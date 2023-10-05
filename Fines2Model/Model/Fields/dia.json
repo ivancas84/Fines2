@@ -1,0 +1,56 @@
+{
+  "id": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "id",
+    "alias": null,
+    "entityName": "dia",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "string",
+    "notNull": true,
+    "defaultValue": "guid",
+    "maxLength": 45
+  },
+  "numero": {
+    "checks": {
+      "type": "short",
+      "required": true
+    },
+    "resets": {},
+    "name": "numero",
+    "alias": null,
+    "entityName": "dia",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "short",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 1
+  },
+  "dia": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "dia",
+    "alias": null,
+    "entityName": "dia",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 9
+  }
+}

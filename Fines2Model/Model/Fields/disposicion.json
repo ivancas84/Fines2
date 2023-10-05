@@ -1,0 +1,74 @@
+{
+  "id": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "id",
+    "alias": null,
+    "entityName": "disposicion",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "string",
+    "notNull": true,
+    "defaultValue": "guid",
+    "maxLength": 45
+  },
+  "asignatura": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "asignatura",
+    "alias": "asi",
+    "entityName": "disposicion",
+    "refEntityName": "asignatura",
+    "refFieldName": "id",
+    "dataType": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 45
+  },
+  "planificacion": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "planificacion",
+    "alias": "pla",
+    "entityName": "disposicion",
+    "refEntityName": "planificacion",
+    "refFieldName": "id",
+    "dataType": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 45
+  },
+  "orden_informe_coordinacion_distrital": {
+    "checks": {
+      "type": "int"
+    },
+    "resets": {},
+    "name": "orden_informe_coordinacion_distrital",
+    "alias": null,
+    "entityName": "disposicion",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 11
+  }
+}
