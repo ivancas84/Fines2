@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33717.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fines2Wpf", "Fines2Wpf\Fines2Wpf.csproj", "{DC426E6F-EB53-428F-A745-1CAEC385F5CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlOrganize", "SqlOrganize\SqlOrganize.csproj", "{A0EC1DBD-4A5A-44B5-99EF-4B127DC8A0FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlOrganize", "SqlOrganize\SqlOrganize.csproj", "{A0EC1DBD-4A5A-44B5-99EF-4B127DC8A0FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlOrganizeMy", "SqlOrganizeMy\SqlOrganizeMy.csproj", "{1A700C8C-392E-41A5-BD75-5E4FC4D5DE59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqlOrganizeMy", "SqlOrganizeMy\SqlOrganizeMy.csproj", "{1A700C8C-392E-41A5-BD75-5E4FC4D5DE59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelOrganize", "ModelOrganize\ModelOrganize.csproj", "{AB2C51B2-3A0B-4AED-B229-F8E45A5F2680}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelOrganize", "ModelOrganize\ModelOrganize.csproj", "{AB2C51B2-3A0B-4AED-B229-F8E45A5F2680}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelOrganizeMy", "ModelOrganizeMy\ModelOrganizeMy.csproj", "{4DA98BD8-14E2-4DBE-827F-FE3B467746E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelOrganizeMy", "ModelOrganizeMy\ModelOrganizeMy.csproj", "{4DA98BD8-14E2-4DBE-827F-FE3B467746E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fines2Model", "Fines2Model\Fines2Model.csproj", "{B9124AFF-9E1E-4F95-92CB-1D3FF9165B27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fines2Model", "Fines2Model\Fines2Model.csproj", "{B9124AFF-9E1E-4F95-92CB-1D3FF9165B27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "Utils\Utils.csproj", "{D24117D3-0080-4CDE-8E1D-4DB285DC7189}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{D24117D3-0080-4CDE-8E1D-4DB285DC7189}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fines2Wpf", "Fines2Wpf\Fines2Wpf.csproj", "{93DB5E13-1437-4C36-A6E1-9084C05ACEA8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DC426E6F-EB53-428F-A745-1CAEC385F5CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC426E6F-EB53-428F-A745-1CAEC385F5CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC426E6F-EB53-428F-A745-1CAEC385F5CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC426E6F-EB53-428F-A745-1CAEC385F5CC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A0EC1DBD-4A5A-44B5-99EF-4B127DC8A0FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A0EC1DBD-4A5A-44B5-99EF-4B127DC8A0FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0EC1DBD-4A5A-44B5-99EF-4B127DC8A0FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +47,10 @@ Global
 		{D24117D3-0080-4CDE-8E1D-4DB285DC7189}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D24117D3-0080-4CDE-8E1D-4DB285DC7189}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D24117D3-0080-4CDE-8E1D-4DB285DC7189}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93DB5E13-1437-4C36-A6E1-9084C05ACEA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93DB5E13-1437-4C36-A6E1-9084C05ACEA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93DB5E13-1437-4C36-A6E1-9084C05ACEA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93DB5E13-1437-4C36-A6E1-9084C05ACEA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

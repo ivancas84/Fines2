@@ -116,7 +116,7 @@ namespace WpfAppMy.Forms.ListaModalidad
                             fieldId = null;
                         }
 
-                        (e.Row.Item as Modalidad).CopyNotNullValues(v.Get().Obj<Modalidad>());
+                        (e.Row.Item as Modalidad).CopyValues<Modalidad>(v.Get().Obj<Modalidad>(),sourceNotNull:true);
                     }
                     while ((fieldId != null) && (parentId != null));
                 }

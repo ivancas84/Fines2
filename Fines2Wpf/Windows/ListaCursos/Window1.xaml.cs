@@ -109,7 +109,7 @@ namespace WpfAppMy.Windows.ListaCursos
                         {
                             if (!v.Check())
                             {
-                                (e.Row.Item as Curso).CopyNotNullValues(v.Get().Obj<Curso>());
+                                (e.Row.Item as Curso).CopyValues<Curso>(v.Get().Obj<Curso>(),sourceNotNull:true);
                                 break;
                             }
 
@@ -125,7 +125,7 @@ namespace WpfAppMy.Windows.ListaCursos
                             }
                         }
 
-                        (e.Row.Item as Curso).CopyNotNullValues(v.Get().Obj<Curso>());
+                        (e.Row.Item as Curso).CopyValues<Curso>(v.Get().Obj<Curso>(),sourceNotNull:true);
 
                         if (fieldId != null)
                         {
