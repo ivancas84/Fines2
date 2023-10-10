@@ -6,12 +6,12 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Utils;
-using WpfAppMy.Data;
-using WpfAppMy.Values;
-using WpfAppMy.ViewModels;
-using WpfAppMy.Windows.AlumnoComision;
+using Fines2Wpf.Data;
+using Fines2Wpf.Values;
+using Fines2Wpf.ViewModels;
+using Fines2Wpf.Windows.AlumnoComision;
 
-namespace WpfAppMy.Windows.Comision
+namespace Fines2Wpf.Windows.Comision
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml

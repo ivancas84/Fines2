@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfAppMy.Forms.InformeCoordinacionDistrital.DAO
+namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
 {
     class Calificacion
     {

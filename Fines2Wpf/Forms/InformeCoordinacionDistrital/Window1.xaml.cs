@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 
-namespace WpfAppMy.Forms.InformeCoordinacionDistrital
+namespace Fines2Wpf.Forms.InformeCoordinacionDistrital
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml

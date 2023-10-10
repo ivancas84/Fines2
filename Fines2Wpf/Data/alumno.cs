@@ -1,169 +1,170 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_alumno : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("alumno", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _anio_ingreso;
+        protected string? _anio_ingreso = (string?)ContainerApp.db.DefaultValue("alumno", "anio_ingreso");
         public string? anio_ingreso
         {
             get { return _anio_ingreso; }
             set { _anio_ingreso = value; NotifyPropertyChanged(); }
         }
-        private string? _observaciones;
+        protected string? _observaciones = null;
         public string? observaciones
         {
             get { return _observaciones; }
             set { _observaciones = value; NotifyPropertyChanged(); }
         }
-        private string? _persona;
+        protected string? _persona = null;
         public string? persona
         {
             get { return _persona; }
             set { _persona = value; NotifyPropertyChanged(); }
         }
-        private string? _estado_inscripcion;
+        protected string? _estado_inscripcion = null;
         public string? estado_inscripcion
         {
             get { return _estado_inscripcion; }
             set { _estado_inscripcion = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _fecha_titulacion;
+        protected DateTime? _fecha_titulacion = null;
         public DateTime? fecha_titulacion
         {
             get { return _fecha_titulacion; }
             set { _fecha_titulacion = value; NotifyPropertyChanged(); }
         }
-        private string? _plan;
+        protected string? _plan = null;
         public string? plan
         {
             get { return _plan; }
             set { _plan = value; NotifyPropertyChanged(); }
         }
-        private string? _resolucion_inscripcion;
+        protected string? _resolucion_inscripcion = null;
         public string? resolucion_inscripcion
         {
             get { return _resolucion_inscripcion; }
             set { _resolucion_inscripcion = value; NotifyPropertyChanged(); }
         }
-        private short? _anio_inscripcion;
+        protected short? _anio_inscripcion = null;
         public short? anio_inscripcion
         {
             get { return _anio_inscripcion; }
             set { _anio_inscripcion = value; NotifyPropertyChanged(); }
         }
-        private short? _semestre_inscripcion;
+        protected short? _semestre_inscripcion = null;
         public short? semestre_inscripcion
         {
             get { return _semestre_inscripcion; }
             set { _semestre_inscripcion = value; NotifyPropertyChanged(); }
         }
-        private short? _semestre_ingreso;
+        protected short? _semestre_ingreso = (short?)ContainerApp.db.DefaultValue("alumno", "semestre_ingreso");
         public short? semestre_ingreso
         {
             get { return _semestre_ingreso; }
             set { _semestre_ingreso = value; NotifyPropertyChanged(); }
         }
-        private string? _adeuda_legajo;
+        protected string? _adeuda_legajo = null;
         public string? adeuda_legajo
         {
             get { return _adeuda_legajo; }
             set { _adeuda_legajo = value; NotifyPropertyChanged(); }
         }
-        private string? _adeuda_deudores;
+        protected string? _adeuda_deudores = null;
         public string? adeuda_deudores
         {
             get { return _adeuda_deudores; }
             set { _adeuda_deudores = value; NotifyPropertyChanged(); }
         }
-        private string? _documentacion_inscripcion;
+        protected string? _documentacion_inscripcion = null;
         public string? documentacion_inscripcion
         {
             get { return _documentacion_inscripcion; }
             set { _documentacion_inscripcion = value; NotifyPropertyChanged(); }
         }
-        private bool? _anio_inscripcion_completo;
+        protected bool? _anio_inscripcion_completo = null;
         public bool? anio_inscripcion_completo
         {
             get { return _anio_inscripcion_completo; }
             set { _anio_inscripcion_completo = value; NotifyPropertyChanged(); }
         }
-        private string? _establecimiento_inscripcion;
+        protected string? _establecimiento_inscripcion = null;
         public string? establecimiento_inscripcion
         {
             get { return _establecimiento_inscripcion; }
             set { _establecimiento_inscripcion = value; NotifyPropertyChanged(); }
         }
-        private string? _libro_folio;
+        protected string? _libro_folio = null;
         public string? libro_folio
         {
             get { return _libro_folio; }
             set { _libro_folio = value; NotifyPropertyChanged(); }
         }
-        private string? _libro;
+        protected string? _libro = null;
         public string? libro
         {
             get { return _libro; }
             set { _libro = value; NotifyPropertyChanged(); }
         }
-        private string? _folio;
+        protected string? _folio = null;
         public string? folio
         {
             get { return _folio; }
             set { _folio = value; NotifyPropertyChanged(); }
         }
-        private string? _comentarios;
+        protected string? _comentarios = null;
         public string? comentarios
         {
             get { return _comentarios; }
             set { _comentarios = value; NotifyPropertyChanged(); }
         }
-        private bool? _tiene_dni;
+        protected bool? _tiene_dni = (bool?)ContainerApp.db.DefaultValue("alumno", "tiene_dni");
         public bool? tiene_dni
         {
             get { return _tiene_dni; }
             set { _tiene_dni = value; NotifyPropertyChanged(); }
         }
-        private bool? _tiene_constancia;
+        protected bool? _tiene_constancia = (bool?)ContainerApp.db.DefaultValue("alumno", "tiene_constancia");
         public bool? tiene_constancia
         {
             get { return _tiene_constancia; }
             set { _tiene_constancia = value; NotifyPropertyChanged(); }
         }
-        private bool? _tiene_certificado;
+        protected bool? _tiene_certificado = (bool?)ContainerApp.db.DefaultValue("alumno", "tiene_certificado");
         public bool? tiene_certificado
         {
             get { return _tiene_certificado; }
             set { _tiene_certificado = value; NotifyPropertyChanged(); }
         }
-        private bool? _previas_completas;
+        protected bool? _previas_completas = (bool?)ContainerApp.db.DefaultValue("alumno", "previas_completas");
         public bool? previas_completas
         {
             get { return _previas_completas; }
             set { _previas_completas = value; NotifyPropertyChanged(); }
         }
-        private bool? _tiene_partida;
+        protected bool? _tiene_partida = (bool?)ContainerApp.db.DefaultValue("alumno", "tiene_partida");
         public bool? tiene_partida
         {
             get { return _tiene_partida; }
             set { _tiene_partida = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _creado;
+        protected DateTime? _creado = (DateTime?)ContainerApp.db.DefaultValue("alumno", "creado");
         public DateTime? creado
         {
             get { return _creado; }
             set { _creado = value; NotifyPropertyChanged(); }
         }
-        private bool? _confirmado_direccion;
+        protected bool? _confirmado_direccion = (bool?)ContainerApp.db.DefaultValue("alumno", "confirmado_direccion");
         public bool? confirmado_direccion
         {
             get { return _confirmado_direccion; }

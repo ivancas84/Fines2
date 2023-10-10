@@ -1,43 +1,44 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_planilla_docente : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("planilla_docente", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _numero;
+        protected string? _numero = null;
         public string? numero
         {
             get { return _numero; }
             set { _numero = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _insertado;
+        protected DateTime? _insertado = (DateTime?)ContainerApp.db.DefaultValue("planilla_docente", "insertado");
         public DateTime? insertado
         {
             get { return _insertado; }
             set { _insertado = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _fecha_contralor;
+        protected DateTime? _fecha_contralor = null;
         public DateTime? fecha_contralor
         {
             get { return _fecha_contralor; }
             set { _fecha_contralor = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _fecha_consejo;
+        protected DateTime? _fecha_consejo = null;
         public DateTime? fecha_consejo
         {
             get { return _fecha_consejo; }
             set { _fecha_consejo = value; NotifyPropertyChanged(); }
         }
-        private string? _observaciones;
+        protected string? _observaciones = null;
         public string? observaciones
         {
             get { return _observaciones; }

@@ -12,10 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
-using WpfAppMy.DAO;
-using WpfAppMy.Data;
+using Fines2Wpf.DAO;
+using Fines2Wpf.Data;
 
-namespace WpfAppMy.PageManipulator
+namespace Fines2Wpf.PageManipulator
 {
     /// <summary>
     /// Lógica de interacción para FormEstudiantes.xaml

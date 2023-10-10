@@ -1,55 +1,56 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_designacion : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("designacion", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _desde;
+        protected DateTime? _desde = null;
         public DateTime? desde
         {
             get { return _desde; }
             set { _desde = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _hasta;
+        protected DateTime? _hasta = null;
         public DateTime? hasta
         {
             get { return _hasta; }
             set { _hasta = value; NotifyPropertyChanged(); }
         }
-        private string? _cargo;
+        protected string? _cargo = null;
         public string? cargo
         {
             get { return _cargo; }
             set { _cargo = value; NotifyPropertyChanged(); }
         }
-        private string? _sede;
+        protected string? _sede = null;
         public string? sede
         {
             get { return _sede; }
             set { _sede = value; NotifyPropertyChanged(); }
         }
-        private string? _persona;
+        protected string? _persona = null;
         public string? persona
         {
             get { return _persona; }
             set { _persona = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _alta;
+        protected DateTime? _alta = (DateTime?)ContainerApp.db.DefaultValue("designacion", "alta");
         public DateTime? alta
         {
             get { return _alta; }
             set { _alta = value; NotifyPropertyChanged(); }
         }
-        private string? _pfid;
+        protected string? _pfid = null;
         public string? pfid
         {
             get { return _pfid; }

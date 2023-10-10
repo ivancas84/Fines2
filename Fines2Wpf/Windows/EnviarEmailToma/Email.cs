@@ -5,9 +5,9 @@ using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
-using WpfAppMy.Windows.TomaPosesionPdf;
+using Fines2Wpf.Windows.TomaPosesionPdf;
 
-namespace WpfAppMy.Windows.EnviarEmailToma
+namespace Fines2Wpf.Windows.EnviarEmailToma
 {
     internal class Email : SmtpClient
     {

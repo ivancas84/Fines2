@@ -1,31 +1,32 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_resolucion : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("resolucion", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _numero;
+        protected string? _numero = null;
         public string? numero
         {
             get { return _numero; }
             set { _numero = value; NotifyPropertyChanged(); }
         }
-        private short? _anio;
+        protected short? _anio = null;
         public short? anio
         {
             get { return _anio; }
             set { _anio = value; NotifyPropertyChanged(); }
         }
-        private string? _tipo;
+        protected string? _tipo = null;
         public string? tipo
         {
             get { return _tipo; }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfAppMy.Windows.ListaTomas
+namespace Fines2Wpf.Windows.ListaTomas
 {
-    internal class DAO : WpfAppMy.DAO2
+    internal class DAO : Fines2Wpf.DAO2
     {
         public IEnumerable<Dictionary<string, object>> TomaAll(Search search)
         {

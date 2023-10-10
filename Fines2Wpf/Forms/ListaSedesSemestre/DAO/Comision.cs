@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Utils;
 
-namespace WpfAppMy.Forms.ListaSedesSemestre.DAO
+namespace Fines2Wpf.Forms.ListaSedesSemestre.DAO
 {
     class Comision
     {

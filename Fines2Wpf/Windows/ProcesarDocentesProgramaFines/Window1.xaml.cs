@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows;
 using Utils;
 
-namespace WpfAppMy.Windows.ProcesarDocentesProgramaFines
+namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml

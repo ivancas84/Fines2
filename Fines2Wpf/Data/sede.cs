@@ -1,79 +1,80 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_sede : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("sede", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _numero;
+        protected string? _numero = null;
         public string? numero
         {
             get { return _numero; }
             set { _numero = value; NotifyPropertyChanged(); }
         }
-        private string? _nombre;
+        protected string? _nombre = null;
         public string? nombre
         {
             get { return _nombre; }
             set { _nombre = value; NotifyPropertyChanged(); }
         }
-        private string? _observaciones;
+        protected string? _observaciones = null;
         public string? observaciones
         {
             get { return _observaciones; }
             set { _observaciones = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _alta;
+        protected DateTime? _alta = (DateTime?)ContainerApp.db.DefaultValue("sede", "alta");
         public DateTime? alta
         {
             get { return _alta; }
             set { _alta = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _baja;
+        protected DateTime? _baja = null;
         public DateTime? baja
         {
             get { return _baja; }
             set { _baja = value; NotifyPropertyChanged(); }
         }
-        private string? _domicilio;
+        protected string? _domicilio = null;
         public string? domicilio
         {
             get { return _domicilio; }
             set { _domicilio = value; NotifyPropertyChanged(); }
         }
-        private string? _centro_educativo;
+        protected string? _centro_educativo = null;
         public string? centro_educativo
         {
             get { return _centro_educativo; }
             set { _centro_educativo = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _fecha_traspaso;
+        protected DateTime? _fecha_traspaso = null;
         public DateTime? fecha_traspaso
         {
             get { return _fecha_traspaso; }
             set { _fecha_traspaso = value; NotifyPropertyChanged(); }
         }
-        private string? _organizacion;
+        protected string? _organizacion = null;
         public string? organizacion
         {
             get { return _organizacion; }
             set { _organizacion = value; NotifyPropertyChanged(); }
         }
-        private string? _pfid;
+        protected string? _pfid = null;
         public string? pfid
         {
             get { return _pfid; }
             set { _pfid = value; NotifyPropertyChanged(); }
         }
-        private string? _pfid_organizacion;
+        protected string? _pfid_organizacion = null;
         public string? pfid_organizacion
         {
             get { return _pfid_organizacion; }

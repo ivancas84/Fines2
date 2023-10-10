@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfAppMy.Forms.ListaReferentesSemestre.DAO
+namespace Fines2Wpf.Forms.ListaReferentesSemestre.DAO
 {
     class Designacion
     {

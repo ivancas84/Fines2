@@ -1,43 +1,44 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_alumno_comision : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("alumno_comision", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _creado;
+        protected DateTime? _creado = (DateTime?)ContainerApp.db.DefaultValue("alumno_comision", "creado");
         public DateTime? creado
         {
             get { return _creado; }
             set { _creado = value; NotifyPropertyChanged(); }
         }
-        private string? _observaciones;
+        protected string? _observaciones = null;
         public string? observaciones
         {
             get { return _observaciones; }
             set { _observaciones = value; NotifyPropertyChanged(); }
         }
-        private string? _comision;
+        protected string? _comision = null;
         public string? comision
         {
             get { return _comision; }
             set { _comision = value; NotifyPropertyChanged(); }
         }
-        private string? _alumno;
+        protected string? _alumno = null;
         public string? alumno
         {
             get { return _alumno; }
             set { _alumno = value; NotifyPropertyChanged(); }
         }
-        private string? _estado;
+        protected string? _estado = (string?)ContainerApp.db.DefaultValue("alumno_comision", "estado");
         public string? estado
         {
             get { return _estado; }

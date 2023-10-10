@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 
-namespace WpfAppMy.DAO
+namespace Fines2Wpf.DAO
 {
     public class AlumnoComision
     {

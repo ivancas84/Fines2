@@ -13,9 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
-using WpfAppMy.Data;
+using Fines2Wpf.Data;
 
-namespace WpfAppMy.Windows.AlumnoComision
+namespace Fines2Wpf.Windows.AlumnoComision
 {
     /// <summary>
     /// Lógica de interacción para AlumnosSemestreSinGenero.xaml

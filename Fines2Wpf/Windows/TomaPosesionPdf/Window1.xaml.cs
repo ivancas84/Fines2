@@ -15,11 +15,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using WpfAppMy.Windows.TomaPosesionPdf;
+using Fines2Wpf.Windows.TomaPosesionPdf;
 using Utils;
-using WpfAppMy.Windows.ListaTomas;
+using Fines2Wpf.Windows.ListaTomas;
 
-namespace WpfAppMy.Windows.TomaPosesionPdf
+namespace Fines2Wpf.Windows.TomaPosesionPdf
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml

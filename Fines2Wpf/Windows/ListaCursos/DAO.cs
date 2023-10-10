@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 
-namespace WpfAppMy.Windows.ListaCursos
+namespace Fines2Wpf.Windows.ListaCursos
 {
-    internal class DAO : WpfAppMy.DAO2
+    internal class DAO : Fines2Wpf.DAO2
     {
         public IEnumerable<Dictionary<string, object>> CursoAll(Search search)
         {

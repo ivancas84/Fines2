@@ -1,25 +1,26 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_modalidad : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("modalidad", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _nombre;
+        protected string? _nombre = null;
         public string? nombre
         {
             get { return _nombre; }
             set { _nombre = value; NotifyPropertyChanged(); }
         }
-        private string? _pfid;
+        protected string? _pfid = null;
         public string? pfid
         {
             get { return _pfid; }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WpfAppMy.Data;
+using Fines2Wpf.Data;
 
-namespace WpfAppMy.ViewModels
+namespace Fines2Wpf.ViewModels
 {
     internal class ComisionRel : Data_comision_r
     {

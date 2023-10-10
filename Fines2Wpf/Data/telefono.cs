@@ -1,49 +1,50 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_telefono : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("telefono", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _tipo;
+        protected string? _tipo = null;
         public string? tipo
         {
             get { return _tipo; }
             set { _tipo = value; NotifyPropertyChanged(); }
         }
-        private string? _prefijo;
+        protected string? _prefijo = null;
         public string? prefijo
         {
             get { return _prefijo; }
             set { _prefijo = value; NotifyPropertyChanged(); }
         }
-        private string? _numero;
+        protected string? _numero = null;
         public string? numero
         {
             get { return _numero; }
             set { _numero = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _insertado;
+        protected DateTime? _insertado = (DateTime?)ContainerApp.db.DefaultValue("telefono", "insertado");
         public DateTime? insertado
         {
             get { return _insertado; }
             set { _insertado = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _eliminado;
+        protected DateTime? _eliminado = null;
         public DateTime? eliminado
         {
             get { return _eliminado; }
             set { _eliminado = value; NotifyPropertyChanged(); }
         }
-        private string? _persona;
+        protected string? _persona = null;
         public string? persona
         {
             get { return _persona; }

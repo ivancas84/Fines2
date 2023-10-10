@@ -1,103 +1,104 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_comision : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("comision", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _turno;
+        protected string? _turno = null;
         public string? turno
         {
             get { return _turno; }
             set { _turno = value; NotifyPropertyChanged(); }
         }
-        private string? _division;
+        protected string? _division = null;
         public string? division
         {
             get { return _division; }
             set { _division = value; NotifyPropertyChanged(); }
         }
-        private string? _comentario;
+        protected string? _comentario = null;
         public string? comentario
         {
             get { return _comentario; }
             set { _comentario = value; NotifyPropertyChanged(); }
         }
-        private bool? _autorizada;
+        protected bool? _autorizada = null;
         public bool? autorizada
         {
             get { return _autorizada; }
             set { _autorizada = value; NotifyPropertyChanged(); }
         }
-        private bool? _apertura;
+        protected bool? _apertura = null;
         public bool? apertura
         {
             get { return _apertura; }
             set { _apertura = value; NotifyPropertyChanged(); }
         }
-        private bool? _publicada;
+        protected bool? _publicada = null;
         public bool? publicada
         {
             get { return _publicada; }
             set { _publicada = value; NotifyPropertyChanged(); }
         }
-        private string? _observaciones;
+        protected string? _observaciones = null;
         public string? observaciones
         {
             get { return _observaciones; }
             set { _observaciones = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _alta;
+        protected DateTime? _alta = (DateTime?)ContainerApp.db.DefaultValue("comision", "alta");
         public DateTime? alta
         {
             get { return _alta; }
             set { _alta = value; NotifyPropertyChanged(); }
         }
-        private string? _sede;
+        protected string? _sede = null;
         public string? sede
         {
             get { return _sede; }
             set { _sede = value; NotifyPropertyChanged(); }
         }
-        private string? _modalidad;
+        protected string? _modalidad = null;
         public string? modalidad
         {
             get { return _modalidad; }
             set { _modalidad = value; NotifyPropertyChanged(); }
         }
-        private string? _planificacion;
+        protected string? _planificacion = null;
         public string? planificacion
         {
             get { return _planificacion; }
             set { _planificacion = value; NotifyPropertyChanged(); }
         }
-        private string? _comision_siguiente;
+        protected string? _comision_siguiente = null;
         public string? comision_siguiente
         {
             get { return _comision_siguiente; }
             set { _comision_siguiente = value; NotifyPropertyChanged(); }
         }
-        private string? _calendario;
+        protected string? _calendario = null;
         public string? calendario
         {
             get { return _calendario; }
             set { _calendario = value; NotifyPropertyChanged(); }
         }
-        private string? _identificacion;
+        protected string? _identificacion = null;
         public string? identificacion
         {
             get { return _identificacion; }
             set { _identificacion = value; NotifyPropertyChanged(); }
         }
-        private string? _pfid;
+        protected string? _pfid = null;
         public string? pfid
         {
             get { return _pfid; }

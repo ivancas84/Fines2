@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using SqlOrganize;
 using SqlOrganizeMy;
-using WpfAppMy.Values;
+using Fines2Wpf.Values;
 
-namespace WpfAppMy
+namespace Fines2Wpf
 {
     internal class DbApp : DbMy
     {

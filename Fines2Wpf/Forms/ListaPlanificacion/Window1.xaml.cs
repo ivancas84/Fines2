@@ -5,14 +5,14 @@ using System.Windows.Data;
 
 using Utils;
 
-namespace WpfAppMy.Forms.ListaPlanificacion
+namespace Fines2Wpf.Forms.ListaPlanificacion
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml
     /// </summary>
     public partial class Window1 : Window
     {
-        private WpfAppMy.Forms.ListaPlanificacion.DAO.Planificacion planificacionDAO = new();
+        private Fines2Wpf.Forms.ListaPlanificacion.DAO.Planificacion planificacionDAO = new();
 
         public Window1()
         {

@@ -17,10 +17,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
-using WpfAppMy.Windows.Comision;
-using WpfAppMy.Windows.ListaCursos;
+using Fines2Wpf.Windows.Comision;
+using Fines2Wpf.Windows.ListaCursos;
 
-namespace WpfAppMy.Windows.ProcesarComisionesProgramaFines
+namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml

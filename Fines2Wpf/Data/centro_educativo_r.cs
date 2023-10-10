@@ -1,52 +1,52 @@
 using System;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_centro_educativo_r : Data_centro_educativo
     {
-        private string? _domicilio__id;
+        protected string? _domicilio__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
         public string? domicilio__id
         {
             get { return _domicilio__id; }
             set { _domicilio__id = value; NotifyPropertyChanged(); }
         }
-        private string? _domicilio__calle;
+        protected string? _domicilio__calle = null;
         public string? domicilio__calle
         {
             get { return _domicilio__calle; }
             set { _domicilio__calle = value; NotifyPropertyChanged(); }
         }
-        private string? _domicilio__entre;
+        protected string? _domicilio__entre = null;
         public string? domicilio__entre
         {
             get { return _domicilio__entre; }
             set { _domicilio__entre = value; NotifyPropertyChanged(); }
         }
-        private string? _domicilio__numero;
+        protected string? _domicilio__numero = null;
         public string? domicilio__numero
         {
             get { return _domicilio__numero; }
             set { _domicilio__numero = value; NotifyPropertyChanged(); }
         }
-        private string? _domicilio__piso;
+        protected string? _domicilio__piso = null;
         public string? domicilio__piso
         {
             get { return _domicilio__piso; }
             set { _domicilio__piso = value; NotifyPropertyChanged(); }
         }
-        private string? _domicilio__departamento;
+        protected string? _domicilio__departamento = null;
         public string? domicilio__departamento
         {
             get { return _domicilio__departamento; }
             set { _domicilio__departamento = value; NotifyPropertyChanged(); }
         }
-        private string? _domicilio__barrio;
+        protected string? _domicilio__barrio = null;
         public string? domicilio__barrio
         {
             get { return _domicilio__barrio; }
             set { _domicilio__barrio = value; NotifyPropertyChanged(); }
         }
-        private string? _domicilio__localidad;
+        protected string? _domicilio__localidad = null;
         public string? domicilio__localidad
         {
             get { return _domicilio__localidad; }

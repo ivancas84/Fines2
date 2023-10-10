@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 
-namespace WpfAppMy.Windows.Curso.ListaCursoSemestreSinTomasAprobadas
+namespace Fines2Wpf.Windows.Curso.ListaCursoSemestreSinTomasAprobadas
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml

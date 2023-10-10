@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 
-namespace WpfAppMy.Forms.ListaReferentesSemestre
+namespace Fines2Wpf.Forms.ListaReferentesSemestre
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml
@@ -22,7 +22,7 @@ namespace WpfAppMy.Forms.ListaReferentesSemestre
     {
         Search search = new();
 
-        private WpfAppMy.Forms.ListaReferentesSemestre.DAO.Designacion designacionDAO = new();
+        private Fines2Wpf.Forms.ListaReferentesSemestre.DAO.Designacion designacionDAO = new();
 
         public Window1()
         {

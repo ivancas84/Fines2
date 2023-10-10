@@ -3,7 +3,7 @@ using ModelOrganize;
 using ModelOrganizeMy;
 using System.Configuration;
 
-var c = new ConfigMy()
+var c = new Config()
 {
     connectionString = ConfigurationManager.AppSettings.Get("connectionString"),
     modelPath = ConfigurationManager.AppSettings.Get("modelPath"),

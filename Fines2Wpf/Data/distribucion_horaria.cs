@@ -1,31 +1,32 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_distribucion_horaria : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("distribucion_horaria", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private int? _horas_catedra;
+        protected int? _horas_catedra = null;
         public int? horas_catedra
         {
             get { return _horas_catedra; }
             set { _horas_catedra = value; NotifyPropertyChanged(); }
         }
-        private int? _dia;
+        protected int? _dia = null;
         public int? dia
         {
             get { return _dia; }
             set { _dia = value; NotifyPropertyChanged(); }
         }
-        private string? _disposicion;
+        protected string? _disposicion = null;
         public string? disposicion
         {
             get { return _disposicion; }

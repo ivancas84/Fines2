@@ -2,9 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using Utils;
-using WpfAppMy.Data;
+using Fines2Wpf.Data;
 
-namespace WpfAppMy.Windows.AlumnoComision.ListaAlumnosSemestre
+namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml

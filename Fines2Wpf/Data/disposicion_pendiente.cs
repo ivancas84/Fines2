@@ -1,31 +1,32 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_disposicion_pendiente : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("disposicion_pendiente", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _disposicion;
+        protected string? _disposicion = null;
         public string? disposicion
         {
             get { return _disposicion; }
             set { _disposicion = value; NotifyPropertyChanged(); }
         }
-        private string? _alumno;
+        protected string? _alumno = null;
         public string? alumno
         {
             get { return _alumno; }
             set { _alumno = value; NotifyPropertyChanged(); }
         }
-        private string? _modo;
+        protected string? _modo = null;
         public string? modo
         {
             get { return _modo; }

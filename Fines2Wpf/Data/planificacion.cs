@@ -1,37 +1,38 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_planificacion : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("planificacion", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _anio;
+        protected string? _anio = null;
         public string? anio
         {
             get { return _anio; }
             set { _anio = value; NotifyPropertyChanged(); }
         }
-        private string? _semestre;
+        protected string? _semestre = null;
         public string? semestre
         {
             get { return _semestre; }
             set { _semestre = value; NotifyPropertyChanged(); }
         }
-        private string? _plan;
+        protected string? _plan = null;
         public string? plan
         {
             get { return _plan; }
             set { _plan = value; NotifyPropertyChanged(); }
         }
-        private string? _pfid;
+        protected string? _pfid = null;
         public string? pfid
         {
             get { return _pfid; }

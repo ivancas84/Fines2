@@ -1,25 +1,26 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_dia : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("dia", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private short? _numero;
+        protected short? _numero = null;
         public short? numero
         {
             get { return _numero; }
             set { _numero = value; NotifyPropertyChanged(); }
         }
-        private string? _dia;
+        protected string? _dia = null;
         public string? dia
         {
             get { return _dia; }

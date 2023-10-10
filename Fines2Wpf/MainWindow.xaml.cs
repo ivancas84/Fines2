@@ -1,7 +1,7 @@
 ﻿using QuestPDF.Infrastructure;
 using System.Windows;
 
-namespace WpfAppMy
+namespace Fines2Wpf
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

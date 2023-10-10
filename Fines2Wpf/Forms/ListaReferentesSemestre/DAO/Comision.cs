@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Utils;
 
-namespace WpfAppMy.Forms.ListaReferentesSemestre.DAO
+namespace Fines2Wpf.Forms.ListaReferentesSemestre.DAO
 {
     class Comision
     {

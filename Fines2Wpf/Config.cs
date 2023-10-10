@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfAppMy
+namespace Fines2Wpf
 {
     public class Config : SqlOrganize.Config
     {

@@ -1,109 +1,110 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_toma : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("toma", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _fecha_toma;
+        protected DateTime? _fecha_toma = null;
         public DateTime? fecha_toma
         {
             get { return _fecha_toma; }
             set { _fecha_toma = value; NotifyPropertyChanged(); }
         }
-        private string? _estado;
+        protected string? _estado = null;
         public string? estado
         {
             get { return _estado; }
             set { _estado = value; NotifyPropertyChanged(); }
         }
-        private string? _observaciones;
+        protected string? _observaciones = null;
         public string? observaciones
         {
             get { return _observaciones; }
             set { _observaciones = value; NotifyPropertyChanged(); }
         }
-        private string? _comentario;
+        protected string? _comentario = null;
         public string? comentario
         {
             get { return _comentario; }
             set { _comentario = value; NotifyPropertyChanged(); }
         }
-        private string? _tipo_movimiento;
+        protected string? _tipo_movimiento = null;
         public string? tipo_movimiento
         {
             get { return _tipo_movimiento; }
             set { _tipo_movimiento = value; NotifyPropertyChanged(); }
         }
-        private string? _estado_contralor;
+        protected string? _estado_contralor = null;
         public string? estado_contralor
         {
             get { return _estado_contralor; }
             set { _estado_contralor = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _alta;
+        protected DateTime? _alta = (DateTime?)ContainerApp.db.DefaultValue("toma", "alta");
         public DateTime? alta
         {
             get { return _alta; }
             set { _alta = value; NotifyPropertyChanged(); }
         }
-        private string? _curso;
+        protected string? _curso = null;
         public string? curso
         {
             get { return _curso; }
             set { _curso = value; NotifyPropertyChanged(); }
         }
-        private string? _docente;
+        protected string? _docente = null;
         public string? docente
         {
             get { return _docente; }
             set { _docente = value; NotifyPropertyChanged(); }
         }
-        private string? _reemplazo;
+        protected string? _reemplazo = null;
         public string? reemplazo
         {
             get { return _reemplazo; }
             set { _reemplazo = value; NotifyPropertyChanged(); }
         }
-        private string? _planilla_docente;
+        protected string? _planilla_docente = null;
         public string? planilla_docente
         {
             get { return _planilla_docente; }
             set { _planilla_docente = value; NotifyPropertyChanged(); }
         }
-        private bool? _calificacion;
+        protected bool? _calificacion = (bool?)ContainerApp.db.DefaultValue("toma", "calificacion");
         public bool? calificacion
         {
             get { return _calificacion; }
             set { _calificacion = value; NotifyPropertyChanged(); }
         }
-        private bool? _temas_tratados;
+        protected bool? _temas_tratados = (bool?)ContainerApp.db.DefaultValue("toma", "temas_tratados");
         public bool? temas_tratados
         {
             get { return _temas_tratados; }
             set { _temas_tratados = value; NotifyPropertyChanged(); }
         }
-        private bool? _asistencia;
+        protected bool? _asistencia = (bool?)ContainerApp.db.DefaultValue("toma", "asistencia");
         public bool? asistencia
         {
             get { return _asistencia; }
             set { _asistencia = value; NotifyPropertyChanged(); }
         }
-        private bool? _sin_planillas;
+        protected bool? _sin_planillas = (bool?)ContainerApp.db.DefaultValue("toma", "sin_planillas");
         public bool? sin_planillas
         {
             get { return _sin_planillas; }
             set { _sin_planillas = value; NotifyPropertyChanged(); }
         }
-        private bool? _confirmada;
+        protected bool? _confirmada = (bool?)ContainerApp.db.DefaultValue("toma", "confirmada");
         public bool? confirmada
         {
             get { return _confirmada; }

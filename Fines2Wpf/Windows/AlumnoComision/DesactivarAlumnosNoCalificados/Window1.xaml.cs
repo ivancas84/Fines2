@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 
-namespace WpfAppMy.Windows.AlumnoComision.DesactivarAlumnosNoCalificados
+namespace Fines2Wpf.Windows.AlumnoComision.DesactivarAlumnosNoCalificados
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml
@@ -23,8 +23,8 @@ namespace WpfAppMy.Windows.AlumnoComision.DesactivarAlumnosNoCalificados
     public partial class Window1 : Window
     {
 
-        WpfAppMy.DAO.AlumnoComision asignacionDAO = new();
-        WpfAppMy.DAO.Calificacion calificacionDAO = new();
+        Fines2Wpf.DAO.AlumnoComision asignacionDAO = new();
+        Fines2Wpf.DAO.Calificacion calificacionDAO = new();
 
 
         public Window1()

@@ -17,7 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 
-namespace WpfAppMy.Forms.ListaModalidad
+namespace Fines2Wpf.Forms.ListaModalidad
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml
@@ -63,12 +63,12 @@ namespace WpfAppMy.Forms.ListaModalidad
                     string fieldName = key;
                     string? parentId = null;
 
-                    if (key.Contains(ContainerApp.db.config.idAttrSeparatorString))
+                    if (key.Contains("__"))
                     {
-                        int indexSeparator = key.IndexOf(ContainerApp.db.config.idAttrSeparatorString);
+                        int indexSeparator = key.IndexOf("__");
                         fieldId = key.Substring(0, indexSeparator);
                         entityName = ContainerApp.db.Entity(entityName!).relations[fieldId].refEntityName;
-                        fieldName = key.Substring(indexSeparator + ContainerApp.db.config.idAttrSeparatorString.Length);
+                        fieldName = key.Substring(indexSeparator + "__".Length);
                     }
 
                     do
@@ -107,7 +107,7 @@ namespace WpfAppMy.Forms.ListaModalidad
                             parentId = ContainerApp.db.Entity(entityName).relations[fieldId].parentId;
                             if (parentId != null) { 
                                 var parentFieldName = ContainerApp.db.Entity(entityName).relations[parentId].fieldName;
-                                r[parentId + ContainerApp.db.config.idNameSeparatorString + parentFieldName] = r[fieldId + ContainerApp.db.config.idNameSeparatorString + fieldName];
+                                r[parentId + "-" + parentFieldName] = r[fieldId + "-" + fieldName];
                                 fieldId = parentId;
                                 fieldName = parentFieldName;
                             }

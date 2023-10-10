@@ -1,37 +1,38 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_centro_educativo : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("centro_educativo", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _nombre;
+        protected string? _nombre = null;
         public string? nombre
         {
             get { return _nombre; }
             set { _nombre = value; NotifyPropertyChanged(); }
         }
-        private string? _cue;
+        protected string? _cue = null;
         public string? cue
         {
             get { return _cue; }
             set { _cue = value; NotifyPropertyChanged(); }
         }
-        private string? _domicilio;
+        protected string? _domicilio = null;
         public string? domicilio
         {
             get { return _domicilio; }
             set { _domicilio = value; NotifyPropertyChanged(); }
         }
-        private string? _observaciones;
+        protected string? _observaciones = null;
         public string? observaciones
         {
             get { return _observaciones; }

@@ -15,9 +15,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
-using WpfAppMy.Forms.ListaModalidad;
+using Fines2Wpf.Forms.ListaModalidad;
 
-namespace WpfAppMy.Windows.ListaCursos
+namespace Fines2Wpf.Windows.ListaCursos
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml
@@ -70,12 +70,12 @@ namespace WpfAppMy.Windows.ListaCursos
                     string entityName = "curso";
                     string fieldName = key;
 
-                    if (key.Contains(ContainerApp.db.config.idAttrSeparatorString))
+                    if (key.Contains("__"))
                     {
-                        int i = key.IndexOf(ContainerApp.db.config.idAttrSeparatorString);
+                        int i = key.IndexOf("__");
                         fieldId = key.Substring(0, i);
                         entityName = ContainerApp.db.Entity(entityName!).relations[fieldId].refEntityName;
-                        fieldName = key.Substring(i + ContainerApp.db.config.idAttrSeparatorString.Length);
+                        fieldName = key.Substring(i + "__".Length);
                     }
 
                     bool continueWhile;
@@ -133,7 +133,7 @@ namespace WpfAppMy.Windows.ListaCursos
                             if (parentId != null)
                             {
                                 var parentFieldName = ContainerApp.db.Entity(mainEntityName).relations[fieldId].fieldName;
-                                value = v.Get()[fieldId + ContainerApp.db.config.idNameSeparatorString + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
+                                value = v.Get()[fieldId + "-" + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
                                 fieldId = parentId;
                                 fieldName = parentFieldName;
                                 entityName = ContainerApp.db.Entity(mainEntityName).relations[parentId].refEntityName;
@@ -142,7 +142,7 @@ namespace WpfAppMy.Windows.ListaCursos
                             else
                             {
                                 entityName = mainEntityName;
-                                value = v.Get()[fieldId + ContainerApp.db.config.idNameSeparatorString + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
+                                value = v.Get()[fieldId + "-" + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
                                 fieldName = ContainerApp.db.Entity(mainEntityName).relations[fieldId].fieldName;
                                 fieldId = null;
                             }

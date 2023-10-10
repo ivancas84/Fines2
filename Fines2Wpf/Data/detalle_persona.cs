@@ -1,55 +1,56 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_detalle_persona : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("detalle_persona", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _descripcion;
+        protected string? _descripcion = null;
         public string? descripcion
         {
             get { return _descripcion; }
             set { _descripcion = value; NotifyPropertyChanged(); }
         }
-        private string? _archivo;
+        protected string? _archivo = null;
         public string? archivo
         {
             get { return _archivo; }
             set { _archivo = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _creado;
+        protected DateTime? _creado = (DateTime?)ContainerApp.db.DefaultValue("detalle_persona", "creado");
         public DateTime? creado
         {
             get { return _creado; }
             set { _creado = value; NotifyPropertyChanged(); }
         }
-        private string? _persona;
+        protected string? _persona = null;
         public string? persona
         {
             get { return _persona; }
             set { _persona = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _fecha;
+        protected DateTime? _fecha = (DateTime?)ContainerApp.db.DefaultValue("detalle_persona", "fecha");
         public DateTime? fecha
         {
             get { return _fecha; }
             set { _fecha = value; NotifyPropertyChanged(); }
         }
-        private string? _tipo;
+        protected string? _tipo = null;
         public string? tipo
         {
             get { return _tipo; }
             set { _tipo = value; NotifyPropertyChanged(); }
         }
-        private string? _asunto;
+        protected string? _asunto = null;
         public string? asunto
         {
             get { return _asunto; }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WpfAppMy.Data;
+using Fines2Wpf.Data;
 
-namespace WpfAppMy.Windows.Comision.ListaComisionesSemestre
+namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 {
     internal class Comision : Data_comision_r
     {

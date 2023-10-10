@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 
-namespace WpfAppMy.Values
+namespace Fines2Wpf.Values
 {
     class Comision : EntityValues
     {

@@ -1,115 +1,116 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_persona : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("persona", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _nombres;
+        protected string? _nombres = null;
         public string? nombres
         {
             get { return _nombres; }
             set { _nombres = value; NotifyPropertyChanged(); }
         }
-        private string? _apellidos;
+        protected string? _apellidos = null;
         public string? apellidos
         {
             get { return _apellidos; }
             set { _apellidos = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _fecha_nacimiento;
+        protected DateTime? _fecha_nacimiento = null;
         public DateTime? fecha_nacimiento
         {
             get { return _fecha_nacimiento; }
             set { _fecha_nacimiento = value; NotifyPropertyChanged(); }
         }
-        private string? _numero_documento;
+        protected string? _numero_documento = null;
         public string? numero_documento
         {
             get { return _numero_documento; }
             set { _numero_documento = value; NotifyPropertyChanged(); }
         }
-        private string? _cuil;
+        protected string? _cuil = null;
         public string? cuil
         {
             get { return _cuil; }
             set { _cuil = value; NotifyPropertyChanged(); }
         }
-        private string? _genero;
+        protected string? _genero = null;
         public string? genero
         {
             get { return _genero; }
             set { _genero = value; NotifyPropertyChanged(); }
         }
-        private string? _apodo;
+        protected string? _apodo = null;
         public string? apodo
         {
             get { return _apodo; }
             set { _apodo = value; NotifyPropertyChanged(); }
         }
-        private string? _telefono;
+        protected string? _telefono = null;
         public string? telefono
         {
             get { return _telefono; }
             set { _telefono = value; NotifyPropertyChanged(); }
         }
-        private string? _email;
+        protected string? _email = null;
         public string? email
         {
             get { return _email; }
             set { _email = value; NotifyPropertyChanged(); }
         }
-        private string? _email_abc;
+        protected string? _email_abc = null;
         public string? email_abc
         {
             get { return _email_abc; }
             set { _email_abc = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _alta;
+        protected DateTime? _alta = (DateTime?)ContainerApp.db.DefaultValue("persona", "alta");
         public DateTime? alta
         {
             get { return _alta; }
             set { _alta = value; NotifyPropertyChanged(); }
         }
-        private string? _domicilio;
+        protected string? _domicilio = null;
         public string? domicilio
         {
             get { return _domicilio; }
             set { _domicilio = value; NotifyPropertyChanged(); }
         }
-        private string? _lugar_nacimiento;
+        protected string? _lugar_nacimiento = null;
         public string? lugar_nacimiento
         {
             get { return _lugar_nacimiento; }
             set { _lugar_nacimiento = value; NotifyPropertyChanged(); }
         }
-        private bool? _telefono_verificado;
+        protected bool? _telefono_verificado = (bool?)ContainerApp.db.DefaultValue("persona", "telefono_verificado");
         public bool? telefono_verificado
         {
             get { return _telefono_verificado; }
             set { _telefono_verificado = value; NotifyPropertyChanged(); }
         }
-        private bool? _email_verificado;
+        protected bool? _email_verificado = (bool?)ContainerApp.db.DefaultValue("persona", "email_verificado");
         public bool? email_verificado
         {
             get { return _email_verificado; }
             set { _email_verificado = value; NotifyPropertyChanged(); }
         }
-        private bool? _info_verificada;
+        protected bool? _info_verificada = (bool?)ContainerApp.db.DefaultValue("persona", "info_verificada");
         public bool? info_verificada
         {
             get { return _info_verificada; }
             set { _info_verificada = value; NotifyPropertyChanged(); }
         }
-        private string? _descripcion_domicilio;
+        protected string? _descripcion_domicilio = null;
         public string? descripcion_domicilio
         {
             get { return _descripcion_domicilio; }

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 
-namespace WpfAppMy
+namespace Fines2Wpf
 {
     /// <summary>
     /// Data Access Object generica

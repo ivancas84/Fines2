@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 
-namespace WpfAppMy.Windows.ProcesarDocentesProgramaFines
+namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
 {
     internal class DAO
     {

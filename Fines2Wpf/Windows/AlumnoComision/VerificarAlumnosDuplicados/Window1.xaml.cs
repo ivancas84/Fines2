@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 
-namespace WpfAppMy.Windows.AlumnoComision.VerificarAlumnosDuplicados
+namespace Fines2Wpf.Windows.AlumnoComision.VerificarAlumnosDuplicados
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml
@@ -22,8 +22,8 @@ namespace WpfAppMy.Windows.AlumnoComision.VerificarAlumnosDuplicados
 
     public partial class Window1 : Window
     {
-        WpfAppMy.DAO.AlumnoComision asignacionDAO = new();
-        WpfAppMy.DAO.Alumno alumnoDAO = new();
+        Fines2Wpf.DAO.AlumnoComision asignacionDAO = new();
+        Fines2Wpf.DAO.Alumno alumnoDAO = new();
         List<string> logs = new();
 
         public Window1()

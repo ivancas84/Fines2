@@ -13,7 +13,7 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 
-namespace WpfAppMy.Windows.TomaPosesionPdf
+namespace Fines2Wpf.Windows.TomaPosesionPdf
 {
 
     internal class Document : IDocument
@@ -50,7 +50,7 @@ namespace WpfAppMy.Windows.TomaPosesionPdf
             {
                 row.RelativeItem(3).Height(75).AlignBottom().Column(column =>
                 {
-                    column.Item().Image("C:\\projects\\SqlOrganize\\WpfAppMy\\Images\\logo.jpg").FitArea();
+                    column.Item().Image("C:\\projects\\SqlOrganize\\Fines2Wpf\\Images\\logo.jpg").FitArea();
                 });
 
                 row.RelativeItem().AlignRight().Column(column =>
@@ -85,12 +85,12 @@ namespace WpfAppMy.Windows.TomaPosesionPdf
                 {
                     row.RelativeItem(2).AlignRight().AlignBottom().PaddingRight(60).Column(column =>
                     {
-                        column.Item().Image("C:\\projects\\SqlOrganize\\WpfAppMy\\Images\\sello_cens.png").FitArea();
+                        column.Item().Image("C:\\projects\\SqlOrganize\\Fines2Wpf\\Images\\sello_cens.png").FitArea();
                     });
 
                     row.RelativeItem().AlignRight().AlignMiddle().Column(column =>
                     {
-                        column.Item().Image("C:\\projects\\SqlOrganize\\WpfAppMy\\Images\\firma_director.png").FitArea();
+                        column.Item().Image("C:\\projects\\SqlOrganize\\Fines2Wpf\\Images\\firma_director.png").FitArea();
                     });
                 });
             });
@@ -99,12 +99,12 @@ namespace WpfAppMy.Windows.TomaPosesionPdf
             {
                 row.ConstantItem(100).AlignCenter().Column(column =>
                 {
-                    column.Item().Image("C:\\projects\\SqlOrganize\\WpfAppMy\\Images\\sello_cens.png").FitArea();
+                    column.Item().Image("C:\\projects\\SqlOrganize\\Fines2Wpf\\Images\\sello_cens.png").FitArea();
                 });
 
                 row.ConstantItem(100).AlignRight().Column(column =>
                 {
-                    column.Item().Image("C:\\projects\\SqlOrganize\\WpfAppMy\\Images\\firma_director.png").FitArea();
+                    column.Item().Image("C:\\projects\\SqlOrganize\\Fines2Wpf\\Images\\firma_director.png").FitArea();
                 });
             });*/
         }

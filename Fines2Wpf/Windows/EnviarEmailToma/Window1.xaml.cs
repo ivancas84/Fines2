@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using Utils;
 
-namespace WpfAppMy.Windows.EnviarEmailToma
+namespace Fines2Wpf.Windows.EnviarEmailToma
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace WpfAppMy
+namespace Fines2Wpf
 {
     public class Model : SqlOrganize.Model
     {

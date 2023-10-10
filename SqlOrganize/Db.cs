@@ -133,7 +133,7 @@ namespace SqlOrganize
         /// <param name="key">fieldId-fieldName</param>
         /// <returns>Elementos de la relación</returns>
         /// <remarks>Asegurar existencia de caracter de separación.<br/>
-        /// Se puede controlar por ej.: if (key.Contains(ContainerApp.db.config.idAttrSeparatorString)) </remarks>
+        /// Se puede controlar por ej.: if (key.Contains("__")) </remarks>
         public (string fieldId, string fieldName, string refEntityName) KeyDeconstruction(string entityName, string key) {
             int i = key.IndexOf("__");
             string fieldId = key.Substring(0, i);

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 
-namespace WpfAppMy.Forms.InformeCoordinacionDistrital.DAO
+namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
 {
     class AlumnoComision
     {

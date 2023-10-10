@@ -1,49 +1,50 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_calendario : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("calendario", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _inicio;
+        protected DateTime? _inicio = null;
         public DateTime? inicio
         {
             get { return _inicio; }
             set { _inicio = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _fin;
+        protected DateTime? _fin = null;
         public DateTime? fin
         {
             get { return _fin; }
             set { _fin = value; NotifyPropertyChanged(); }
         }
-        private short? _anio;
+        protected short? _anio = null;
         public short? anio
         {
             get { return _anio; }
             set { _anio = value; NotifyPropertyChanged(); }
         }
-        private short? _semestre;
+        protected short? _semestre = null;
         public short? semestre
         {
             get { return _semestre; }
             set { _semestre = value; NotifyPropertyChanged(); }
         }
-        private DateTime? _insertado;
+        protected DateTime? _insertado = (DateTime?)ContainerApp.db.DefaultValue("calendario", "insertado");
         public DateTime? insertado
         {
             get { return _insertado; }
             set { _insertado = value; NotifyPropertyChanged(); }
         }
-        private string? _descripcion;
+        protected string? _descripcion = null;
         public string? descripcion
         {
             get { return _descripcion; }

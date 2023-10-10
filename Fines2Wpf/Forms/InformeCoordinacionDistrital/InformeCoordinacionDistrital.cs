@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfAppMy.Forms.InformeCoordinacionDistrital
+namespace Fines2Wpf.Forms.InformeCoordinacionDistrital
 {
     class InformeCoordinacionDistrital
     {

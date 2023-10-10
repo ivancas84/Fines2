@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 
-namespace WpfAppMy.Forms.ListaSedesSemestre
+namespace Fines2Wpf.Forms.ListaSedesSemestre
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml
@@ -24,7 +24,7 @@ namespace WpfAppMy.Forms.ListaSedesSemestre
 
         ComisionSearch comisionSearch = new();
 
-        private WpfAppMy.Forms.ListaSedesSemestre.DAO.Comision comisionDAO = new();
+        private Fines2Wpf.Forms.ListaSedesSemestre.DAO.Comision comisionDAO = new();
 
         public Window1()
         {

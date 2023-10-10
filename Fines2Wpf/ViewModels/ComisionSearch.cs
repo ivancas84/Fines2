@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 
-namespace WpfAppMy.ViewModels
+namespace Fines2Wpf.ViewModels
 {
     internal class ComisionSearch
     {

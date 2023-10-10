@@ -13,15 +13,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 
-namespace WpfAppMy.Windows.AlumnoComision.ActualizarPlanAlumnos
+namespace Fines2Wpf.Windows.AlumnoComision.ActualizarPlanAlumnos
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml
     /// </summary>
     public partial class Window1 : Window
     {
-        WpfAppMy.DAO.AlumnoComision asignacionDAO = new();
-        WpfAppMy.DAO.Comision comisionDAO = new();
+        Fines2Wpf.DAO.AlumnoComision asignacionDAO = new();
+        Fines2Wpf.DAO.Comision comisionDAO = new();
 
         List<string> logs = new();
         public Window1()

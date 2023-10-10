@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfAppMy.Forms.ListaModalidad
+namespace Fines2Wpf.Forms.ListaModalidad
 {
     internal class DAO
     {

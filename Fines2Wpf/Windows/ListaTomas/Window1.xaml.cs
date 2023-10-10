@@ -8,7 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Utils;
 
-namespace WpfAppMy.Windows.ListaTomas
+namespace Fines2Wpf.Windows.ListaTomas
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml
@@ -60,7 +60,7 @@ namespace WpfAppMy.Windows.ListaTomas
                     string? fieldId = null;
                     string mainEntityName = "toma", entityName = "toma", fieldName = key;
 
-                    if (key.Contains(ContainerApp.db.config.idAttrSeparatorString))
+                    if (key.Contains("__"))
                         (fieldId, fieldName, entityName) = ContainerApp.db.KeyDeconstruction(entityName, key);
 
                     bool continueWhile;
@@ -105,7 +105,7 @@ namespace WpfAppMy.Windows.ListaTomas
                             if (parentId != null)
                             {
                                 var parentFieldName = ContainerApp.db.Entity(mainEntityName).relations[fieldId].fieldName;
-                                value = v.Get()[fieldId + ContainerApp.db.config.idNameSeparatorString + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
+                                value = v.Get()[fieldId + "-" + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
                                 fieldId = parentId;
                                 fieldName = parentFieldName;
                                 entityName = ContainerApp.db.Entity(mainEntityName).relations[parentId].refEntityName;
@@ -114,7 +114,7 @@ namespace WpfAppMy.Windows.ListaTomas
                             else
                             {
                                 entityName = mainEntityName;
-                                value = v.Get()[fieldId + ContainerApp.db.config.idNameSeparatorString + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
+                                value = v.Get()[fieldId + "-" + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
                                 fieldName = ContainerApp.db.Entity(mainEntityName).relations[fieldId].fieldName;
                                 fieldId = null;
                             }
@@ -145,7 +145,7 @@ namespace WpfAppMy.Windows.ListaTomas
                 {
                     string? fieldId = null;
                     string entityName = "toma", fieldName = key;
-                    if (key.Contains(ContainerApp.db.config.idAttrSeparatorString))
+                    if (key.Contains("__"))
                         (fieldId, fieldName, entityName) = ContainerApp.db.KeyDeconstruction(entityName, key);
 
                     EntityValues v = ContainerApp.db.Values(entityName, fieldId).Set(source);

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WpfAppMy.Windows.EnviarEmailToma
+namespace Fines2Wpf.Windows.EnviarEmailToma
 {
     internal class DAO
     {

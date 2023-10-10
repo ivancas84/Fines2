@@ -1,37 +1,38 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_plan : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("plan", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _orientacion;
+        protected string? _orientacion = null;
         public string? orientacion
         {
             get { return _orientacion; }
             set { _orientacion = value; NotifyPropertyChanged(); }
         }
-        private string? _resolucion;
+        protected string? _resolucion = null;
         public string? resolucion
         {
             get { return _resolucion; }
             set { _resolucion = value; NotifyPropertyChanged(); }
         }
-        private string? _distribucion_horaria;
+        protected string? _distribucion_horaria = null;
         public string? distribucion_horaria
         {
             get { return _distribucion_horaria; }
             set { _distribucion_horaria = value; NotifyPropertyChanged(); }
         }
-        private string? _pfid;
+        protected string? _pfid = null;
         public string? pfid
         {
             get { return _pfid; }

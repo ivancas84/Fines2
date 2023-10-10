@@ -13,10 +13,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
-using WpfAppMy.Data;
-using WpfAppMy.ViewModels;
+using Fines2Wpf.Data;
+using Fines2Wpf.ViewModels;
 
-namespace WpfAppMy.Windows.Comision.ListaComisionesSemestre
+namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Utils;
 
-namespace WpfAppMy.Forms.ListaPlanificacion.DAO
+namespace Fines2Wpf.Forms.ListaPlanificacion.DAO
 {
     internal class Planificacion
     {

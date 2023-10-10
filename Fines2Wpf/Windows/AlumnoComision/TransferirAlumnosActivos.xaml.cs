@@ -15,18 +15,18 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
-using WpfAppMy.Windows.Curso.ListaCursoSemestreSinTomasAprobadas;
-using WpfAppMy.Windows.ProcesarDocentesProgramaFines;
+using Fines2Wpf.Windows.Curso.ListaCursoSemestreSinTomasAprobadas;
+using Fines2Wpf.Windows.ProcesarDocentesProgramaFines;
 
-namespace WpfAppMy.Windows.AlumnoComision
+namespace Fines2Wpf.Windows.AlumnoComision
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml
     /// </summary>
     public partial class TransferirAlumnosActivos : Window
     {
-        WpfAppMy.DAO.Comision comisionDAO = new();
-        WpfAppMy.DAO.AlumnoComision alumnoComisionDAO = new();
+        Fines2Wpf.DAO.Comision comisionDAO = new();
+        Fines2Wpf.DAO.AlumnoComision alumnoComisionDAO = new();
         private ObservableCollection<Model> data = new();
             
 
@@ -52,7 +52,7 @@ namespace WpfAppMy.Windows.AlumnoComision
                     Set("alumno", ac["alumno"]).
                     Set("estado", "Activo");
                                
-                ContainerApp.db.Persist("alumno_comision").PersistValues(v).Exec();
+                ContainerApp.db.Persist("alumno_comision").Persist(v).Exec();
 
                 data.Add(ac.Obj<Model>());
             }

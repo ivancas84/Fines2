@@ -15,9 +15,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
-using WpfAppMy.ViewModels;
+using Fines2Wpf.ViewModels;
 
-namespace WpfAppMy.Windows.AlumnoComision.CargarNuevosAlumnos
+namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml

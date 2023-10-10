@@ -1,55 +1,56 @@
 using System;
 using System.ComponentModel;
 
-namespace WpfAppMy.Data
+namespace Fines2Wpf.Data
 {
     public class Data_domicilio : INotifyPropertyChanged
     {
 
-        public string? label { get; set; }
-        private string? _id;
+        public string? Label { get; set; }
+
+        protected string? _id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        private string? _calle;
+        protected string? _calle = null;
         public string? calle
         {
             get { return _calle; }
             set { _calle = value; NotifyPropertyChanged(); }
         }
-        private string? _entre;
+        protected string? _entre = null;
         public string? entre
         {
             get { return _entre; }
             set { _entre = value; NotifyPropertyChanged(); }
         }
-        private string? _numero;
+        protected string? _numero = null;
         public string? numero
         {
             get { return _numero; }
             set { _numero = value; NotifyPropertyChanged(); }
         }
-        private string? _piso;
+        protected string? _piso = null;
         public string? piso
         {
             get { return _piso; }
             set { _piso = value; NotifyPropertyChanged(); }
         }
-        private string? _departamento;
+        protected string? _departamento = null;
         public string? departamento
         {
             get { return _departamento; }
             set { _departamento = value; NotifyPropertyChanged(); }
         }
-        private string? _barrio;
+        protected string? _barrio = null;
         public string? barrio
         {
             get { return _barrio; }
             set { _barrio = value; NotifyPropertyChanged(); }
         }
-        private string? _localidad;
+        protected string? _localidad = null;
         public string? localidad
         {
             get { return _localidad; }

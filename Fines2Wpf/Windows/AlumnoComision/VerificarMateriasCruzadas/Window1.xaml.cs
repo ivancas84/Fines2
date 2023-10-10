@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 
-namespace WpfAppMy.Windows.AlumnoComision.VerificarMateriasCruzadas
+namespace Fines2Wpf.Windows.AlumnoComision.VerificarMateriasCruzadas
 {
     /// <summary>
     /// Lógica de interacción para Window1.xaml
