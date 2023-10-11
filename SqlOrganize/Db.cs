@@ -180,36 +180,55 @@ namespace SqlOrganize
                         return field.defaultValue;
 
                 case "sbyte":
+                    return Convert.ToSByte(DefaultValueInt(field));
+
                 case "byte":
-                case "short":
-                case "ushort":
-                case "int":
-                case "uint":
+                    return Convert.ToByte(DefaultValueInt(field));
+
                 case "long":
+                    return Convert.ToInt64(DefaultValueInt(field));
+
                 case "ulong":
+                    return Convert.ToUInt64(DefaultValueInt(field));
+
+                case "int":
                 case "nint":
+                    return Convert.ToInt32(DefaultValueInt(field));
+
+                case "uint":
                 case "nuint":
-                    if (field.defaultValue.ToString()!.ToLower().Contains("next"))
-                    {
-                        ulong next = Query(entityName).GetNextValue();
-                        return next;
-                    }
-                    else if (field.defaultValue.ToString()!.ToLower().Contains("max"))
-                    {
-                        long max = Query(entityName).GetMaxValue(fieldName);
-                        return max + 1;
-                    }
-                    else if (field.defaultValue.ToString()!.ToLower().Contains("next"))
-                    {
-                        throw new Exception("Not implemented"); //siguiente valor de la secuencia, cada motor debe tener su propia implementacion, definir subclase
-                    }
-                    else
-                    {
-                        return field.defaultValue;
-                    }
+                    return Convert.ToUInt32(DefaultValueInt(field));
+
+                case "short":
+                    return Convert.ToInt16(DefaultValueInt(field));
+                
+                case "ushort":
+                    return Convert.ToUInt16(DefaultValueInt(field));
 
                 default:
                     return field.defaultValue;
+            }
+        }
+
+        protected object? DefaultValueInt(Field field)
+        {
+            if (field.defaultValue.ToString()!.ToLower().Contains("next"))
+            {
+                ulong next = Query(field.entityName).GetNextValue();
+                return next;
+            }
+            else if (field.defaultValue.ToString()!.ToLower().Contains("max"))
+            {
+                long max = Query(field.entityName).GetMaxValue(field.name);
+                return max + 1;
+            }
+            else if (field.defaultValue.ToString()!.ToLower().Contains("next"))
+            {
+                throw new Exception("Not implemented"); //siguiente valor de la secuencia, cada motor debe tener su propia implementacion, definir subclase
+            }
+            else
+            {
+                return field.defaultValue;
             }
         }
     }
