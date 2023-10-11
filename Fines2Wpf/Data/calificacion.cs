@@ -1,3 +1,4 @@
+using SqlOrganize;
 using System;
 using System.ComponentModel;
 
@@ -6,9 +7,31 @@ namespace Fines2Wpf.Data
     public class Data_calificacion : INotifyPropertyChanged
     {
 
+        public Data_calificacion ()
+        {
+            Initialize();
+        }
+
+        public Data_calificacion(DataInitMode mode = DataInitMode.Default)
+        {
+            Initialize(mode);
+        }
+
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                case DataInitMode.DefaultMain:
+                    _id = (string?)ContainerApp.db.DefaultValue("calificacion", "id");
+                    _archivado = (bool?)ContainerApp.db.DefaultValue("calificacion", "archivado");
+                break;
+            }
+        }
+
         public string? Label { get; set; }
 
-        protected string? _id = (string?)ContainerApp.db.DefaultValue("calificacion", "id");
+        protected string? _id = null;
         public string? id
         {
             get { return _id; }
@@ -86,7 +109,7 @@ namespace Fines2Wpf.Data
             get { return _fecha; }
             set { _fecha = value; NotifyPropertyChanged(); }
         }
-        protected bool? _archivado = (bool?)ContainerApp.db.DefaultValue("calificacion", "archivado");
+        protected bool? _archivado = null;
         public bool? archivado
         {
             get { return _archivado; }

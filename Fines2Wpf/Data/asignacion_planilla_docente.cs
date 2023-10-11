@@ -1,3 +1,4 @@
+using SqlOrganize;
 using System;
 using System.ComponentModel;
 
@@ -6,9 +7,32 @@ namespace Fines2Wpf.Data
     public class Data_asignacion_planilla_docente : INotifyPropertyChanged
     {
 
+        public Data_asignacion_planilla_docente ()
+        {
+            Initialize();
+        }
+
+        public Data_asignacion_planilla_docente(DataInitMode mode = DataInitMode.Default)
+        {
+            Initialize(mode);
+        }
+
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                case DataInitMode.DefaultMain:
+                    _id = (string?)ContainerApp.db.DefaultValue("asignacion_planilla_docente", "id");
+                    _insertado = (DateTime?)ContainerApp.db.DefaultValue("asignacion_planilla_docente", "insertado");
+                    _reclamo = (bool?)ContainerApp.db.DefaultValue("asignacion_planilla_docente", "reclamo");
+                break;
+            }
+        }
+
         public string? Label { get; set; }
 
-        protected string? _id = (string?)ContainerApp.db.DefaultValue("asignacion_planilla_docente", "id");
+        protected string? _id = null;
         public string? id
         {
             get { return _id; }
@@ -26,7 +50,7 @@ namespace Fines2Wpf.Data
             get { return _toma; }
             set { _toma = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _insertado = (DateTime?)ContainerApp.db.DefaultValue("asignacion_planilla_docente", "insertado");
+        protected DateTime? _insertado = null;
         public DateTime? insertado
         {
             get { return _insertado; }
@@ -38,7 +62,7 @@ namespace Fines2Wpf.Data
             get { return _comentario; }
             set { _comentario = value; NotifyPropertyChanged(); }
         }
-        protected bool? _reclamo = (bool?)ContainerApp.db.DefaultValue("asignacion_planilla_docente", "reclamo");
+        protected bool? _reclamo = null;
         public bool? reclamo
         {
             get { return _reclamo; }

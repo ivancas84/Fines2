@@ -1,10 +1,38 @@
+using SqlOrganize;
 using System;
 
 namespace Fines2Wpf.Data
 {
     public class Data_telefono_r : Data_telefono
     {
-        protected string? _persona__id = (string?)ContainerApp.db.DefaultValue("persona", "id");
+
+        public Data_telefono_r () : base()
+        {
+            Initialize();
+        }
+
+        public Data_telefono_r (DataInitMode mode = DataInitMode.Default) : base(mode)
+        {
+            Initialize(mode);
+        }
+
+        protected override void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            base.Initialize(mode);
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                    _persona__id = (string?)ContainerApp.db.DefaultValue("persona", "id");
+                    _persona__alta = (DateTime?)ContainerApp.db.DefaultValue("persona", "alta");
+                    _persona__telefono_verificado = (bool?)ContainerApp.db.DefaultValue("persona", "telefono_verificado");
+                    _persona__email_verificado = (bool?)ContainerApp.db.DefaultValue("persona", "email_verificado");
+                    _persona__info_verificada = (bool?)ContainerApp.db.DefaultValue("persona", "info_verificada");
+                    _domicilio__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+                break;
+            }
+        }
+
+        protected string? _persona__id = null;
         public string? persona__id
         {
             get { return _persona__id; }
@@ -70,7 +98,7 @@ namespace Fines2Wpf.Data
             get { return _persona__email_abc; }
             set { _persona__email_abc = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _persona__alta = (DateTime?)ContainerApp.db.DefaultValue("persona", "alta");
+        protected DateTime? _persona__alta = null;
         public DateTime? persona__alta
         {
             get { return _persona__alta; }
@@ -88,19 +116,19 @@ namespace Fines2Wpf.Data
             get { return _persona__lugar_nacimiento; }
             set { _persona__lugar_nacimiento = value; NotifyPropertyChanged(); }
         }
-        protected bool? _persona__telefono_verificado = (bool?)ContainerApp.db.DefaultValue("persona", "telefono_verificado");
+        protected bool? _persona__telefono_verificado = null;
         public bool? persona__telefono_verificado
         {
             get { return _persona__telefono_verificado; }
             set { _persona__telefono_verificado = value; NotifyPropertyChanged(); }
         }
-        protected bool? _persona__email_verificado = (bool?)ContainerApp.db.DefaultValue("persona", "email_verificado");
+        protected bool? _persona__email_verificado = null;
         public bool? persona__email_verificado
         {
             get { return _persona__email_verificado; }
             set { _persona__email_verificado = value; NotifyPropertyChanged(); }
         }
-        protected bool? _persona__info_verificada = (bool?)ContainerApp.db.DefaultValue("persona", "info_verificada");
+        protected bool? _persona__info_verificada = null;
         public bool? persona__info_verificada
         {
             get { return _persona__info_verificada; }
@@ -112,7 +140,7 @@ namespace Fines2Wpf.Data
             get { return _persona__descripcion_domicilio; }
             set { _persona__descripcion_domicilio = value; NotifyPropertyChanged(); }
         }
-        protected string? _domicilio__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+        protected string? _domicilio__id = null;
         public string? domicilio__id
         {
             get { return _domicilio__id; }

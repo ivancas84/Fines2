@@ -1,3 +1,4 @@
+using SqlOrganize;
 using System;
 using System.ComponentModel;
 
@@ -6,9 +7,34 @@ namespace Fines2Wpf.Data
     public class Data_persona : INotifyPropertyChanged
     {
 
+        public Data_persona ()
+        {
+            Initialize();
+        }
+
+        public Data_persona(DataInitMode mode = DataInitMode.Default)
+        {
+            Initialize(mode);
+        }
+
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                case DataInitMode.DefaultMain:
+                    _id = (string?)ContainerApp.db.DefaultValue("persona", "id");
+                    _alta = (DateTime?)ContainerApp.db.DefaultValue("persona", "alta");
+                    _telefono_verificado = (bool?)ContainerApp.db.DefaultValue("persona", "telefono_verificado");
+                    _email_verificado = (bool?)ContainerApp.db.DefaultValue("persona", "email_verificado");
+                    _info_verificada = (bool?)ContainerApp.db.DefaultValue("persona", "info_verificada");
+                break;
+            }
+        }
+
         public string? Label { get; set; }
 
-        protected string? _id = (string?)ContainerApp.db.DefaultValue("persona", "id");
+        protected string? _id = null;
         public string? id
         {
             get { return _id; }
@@ -74,7 +100,7 @@ namespace Fines2Wpf.Data
             get { return _email_abc; }
             set { _email_abc = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _alta = (DateTime?)ContainerApp.db.DefaultValue("persona", "alta");
+        protected DateTime? _alta = null;
         public DateTime? alta
         {
             get { return _alta; }
@@ -92,19 +118,19 @@ namespace Fines2Wpf.Data
             get { return _lugar_nacimiento; }
             set { _lugar_nacimiento = value; NotifyPropertyChanged(); }
         }
-        protected bool? _telefono_verificado = (bool?)ContainerApp.db.DefaultValue("persona", "telefono_verificado");
+        protected bool? _telefono_verificado = null;
         public bool? telefono_verificado
         {
             get { return _telefono_verificado; }
             set { _telefono_verificado = value; NotifyPropertyChanged(); }
         }
-        protected bool? _email_verificado = (bool?)ContainerApp.db.DefaultValue("persona", "email_verificado");
+        protected bool? _email_verificado = null;
         public bool? email_verificado
         {
             get { return _email_verificado; }
             set { _email_verificado = value; NotifyPropertyChanged(); }
         }
-        protected bool? _info_verificada = (bool?)ContainerApp.db.DefaultValue("persona", "info_verificada");
+        protected bool? _info_verificada = null;
         public bool? info_verificada
         {
             get { return _info_verificada; }

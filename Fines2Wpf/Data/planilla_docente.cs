@@ -1,3 +1,4 @@
+using SqlOrganize;
 using System;
 using System.ComponentModel;
 
@@ -6,9 +7,31 @@ namespace Fines2Wpf.Data
     public class Data_planilla_docente : INotifyPropertyChanged
     {
 
+        public Data_planilla_docente ()
+        {
+            Initialize();
+        }
+
+        public Data_planilla_docente(DataInitMode mode = DataInitMode.Default)
+        {
+            Initialize(mode);
+        }
+
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                case DataInitMode.DefaultMain:
+                    _id = (string?)ContainerApp.db.DefaultValue("planilla_docente", "id");
+                    _insertado = (DateTime?)ContainerApp.db.DefaultValue("planilla_docente", "insertado");
+                break;
+            }
+        }
+
         public string? Label { get; set; }
 
-        protected string? _id = (string?)ContainerApp.db.DefaultValue("planilla_docente", "id");
+        protected string? _id = null;
         public string? id
         {
             get { return _id; }
@@ -20,7 +43,7 @@ namespace Fines2Wpf.Data
             get { return _numero; }
             set { _numero = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _insertado = (DateTime?)ContainerApp.db.DefaultValue("planilla_docente", "insertado");
+        protected DateTime? _insertado = null;
         public DateTime? insertado
         {
             get { return _insertado; }

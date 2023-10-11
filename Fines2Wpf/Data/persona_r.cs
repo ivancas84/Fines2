@@ -1,10 +1,33 @@
+using SqlOrganize;
 using System;
 
 namespace Fines2Wpf.Data
 {
     public class Data_persona_r : Data_persona
     {
-        protected string? _domicilio__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+
+        public Data_persona_r () : base()
+        {
+            Initialize();
+        }
+
+        public Data_persona_r (DataInitMode mode = DataInitMode.Default) : base(mode)
+        {
+            Initialize(mode);
+        }
+
+        protected override void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            base.Initialize(mode);
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                    _domicilio__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+                break;
+            }
+        }
+
+        protected string? _domicilio__id = null;
         public string? domicilio__id
         {
             get { return _domicilio__id; }

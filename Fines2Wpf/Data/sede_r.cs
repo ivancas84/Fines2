@@ -1,10 +1,35 @@
+using SqlOrganize;
 using System;
 
 namespace Fines2Wpf.Data
 {
     public class Data_sede_r : Data_sede
     {
-        protected string? _domicilio__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+
+        public Data_sede_r () : base()
+        {
+            Initialize();
+        }
+
+        public Data_sede_r (DataInitMode mode = DataInitMode.Default) : base(mode)
+        {
+            Initialize(mode);
+        }
+
+        protected override void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            base.Initialize(mode);
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                    _domicilio__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+                    _centro_educativo__id = (string?)ContainerApp.db.DefaultValue("centro_educativo", "id");
+                    _domicilio_cen__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+                break;
+            }
+        }
+
+        protected string? _domicilio__id = null;
         public string? domicilio__id
         {
             get { return _domicilio__id; }
@@ -52,7 +77,7 @@ namespace Fines2Wpf.Data
             get { return _domicilio__localidad; }
             set { _domicilio__localidad = value; NotifyPropertyChanged(); }
         }
-        protected string? _centro_educativo__id = (string?)ContainerApp.db.DefaultValue("centro_educativo", "id");
+        protected string? _centro_educativo__id = null;
         public string? centro_educativo__id
         {
             get { return _centro_educativo__id; }
@@ -82,7 +107,7 @@ namespace Fines2Wpf.Data
             get { return _centro_educativo__observaciones; }
             set { _centro_educativo__observaciones = value; NotifyPropertyChanged(); }
         }
-        protected string? _domicilio_cen__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+        protected string? _domicilio_cen__id = null;
         public string? domicilio_cen__id
         {
             get { return _domicilio_cen__id; }

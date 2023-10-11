@@ -1,3 +1,4 @@
+using SqlOrganize;
 using System;
 using System.ComponentModel;
 
@@ -6,9 +7,31 @@ namespace Fines2Wpf.Data
     public class Data_designacion : INotifyPropertyChanged
     {
 
+        public Data_designacion ()
+        {
+            Initialize();
+        }
+
+        public Data_designacion(DataInitMode mode = DataInitMode.Default)
+        {
+            Initialize(mode);
+        }
+
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                case DataInitMode.DefaultMain:
+                    _id = (string?)ContainerApp.db.DefaultValue("designacion", "id");
+                    _alta = (DateTime?)ContainerApp.db.DefaultValue("designacion", "alta");
+                break;
+            }
+        }
+
         public string? Label { get; set; }
 
-        protected string? _id = (string?)ContainerApp.db.DefaultValue("designacion", "id");
+        protected string? _id = null;
         public string? id
         {
             get { return _id; }
@@ -44,7 +67,7 @@ namespace Fines2Wpf.Data
             get { return _persona; }
             set { _persona = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _alta = (DateTime?)ContainerApp.db.DefaultValue("designacion", "alta");
+        protected DateTime? _alta = null;
         public DateTime? alta
         {
             get { return _alta; }

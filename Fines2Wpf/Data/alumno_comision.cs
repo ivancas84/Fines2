@@ -1,3 +1,4 @@
+using SqlOrganize;
 using System;
 using System.ComponentModel;
 
@@ -6,15 +7,38 @@ namespace Fines2Wpf.Data
     public class Data_alumno_comision : INotifyPropertyChanged
     {
 
+        public Data_alumno_comision ()
+        {
+            Initialize();
+        }
+
+        public Data_alumno_comision(DataInitMode mode = DataInitMode.Default)
+        {
+            Initialize(mode);
+        }
+
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                case DataInitMode.DefaultMain:
+                    _id = (string?)ContainerApp.db.DefaultValue("alumno_comision", "id");
+                    _creado = (DateTime?)ContainerApp.db.DefaultValue("alumno_comision", "creado");
+                    _estado = (string?)ContainerApp.db.DefaultValue("alumno_comision", "estado");
+                break;
+            }
+        }
+
         public string? Label { get; set; }
 
-        protected string? _id = (string?)ContainerApp.db.DefaultValue("alumno_comision", "id");
+        protected string? _id = null;
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _creado = (DateTime?)ContainerApp.db.DefaultValue("alumno_comision", "creado");
+        protected DateTime? _creado = null;
         public DateTime? creado
         {
             get { return _creado; }
@@ -38,7 +62,7 @@ namespace Fines2Wpf.Data
             get { return _alumno; }
             set { _alumno = value; NotifyPropertyChanged(); }
         }
-        protected string? _estado = (string?)ContainerApp.db.DefaultValue("alumno_comision", "estado");
+        protected string? _estado = null;
         public string? estado
         {
             get { return _estado; }

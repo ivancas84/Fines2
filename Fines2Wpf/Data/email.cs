@@ -1,3 +1,4 @@
+using SqlOrganize;
 using System;
 using System.ComponentModel;
 
@@ -6,9 +7,32 @@ namespace Fines2Wpf.Data
     public class Data_email : INotifyPropertyChanged
     {
 
+        public Data_email ()
+        {
+            Initialize();
+        }
+
+        public Data_email(DataInitMode mode = DataInitMode.Default)
+        {
+            Initialize(mode);
+        }
+
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                case DataInitMode.DefaultMain:
+                    _id = (string?)ContainerApp.db.DefaultValue("email", "id");
+                    _verificado = (bool?)ContainerApp.db.DefaultValue("email", "verificado");
+                    _insertado = (DateTime?)ContainerApp.db.DefaultValue("email", "insertado");
+                break;
+            }
+        }
+
         public string? Label { get; set; }
 
-        protected string? _id = (string?)ContainerApp.db.DefaultValue("email", "id");
+        protected string? _id = null;
         public string? id
         {
             get { return _id; }
@@ -20,13 +44,13 @@ namespace Fines2Wpf.Data
             get { return _email; }
             set { _email = value; NotifyPropertyChanged(); }
         }
-        protected bool? _verificado = (bool?)ContainerApp.db.DefaultValue("email", "verificado");
+        protected bool? _verificado = null;
         public bool? verificado
         {
             get { return _verificado; }
             set { _verificado = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _insertado = (DateTime?)ContainerApp.db.DefaultValue("email", "insertado");
+        protected DateTime? _insertado = null;
         public DateTime? insertado
         {
             get { return _insertado; }

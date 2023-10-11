@@ -1,3 +1,4 @@
+using SqlOrganize;
 using System;
 using System.ComponentModel;
 
@@ -6,9 +7,30 @@ namespace Fines2Wpf.Data
     public class Data_domicilio : INotifyPropertyChanged
     {
 
+        public Data_domicilio ()
+        {
+            Initialize();
+        }
+
+        public Data_domicilio(DataInitMode mode = DataInitMode.Default)
+        {
+            Initialize(mode);
+        }
+
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                case DataInitMode.DefaultMain:
+                    _id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+                break;
+            }
+        }
+
         public string? Label { get; set; }
 
-        protected string? _id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+        protected string? _id = null;
         public string? id
         {
             get { return _id; }

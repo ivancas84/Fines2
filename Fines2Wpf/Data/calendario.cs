@@ -1,3 +1,4 @@
+using SqlOrganize;
 using System;
 using System.ComponentModel;
 
@@ -6,9 +7,31 @@ namespace Fines2Wpf.Data
     public class Data_calendario : INotifyPropertyChanged
     {
 
+        public Data_calendario ()
+        {
+            Initialize();
+        }
+
+        public Data_calendario(DataInitMode mode = DataInitMode.Default)
+        {
+            Initialize(mode);
+        }
+
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                case DataInitMode.DefaultMain:
+                    _id = (string?)ContainerApp.db.DefaultValue("calendario", "id");
+                    _insertado = (DateTime?)ContainerApp.db.DefaultValue("calendario", "insertado");
+                break;
+            }
+        }
+
         public string? Label { get; set; }
 
-        protected string? _id = (string?)ContainerApp.db.DefaultValue("calendario", "id");
+        protected string? _id = null;
         public string? id
         {
             get { return _id; }
@@ -38,7 +61,7 @@ namespace Fines2Wpf.Data
             get { return _semestre; }
             set { _semestre = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _insertado = (DateTime?)ContainerApp.db.DefaultValue("calendario", "insertado");
+        protected DateTime? _insertado = null;
         public DateTime? insertado
         {
             get { return _insertado; }

@@ -1,10 +1,33 @@
+using SqlOrganize;
 using System;
 
 namespace Fines2Wpf.Data
 {
     public class Data_centro_educativo_r : Data_centro_educativo
     {
-        protected string? _domicilio__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+
+        public Data_centro_educativo_r () : base()
+        {
+            Initialize();
+        }
+
+        public Data_centro_educativo_r (DataInitMode mode = DataInitMode.Default) : base(mode)
+        {
+            Initialize(mode);
+        }
+
+        protected override void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            base.Initialize(mode);
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                    _domicilio__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+                break;
+            }
+        }
+
+        protected string? _domicilio__id = null;
         public string? domicilio__id
         {
             get { return _domicilio__id; }

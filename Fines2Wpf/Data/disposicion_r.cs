@@ -1,10 +1,35 @@
+using SqlOrganize;
 using System;
 
 namespace Fines2Wpf.Data
 {
     public class Data_disposicion_r : Data_disposicion
     {
-        protected string? _asignatura__id = (string?)ContainerApp.db.DefaultValue("asignatura", "id");
+
+        public Data_disposicion_r () : base()
+        {
+            Initialize();
+        }
+
+        public Data_disposicion_r (DataInitMode mode = DataInitMode.Default) : base(mode)
+        {
+            Initialize(mode);
+        }
+
+        protected override void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            base.Initialize(mode);
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                    _asignatura__id = (string?)ContainerApp.db.DefaultValue("asignatura", "id");
+                    _planificacion__id = (string?)ContainerApp.db.DefaultValue("planificacion", "id");
+                    _plan__id = (string?)ContainerApp.db.DefaultValue("plan", "id");
+                break;
+            }
+        }
+
+        protected string? _asignatura__id = null;
         public string? asignatura__id
         {
             get { return _asignatura__id; }
@@ -40,7 +65,7 @@ namespace Fines2Wpf.Data
             get { return _asignatura__perfil; }
             set { _asignatura__perfil = value; NotifyPropertyChanged(); }
         }
-        protected string? _planificacion__id = (string?)ContainerApp.db.DefaultValue("planificacion", "id");
+        protected string? _planificacion__id = null;
         public string? planificacion__id
         {
             get { return _planificacion__id; }
@@ -70,7 +95,7 @@ namespace Fines2Wpf.Data
             get { return _planificacion__pfid; }
             set { _planificacion__pfid = value; NotifyPropertyChanged(); }
         }
-        protected string? _plan__id = (string?)ContainerApp.db.DefaultValue("plan", "id");
+        protected string? _plan__id = null;
         public string? plan__id
         {
             get { return _plan__id; }

@@ -1,3 +1,4 @@
+using SqlOrganize;
 using System;
 using System.ComponentModel;
 
@@ -6,9 +7,30 @@ namespace Fines2Wpf.Data
     public class Data_resolucion : INotifyPropertyChanged
     {
 
+        public Data_resolucion ()
+        {
+            Initialize();
+        }
+
+        public Data_resolucion(DataInitMode mode = DataInitMode.Default)
+        {
+            Initialize(mode);
+        }
+
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                case DataInitMode.DefaultMain:
+                    _id = (string?)ContainerApp.db.DefaultValue("resolucion", "id");
+                break;
+            }
+        }
+
         public string? Label { get; set; }
 
-        protected string? _id = (string?)ContainerApp.db.DefaultValue("resolucion", "id");
+        protected string? _id = null;
         public string? id
         {
             get { return _id; }

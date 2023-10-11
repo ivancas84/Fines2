@@ -1,10 +1,45 @@
+using SqlOrganize;
 using System;
 
 namespace Fines2Wpf.Data
 {
     public class Data_curso_r : Data_curso
     {
-        protected string? _comision__id = (string?)ContainerApp.db.DefaultValue("comision", "id");
+
+        public Data_curso_r () : base()
+        {
+            Initialize();
+        }
+
+        public Data_curso_r (DataInitMode mode = DataInitMode.Default) : base(mode)
+        {
+            Initialize(mode);
+        }
+
+        protected override void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            base.Initialize(mode);
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                    _comision__id = (string?)ContainerApp.db.DefaultValue("comision", "id");
+                    _comision__alta = (DateTime?)ContainerApp.db.DefaultValue("comision", "alta");
+                    _sede__id = (string?)ContainerApp.db.DefaultValue("sede", "id");
+                    _sede__alta = (DateTime?)ContainerApp.db.DefaultValue("sede", "alta");
+                    _domicilio__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+                    _centro_educativo__id = (string?)ContainerApp.db.DefaultValue("centro_educativo", "id");
+                    _domicilio_cen__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+                    _modalidad__id = (string?)ContainerApp.db.DefaultValue("modalidad", "id");
+                    _planificacion__id = (string?)ContainerApp.db.DefaultValue("planificacion", "id");
+                    _plan__id = (string?)ContainerApp.db.DefaultValue("plan", "id");
+                    _calendario__id = (string?)ContainerApp.db.DefaultValue("calendario", "id");
+                    _calendario__insertado = (DateTime?)ContainerApp.db.DefaultValue("calendario", "insertado");
+                    _asignatura__id = (string?)ContainerApp.db.DefaultValue("asignatura", "id");
+                break;
+            }
+        }
+
+        protected string? _comision__id = null;
         public string? comision__id
         {
             get { return _comision__id; }
@@ -52,7 +87,7 @@ namespace Fines2Wpf.Data
             get { return _comision__observaciones; }
             set { _comision__observaciones = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _comision__alta = (DateTime?)ContainerApp.db.DefaultValue("comision", "alta");
+        protected DateTime? _comision__alta = null;
         public DateTime? comision__alta
         {
             get { return _comision__alta; }
@@ -100,7 +135,7 @@ namespace Fines2Wpf.Data
             get { return _comision__pfid; }
             set { _comision__pfid = value; NotifyPropertyChanged(); }
         }
-        protected string? _sede__id = (string?)ContainerApp.db.DefaultValue("sede", "id");
+        protected string? _sede__id = null;
         public string? sede__id
         {
             get { return _sede__id; }
@@ -124,7 +159,7 @@ namespace Fines2Wpf.Data
             get { return _sede__observaciones; }
             set { _sede__observaciones = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _sede__alta = (DateTime?)ContainerApp.db.DefaultValue("sede", "alta");
+        protected DateTime? _sede__alta = null;
         public DateTime? sede__alta
         {
             get { return _sede__alta; }
@@ -172,7 +207,7 @@ namespace Fines2Wpf.Data
             get { return _sede__pfid_organizacion; }
             set { _sede__pfid_organizacion = value; NotifyPropertyChanged(); }
         }
-        protected string? _domicilio__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+        protected string? _domicilio__id = null;
         public string? domicilio__id
         {
             get { return _domicilio__id; }
@@ -220,7 +255,7 @@ namespace Fines2Wpf.Data
             get { return _domicilio__localidad; }
             set { _domicilio__localidad = value; NotifyPropertyChanged(); }
         }
-        protected string? _centro_educativo__id = (string?)ContainerApp.db.DefaultValue("centro_educativo", "id");
+        protected string? _centro_educativo__id = null;
         public string? centro_educativo__id
         {
             get { return _centro_educativo__id; }
@@ -250,7 +285,7 @@ namespace Fines2Wpf.Data
             get { return _centro_educativo__observaciones; }
             set { _centro_educativo__observaciones = value; NotifyPropertyChanged(); }
         }
-        protected string? _domicilio_cen__id = (string?)ContainerApp.db.DefaultValue("domicilio", "id");
+        protected string? _domicilio_cen__id = null;
         public string? domicilio_cen__id
         {
             get { return _domicilio_cen__id; }
@@ -298,7 +333,7 @@ namespace Fines2Wpf.Data
             get { return _domicilio_cen__localidad; }
             set { _domicilio_cen__localidad = value; NotifyPropertyChanged(); }
         }
-        protected string? _modalidad__id = (string?)ContainerApp.db.DefaultValue("modalidad", "id");
+        protected string? _modalidad__id = null;
         public string? modalidad__id
         {
             get { return _modalidad__id; }
@@ -316,7 +351,7 @@ namespace Fines2Wpf.Data
             get { return _modalidad__pfid; }
             set { _modalidad__pfid = value; NotifyPropertyChanged(); }
         }
-        protected string? _planificacion__id = (string?)ContainerApp.db.DefaultValue("planificacion", "id");
+        protected string? _planificacion__id = null;
         public string? planificacion__id
         {
             get { return _planificacion__id; }
@@ -346,7 +381,7 @@ namespace Fines2Wpf.Data
             get { return _planificacion__pfid; }
             set { _planificacion__pfid = value; NotifyPropertyChanged(); }
         }
-        protected string? _plan__id = (string?)ContainerApp.db.DefaultValue("plan", "id");
+        protected string? _plan__id = null;
         public string? plan__id
         {
             get { return _plan__id; }
@@ -376,7 +411,7 @@ namespace Fines2Wpf.Data
             get { return _plan__pfid; }
             set { _plan__pfid = value; NotifyPropertyChanged(); }
         }
-        protected string? _calendario__id = (string?)ContainerApp.db.DefaultValue("calendario", "id");
+        protected string? _calendario__id = null;
         public string? calendario__id
         {
             get { return _calendario__id; }
@@ -406,7 +441,7 @@ namespace Fines2Wpf.Data
             get { return _calendario__semestre; }
             set { _calendario__semestre = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _calendario__insertado = (DateTime?)ContainerApp.db.DefaultValue("calendario", "insertado");
+        protected DateTime? _calendario__insertado = null;
         public DateTime? calendario__insertado
         {
             get { return _calendario__insertado; }
@@ -418,7 +453,7 @@ namespace Fines2Wpf.Data
             get { return _calendario__descripcion; }
             set { _calendario__descripcion = value; NotifyPropertyChanged(); }
         }
-        protected string? _asignatura__id = (string?)ContainerApp.db.DefaultValue("asignatura", "id");
+        protected string? _asignatura__id = null;
         public string? asignatura__id
         {
             get { return _asignatura__id; }

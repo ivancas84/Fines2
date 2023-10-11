@@ -1,3 +1,4 @@
+using SqlOrganize;
 using System;
 using System.ComponentModel;
 
@@ -6,15 +7,45 @@ namespace Fines2Wpf.Data
     public class Data_alumno : INotifyPropertyChanged
     {
 
+        public Data_alumno ()
+        {
+            Initialize();
+        }
+
+        public Data_alumno(DataInitMode mode = DataInitMode.Default)
+        {
+            Initialize(mode);
+        }
+
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                case DataInitMode.DefaultMain:
+                    _id = (string?)ContainerApp.db.DefaultValue("alumno", "id");
+                    _anio_ingreso = (string?)ContainerApp.db.DefaultValue("alumno", "anio_ingreso");
+                    _semestre_ingreso = (short?)ContainerApp.db.DefaultValue("alumno", "semestre_ingreso");
+                    _tiene_dni = (bool?)ContainerApp.db.DefaultValue("alumno", "tiene_dni");
+                    _tiene_constancia = (bool?)ContainerApp.db.DefaultValue("alumno", "tiene_constancia");
+                    _tiene_certificado = (bool?)ContainerApp.db.DefaultValue("alumno", "tiene_certificado");
+                    _previas_completas = (bool?)ContainerApp.db.DefaultValue("alumno", "previas_completas");
+                    _tiene_partida = (bool?)ContainerApp.db.DefaultValue("alumno", "tiene_partida");
+                    _creado = (DateTime?)ContainerApp.db.DefaultValue("alumno", "creado");
+                    _confirmado_direccion = (bool?)ContainerApp.db.DefaultValue("alumno", "confirmado_direccion");
+                break;
+            }
+        }
+
         public string? Label { get; set; }
 
-        protected string? _id = (string?)ContainerApp.db.DefaultValue("alumno", "id");
+        protected string? _id = null;
         public string? id
         {
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-        protected string? _anio_ingreso = (string?)ContainerApp.db.DefaultValue("alumno", "anio_ingreso");
+        protected string? _anio_ingreso = null;
         public string? anio_ingreso
         {
             get { return _anio_ingreso; }
@@ -68,7 +99,7 @@ namespace Fines2Wpf.Data
             get { return _semestre_inscripcion; }
             set { _semestre_inscripcion = value; NotifyPropertyChanged(); }
         }
-        protected short? _semestre_ingreso = (short?)ContainerApp.db.DefaultValue("alumno", "semestre_ingreso");
+        protected short? _semestre_ingreso = null;
         public short? semestre_ingreso
         {
             get { return _semestre_ingreso; }
@@ -128,43 +159,43 @@ namespace Fines2Wpf.Data
             get { return _comentarios; }
             set { _comentarios = value; NotifyPropertyChanged(); }
         }
-        protected bool? _tiene_dni = (bool?)ContainerApp.db.DefaultValue("alumno", "tiene_dni");
+        protected bool? _tiene_dni = null;
         public bool? tiene_dni
         {
             get { return _tiene_dni; }
             set { _tiene_dni = value; NotifyPropertyChanged(); }
         }
-        protected bool? _tiene_constancia = (bool?)ContainerApp.db.DefaultValue("alumno", "tiene_constancia");
+        protected bool? _tiene_constancia = null;
         public bool? tiene_constancia
         {
             get { return _tiene_constancia; }
             set { _tiene_constancia = value; NotifyPropertyChanged(); }
         }
-        protected bool? _tiene_certificado = (bool?)ContainerApp.db.DefaultValue("alumno", "tiene_certificado");
+        protected bool? _tiene_certificado = null;
         public bool? tiene_certificado
         {
             get { return _tiene_certificado; }
             set { _tiene_certificado = value; NotifyPropertyChanged(); }
         }
-        protected bool? _previas_completas = (bool?)ContainerApp.db.DefaultValue("alumno", "previas_completas");
+        protected bool? _previas_completas = null;
         public bool? previas_completas
         {
             get { return _previas_completas; }
             set { _previas_completas = value; NotifyPropertyChanged(); }
         }
-        protected bool? _tiene_partida = (bool?)ContainerApp.db.DefaultValue("alumno", "tiene_partida");
+        protected bool? _tiene_partida = null;
         public bool? tiene_partida
         {
             get { return _tiene_partida; }
             set { _tiene_partida = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _creado = (DateTime?)ContainerApp.db.DefaultValue("alumno", "creado");
+        protected DateTime? _creado = null;
         public DateTime? creado
         {
             get { return _creado; }
             set { _creado = value; NotifyPropertyChanged(); }
         }
-        protected bool? _confirmado_direccion = (bool?)ContainerApp.db.DefaultValue("alumno", "confirmado_direccion");
+        protected bool? _confirmado_direccion = null;
         public bool? confirmado_direccion
         {
             get { return _confirmado_direccion; }

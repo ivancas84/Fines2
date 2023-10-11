@@ -1,10 +1,34 @@
+using SqlOrganize;
 using System;
 
 namespace Fines2Wpf.Data
 {
     public class Data_contralor_r : Data_contralor
     {
-        protected string? _planilla_docente__id = (string?)ContainerApp.db.DefaultValue("planilla_docente", "id");
+
+        public Data_contralor_r () : base()
+        {
+            Initialize();
+        }
+
+        public Data_contralor_r (DataInitMode mode = DataInitMode.Default) : base(mode)
+        {
+            Initialize(mode);
+        }
+
+        protected override void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            base.Initialize(mode);
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                    _planilla_docente__id = (string?)ContainerApp.db.DefaultValue("planilla_docente", "id");
+                    _planilla_docente__insertado = (DateTime?)ContainerApp.db.DefaultValue("planilla_docente", "insertado");
+                break;
+            }
+        }
+
+        protected string? _planilla_docente__id = null;
         public string? planilla_docente__id
         {
             get { return _planilla_docente__id; }
@@ -16,7 +40,7 @@ namespace Fines2Wpf.Data
             get { return _planilla_docente__numero; }
             set { _planilla_docente__numero = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _planilla_docente__insertado = (DateTime?)ContainerApp.db.DefaultValue("planilla_docente", "insertado");
+        protected DateTime? _planilla_docente__insertado = null;
         public DateTime? planilla_docente__insertado
         {
             get { return _planilla_docente__insertado; }

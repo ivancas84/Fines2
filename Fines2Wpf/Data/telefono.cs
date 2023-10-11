@@ -1,3 +1,4 @@
+using SqlOrganize;
 using System;
 using System.ComponentModel;
 
@@ -6,9 +7,31 @@ namespace Fines2Wpf.Data
     public class Data_telefono : INotifyPropertyChanged
     {
 
+        public Data_telefono ()
+        {
+            Initialize();
+        }
+
+        public Data_telefono(DataInitMode mode = DataInitMode.Default)
+        {
+            Initialize(mode);
+        }
+
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        {
+            switch(mode)
+            {
+                case DataInitMode.Default:
+                case DataInitMode.DefaultMain:
+                    _id = (string?)ContainerApp.db.DefaultValue("telefono", "id");
+                    _insertado = (DateTime?)ContainerApp.db.DefaultValue("telefono", "insertado");
+                break;
+            }
+        }
+
         public string? Label { get; set; }
 
-        protected string? _id = (string?)ContainerApp.db.DefaultValue("telefono", "id");
+        protected string? _id = null;
         public string? id
         {
             get { return _id; }
@@ -32,7 +55,7 @@ namespace Fines2Wpf.Data
             get { return _numero; }
             set { _numero = value; NotifyPropertyChanged(); }
         }
-        protected DateTime? _insertado = (DateTime?)ContainerApp.db.DefaultValue("telefono", "insertado");
+        protected DateTime? _insertado = null;
         public DateTime? insertado
         {
             get { return _insertado; }
