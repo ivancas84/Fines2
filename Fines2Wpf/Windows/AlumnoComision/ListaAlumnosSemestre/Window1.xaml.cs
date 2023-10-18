@@ -104,8 +104,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
                 IDictionary<string, object>? row = dao.RowByUniqueFieldOrValues(fieldName, v);
                 if (!row.IsNullOrEmpty()) //con el nuevo valor ingresados se obtuvo un nuevo campo unico, no se realiza persistencia y se cambian los valores para reflejar el nuevo valor consultado
                 {
-                    v = ContainerApp.db.Values(entityName).Set(row!);
-                    v.fieldId = fieldId;
+                    v.Clear().Set(row!);
                     (e.Row.Item as Asignacion).CopyValues<Asignacion>(v.Get().Obj<Asignacion>(), sourceNotNull: true);
                 }
                 else //con el nuevo valor ingresados no se obtuvo un nuevo campo unico, se realiza persistencia (insertar o modificar) del nuevo valor
@@ -119,32 +118,9 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
                     dao.Persist(v);
                 }
 
-                if (fieldId != null)
-                {
-                    string? parentId = ContainerApp.db.Entity(mainEntityName).relations[fieldId].parentId;
-                    if (parentId != null)
-                    {
-                        //sea por ejemplo alumnoT.personaF (con fieldId alumno) = personaT.id (con fieldId = persona), entones:
-                        //parentFieldName = personaF
-                        //value = personaValues.values["id"]
-                        //fieldId = alumno
-                        //fieldName = personaF
-                        //entityName = alumnoT
-                        string parentFieldName = ContainerApp.db.Entity(mainEntityName).relations[fieldId].fieldName;
-                        value = v.values[ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
-                        fieldId = parentId;
-                        fieldName = parentFieldName;
-                        entityName = ContainerApp.db.Entity(mainEntityName).relations[parentId].refEntityName;
+                if(fieldId != null)
+                    (fieldId, fieldName, entityName, value) = v.ParentVariables(mainEntityName);
 
-                    }
-                    else
-                    {
-                        fieldId = null;
-                        entityName = mainEntityName;
-                        fieldName = ContainerApp.db.Entity(mainEntityName).relations[fieldId].fieldName;
-                        value = v.values[ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
-                    }
-                }
                 reload = true;
             }
             while (continueWhile);

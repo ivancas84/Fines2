@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using Fines2Wpf;
+using Google.Protobuf.WellKnownTypes;
+using SqlOrganize;
+using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace WpfUtils
@@ -19,7 +22,7 @@ namespace WpfUtils
             var columnCh = e.Column as DataGridCheckBoxColumn; //los campos checkbox se procesan de forma independiente.
             if (columnCh != null)
                 return (key, value);
-            
+
             var columnCo = e.Column as DataGridComboBoxColumn;
             if (columnCo != null)
             {
@@ -38,5 +41,6 @@ namespace WpfUtils
 
             return (key, value);
         }
+
     }
 }
