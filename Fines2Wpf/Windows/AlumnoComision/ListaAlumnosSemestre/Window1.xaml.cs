@@ -6,6 +6,7 @@ using Fines2Wpf.Data;
 using System.Windows.Controls;
 using System.Windows.Data;
 using SqlOrganize;
+using WpfUtils;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 {
@@ -65,28 +66,19 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
             LoadAsignaciones();
         }
 
+
         private void AsignacionGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             if (e.EditAction != DataGridEditAction.Commit)
                 return;
 
-            var columnCB = e.Column as DataGridComboBoxColumn;
-            string key = "";
-            if (columnCB != null)
-                key = ((Binding)columnCB.SelectedValueBinding).Path.Path; //column's binding
+            var result = e.GetKeyAndValue();
+            string key = result.key;
+            object? value = result.value;
 
-            if(key.IsNullOrEmpty())
-            {
-                var column = e.Column as DataGridBoundColumn;
-                if (column == null)
-                    return;
-                key = ((Binding)column.Binding).Path.Path; //column's binding
-            }
+            if (key.IsNullOrEmpty())
+                return;
 
-            List<string> ignore = new List<string>() { "confirmada" };
-            if (ignore.Contains(key)) return;
-
-            object value = (e.EditingElement as TextBox)!.Text;
             IDictionary<string, object?> source = e.Row.DataContext.Dict();
             string? fieldId = null;
             string mainEntityName = "alumno_comision", entityName = "alumno_comision", fieldName = key;
