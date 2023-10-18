@@ -6,6 +6,10 @@
         xmlns:local="clr-namespace:Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre"
         mc:Ignorable="d"
         Title="Window1" Height="450" Width="800">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="sedes" ObjectType="{x:Type local:SedeViewModel}" MethodName="Sedes" />
+
+    </Window.Resources>
     <DockPanel>
         <Grid DockPanel.Dock="Top">
 
@@ -56,15 +60,26 @@
         </Grid>
 
         <DataGrid Name="asignacionGrid" AutoGenerateColumns="false">
+
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
+                <DataGridTextColumn  Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
                 <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Teléfono" Binding="{Binding persona__telefono}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Email" Binding="{Binding persona__email}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Comision" Binding="{Binding comision__label}"></DataGridTextColumn>
+                <DataGridTextColumn IsReadOnly="True" Header="Comision" Binding="{Binding comision__label}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Sede id" Binding="{Binding comision__sede}"></DataGridTextColumn>
+
+                <DataGridComboBoxColumn Header="SEDES"  
+                                        DisplayMemberPath="nombre" 
+                                        SelectedValuePath="id"
+                                        SelectedValueBinding="{Binding comision__sede}" 
+                                        ItemsSource="{Binding Source={StaticResource sedes}}" />
+
+
+
                 <DataGridTextColumn Header="Inscripción" Binding="{Binding alumno__estado_inscripcion}"></DataGridTextColumn>
                 <DataGridCheckBoxColumn Header="cons" Binding="{Binding alumno__tiene_constancia}"></DataGridCheckBoxColumn>
                 <DataGridCheckBoxColumn Header="cert" Binding="{Binding alumno__tiene_certificado}"></DataGridCheckBoxColumn>

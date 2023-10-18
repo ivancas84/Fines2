@@ -7,7 +7,7 @@ using Fines2Wpf.Data;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 {
-    internal class Asignacion : Data_alumno_comision_r
+    public class Asignacion : Data_alumno_comision_r
     {
         public string? comision__label { get; set; } 
     }

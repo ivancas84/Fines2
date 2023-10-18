@@ -92,7 +92,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 
             this.sedeList.Visibility = Visibility.Visible;
 
-            IEnumerable<Dictionary<string, object>> list = sedeDAO.BusquedaAproximada(this.sedeText.Text);
+            IEnumerable<Dictionary<string, object?>> list = sedeDAO.BusquedaAproximadaQuery(this.sedeText.Text).ColOfDictCache();
             this.sedeList.ItemsSource = list.ColOfObj<Data_sede>();
         }
 

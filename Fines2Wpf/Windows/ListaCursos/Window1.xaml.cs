@@ -26,7 +26,7 @@ namespace Fines2Wpf.Windows.ListaCursos
     {
 
         Search search = new();
-        DAO dao = new();
+        Fines2Wpf.DAO.Curso cursoDAO = new();
         private ObservableCollection<Curso> cursoData = new();
 
         public Window1()
@@ -45,7 +45,7 @@ namespace Fines2Wpf.Windows.ListaCursos
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object>> list = dao.CursoAll(search);
+            IEnumerable<Dictionary<string, object>> list = cursoDAO.CursosSemestre(search.calendario__anio, search.calendario__semestre);
             cursoData.Clear();
             cursoData.AddRange(list.ColOfObj<Curso>());
         }
@@ -96,9 +96,9 @@ namespace Fines2Wpf.Windows.ListaCursos
 
                         //en caso de que el campo editado sea unico, se consultan sus valores
                         if (ContainerApp.db.Field(entityName, fieldName).IsUnique())
-                            row = dao.RowByEntityFieldValue(entityName, fieldName, value);
+                            row = ContainerApp.dao.RowByFieldValue(entityName, fieldName, value);
                         else
-                            row = dao.RowByEntityUnique(entityName, v.values);
+                            row = ContainerApp.dao.RowByUniqueWithoutIdIfExists(entityName, v.values);
 
                         if (!row.IsNullOrEmpty())
                         {

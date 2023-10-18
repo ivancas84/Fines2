@@ -17,7 +17,8 @@ namespace Fines2Wpf.Windows.ListaTomas
     {
 
         Search search = new();
-        DAO dao = new();
+        Fines2Wpf.DAO.Toma tomaDAO = new();
+        
         private ObservableCollection<Toma> tomaData = new();
 
         public Window1()
@@ -36,7 +37,7 @@ namespace Fines2Wpf.Windows.ListaTomas
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object>> list = dao.TomaAll(search);
+            IEnumerable<Dictionary<string, object>> list = tomaDAO.TomasSemestre(search.calendario__anio, search.calendario__semestre);
             tomaData.Clear();
             tomaData.AddRange(list.ColOfObj<Toma>());
         }
@@ -52,7 +53,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                 var column = e.Column as DataGridBoundColumn;
                 if (column != null)
                 {
-                    List<string> ignore = new List<string>() { "confirmada" };
+                    List<string> ignore = new List<string>() { "alumno__tiene_constancia", "alumno__tiene_dni", "alumno__tiene_partida", "alumno__tiene_certificado" };
                     string key = ((Binding)column.Binding).Path.Path; //column's binding
                     if (ignore.Contains(key)) return;
                     object value = (e.EditingElement as TextBox)!.Text;
@@ -79,7 +80,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                         v.Sset(fieldName, value);
                         IDictionary<string, object>? row;
 
-                        row = dao.RowByUniqueFieldOrUniqueValues(fieldName, v);
+                        row = ContainerApp.dao.RowByUniqueFieldOrValues(fieldName, v);
 
                         if (!row.IsNullOrEmpty())
                         {
@@ -94,7 +95,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                                 break;
                             }
 
-                            dao.Persist(v);
+                            ContainerApp.dao.Persist(v);
                         }
 
                         (e.Row.Item as Toma).CopyValues<Toma>(v.Get().Obj<Toma>(), sourceNotNull: true);
@@ -152,7 +153,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                     v.Sset(fieldName, value);
 
                     if (v.Check())
-                        dao.Persist(v);
+                        ContainerApp.dao.Persist(v);
 
                     DataGridRow row = DataGridRow.GetRowContainingElement(cell);
                     (row.Item as Toma).CopyValues<Toma>(v.Get().Obj<Toma>(),sourceNotNull:true);
