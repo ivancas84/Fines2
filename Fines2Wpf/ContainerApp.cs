@@ -29,6 +29,7 @@ namespace Fines2Wpf
             emailDocenteBcc = ConfigurationManager.AppSettings.Get("emailDocenteBcc"),
         };
 
+        public static SqlOrganize.DAO dao;
 
         static ContainerApp()
         {
@@ -37,6 +38,7 @@ namespace Fines2Wpf
 
             Model model = new Model();
             db = new DbApp(config, model, cache);
+            dao = new(db);
 
         }
 
