@@ -101,5 +101,18 @@ namespace Fines2Wpf.DAO
             IEnumerable<object> ids = IdsComisionesAutorizadasPorCalendario(anio, semestre);
             return ContainerApp.db.Query("comision").CacheByIds(ids);
         }
+
+        public EntityQuery ComisionesAutorizadasPorSemestreQuery(object anio, object semestre)
+        {
+            return ContainerApp.db.Query("comision")
+                .Fields()
+                .Size(0)
+                .Where(@"
+                    $calendario-anio = @0
+                    AND $calendario-semestre = @1
+                    AND $autorizada = true
+                ")
+                .Parameters(anio, semestre);
+        }
     }
 }
