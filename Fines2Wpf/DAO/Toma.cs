@@ -23,5 +23,18 @@ namespace Fines2Wpf.DAO
 
         }
 
+        public IEnumerable<Dictionary<string, object>> TomasSemestre(object calendarioAnio, object calendarioSemestre)
+        {
+            return ContainerApp.db.Query("toma")
+                .Fields()
+                .Size(0)
+                .Where(@"
+                    $calendario-anio = @0 
+                    AND $calendario-semestre = @1 
+                ")
+                .Parameters(calendarioAnio, calendarioSemestre).ColOfDictCache();
+
+        }
+
     }
 }
