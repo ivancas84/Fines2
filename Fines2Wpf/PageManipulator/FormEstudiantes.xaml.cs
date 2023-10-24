@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 using Fines2Wpf.DAO;
-using Fines2Wpf.Data;
+using Fines2Wpf.Model;
 
 namespace Fines2Wpf.PageManipulator
 {

@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Utils;
-using Fines2Wpf.Data;
+using Fines2Wpf.Model;
 using Fines2Wpf.Values;
 using Fines2Wpf.ViewModels;
 using Fines2Wpf.Windows.AlumnoComision;

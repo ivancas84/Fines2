@@ -7,7 +7,7 @@ namespace Fines2Wpf
 {
     internal class DbApp : DbMy
     {
-        public DbApp(Config config, Model model, MemoryCache cache) : base(config, model, cache)
+        public DbApp(Config config, Schema sch, MemoryCache cache) : base(config, sch, cache)
         {
         }
 

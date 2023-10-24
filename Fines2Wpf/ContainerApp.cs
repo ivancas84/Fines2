@@ -36,7 +36,7 @@ namespace Fines2Wpf
 
             MemoryCache cache = new MemoryCache(new MemoryCacheOptions());
 
-            Model model = new Model();
+            Schema model = new Schema();
             db = new DbApp(config, model, cache);
             dao = new(db);
 

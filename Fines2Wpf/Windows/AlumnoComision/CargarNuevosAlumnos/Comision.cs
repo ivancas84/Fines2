@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Fines2Wpf.Data;
+using Fines2Wpf.Model;
 
 namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
 {
