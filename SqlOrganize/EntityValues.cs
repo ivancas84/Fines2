@@ -108,10 +108,10 @@ namespace SqlOrganize
 
             switch (field.dataType) //solo funciona para tipos especificos, para mapear correctamente deberia almacenarse en field, el tipo original sql.
             {
-                case "string":
+                case "varchar":
                     return "'" + (string)value + "'";
 
-                case "DateTime": //puede que no funcione correctamente, es necesario almacenar el tipo original sql
+                case "datetime": //puede que no funcione correctamente, es necesario almacenar el tipo original sql
                     return "'" + ((DateTime)value).ToString("u");
 
                 default:
