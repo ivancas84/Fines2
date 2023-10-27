@@ -13,7 +13,8 @@
     "entityName": "resolucion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": "guid",
     "maxLength": 45
@@ -32,7 +33,8 @@
     "entityName": "resolucion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 255
@@ -47,7 +49,8 @@
     "entityName": "resolucion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "short",
+    "dataType": "year",
+    "type": "short",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 4
@@ -66,7 +69,8 @@
     "entityName": "resolucion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 255

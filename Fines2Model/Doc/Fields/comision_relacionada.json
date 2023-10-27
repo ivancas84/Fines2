@@ -13,7 +13,8 @@
     "entityName": "comision_relacionada",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": "guid",
     "maxLength": 45
@@ -32,7 +33,8 @@
     "entityName": "comision_relacionada",
     "refEntityName": "comision",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45
@@ -51,7 +53,8 @@
     "entityName": "comision_relacionada",
     "refEntityName": "comision",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45

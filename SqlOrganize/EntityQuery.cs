@@ -481,7 +481,7 @@ namespace SqlOrganize
         /// </summary>
         /// <remarks>Convert the result to json with "JsonConvert.SerializeObject(data, Formatting.Indented)</remarks>
         /// <returns></returns>
-        public IEnumerable<Dictionary<string, object>> ColOfDict()
+        public IEnumerable<Dictionary<string, object?>> ColOfDict()
         {
             var q = Db.Query();
             q.sql = Sql();

@@ -13,7 +13,8 @@
     "entityName": "calificacion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": "guid",
     "maxLength": 45
@@ -29,6 +30,7 @@
     "refEntityName": null,
     "refFieldName": null,
     "dataType": "decimal",
+    "type": "decimal",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 4
@@ -44,6 +46,7 @@
     "refEntityName": null,
     "refFieldName": null,
     "dataType": "decimal",
+    "type": "decimal",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 4
@@ -59,6 +62,7 @@
     "refEntityName": null,
     "refFieldName": null,
     "dataType": "decimal",
+    "type": "decimal",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 4
@@ -74,6 +78,7 @@
     "refEntityName": null,
     "refFieldName": null,
     "dataType": "decimal",
+    "type": "decimal",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 4
@@ -89,6 +94,7 @@
     "refEntityName": null,
     "refFieldName": null,
     "dataType": "decimal",
+    "type": "decimal",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 4
@@ -107,7 +113,8 @@
     "entityName": "calificacion",
     "refEntityName": "curso",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 45
@@ -123,6 +130,7 @@
     "refEntityName": null,
     "refFieldName": null,
     "dataType": "int",
+    "type": "int",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 3
@@ -141,7 +149,8 @@
     "entityName": "calificacion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "text",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 65535
@@ -160,7 +169,8 @@
     "entityName": "calificacion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 255
@@ -179,7 +189,8 @@
     "entityName": "calificacion",
     "refEntityName": "alumno",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45
@@ -198,7 +209,8 @@
     "entityName": "calificacion",
     "refEntityName": "disposicion",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45
@@ -213,7 +225,8 @@
     "entityName": "calificacion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "DateTime",
+    "dataType": "date",
+    "type": "DateTime",
     "notNull": false,
     "defaultValue": null,
     "maxLength": null
@@ -229,7 +242,8 @@
     "entityName": "calificacion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "bool",
+    "dataType": "tinyint",
+    "type": "bool",
     "notNull": true,
     "defaultValue": false,
     "maxLength": 1

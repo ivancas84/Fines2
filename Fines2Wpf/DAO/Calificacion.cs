@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlOrganize;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -64,6 +65,21 @@ namespace Fines2Wpf.DAO
 
             if (d.IsNullOrEmpty()) { return 0; }
             return (Int64)d["cantidad"];
+        }
+
+        public EntityQuery CantidadCalificacionesAprobadasAgrupadasPorPlanificacionSinArchivarPorAlumnosYPlanesQuery(List<object> alumnosYplanes)
+        {
+            return ContainerApp.db.Query("calificacion")
+                .Select("COUNT($id) as cantidad")
+                .Group("$alumno, $planificacion_dis-anio, $planificacion_dis-semestre")
+                .Size(0)
+                .Where(@"
+                    CONCAT($alumno, $planificacion_dis-plan) IN (@0)
+                    AND ($nota_final >= 7 OR $crec >= 4) 
+                    AND $archivado = false
+                ")
+                .Order("$alumno ASC, $planificacion_dis-anio ASC, $planificacion_dis-semestre ASC")
+                .Parameters(alumnosYplanes);
         }
 
     }

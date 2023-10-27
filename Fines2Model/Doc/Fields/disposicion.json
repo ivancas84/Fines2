@@ -13,7 +13,8 @@
     "entityName": "disposicion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": "guid",
     "maxLength": 45
@@ -32,7 +33,8 @@
     "entityName": "disposicion",
     "refEntityName": "asignatura",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45
@@ -51,7 +53,8 @@
     "entityName": "disposicion",
     "refEntityName": "planificacion",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45
@@ -67,6 +70,7 @@
     "refEntityName": null,
     "refFieldName": null,
     "dataType": "int",
+    "type": "int",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 11

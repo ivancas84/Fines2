@@ -4,11 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre"
+        xmlns:proxy="clr-namespace:WpfUtils"
         mc:Ignorable="d"
         Title="Window1" Height="450" Width="800">
     <Window.Resources>
-        <ObjectDataProvider x:Key="sedes" ObjectType="{x:Type local:SedeViewModel}" MethodName="Sedes" />
-
+        <ObjectDataProvider x:Key="estadosInscripcion" ObjectType="{x:Type local:EstadoInscripcionData}" MethodName="Estados" />
     </Window.Resources>
     <DockPanel>
         <Grid DockPanel.Dock="Top">
@@ -59,27 +59,36 @@
             </StackPanel>
         </Grid>
 
-        <DataGrid Name="asignacionGrid" AutoGenerateColumns="false">
-
+        <DataGrid Name="asignacionGrid" ItemsSource="{Binding}" AutoGenerateColumns="false">
+            <DataGrid.Resources>
+                <proxy:BindingProxy x:Key="proxy" Data="{Binding}"/>
+            </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn  Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
+                <DataGridTextColumn IsReadOnly="True" Header="Sede" Binding="{Binding sede__nombre}">
+                    
+                </DataGridTextColumn>
+                <DataGridTextColumn IsReadOnly="True" Header="Comision" Binding="{Binding comision__Label}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
                 <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Teléfono" Binding="{Binding persona__telefono}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Email" Binding="{Binding persona__email}"></DataGridTextColumn>
-                <DataGridTextColumn IsReadOnly="True" Header="Comision" Binding="{Binding comision__Label}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
+                <DataGridTextColumn IsReadOnly="True" Header="Ingreso" Binding="{Binding tramo_ingreso}"></DataGridTextColumn>
 
-                <DataGridComboBoxColumn IsReadOnly="True" Header="Sede"  
-                                        DisplayMemberPath="nombre" 
-                                        SelectedValuePath="id"
-                                        SelectedValueBinding="{Binding comision__sede}" 
-                                        ItemsSource="{Binding Source={StaticResource sedes}}" />
+                <DataGridTextColumn IsReadOnly="True" Header="" Width="50">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="{Binding color_estado_inscripcion}"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                
+                <DataGridComboBoxColumn Header="Inscripción"  
+                    SelectedValueBinding="{Binding alumno__estado_inscripcion}" 
+                    ItemsSource="{Binding Source={StaticResource estadosInscripcion}}">
+                </DataGridComboBoxColumn>
 
-
-
-                <DataGridTextColumn Header="Inscripción" Binding="{Binding alumno__estado_inscripcion}"></DataGridTextColumn>
-                <DataGridCheckBoxColumn Binding="{Binding alumno__tiene_constancia}" Header="Tiene Constancia">
+                <DataGridCheckBoxColumn Binding="{Binding alumno__tiene_constancia}" Header="CONS">
                     <DataGridCheckBoxColumn.CellStyle>
                         <Style>
                             <EventSetter Event="CheckBox.Checked" Handler="EntityGrid_CellCheckBoxClick"/>
@@ -87,16 +96,119 @@
                         </Style>
                     </DataGridCheckBoxColumn.CellStyle>
                 </DataGridCheckBoxColumn>
-                
 
-                <DataGridCheckBoxColumn Header="cert" Binding="{Binding alumno__tiene_certificado}"></DataGridCheckBoxColumn>
-                <DataGridCheckBoxColumn Header="DNI" Binding="{Binding alumno__tiene_dni}"></DataGridCheckBoxColumn>
-                <DataGridCheckBoxColumn Header="part" Binding="{Binding alumno__tiene_partida}"></DataGridCheckBoxColumn>
+                <DataGridCheckBoxColumn Binding="{Binding alumno__tiene_certificado}" Header="CERT">
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style>
+                            <EventSetter Event="CheckBox.Checked" Handler="EntityGrid_CellCheckBoxClick"/>
+                            <EventSetter Event="CheckBox.Unchecked" Handler="EntityGrid_CellCheckBoxClick"/>
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+                </DataGridCheckBoxColumn>
+
+                <DataGridCheckBoxColumn Binding="{Binding alumno__tiene_dni}" Header="DNI">
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style>
+                            <EventSetter Event="CheckBox.Checked" Handler="EntityGrid_CellCheckBoxClick"/>
+                            <EventSetter Event="CheckBox.Unchecked" Handler="EntityGrid_CellCheckBoxClick"/>
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+                </DataGridCheckBoxColumn>
+
+                <DataGridCheckBoxColumn Binding="{Binding alumno__tiene_partida}" Header="PART">
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style>
+                            <EventSetter Event="CheckBox.Checked" Handler="EntityGrid_CellCheckBoxClick"/>
+                            <EventSetter Event="CheckBox.Unchecked" Handler="EntityGrid_CellCheckBoxClick"/>
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+                </DataGridCheckBoxColumn>
+
+                <DataGridCheckBoxColumn Binding="{Binding alumno__tiene_partida}" Header="PART">
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style>
+                            <EventSetter Event="CheckBox.Checked" Handler="EntityGrid_CellCheckBoxClick"/>
+                            <EventSetter Event="CheckBox.Unchecked" Handler="EntityGrid_CellCheckBoxClick"/>
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+                </DataGridCheckBoxColumn>
+
+                <DataGridCheckBoxColumn Binding="{Binding alumno__confirmado_direccion}" Header="CONF">
+                    <DataGridCheckBoxColumn.CellStyle>
+                        <Style>
+                            <EventSetter Event="CheckBox.Checked" Handler="EntityGrid_CellCheckBoxClick"/>
+                            <EventSetter Event="CheckBox.Unchecked" Handler="EntityGrid_CellCheckBoxClick"/>
+                        </Style>
+                    </DataGridCheckBoxColumn.CellStyle>
+                </DataGridCheckBoxColumn>
+
+                <DataGridTextColumn  IsReadOnly="True" Header="1/1" Binding="{Binding cantidad_aprobadas11}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="{Binding color_aprobadas11}"/>
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="Padding" Value="10,5,10,5" />
+
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn  IsReadOnly="True" Header="1/2" Binding="{Binding cantidad_aprobadas12}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="{Binding color_aprobadas12}"/>
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="Padding" Value="10,5,10,5" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn  IsReadOnly="True" Header="2/1" Binding="{Binding cantidad_aprobadas21}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="{Binding color_aprobadas21}"/>
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="Padding" Value="10,5,10,5" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+
+                <DataGridTextColumn IsReadOnly="True" Header="2/2" Binding="{Binding cantidad_aprobadas22}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="{Binding color_aprobadas22}"/>
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="Padding" Value="10,5,10,5" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn  IsReadOnly="True" Header="3/1" Binding="{Binding cantidad_aprobadas31}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="{Binding color_aprobadas31}"/>
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="Padding" Value="10,5,10,5" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn  IsReadOnly="True" Header="3/2" Binding="{Binding cantidad_aprobadas32}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="{Binding color_aprobadas32}"/>
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="Padding" Value="10,5,10,5" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+
+                <DataGridTextColumn Binding="{Binding alumno__observaciones}" Width="500" Header="Observaciones"></DataGridTextColumn>
+
+
             </DataGrid.Columns>
         </DataGrid>
-
-
-
     </DockPanel>
 
 </Window>

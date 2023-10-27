@@ -13,7 +13,8 @@
     "entityName": "distribucion_horaria",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": "guid",
     "maxLength": 45
@@ -30,6 +31,7 @@
     "refEntityName": null,
     "refFieldName": null,
     "dataType": "int",
+    "type": "int",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 11
@@ -46,6 +48,7 @@
     "refEntityName": null,
     "refFieldName": null,
     "dataType": "int",
+    "type": "int",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 11
@@ -64,7 +67,8 @@
     "entityName": "distribucion_horaria",
     "refEntityName": "disposicion",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 45

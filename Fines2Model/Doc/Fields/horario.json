@@ -13,7 +13,8 @@
     "entityName": "horario",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": "guid",
     "maxLength": 45
@@ -29,7 +30,8 @@
     "entityName": "horario",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "DateTime",
+    "dataType": "time",
+    "type": "DateTime",
     "notNull": true,
     "defaultValue": null,
     "maxLength": null
@@ -45,7 +47,8 @@
     "entityName": "horario",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "DateTime",
+    "dataType": "time",
+    "type": "DateTime",
     "notNull": true,
     "defaultValue": null,
     "maxLength": null
@@ -64,7 +67,8 @@
     "entityName": "horario",
     "refEntityName": "curso",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45
@@ -83,7 +87,8 @@
     "entityName": "horario",
     "refEntityName": "dia",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45

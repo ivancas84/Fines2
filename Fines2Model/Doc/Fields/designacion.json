@@ -13,7 +13,8 @@
     "entityName": "designacion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": "guid",
     "maxLength": 45
@@ -28,7 +29,8 @@
     "entityName": "designacion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "DateTime",
+    "dataType": "date",
+    "type": "DateTime",
     "notNull": false,
     "defaultValue": null,
     "maxLength": null
@@ -43,7 +45,8 @@
     "entityName": "designacion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "DateTime",
+    "dataType": "date",
+    "type": "DateTime",
     "notNull": false,
     "defaultValue": null,
     "maxLength": null
@@ -62,7 +65,8 @@
     "entityName": "designacion",
     "refEntityName": "cargo",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45
@@ -81,7 +85,8 @@
     "entityName": "designacion",
     "refEntityName": "sede",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45
@@ -100,7 +105,8 @@
     "entityName": "designacion",
     "refEntityName": "persona",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45
@@ -116,7 +122,8 @@
     "entityName": "designacion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "DateTime",
+    "dataType": "timestamp",
+    "type": "DateTime",
     "notNull": true,
     "defaultValue": "current_timestamp()",
     "maxLength": null
@@ -135,7 +142,8 @@
     "entityName": "designacion",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 45

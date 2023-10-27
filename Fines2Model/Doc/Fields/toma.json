@@ -13,7 +13,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": "guid",
     "maxLength": 45
@@ -28,7 +29,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "DateTime",
+    "dataType": "date",
+    "type": "DateTime",
     "notNull": false,
     "defaultValue": null,
     "maxLength": null
@@ -47,7 +49,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 45
@@ -66,7 +69,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "text",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 65535
@@ -85,7 +89,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 45
@@ -104,7 +109,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45
@@ -123,7 +129,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 45
@@ -139,7 +146,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "DateTime",
+    "dataType": "timestamp",
+    "type": "DateTime",
     "notNull": true,
     "defaultValue": "current_timestamp()",
     "maxLength": null
@@ -158,7 +166,8 @@
     "entityName": "toma",
     "refEntityName": "curso",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": true,
     "defaultValue": null,
     "maxLength": 45
@@ -177,7 +186,8 @@
     "entityName": "toma",
     "refEntityName": "persona",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 45
@@ -196,7 +206,8 @@
     "entityName": "toma",
     "refEntityName": "persona",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 45
@@ -215,7 +226,8 @@
     "entityName": "toma",
     "refEntityName": "planilla_docente",
     "refFieldName": "id",
-    "dataType": "string",
+    "dataType": "varchar",
+    "type": "string",
     "notNull": false,
     "defaultValue": null,
     "maxLength": 45
@@ -231,7 +243,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "bool",
+    "dataType": "tinyint",
+    "type": "bool",
     "notNull": true,
     "defaultValue": false,
     "maxLength": 1
@@ -247,7 +260,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "bool",
+    "dataType": "tinyint",
+    "type": "bool",
     "notNull": true,
     "defaultValue": false,
     "maxLength": 1
@@ -263,7 +277,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "bool",
+    "dataType": "tinyint",
+    "type": "bool",
     "notNull": true,
     "defaultValue": false,
     "maxLength": 1
@@ -279,7 +294,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "bool",
+    "dataType": "tinyint",
+    "type": "bool",
     "notNull": true,
     "defaultValue": false,
     "maxLength": 1
@@ -295,7 +311,8 @@
     "entityName": "toma",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "bool",
+    "dataType": "tinyint",
+    "type": "bool",
     "notNull": true,
     "defaultValue": false,
     "maxLength": 1

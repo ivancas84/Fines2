@@ -6,8 +6,6 @@ using Fines2Wpf.Model;
 using System.Windows.Controls;
 using SqlOrganize;
 using WpfUtils;
-using System.Windows.Data;
-using Google.Protobuf.WellKnownTypes;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 {
@@ -16,10 +14,10 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
     /// </summary>
     public partial class Window1 : Window
     {
-        private DAO.Sede sedeDAO = new();
+        private DAO.Calificacion calificacionDAO = new();
         private SqlOrganize.DAO dao = new(ContainerApp.db);
-        public ObservableCollection<Data_alumno_comision_r> asignacionData = new();
-        public Data_alumno_comision_r search = new(DataInitMode.Null);
+        private ObservableCollection<Asignacion> asignacionData = new();
+        private Data_alumno_comision_r search = new(DataInitMode.Null);
         
         public Window1()
         {
@@ -39,7 +37,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 
             asignacionGrid.CellEditEnding += AsignacionGrid_CellEditEnding;
 
-            asignacionGrid.ItemsSource = asignacionData;
+            asignacionGrid.DataContext = asignacionData;
             Loaded += Window1_Loaded;
         }
 
@@ -49,14 +47,59 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         {
             var data = dao.Search("alumno_comision", search);
             asignacionData.Clear();
+            List<object> alumnosYplanes = new();
+            ObservableCollection<Asignacion> asignacionDataAux = new();
+
             foreach (var d in data)
             {
                 var v = (Values.AlumnoComision)ContainerApp.db.Values("alumno_comision").Values(d);
-                var o = d.Obj<Data_alumno_comision_r>();
+                var va = (Values.Alumno)ContainerApp.db.Values("alumno","alumno").Set(d);
+                var o = d.Obj<Asignacion>();
+                o.tramo_ingreso = va.TramoIngreso();
                 o.comision__Label = v.ValuesTree("comision")?.ToString() ?? "";
-                asignacionData.Add(o);
+                o.color_estado_inscripcion = va.ColorEstadoInscripcion(o.alumno__estado_inscripcion);
+                alumnosYplanes.Add(o.alumno!.ToString() +o.planificacion__plan!.ToString());
+                asignacionDataAux.Add(o);
             }
+            var dataCalificacionesDict = calificacionDAO.CantidadCalificacionesAprobadasAgrupadasPorPlanificacionSinArchivarPorAlumnosYPlanesQuery(alumnosYplanes).ColOfDict().DictOfDictByKeysValue("cantidad", "alumno", "planificacion_dis-anio", "planificacion_dis-semestre");
+                
+            foreach (var d in asignacionDataAux)
+            {
+                var key = d.alumno!.ToString()!;
+                if(dataCalificacionesDict.ContainsKey(key + "~" + "1" + "~" + "1"))
+                    d.cantidad_aprobadas11 = (long)dataCalificacionesDict[key + "~" + "1" + "~" + "1"];
+                if (dataCalificacionesDict.ContainsKey(key + "~" + "1" + "~" + "2"))
+                    d.cantidad_aprobadas12 = (long)dataCalificacionesDict[key + "~" + "1" + "~" + "2"];
+                if (dataCalificacionesDict.ContainsKey(key + "~" + "2" + "~" + "1"))
+                    d.cantidad_aprobadas21 = (long)dataCalificacionesDict[key + "~" + "2" + "~" + "1"];
+                if (dataCalificacionesDict.ContainsKey(key + "~" + "2" + "~" + "2"))
+                    d.cantidad_aprobadas22 = (long)dataCalificacionesDict[key + "~" + "2" + "~" + "2"];
+                if (dataCalificacionesDict.ContainsKey(key + "~" + "3" + "~" + "1"))
+                    d.cantidad_aprobadas31 = (long)dataCalificacionesDict[key + "~" + "3" + "~" + "1"];
+                if (dataCalificacionesDict.ContainsKey(key + "~" + "3" + "~" + "2"))
+                    d.cantidad_aprobadas32 = (long)dataCalificacionesDict[key + "~" + "3" + "~" + "2"];
+
+                var va = (Values.Alumno)ContainerApp.db.Values("alumno", "alumno");
+
+                short ai = 1;
+                if (!d.alumno__anio_ingreso.IsNullOrEmptyOrDbNull())
+                    ai = short.Parse(d.alumno__anio_ingreso!);
+                short pa = short.Parse(d.planificacion__anio!);
+                short pe = short.Parse(d.planificacion__semestre!);
+
+                d.color_aprobadas11 = va.ColorCantidadAprobadasSemestreActual(d.cantidad_aprobadas11, 1, 1, pa, pe, ai, d.alumno__semestre_ingreso);
+                d.color_aprobadas12 = va.ColorCantidadAprobadasSemestreActual(d.cantidad_aprobadas12, 1, 2, pa, pe, ai, d.alumno__semestre_ingreso);
+                d.color_aprobadas21 = va.ColorCantidadAprobadasSemestreActual(d.cantidad_aprobadas21, 2, 1, pa, pe, ai, d.alumno__semestre_ingreso);
+                d.color_aprobadas22 = va.ColorCantidadAprobadasSemestreActual(d.cantidad_aprobadas22, 2, 2, pa, pe, ai, d.alumno__semestre_ingreso);
+                d.color_aprobadas31 = va.ColorCantidadAprobadasSemestreActual(d.cantidad_aprobadas31, 3, 1, pa, pe, ai, d.alumno__semestre_ingreso);
+                d.color_aprobadas32 = va.ColorCantidadAprobadasSemestreActual(d.cantidad_aprobadas32, 3, 2, pa, pe, ai, d.alumno__semestre_ingreso);
+
+                asignacionData.Add(d);
+            }
+
+
         }
+
 
         private void Window1_Loaded(object sender, RoutedEventArgs e)
         {
@@ -83,6 +126,20 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
             if (reload)
               LoadAsignaciones();//debe recargarse para visualizar los cambios realizados en otras iteraciones
                                  //Dada una relacion a : b, si se modifica b correspondiente a a.b, se deberan actualizar todas las filas
+        }
+    }
+
+    public class EstadoInscripcionData
+    {
+        public ObservableCollection<string> Estados()
+        {
+            return new()
+            {
+                "Correcto",
+                "Indeterminado",
+                "Caso particular",
+                "Titulado",
+            };
         }
     }
 

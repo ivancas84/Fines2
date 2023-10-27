@@ -73,8 +73,15 @@ namespace WpfUtils
             IDictionary<string, object?> source = row.DataContext.Dict();
 
             EntityValues v = ContainerApp.db.Values(entityName, fieldId).Set(source);
-            if (v.GetOrNull(fieldName).Equals(value))
-                return reload;
+            var val = v.GetOrNull(fieldName);
+            if (val.IsNullOrEmptyOrDbNull())
+            { 
+                if (value.IsNullOrEmptyOrDbNull())
+                    return reload;
+            }
+            else
+                if(val.Equals(value))
+                    return reload;
 
             v.Sset(fieldName, value);
             IDictionary<string, object>? rowDb = ContainerApp.dao.RowByUniqueFieldOrValues(fieldName, v);
