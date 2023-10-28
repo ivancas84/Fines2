@@ -18,6 +18,7 @@
                 <RowDefinition Height = "Auto" />
                 <RowDefinition Height = "Auto" />
                 <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "Auto" />
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -53,16 +54,26 @@
                 Name = "estadoCombo" 
                 Text="{Binding estado, Mode = TwoWay}">
             </ComboBox>
+
             
             <StackPanel Grid.Row = "3" Grid.ColumnSpan = "2">
                 <Button Content = "_Buscar..." Click="BuscarButton_Click" />
             </StackPanel>
+
+            <Label 
+                Grid.Row = "4"
+                Margin = "2">_Filtro:</Label>
+
+            <TextBox 
+                Name ="filterTextBox"
+                TextChanged="FilterTextBox_TextChanged"
+                Grid.Row = "4" 
+                Grid.Column = "1" 
+                Margin = "2" />
+
         </Grid>
 
-        <DataGrid Name="asignacionGrid" ItemsSource="{Binding}" AutoGenerateColumns="false">
-            <DataGrid.Resources>
-                <proxy:BindingProxy x:Key="proxy" Data="{Binding}"/>
-            </DataGrid.Resources>
+        <DataGrid Name="asignacionGrid" AutoGenerateColumns="false">
             <DataGrid.Columns>
                 <DataGridTextColumn IsReadOnly="True" Header="Sede" Binding="{Binding sede__nombre}">
                     

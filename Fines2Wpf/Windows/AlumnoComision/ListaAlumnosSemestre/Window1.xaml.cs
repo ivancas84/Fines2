@@ -6,6 +6,8 @@ using Fines2Wpf.Model;
 using System.Windows.Controls;
 using SqlOrganize;
 using WpfUtils;
+using System.ComponentModel;
+using System.Windows.Data;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 {
@@ -18,10 +20,20 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         private SqlOrganize.DAO dao = new(ContainerApp.db);
         private ObservableCollection<Asignacion> asignacionData = new();
         private Data_alumno_comision_r search = new(DataInitMode.Null);
-        
+
+        private ICollectionView asignacionDataCV;
+
+
         public Window1()
         {
             InitializeComponent();
+
+            var asignacionDataCVS = new CollectionViewSource() { Source = asignacionData };
+            asignacionDataCV = asignacionDataCVS.View;
+            asignacionDataCV.Filter = AsignacionDataCV_Filter;
+            asignacionGrid.ItemsSource = asignacionDataCV;
+
+
 
             estadoCombo.SelectedValuePath = "Key";
             estadoCombo.DisplayMemberPath = "Value";
@@ -37,10 +49,27 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 
             asignacionGrid.CellEditEnding += AsignacionGrid_CellEditEnding;
 
-            asignacionGrid.DataContext = asignacionData;
             Loaded += Window1_Loaded;
         }
 
+        private bool AsignacionDataCV_Filter(object obj)
+        {
+            var o = obj as Asignacion;
+            return filterTextBox.Text.IsNullOrEmpty()
+                || (!o.persona__nombres.IsNullOrEmptyOrDbNull() && o.persona__nombres.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
+                || (!o.persona__apellidos.IsNullOrEmptyOrDbNull() && o.persona__apellidos.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
+                || (!o.comision__Label.IsNullOrEmptyOrDbNull() && o.comision__Label.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
+                || (!o.persona__telefono.IsNullOrEmptyOrDbNull() && o.persona__telefono.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
+                || (!o.persona__numero_documento.IsNullOrEmptyOrDbNull() && o.persona__numero_documento.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
+                || (!o.sede__nombre.IsNullOrEmptyOrDbNull() && o.sede__nombre.ToString().ToLower().Contains(filterTextBox.Text.ToLower()));
+
+        }
+
+        private void FilterTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (asignacionDataCV != null)
+                asignacionDataCV.Refresh();
+        }
 
 
         public void LoadAsignaciones()
