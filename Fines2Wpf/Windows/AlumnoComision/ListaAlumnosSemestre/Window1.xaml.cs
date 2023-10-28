@@ -8,6 +8,8 @@ using SqlOrganize;
 using WpfUtils;
 using System.ComponentModel;
 using System.Windows.Data;
+using System.Windows.Threading;
+using System;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 {
@@ -23,6 +25,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 
         private ICollectionView asignacionDataCV;
 
+
+        System.Windows.Threading.DispatcherTimer _typingTimer;
 
         public Window1()
         {
@@ -67,10 +71,35 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 
         private void FilterTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (asignacionDataCV != null)
-                asignacionDataCV.Refresh();
+            if (_typingTimer == null)
+            {
+                _typingTimer = new DispatcherTimer();
+                _typingTimer.Interval = TimeSpan.FromMilliseconds(300);
+                _typingTimer.Tick += new EventHandler(HandleTypingTimerTimeout);
+
+            }
+
+            _typingTimer.Stop(); // Resets the timer
+            _typingTimer.Tag = (sender as TextBox).Text; // This should be done with EventArgs
+            _typingTimer.Start();
+
+            
         }
 
+        private void HandleTypingTimerTimeout(object sender, EventArgs e)
+        {
+             var timer = sender as DispatcherTimer; // WPF
+            if (timer == null)
+            {
+                return;
+            }
+
+            if (asignacionDataCV != null)
+                asignacionDataCV.Refresh();
+
+            // The timer must be stopped! We want to act only once per keystroke.
+            timer.Stop();
+        }
 
         public void LoadAsignaciones()
         {
