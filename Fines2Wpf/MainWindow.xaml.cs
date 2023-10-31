@@ -147,7 +147,11 @@ namespace Fines2Wpf
             win.Show();
         }
 
-      
+        private void AdministrarAlumno_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.Alumno.AdministrarAlumno.Window1 window1 = new();
+            window1.Show();
+        }
     }
 }
 

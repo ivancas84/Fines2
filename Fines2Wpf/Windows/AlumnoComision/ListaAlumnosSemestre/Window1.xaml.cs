@@ -25,8 +25,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 
         private ICollectionView asignacionDataCV;
 
-
-        System.Windows.Threading.DispatcherTimer _typingTimer;
+        DispatcherTimer _typingTimer;
 
         public Window1()
         {

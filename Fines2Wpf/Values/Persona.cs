@@ -1,6 +1,7 @@
 ﻿using SqlOrganize;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
@@ -11,16 +12,19 @@ namespace Fines2Wpf.Values
 {
     class Persona : EntityValues
     {
+
         public Persona(Db db, string entityName, string? fieldId = null) : base(db, entityName, fieldId)
         {
         }
 
         public override string ToString()
         {
+            TextInfo myTI = new CultureInfo("es-AR", false).TextInfo;
+
             string s = "";
-            s += GetOrNull("nombres")?.ToString() ?? "?";
-            s += " ";
-            s += GetOrNull("apellidos")?.ToString() ?? "?";
+            s += (GetOrNull("apellidos")?.ToString() ?? "?").ToUpper() ;
+            s += ", ";
+            s += myTI.ToTitleCase(GetOrNull("nombres")?.ToString() ?? "?") ;
             s += " ";
             s += GetOrNull("numero_documento")?.ToString() ?? "?";
             return s;

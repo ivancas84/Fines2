@@ -7,21 +7,31 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         
-         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-         TextElement.FontWeight="Regular"
-         TextElement.FontSize="13"
-         TextOptions.TextFormattingMode="Ideal"
-         TextOptions.TextRenderingMode="Auto"
-         Background="{DynamicResource MaterialDesignPaper}"
-         FontFamily="{DynamicResource MaterialDesignFont}">
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+       >
         
 
     <DockPanel >
 
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Alumnos">
-                <MenuItem Header="Lista de Alumnos del Semestre" Click="listaAsignacionesSemestre_Click"/>
+                <MenuItem Header="Lista de Alumnos del Semestre" Click="listaAsignacionesSemestre_Click">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="ListBox"></materialDesign:PackIcon>
+                    </MenuItem.Icon>
+                    
+                </MenuItem>
+                <MenuItem Header="Administrar Alumno" Click="AdministrarAlumno_Click">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="ListBox"></materialDesign:PackIcon>
+                    </MenuItem.Icon>
+
+                </MenuItem>
                 <MenuItem Header="Lista de Asignaciones para programafines" Click="listaAsignacionesProgramaFines_Click"/>
                 <MenuItem Header="Lista de Alumnos semestre sin genero" Click="ListaAlumnosSinGenero_Click"/>
 

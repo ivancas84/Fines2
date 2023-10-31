@@ -1,0 +1,205 @@
+﻿<Window x:Class="Fines2Wpf.Windows.Alumno.AdministrarAlumno.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Fines2Wpf.Windows.Alumno.AdministrarAlumno"
+        mc:Ignorable="d"
+        Title="Window1" Height="450" Width="800"
+        
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        >
+
+    
+    <ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "*" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width = "*" />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox 
+                Panel.ZIndex="1"
+                Header="Buscar"
+                Margin="16"
+	            materialDesign:ElevationAssist.Elevation="Dp3">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width = "*" />
+                    </Grid.ColumnDefinitions>
+
+                
+                    <TextBox 
+                        Grid.Row = "0"
+                        Name="searchTextBox"
+                        TextChanged="SearchTextBox_TextChanged"
+                        Margin="2" />
+
+                    <Canvas
+ 	                    Grid.Row = "1"
+	                    Grid.Column="1"
+	                    Panel.ZIndex="2" >
+
+                        <ListBox 
+		                    Name="personaListBox"    
+		                    Margin="2"
+		                    SelectionChanged="PersonaListBox_SelectionChanged">
+                            <ListBox.Background>
+                                <SolidColorBrush Color="White" />
+                            </ListBox.Background>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel>
+                                        <TextBlock                       
+Text="{Binding Label}">
+                                            <TextBlock.Background>
+                                                <SolidColorBrush Color="White" />
+                                            </TextBlock.Background>
+                                        </TextBlock>
+                                    </StackPanel>
+
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Canvas>
+                </Grid>
+                
+            </GroupBox>
+            <GroupBox
+                Grid.Row="1"
+                Name="personaGroupBox"
+                Header="Datos principales"
+                Margin="16"
+	            materialDesign:ElevationAssist.Elevation="Dp3">       
+
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+
+
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width = "Auto" />
+                        <ColumnDefinition Width = "*" />
+                        <ColumnDefinition Width = "Auto" />
+                        <ColumnDefinition Width = "*" />
+                        <ColumnDefinition Width = "Auto" />
+                        <ColumnDefinition Width = "*" />
+                    </Grid.ColumnDefinitions>
+
+
+                    <Label Margin = "2">_Nombres:</Label>
+                    <TextBox Grid.Column="1"
+                             Text="{Binding nombres}"
+                             Margin = "2"></TextBox>
+
+                    <Label Grid.Column="2"
+                           Margin = "2">_Apellidos:</Label>
+                    <TextBox Grid.Column="3"
+                             Text="{Binding apellidos}"
+                             Margin = "2"></TextBox>
+
+                    <Label Grid.Column="4"
+                           Margin = "2">_DNI:</Label>
+                    <TextBox Grid.Column="5"
+                             Text="{Binding numero_documento}"
+                             Margin = "2"></TextBox>
+
+
+                    <Label Grid.Row="1" 
+                           Margin = "2">_CUIL:</Label>
+                    <TextBox Grid.Row="1"
+                             Grid.Column="1"
+                             Text="{Binding cuil}"
+                             Margin = "2"></TextBox>
+
+                    <Label Grid.Row="1"
+                           Grid.Column="2"
+                           Margin = "2">_Genero:</Label>
+                    <ComboBox Grid.Row="1"
+                             Grid.Column="3"
+                             Text="{Binding genero, Mode = TwoWay}"
+                             Margin = "2">
+                        <ComboBoxItem Content="Masculino"  />
+                        <ComboBoxItem Content="Femenino" />
+                        <ComboBoxItem Content="Otro" />
+                    </ComboBox>
+
+                    
+                    
+                    <Label Grid.Row="1"
+                           Grid.Column="4"
+                           Margin = "2">_Fecha Nacimiento:</Label>
+                    <DatePicker Grid.Row="1"
+                             Grid.Column="5"
+                             SelectedDate="{Binding fecha_nacimiento}"
+                             Margin = "2"></DatePicker>
+
+
+
+                    <Label Grid.Row="2" 
+                           Margin = "2">_Telefono:</Label>
+                    <TextBox Grid.Row="2"
+                             Grid.Column="1"
+                             Text="{Binding telefono}"
+                             Margin = "2"></TextBox>
+
+                    <Label Grid.Row="2"
+                           Grid.Column="2"
+                           Margin = "2">_Email:</Label>
+                    <TextBox Grid.Row="2"
+                             Grid.Column="3"
+                             Text="{Binding email}"
+                             Margin = "2"></TextBox>
+
+                    
+                    
+                    <Label Grid.Row="2"
+                           Grid.Column="4"
+                           Margin = "2">_Lugar Nacimiento:</Label>
+                    <TextBox Grid.Row="2"
+                             Grid.Column="5"
+                             Text="{Binding lugar_nacimiento}"
+                             Margin = "2"></TextBox>
+
+                </Grid>
+
+            </GroupBox>
+
+
+            <GroupBox Header="Asignaciones"
+                      Grid.Row = "2" 
+                      Margin="16"
+	                  materialDesign:ElevationAssist.Elevation="Dp3">
+                <DataGrid Name="organismoGrid" IsReadOnly="True" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding IdOrg}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+        </Grid>
+
+    </ScrollViewer>
+</Window>

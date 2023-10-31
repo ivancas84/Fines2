@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre"
         xmlns:proxy="clr-namespace:WpfUtils"
         mc:Ignorable="d"
-        Title="Window1" Height="450" Width="800">
+        Title="Window1" Height="450" Width="800"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        >
     <Window.Resources>
         <ObjectDataProvider x:Key="estadosInscripcion" ObjectType="{x:Type local:EstadoInscripcionData}" MethodName="Estados" />
     </Window.Resources>
@@ -25,9 +27,6 @@
                 <ColumnDefinition Width = "Auto" />
                 <ColumnDefinition Width = "200" />
             </Grid.ColumnDefinitions>
-
-            <Label 
-                Margin = "2">_Año:</Label>
 
             <TextBox 
                 Grid.Column = "1"
@@ -73,7 +72,7 @@
 
         </Grid>
 
-        <DataGrid Name="asignacionGrid" AutoGenerateColumns="false">
+        <DataGrid CanUserAddRows="False" Name="asignacionGrid" AutoGenerateColumns="false">
             <DataGrid.Columns>
                 <DataGridTextColumn IsReadOnly="True" Header="Sede" Binding="{Binding sede__nombre}">
                     
@@ -82,7 +81,19 @@
                 <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
                 <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Teléfono" Binding="{Binding persona__telefono}"></DataGridTextColumn>
+                <DataGridTemplateColumn Header="Fecha Nac">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding persona__fecha_nacimiento, StringFormat={}{0:dd/MM/yyyy}}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
+                            <DatePicker SelectedDate="{Binding persona__fecha_nacimiento}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn MaxWidth="120" Header="Teléfono" Binding="{Binding persona__telefono}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Email" Binding="{Binding persona__email}"></DataGridTextColumn>
                 <DataGridTextColumn IsReadOnly="True" Header="Ingreso" Binding="{Binding tramo_ingreso}"></DataGridTextColumn>
 
