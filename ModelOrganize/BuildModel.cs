@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -498,25 +499,21 @@ namespace ModelOrganize
                 sw.WriteLine("");
                 sw.WriteLine("namespace " + Config.dataClassesNamespace);
                 sw.WriteLine("{");
-                sw.WriteLine("    public class Data_"+ entityName + " : INotifyPropertyChanged");
+                sw.WriteLine("    public class Data_"+ entityName + " : INotifyPropertyChanged, IDataErrorInfo");
                 sw.WriteLine("    {");
-
                 sw.WriteLine("");
-
+                sw.WriteLine("        public bool Validate = false;");
+                sw.WriteLine("");
                 sw.WriteLine("        public Data_" + entityName + " ()");
                 sw.WriteLine("        {");
                 sw.WriteLine("            Initialize();");
                 sw.WriteLine("        }");
-
                 sw.WriteLine("");
-
                 sw.WriteLine("        public Data_" + entityName + "(DataInitMode mode = DataInitMode.Default)");
                 sw.WriteLine("        {");
                 sw.WriteLine("            Initialize(mode);");
                 sw.WriteLine("        }");
-
                 sw.WriteLine("");
-
                 sw.WriteLine("        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)");
                 sw.WriteLine("        {");
                 sw.WriteLine("            switch(mode)");
@@ -557,8 +554,54 @@ namespace ModelOrganize
                 sw.WriteLine("        {");
                 sw.WriteLine("            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));");
                 sw.WriteLine("        }");
+
+                sw.WriteLine("        public string Error");
+                sw.WriteLine("        {");
+                sw.WriteLine("            get");
+                sw.WriteLine("            {");
+                sw.WriteLine("                PropertyInfo[] properties = this.GetType().GetProperties();");
+                sw.WriteLine("");
+                sw.WriteLine("                List<string> errors = new ();");
+                sw.WriteLine("                foreach (PropertyInfo property in properties)");
+                sw.WriteLine("                    if (this[property.Name] != \"\")");
+                sw.WriteLine("                    {");
+                sw.WriteLine("                        NotifyPropertyChanged(property.Name);");
+                sw.WriteLine("                        errors.Add(this[property.Name]);");
+                sw.WriteLine("                    }");
+                sw.WriteLine("");
+                sw.WriteLine("                if(errors.Count > 0)");
+                sw.WriteLine("                    return String.Join(\" - \", errors.ToArray());");
+                sw.WriteLine("");
+                sw.WriteLine("                return \"\";");
+                sw.WriteLine("            }");
+                sw.WriteLine("        }");
+                sw.WriteLine("");
+                foreach (var (fieldName, field) in fields[entityName])
+                {
+                    if (!field.notNull) 
+                        continue;
+
+                    sw.WriteLine("                if (columnName == \""+ fieldName+ "\")");
+                    sw.WriteLine("                {");
+                    sw.WriteLine("                    if (string.IsNullOrEmpty("+ fieldName+ "))");
+                    sw.WriteLine("                        return \"" + fieldName + " no puede estar vacìo\"");
+                    sw.WriteLine("                }");
+                }
+                sw.WriteLine("");
+                sw.WriteLine("        public string this[string columnName]");
+                sw.WriteLine("        {");
+                sw.WriteLine("            get");
+                sw.WriteLine("            {");
+                sw.WriteLine("                if (!Validate)");
+                sw.WriteLine("                    return \"\";");
+                sw.WriteLine("");
+                sw.WriteLine("                // If there's no error, empty string gets returned");
+                sw.WriteLine("                return \"\";");
+                sw.WriteLine("            }");
+                sw.WriteLine("        };");
                 sw.WriteLine("    }");
                 sw.WriteLine("}");
+
             }
         }
 
