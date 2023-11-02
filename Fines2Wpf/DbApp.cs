@@ -29,6 +29,9 @@ namespace Fines2Wpf
 
                 case "persona":
                     return new Persona(this, entityName, fieldId);
+
+                case "plan":
+                    return new Plan(this, entityName, fieldId);
             }
 
             return new EntityValues(this, entityName, fieldId);

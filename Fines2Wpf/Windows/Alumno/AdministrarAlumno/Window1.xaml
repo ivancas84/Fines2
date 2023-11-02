@@ -20,6 +20,8 @@
 
         <Grid>
             <Grid.RowDefinitions>
+                
+                <RowDefinition Height = "Auto" />
                 <RowDefinition Height = "Auto" />
                 <RowDefinition Height = "Auto" />
                 <RowDefinition Height = "*" />
@@ -39,49 +41,27 @@
                         <RowDefinition Height = "Auto" />
                         <RowDefinition Height = "Auto" />
                         <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width = "*" />
                     </Grid.ColumnDefinitions>
-
                 
-                    <TextBox 
-                        Grid.Row = "0"
-                        Name="searchTextBox"
-                        TextChanged="SearchTextBox_TextChanged"
-                        Margin="2" />
-
-                    <Canvas
- 	                    Grid.Row = "1"
-	                    Grid.Column="1"
-	                    Panel.ZIndex="2" >
-
-                        <ListBox 
-		                    Name="personaListBox"    
-		                    Margin="2"
-		                    SelectionChanged="PersonaListBox_SelectionChanged">
-                            <ListBox.Background>
-                                <SolidColorBrush Color="White" />
-                            </ListBox.Background>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel>
-                                        <TextBlock                       
-Text="{Binding Label}">
-                                            <TextBlock.Background>
-                                                <SolidColorBrush Color="White" />
-                                            </TextBlock.Background>
-                                        </TextBlock>
-                                    </StackPanel>
-
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </Canvas>
+                    <ComboBox Name="personaComboBox"
+                              IsTextSearchEnabled="False"
+                              IsEditable="True"
+                              StaysOpenOnEdit="True"
+                              TextBoxBase.TextChanged="PersonaComboBox_TextChanged"
+                              GotFocus="PersonaComboBox_GotFocus"
+                              TextBoxBase.SelectionChanged="PersonaComboBox_SelectionChanged">
+                        
+                    </ComboBox>
                 </Grid>
                 
             </GroupBox>
+            
             <GroupBox
                 Grid.Row="1"
                 Name="personaGroupBox"
@@ -95,8 +75,7 @@ Text="{Binding Label}">
                         <RowDefinition Height = "Auto" />
                         <RowDefinition Height = "Auto" />
                         <RowDefinition Height = "Auto" />
-
-
+                        <RowDefinition Height = "Auto" />
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
@@ -109,38 +88,38 @@ Text="{Binding Label}">
                     </Grid.ColumnDefinitions>
 
 
-                    <Label Margin = "2">_Nombres:</Label>
+                    <Label Margin = "5">_Nombres:</Label>
                     <TextBox Grid.Column="1"
-                             Text="{Binding nombres}"
-                             Margin = "2"></TextBox>
+                             Text="{Binding nombres, ValidatesOnDataErrors=True}"
+                             Margin = "5"></TextBox>
 
                     <Label Grid.Column="2"
-                           Margin = "2">_Apellidos:</Label>
+                           Margin = "5">_Apellidos:</Label>
                     <TextBox Grid.Column="3"
                              Text="{Binding apellidos}"
-                             Margin = "2"></TextBox>
+                             Margin = "5"></TextBox>
 
                     <Label Grid.Column="4"
-                           Margin = "2">_DNI:</Label>
+                           Margin = "5">_DNI:</Label>
                     <TextBox Grid.Column="5"
-                             Text="{Binding numero_documento}"
-                             Margin = "2"></TextBox>
+                             Text="{Binding numero_documento, ValidatesOnDataErrors=True}"
+                             Margin = "5"></TextBox>
 
 
                     <Label Grid.Row="1" 
-                           Margin = "2">_CUIL:</Label>
+                           Margin = "5">_CUIL:</Label>
                     <TextBox Grid.Row="1"
                              Grid.Column="1"
                              Text="{Binding cuil}"
-                             Margin = "2"></TextBox>
+                             Margin = "5"></TextBox>
 
                     <Label Grid.Row="1"
                            Grid.Column="2"
-                           Margin = "2">_Genero:</Label>
+                           Margin = "5">_Genero:</Label>
                     <ComboBox Grid.Row="1"
                              Grid.Column="3"
                              Text="{Binding genero, Mode = TwoWay}"
-                             Margin = "2">
+                             Margin = "5">
                         <ComboBoxItem Content="Masculino"  />
                         <ComboBoxItem Content="Femenino" />
                         <ComboBoxItem Content="Otro" />
@@ -150,38 +129,285 @@ Text="{Binding Label}">
                     
                     <Label Grid.Row="1"
                            Grid.Column="4"
-                           Margin = "2">_Fecha Nacimiento:</Label>
+                           Margin = "5">_Fecha Nacimiento:</Label>
                     <DatePicker Grid.Row="1"
                              Grid.Column="5"
                              SelectedDate="{Binding fecha_nacimiento}"
-                             Margin = "2"></DatePicker>
+                             Margin = "5"></DatePicker>
 
 
 
                     <Label Grid.Row="2" 
-                           Margin = "2">_Telefono:</Label>
+                           Margin = "5">_Telefono:</Label>
                     <TextBox Grid.Row="2"
                              Grid.Column="1"
                              Text="{Binding telefono}"
-                             Margin = "2"></TextBox>
+                             Margin = "5"></TextBox>
 
                     <Label Grid.Row="2"
                            Grid.Column="2"
-                           Margin = "2">_Email:</Label>
+                           Margin = "5">_Email:</Label>
                     <TextBox Grid.Row="2"
                              Grid.Column="3"
                              Text="{Binding email}"
-                             Margin = "2"></TextBox>
+                             Margin = "5"></TextBox>
 
                     
                     
                     <Label Grid.Row="2"
                            Grid.Column="4"
-                           Margin = "2">_Lugar Nacimiento:</Label>
+                           Margin = "5">_Lugar Nacimiento:</Label>
                     <TextBox Grid.Row="2"
                              Grid.Column="5"
                              Text="{Binding lugar_nacimiento}"
-                             Margin = "2"></TextBox>
+                             Margin = "5"></TextBox>
+
+
+                    <StackPanel Grid.Row = "3" Grid.ColumnSpan = "6">
+                      
+                        <Button 
+                            Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                            Content = "_Guardar..." 
+                            Click="GuardarPersonaButton_Click"
+                            Margin = "20"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+            </GroupBox>
+
+            <GroupBox
+                Grid.Row="2"
+                Name="alumnoGroupBox"
+                Header="Datos de Alumno"
+                Margin="16"
+	            materialDesign:ElevationAssist.Elevation="Dp3">
+
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width = "Auto" />
+                        <ColumnDefinition Width = "*" />
+                        <ColumnDefinition Width = "Auto" />
+                        <ColumnDefinition Width = "*" />
+                        <ColumnDefinition Width = "Auto" />
+                        <ColumnDefinition Width = "*" />
+                    </Grid.ColumnDefinitions>
+
+
+
+                    <Label Grid.Row="0"
+                           Margin = "5">_Estado Ingreso:</Label>
+                    <ComboBox Grid.Row="0"
+                             Grid.Column="1"
+                             Text="{Binding estado_inscripcion}"
+                             Margin = "5"
+                             TextBlock.TextAlignment="Center"
+                             >
+                        <ComboBoxItem>Correcto</ComboBoxItem>
+                        <ComboBoxItem>Indeterminado</ComboBoxItem>
+                        <ComboBoxItem>Caso particular</ComboBoxItem>
+                        <ComboBoxItem>Titulado</ComboBoxItem>
+                    </ComboBox>
+
+                    
+
+                    <Label Grid.Row="0"
+                           Grid.Column="2"
+                           Margin = "5">_Año/Semestre Ingreso:</Label>
+                    <Grid Grid.Row="0"
+                          Grid.Column="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height = "Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width = "*" />
+                            <ColumnDefinition Width = "Auto" />
+                            <ColumnDefinition Width = "*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox
+                             Text="{Binding anio_ingreso}"
+                             Margin = "5"
+                             TextBlock.TextAlignment="Center">
+                            <ComboBoxItem>1</ComboBoxItem>
+                            <ComboBoxItem>2</ComboBoxItem>
+                            <ComboBoxItem>3</ComboBoxItem>
+                        </ComboBox>
+                        
+                        <TextBlock Grid.Column="1">-</TextBlock>
+                        <ComboBox Grid.Column="2"
+                             Text="{Binding semestre_ingreso}"
+                             TextBlock.TextAlignment="Center"
+                             Margin = "5">
+                            <ComboBoxItem>1</ComboBoxItem>
+                            <ComboBoxItem>2</ComboBoxItem>
+                        </ComboBox>
+                    </Grid>
+
+                    <Label Grid.Row="0"
+                           Grid.Column="4"
+                           Margin = "5">_Plan Ingreso:</Label>
+                    <ComboBox Grid.Row="0"
+                             Grid.Column="5"
+                             TextBlock.TextAlignment="Center"
+                             Name="planComboBox"
+                             SelectedValue="{Binding plan}"
+                             Margin = "5"></ComboBox>
+                    
+                    
+                    <Label Grid.Row="1"
+                           Margin = "5">_Se inscribió con:</Label>
+                    <ComboBox Grid.Row="1"
+                              TextBlock.TextAlignment="Center"
+                              Name="documentacionInscripcionComboBox"
+                             Grid.Column="1"
+                             SelectedValue="{Binding documentacion_inscripcion, Mode = TwoWay}"
+                             Margin = "5"></ComboBox>
+
+                    <Label Grid.Row="1"
+                           Grid.Column="2"
+                           Margin = "5">_Año/Semestre:</Label>
+                    <Grid Grid.Row="1"
+                          Grid.Column="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height = "Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width = "*" />
+                            <ColumnDefinition Width = "Auto" />
+                            <ColumnDefinition Width = "*" />
+                            <ColumnDefinition Width = "*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox
+                             Text="{Binding anio_inscripcion}"
+                            TextBlock.TextAlignment="Center"
+                             Margin = "5">
+                            <ComboBoxItem>1</ComboBoxItem>
+                            <ComboBoxItem>2</ComboBoxItem>
+                            <ComboBoxItem>3</ComboBoxItem>
+                            <ComboBoxItem>4</ComboBoxItem>
+                            <ComboBoxItem>5</ComboBoxItem>
+                            <ComboBoxItem>6</ComboBoxItem>
+                            <ComboBoxItem>7</ComboBoxItem>
+                            <ComboBoxItem>8</ComboBoxItem>
+                            <ComboBoxItem>9</ComboBoxItem>
+                        </ComboBox>
+                        <TextBlock Grid.Column="1">-</TextBlock>
+                        <ComboBox Grid.Column="2"
+                             Text="{Binding semestre_inscripcion}"
+                             TextBlock.TextAlignment="Center"
+                             Margin = "5">
+                            <ComboBoxItem>1</ComboBoxItem>
+                            <ComboBoxItem>2</ComboBoxItem>
+                        </ComboBox>
+                        <ComboBox Grid.Column="3"
+                                  Name="anioInscripcionCompletoComboBox"
+                                  TextBlock.TextAlignment="Center"
+                                  SelectedValue="{Binding anio_inscripcion_completo}"
+                                  Margin = "5">
+                            
+                        </ComboBox>
+                    </Grid>
+
+                    <Label Grid.Row="1"
+                           Grid.Column="4"
+                           Margin = "5">_Resolución:</Label>
+                    <ComboBox Grid.Row="1"
+                              Grid.Column="5"
+                              Name="resolucionInscripcionComboBox"
+                              TextBlock.TextAlignment="Center"
+                              SelectedValue="{Binding resolucion_inscripcion}"
+                              Margin = "5"></ComboBox>
+
+
+
+                    
+                    
+                    <Label Grid.Row="2"
+                           Grid.Column="0"
+                           Margin = "5">_Establecimiento:</Label>
+                    <TextBox Grid.Row="2"
+                             Grid.Column="1"
+                             Text="{Binding establecimiento_inscripcion}"
+                             Margin = "5"
+                             TextAlignment="Center"></TextBox>
+
+                    <Label Grid.Row="2"
+                           Grid.Column="2"
+                           Margin = "5">_Libro:</Label>
+                    <TextBox Grid.Row="2"
+                             Grid.Column="3"
+                             Text="{Binding libro}"
+                             TextAlignment="Center"
+                             Margin = "5"></TextBox>
+
+                    <Label Grid.Row="2"
+                           Grid.Column="4"
+                           Margin = "5">_Folio:</Label>
+                    <TextBox Grid.Row="2"
+                             Grid.Column="5"
+                             TextAlignment="Center"
+                             Text="{Binding folio}"
+                             Margin = "5"></TextBox>
+
+
+
+
+                    <Label Grid.Row="3"
+                           Grid.Column="0"
+                           Margin = "5">_Observaciones:</Label>
+                    <TextBox Grid.Row="3"
+                             Grid.Column="1"
+                             Text="{Binding observaciones}"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Visible"
+                             Margin = "5"></TextBox>
+
+                    <Label Grid.Row="3"
+                           Grid.Column="2"
+                           Margin = "5">_Adeuda legajo:</Label>
+                    <TextBox Grid.Row="3"
+                             Grid.Column="3"
+                             Text="{Binding adeuda_legajo}"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Visible"
+                             IsReadOnly="True"
+                             Margin = "5"></TextBox>
+
+                    <Label Grid.Row="3"
+                           Grid.Column="4"
+                           Margin = "5">_Adeuda Deudores:</Label>
+                    <TextBox Grid.Row="3"
+                             Grid.Column="5"
+                             Text="{Binding adeuda_deudores}"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Visible"
+                             IsReadOnly="True"
+                             Margin = "5"></TextBox>
+                    <StackPanel Grid.Row = "4" Grid.ColumnSpan = "6">
+                        <Button 
+                            Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                            Content = "_Guardar..." 
+                            Click="GuardarAlumnoButton_Click" 
+                            Margin = "20"/>
+
+                    </StackPanel>
 
                 </Grid>
 
@@ -189,7 +415,7 @@ Text="{Binding Label}">
 
 
             <GroupBox Header="Asignaciones"
-                      Grid.Row = "2" 
+                      Grid.Row = "3" 
                       Margin="16"
 	                  materialDesign:ElevationAssist.Elevation="Dp3">
                 <DataGrid Name="organismoGrid" IsReadOnly="True" AutoGenerateColumns="False">

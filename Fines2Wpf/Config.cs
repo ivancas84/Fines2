@@ -16,5 +16,7 @@ namespace Fines2Wpf
         public string? emailDocenteBcc { get; set; }
         public string? emailDocenteUser { get; set; }
 
+        public new string id = "id";
+
     }
 }

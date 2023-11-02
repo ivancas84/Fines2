@@ -1,13 +1,19 @@
+using Fines2Wpf.Windows.EnviarEmailToma;
 using SqlOrganize;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using System.Xml.Linq;
 
 namespace Fines2Wpf.Model
 {
-    public class Data_persona : INotifyPropertyChanged
+    public class Data_persona : INotifyPropertyChanged, IDataErrorInfo
     {
 
-        public Data_persona ()
+        public Data_persona()
         {
             Initialize();
         }
@@ -19,7 +25,7 @@ namespace Fines2Wpf.Model
 
         protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
         {
-            switch(mode)
+            switch (mode)
             {
                 case DataInitMode.Default:
                 case DataInitMode.DefaultMain:
@@ -28,7 +34,7 @@ namespace Fines2Wpf.Model
                     _telefono_verificado = (bool?)ContainerApp.db.Values("persona").Default("telefono_verificado").Get("telefono_verificado");
                     _email_verificado = (bool?)ContainerApp.db.Values("persona").Default("email_verificado").Get("email_verificado");
                     _info_verificada = (bool?)ContainerApp.db.Values("persona").Default("info_verificada").Get("info_verificada");
-                break;
+                    break;
             }
         }
 
@@ -142,10 +148,77 @@ namespace Fines2Wpf.Model
             get { return _descripcion_domicilio; }
             set { _descripcion_domicilio = value; NotifyPropertyChanged(); }
         }
+
+        public bool Validate = false;
+
+        public string Error
+        {
+            get
+            {
+                PropertyInfo[] properties = this.GetType().GetProperties();
+
+                List<string> errors = new ();
+                foreach (PropertyInfo property in properties)
+                    if (this[property.Name] != "")
+                    {
+                        NotifyPropertyChanged(property.Name);
+                        errors.Add(this[property.Name]);
+                    }
+
+                if(errors.Count > 0)
+                    return String.Join(" - ", errors.ToArray());
+
+                return "";
+            }
+        }
+
+        public string this[string columnName]
+        {
+
+            get
+            {
+                if (!Validate)
+                    return "";
+
+                if (columnName == "numero_documento")
+                {
+
+                    
+
+                    // Validate property and return a string if there is an error
+
+                    if (string.IsNullOrEmpty(numero_documento))
+                        return "El DNI no puede estar vacìo";
+
+                }
+
+                if (columnName == "nombres")
+                {
+
+                    // Validate property and return a string if there is an error
+
+                    if (string.IsNullOrEmpty(nombres))
+                        return "Nombres no puede estar vacìo";
+
+                }
+
+                // If there's no error, empty string gets returned
+                return "";
+
+            }
+
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
+
         protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+
+        
+
+
     }
 }
