@@ -1,11 +1,16 @@
 using SqlOrganize;
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Reflection;
+using Utils;
 
 namespace Fines2Wpf.Model
 {
-    public class Data_sede : INotifyPropertyChanged
+    public class Data_sede : INotifyPropertyChanged, IDataErrorInfo
     {
+
+        public bool Validate = false;
 
         public Data_sede ()
         {
@@ -107,6 +112,91 @@ namespace Fines2Wpf.Model
         protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public string Error
+        {
+            get
+            {
+                PropertyInfo[] properties = this.GetType().GetProperties();
+
+                List<string> errors = new ();
+                foreach (PropertyInfo property in properties)
+                    if (this[property.Name] != "")
+                    {
+                        NotifyPropertyChanged(property.Name);
+                        errors.Add(this[property.Name]);
+                    }
+
+                if(errors.Count > 0)
+                    return String.Join(" - ", errors.ToArray());
+
+                return "";
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if (!Validate)
+                    return "";
+
+                // If there's no error, empty string gets returned
+                return ValidateField(columnName);
+            }
+        }
+
+        protected virtual string ValidateField(string columnName)
+        {
+
+            switch (columnName)
+            {
+
+                case "id":
+                    if (_id == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "numero":
+                    if (_numero == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "nombre":
+                    if (_nombre == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "observaciones":
+                    return "";
+
+                case "alta":
+                    if (_alta == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "baja":
+                    return "";
+
+                case "domicilio":
+                    return "";
+
+                case "centro_educativo":
+                    return "";
+
+                case "fecha_traspaso":
+                    return "";
+
+                case "organizacion":
+                    return "";
+
+                case "pfid":
+                    return "";
+
+                case "pfid_organizacion":
+                    return "";
+
+            }
         }
     }
 }

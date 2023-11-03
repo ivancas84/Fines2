@@ -14,6 +14,7 @@ var c = new Config()
     schemaClassPath = ConfigurationManager.AppSettings.Get("schemaClassPath"),
     schemaClassNamespace = ConfigurationManager.AppSettings.Get("schemaClassNamespace"),
     idSource = "field_name",
+    id = "id",
 };
 
 BuildModelMy t = new(c);

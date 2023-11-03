@@ -1,11 +1,16 @@
 using SqlOrganize;
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Reflection;
+using Utils;
 
 namespace Fines2Wpf.Model
 {
-    public class Data_asignacion_planilla_docente : INotifyPropertyChanged
+    public class Data_asignacion_planilla_docente : INotifyPropertyChanged, IDataErrorInfo
     {
+
+        public bool Validate = false;
 
         public Data_asignacion_planilla_docente ()
         {
@@ -72,6 +77,75 @@ namespace Fines2Wpf.Model
         protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public string Error
+        {
+            get
+            {
+                PropertyInfo[] properties = this.GetType().GetProperties();
+
+                List<string> errors = new ();
+                foreach (PropertyInfo property in properties)
+                    if (this[property.Name] != "")
+                    {
+                        NotifyPropertyChanged(property.Name);
+                        errors.Add(this[property.Name]);
+                    }
+
+                if(errors.Count > 0)
+                    return String.Join(" - ", errors.ToArray());
+
+                return "";
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if (!Validate)
+                    return "";
+
+                // If there's no error, empty string gets returned
+                return ValidateField(columnName);
+            }
+        }
+
+        protected virtual string ValidateField(string columnName)
+        {
+
+            switch (columnName)
+            {
+
+                case "id":
+                    if (_id == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "planilla_docente":
+                    if (_planilla_docente == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "toma":
+                    if (_toma == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "insertado":
+                    if (_insertado == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "comentario":
+                    return "";
+
+                case "reclamo":
+                    if (_reclamo == null)
+                        return "Debe completar valor.";
+                    return "";
+
+            }
         }
     }
 }

@@ -1,11 +1,16 @@
 using SqlOrganize;
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Reflection;
+using Utils;
 
 namespace Fines2Wpf.Model
 {
-    public class Data_toma : INotifyPropertyChanged
+    public class Data_toma : INotifyPropertyChanged, IDataErrorInfo
     {
+
+        public bool Validate = false;
 
         public Data_toma ()
         {
@@ -142,6 +147,116 @@ namespace Fines2Wpf.Model
         protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public string Error
+        {
+            get
+            {
+                PropertyInfo[] properties = this.GetType().GetProperties();
+
+                List<string> errors = new ();
+                foreach (PropertyInfo property in properties)
+                    if (this[property.Name] != "")
+                    {
+                        NotifyPropertyChanged(property.Name);
+                        errors.Add(this[property.Name]);
+                    }
+
+                if(errors.Count > 0)
+                    return String.Join(" - ", errors.ToArray());
+
+                return "";
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if (!Validate)
+                    return "";
+
+                // If there's no error, empty string gets returned
+                return ValidateField(columnName);
+            }
+        }
+
+        protected virtual string ValidateField(string columnName)
+        {
+
+            switch (columnName)
+            {
+
+                case "id":
+                    if (_id == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "fecha_toma":
+                    return "";
+
+                case "estado":
+                    return "";
+
+                case "observaciones":
+                    return "";
+
+                case "comentario":
+                    return "";
+
+                case "tipo_movimiento":
+                    if (_tipo_movimiento == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "estado_contralor":
+                    return "";
+
+                case "alta":
+                    if (_alta == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "curso":
+                    if (_curso == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "docente":
+                    return "";
+
+                case "reemplazo":
+                    return "";
+
+                case "planilla_docente":
+                    return "";
+
+                case "calificacion":
+                    if (_calificacion == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "temas_tratados":
+                    if (_temas_tratados == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "asistencia":
+                    if (_asistencia == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "sin_planillas":
+                    if (_sin_planillas == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "confirmada":
+                    if (_confirmada == null)
+                        return "Debe completar valor.";
+                    return "";
+
+            }
         }
     }
 }

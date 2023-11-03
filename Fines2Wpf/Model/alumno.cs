@@ -1,11 +1,16 @@
 using SqlOrganize;
 using System;
 using System.ComponentModel;
+using System.Collections.Generic;
+using System.Reflection;
+using Utils;
 
 namespace Fines2Wpf.Model
 {
-    public class Data_alumno : INotifyPropertyChanged
+    public class Data_alumno : INotifyPropertyChanged, IDataErrorInfo
     {
+
+        public bool Validate = false;
 
         public Data_alumno ()
         {
@@ -205,6 +210,156 @@ namespace Fines2Wpf.Model
         protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public string Error
+        {
+            get
+            {
+                PropertyInfo[] properties = this.GetType().GetProperties();
+
+                List<string> errors = new ();
+                foreach (PropertyInfo property in properties)
+                    if (this[property.Name] != "")
+                    {
+                        NotifyPropertyChanged(property.Name);
+                        errors.Add(this[property.Name]);
+                    }
+
+                if(errors.Count > 0)
+                    return String.Join(" - ", errors.ToArray());
+
+                return "";
+            }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if (!Validate)
+                    return "";
+
+                // If there's no error, empty string gets returned
+                return ValidateField(columnName);
+            }
+        }
+
+        protected virtual string ValidateField(string columnName)
+        {
+
+            switch (columnName)
+            {
+
+                case "id":
+                    if (_id == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "anio_ingreso":
+                    return "";
+
+                case "observaciones":
+                    return "";
+
+                case "persona":
+                    if (_persona == null)
+                        return "Debe completar valor.";
+                    if (!_persona.IsNullOrEmptyOrDbNull()) {
+                        var row = ContainerApp.db.Query("alumno").Where("$persona = @0").Parameters(_persona).DictCache();
+                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row["id"].ToString()))
+                            return "Valor existente.";
+                    }
+                    return "";
+
+                case "estado_inscripcion":
+                    return "";
+
+                case "fecha_titulacion":
+                    return "";
+
+                case "plan":
+                    return "";
+
+                case "resolucion_inscripcion":
+                    return "";
+
+                case "anio_inscripcion":
+                    return "";
+
+                case "semestre_inscripcion":
+                    return "";
+
+                case "semestre_ingreso":
+                    return "";
+
+                case "adeuda_legajo":
+                    return "";
+
+                case "adeuda_deudores":
+                    return "";
+
+                case "documentacion_inscripcion":
+                    return "";
+
+                case "anio_inscripcion_completo":
+                    return "";
+
+                case "establecimiento_inscripcion":
+                    return "";
+
+                case "libro_folio":
+                    if (!_libro_folio.IsNullOrEmptyOrDbNull()) {
+                        var row = ContainerApp.db.Query("alumno").Where("$libro_folio = @0").Parameters(_libro_folio).DictCache();
+                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row["id"].ToString()))
+                            return "Valor existente.";
+                    }
+                    return "";
+
+                case "libro":
+                    return "";
+
+                case "folio":
+                    return "";
+
+                case "comentarios":
+                    return "";
+
+                case "tiene_dni":
+                    if (_tiene_dni == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "tiene_constancia":
+                    if (_tiene_constancia == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "tiene_certificado":
+                    if (_tiene_certificado == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "previas_completas":
+                    if (_previas_completas == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "tiene_partida":
+                    if (_tiene_partida == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "creado":
+                    if (_creado == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "confirmado_direccion":
+                    if (_confirmado_direccion == null)
+                        return "Debe completar valor.";
+                    return "";
+
+            }
         }
     }
 }

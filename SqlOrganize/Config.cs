@@ -32,11 +32,10 @@
         /// Nombre del identificador único de las tablas       
         /// </summary>
         /// <remarks>
-        /// Todas las tablas deben tener un campos id con el mismo nombre de tipo string<br/>
-        /// Si no existe, debe indicarse "_Id", _Id es un identificador único calculado
+        /// Todas las tablas deben tener un identificador, que puede ser real o ficticio<br/>
+        /// El identificador ficticio se define como "_Id"
         /// </remarks>
         public string id = "_Id";
-
     }
 
 }

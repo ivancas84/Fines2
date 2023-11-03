@@ -1,15 +1,18 @@
 using SqlOrganize;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.Collections.Generic;
 using System.Reflection;
+using Utils;
 
 namespace Fines2Wpf.Model
 {
     public class Data_persona : INotifyPropertyChanged, IDataErrorInfo
     {
 
-        public Data_persona()
+        public bool Validate = false;
+
+        public Data_persona ()
         {
             Initialize();
         }
@@ -21,7 +24,7 @@ namespace Fines2Wpf.Model
 
         protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
         {
-            switch (mode)
+            switch(mode)
             {
                 case DataInitMode.Default:
                 case DataInitMode.DefaultMain:
@@ -30,7 +33,7 @@ namespace Fines2Wpf.Model
                     _telefono_verificado = (bool?)ContainerApp.db.Values("persona").Default("telefono_verificado").Get("telefono_verificado");
                     _email_verificado = (bool?)ContainerApp.db.Values("persona").Default("email_verificado").Get("email_verificado");
                     _info_verificada = (bool?)ContainerApp.db.Values("persona").Default("info_verificada").Get("info_verificada");
-                    break;
+                break;
             }
         }
 
@@ -144,9 +147,11 @@ namespace Fines2Wpf.Model
             get { return _descripcion_domicilio; }
             set { _descripcion_domicilio = value; NotifyPropertyChanged(); }
         }
-
-        public bool Validate = false;
-
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         public string Error
         {
             get
@@ -170,51 +175,106 @@ namespace Fines2Wpf.Model
 
         public string this[string columnName]
         {
-
             get
             {
                 if (!Validate)
                     return "";
 
-                if (columnName == "numero_documento")
-                {
-
-                    
-
-                    // Validate property and return a string if there is an error
-
-                    if (string.IsNullOrEmpty(numero_documento))
-                        return "El DNI no puede estar vacìo";
-
-                }
-
-                if (columnName == "nombres")
-                {
-
-                    // Validate property and return a string if there is an error
-
-                    if (string.IsNullOrEmpty(nombres))
-                        return "Nombres no puede estar vacìo";
-
-                }
-
                 // If there's no error, empty string gets returned
-                return "";
+                return ValidateField(columnName);
+            }
+        }
+
+        protected virtual string ValidateField(string columnName)
+        {
+
+            switch (columnName)
+            {
+
+                case "id":
+                    if (_id == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "nombres":
+                    if (_nombres == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "apellidos":
+                    return "";
+
+                case "fecha_nacimiento":
+                    return "";
+
+                case "numero_documento":
+                    if (_numero_documento == null)
+                        return "Debe completar valor.";
+                    if (!_numero_documento.IsNullOrEmptyOrDbNull()) {
+                        var row = ContainerApp.db.Query("persona").Where("$numero_documento = @0").Parameters(_numero_documento).DictCache();
+                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                            return "Valor existente.";
+                    }
+                    return "";
+
+                case "cuil":
+                    if (!_cuil.IsNullOrEmptyOrDbNull()) {
+                        var row = ContainerApp.db.Query("persona").Where("$cuil = @0").Parameters(_cuil).DictCache();
+                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                            return "Valor existente.";
+                    }
+                    return "";
+
+                case "genero":
+                    return "";
+
+                case "apodo":
+                    return "";
+
+                case "telefono":
+                    return "";
+
+                case "email":
+                    return "";
+
+                case "email_abc":
+                    if (!_email_abc.IsNullOrEmptyOrDbNull()) {
+                        var row = ContainerApp.db.Query("persona").Where("$email_abc = @0").Parameters(_email_abc).DictCache();
+                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row["id"].ToString()))
+                            return "Valor existente.";
+                    }
+                    return "";
+
+                case "alta":
+                    if (_alta == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "domicilio":
+                    return "";
+
+                case "lugar_nacimiento":
+                    return "";
+
+                case "telefono_verificado":
+                    if (_telefono_verificado == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "email_verificado":
+                    if (_email_verificado == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "info_verificada":
+                    if (_info_verificada == null)
+                        return "Debe completar valor.";
+                    return "";
+
+                case "descripcion_domicilio":
+                    return "";
 
             }
-
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-
-        
-
-
     }
 }

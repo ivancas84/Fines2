@@ -3,10 +3,12 @@ using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using Utils;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ModelOrganize
 {
@@ -393,7 +395,7 @@ namespace ModelOrganize
             return aliasAux;
         }
 
-        protected abstract List<String> GetTableNames();
+        protected abstract List<string> GetTableNames();
 
         protected abstract List<Column> GetColumns(string tableName);
 
@@ -496,6 +498,9 @@ namespace ModelOrganize
                 sw.WriteLine("using SqlOrganize;");
                 sw.WriteLine("using System;");
                 sw.WriteLine("using System.ComponentModel;");
+                sw.WriteLine("using System.Collections.Generic;");
+                sw.WriteLine("using System.Reflection;");
+                sw.WriteLine("using Utils;");
                 sw.WriteLine("");
                 sw.WriteLine("namespace " + Config.dataClassesNamespace);
                 sw.WriteLine("{");
@@ -539,7 +544,18 @@ namespace ModelOrganize
                 sw.WriteLine("        public string? Label { get; set; }");
                 sw.WriteLine("");
 
-                foreach (var (fieldName, field) in fields[entityName])
+                Dictionary<string, Field> _fields = new(fields[entityName]);
+                if(!_fields.ContainsKey(Config.id)) {
+                    Field _Id = new Field()
+                    {
+                        entityName = entityName,
+                        name = Config.id,
+                        type = "string"
+                    };
+                    _fields[Config.id] = _Id;
+                }
+
+                foreach (var (fieldName, field) in _fields)
                 {
                     sw.WriteLine("        protected " + field.type + "? _" + fieldName + " = null;");
                     sw.WriteLine("        public " + field.type + "? " + fieldName);
@@ -576,18 +592,6 @@ namespace ModelOrganize
                 sw.WriteLine("            }");
                 sw.WriteLine("        }");
                 sw.WriteLine("");
-                foreach (var (fieldName, field) in fields[entityName])
-                {
-                    if (!field.notNull) 
-                        continue;
-
-                    sw.WriteLine("                if (columnName == \""+ fieldName+ "\")");
-                    sw.WriteLine("                {");
-                    sw.WriteLine("                    if (string.IsNullOrEmpty("+ fieldName+ "))");
-                    sw.WriteLine("                        return \"" + fieldName + " no puede estar vacìo\"");
-                    sw.WriteLine("                }");
-                }
-                sw.WriteLine("");
                 sw.WriteLine("        public string this[string columnName]");
                 sw.WriteLine("        {");
                 sw.WriteLine("            get");
@@ -596,9 +600,40 @@ namespace ModelOrganize
                 sw.WriteLine("                    return \"\";");
                 sw.WriteLine("");
                 sw.WriteLine("                // If there's no error, empty string gets returned");
-                sw.WriteLine("                return \"\";");
+                sw.WriteLine("                return ValidateField(columnName);");
                 sw.WriteLine("            }");
-                sw.WriteLine("        };");
+                sw.WriteLine("        }");
+                sw.WriteLine("");
+                sw.WriteLine("        protected virtual string ValidateField(string columnName)");
+                sw.WriteLine("        {");
+                sw.WriteLine("");
+                sw.WriteLine("            switch (columnName)");
+                sw.WriteLine("            {");
+                sw.WriteLine("");
+                foreach (var (fieldName, field) in fields[entityName])
+                {
+                    sw.WriteLine("                case \"" + fieldName + "\":");
+
+                    if (field.notNull)
+                    {
+                        sw.WriteLine("                    if (_" + fieldName +" == null)");
+                        sw.WriteLine("                        return \"Debe completar valor.\";");
+
+                    }
+                    if (entity.unique.Contains(field.name))
+                    {
+                        sw.WriteLine("                    if (!_" + fieldName + ".IsNullOrEmptyOrDbNull()) {");
+                        sw.WriteLine("                        var row = ContainerApp.db.Query(\"" + entityName + "\").Where(\"$" + fieldName + " = @0\").Parameters(_" + fieldName + ").DictCache();");
+                        sw.WriteLine("                        if (!row.IsNullOrEmpty() && !_" + Config.id + ".ToString().Equals(row![\"" + Config.id + "\"]!.ToString()))");
+                        sw.WriteLine("                            return \"Valor existente.\";");
+                        sw.WriteLine("                    }");
+                    }
+                    sw.WriteLine("                    return \"\";");
+                    sw.WriteLine("");
+
+                }
+                sw.WriteLine("            }");
+                sw.WriteLine("        }");
                 sw.WriteLine("    }");
                 sw.WriteLine("}");
 
