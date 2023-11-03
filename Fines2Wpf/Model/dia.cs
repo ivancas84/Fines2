@@ -107,7 +107,7 @@ namespace Fines2Wpf.Model
                         return "Debe completar valor.";
                     if (!_numero.IsNullOrEmptyOrDbNull()) {
                         var row = ContainerApp.db.Query("dia").Where("$numero = @0").Parameters(_numero).DictCache();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row["id"].ToString()))
+                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
@@ -117,12 +117,14 @@ namespace Fines2Wpf.Model
                         return "Debe completar valor.";
                     if (!_dia.IsNullOrEmptyOrDbNull()) {
                         var row = ContainerApp.db.Query("dia").Where("$dia = @0").Parameters(_dia).DictCache();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row["id"].ToString()))
+                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
 
             }
+
+            return "";
         }
     }
 }

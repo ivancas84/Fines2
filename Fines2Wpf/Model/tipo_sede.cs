@@ -101,12 +101,14 @@ namespace Fines2Wpf.Model
                         return "Debe completar valor.";
                     if (!_descripcion.IsNullOrEmptyOrDbNull()) {
                         var row = ContainerApp.db.Query("tipo_sede").Where("$descripcion = @0").Parameters(_descripcion).DictCache();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row["id"].ToString()))
+                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
 
             }
+
+            return "";
         }
     }
 }

@@ -266,7 +266,7 @@ namespace Fines2Wpf.Model
                         return "Debe completar valor.";
                     if (!_persona.IsNullOrEmptyOrDbNull()) {
                         var row = ContainerApp.db.Query("alumno").Where("$persona = @0").Parameters(_persona).DictCache();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row["id"].ToString()))
+                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
@@ -310,7 +310,7 @@ namespace Fines2Wpf.Model
                 case "libro_folio":
                     if (!_libro_folio.IsNullOrEmptyOrDbNull()) {
                         var row = ContainerApp.db.Query("alumno").Where("$libro_folio = @0").Parameters(_libro_folio).DictCache();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row["id"].ToString()))
+                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
@@ -360,6 +360,8 @@ namespace Fines2Wpf.Model
                     return "";
 
             }
+
+            return "";
         }
     }
 }

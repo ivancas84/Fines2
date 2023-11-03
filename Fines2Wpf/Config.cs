@@ -16,6 +16,13 @@ namespace Fines2Wpf
         public string? emailDocenteBcc { get; set; }
         public string? emailDocenteUser { get; set; }
 
+        public string colorRed { get; set; } = "#fa91aa";
+        public string colorGreen { get; set; } = "#cae7c2";
+        public string colorBlue { get; set; } = "#7196bd";
+        public string colorYellow { get; set; } = "#faebd7";
+        public string colorGray { get; set; } = "#d7d7d7";
+
+
         public new string id = "id";
 
     }

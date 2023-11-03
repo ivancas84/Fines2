@@ -243,6 +243,8 @@ namespace Fines2Wpf.Model
                     return "";
 
             }
+
+            return "";
         }
     }
 }

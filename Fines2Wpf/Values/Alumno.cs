@@ -9,26 +9,26 @@ namespace Fines2Wpf.Values
         {
         }
 
-        public string ColorEstadoInscripcion(string estadoInscripcion)
+        public string ColorEstadoInscripcion(string? estadoInscripcion)
         {
             if (estadoInscripcion.IsNullOrEmptyOrDbNull())
-                return "fa91aa"; //red
+                return ContainerApp.config.colorRed; //red
 
-            if (estadoInscripcion.Equals("Correcto"))
-                return "#cae7c2";//green
+            if (estadoInscripcion!.Equals("Correcto"))
+                return ContainerApp.config.colorGreen;//green
 
             else if (estadoInscripcion.Equals("Indeterminado"))
-                return "#fa91aa"; //red
+                return ContainerApp.config.colorRed; //red
 
 
             else if (estadoInscripcion.Equals("Caso particular"))
-                return "#fa91aa";  //red
+                return ContainerApp.config.colorRed;  //red
 
 
             else if (estadoInscripcion.Equals("Titulado"))
-                return "#cae7c2"; //green
+                return ContainerApp.config.colorGreen; //green
 
-            return "d7d7d7"; //gray
+            return ContainerApp.config.colorGray; //gray
         }
 
 

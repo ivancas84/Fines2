@@ -88,38 +88,38 @@
                     </Grid.ColumnDefinitions>
 
 
-                    <Label Margin = "5">_Nombres:</Label>
+                    <Label Margin = "5,10">_Nombres:</Label>
                     <TextBox Grid.Column="1"
                              Text="{Binding nombres, ValidatesOnDataErrors=True}"
-                             Margin = "5"></TextBox>
+                             Margin = "5,10"></TextBox>
 
                     <Label Grid.Column="2"
-                           Margin = "5">_Apellidos:</Label>
+                           Margin = "5,10">_Apellidos:</Label>
                     <TextBox Grid.Column="3"
                              Text="{Binding apellidos}"
-                             Margin = "5"></TextBox>
+                             Margin = "5,10"></TextBox>
 
                     <Label Grid.Column="4"
-                           Margin = "5">_DNI:</Label>
+                           Margin = "5,10">_DNI:</Label>
                     <TextBox Grid.Column="5"
                              Text="{Binding numero_documento, ValidatesOnDataErrors=True}"
-                             Margin = "5"></TextBox>
+                             Margin = "5,10"></TextBox>
 
 
                     <Label Grid.Row="1" 
-                           Margin = "5">_CUIL:</Label>
+                           Margin = "5,10">_CUIL:</Label>
                     <TextBox Grid.Row="1"
                              Grid.Column="1"
-                             Text="{Binding cuil}"
-                             Margin = "5"></TextBox>
+                             Text="{Binding cuil, ValidatesOnDataErrors=True}"
+                             Margin = "5,10"></TextBox>
 
                     <Label Grid.Row="1"
                            Grid.Column="2"
-                           Margin = "5">_Genero:</Label>
+                           Margin = "5,10">_Genero:</Label>
                     <ComboBox Grid.Row="1"
                              Grid.Column="3"
-                             Text="{Binding genero, Mode = TwoWay}"
-                             Margin = "5">
+                             Text="{Binding genero, ValidatesOnDataErrors=True}"
+                             Margin = "5,10">
                         <ComboBoxItem Content="Masculino"  />
                         <ComboBoxItem Content="Femenino" />
                         <ComboBoxItem Content="Otro" />
@@ -129,38 +129,38 @@
                     
                     <Label Grid.Row="1"
                            Grid.Column="4"
-                           Margin = "5">_Fecha Nacimiento:</Label>
+                           Margin = "5,10">_Fecha Nacimiento:</Label>
                     <DatePicker Grid.Row="1"
                              Grid.Column="5"
-                             SelectedDate="{Binding fecha_nacimiento}"
-                             Margin = "5"></DatePicker>
+                             SelectedDate="{Binding fecha_nacimiento, ValidatesOnDataErrors=True}"
+                             Margin = "5,10"></DatePicker>
 
 
 
                     <Label Grid.Row="2" 
-                           Margin = "5">_Telefono:</Label>
+                           Margin = "5,10">_Telefono:</Label>
                     <TextBox Grid.Row="2"
                              Grid.Column="1"
-                             Text="{Binding telefono}"
-                             Margin = "5"></TextBox>
+                             Text="{Binding telefono, ValidatesOnDataErrors=True}"
+                             Margin = "5,10"></TextBox>
 
                     <Label Grid.Row="2"
                            Grid.Column="2"
-                           Margin = "5">_Email:</Label>
+                           Margin = "5,10">_Email:</Label>
                     <TextBox Grid.Row="2"
                              Grid.Column="3"
-                             Text="{Binding email}"
-                             Margin = "5"></TextBox>
+                             Text="{Binding email, ValidatesOnDataErrors=True}"
+                             Margin = "5,10"></TextBox>
 
                     
                     
                     <Label Grid.Row="2"
                            Grid.Column="4"
-                           Margin = "5">_Lugar Nacimiento:</Label>
+                           Margin = "5,10">_Lugar Nacimiento:</Label>
                     <TextBox Grid.Row="2"
                              Grid.Column="5"
-                             Text="{Binding lugar_nacimiento}"
-                             Margin = "5"></TextBox>
+                             Text="{Binding lugar_nacimiento, ValidatesOnDataErrors=True}"
+                             Margin = "5,10"></TextBox>
 
 
                     <StackPanel Grid.Row = "3" Grid.ColumnSpan = "6">
@@ -192,6 +192,7 @@
                         <RowDefinition Height = "Auto" />
                         <RowDefinition Height = "Auto" />
                         <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
@@ -206,12 +207,13 @@
 
 
                     <Label Grid.Row="0"
-                           Margin = "5">_Estado Ingreso:</Label>
+                           Margin = "5,10">_Estado Ingreso:</Label>
                     <ComboBox Grid.Row="0"
                              Grid.Column="1"
-                             Text="{Binding estado_inscripcion}"
-                             Margin = "5"
+                             Text="{Binding estado_inscripcion, ValidatesOnDataErrors=True}"
+                             Margin = "5,10"
                              TextBlock.TextAlignment="Center"
+                             Background="{Binding color_estado_inscripcion}"
                              >
                         <ComboBoxItem>Correcto</ComboBoxItem>
                         <ComboBoxItem>Indeterminado</ComboBoxItem>
@@ -223,7 +225,7 @@
 
                     <Label Grid.Row="0"
                            Grid.Column="2"
-                           Margin = "5">_Año/Semestre Ingreso:</Label>
+                           Margin = "5,10">_Año/Semestre Ingreso:</Label>
                     <Grid Grid.Row="0"
                           Grid.Column="3">
                         <Grid.RowDefinitions>
@@ -237,9 +239,10 @@
                         </Grid.ColumnDefinitions>
 
                         <ComboBox
-                             Text="{Binding anio_ingreso}"
-                             Margin = "5"
-                             TextBlock.TextAlignment="Center">
+                             Text="{Binding anio_ingreso, ValidatesOnDataErrors=True}"
+                             Margin = "5,10"
+                             TextBlock.TextAlignment="Center"
+                             Background="{Binding color_anio_ingreso}">
                             <ComboBoxItem>1</ComboBoxItem>
                             <ComboBoxItem>2</ComboBoxItem>
                             <ComboBoxItem>3</ComboBoxItem>
@@ -247,9 +250,10 @@
                         
                         <TextBlock Grid.Column="1">-</TextBlock>
                         <ComboBox Grid.Column="2"
-                             Text="{Binding semestre_ingreso}"
+                             Text="{Binding semestre_ingreso, ValidatesOnDataErrors=True}"
                              TextBlock.TextAlignment="Center"
-                             Margin = "5">
+                             Margin = "5,10"
+                             Background="{Binding color_semestre_ingreso}">
                             <ComboBoxItem>1</ComboBoxItem>
                             <ComboBoxItem>2</ComboBoxItem>
                         </ComboBox>
@@ -257,27 +261,28 @@
 
                     <Label Grid.Row="0"
                            Grid.Column="4"
-                           Margin = "5">_Plan Ingreso:</Label>
+                           Margin = "5,10">_Plan Ingreso:</Label>
                     <ComboBox Grid.Row="0"
                              Grid.Column="5"
                              TextBlock.TextAlignment="Center"
                              Name="planComboBox"
-                             SelectedValue="{Binding plan}"
-                             Margin = "5"></ComboBox>
+                             SelectedValue="{Binding plan, ValidatesOnDataErrors=True}"
+                             Margin = "5,10"
+                             Background="{Binding color_plan}"></ComboBox>
                     
                     
                     <Label Grid.Row="1"
-                           Margin = "5">_Se inscribió con:</Label>
+                           Margin = "5,10">_Se inscribió con:</Label>
                     <ComboBox Grid.Row="1"
                               TextBlock.TextAlignment="Center"
                               Name="documentacionInscripcionComboBox"
                              Grid.Column="1"
-                             SelectedValue="{Binding documentacion_inscripcion, Mode = TwoWay}"
-                             Margin = "5"></ComboBox>
+                             SelectedValue="{Binding documentacion_inscripcion, ValidatesOnDataErrors=True}"
+                             Margin = "5,10"></ComboBox>
 
                     <Label Grid.Row="1"
                            Grid.Column="2"
-                           Margin = "5">_Año/Semestre:</Label>
+                           Margin = "5,10">_Año/Semestre:</Label>
                     <Grid Grid.Row="1"
                           Grid.Column="3">
                         <Grid.RowDefinitions>
@@ -292,9 +297,10 @@
                         </Grid.ColumnDefinitions>
 
                         <ComboBox
-                             Text="{Binding anio_inscripcion}"
+                             Text="{Binding anio_inscripcion, ValidatesOnDataErrors=True}"
                             TextBlock.TextAlignment="Center"
-                             Margin = "5">
+                             Margin = "5,10"
+                            Background="{Binding color_anio_inscripcion}">
                             <ComboBoxItem>1</ComboBoxItem>
                             <ComboBoxItem>2</ComboBoxItem>
                             <ComboBoxItem>3</ComboBoxItem>
@@ -304,33 +310,33 @@
                             <ComboBoxItem>7</ComboBoxItem>
                             <ComboBoxItem>8</ComboBoxItem>
                             <ComboBoxItem>9</ComboBoxItem>
+                            
                         </ComboBox>
                         <TextBlock Grid.Column="1">-</TextBlock>
                         <ComboBox Grid.Column="2"
-                             Text="{Binding semestre_inscripcion}"
+                             Text="{Binding semestre_inscripcion, ValidatesOnDataErrors=True}"
                              TextBlock.TextAlignment="Center"
-                             Margin = "5">
+                             Margin = "5,10">
                             <ComboBoxItem>1</ComboBoxItem>
                             <ComboBoxItem>2</ComboBoxItem>
                         </ComboBox>
                         <ComboBox Grid.Column="3"
                                   Name="anioInscripcionCompletoComboBox"
                                   TextBlock.TextAlignment="Center"
-                                  SelectedValue="{Binding anio_inscripcion_completo}"
-                                  Margin = "5">
-                            
+                                  SelectedValue="{Binding anio_inscripcion_completo, ValidatesOnDataErrors=True}"
+                                  Margin = "5,10">
                         </ComboBox>
                     </Grid>
 
                     <Label Grid.Row="1"
                            Grid.Column="4"
-                           Margin = "5">_Resolución:</Label>
+                           Margin = "5,10">_Resolución:</Label>
                     <ComboBox Grid.Row="1"
                               Grid.Column="5"
                               Name="resolucionInscripcionComboBox"
                               TextBlock.TextAlignment="Center"
-                              SelectedValue="{Binding resolucion_inscripcion}"
-                              Margin = "5"></ComboBox>
+                              SelectedValue="{Binding resolucion_inscripcion, ValidatesOnDataErrors=True}"
+                              Margin = "5,10"></ComboBox>
 
 
 
@@ -338,69 +344,127 @@
                     
                     <Label Grid.Row="2"
                            Grid.Column="0"
-                           Margin = "5">_Establecimiento:</Label>
+                           Margin = "5,10">_Establecimiento:</Label>
                     <TextBox Grid.Row="2"
                              Grid.Column="1"
-                             Text="{Binding establecimiento_inscripcion}"
-                             Margin = "5"
+                             Text="{Binding establecimiento_inscripcion, ValidatesOnDataErrors=True}"
+                             Margin = "5,10"
                              TextAlignment="Center"></TextBox>
 
                     <Label Grid.Row="2"
                            Grid.Column="2"
-                           Margin = "5">_Libro:</Label>
+                           Margin = "5,10">_Libro:</Label>
                     <TextBox Grid.Row="2"
                              Grid.Column="3"
-                             Text="{Binding libro}"
+                             Text="{Binding libro, ValidatesOnDataErrors=True}"
                              TextAlignment="Center"
-                             Margin = "5"></TextBox>
+                             Margin = "5,10"></TextBox>
 
                     <Label Grid.Row="2"
                            Grid.Column="4"
-                           Margin = "5">_Folio:</Label>
+                           Margin = "5,10">_Folio:</Label>
                     <TextBox Grid.Row="2"
                              Grid.Column="5"
                              TextAlignment="Center"
-                             Text="{Binding folio}"
-                             Margin = "5"></TextBox>
+                             Text="{Binding folio, ValidatesOnDataErrors=True}"
+                             Margin = "5,10"></TextBox>
 
 
+                    
+                    
 
 
                     <Label Grid.Row="3"
                            Grid.Column="0"
-                           Margin = "5">_Observaciones:</Label>
+                           Margin = "5,10">_Observaciones:</Label>
                     <TextBox Grid.Row="3"
                              Grid.Column="1"
-                             Text="{Binding observaciones}"
+                             Text="{Binding observaciones, ValidatesOnDataErrors=True}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
                              VerticalScrollBarVisibility="Visible"
-                             Margin = "5"></TextBox>
+                             Margin = "5,10"></TextBox>
 
                     <Label Grid.Row="3"
                            Grid.Column="2"
-                           Margin = "5">_Adeuda legajo:</Label>
+                           Margin = "5,10">_Adeuda legajo:</Label>
                     <TextBox Grid.Row="3"
                              Grid.Column="3"
-                             Text="{Binding adeuda_legajo}"
+                             Text="{Binding adeuda_legajo, ValidatesOnDataErrors=True}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
                              VerticalScrollBarVisibility="Visible"
                              IsReadOnly="True"
-                             Margin = "5"></TextBox>
+                             Margin = "5,10"></TextBox>
 
                     <Label Grid.Row="3"
                            Grid.Column="4"
-                           Margin = "5">_Adeuda Deudores:</Label>
+                           Margin = "5,10">_Adeuda Deudores:</Label>
                     <TextBox Grid.Row="3"
                              Grid.Column="5"
-                             Text="{Binding adeuda_deudores}"
+                             Text="{Binding adeuda_deudores, ValidatesOnDataErrors=True}"
                              TextWrapping="Wrap"
                              AcceptsReturn="True"
                              VerticalScrollBarVisibility="Visible"
                              IsReadOnly="True"
-                             Margin = "5"></TextBox>
-                    <StackPanel Grid.Row = "4" Grid.ColumnSpan = "6">
+                             Margin = "5,10"></TextBox>
+
+                    <StackPanel Orientation="Horizontal" Grid.Row = "4" Grid.ColumnSpan = "6">
+                        <CheckBox 
+                             IsChecked="{Binding tiene_constancia, ValidatesOnDataErrors=True}"
+                             Margin = "20,10,20,10" >
+                            <TextBlock Background="{Binding color_tiene_constancia}">
+				                Tiene Constancia
+                            </TextBlock>
+                        </CheckBox>
+
+                        <CheckBox 
+                             IsChecked="{Binding tiene_certificado, ValidatesOnDataErrors=True}"
+                             Margin = "20,10,20,10">
+                            <TextBlock Background="{Binding color_tiene_certificado}">
+				                Tiene Certificado
+                            </TextBlock>
+                        </CheckBox>
+
+
+                        <CheckBox 
+                             IsChecked="{Binding previas_completas, ValidatesOnDataErrors=True}"
+                             Margin = "20,10,20,10">
+                            <TextBlock Background="{Binding color_previas_completas}">
+				                Previas Completas
+                            </TextBlock>
+                        </CheckBox>
+
+                        <CheckBox 
+                             IsChecked="{Binding tiene_dni, ValidatesOnDataErrors=True}"
+                             Margin = "20,10,20,10">
+                            <TextBlock Background="{Binding color_tiene_dni}">
+				                Tiene DNI
+                            </TextBlock>
+                        </CheckBox>
+
+                        <CheckBox 
+                             IsChecked="{Binding tiene_partida, ValidatesOnDataErrors=True}"
+                             Margin = "20,10,20,10">
+                            <TextBlock Background="{Binding color_tiene_partida}">
+				                Tiene partida
+                            </TextBlock>
+                        </CheckBox>
+
+
+                        <CheckBox 
+                             IsChecked="{Binding confirmado_direccion, ValidatesOnDataErrors=True}"
+                             Margin = "20,10,20,10">
+                            <TextBlock Background="{Binding color_confirmado_direccion}">
+				                Confirmado dirección
+                            </TextBlock>
+                        </CheckBox>
+
+                    </StackPanel>
+                    
+                    
+
+                    <StackPanel Grid.Row = "5" Grid.ColumnSpan = "6">
                         <Button 
                             Style="{DynamicResource MaterialDesignRaisedAccentButton}"
                             Content = "_Guardar..." 

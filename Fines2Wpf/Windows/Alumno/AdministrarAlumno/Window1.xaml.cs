@@ -96,15 +96,29 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             persona.Validate = true;
 
         }
-        private void SetAlumnoGroupBox(Data_alumno? alumno = null)
+        private void SetAlumnoGroupBox(Alumno? alumno = null)
         {
             if (alumno.IsNullOrEmpty())
             {
-                alumno = new Data_alumno(SqlOrganize.DataInitMode.Default);
+                alumno = new Alumno(SqlOrganize.DataInitMode.Default);
                 var per = (Data_persona)personaGroupBox.DataContext;
                 alumno.persona = per.id;
             }
+            var value = (Values.Alumno)ContainerApp.db.Values("alumno").SetObj(alumno!);
+            alumno!.color_anio_ingreso = alumno.anio_ingreso.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
+            alumno!.color_semestre_ingreso = alumno.semestre_ingreso.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;            
+            alumno!.color_plan = alumno.plan.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
+            alumno!.color_estado_inscripcion = value.ColorEstadoInscripcion(alumno.estado_inscripcion);
+            alumno!.color_confirmado_direccion = alumno.confirmado_direccion ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
+            alumno!.color_tiene_certificado = alumno.tiene_certificado ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
+            alumno!.color_tiene_constancia = alumno.tiene_constancia ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
+            alumno!.color_tiene_partida = alumno.tiene_partida ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
+            alumno!.color_tiene_dni = alumno.tiene_dni ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
+            alumno!.color_previas_completas = alumno.previas_completas ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
+            alumno!.Validate = true;
+
             alumnoGroupBox.DataContext = alumno;
+
         }
 
         private void Window1_ContentRendered(object? sender, EventArgs e)
@@ -142,12 +156,13 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void GuardarAlumnoButton_Click(object sender, RoutedEventArgs e)
         {
-            var alu = (Data_alumno)alumnoGroupBox.DataContext;
+            var alu = (Alumno)alumnoGroupBox.DataContext;
             
             EntityPersist p = ContainerApp.db.Persist("alumno");
             try
             {
                 p.PersistObj(alu).Exec().RemoveCache();
+                SetAlumnoGroupBox(alu);
                 MessageBox.Show("Registro de alumno realizado");
             }
             catch (Exception ex)
@@ -228,7 +243,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (this.personaComboBox.SelectedIndex > -1)
             {
                 var p = (Data_persona)this.personaComboBox.SelectedItem;                
-                var a = ContainerApp.db.Query("alumno").Where("$persona = @0").Parameters(p.id!).Obj<Data_alumno_r>();
+                var a = ContainerApp.db.Query("alumno").Where("$persona = @0").Parameters(p.id!).Obj<Alumno>();
                 SetPersonaGroupBox(p);
                 SetAlumnoGroupBox(a);
             } else

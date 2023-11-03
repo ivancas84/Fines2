@@ -219,7 +219,7 @@ namespace Fines2Wpf.Model
 
                 case "cuil":
                     if (!_cuil.IsNullOrEmptyOrDbNull()) {
-                        var row = ContainerApp.db.Query("persona").Where("$cuil = @0").Parameters(_cuil).DictCache();
+                        var row = ContainerApp.db.Query("persona").Where("$cuil = @0").Parameters(_cuil!).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -240,7 +240,7 @@ namespace Fines2Wpf.Model
                 case "email_abc":
                     if (!_email_abc.IsNullOrEmptyOrDbNull()) {
                         var row = ContainerApp.db.Query("persona").Where("$email_abc = @0").Parameters(_email_abc).DictCache();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row["id"].ToString()))
+                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
@@ -275,6 +275,8 @@ namespace Fines2Wpf.Model
                     return "";
 
             }
+
+            return "";
         }
     }
 }

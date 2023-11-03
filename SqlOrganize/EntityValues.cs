@@ -40,7 +40,7 @@ namespace SqlOrganize
             return this;
         }
 
-        public EntityValues Set(object o)
+        public EntityValues SetObj(object o)
         {
             var d = o.Dict();
             return Set(d);

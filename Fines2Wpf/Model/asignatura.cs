@@ -125,7 +125,7 @@ namespace Fines2Wpf.Model
                         return "Debe completar valor.";
                     if (!_nombre.IsNullOrEmptyOrDbNull()) {
                         var row = ContainerApp.db.Query("asignatura").Where("$nombre = @0").Parameters(_nombre).DictCache();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row["id"].ToString()))
+                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
@@ -143,6 +143,8 @@ namespace Fines2Wpf.Model
                     return "";
 
             }
+
+            return "";
         }
     }
 }
