@@ -1,13 +1,16 @@
 ﻿using Fines2Wpf.DAO;
 using Fines2Wpf.Model;
+using Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre;
 using SqlOrganize;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Threading;
 using Utils;
 
@@ -25,7 +28,11 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         private ObservableCollection<Data_persona> personaOC = new(); //datos consultados de la base de datos
         private ObservableCollection<Data_resolucion_r> resolucionOC = new(); //datos consultados de la base de datos
         private ObservableCollection<Data_plan_r> planOC = new(); //datos consultados de la base de datos
-        private DispatcherTimer _typingTimer;
+        private DispatcherTimer typingTimer;
+
+        #region asignacionGroupBox
+        private ObservableCollection<Asignacion> asignacionOC = new();
+        #endregion
 
         public Window1()
         {
@@ -82,8 +89,18 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             #endregion
 
 
-
+            #region asignacionDataGrid
+            asignacionDataGrid.ItemsSource = asignacionOC;
+            asignacionDataGrid.CellEditEnding += AsignacionDataGrid_CellEditEnding;
+            #endregion
         }
+
+        private void AsignacionDataGrid_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        
 
         private void SetPersonaGroupBox(Data_persona? persona = null)
         {
@@ -106,7 +123,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             }
             var value = (Values.Alumno)ContainerApp.db.Values("alumno").SetObj(alumno!);
             alumno!.color_anio_ingreso = alumno.anio_ingreso.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
-            alumno!.color_semestre_ingreso = alumno.semestre_ingreso.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;            
+            alumno!.color_semestre_ingreso = alumno.semestre_ingreso.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
             alumno!.color_plan = alumno.plan.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
             alumno!.color_estado_inscripcion = value.ColorEstadoInscripcion(alumno.estado_inscripcion);
             alumno!.color_confirmado_direccion = alumno.confirmado_direccion ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
@@ -127,7 +144,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             SetAlumnoGroupBox();
         }
 
-        
+
         private void GuardarPersonaButton_Click(object sender, RoutedEventArgs e)
         {
             var persona = (Data_persona)personaGroupBox.DataContext;
@@ -151,13 +168,13 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 MessageBox.Show("Verificar formulario: " + persona.Error);
             }
             return;
-            
+
         }
 
         private void GuardarAlumnoButton_Click(object sender, RoutedEventArgs e)
         {
             var alu = (Alumno)alumnoGroupBox.DataContext;
-            
+
             EntityPersist p = ContainerApp.db.Persist("alumno");
             try
             {
@@ -169,7 +186,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             {
                 MessageBox.Show(ex.Message);
             }
-    }
+        }
 
 
 
@@ -183,23 +200,23 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (this.personaComboBox.Text.IsNullOrEmpty())
                 personaComboBox.IsDropDownOpen = true;
             if (this.personaComboBox.SelectedIndex > -1)
-            { 
+            {
                 if (this.personaComboBox.Text.Equals(((Data_persona)this.personaComboBox.SelectedItem).Label))
                     return;
                 else
                     this.personaComboBox.Text = "";
             }
 
-            if (_typingTimer == null)
+            if (typingTimer == null)
             {
-                _typingTimer = new DispatcherTimer();
-                _typingTimer.Interval = TimeSpan.FromMilliseconds(300);
-                _typingTimer.Tick += new EventHandler(PersonaComboBox_HandleTypingTimerTimeout);
+                typingTimer = new DispatcherTimer();
+                typingTimer.Interval = TimeSpan.FromMilliseconds(300);
+                typingTimer.Tick += new EventHandler(PersonaComboBox_HandleTypingTimerTimeout);
             }
 
-            _typingTimer.Stop(); // Resets the timer
-            _typingTimer.Tag = (sender as ComboBox).Text; // This should be done with EventArgs
-            _typingTimer.Start();
+            typingTimer.Stop(); // Resets the timer
+            typingTimer.Tag = (sender as ComboBox).Text; // This should be done with EventArgs
+            typingTimer.Start();
         }
 
         private void PersonaComboBox_HandleTypingTimerTimeout(object sender, EventArgs e)
@@ -219,7 +236,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void _PersonaComboBox_TextChanged()
         {
-            
+
             personaOC.Clear();
 
             if (string.IsNullOrEmpty(this.personaComboBox.Text) || this.personaComboBox.Text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
@@ -242,18 +259,39 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             if (this.personaComboBox.SelectedIndex > -1)
             {
-                var p = (Data_persona)this.personaComboBox.SelectedItem;                
-                var a = ContainerApp.db.Query("alumno").Where("$persona = @0").Parameters(p.id!).Obj<Alumno>();
-                SetPersonaGroupBox(p);
+                var pgb = (Data_persona)personaGroupBox.DataContext;
+                var pcb = (Data_persona)this.personaComboBox.SelectedItem;
+                if (pgb != null && pgb.id!.ToString().Equals(pcb.id))
+                    return;
+
+                var a = ContainerApp.db.Query("alumno").Where("$persona = @0").Parameters(pcb.id!).Obj<Alumno>();
+
+                SetPersonaGroupBox(pcb);
                 SetAlumnoGroupBox(a);
-            } else
+                LoadAsignaciones(a);
+            }
+            else
             {
                 SetPersonaGroupBox();
                 SetAlumnoGroupBox();
+                LoadAsignaciones();
                 this.personaComboBox.IsDropDownOpen = true;
             }
         }
+
+        private void LoadAsignaciones(Alumno? a = null)
+        {
+            asignacionOC.Clear();
+            if (a == null)
+                return;
+
+            var data = ContainerApp.db.Query("alumno_comision").
+                Where("$alumno = @0").
+                Parameters(a.id!).ColOfDictCache();
+
+            asignacionOC.AddRange(data);
+        }
     }
 
-    
+
 }

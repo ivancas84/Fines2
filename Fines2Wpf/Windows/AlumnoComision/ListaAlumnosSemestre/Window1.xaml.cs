@@ -20,42 +20,45 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
     {
         private DAO.Calificacion calificacionDAO = new();
         private SqlOrganize.DAO dao = new(ContainerApp.db);
-        private ObservableCollection<Asignacion> asignacionData = new();
+        private ObservableCollection<Asignacion> asignacionOC = new();
         private Data_alumno_comision_r search = new(DataInitMode.Null);
 
-        private ICollectionView asignacionDataCV;
+        private ICollectionView asignacionCV;
 
-        DispatcherTimer _typingTimer;
+        DispatcherTimer typingTimer;
 
         public Window1()
         {
             InitializeComponent();
+            Loaded += Window1_Loaded;
 
-            var asignacionDataCVS = new CollectionViewSource() { Source = asignacionData };
-            asignacionDataCV = asignacionDataCVS.View;
-            asignacionDataCV.Filter = AsignacionDataCV_Filter;
-            asignacionGrid.ItemsSource = asignacionDataCV;
+            #region asignacionDataGrid
+            var asignacionCVS = new CollectionViewSource() { Source = asignacionOC };
+            asignacionCV = asignacionCVS.View;
+            asignacionCV.Filter = AsignacionCV_Filter;
+            asignacionDataGrid.ItemsSource = asignacionCV;
+            asignacionDataGrid.CellEditEnding += AsignacionDataGrid_CellEditEnding;
+            #endregion
 
+            #region estadoComboBox
+            estadoComboBox.SelectedValuePath = "Key";
+            estadoComboBox.DisplayMemberPath = "Value";
+            estadoComboBox.Items.Add(new KeyValuePair<string?, string>(null, "(Todos)"));
+            estadoComboBox.Items.Add(new KeyValuePair<string, string>("Activo", "Activo"));
+            estadoComboBox.Items.Add(new KeyValuePair<string, string>("No activo", "No activo"));
+            estadoComboBox.Items.Add(new KeyValuePair<string, string>("Mesa", "Mesa"));
+            #endregion
 
-
-            estadoCombo.SelectedValuePath = "Key";
-            estadoCombo.DisplayMemberPath = "Value";
-            estadoCombo.Items.Add(new KeyValuePair<string?, string>(null, "(Todos)"));
-            estadoCombo.Items.Add(new KeyValuePair<string, string>("Activo", "Activo"));
-            estadoCombo.Items.Add(new KeyValuePair<string, string>("No activo", "No activo"));
-            estadoCombo.Items.Add(new KeyValuePair<string, string>("Mesa", "Mesa"));
-
+            #region search
             search.calendario__anio = 2023;
             search.calendario__semestre = 2;
             search.estado = "Activo";
             DataContext = search;
+            #endregion
 
-            asignacionGrid.CellEditEnding += AsignacionGrid_CellEditEnding;
-
-            Loaded += Window1_Loaded;
         }
 
-        private bool AsignacionDataCV_Filter(object obj)
+        private bool AsignacionCV_Filter(object obj)
         {
             var o = obj as Asignacion;
             return filterTextBox.Text.IsNullOrEmpty()
@@ -70,22 +73,20 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 
         private void FilterTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (_typingTimer == null)
+            if (typingTimer == null)
             {
-                _typingTimer = new DispatcherTimer();
-                _typingTimer.Interval = TimeSpan.FromMilliseconds(300);
-                _typingTimer.Tick += new EventHandler(HandleTypingTimerTimeout);
+                typingTimer = new DispatcherTimer();
+                typingTimer.Interval = TimeSpan.FromMilliseconds(300);
+                typingTimer.Tick += new EventHandler(FilterTextBox_HandleTypingTimerTimeout);
 
             }
 
-            _typingTimer.Stop(); // Resets the timer
-            _typingTimer.Tag = (sender as TextBox).Text; // This should be done with EventArgs
-            _typingTimer.Start();
-
-            
+            typingTimer.Stop(); // Resets the timer
+            typingTimer.Tag = (sender as TextBox).Text; // This should be done with EventArgs
+            typingTimer.Start();    
         }
 
-        private void HandleTypingTimerTimeout(object sender, EventArgs e)
+        private void FilterTextBox_HandleTypingTimerTimeout(object sender, EventArgs e)
         {
              var timer = sender as DispatcherTimer; // WPF
             if (timer == null)
@@ -93,8 +94,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
                 return;
             }
 
-            if (asignacionDataCV != null)
-                asignacionDataCV.Refresh();
+            if (asignacionCV != null)
+                asignacionCV.Refresh();
 
             // The timer must be stopped! We want to act only once per keystroke.
             timer.Stop();
@@ -103,24 +104,23 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         public void LoadAsignaciones()
         {
             var data = dao.Search("alumno_comision", search);
-            asignacionData.Clear();
+            asignacionOC.Clear();
             List<object> alumnosYplanes = new();
-            ObservableCollection<Asignacion> asignacionDataAux = new();
+            ObservableCollection<Asignacion> asignacionOCAux = new();
 
             foreach (var d in data)
             {
-                var v = (Values.AlumnoComision)ContainerApp.db.Values("alumno_comision").Values(d);
                 var va = (Values.Alumno)ContainerApp.db.Values("alumno","alumno").Set(d);
                 var o = d.Obj<Asignacion>();
                 o.tramo_ingreso = va.TramoIngreso();
-                o.comision__Label = v.ValuesTree("comision")?.ToString() ?? "";
+                o.comision__Label = ContainerApp.db.Values("comision", "comision").Set(d).ToString();
                 o.color_estado_inscripcion = va.ColorEstadoInscripcion(o.alumno__estado_inscripcion);
                 alumnosYplanes.Add(o.alumno!.ToString() +o.planificacion__plan!.ToString());
-                asignacionDataAux.Add(o);
+                asignacionOCAux.Add(o);
             }
             var dataCalificacionesDict = calificacionDAO.CantidadCalificacionesAprobadasAgrupadasPorPlanificacionSinArchivarPorAlumnosYPlanesQuery(alumnosYplanes).ColOfDict().DictOfDictByKeysValue("cantidad", "alumno", "planificacion_dis-anio", "planificacion_dis-semestre");
                 
-            foreach (var d in asignacionDataAux)
+            foreach (var d in asignacionOCAux)
             {
                 var key = d.alumno!.ToString()!;
                 if(dataCalificacionesDict.ContainsKey(key + "~" + "1" + "~" + "1"))
@@ -151,7 +151,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
                 d.color_aprobadas31 = va.ColorCantidadAprobadasSemestreActual(d.cantidad_aprobadas31, 3, 1, pa, pe, ai, d.alumno__semestre_ingreso);
                 d.color_aprobadas32 = va.ColorCantidadAprobadasSemestreActual(d.cantidad_aprobadas32, 3, 2, pa, pe, ai, d.alumno__semestre_ingreso);
 
-                asignacionData.Add(d);
+                asignacionOC.Add(d);
             }
 
 
@@ -168,7 +168,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
             LoadAsignaciones();
         }
 
-        private void AsignacionGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        private void AsignacionDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             var reload = e.DataGridCellEditEndingEventArgs_CellEditEnding<Data_alumno_comision_r>("alumno_comision");
             if (reload)

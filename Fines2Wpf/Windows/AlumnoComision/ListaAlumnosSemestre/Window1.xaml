@@ -50,7 +50,7 @@
             <ComboBox 
                 Grid.Row = "2"
                 Grid.Column = "1"
-                Name = "estadoCombo" 
+                Name = "estadoComboBox" 
                 Text="{Binding estado, Mode = TwoWay}">
             </ComboBox>
 
@@ -63,16 +63,16 @@
                 Grid.Row = "4"
                 Margin = "2">_Filtro:</Label>
 
-            <TextBox 
-                Name ="filterTextBox"
-                TextChanged="FilterTextBox_TextChanged"
-                Grid.Row = "4" 
-                Grid.Column = "1" 
-                Margin = "2" />
+                <TextBox 
+                    Name ="filterTextBox"
+                    TextChanged="FilterTextBox_TextChanged"
+                    Grid.Row = "4" 
+                    Grid.Column = "1" 
+                    Margin = "2" />
 
         </Grid>
 
-        <DataGrid CanUserAddRows="False" Name="asignacionGrid" AutoGenerateColumns="false">
+        <DataGrid CanUserAddRows="False" Name="asignacionDataGrid" AutoGenerateColumns="false">
             <DataGrid.Columns>
                 <DataGridTextColumn IsReadOnly="True" Header="Sede" Binding="{Binding sede__nombre}">
                     
@@ -137,7 +137,7 @@
                     </DataGridCheckBoxColumn.CellStyle>
                 </DataGridCheckBoxColumn>
 
-                <DataGridCheckBoxColumn Binding="{Binding alumno__tiene_partida}" Header="PART">
+                <DataGridCheckBoxColumn Binding="{Binding alumno__previas_completas}" Header="PREV">
                     <DataGridCheckBoxColumn.CellStyle>
                         <Style>
                             <EventSetter Event="CheckBox.Checked" Handler="EntityGrid_CellCheckBoxClick"/>

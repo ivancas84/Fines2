@@ -16,7 +16,7 @@
         >
 
     
-    <ScrollViewer ScrollViewer.HorizontalScrollBarVisibility="Auto">
+    <ScrollViewer>
 
         <Grid>
             <Grid.RowDefinitions>
@@ -479,15 +479,15 @@
 
 
             <GroupBox Header="Asignaciones"
+                      Name="asignacionGroupBox"
                       Grid.Row = "3" 
                       Margin="16"
 	                  materialDesign:ElevationAssist.Elevation="Dp3">
-                <DataGrid Name="organismoGrid" IsReadOnly="True" AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID" Binding="{Binding IdOrg}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Descripción" Binding="{Binding Descripcion}"></DataGridTextColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
+                <Grid>
+                    <DataGrid Grid.Row="1" Name="asignacionDataGrid" IsReadOnly="True" AutoGenerateColumns="True">
+                    </DataGrid>
+                </Grid>
+
             </GroupBox>
         </Grid>
 

@@ -22,8 +22,7 @@ namespace Fines2Wpf
         public string colorYellow { get; set; } = "#faebd7";
         public string colorGray { get; set; } = "#d7d7d7";
 
-
-        public new string id = "id";
+        public override string id { get; set; } = "id";
 
     }
 }
