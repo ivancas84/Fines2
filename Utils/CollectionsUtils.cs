@@ -218,7 +218,6 @@ namespace Utils
         /// <param name="source"></param>
         /// <param name="bindingAttr"></param>
         /// <returns></returns>
-        /// <remarks>Utiliza </remarks>
         public static IDictionary<string, object?> Dict(this object source, BindingFlags bindingAttr = BindingFlags.Public | BindingFlags.Instance)
         {
             var properties = source.GetType().GetProperties();
