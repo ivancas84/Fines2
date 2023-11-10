@@ -208,7 +208,7 @@ namespace Fines2Wpf.Model
                     return "";
 
                 case "numero_documento":
-                    if (_numero_documento == null)
+                    if (_numero_documento.IsNullOrEmpty())
                         return "Debe completar valor.";
                     if (!_numero_documento.IsNullOrEmptyOrDbNull()) {
                         var row = ContainerApp.db.Query("persona").Where("$numero_documento = @0").Parameters(_numero_documento).DictCache();

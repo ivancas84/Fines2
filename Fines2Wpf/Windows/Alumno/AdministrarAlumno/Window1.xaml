@@ -14,8 +14,10 @@
         TextElement.FontSize="14"
         FontFamily="{materialDesign:MaterialDesignFont}"
         >
+    <Window.Resources>
+        <ObjectDataProvider x:Key="estados" ObjectType="{x:Type local:EstadoData}" MethodName="Estados" />
+    </Window.Resources>
 
-    
     <ScrollViewer>
 
         <Grid>
@@ -24,6 +26,7 @@
                 <RowDefinition Height = "Auto" />
                 <RowDefinition Height = "Auto" />
                 <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "*" />
                 <RowDefinition Height = "*" />
             </Grid.RowDefinitions>
 
@@ -221,7 +224,7 @@
                         <ComboBoxItem>Titulado</ComboBoxItem>
                     </ComboBox>
 
-                    
+
 
                     <Label Grid.Row="0"
                            Grid.Column="2"
@@ -247,7 +250,7 @@
                             <ComboBoxItem>2</ComboBoxItem>
                             <ComboBoxItem>3</ComboBoxItem>
                         </ComboBox>
-                        
+
                         <TextBlock Grid.Column="1">-</TextBlock>
                         <ComboBox Grid.Column="2"
                              Text="{Binding semestre_ingreso, ValidatesOnDataErrors=True}"
@@ -269,8 +272,8 @@
                              SelectedValue="{Binding plan, ValidatesOnDataErrors=True}"
                              Margin = "5,10"
                              Background="{Binding color_plan}"></ComboBox>
-                    
-                    
+
+
                     <Label Grid.Row="1"
                            Margin = "5,10">_Se inscribió con:</Label>
                     <ComboBox Grid.Row="1"
@@ -310,7 +313,7 @@
                             <ComboBoxItem>7</ComboBoxItem>
                             <ComboBoxItem>8</ComboBoxItem>
                             <ComboBoxItem>9</ComboBoxItem>
-                            
+
                         </ComboBox>
                         <TextBlock Grid.Column="1">-</TextBlock>
                         <ComboBox Grid.Column="2"
@@ -340,8 +343,8 @@
 
 
 
-                    
-                    
+
+
                     <Label Grid.Row="2"
                            Grid.Column="0"
                            Margin = "5,10">_Establecimiento:</Label>
@@ -370,8 +373,8 @@
                              Margin = "5,10"></TextBox>
 
 
-                    
-                    
+
+
 
 
                     <Label Grid.Row="3"
@@ -461,8 +464,8 @@
                         </CheckBox>
 
                     </StackPanel>
-                    
-                    
+
+
 
                     <StackPanel Grid.Row = "5" Grid.ColumnSpan = "6">
                         <Button 
@@ -477,17 +480,124 @@
 
             </GroupBox>
 
-
-            <GroupBox Header="Asignaciones"
-                      Name="asignacionGroupBox"
+            <GroupBox Name="asignacionGroupBox"
+                      Header="Asignaciones"                      
                       Grid.Row = "3" 
                       Margin="16"
 	                  materialDesign:ElevationAssist.Elevation="Dp3">
+                
+                    <DataGrid Name="asignacionDataGrid" CanUserAddRows="False" AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Comision">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding comision__Label}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <ComboBox 
+                                                DisplayMemberPath="Label"
+                                                SelectedValuePath="id"
+                                                IsTextSearchEnabled="False"
+                                                IsEditable="True"
+                                                StaysOpenOnEdit="True"
+                                                TextBoxBase.TextChanged="ComisionComboBox_TextChanged"
+                                                GotFocus="ComisionComboBox_GotFocus"
+                                                SelectionChanged="ComisionComboBox_SelectionChanged"
+                                                SelectedValue="{Binding comision}"
+                                                ItemsSource="{Binding Comisiones}">
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+
+      
+
+                            <DataGridComboBoxColumn Header="Estado"  
+                                SelectedValueBinding="{Binding estado}" 
+                                ItemsSource="{Binding Source={StaticResource estados}}">
+                                <DataGridComboBoxColumn.EditingElementStyle>
+                                    <Style TargetType="{x:Type ComboBox}">
+                                        <EventSetter Event="SelectionChanged" Handler="EstadoComboBox_SelectionChanged" />
+                                    </Style>
+                                </DataGridComboBoxColumn.EditingElementStyle>
+                            </DataGridComboBoxColumn>
+                            
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+                
+            </GroupBox>
+            
+            <GroupBox Name="calificacionGroupBox"
+                      Header="Calificaciones"                      
+                      Grid.Row = "4" 
+                      Margin="16"
+	                  materialDesign:ElevationAssist.Elevation="Dp3">
                 <Grid>
-                    <DataGrid Grid.Row="1" Name="asignacionDataGrid" IsReadOnly="True" AutoGenerateColumns="True">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width = "*" />
+                    </Grid.ColumnDefinitions>
+
+                    <WrapPanel>
+                        <Label>Filtro</Label>
+                        <TextBox Name ="calificacionFilterTextBox"
+                             TextChanged="CalificacionFilterTextBox_TextChanged"></TextBox>
+                    </WrapPanel>
+
+                    <DataGrid  Grid.Row="1" Name="calificacionDataGrid" AutoGenerateColumns="False">
+            
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="disposision template" Width="200">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding disposicion,ValidatesOnDataErrors=True}"></TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <TextBox Text="{Binding disposicion,ValidatesOnDataErrors=True}" ></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+
+
+                            <DataGridTextColumn Header="Disposicion text" Binding="{Binding disposicion, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"></DataGridTextColumn>
+                            <DataGridComboBoxColumn Header="Disposicion">
+                                <DataGridComboBoxColumn.ElementStyle>
+                                    <Style TargetType="ComboBox">
+                                        <Setter Property="DisplayMemberPath" Value="Label"></Setter>
+                                        <Setter Property="SelectedValuePath" Value="id"/>
+                                        <Setter Property="SelectedValue" Value="{Binding disposicion, ValidatesOnDataErrors=True}"></Setter>
+                                        <Setter Property="ItemsSource" Value="{Binding Disposiciones}"/>
+                                    </Style>
+                                </DataGridComboBoxColumn.ElementStyle>
+                                <DataGridComboBoxColumn.EditingElementStyle>
+                                    <Style TargetType="{x:Type ComboBox}">
+                                        <EventSetter Event="GotFocus" Handler="DisposicionComboBox_GotFocus" />
+                                        <EventSetter Event="LostFocus" Handler="DisposicionComboBox_LostFocus" />
+                                        <EventSetter Event="SelectionChanged" Handler="DisposicionComboBox_SelectionChanged" />
+                                        <Setter Property="IsTextSearchEnabled" Value="True" />
+                                        <Setter Property="IsEditable" Value="True" />
+                                        <Setter Property="DisplayMemberPath" Value="Label"></Setter>
+                                        <Setter Property="SelectedValuePath" Value="id"/>
+                                        <Setter Property="SelectedValue" Value="{Binding disposicion, ValidatesOnDataErrors=True}"></Setter>
+                                        <Setter Property="ItemsSource" Value="{Binding Disposiciones}"/>
+                                    </Style>
+                                </DataGridComboBoxColumn.EditingElementStyle>
+                            </DataGridComboBoxColumn>
+                        </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
 
+                
             </GroupBox>
         </Grid>
 

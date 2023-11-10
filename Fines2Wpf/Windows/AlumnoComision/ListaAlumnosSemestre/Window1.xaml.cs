@@ -170,7 +170,25 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 
         private void AsignacionDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            var reload = e.DataGridCellEditEndingEventArgs_CellEditEnding<Data_alumno_comision_r>("alumno_comision");
+            string key = "";
+            object? value = null;
+
+            var columnCo = e.Column as DataGridComboBoxColumn;
+            if (columnCo != null)
+            {
+                key = ((Binding)columnCo.SelectedValueBinding).Path.Path; //column's binding
+                value = (e.EditingElement as ComboBox)!.SelectedValue;
+            }
+
+            var column = e.Column as DataGridBoundColumn;
+            if (column != null)
+            {
+                key = ((Binding)column.Binding).Path.Path; //column's binding
+                value = (e.EditingElement as TextBox)!.Text;
+            }
+
+
+            var reload = e.DataGridCellEditEndingEventArgs_CellEditEnding<Data_alumno_comision_r>("alumno_comision", key, value);
             if (reload)
                 LoadAsignaciones(); //debe recargarse para visualizar los cambios realizados en otras iteraciones
                                     //Dada una relacion a : b, si se modifica b correspondiente a a.b, se deberan actualizar todas las filas

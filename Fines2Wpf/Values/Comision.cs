@@ -35,9 +35,9 @@ namespace Fines2Wpf.Values
         }
 
     
-        public string ToStringNombreSede()
+        public override string ToString()
         {
-            var s = ToString();
+            var s = ToStringShort();
             s += " ";
             s += ValuesTree("sede")?.GetOrNull("nombre")?.ToString() ?? "?";
             return s;
@@ -47,7 +47,7 @@ namespace Fines2Wpf.Values
         {
             string s = "";
             var v = ValuesTree("calendario");
-            if (v.IsNullOrEmpty())
+            if (!v.IsNullOrEmpty())
             {
                 s += v.GetOrNull("anio")?.ToString() ?? "?";
                 s += "-";
@@ -56,14 +56,15 @@ namespace Fines2Wpf.Values
             return s;
         }
 
-        public override string ToString()
+        public string ToStringShort()
         {
             var s = Numero();
             s += " ";
             s += CalendarioAnioSemestre();
-            return s;
-
+            s += " ";
+            return s.Trim();
         }
+
 
 
     }

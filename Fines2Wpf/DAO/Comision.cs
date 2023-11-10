@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
@@ -114,5 +115,24 @@ namespace Fines2Wpf.DAO
                 ")
                 .Parameters(anio, semestre);
         }
+
+
+        public EntityQuery BusquedaAproximadaQuery(string search)
+        {
+            return ContainerApp.db.Query("comision")
+               .Fields()
+               .Size(0)
+               .Where(@"
+                    $sede-nombre LIKE @0
+                    OR
+                    CONCAT($sede-numero, $division, '/', $planificacion-anio, $planificacion-semestre) LIKE @0
+                    OR
+                    CONCAT($calendario-anio, '-', $calendario-semestre) LIKE @0
+                ")
+               .Order("$sede-numero ASC, $division ASC, $calendario-anio, $calendario-semestre")
+               .Parameters("%"+search+"%");
+        }
+
+
     }
 }

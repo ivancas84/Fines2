@@ -32,6 +32,9 @@ namespace Fines2Wpf
 
                 case "plan":
                     return new Plan(this, entityName, fieldId);
+
+                case "disposicion":
+                    return new Disposicion(this, entityName, fieldId);
             }
 
             return new EntityValues(this, entityName, fieldId);

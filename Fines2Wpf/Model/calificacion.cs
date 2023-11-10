@@ -202,7 +202,7 @@ namespace Fines2Wpf.Model
                     return "";
 
                 case "disposicion":
-                    if (_disposicion == null)
+                    if (_disposicion.IsNullOrEmpty())
                         return "Debe completar valor.";
                     return "";
 

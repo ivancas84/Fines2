@@ -47,7 +47,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
         {
             var data = dao.Get("comision", IdComision);
             comision = data.Obj<Comision>();
-            comision.label = ((Values.Comision)ContainerApp.db.Values("comision").Values(data)).ToStringNombreSede();
+            comision.label = ((Values.Comision)ContainerApp.db.Values("comision").Values(data)).ToString();
             DataContext = comision;
         }
 
@@ -200,7 +200,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                         row = j,
                         status = "warning",
                         detail = "Se encuentra en otra comision del mismo semestre",
-                        data = persona.ToString() + " en " + comV.ToStringNombreSede() + " con estado " + a["estado"].ToString()
+                        data = persona.ToString() + " en " + comV.ToString() + " con estado " + a["estado"].ToString()
                     });
                 }
                 #endregion
@@ -217,7 +217,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                         row = j,
                         status = "info",
                         detail = "Asignacion en otra comisión",
-                        data = persona.ToString() + " en " + comV.ToStringNombreSede() + " con estado " + a["estado"]
+                        data = persona.ToString() + " en " + comV.ToString() + " con estado " + a["estado"]
                     });
                 }
                 #endregion

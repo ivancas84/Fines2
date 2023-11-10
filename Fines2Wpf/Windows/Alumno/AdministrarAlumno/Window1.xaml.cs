@@ -1,4 +1,4 @@
-﻿using Fines2Wpf.DAO;
+﻿
 using Fines2Wpf.Model;
 using Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre;
 using SqlOrganize;
@@ -6,14 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
 using Utils;
-
+using WpfUtils;
 
 namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 {
@@ -25,13 +23,26 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
     public partial class Window1 : Window
     {
         private DAO.Persona personaDAO = new(); //objeto de acceso a datos
+        private DAO.Comision comisionDAO = new(); //objeto de acceso a datos
+
         private ObservableCollection<Data_persona> personaOC = new(); //datos consultados de la base de datos
         private ObservableCollection<Data_resolucion_r> resolucionOC = new(); //datos consultados de la base de datos
         private ObservableCollection<Data_plan_r> planOC = new(); //datos consultados de la base de datos
         private DispatcherTimer typingTimer;
 
+
         #region asignacionGroupBox
-        private ObservableCollection<Asignacion> asignacionOC = new();
+        private ObservableCollection<Asignacion> asignacionOC = new(); //datos a visualizar
+        private DispatcherTimer typingTimerComision; //timer para busqueda de comision en asignacion
+        private Asignacion asignacion; //asignacion que esta siendo editada
+        #endregion
+
+        #region calificacionGroupBox
+        private ObservableCollection<Calificacion> calificacionOC = new(); //datos a visualizar
+        private ICollectionView calificacionCV; //CV para filtro
+        DispatcherTimer calificacionTypingTimer; //timer para filtro
+        Calificacion calificacion; //calificacion que esta siendo administrada
+        private ObservableCollection<Data_disposicion_r> disposicionOC = new(); //datos a visualizar del comboBox
         #endregion
 
         public Window1()
@@ -88,20 +99,19 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             anioInscripcionCompletoComboBox.Items.Add(new KeyValuePair<bool?, string>(false, "Incompleto"));
             #endregion
 
-
             #region asignacionDataGrid
             asignacionDataGrid.ItemsSource = asignacionOC;
-            asignacionDataGrid.CellEditEnding += AsignacionDataGrid_CellEditEnding;
+            #endregion
+
+            #region calificacionGroupBox
+            var calificacionCVS = new CollectionViewSource() { Source = calificacionOC };
+            calificacionCV = calificacionCVS.View;
+            calificacionCV.Filter = CalificacionCV_Filter;
+            calificacionDataGrid.ItemsSource = calificacionCV;
             #endregion
         }
 
-        private void AsignacionDataGrid_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         
-
         private void SetPersonaGroupBox(Data_persona? persona = null)
         {
             if (persona.IsNullOrEmpty())
@@ -133,10 +143,75 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             alumno!.color_tiene_dni = alumno.tiene_dni ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
             alumno!.color_previas_completas = alumno.previas_completas ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
             alumno!.Validate = true;
+            
 
             alumnoGroupBox.DataContext = alumno;
 
         }
+
+        private void LoadAsignaciones(Alumno a)
+        {
+            asignacionOC.Clear();
+
+            var data = ContainerApp.db.Query("alumno_comision").
+                Where("$alumno = @0").
+                Parameters(a.id!).ColOfDictCache();
+
+            foreach (var item in data)
+            {
+                var asignacion = item.Obj<Asignacion>();
+
+
+                var val = ContainerApp.db.Values("comision", "comision").Set(item);
+                var comision = val.values.Obj<Data_comision_r>();
+                comision.Label = val.ToString();
+
+                asignacion.comision__Label = comision.Label;
+                asignacion.Comisiones.Add(comision);
+
+                asignacionOC.Add(asignacion);
+            }
+        }
+
+        private void LoadCalificaciones(Data_alumno a)
+        {
+            calificacionOC.Clear();
+
+            var data = ContainerApp.db.Query("calificacion").
+                Where("$alumno = @0").
+                Parameters(a.id!).ColOfDictCache();
+
+            foreach (var item in data)
+            {
+                var calificacion = item.Obj<Calificacion>();
+
+                var val = ContainerApp.db.Values("disposicion", "disposicion").Set(item);
+                var disposicion = val.values.Obj<Data_disposicion_r>();
+                disposicion.Label = val.ToString();
+                calificacion.Disposiciones.Add(disposicion);
+                calificacion.Validate = true;
+                calificacionOC.Add(calificacion);
+            }
+        }
+        private void LoadDisposiciones(Data_alumno a)
+        {
+            disposicionOC.Clear();
+
+            if (a.plan.IsNullOrEmptyOrDbNull())
+                return;
+
+            var data = ContainerApp.db.Query("disposicion").
+                Where("$planificacion-plan = @0").
+                Parameters(a.plan!).ColOfDictCache();
+
+            foreach (var item in data)
+            {
+                var disposicion = item.Obj<Data_disposicion_r>();
+                disposicion.Label = ContainerApp.db.Values("disposicion").Set(item).ToString();                
+                disposicionOC.Add(disposicion);
+            }
+        }
+
 
         private void Window1_ContentRendered(object? sender, EventArgs e)
         {
@@ -243,7 +318,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 return;
 
             IEnumerable<Dictionary<string, object>> list = personaDAO.SearchLikeQuery(this.personaComboBox.Text).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
-            personaOC.Clear();
 
             foreach (var item in list)
             {
@@ -269,29 +343,213 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 SetPersonaGroupBox(pcb);
                 SetAlumnoGroupBox(a);
                 LoadAsignaciones(a);
+                LoadCalificaciones(a);
+                LoadDisposiciones(a);
             }
             else
             {
                 SetPersonaGroupBox();
                 SetAlumnoGroupBox();
-                LoadAsignaciones();
+                asignacionOC.Clear();
+                calificacionOC.Clear();
+                disposicionOC.Clear();
+
+
                 this.personaComboBox.IsDropDownOpen = true;
             }
         }
 
-        private void LoadAsignaciones(Alumno? a = null)
+        
+
+
+
+        #region asignacionGroupBox
+        private void ComisionComboBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            asignacionOC.Clear();
-            if (a == null)
+            var cb = (ComboBox)sender;
+
+            if (cb!.Text.IsNullOrEmpty())
+                cb.IsDropDownOpen = true;
+
+            if (cb.SelectedIndex > -1)
+            {
+                if (cb.Text.Equals(((Data_comision_r)cb.SelectedItem).Label))
+                    return;
+
+                cb.Text = ""; //si hay seleccionado y cambio al texto, se blanquea el texto. Si no se incluye esta opción el texto se blanquea igual por defecto, pero tarda mas tiempo y es mas engorroso
+            }
+
+            asignacion = (Asignacion)cb.DataContext; //se carga la asignacion que esta siendo editada
+            asignacion.SearchComision = cb.Text;
+
+            if (typingTimerComision == null)
+            {
+                typingTimerComision = new DispatcherTimer();
+                typingTimerComision.Interval = TimeSpan.FromMilliseconds(300);
+                typingTimerComision.Tick += new EventHandler(ComisionComboBox_HandleTypingTimerTimeout);
+            }
+
+            typingTimerComision.Stop(); // Resets the timer
+            typingTimerComision.Tag = asignacion.SearchComision; // This should be done with EventArgs
+            typingTimerComision.Start();
+        }
+
+        private void ComisionComboBox_HandleTypingTimerTimeout(object sender, EventArgs e)
+        {
+            var timer = sender as DispatcherTimer;
+            if (timer == null)
                 return;
 
-            var data = ContainerApp.db.Query("alumno_comision").
-                Where("$alumno = @0").
-                Parameters(a.id!).ColOfDictCache();
+            _ComisionComboBox_TextChanged();
 
-            asignacionOC.AddRange(data);
+            timer.Stop(); // The timer must be stopped! We want to act only once per keystroke.
+        }
+
+        private void _ComisionComboBox_TextChanged()
+        {
+
+            asignacion.Comisiones.Clear();
+
+            if (string.IsNullOrEmpty(asignacion.SearchComision) || asignacion.SearchComision.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
+                return;
+
+            IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(asignacion.SearchComision).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            foreach(var item in list)
+            {
+                var val = ContainerApp.db.Values("comision").Set(item);
+                var obj = val.values.Obj<Data_comision_r>();
+                obj.Label = val.ToString();
+                asignacion.Comisiones.Add(obj);
+            }
+        }
+
+        private void ComisionComboBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            (sender as ComboBox)!.IsDropDownOpen = true;
+        }
+
+        private void ComisionComboBox_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            var cb = (ComboBox)sender;
+            var asignacion = (Asignacion)cb.DataContext; //se carga la asignacion que esta siendo editada
+            if (cb.SelectedIndex > -1) 
+            {
+                if(!cb.SelectedValue.ToString()!.Equals(asignacion.comision))
+                { 
+                    ContainerApp.db.Persist("alumno_comision").UpdateValue("comision", cb.SelectedValue, new List<object>() { asignacion.id }).Exec().RemoveCache();
+                    asignacion.comision__Label = (cb.SelectedItem as Data_comision_r)!.Label;
+                }
+            }
+            else
+            {
+                asignacion.comision__Label = "";
+                cb.IsDropDownOpen = true;
+            }
+
+        }
+
+
+        #endregion asignacionGroupBox
+
+        private void EstadoComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var cb = (ComboBox)sender;
+            var asignacion = (Asignacion)cb.DataContext; //se carga la asignacion que esta siendo editada
+            if (cb.SelectedIndex > -1)
+            { 
+                if(!cb.SelectedValue.ToString()!.Equals(asignacion.estado))
+                    ContainerApp.db.Persist("alumno_comision").UpdateValue("estado", cb.SelectedValue, new List<object>() { asignacion.id }).Exec().RemoveCache();
+            }
+        }
+
+
+        #region calificacionGroupBox
+        private bool CalificacionCV_Filter(object obj)
+        {
+            var o = obj as Data_calificacion_r;
+            return calificacionFilterTextBox.Text.IsNullOrEmpty()
+                || (!o.asignatura_dis__nombre.IsNullOrEmptyOrDbNull() && o.asignatura_dis__nombre.ToString().ToLower().Contains(calificacionFilterTextBox.Text.ToLower()));
+
+        }
+
+        private void CalificacionFilterTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (calificacionTypingTimer == null)
+            {
+                calificacionTypingTimer = new DispatcherTimer();
+                calificacionTypingTimer.Interval = TimeSpan.FromMilliseconds(300);
+                calificacionTypingTimer.Tick += new EventHandler(CalificacionFilterTextBox_HandleTypingTimerTimeout);
+
+            }
+
+            calificacionTypingTimer.Stop(); // Resets the timer
+            calificacionTypingTimer.Tag = (sender as TextBox).Text; // This should be done with EventArgs
+            calificacionTypingTimer.Start();
+        }
+
+        private void CalificacionFilterTextBox_HandleTypingTimerTimeout(object sender, EventArgs e)
+        {
+            var timer = sender as DispatcherTimer;
+            if (timer == null)
+                return;
+
+            if (calificacionCV != null)
+                calificacionCV.Refresh();
+
+            timer.Stop();// The timer must be stopped! We want to act only once per keystroke.
+        }
+        #endregion
+
+
+
+        #region CalificacionGroupBox
+        private void DisposicionComboBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            var cb = (ComboBox)sender;
+            var calificacion = (Calificacion)cb.DataContext; //se carga la asignacion que esta siendo editada
+                        
+            calificacion.Disposiciones.Clear();
+            calificacion.Disposiciones.AddRange(disposicionOC);            
+        }
+
+        private void DisposicionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var cb = (ComboBox)sender;
+            var calificacion = (Calificacion)cb.DataContext; //se carga la asignacion que esta siendo editada
+            if (cb.SelectedIndex > -1)
+            {
+                if (!cb.SelectedValue.ToString()!.Equals(calificacion.disposicion))
+                {
+                    ContainerApp.db.Persist("calificacion").UpdateValue("disposicion", cb.SelectedValue, new List<object>() { calificacion.id }).Exec().RemoveCache();
+                    calificacion.disposicion = (string)cb.SelectedValue;
+                }
+
+            }
+        }
+        #endregion
+
+        private void DisposicionComboBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            var cb = (ComboBox)sender;
+            var calificacion = (Calificacion)cb.DataContext; //se carga la asignacion que esta siendo editada
+            cb.SelectedValue = calificacion.disposicion;
         }
     }
 
+    public class EstadoData
+    {
+        public ObservableCollection<string> Estados()
+        {
+            return new()
+            {
+                "Activo",
+                "No activo",
+                "Mesa",
+            };
+        }
+    }
+
+
+   
 
 }
