@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlOrganize;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,5 +36,25 @@ namespace Fines2Wpf.DAO
                 ")
                 .Parameters(calendarioAnio, calendarioSemestre).ColOfDictCache();
         }
+
+        public EntityQuery TomaActivaDeCursoQuery(object idCurso)
+        {
+            return ContainerApp.db.Query("toma").
+                Where("$curso = @0 AND $estado = 'Aprobada' AND $estado_contralor = 'Pasar'").
+                Parameters(idCurso);
+        }
+
+        public EntityQuery BusquedaAproximadaQuery(string search)
+        {
+            return ContainerApp.db.Query("curso")
+               .Fields()
+               .Size(0)
+               .Where(@"
+                    CONCAT($sede-numero, $comision-division, '/', $planificacion-anio, $planificacion-semestre, ' ', $calendario-anio, '-', $calendario-semestre) LIKE @0
+                ")
+               .Order("$sede-numero ASC, $comision-division ASC, $planificacion-anio ASC, $planificacion-semestre ASC")
+               .Parameters("%" + search + "%");
+        }
+
     }
 }

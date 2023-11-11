@@ -40,19 +40,7 @@ namespace Fines2Wpf
             db = new DbApp(config, model, cache);
             dao = new(db);
 
-        }
-
-        public static EntityValues? Values(this IDictionary<string, object>? data, string entityName)
-        {
-            if (data.IsNullOrEmptyOrDbNull()) return null;
-            return db.Values(entityName).Values(data);
-        }
-
-        public static EntityValues? ValuesSet(this IDictionary<string, object>? data, string entityName, string? fieldId = null)
-        {
-            if (data.IsNullOrEmptyOrDbNull()) return null;
-            return db.Values(entityName, fieldId).Set(data);
-        }
+        }     
 
     }
 }

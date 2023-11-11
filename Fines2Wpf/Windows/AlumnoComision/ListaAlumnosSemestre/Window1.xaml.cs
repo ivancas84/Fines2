@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Threading;
 using System;
+using System.Windows.Media;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 {
@@ -38,6 +39,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
             asignacionCV.Filter = AsignacionCV_Filter;
             asignacionDataGrid.ItemsSource = asignacionCV;
             asignacionDataGrid.CellEditEnding += AsignacionDataGrid_CellEditEnding;
+
             #endregion
 
             #region estadoComboBox
@@ -172,6 +174,13 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         {
             string key = "";
             object? value = null;
+
+            var columnT = e.Column as DataGridTemplateColumn;
+            if (columnT != null)
+            {
+                var datePicker = VisualTreeHelper.GetChild(e.EditingElement, 0) as DatePicker;
+               
+            }
 
             var columnCo = e.Column as DataGridComboBoxColumn;
             if (columnCo != null)

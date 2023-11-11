@@ -498,16 +498,17 @@
                                 <DataGridTemplateColumn.CellEditingTemplate>
                                     <DataTemplate>
                                         <ComboBox 
-                                                DisplayMemberPath="Label"
-                                                SelectedValuePath="id"
-                                                IsTextSearchEnabled="False"
-                                                IsEditable="True"
-                                                StaysOpenOnEdit="True"
-                                                TextBoxBase.TextChanged="ComisionComboBox_TextChanged"
-                                                GotFocus="ComisionComboBox_GotFocus"
-                                                SelectionChanged="ComisionComboBox_SelectionChanged"
-                                                SelectedValue="{Binding comision}"
-                                                ItemsSource="{Binding Comisiones}">
+                                            Name="comision"
+                                            DisplayMemberPath="Label"
+                                            SelectedValuePath="id"
+                                            IsTextSearchEnabled="False"
+                                            IsEditable="True"
+                                            StaysOpenOnEdit="True"
+                                            TextBoxBase.TextChanged="ComisionComboBox_TextChanged"
+                                            GotFocus="ComisionComboBox_GotFocus"
+                                            SelectionChanged="ComisionComboBox_SelectionChanged"
+                                            SelectedValue="{Binding comision}"
+                                            ItemsSource="{Binding Comisiones}">
                                         </ComboBox>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellEditingTemplate>
@@ -549,27 +550,12 @@
                     <WrapPanel>
                         <Label>Filtro</Label>
                         <TextBox Name ="calificacionFilterTextBox"
-                             TextChanged="CalificacionFilterTextBox_TextChanged"></TextBox>
+                             TextChanged="CalificacionFilterTextBox_TextChanged" Width="200"></TextBox>
                     </WrapPanel>
 
                     <DataGrid  Grid.Row="1" Name="calificacionDataGrid" AutoGenerateColumns="False">
             
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="disposision template" Width="200">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding disposicion,ValidatesOnDataErrors=True}"></TextBlock>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                                <DataGridTemplateColumn.CellEditingTemplate>
-                                    <DataTemplate>
-                                        <TextBox Text="{Binding disposicion,ValidatesOnDataErrors=True}" ></TextBox>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellEditingTemplate>
-                            </DataGridTemplateColumn>
-
-
-                            <DataGridTextColumn Header="Disposicion text" Binding="{Binding disposicion, ValidatesOnDataErrors=True, NotifyOnValidationError=True}"></DataGridTextColumn>
                             <DataGridComboBoxColumn Header="Disposicion">
                                 <DataGridComboBoxColumn.ElementStyle>
                                     <Style TargetType="ComboBox">
@@ -593,6 +579,50 @@
                                     </Style>
                                 </DataGridComboBoxColumn.EditingElementStyle>
                             </DataGridComboBoxColumn>
+
+                            <DataGridTextColumn Header="Nota" Binding="{Binding nota_final, ValidatesOnDataErrors=True}"></DataGridTextColumn>
+
+                            <DataGridTextColumn Header="Crec" Binding="{Binding crec, ValidatesOnDataErrors=True}"></DataGridTextColumn>
+
+                            <DataGridTemplateColumn Header="fecha">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding fecha, StringFormat={}{0:dd/MM/yyyy}, ValidatesOnDataErrors=True}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <DatePicker SelectedDate="{Binding fecha, ValidatesOnDataErrors=True}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+
+
+                            <DataGridTemplateColumn Header="Curso">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding curso__Label}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <ComboBox 
+                                            DisplayMemberPath="Label"
+                                            SelectedValuePath="id"
+                                            IsTextSearchEnabled="False"
+                                            IsEditable="True"
+                                            StaysOpenOnEdit="True"
+                                            TextBoxBase.TextChanged="CursoComboBox_TextChanged"
+                                            GotFocus="CursoComboBox_GotFocus"
+                                            SelectionChanged="CursoComboBox_SelectionChanged"
+                                            SelectedValue="{Binding curso}"
+                                            ItemsSource="{Binding Cursos}">
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

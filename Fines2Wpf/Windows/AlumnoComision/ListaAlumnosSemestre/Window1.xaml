@@ -89,7 +89,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <DatePicker SelectedDate="{Binding persona__fecha_nacimiento}" />
+                            <DatePicker Name="persona__fecha_nacimiento" SelectedDate="{Binding persona__fecha_nacimiento}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>

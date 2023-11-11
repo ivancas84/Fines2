@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using System.Windows.Threading;
 using Utils;
 using WpfUtils;
@@ -24,6 +25,8 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
     {
         private DAO.Persona personaDAO = new(); //objeto de acceso a datos
         private DAO.Comision comisionDAO = new(); //objeto de acceso a datos
+        private DAO.Curso cursoDAO = new(); //objeto de acceso a datos
+
 
         private ObservableCollection<Data_persona> personaOC = new(); //datos consultados de la base de datos
         private ObservableCollection<Data_resolucion_r> resolucionOC = new(); //datos consultados de la base de datos
@@ -35,6 +38,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         private ObservableCollection<Asignacion> asignacionOC = new(); //datos a visualizar
         private DispatcherTimer typingTimerComision; //timer para busqueda de comision en asignacion
         private Asignacion asignacion; //asignacion que esta siendo editada
+
         #endregion
 
         #region calificacionGroupBox
@@ -43,6 +47,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         DispatcherTimer calificacionTypingTimer; //timer para filtro
         Calificacion calificacion; //calificacion que esta siendo administrada
         private ObservableCollection<Data_disposicion_r> disposicionOC = new(); //datos a visualizar del comboBox
+        private DispatcherTimer cursoTypingTimer; //timer para busqueda de comision en asignacion
         #endregion
 
         public Window1()
@@ -101,6 +106,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             #region asignacionDataGrid
             asignacionDataGrid.ItemsSource = asignacionOC;
+            asignacionDataGrid.CellEditEnding += AsignacionDataGrid_CellEditEnding;
             #endregion
 
             #region calificacionGroupBox
@@ -111,7 +117,27 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             #endregion
         }
 
-        
+        private void AsignacionDataGrid_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
+        {
+            string key = "";
+
+            object? value = null;
+
+
+
+            //GET KEY AND VALUE
+            var columnT = e.Column as DataGridTemplateColumn;
+            if (columnT != null)
+            {
+                var comboBox = VisualTreeHelper.GetChild(e.EditingElement, 0) as ComboBox;
+                key = comboBox.Name;
+                value = comboBox.SelectedValue;
+            }
+
+
+
+        }
+
         private void SetPersonaGroupBox(Data_persona? persona = null)
         {
             if (persona.IsNullOrEmpty())
@@ -185,10 +211,17 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             {
                 var calificacion = item.Obj<Calificacion>();
 
+
                 var val = ContainerApp.db.Values("disposicion", "disposicion").Set(item);
                 var disposicion = val.values.Obj<Data_disposicion_r>();
                 disposicion.Label = val.ToString();
                 calificacion.Disposiciones.Add(disposicion);
+
+                var valc = (Values.Curso)ContainerApp.db.Values("curso", "curso").Set(item);
+                var curso = val.values.Obj<Data_curso_r>();
+                curso.Label = valc.ToStringDocente();
+                calificacion.curso__Label = curso.Label;
+
                 calificacion.Validate = true;
                 calificacionOC.Add(calificacion);
             }
@@ -526,7 +559,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             }
         }
-        #endregion
 
         private void DisposicionComboBox_LostFocus(object sender, RoutedEventArgs e)
         {
@@ -534,6 +566,86 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             var calificacion = (Calificacion)cb.DataContext; //se carga la asignacion que esta siendo editada
             cb.SelectedValue = calificacion.disposicion;
         }
+        
+        private void CursoComboBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var cb = (ComboBox)sender;
+
+            if (cb!.Text.IsNullOrEmpty())
+                cb.IsDropDownOpen = true;
+
+            if (cb.SelectedIndex > -1)
+            {
+                if (cb.Text.Equals(((Data_curso_r)cb.SelectedItem).Label))
+                    return;
+
+                cb.Text = ""; //si hay seleccionado y cambio al texto, se blanquea el texto. Si no se incluye esta opción el texto se blanquea igual por defecto, pero tarda mas tiempo y es mas engorroso
+            }
+
+            calificacion = (Calificacion)cb.DataContext; //se carga la asignacion que esta siendo editada
+            calificacion.SearchCurso = cb.Text;
+
+            if (cursoTypingTimer == null)
+            {
+                cursoTypingTimer = new DispatcherTimer();
+                cursoTypingTimer.Interval = TimeSpan.FromMilliseconds(300);
+                cursoTypingTimer.Tick += new EventHandler(CursoComboBox_HandleTypingTimerTimeout!);
+            }
+
+            cursoTypingTimer.Stop(); // Resets the timer
+            cursoTypingTimer.Tag = calificacion.SearchCurso; // This should be done with EventArgs
+            cursoTypingTimer.Start();
+        }
+
+        private void CursoComboBox_HandleTypingTimerTimeout(object sender, EventArgs e)
+        {
+            var timer = sender as DispatcherTimer;
+            if (timer == null)
+                return;
+
+            _CursoComboBox_TextChanged();
+
+            timer.Stop(); // The timer must be stopped! We want to act only once per keystroke.
+        }
+
+        private void _CursoComboBox_TextChanged()
+        {
+            calificacion.Cursos.Clear();
+
+            if (string.IsNullOrEmpty(calificacion.SearchCurso) || calificacion.SearchCurso.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
+                return;
+
+            IEnumerable<Dictionary<string, object?>> list = cursoDAO.BusquedaAproximadaQuery(calificacion.SearchCurso).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            foreach (var item in list)
+            {
+                var val = (Values.Curso)ContainerApp.db.Values("curso").Set(item);
+                var obj = val.values.Obj<Data_curso_r>();
+                obj.Label = val.ToStringDocente();
+                calificacion.Cursos.Add(obj);
+            }
+        }
+        private void CursoComboBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            (sender as ComboBox)!.IsDropDownOpen = true;
+        }
+
+        private void CursoComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var cb = (ComboBox)sender;
+            var calificacion = (Calificacion)cb.DataContext; //se carga la asignacion que esta siendo editada
+            if (cb.SelectedIndex > -1)
+            {
+                ContainerApp.db.Persist("calificacion").UpdateValue("curso", cb.SelectedValue, new List<object>() { calificacion.id }).Exec().RemoveCache();
+                calificacion.curso__Label = (cb.SelectedItem as Data_curso_r)!.Label;
+            }
+
+            else
+            {
+                calificacion.curso__Label = "";
+                cb.IsDropDownOpen = true;
+            }
+        }
+        #endregion
     }
 
     public class EstadoData

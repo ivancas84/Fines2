@@ -35,6 +35,9 @@ namespace Fines2Wpf
 
                 case "disposicion":
                     return new Disposicion(this, entityName, fieldId);
+
+                case "curso":
+                    return new Curso(this, entityName, fieldId);
             }
 
             return new EntityValues(this, entityName, fieldId);

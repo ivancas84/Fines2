@@ -454,6 +454,30 @@ namespace SqlOrganize
             return null;
         }
 
+        public EntityValues? ValuesRel(string fieldId)
+        {
+            Entity entity = db.Entity(entityName);
+            EntityRelation rel = entity.relations[fieldId];
+            if(rel.parentId == null)
+            {
+                object? val = GetOrNull(rel.fieldName);
+                if (!val.IsNullOrEmpty())
+                {
+                    var data = db.Query(rel.refEntityName)._CacheById(val!);
+                    return db.Values(rel.refEntityName).Set(data!);
+                }
+            } 
+            else
+            {
+                EntityValues? values = ValuesRel(rel.parentId);                
+                if (!values.IsNullOrEmpty())
+                    return values!.ValuesRel(fieldId);
+            }
+            return null;
+        }
+
+
+
         public override string ToString()
         {
             List<string> fieldNames = ToStringFields();
