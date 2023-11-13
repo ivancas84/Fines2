@@ -128,7 +128,13 @@ namespace SqlOrganize
         }
 
 
-
+        /// <summary>
+        /// Seteo "lento", con verificacion y convercion de tipo de datos.
+        /// </summary>
+        /// <param name="fieldName"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <remarks>Este metodo se encuentra en construccion!!! A medida que se van procesando los datos se agregan</remarks>
         public EntityValues Sset(string fieldName, object? value)
         {
             var method = "Sset_" + fieldName;
@@ -149,19 +155,35 @@ namespace SqlOrganize
                 case "string":
                     values[fieldName] = (string)value;
                     break;
-                case "int":
-                    values[fieldName] = Int32.Parse(value.ToString());
+
+                case "decimal":
+                    if(value is decimal)
+                        values[fieldName] = (Decimal)value;
+                    else
+                        values[fieldName] = Decimal.Parse(value.ToString()!);
                     break;
+
+                case "int":
+                case "Int32":
+                    if (value is Int32)
+                        values[fieldName] = (Int32)value;
+                    else 
+                        values[fieldName] = Int32.Parse(value.ToString()!);
+                    break;
+
                 case "bool":
                     if(value is bool)
                         values[fieldName] = (bool)value;
                     else 
-                        values[fieldName] = (value as string).ToBool();
-                    break;
-                case "date":
-                    throw new NotImplementedException();
+                        values[fieldName] = (value as string)!.ToBool();
                     break;
 
+                case "DateTime":
+                    if (value is DateTime)
+                        values[fieldName] = (DateTime)value;
+                    else
+                        values[fieldName] = DateTime.Parse(value.ToString()!);
+                    break;
             }
 
             return this;

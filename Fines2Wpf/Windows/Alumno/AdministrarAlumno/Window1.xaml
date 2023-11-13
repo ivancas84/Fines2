@@ -22,7 +22,6 @@
 
         <Grid>
             <Grid.RowDefinitions>
-                
                 <RowDefinition Height = "Auto" />
                 <RowDefinition Height = "Auto" />
                 <RowDefinition Height = "Auto" />
@@ -485,7 +484,12 @@
                       Grid.Row = "3" 
                       Margin="16"
 	                  materialDesign:ElevationAssist.Elevation="Dp3">
-                
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "*" />
+                    </Grid.RowDefinitions>
+                    
                     <DataGrid Name="asignacionDataGrid" CanUserAddRows="False" AutoGenerateColumns="False">
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="Comision">
@@ -514,22 +518,31 @@
                                 </DataGridTemplateColumn.CellEditingTemplate>
                             </DataGridTemplateColumn>
 
-      
-
                             <DataGridComboBoxColumn Header="Estado"  
                                 SelectedValueBinding="{Binding estado}" 
                                 ItemsSource="{Binding Source={StaticResource estados}}">
-                                <DataGridComboBoxColumn.EditingElementStyle>
-                                    <Style TargetType="{x:Type ComboBox}">
-                                        <EventSetter Event="SelectionChanged" Handler="EstadoComboBox_SelectionChanged" />
-                                    </Style>
-                                </DataGridComboBoxColumn.EditingElementStyle>
                             </DataGridComboBoxColumn>
-                            
 
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <WrapPanel>
+                                            <Button Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                                                    Click="GuardarAsignacion_Click">Guardar</Button>
+                                            <Button Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                                                    Click="EliminarAsignacion_Click">Eliminar</Button>
+                                        </WrapPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
                     </DataGrid>
-                
+
+                    <Button Grid.Row="1" 
+                            Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                            Content="Agregar Registro" 
+                            Click="AgregarAsignacion_Click" />
+                </Grid>
             </GroupBox>
             
             <GroupBox Name="calificacionGroupBox"
@@ -553,7 +566,11 @@
                              TextChanged="CalificacionFilterTextBox_TextChanged" Width="200"></TextBox>
                     </WrapPanel>
 
-                    <DataGrid  Grid.Row="1" Name="calificacionDataGrid" AutoGenerateColumns="False">
+                    <DataGrid 
+                        CanUserAddRows="False" 
+                        Grid.Row="1" 
+                        Name="calificacionDataGrid" 
+                        AutoGenerateColumns="False">
             
                         <DataGrid.Columns>
                             <DataGridComboBoxColumn Header="Disposicion">
@@ -584,7 +601,7 @@
 
                             <DataGridTextColumn Header="Crec" Binding="{Binding crec, ValidatesOnDataErrors=True}"></DataGridTextColumn>
 
-                            <DataGridTemplateColumn Header="fecha">
+                            <DataGridTemplateColumn Header="Fecha">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding fecha, StringFormat={}{0:dd/MM/yyyy}, ValidatesOnDataErrors=True}" />
@@ -592,11 +609,10 @@
                                 </DataGridTemplateColumn.CellTemplate>
                                 <DataGridTemplateColumn.CellEditingTemplate>
                                     <DataTemplate>
-                                        <DatePicker SelectedDate="{Binding fecha, ValidatesOnDataErrors=True}" />
+                                        <DatePicker Name="fecha" SelectedDate="{Binding fecha, ValidatesOnDataErrors=True}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellEditingTemplate>
                             </DataGridTemplateColumn>
-
 
                             <DataGridTemplateColumn Header="Curso">
                                 <DataGridTemplateColumn.CellTemplate>
@@ -625,6 +641,8 @@
 
                         </DataGrid.Columns>
                     </DataGrid>
+
+                  
                 </Grid>
 
                 

@@ -36,7 +36,10 @@ namespace Fines2Wpf.Windows.AlumnoComision.DesactivarAlumnosNoCalificados
             List<object> ids = new();
             foreach (var alumnoComision in alumnosComisiones)
             {
-                var q = calificacionDAO.CantidadCalificacionesAprobadasDeAlumnoPorTramo(alumnoComision["alumno"], alumnoComision["planificacion-anio"], alumnoComision["planificacion-semestre"]);
+
+                var qu = calificacionDAO.CantidadCalificacionesAprobadasDeAlumnoPorTramoQuery(alumnoComision["alumno"], alumnoComision["planificacion-anio"], alumnoComision["planificacion-semestre"]).DictCache();
+                var q = (qu.IsNullOrEmpty()) ? (Int64)qu["cantidad"]! :  0;
+                
                 if (q < 3)
                 {
                     ids.Add(alumnoComision["id"]);

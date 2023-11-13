@@ -23,9 +23,10 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
     /// </summary>
     public partial class Window1 : Window
     {
-        private DAO.Persona personaDAO = new(); //objeto de acceso a datos
-        private DAO.Comision comisionDAO = new(); //objeto de acceso a datos
-        private DAO.Curso cursoDAO = new(); //objeto de acceso a datos
+        private DAO.Persona personaDAO = new(); //objeto de acceso a datos de persona
+        private DAO.Comision comisionDAO = new(); //objeto de acceso a datos de comision
+        private DAO.Curso cursoDAO = new(); //objeto de acceso a datos de curso
+        private DAO.Calificacion calificacionDAO = new(); //objeto de acceso a datos de calificacion
 
 
         private ObservableCollection<Data_persona> personaOC = new(); //datos consultados de la base de datos
@@ -106,7 +107,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             #region asignacionDataGrid
             asignacionDataGrid.ItemsSource = asignacionOC;
-            asignacionDataGrid.CellEditEnding += AsignacionDataGrid_CellEditEnding;
             #endregion
 
             #region calificacionGroupBox
@@ -114,28 +114,8 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             calificacionCV = calificacionCVS.View;
             calificacionCV.Filter = CalificacionCV_Filter;
             calificacionDataGrid.ItemsSource = calificacionCV;
+            calificacionDataGrid.CellEditEnding += CalificacionDataGrid_CellEditEnding;
             #endregion
-        }
-
-        private void AsignacionDataGrid_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
-        {
-            string key = "";
-
-            object? value = null;
-
-
-
-            //GET KEY AND VALUE
-            var columnT = e.Column as DataGridTemplateColumn;
-            if (columnT != null)
-            {
-                var comboBox = VisualTreeHelper.GetChild(e.EditingElement, 0) as ComboBox;
-                key = comboBox.Name;
-                value = comboBox.SelectedValue;
-            }
-
-
-
         }
 
         private void SetPersonaGroupBox(Data_persona? persona = null)
@@ -203,14 +183,14 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             calificacionOC.Clear();
 
-            var data = ContainerApp.db.Query("calificacion").
-                Where("$alumno = @0").
-                Parameters(a.id!).ColOfDictCache();
+            if (a.plan.IsNullOrEmpty())
+                return;
+            
+            var data = calificacionDAO.CalificacionesDeAlumnoPlanArchivoQuery(a.id!, a.plan!, false).ColOfDictCache();
 
             foreach (var item in data)
             {
                 var calificacion = item.Obj<Calificacion>();
-
 
                 var val = ContainerApp.db.Values("disposicion", "disposicion").Set(item);
                 var disposicion = val.values.Obj<Data_disposicion_r>();
@@ -226,6 +206,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 calificacionOC.Add(calificacion);
             }
         }
+
         private void LoadDisposiciones(Data_alumno a)
         {
             disposicionOC.Clear();
@@ -245,13 +226,11 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             }
         }
 
-
         private void Window1_ContentRendered(object? sender, EventArgs e)
         {
             SetPersonaGroupBox();
             SetAlumnoGroupBox();
         }
-
 
         private void GuardarPersonaButton_Click(object sender, RoutedEventArgs e)
         {
@@ -296,8 +275,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             }
         }
 
-
-
         private void PersonaComboBox_GotFocus(object sender, RoutedEventArgs e)
         {
             personaComboBox.IsDropDownOpen = true;
@@ -341,7 +318,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             timer.Stop();
         }
 
-
         private void _PersonaComboBox_TextChanged()
         {
 
@@ -360,7 +336,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 personaOC.Add(o);
             }
         }
-
 
         private void PersonaComboBox_SelectionChanged(object sender, RoutedEventArgs e)
         {
@@ -391,10 +366,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 this.personaComboBox.IsDropDownOpen = true;
             }
         }
-
-        
-
-
 
         #region asignacionGroupBox
         private void ComisionComboBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -468,10 +439,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (cb.SelectedIndex > -1) 
             {
                 if(!cb.SelectedValue.ToString()!.Equals(asignacion.comision))
-                { 
-                    ContainerApp.db.Persist("alumno_comision").UpdateValue("comision", cb.SelectedValue, new List<object>() { asignacion.id }).Exec().RemoveCache();
                     asignacion.comision__Label = (cb.SelectedItem as Data_comision_r)!.Label;
-                }
             }
             else
             {
@@ -481,19 +449,48 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         }
 
-
-        #endregion asignacionGroupBox
-
-        private void EstadoComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void AgregarAsignacion_Click(object sender, RoutedEventArgs e)
         {
-            var cb = (ComboBox)sender;
-            var asignacion = (Asignacion)cb.DataContext; //se carga la asignacion que esta siendo editada
-            if (cb.SelectedIndex > -1)
-            { 
-                if(!cb.SelectedValue.ToString()!.Equals(asignacion.estado))
-                    ContainerApp.db.Persist("alumno_comision").UpdateValue("estado", cb.SelectedValue, new List<object>() { asignacion.id }).Exec().RemoveCache();
+            var a = new Asignacion();
+            var alumno = (Data_alumno)alumnoGroupBox.DataContext;
+            a.alumno = alumno.id;
+            asignacionOC.Add(a);
+        }
+
+        private void GuardarAsignacion_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var asignacion = (Data_alumno_comision)button!.DataContext;
+            var p = ContainerApp.db.Persist("alumno_comision");
+            try
+            {
+                p.PersistObj(asignacion).Exec().RemoveCache();
+                MessageBox.Show("Registro realizado");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
+
+        private void EliminarAsignacion_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var a = (Asignacion)button!.DataContext;
+            try
+            {
+                if (!a.id.IsNullOrEmpty())
+                    ContainerApp.db.Persist("alumno_comision").DeleteIds(new object[] { a.id! }).Exec().RemoveCache();
+                asignacionOC.Remove(a);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        #endregion asignacionGroupBox
 
 
         #region calificacionGroupBox
@@ -645,7 +642,39 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 cb.IsDropDownOpen = true;
             }
         }
+
+
+        private void CalificacionDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            string key = "";
+            object? value = null;
+
+            var column = e.Column as DataGridBoundColumn;
+            if (column != null)
+            {
+                key = ((Binding)column.Binding).Path.Path; //column's binding
+                value = (e.EditingElement as TextBox)!.Text;
+            }
+
+            var columnT = e.Column as DataGridTemplateColumn;
+            if (columnT != null)
+            {
+                var datePicker = VisualTreeHelper.GetChild(e.EditingElement, 0) as DatePicker;
+                if (datePicker != null)
+                {
+                    key = datePicker.Name;
+                    value = datePicker.SelectedDate;
+                }
+            }
+
+            if (key.IsNullOrEmpty())
+                return;
+
+            e.DataGridCellEditEndingEventArgs_CellEditEnding<Data_alumno_comision_r>("calificacion", key, value);
+
+        }
         #endregion
+
     }
 
     public class EstadoData
