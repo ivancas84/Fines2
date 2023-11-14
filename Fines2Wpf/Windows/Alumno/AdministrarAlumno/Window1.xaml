@@ -27,6 +27,7 @@
                 <RowDefinition Height = "Auto" />
                 <RowDefinition Height = "*" />
                 <RowDefinition Height = "*" />
+                <RowDefinition Height = "*" />
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -646,6 +647,30 @@
                 </Grid>
 
                 
+            </GroupBox>
+
+
+            <GroupBox Name="detallePersonaGroupBox" 
+                      Grid.Row="5"
+                      Panel.ZIndex="1"
+                      Header="Asignaciones"
+                      Margin="16"
+	                  materialDesign:ElevationAssist.Elevation="Dp3">
+                <DataGrid Name="detallePersonaDataGrid">
+                    <DataGrid.Columns>
+
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Click="DescargarArchivo_Click">Descargar</Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+
+
+                </DataGrid>
+
             </GroupBox>
         </Grid>
 

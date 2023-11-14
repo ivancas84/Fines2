@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -49,6 +50,10 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         Calificacion calificacion; //calificacion que esta siendo administrada
         private ObservableCollection<Data_disposicion_r> disposicionOC = new(); //datos a visualizar del comboBox
         private DispatcherTimer cursoTypingTimer; //timer para busqueda de comision en asignacion
+        #endregion
+
+        #region detallePersonaGroupBox
+        private ObservableCollection<Data_detalle_persona_r> detallePersonaOC = new();
         #endregion
 
         public Window1()
@@ -115,6 +120,10 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             calificacionCV.Filter = CalificacionCV_Filter;
             calificacionDataGrid.ItemsSource = calificacionCV;
             calificacionDataGrid.CellEditEnding += CalificacionDataGrid_CellEditEnding;
+            #endregion
+
+            #region detallePersonaGroupBox
+            detallePersonaDataGrid.ItemsSource = detallePersonaOC;
             #endregion
         }
 
@@ -223,6 +232,21 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 var disposicion = item.Obj<Data_disposicion_r>();
                 disposicion.Label = ContainerApp.db.Values("disposicion").Set(item).ToString();                
                 disposicionOC.Add(disposicion);
+            }
+        }
+
+        private void LoadDetalles(Data_persona p)
+        {
+            detallePersonaOC.Clear();
+
+            var data = ContainerApp.db.Query("detalle_persona").
+                Where("$persona = @0").
+                Parameters(p.id!).ColOfDictCache();
+
+            foreach (var item in data)
+            {
+                var detalle = item.Obj<Data_detalle_persona_r>();
+                detallePersonaOC.Add(detalle);
             }
         }
 
@@ -353,6 +377,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 LoadAsignaciones(a);
                 LoadCalificaciones(a);
                 LoadDisposiciones(a);
+                LoadDetalles(pcb);
             }
             else
             {
@@ -361,7 +386,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 asignacionOC.Clear();
                 calificacionOC.Clear();
                 disposicionOC.Clear();
-
+                detallePersonaOC.Clear();
 
                 this.personaComboBox.IsDropDownOpen = true;
             }
@@ -439,6 +464,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (cb.SelectedIndex > -1) 
             {
                 if(!cb.SelectedValue.ToString()!.Equals(asignacion.comision))
+                    asignacion.comision = cb.SelectedValue.ToString();
                     asignacion.comision__Label = (cb.SelectedItem as Data_comision_r)!.Label;
             }
             else
@@ -675,6 +701,15 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         }
         #endregion
 
+        private void DescargarArchivo_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var dp = (Data_detalle_persona_r)button.DataContext;
+            WebClient client = new WebClient();
+            client.Credentials = new NetworkCredential("planfi10", "Marcelita1024");
+            client.DownloadFile(
+                "ftp://ftp.planfines2.com.ar/remote/path/file.zip", @"C:\local\path\file.zip");
+        }
     }
 
     public class EstadoData
