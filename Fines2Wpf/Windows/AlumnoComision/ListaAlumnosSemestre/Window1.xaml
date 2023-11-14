@@ -7,8 +7,7 @@
         xmlns:proxy="clr-namespace:WpfUtils"
         mc:Ignorable="d"
         Title="Window1" Height="450" Width="800"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        >
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:control="clr-namespace:WpfUtils.Controls">
     <Window.Resources>
         <ObjectDataProvider x:Key="estadosInscripcion" ObjectType="{x:Type local:EstadoInscripcionData}" MethodName="Estados" />
     </Window.Resources>
@@ -89,7 +88,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
-                            <DatePicker Name="persona__fecha_nacimiento" SelectedDate="{Binding persona__fecha_nacimiento}" />
+                            <control:CustomDatePicker x:Name="persona__fecha_nacimiento" SelectedDate="{Binding persona__fecha_nacimiento}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>

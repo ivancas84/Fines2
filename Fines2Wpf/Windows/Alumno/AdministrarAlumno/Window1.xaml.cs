@@ -708,7 +708,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             WebClient client = new WebClient();
             client.Credentials = new NetworkCredential("planfi10", "Marcelita1024");
             client.DownloadFile(
-                "ftp://ftp.planfines2.com.ar/remote/path/file.zip", @"C:\local\path\file.zip");
+                "ftp://ftp.planfines2.com.ar/domains/planfines2.com.ar/public_html/upload/" + dp.archivo__content, @"C:\Users\ivan\Downloads\test.jpg");
         }
     }
 
