@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
@@ -53,7 +54,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         #endregion
 
         #region detallePersonaGroupBox
-        private ObservableCollection<Data_detalle_persona_r> detallePersonaOC = new();
+        private ObservableCollection<DetallePersona> detallePersonaOC = new();
         #endregion
 
         public Window1()
@@ -245,7 +246,8 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             foreach (var item in data)
             {
-                var detalle = item.Obj<Data_detalle_persona_r>();
+                var detalle = item.Obj<DetallePersona>();
+                detalle.arch = detalle.archivo;
                 detallePersonaOC.Add(detalle);
             }
         }
@@ -703,12 +705,46 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void DescargarArchivo_Click(object sender, RoutedEventArgs e)
         {
+            
             var button = (e.OriginalSource as Button);
-            var dp = (Data_detalle_persona_r)button.DataContext;
+            var dp = (DetallePersona)button.DataContext;
             WebClient client = new WebClient();
-            client.Credentials = new NetworkCredential("planfi10", "Marcelita1024");
+            client.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
             client.DownloadFile(
-                "ftp://ftp.planfines2.com.ar/domains/planfines2.com.ar/public_html/upload/" + dp.archivo__content, @"C:\Users\ivan\Downloads\test.jpg");
+                ContainerApp.config.upload + dp.archivo__content, ContainerApp.config.download);
+        }
+
+        private void BrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog openFileDlg = new Microsoft.Win32.OpenFileDialog();
+
+            var button = (e.OriginalSource as Button);
+            var dp = (DetallePersona)button!.DataContext;
+
+            bool? result = openFileDlg.ShowDialog();  // Launch OpenFileDialog by calling ShowDialog method
+
+            if (result == true)
+            {
+                dp.arch = openFileDlg.FileName; // Get the selected file name and display in a TextBox.
+                                                //var texto = System.IO.File.ReadAllText(openFileDlg.FileName); //read content
+
+                try
+                {
+                    var yearMonth = DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString();
+                    //create the directory
+                    WebRequest requestDir = WebRequest.Create(new Uri(ContainerApp.config.upload + "/test/" + yearMonth));
+                    requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
+                    requestDir.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
+                    using FtpWebResponse response = (FtpWebResponse)requestDir.GetResponse();
+                    {
+                        MessageBox.Show(response.StatusCode.ToString());
+                    }
+                }
+                catch (WebException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
     }
 

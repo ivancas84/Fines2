@@ -27,6 +27,10 @@ namespace Fines2Wpf
             emailDocenteFromAddress = ConfigurationManager.AppSettings.Get("emailDocenteFromAddress"),
             emailDocenteFromName = ConfigurationManager.AppSettings.Get("emailDocenteFromName"),
             emailDocenteBcc = ConfigurationManager.AppSettings.Get("emailDocenteBcc"),
+            upload = ConfigurationManager.AppSettings.Get("upload"),
+            download = ConfigurationManager.AppSettings.Get("download"),
+            ftpUserName = ConfigurationManager.AppSettings.Get("ftpUserName"),
+            ftpUserPassword = ConfigurationManager.AppSettings.Get("ftpUserPassword"),
         };
 
         public static SqlOrganize.DAO dao;

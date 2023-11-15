@@ -1,5 +1,4 @@
 ﻿using Fines2Wpf.Model;
-using MaterialDesignColors;
 using SqlOrganize;
 
 namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
