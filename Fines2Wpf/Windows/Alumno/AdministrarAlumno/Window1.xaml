@@ -656,28 +656,48 @@
                       Header="Asignaciones"
                       Margin="16"
 	                  materialDesign:ElevationAssist.Elevation="Dp3">
-                <DataGrid Name="detallePersonaDataGrid" AutoGenerateColumns="True">
+                <DataGrid Name="detallePersonaDataGrid" AutoGenerateColumns="False">
                     <DataGrid.Columns>
+
+                        <DataGridHyperlinkColumn 
+                             Binding="{Binding archivo__name}"
+                             ContentBinding="{Binding archivo__name}"
+                             Header="Product"
+                             IsReadOnly="True">
+                                    <DataGridHyperlinkColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                           <EventSetter Event="Hyperlink.Click" Handler="DescargarArchivo_Click" />
+                                        </Style>
+                                    </DataGridHyperlinkColumn.ElementStyle>
+                        </DataGridHyperlinkColumn>
 
                         <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Click="DescargarArchivo_Click">Descargar</Button>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
-
-                        <DataGridTemplateColumn Header="Archivo">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
                                     <WrapPanel>
-                                        <TextBlock Text="{Binding archivo__name}" />
-                                        <Button x:Name="BrowseButton" Content="Browse a file" Click="BrowseButton_Click" />
+                                        <Button x:Name="BrowseButton"  Click="BrowseButton_Click" Style="{DynamicResource MaterialDesignFlatButton}">
+                                            <materialDesign:PackIcon Kind="Search"></materialDesign:PackIcon>
+                                        </Button>
                                     </WrapPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
-                            
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Binding="{Binding archivo__name}" ></DataGridTextColumn>
+                        
+
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <WrapPanel>
+                                        <Button x:Name="DownloadButton"  Click="DescargarArchivo_Click" Style="{DynamicResource MaterialDesignFlatButton}">
+                                            <materialDesign:PackIcon Kind="DownloadBoxOutline"></materialDesign:PackIcon>
+                                        </Button>
+                                        <Button x:Name="BrowseButton"  Click="BrowseButton_Click" Style="{DynamicResource MaterialDesignFlatButton}">
+                                            <materialDesign:PackIcon Kind="Search"></materialDesign:PackIcon>
+                                        </Button>
+                                    </WrapPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     
                     </DataGrid.Columns>

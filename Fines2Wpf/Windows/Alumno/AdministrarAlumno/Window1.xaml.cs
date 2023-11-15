@@ -12,6 +12,7 @@ using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Utils;
@@ -706,13 +707,12 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void DescargarArchivo_Click(object sender, RoutedEventArgs e)
         {
-            
-            var button = (e.OriginalSource as Button);
-            var dp = (DetallePersona)button.DataContext;
+
+            var dp = ((Hyperlink)e.OriginalSource).DataContext as DetallePersona;
             WebClient client = new WebClient();
             client.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
             client.DownloadFile(
-                ContainerApp.config.upload + dp.archivo__content, ContainerApp.config.download);
+                ContainerApp.config.upload + dp.archivo__content, ContainerApp.config.download + dp.archivo__name);
         }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
