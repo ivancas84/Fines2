@@ -656,7 +656,7 @@
                       Header="Asignaciones"
                       Margin="16"
 	                  materialDesign:ElevationAssist.Elevation="Dp3">
-                <DataGrid Name="detallePersonaDataGrid" AutoGenerateColumns="False">
+                <DataGrid Name="detallePersonaDataGrid" AutoGenerateColumns="True">
                     <DataGrid.Columns>
 
                         <DataGridTemplateColumn>
@@ -671,17 +671,13 @@
                         <DataGridTemplateColumn Header="Archivo">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding arch}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                            <DataGridTemplateColumn.CellEditingTemplate>
-                                <DataTemplate>
                                     <WrapPanel>
-                                        <TextBox Text="{Binding arch}" />
+                                        <TextBlock Text="{Binding archivo__name}" />
                                         <Button x:Name="BrowseButton" Content="Browse a file" Click="BrowseButton_Click" />
                                     </WrapPanel>
                                 </DataTemplate>
-                            </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            
                         </DataGridTemplateColumn>
                     
                     </DataGrid.Columns>

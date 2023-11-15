@@ -1,6 +1,7 @@
 ﻿
 using Fines2Wpf.Model;
 using Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre;
+using Microsoft.Win32;
 using SqlOrganize;
 using System;
 using System.Collections.Generic;
@@ -725,20 +726,38 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             if (result == true)
             {
-                dp.arch = openFileDlg.FileName; // Get the selected file name and display in a TextBox.
-                                                //var texto = System.IO.File.ReadAllText(openFileDlg.FileName); //read content
-
+                
+                WebRequest requestDir = WebRequest.Create(ContainerApp.config.upload + DateTime.Now.Year.ToString());
+                requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
+                requestDir.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
+                try { 
+                    requestDir.GetResponse();
+                } catch (Exception ex)
+                {
+                    //ignorar excepcion directorio existente
+                }
+                requestDir = WebRequest.Create(ContainerApp.config.upload + DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString());
+                requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
+                requestDir.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
                 try
                 {
-                    var yearMonth = DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString();
-                    //create the directory
-                    WebRequest requestDir = WebRequest.Create(new Uri(ContainerApp.config.upload + "/test/" + yearMonth));
-                    requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
-                    requestDir.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
-                    using FtpWebResponse response = (FtpWebResponse)requestDir.GetResponse();
-                    {
-                        MessageBox.Show(response.StatusCode.ToString());
-                    }
+                    requestDir.GetResponse();
+                }
+                catch (Exception ex)
+                {
+                    //ignorar excepcion directorio existente
+                }
+                
+                try
+                {
+                    var dir = ContainerApp.config.upload + DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString() + "/";
+                    WebClient client = new WebClient();
+                    client.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
+
+                    var fileName = dp.id+Path.GetExtension(openFileDlg.SafeFileName);
+                    client.UploadFile(dir + "/" + fileName, openFileDlg.FileName);
+                    dp.archivo__content = DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString() + "/"+ fileName;
+                    dp.archivo__name = openFileDlg.SafeFileName;
                 }
                 catch (WebException ex)
                 {
