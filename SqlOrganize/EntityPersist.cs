@@ -222,6 +222,12 @@ WHERE " + id + " = @" + count + @";
             return UpdateValue(key, value, ids, _entityName);
         }
 
+        public EntityPersist InsertObj(object obj, string? entityName = null)
+        {
+            IDictionary<string, object?> dict = obj.Dict();
+            return Insert(dict, entityName);
+        }
+
         public EntityPersist Insert(EntityValues v)
         {
             if (!v.values.ContainsKey(Db.config.id) || v.values[Db.config.id].IsNullOrEmptyOrDbNull())
@@ -236,7 +242,7 @@ WHERE " + id + " = @" + count + @";
         /// <param name="_entityName"></param>
         /// <returns></returns>
         /// <remarks>Debe estar definido el id</remarks>
-        public EntityPersist Insert(IDictionary<string, object> row, string? _entityName = null)
+        public EntityPersist Insert(IDictionary<string, object?> row, string? _entityName = null)
         {
             _entityName = _entityName ?? entityName;
 

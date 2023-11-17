@@ -2,6 +2,7 @@
 using Fines2Wpf.Model;
 using Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre;
 using Microsoft.Win32;
+using MimeTypes;
 using SqlOrganize;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -707,12 +709,25 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void DescargarArchivo_Click(object sender, RoutedEventArgs e)
         {
+         
 
-            var dp = ((Hyperlink)e.OriginalSource).DataContext as DetallePersona;
+                var dp = ((Hyperlink)e.OriginalSource).DataContext as DetallePersona;
             WebClient client = new WebClient();
             client.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
-            client.DownloadFile(
-                ContainerApp.config.upload + dp.archivo__content, ContainerApp.config.download + dp.archivo__name);
+
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.InitialDirectory = ContainerApp.config.download;
+            saveFileDialog.RestoreDirectory = false;
+            saveFileDialog.Title = "Descargar archivo de legajo";
+            saveFileDialog.DefaultExt = Path.GetExtension(dp.archivo__name);
+            saveFileDialog.FileName =  dp.archivo__name;
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                client.DownloadFile(
+                ContainerApp.config.upload + dp.archivo__content, saveFileDialog.FileName);
+            }
+        
         }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
@@ -726,38 +741,30 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             if (result == true)
             {
+                string year = DateTime.Now.Year.ToString();
+                string month = DateTime.Now.Month.ToString();
                 
-                WebRequest requestDir = WebRequest.Create(ContainerApp.config.upload + DateTime.Now.Year.ToString());
-                requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
-                requestDir.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
-                try { 
-                    requestDir.GetResponse();
-                } catch (Exception ex)
-                {
-                    //ignorar excepcion directorio existente
-                }
-                requestDir = WebRequest.Create(ContainerApp.config.upload + DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString());
-                requestDir.Method = WebRequestMethods.Ftp.MakeDirectory;
-                requestDir.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
-                try
-                {
-                    requestDir.GetResponse();
-                }
-                catch (Exception ex)
-                {
-                    //ignorar excepcion directorio existente
-                }
-                
-                try
-                {
-                    var dir = ContainerApp.config.upload + DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString() + "/";
-                    WebClient client = new WebClient();
-                    client.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
+                WebRequestUtils.CreateDirectoryIfNotExists(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword, ContainerApp.config.upload, year);
+                WebRequestUtils.CreateDirectoryIfNotExists(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword, ContainerApp.config.upload + year + "/", month);
 
-                    var fileName = dp.id+Path.GetExtension(openFileDlg.SafeFileName);
-                    client.UploadFile(dir + "/" + fileName, openFileDlg.FileName);
-                    dp.archivo__content = DateTime.Now.Year.ToString() + "/" + DateTime.Now.Month.ToString() + "/"+ fileName;
-                    dp.archivo__name = openFileDlg.SafeFileName;
+                string dir = year + "/" + month;
+                FileInfo fileInfo = new(openFileDlg.FileName);
+
+                Data_file archivo = new(DataInitMode.Default);
+                var fileName = archivo.id + fileInfo.Extension;
+                
+                try
+                {
+                    WebRequestUtils.UploadFile(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword, ContainerApp.config.upload + dir + "/" + fileName, openFileDlg.FileName);
+                    archivo.name = openFileDlg.SafeFileName;
+                    archivo.content = dir + "/" + fileName;
+                    archivo.type = MimeTypeMap.GetMimeType(fileInfo.Extension);
+                    archivo.size = Convert.ToUInt32(fileInfo.Length);
+                    dp.archivo = archivo.id;
+                    dp.archivo__name = archivo.name;
+                    EntityPersist p = ContainerApp.db.Persist().InsertObj(archivo, "file");
+                    p.UpdateValue("archivo", archivo.id, new List<object>() { dp.id! }, "detalle_persona" );
+                    p.Transaction().RemoveCache();
                 }
                 catch (WebException ex)
                 {

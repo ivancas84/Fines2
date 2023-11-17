@@ -40,18 +40,53 @@
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width = "Auto" />
+                        <ColumnDefinition Width = "*" />
+                        <ColumnDefinition Width = "Auto" />
                         <ColumnDefinition Width = "*" />
                     </Grid.ColumnDefinitions>
-                
-                    <Label>Calificaciones
-                    </Label>
-                        <TextBox
-                            Name="calificaciones"
-                      TextWrapping="Wrap"
-                      AcceptsReturn="True"
-                      VerticalScrollBarVisibility="Visible"
-                    >       
-                    </TextBox>
+                    
+                    <Label>Calendario</Label>
+
+                    <ComboBox 
+                        Grid.Column="1"
+                        Name = "calendarioComboBox" 
+                        SelectedValue="{Binding calendario}"/>
+
+                    <Label
+                        Grid.Column="2">Curso</Label>
+
+                    <ComboBox 
+                        Grid.Column="3"
+                        Name="cursoComboBox"
+                        IsTextSearchEnabled="False"
+                        IsEditable="True"
+                        StaysOpenOnEdit="True"
+                        TextBoxBase.TextChanged="CursoComboBox_TextChanged"
+                        GotFocus="CursoComboBox_GotFocus"
+                        TextBoxBase.SelectionChanged="CursoComboBox_SelectionChanged"/>
+
+                    <Label 
+                        Grid.Row="1">Encabezados</Label>
+                    
+                    <TextBox 
+                        Grid.Column="1"
+                        Grid.ColumnSpan="3"
+                        Name="calificaciones"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        VerticalScrollBarVisibility="Visible"/>
+                    
+                    <Label 
+                        Grid.Row="2">Datos</Label>
+                    
+                    <TextBox 
+                        Grid.Column="1"
+                        Grid.ColumnSpan="3"
+                        Text="{Binding datos, TargetNullValue=''}"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        VerticalScrollBarVisibility="Visible"/>
                 </Grid>
 
             </GroupBox>
