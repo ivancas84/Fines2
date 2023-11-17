@@ -59,7 +59,13 @@
                 <DataGridTextColumn Header="HC" Binding="{Binding horas_catedra}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Comisión PFID" Binding="{Binding comision__pfid}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Comisión Id" Binding="{Binding comision__identificacion}"></DataGridTextColumn>
-
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="AgregarCalificaciones_Click">Agregar Calificaciones</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

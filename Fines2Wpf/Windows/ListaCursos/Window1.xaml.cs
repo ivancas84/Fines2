@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 using Fines2Wpf.Forms.ListaModalidad;
+using Fines2Wpf.Model;
 
 namespace Fines2Wpf.Windows.ListaCursos
 {
@@ -27,7 +28,7 @@ namespace Fines2Wpf.Windows.ListaCursos
 
         Search search = new();
         Fines2Wpf.DAO.Curso cursoDAO = new();
-        private ObservableCollection<Curso> cursoData = new();
+        private ObservableCollection<Data_curso_r> cursoData = new();
 
         public Window1()
         {
@@ -47,7 +48,7 @@ namespace Fines2Wpf.Windows.ListaCursos
         {
             IEnumerable<Dictionary<string, object>> list = cursoDAO.CursosSemestre(search.calendario__anio, search.calendario__semestre);
             cursoData.Clear();
-            cursoData.AddRange(list.ColOfObj<Curso>());
+            cursoData.AddRange(list.ColOfObj<Data_curso_r>());
         }
         private void BuscarButton_Click(object sender, RoutedEventArgs e)
         {
@@ -154,7 +155,13 @@ namespace Fines2Wpf.Windows.ListaCursos
             }
         }
 
-
+        private void AgregarCalificaciones_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var data = (Data_curso_r)button.DataContext;
+            //CargarCalificacionesCurso win = new(organismo.IdOrg);
+            //win.Show();
+        }
     }
 
     internal class Search
@@ -164,136 +171,4 @@ namespace Fines2Wpf.Windows.ListaCursos
     }
 
 
-    internal class Curso : INotifyPropertyChanged
-    {
-        private string _id;
-        public string id
-        {
-            get { return _id; }
-            set { _id = value; NotifyPropertyChanged(); }
-        }
-
-        private int _horas_catedra;
-        public int horas_catedra
-        {
-            get { return _horas_catedra; }
-            set { _horas_catedra = value; NotifyPropertyChanged(); }
-        }
-
-        private string _asignatura;
-
-        public string asignatura
-        {
-            get { return _asignatura; }
-            set { _asignatura = value; NotifyPropertyChanged(); }
-        }
-
-        private string _asignatura__id;
-
-        public string asignatura__id
-        {
-            get { return _asignatura__id; }
-            set { _asignatura__id = value; NotifyPropertyChanged(); }
-        }
-
-        private string _asignatura__nombre;
-
-        public string asignatura__nombre
-        {
-            get { return _asignatura__nombre; }
-            set { _asignatura__nombre = value; NotifyPropertyChanged(); }
-        }
-
-        private string _asignatura__codigo;
-
-        public string asignatura__codigo
-        {
-            get { return _asignatura__codigo; }
-            set { _asignatura__codigo = value; NotifyPropertyChanged(); }
-        }
-
-        private string _comision;
-
-        public string comision
-        {
-            get { return _comision; }
-            set { _comision = value; NotifyPropertyChanged(); }
-        }
-
-        private string _comision__id;
-
-        public string comision__id
-        {
-            get { return _comision__id; }
-            set { _comision__id = value; NotifyPropertyChanged(); }
-        }
-
-        private string _comision__division;
-
-        public string comision__division
-        {
-            get { return _comision__division; }
-            set { _comision__division = value; NotifyPropertyChanged(); }
-        }
-
-        private string _comision__pfid;
-
-        public string comision__pfid
-        {
-            get { return _comision__pfid; }
-            set { _comision__pfid = value; NotifyPropertyChanged(); }
-        }
-
-        private string _comision__identificacion;
-
-        public string comision__identificacion
-        {
-            get { return _comision__identificacion; }
-            set { _comision__identificacion = value; NotifyPropertyChanged(); }
-        }
-
-
-        private string _planificacion__anio;
-
-        public string planificacion__anio
-        {
-            get { return _planificacion__anio; }
-            set { _planificacion__anio = value; NotifyPropertyChanged(); }
-        }
-
-        private string _planificacion__semestre;
-
-        public string planificacion__semestre
-        {
-            get { return _planificacion__semestre; }
-            set { _planificacion__semestre = value; NotifyPropertyChanged(); }
-        }
-
-        private string _sede__numero;
-
-        public string sede__numero
-        {
-            get { return _sede__numero; }
-            set { _sede__numero = value; NotifyPropertyChanged(); }
-        }
-
-        private string _sede__nombre;
-
-        public string sede__nombre
-        {
-            get { return _sede__nombre; }
-            set { _sede__nombre = value; NotifyPropertyChanged(); }
-        }
-
-
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-
-
-    }
 }

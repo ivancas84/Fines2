@@ -18,6 +18,7 @@
         <ObjectDataProvider x:Key="estados" ObjectType="{x:Type local:EstadoData}" MethodName="Estados" />
     </Window.Resources>
 
+    
     <ScrollViewer>
 
         <Grid>
@@ -28,6 +29,7 @@
                 <RowDefinition Height = "*" />
                 <RowDefinition Height = "*" />
                 <RowDefinition Height = "*" />
+
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -167,7 +169,6 @@
 
 
                     <StackPanel Grid.Row = "3" Grid.ColumnSpan = "6">
-                      
                         <Button 
                             Style="{DynamicResource MaterialDesignRaisedAccentButton}"
                             Content = "_Guardar..." 

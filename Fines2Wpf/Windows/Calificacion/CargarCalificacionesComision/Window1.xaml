@@ -59,12 +59,7 @@
                     <ComboBox 
                         Grid.Column="3"
                         Name="cursoComboBox"
-                        IsTextSearchEnabled="False"
-                        IsEditable="True"
-                        StaysOpenOnEdit="True"
-                        TextBoxBase.TextChanged="CursoComboBox_TextChanged"
-                        GotFocus="CursoComboBox_GotFocus"
-                        TextBoxBase.SelectionChanged="CursoComboBox_SelectionChanged"/>
+                        SelectedValue="{Binding curso}"/>
 
                     <Label 
                         Grid.Row="1">Encabezados</Label>
