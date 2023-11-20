@@ -2,21 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Utils;
-using Fines2Wpf.Forms.ListaModalidad;
 using Fines2Wpf.Model;
+using ToastNotifications;
+using ToastNotifications.Lifetime;
+using ToastNotifications.Position;
+using ToastNotifications.Messages;
+
+using System.Linq;
 
 namespace Fines2Wpf.Windows.ListaCursos
 {
@@ -29,6 +25,20 @@ namespace Fines2Wpf.Windows.ListaCursos
         Search search = new();
         Fines2Wpf.DAO.Curso cursoDAO = new();
         private ObservableCollection<Data_curso_r> cursoData = new();
+        private Notifier notifier = new Notifier(cfg =>
+        {
+            cfg.PositionProvider = new WindowPositionProvider(
+                parentWindow: Application.Current.MainWindow,
+                corner: Corner.BottomRight,
+                offsetX: 10,
+                offsetY: 10);
+
+            cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
+                notificationLifetime: TimeSpan.FromSeconds(3),
+                maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+
+            cfg.Dispatcher = Application.Current.Dispatcher;
+        });
 
         public Window1()
         {
@@ -46,9 +56,17 @@ namespace Fines2Wpf.Windows.ListaCursos
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object>> list = cursoDAO.CursosSemestre(search.calendario__anio, search.calendario__semestre);
             cursoData.Clear();
-            cursoData.AddRange(list.ColOfObj<Data_curso_r>());
+            try
+            {
+                IEnumerable<Dictionary<string, object>> list = cursoDAO.CursosSemestre(search.calendario__anio, search.calendario__semestre);
+                cursoData.AddRange(list.ColOfObj<Data_curso_r>());
+            }
+            catch (Exception ex)
+            {
+                notifier.ShowError(ex.Message);
+            }
+
         }
         private void BuscarButton_Click(object sender, RoutedEventArgs e)
         {
@@ -65,7 +83,7 @@ namespace Fines2Wpf.Windows.ListaCursos
 
                     string key = ((Binding)column.Binding).Path.Path; //column's binding
                     object value = (e.EditingElement as TextBox)!.Text;
-                    Dictionary<string, object> source = (Dictionary<string, object>)((Curso)e.Row.DataContext).Dict();
+                    Dictionary<string, object> source = (Dictionary<string, object>)((Data_curso_r)e.Row.DataContext).Dict();
                     string? fieldId = null;
                     string mainEntityName = "curso";
                     string entityName = "curso";
@@ -110,7 +128,7 @@ namespace Fines2Wpf.Windows.ListaCursos
                         {
                             if (!v.Check())
                             {
-                                (e.Row.Item as Curso).CopyValues<Curso>(v.Get().Obj<Curso>(),sourceNotNull:true);
+                                (e.Row.Item as Data_curso_r).CopyValues<Data_curso_r>(v.Get().Obj<Data_curso_r>(),sourceNotNull:true);
                                 break;
                             }
 
@@ -126,7 +144,7 @@ namespace Fines2Wpf.Windows.ListaCursos
                             }
                         }
 
-                        (e.Row.Item as Curso).CopyValues<Curso>(v.Get().Obj<Curso>(),sourceNotNull:true);
+                        (e.Row.Item as Data_curso_r).CopyValues<Data_curso_r>(v.Get().Obj<Data_curso_r>(),sourceNotNull:true);
 
                         if (fieldId != null)
                         {
@@ -159,8 +177,10 @@ namespace Fines2Wpf.Windows.ListaCursos
         {
             var button = (e.OriginalSource as Button);
             var data = (Data_curso_r)button.DataContext;
-            //CargarCalificacionesCurso win = new(organismo.IdOrg);
-            //win.Show();
+            Calificacion.CargarCalificacionesCurso.Window1 win = new(data.id!);
+            win.WindowState = WindowState.Maximized;
+            win.Show();
+
         }
     }
 

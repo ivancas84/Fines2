@@ -5,8 +5,188 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso"
         mc:Ignorable="d"
-        Title="Window1" Height="450" Width="800">
-    <Grid>
+        Title="Window1" Height="450" Width="800"
         
-    </Grid>
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        >
+    <ScrollViewer>
+
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "*" />
+                <RowDefinition Height = "*" />
+                <RowDefinition Height = "*" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width = "*" />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox 
+                    Name="formGroupBox"
+                    Header="Cargar Calificaciones"
+                    Margin="16"
+	                materialDesign:ElevationAssist.Elevation="Dp3">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "150" MaxHeight="150"/>
+                        <RowDefinition Height = "Auto" />
+
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width = "Auto" />
+                        <ColumnDefinition Width = "*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label>Curso</Label>
+
+                    <TextBlock
+                            Text="{Binding curso}" 
+                            Grid.Column="1"
+                            Margin = "5,10"></TextBlock>
+
+                    <Label
+                            Margin = "5,10"
+                            Grid.Row="1">Encabezados</Label>
+
+                    <TextBox 
+                            Margin = "5,10"
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Text="{Binding encabezados}"></TextBox>
+
+                    <Label 
+                            Margin = "5,10"
+                            Grid.Row="2">Datos</Label>
+
+                    <TextBox 
+                        Margin = "5,10"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Text="{Binding datos}"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        AcceptsTab="True"
+                        VerticalScrollBarVisibility="Visible"
+                        MaxHeight="500"></TextBox>
+
+                    <StackPanel Grid.Row = "3" Grid.ColumnSpan = "2">
+                        <Button 
+                            Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                            Content = "_Aceptar..." 
+                            Click="SubmitButton_Click"
+                            Margin = "20"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+            </GroupBox>
+
+            <GroupBox 
+                Name="asignacionGroupBox" 
+                Grid.Row="3"
+                Header="Alumnos"
+                Margin="16"
+	            materialDesign:ElevationAssist.Elevation="Dp3">
+
+                <DataGrid 
+                    Name="asignacionDataGrid" 
+                    AutoGenerateColumns="False" 
+                    CanUserAddRows="False">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy" Command="Copy" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
+
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+
+            <GroupBox 
+                Name="calificacionExistenteGroupBox" 
+                Grid.Row="2"
+                Header="Calificaciones existentes"
+                Margin="16"
+	            materialDesign:ElevationAssist.Elevation="Dp3">
+
+
+                <DataGrid 
+                    Name="calificacionExistenteDataGrid" 
+                    AutoGenerateColumns="False" 
+                    CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Nota Final" Binding="{Binding nota_final}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Crec" Binding="{Binding crec}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Archivado" Binding="{Binding archivado}"></DataGridTextColumn>
+
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+            
+            <GroupBox 
+                Name="calificacionGroupBox" 
+                Grid.Row="1"
+                Header="Calificaciones a registrar"
+                Margin="16"
+	            materialDesign:ElevationAssist.Elevation="Dp3">
+
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width = "*" />
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid 
+                        Grid.Row="0"
+                        Name="calificacionDataGrid" 
+                        AutoGenerateColumns="False" 
+                        CanUserAddRows="False">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Nota Final" Binding="{Binding nota_final}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Crec" Binding="{Binding crec}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Observaciones" Binding="{Binding observaciones}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="PRocesar" Binding="{Binding procesar}"></DataGridTextColumn>
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Button 
+                        Grid.Row="1"
+                        Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                        Content = "_Guardar..." 
+                        Click="ProcessButton_Click"
+                        Margin = "20"/>
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
 </Window>

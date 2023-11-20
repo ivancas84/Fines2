@@ -22,18 +22,22 @@ namespace Fines2Wpf.Values
             TextInfo myTI = new CultureInfo("es-AR", false).TextInfo;
 
             string s = "";
-            s += (GetOrNull("apellidos")?.ToString() ?? "?").ToUpper() ;
+            s += (GetOrNull("apellidos")?.ToString() ?? "?").ToUpper();
             s += ", ";
-            s += myTI.ToTitleCase(GetOrNull("nombres")?.ToString() ?? "?") ;
+            s += myTI.ToTitleCase(GetOrNull("nombres")?.ToString() ?? "?");
             s += " ";
             s += GetOrNull("numero_documento")?.ToString() ?? "?";
             return s;
 
         }
-        public override IDictionary<string, object> Compare(IDictionary<string, object> val, IEnumerable<string>? ignoreFields = null, bool ignoreNull = true, bool ignoreNonExistent = true)
-        {
-            var response = base.Compare(val, ignoreFields, ignoreNull, ignoreNonExistent);
 
+        /// <summary>
+        /// Vuelve a comparar ciertos campos que necesitan verificacion adicional
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        protected IDictionary<string, object?> Recompare(IDictionary<string, object?> response)
+        {
             if (response.ContainsKey("nombres") && !response["nombres"].IsNullOrEmpty())
             {
                 IEnumerable<string> nombres = response["nombres"].ToString()!.Trim().RemoveMultipleSpaces().Split(" ");
@@ -55,7 +59,7 @@ namespace Fines2Wpf.Values
                             && values["apellidos"].ToString().Contains(n)
                         )
                     )
-                        {
+                    {
                         response.Remove("nombres");
                         break;
                     }
@@ -72,11 +76,11 @@ namespace Fines2Wpf.Values
 
                     if (
                         (
-                            values.ContainsKey("nombres") 
-                            && !values["nombres"].IsNullOrEmpty() 
+                            values.ContainsKey("nombres")
+                            && !values["nombres"].IsNullOrEmpty()
                             && values["nombres"].ToString().Contains(a)
                         )
-                        || 
+                        ||
                         (
                             values.ContainsKey("apellidos")
                             && !values["apellidos"].IsNullOrEmpty()
@@ -91,9 +95,9 @@ namespace Fines2Wpf.Values
             }
 
             if (
-                response.ContainsKey("fecha_nacimiento") 
+                response.ContainsKey("fecha_nacimiento")
                 && !response["fecha_nacimiento"].IsNullOrEmpty()
-                && values.ContainsKey("fecha_nacimiento") 
+                && values.ContainsKey("fecha_nacimiento")
                 && !values["fecha_nacimiento"].IsNullOrEmpty()
             )
             {
@@ -106,6 +110,18 @@ namespace Fines2Wpf.Values
             }
 
             return response;
+        }
+
+        public override IDictionary<string, object?> Compare(IDictionary<string, object> val, IEnumerable<string>? ignoreFields = null, bool ignoreNull = true, bool ignoreNonExistent = true)
+        {
+            var response = base.Compare(val, ignoreFields, ignoreNull, ignoreNonExistent);
+            return Recompare(response);
+        }
+
+        public override IDictionary<string, object?> CompareFields(IDictionary<string, object?> val, IEnumerable<string> fieldsToCompare, bool ignoreNull = true, bool ignoreNonExistent = true)
+        {
+            var response = base.CompareFields(val, fieldsToCompare, ignoreNull, ignoreNonExistent);
+            return Recompare(response);
         }
     }
 }

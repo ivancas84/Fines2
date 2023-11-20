@@ -326,8 +326,9 @@ VALUES (";
 
             if (rows.Count() == 1)
             {
-                if (v.values.ContainsKey(Db.config.id) && v.Get(Db.config.id).ToString() != rows.ElementAt(0)[Db.config.id].ToString())
-                    throw new Exception("Los id son diferentes");
+                //Se controla la existencia de id diferente?
+                //if (v.values.ContainsKey(Db.config.id) && v.Get(Db.config.id).ToString() != rows.ElementAt(0)[Db.config.id].ToString())
+                //    throw new Exception("Los id son diferentes");
 
                 v.Set(Db.config.id, rows.ElementAt(0)[Db.config.id]).Reset().Check();
                 if (v.logging.HasErrors())

@@ -39,7 +39,7 @@ namespace Fines2Wpf.Windows.AlumnoComision
             var alumnosComisiones = alumnoComisionDAO.AsignacionesActivasPorComisiones(idsComisiones);
             var idsComisionesSiguientes = alumnosComisiones.ColOfVal<object>("comision-comision_siguiente");
             var idsComisionesSiguientes_ = idsComisionesSiguientes.GroupBy(x => x.ToString()).Select(x => x.First()).ToList();
-            var comisionesSiguientesAgrupadasPorId = comisionDAO.ComisionesPorIds(idsComisionesSiguientes_).DictOfDictByKey("id");
+            var comisionesSiguientesAgrupadasPorId = comisionDAO.ComisionesPorIds(idsComisionesSiguientes_).DictOfDictByKey<object>("id");
             data.Clear();
             
             foreach (var ac in alumnosComisiones)

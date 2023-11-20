@@ -47,5 +47,14 @@ namespace Fines2Wpf.Values
             return s;
         }
 
+        public string ToStringSede()
+        {
+            var s = ToString();
+            s += " ";
+            s += ValuesRel("sede")?.GetOrNull("nombre") ?? "?";
+            return s;
+        }
+
+
     }
 }
