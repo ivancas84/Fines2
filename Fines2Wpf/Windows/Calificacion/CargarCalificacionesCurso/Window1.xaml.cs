@@ -144,9 +144,10 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
         {
             var fd = (FormData)(sender as Button)!.DataContext;
 
-            IEnumerable<string> encabezados = fd.encabezados.Split(",").Select(s => s.Trim());
-            IEnumerable<string> datos = fd.datos.Split("\r\n");
+            IEnumerable<string> encabezados = fd.encabezados!.Split(",").Select(s => s.Trim());
+            IEnumerable<string> datos = fd.datos!.Split("\r\n");
             IDictionary<string, Dictionary<string, object?>> calificacionesExistentesPorDNI = calificacionExistenteOC.ColOfDict().DictOfDictByKey<string>("persona-numero_documento");
+            List<string> dnisProcesados = new();
 
             EntityPersist p = ContainerApp.db.Persist();
             calificacionOC.Clear();
@@ -174,15 +175,11 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                     continue;
                 } 
                 
-                if(!dnis.Contains(o.persona__numero_documento))
-                {
-                    o.observaciones += "El DNI no se encuentra en la lista de alumnos. ";
-                }
-
                 if(o.nota_final.IsNullOrEmptyOrDbNull() && o.crec.IsNullOrEmptyOrDbNull())
                 {
                     o.observaciones += "Calificacion vacía. ";
                     o.procesar = false;
+                    continue;
 
                 } else if (o.nota_final <= 7 && o.crec <= 4)
                 {
@@ -190,12 +187,37 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                     o.archivado = true;
                 }
 
-
-                foreach(Calificacion cal in calificacionExistenteOC)
+                if (dnisProcesados.Contains(o.persona__numero_documento!))
                 {
-                    cal.Dict()
-                    calificacionesExistentesPorDNI.Add(cal);
+                    o.observaciones += "DNI repetido";
+                    o.procesar = false;
+                    continue;
                 }
+
+                dnisProcesados.Add(o.persona__numero_documento!);
+
+                if (calificacionesExistentesPorDNI.ContainsKey(o.persona__numero_documento)){
+                    Calificacion cal = calificacionesExistentesPorDNI[o.persona__numero_documento].Obj<Calificacion>();
+                    if (cal.archivado == o.archivado) { 
+                        o.observaciones += "Calificacion existente. ";
+                        o.procesar = false;
+
+                        if (!o.nota_final.IsNullOrEmptyOrDbNull() && o.nota_final >= 7)
+                        {
+                            string n1 = o.nota_final.ToString()!;
+                            string n2 = cal.nota_final?.ToString() ?? "0";
+                            if (n1 != n2)
+                                o.observaciones += "Nota final diferente. ";
+                        } else if (!o.crec.IsNullOrEmptyOrDbNull() && o.crec >= 4)
+                        {
+                            string n1 = o.crec.ToString()!;
+                            string n2 = cal.crec?.ToString() ?? "0";
+                            if (n1 != n2)
+                                o.observaciones += "Crec diferente. ";
+                        }
+                    }
+                }
+
                 calificacionOC.Add(o);
             }
 
