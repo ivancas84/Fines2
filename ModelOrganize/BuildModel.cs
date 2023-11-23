@@ -726,12 +726,12 @@ namespace ModelOrganize
 
         public void _CreateFileData2()
         {
-            if (!Directory.Exists(@"C:\projects\Fines2\Fines2Wpf\Data\"))
-                Directory.CreateDirectory(@"C:\projects\Fines2\Fines2Wpf\Data\");
+            if (!Directory.Exists(Config.dataClassesPath))
+                Directory.CreateDirectory(Config.dataClassesPath);
 
             foreach (var (entityName, entity) in entities)
             {
-                using StreamWriter sw = File.CreateText(@"C:\projects\Fines2\Fines2Wpf\Data\" + entityName + ".cs");
+                using StreamWriter sw = File.CreateText(Config.dataClassesPath + entityName + ".cs");
                 sw.WriteLine("using SqlOrganize;");
                 sw.WriteLine("using System;");
                 sw.WriteLine("using System.ComponentModel;");
@@ -739,7 +739,7 @@ namespace ModelOrganize
                 sw.WriteLine("using System.Reflection;");
                 sw.WriteLine("using Utils;");
                 sw.WriteLine("");
-                sw.WriteLine("namespace Fines2Wpf.Data");
+                sw.WriteLine("namespace " + Config.dataClassesNamespace);
                 sw.WriteLine("{");
                 sw.WriteLine("    public class Data_" + entityName + " : INotifyPropertyChanged, IDataErrorInfo");
                 sw.WriteLine("    {");
