@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 
@@ -22,9 +23,9 @@ namespace Fines2Wpf.Model
             switch(mode)
             {
                 case DataInitMode.Default:
-                    _asignatura__id = (string?)ContainerApp.db.Values("asignatura").Default("id").Get("id");
-                    _planificacion__id = (string?)ContainerApp.db.Values("planificacion").Default("id").Get("id");
-                    _plan__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
+                    asignatura__id = (string?)ContainerApp.db.Values("asignatura").Default("id").Get("id");
+                    planificacion__id = (string?)ContainerApp.db.Values("planificacion").Default("id").Get("id");
+                    plan__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
                 break;
             }
         }
@@ -35,7 +36,7 @@ namespace Fines2Wpf.Model
         public string? asignatura__id
         {
             get { return _asignatura__id; }
-            set { _asignatura__id = value; NotifyPropertyChanged(); }
+            set { _asignatura__id = value; _asignatura = value; NotifyPropertyChanged(); }
         }
         protected string? _asignatura__nombre = null;
         public string? asignatura__nombre
@@ -74,7 +75,7 @@ namespace Fines2Wpf.Model
         public string? planificacion__id
         {
             get { return _planificacion__id; }
-            set { _planificacion__id = value; NotifyPropertyChanged(); }
+            set { _planificacion__id = value; _planificacion = value; NotifyPropertyChanged(); }
         }
         protected string? _planificacion__anio = null;
         public string? planificacion__anio
@@ -107,7 +108,7 @@ namespace Fines2Wpf.Model
         public string? plan__id
         {
             get { return _plan__id; }
-            set { _plan__id = value; NotifyPropertyChanged(); }
+            set { _plan__id = value; _planificacion__plan = value; NotifyPropertyChanged(); }
         }
         protected string? _plan__orientacion = null;
         public string? plan__orientacion

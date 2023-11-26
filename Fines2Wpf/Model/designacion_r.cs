@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 
@@ -22,18 +23,18 @@ namespace Fines2Wpf.Model
             switch(mode)
             {
                 case DataInitMode.Default:
-                    _cargo__id = (string?)ContainerApp.db.Values("cargo").Default("id").Get("id");
-                    _sede__id = (string?)ContainerApp.db.Values("sede").Default("id").Get("id");
-                    _sede__alta = (DateTime?)ContainerApp.db.Values("sede").Default("alta").Get("alta");
-                    _domicilio__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
-                    _centro_educativo__id = (string?)ContainerApp.db.Values("centro_educativo").Default("id").Get("id");
-                    _domicilio_cen__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
-                    _persona__id = (string?)ContainerApp.db.Values("persona").Default("id").Get("id");
-                    _persona__alta = (DateTime?)ContainerApp.db.Values("persona").Default("alta").Get("alta");
-                    _persona__telefono_verificado = (bool?)ContainerApp.db.Values("persona").Default("telefono_verificado").Get("telefono_verificado");
-                    _persona__email_verificado = (bool?)ContainerApp.db.Values("persona").Default("email_verificado").Get("email_verificado");
-                    _persona__info_verificada = (bool?)ContainerApp.db.Values("persona").Default("info_verificada").Get("info_verificada");
-                    _domicilio_per__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    cargo__id = (string?)ContainerApp.db.Values("cargo").Default("id").Get("id");
+                    sede__id = (string?)ContainerApp.db.Values("sede").Default("id").Get("id");
+                    sede__alta = (DateTime?)ContainerApp.db.Values("sede").Default("alta").Get("alta");
+                    domicilio__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    centro_educativo__id = (string?)ContainerApp.db.Values("centro_educativo").Default("id").Get("id");
+                    domicilio_cen__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    persona__id = (string?)ContainerApp.db.Values("persona").Default("id").Get("id");
+                    persona__alta = (DateTime?)ContainerApp.db.Values("persona").Default("alta").Get("alta");
+                    persona__telefono_verificado = (bool?)ContainerApp.db.Values("persona").Default("telefono_verificado").Get("telefono_verificado");
+                    persona__email_verificado = (bool?)ContainerApp.db.Values("persona").Default("email_verificado").Get("email_verificado");
+                    persona__info_verificada = (bool?)ContainerApp.db.Values("persona").Default("info_verificada").Get("info_verificada");
+                    domicilio_per__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
                 break;
             }
         }
@@ -44,7 +45,7 @@ namespace Fines2Wpf.Model
         public string? cargo__id
         {
             get { return _cargo__id; }
-            set { _cargo__id = value; NotifyPropertyChanged(); }
+            set { _cargo__id = value; _cargo = value; NotifyPropertyChanged(); }
         }
         protected string? _cargo__descripcion = null;
         public string? cargo__descripcion
@@ -59,7 +60,7 @@ namespace Fines2Wpf.Model
         public string? sede__id
         {
             get { return _sede__id; }
-            set { _sede__id = value; NotifyPropertyChanged(); }
+            set { _sede__id = value; _sede = value; NotifyPropertyChanged(); }
         }
         protected string? _sede__numero = null;
         public string? sede__numero
@@ -134,7 +135,7 @@ namespace Fines2Wpf.Model
         public string? domicilio__id
         {
             get { return _domicilio__id; }
-            set { _domicilio__id = value; NotifyPropertyChanged(); }
+            set { _domicilio__id = value; _sede__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio__calle = null;
         public string? domicilio__calle
@@ -185,7 +186,7 @@ namespace Fines2Wpf.Model
         public string? centro_educativo__id
         {
             get { return _centro_educativo__id; }
-            set { _centro_educativo__id = value; NotifyPropertyChanged(); }
+            set { _centro_educativo__id = value; _sede__centro_educativo = value; NotifyPropertyChanged(); }
         }
         protected string? _centro_educativo__nombre = null;
         public string? centro_educativo__nombre
@@ -218,7 +219,7 @@ namespace Fines2Wpf.Model
         public string? domicilio_cen__id
         {
             get { return _domicilio_cen__id; }
-            set { _domicilio_cen__id = value; NotifyPropertyChanged(); }
+            set { _domicilio_cen__id = value; _centro_educativo__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio_cen__calle = null;
         public string? domicilio_cen__calle
@@ -269,7 +270,7 @@ namespace Fines2Wpf.Model
         public string? persona__id
         {
             get { return _persona__id; }
-            set { _persona__id = value; NotifyPropertyChanged(); }
+            set { _persona__id = value; _persona = value; NotifyPropertyChanged(); }
         }
         protected string? _persona__nombres = null;
         public string? persona__nombres
@@ -380,7 +381,7 @@ namespace Fines2Wpf.Model
         public string? domicilio_per__id
         {
             get { return _domicilio_per__id; }
-            set { _domicilio_per__id = value; NotifyPropertyChanged(); }
+            set { _domicilio_per__id = value; _persona__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio_per__calle = null;
         public string? domicilio_per__calle

@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 
@@ -22,8 +23,8 @@ namespace Fines2Wpf.Model
             switch(mode)
             {
                 case DataInitMode.Default:
-                    _planilla_docente__id = (string?)ContainerApp.db.Values("planilla_docente").Default("id").Get("id");
-                    _planilla_docente__insertado = (DateTime?)ContainerApp.db.Values("planilla_docente").Default("insertado").Get("insertado");
+                    planilla_docente__id = (string?)ContainerApp.db.Values("planilla_docente").Default("id").Get("id");
+                    planilla_docente__insertado = (DateTime?)ContainerApp.db.Values("planilla_docente").Default("insertado").Get("insertado");
                 break;
             }
         }
@@ -34,7 +35,7 @@ namespace Fines2Wpf.Model
         public string? planilla_docente__id
         {
             get { return _planilla_docente__id; }
-            set { _planilla_docente__id = value; NotifyPropertyChanged(); }
+            set { _planilla_docente__id = value; _planilla_docente = value; NotifyPropertyChanged(); }
         }
         protected string? _planilla_docente__numero = null;
         public string? planilla_docente__numero

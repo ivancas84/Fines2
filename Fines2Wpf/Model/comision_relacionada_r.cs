@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 
@@ -22,30 +23,30 @@ namespace Fines2Wpf.Model
             switch(mode)
             {
                 case DataInitMode.Default:
-                    _comision__id = (string?)ContainerApp.db.Values("comision").Default("id").Get("id");
-                    _comision__alta = (DateTime?)ContainerApp.db.Values("comision").Default("alta").Get("alta");
-                    _sede__id = (string?)ContainerApp.db.Values("sede").Default("id").Get("id");
-                    _sede__alta = (DateTime?)ContainerApp.db.Values("sede").Default("alta").Get("alta");
-                    _domicilio__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
-                    _centro_educativo__id = (string?)ContainerApp.db.Values("centro_educativo").Default("id").Get("id");
-                    _domicilio_cen__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
-                    _modalidad__id = (string?)ContainerApp.db.Values("modalidad").Default("id").Get("id");
-                    _planificacion__id = (string?)ContainerApp.db.Values("planificacion").Default("id").Get("id");
-                    _plan__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
-                    _calendario__id = (string?)ContainerApp.db.Values("calendario").Default("id").Get("id");
-                    _calendario__insertado = (DateTime?)ContainerApp.db.Values("calendario").Default("insertado").Get("insertado");
-                    _relacion__id = (string?)ContainerApp.db.Values("comision").Default("id").Get("id");
-                    _relacion__alta = (DateTime?)ContainerApp.db.Values("comision").Default("alta").Get("alta");
-                    _sede_rel__id = (string?)ContainerApp.db.Values("sede").Default("id").Get("id");
-                    _sede_rel__alta = (DateTime?)ContainerApp.db.Values("sede").Default("alta").Get("alta");
-                    _domicilio_sed__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
-                    _centro_educativo_sed__id = (string?)ContainerApp.db.Values("centro_educativo").Default("id").Get("id");
-                    _domicilio_cen1__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
-                    _modalidad_rel__id = (string?)ContainerApp.db.Values("modalidad").Default("id").Get("id");
-                    _planificacion_rel__id = (string?)ContainerApp.db.Values("planificacion").Default("id").Get("id");
-                    _plan_pla__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
-                    _calendario_rel__id = (string?)ContainerApp.db.Values("calendario").Default("id").Get("id");
-                    _calendario_rel__insertado = (DateTime?)ContainerApp.db.Values("calendario").Default("insertado").Get("insertado");
+                    comision__id = (string?)ContainerApp.db.Values("comision").Default("id").Get("id");
+                    comision__alta = (DateTime?)ContainerApp.db.Values("comision").Default("alta").Get("alta");
+                    sede__id = (string?)ContainerApp.db.Values("sede").Default("id").Get("id");
+                    sede__alta = (DateTime?)ContainerApp.db.Values("sede").Default("alta").Get("alta");
+                    domicilio__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    centro_educativo__id = (string?)ContainerApp.db.Values("centro_educativo").Default("id").Get("id");
+                    domicilio_cen__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    modalidad__id = (string?)ContainerApp.db.Values("modalidad").Default("id").Get("id");
+                    planificacion__id = (string?)ContainerApp.db.Values("planificacion").Default("id").Get("id");
+                    plan__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
+                    calendario__id = (string?)ContainerApp.db.Values("calendario").Default("id").Get("id");
+                    calendario__insertado = (DateTime?)ContainerApp.db.Values("calendario").Default("insertado").Get("insertado");
+                    relacion__id = (string?)ContainerApp.db.Values("comision").Default("id").Get("id");
+                    relacion__alta = (DateTime?)ContainerApp.db.Values("comision").Default("alta").Get("alta");
+                    sede_rel__id = (string?)ContainerApp.db.Values("sede").Default("id").Get("id");
+                    sede_rel__alta = (DateTime?)ContainerApp.db.Values("sede").Default("alta").Get("alta");
+                    domicilio_sed__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    centro_educativo_sed__id = (string?)ContainerApp.db.Values("centro_educativo").Default("id").Get("id");
+                    domicilio_cen1__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    modalidad_rel__id = (string?)ContainerApp.db.Values("modalidad").Default("id").Get("id");
+                    planificacion_rel__id = (string?)ContainerApp.db.Values("planificacion").Default("id").Get("id");
+                    plan_pla__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
+                    calendario_rel__id = (string?)ContainerApp.db.Values("calendario").Default("id").Get("id");
+                    calendario_rel__insertado = (DateTime?)ContainerApp.db.Values("calendario").Default("insertado").Get("insertado");
                 break;
             }
         }
@@ -56,7 +57,7 @@ namespace Fines2Wpf.Model
         public string? comision__id
         {
             get { return _comision__id; }
-            set { _comision__id = value; NotifyPropertyChanged(); }
+            set { _comision__id = value; _comision = value; NotifyPropertyChanged(); }
         }
         protected string? _comision__turno = null;
         public string? comision__turno
@@ -155,7 +156,7 @@ namespace Fines2Wpf.Model
         public string? sede__id
         {
             get { return _sede__id; }
-            set { _sede__id = value; NotifyPropertyChanged(); }
+            set { _sede__id = value; _comision__sede = value; NotifyPropertyChanged(); }
         }
         protected string? _sede__numero = null;
         public string? sede__numero
@@ -230,7 +231,7 @@ namespace Fines2Wpf.Model
         public string? domicilio__id
         {
             get { return _domicilio__id; }
-            set { _domicilio__id = value; NotifyPropertyChanged(); }
+            set { _domicilio__id = value; _sede__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio__calle = null;
         public string? domicilio__calle
@@ -281,7 +282,7 @@ namespace Fines2Wpf.Model
         public string? centro_educativo__id
         {
             get { return _centro_educativo__id; }
-            set { _centro_educativo__id = value; NotifyPropertyChanged(); }
+            set { _centro_educativo__id = value; _sede__centro_educativo = value; NotifyPropertyChanged(); }
         }
         protected string? _centro_educativo__nombre = null;
         public string? centro_educativo__nombre
@@ -314,7 +315,7 @@ namespace Fines2Wpf.Model
         public string? domicilio_cen__id
         {
             get { return _domicilio_cen__id; }
-            set { _domicilio_cen__id = value; NotifyPropertyChanged(); }
+            set { _domicilio_cen__id = value; _centro_educativo__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio_cen__calle = null;
         public string? domicilio_cen__calle
@@ -365,7 +366,7 @@ namespace Fines2Wpf.Model
         public string? modalidad__id
         {
             get { return _modalidad__id; }
-            set { _modalidad__id = value; NotifyPropertyChanged(); }
+            set { _modalidad__id = value; _comision__modalidad = value; NotifyPropertyChanged(); }
         }
         protected string? _modalidad__nombre = null;
         public string? modalidad__nombre
@@ -386,7 +387,7 @@ namespace Fines2Wpf.Model
         public string? planificacion__id
         {
             get { return _planificacion__id; }
-            set { _planificacion__id = value; NotifyPropertyChanged(); }
+            set { _planificacion__id = value; _comision__planificacion = value; NotifyPropertyChanged(); }
         }
         protected string? _planificacion__anio = null;
         public string? planificacion__anio
@@ -419,7 +420,7 @@ namespace Fines2Wpf.Model
         public string? plan__id
         {
             get { return _plan__id; }
-            set { _plan__id = value; NotifyPropertyChanged(); }
+            set { _plan__id = value; _planificacion__plan = value; NotifyPropertyChanged(); }
         }
         protected string? _plan__orientacion = null;
         public string? plan__orientacion
@@ -452,7 +453,7 @@ namespace Fines2Wpf.Model
         public string? calendario__id
         {
             get { return _calendario__id; }
-            set { _calendario__id = value; NotifyPropertyChanged(); }
+            set { _calendario__id = value; _comision__calendario = value; NotifyPropertyChanged(); }
         }
         protected DateTime? _calendario__inicio = null;
         public DateTime? calendario__inicio
@@ -497,7 +498,7 @@ namespace Fines2Wpf.Model
         public string? relacion__id
         {
             get { return _relacion__id; }
-            set { _relacion__id = value; NotifyPropertyChanged(); }
+            set { _relacion__id = value; _relacion = value; NotifyPropertyChanged(); }
         }
         protected string? _relacion__turno = null;
         public string? relacion__turno
@@ -596,7 +597,7 @@ namespace Fines2Wpf.Model
         public string? sede_rel__id
         {
             get { return _sede_rel__id; }
-            set { _sede_rel__id = value; NotifyPropertyChanged(); }
+            set { _sede_rel__id = value; _relacion__sede = value; NotifyPropertyChanged(); }
         }
         protected string? _sede_rel__numero = null;
         public string? sede_rel__numero
@@ -671,7 +672,7 @@ namespace Fines2Wpf.Model
         public string? domicilio_sed__id
         {
             get { return _domicilio_sed__id; }
-            set { _domicilio_sed__id = value; NotifyPropertyChanged(); }
+            set { _domicilio_sed__id = value; _sede_rel__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio_sed__calle = null;
         public string? domicilio_sed__calle
@@ -722,7 +723,7 @@ namespace Fines2Wpf.Model
         public string? centro_educativo_sed__id
         {
             get { return _centro_educativo_sed__id; }
-            set { _centro_educativo_sed__id = value; NotifyPropertyChanged(); }
+            set { _centro_educativo_sed__id = value; _sede_rel__centro_educativo = value; NotifyPropertyChanged(); }
         }
         protected string? _centro_educativo_sed__nombre = null;
         public string? centro_educativo_sed__nombre
@@ -755,7 +756,7 @@ namespace Fines2Wpf.Model
         public string? domicilio_cen1__id
         {
             get { return _domicilio_cen1__id; }
-            set { _domicilio_cen1__id = value; NotifyPropertyChanged(); }
+            set { _domicilio_cen1__id = value; _centro_educativo_sed__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio_cen1__calle = null;
         public string? domicilio_cen1__calle
@@ -806,7 +807,7 @@ namespace Fines2Wpf.Model
         public string? modalidad_rel__id
         {
             get { return _modalidad_rel__id; }
-            set { _modalidad_rel__id = value; NotifyPropertyChanged(); }
+            set { _modalidad_rel__id = value; _relacion__modalidad = value; NotifyPropertyChanged(); }
         }
         protected string? _modalidad_rel__nombre = null;
         public string? modalidad_rel__nombre
@@ -827,7 +828,7 @@ namespace Fines2Wpf.Model
         public string? planificacion_rel__id
         {
             get { return _planificacion_rel__id; }
-            set { _planificacion_rel__id = value; NotifyPropertyChanged(); }
+            set { _planificacion_rel__id = value; _relacion__planificacion = value; NotifyPropertyChanged(); }
         }
         protected string? _planificacion_rel__anio = null;
         public string? planificacion_rel__anio
@@ -860,7 +861,7 @@ namespace Fines2Wpf.Model
         public string? plan_pla__id
         {
             get { return _plan_pla__id; }
-            set { _plan_pla__id = value; NotifyPropertyChanged(); }
+            set { _plan_pla__id = value; _planificacion_rel__plan = value; NotifyPropertyChanged(); }
         }
         protected string? _plan_pla__orientacion = null;
         public string? plan_pla__orientacion
@@ -893,7 +894,7 @@ namespace Fines2Wpf.Model
         public string? calendario_rel__id
         {
             get { return _calendario_rel__id; }
-            set { _calendario_rel__id = value; NotifyPropertyChanged(); }
+            set { _calendario_rel__id = value; _relacion__calendario = value; NotifyPropertyChanged(); }
         }
         protected DateTime? _calendario_rel__inicio = null;
         public DateTime? calendario_rel__inicio

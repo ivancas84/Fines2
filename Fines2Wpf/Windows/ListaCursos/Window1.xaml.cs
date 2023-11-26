@@ -13,6 +13,7 @@ using ToastNotifications.Position;
 using ToastNotifications.Messages;
 
 using System.Linq;
+using CommunityToolkit.WinUI.Notifications;
 
 namespace Fines2Wpf.Windows.ListaCursos
 {
@@ -25,6 +26,7 @@ namespace Fines2Wpf.Windows.ListaCursos
         Search search = new();
         Fines2Wpf.DAO.Curso cursoDAO = new();
         private ObservableCollection<Data_curso_r> cursoData = new();
+
         private Notifier notifier = new Notifier(cfg =>
         {
             cfg.PositionProvider = new WindowPositionProvider(

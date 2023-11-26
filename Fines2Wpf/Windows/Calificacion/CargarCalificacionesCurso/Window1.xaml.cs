@@ -1,4 +1,4 @@
-﻿using Fines2Wpf.Model;
+﻿using Fines2Wpf.Data;
 using SqlOrganize;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,12 +6,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Utils;
-using ToastNotifications;
-using ToastNotifications.Lifetime;
-using ToastNotifications.Position;
-using ToastNotifications.Messages;
+using CommunityToolkit.WinUI.Notifications;
 using System;
-using Google.Protobuf.WellKnownTypes;
 
 namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 {
@@ -20,123 +16,266 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
     /// </summary>
     public partial class Window1 : Window
     {
+        private FormData formData = new FormData();
 
         private object idCurso;
-        private Data_curso_r curso;
-        private FormData formData = new FormData();
+        private IDictionary<string, object?> cursoData;
+
         private IEnumerable<object> idsAlumnos; //ids de alumnos
+        private object idDisposicion;
+        
         private IEnumerable<string> dnis; //ids de alumnos
+
+        private List<Dictionary<string, object?>> calificacionData = new();
         private ObservableCollection<Calificacion> calificacionOC = new(); 
-        private ObservableCollection<Data_calificacion_r> calificacionExistenteOC = new();
-        private ObservableCollection<Data_alumno_comision_r> asignacionOC = new();
-        private Notifier notifier = new Notifier(cfg =>
-        {
-            cfg.PositionProvider = new WindowPositionProvider(
-                parentWindow: Application.Current.MainWindow,
-                corner: Corner.TopRight,
-                offsetX: 10,
-                offsetY: 10);
 
-            cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
-                notificationLifetime: TimeSpan.FromSeconds(3),
-                maximumNotificationCount: MaximumNotificationCount.FromCount(5));
+        private IEnumerable<Dictionary<string, object?>> asignacionData;
+        private ObservableCollection<Data_alumno_comision> asignacionOC = new();
 
-            cfg.Dispatcher = Application.Current.Dispatcher;
-        });
+        private IEnumerable<Dictionary<string, object?>> calificacionExistenteData;
+        private ObservableCollection<Data_calificacion> calificacionExistenteOC = new();
 
-        //private ObservableCollection<Data_alumno> alumnoExistenteOC = new();
-        //private ObservableCollection<Data_persona> personaExistenteOC = new();
+        private IDictionary<string, Dictionary<string, object?>> calificacionesExistentesPorDNI;
+
+
+
 
         public Window1(object idCurso)
         {
             InitializeComponent();
             this.idCurso = idCurso;
 
-            #region consulta de curso
+            #region  de curso
             {
-                IDictionary<string, object?> data = ContainerApp.db.Query("curso").CacheById(idCurso);
-                Values.Curso val = (Values.Curso)ContainerApp.db.Values("curso").Values(data!);
+                cursoData = ContainerApp.db.Query("curso").CacheById(idCurso);
+                Values.Curso val = (Values.Curso)ContainerApp.db.Values("curso").Values(cursoData!);
                 formData.curso = val.ToStringSede();
-                curso = val.values.Obj<Data_curso_r>();
             }
             #endregion
-            #region consulta de asignaciones del curso
-            {
-                IEnumerable<Dictionary<string, object?>> data = ContainerApp.db.Query("alumno_comision").
-                Where("$comision = @0").
-                Order("$estado ASC, $persona-apellidos ASC, $persona-nombres ASC").
-                Parameters(curso.comision!).ColOfDictCache();
-                idsAlumnos = data.ColOfVal<object>("alumno");
-                dnis = data.ColOfVal<string>("persona-numero_documento");
-                asignacionOC.Clear();
-                if (data.Count() > 0)
-                {
-                    asignacionOC.AddRange(data);
-                    notifier.ShowSuccess(data.Count() + " alumnos");
-                } else
-                {
-                    notifier.ShowError("Sin alumnos");
-                }
-            }
-            #endregion
-            #region consulta de calificaciones existentes
-            {
-                IEnumerable<Dictionary<string, object?>> data = ContainerApp.db.Query("calificacion").
-                Where("$disposicion-asignatura = @0").
-                Where(" AND $disposicion-planificacion = @1").
-                Where(" AND $alumno IN (@2)").
-                Where(" AND ($nota_final >= 7 OR $crec >= 4)").
-                Parameters(curso.asignatura!, curso.comision__planificacion!,idsAlumnos).ColOfDictCache();
-                calificacionExistenteOC.Clear();
-                if (data.Count() > 0)
-                {
-                    calificacionExistenteOC.AddRange(data);
-                    notifier.ShowWarning(data.Count() + " calificaciones");
-                }
 
+            #region consulta de id disposicion
+            {
+                idDisposicion = ContainerApp.db.Query("disposicion").
+                Where("$asignatura = @0").
+                Where(" AND $planificacion = @1").
+                Parameters(cursoData!["asignatura"]!, cursoData["comision-planificacion"]!).DictCache()!["id"]!;
             }
             #endregion
+
+            ConsultarAsignacionesExistentes();
+            ConsultarCalificacionesExistentes();
 
 
             formGroupBox.DataContext = formData;
             calificacionDataGrid.ItemsSource = calificacionOC;
             calificacionExistenteDataGrid.ItemsSource = calificacionExistenteOC;
             asignacionDataGrid.ItemsSource = asignacionOC;
+            calificacionDataGrid.RowEditEnding += CalificacionDataGrid_RowEditEnding;
+
         }
 
+        private void ConsultarAsignacionesExistentes()
+        {
+            {
+                asignacionData = ContainerApp.db.Query("alumno_comision").
+                Where("$comision = @0").
+                Order("$estado ASC, $persona-apellidos ASC, $persona-nombres ASC").
+                Parameters(cursoData["comision"]!).ColOfDictCache();
+                idsAlumnos = asignacionData.ColOfVal<object>("alumno");
+                dnis = asignacionData.ColOfVal<string>("persona-numero_documento");
+                asignacionOC.Clear();
+                if (asignacionData.Count() > 0)
+                {
+                    foreach (Dictionary<string, object?> kvp in asignacionData)
+                    {
+                        Data_alumno_comision asignacion = kvp.Obj<Data_alumno_comision>();
+                        asignacion.Data_alumno = kvp.Obj<Data_alumno>("alumno");
+                        asignacion.Data_alumno.Data_persona = kvp.Obj<Data_persona>("persona");
+                        asignacionOC.Add(asignacion);
+                    }
+                    new ToastContentBuilder()
+                    .AddText(asignacionData.Count() + " alumnos")
+                    .Show();
+                }
+                else
+                {
+                    new ToastContentBuilder()
+                   .AddText("Sin alumnos")
+                   .Show();
+                }
+            }
+        }
+
+        private void ConsultarCalificacionesExistentes()
+        {
+            {
+                calificacionExistenteData = ContainerApp.db.Query("calificacion").
+                Where("$disposicion-asignatura = @0").
+                Where(" AND $disposicion-planificacion = @1").
+                Where(" AND $alumno IN (@2)").
+                Where(" AND ($nota_final >= 7 OR $crec >= 4)").
+                Parameters(cursoData["asignatura"]!, cursoData["comision-planificacion"]!, idsAlumnos).ColOfDictCache();
+                calificacionExistenteOC.Clear();
+                foreach (Dictionary<string, object?> kvp in calificacionExistenteData)
+                {
+                    Data_calificacion calificacion = kvp.Obj<Data_calificacion>();
+                    calificacion.Data_alumno = kvp.Obj<Data_alumno>("alumno");
+                    calificacion.Data_alumno.Data_persona = kvp.Obj<Data_persona>("persona");
+                    calificacionExistenteOC.Add(calificacion);
+                }
+
+                if (calificacionExistenteData.Count() > 0)
+                {
+                    new ToastContentBuilder()
+                    .AddText(calificacionExistenteData.Count() + " calificaciones")
+                    .Show();
+                }
+                calificacionesExistentesPorDNI = calificacionExistenteData.DictOfDictByKey<string>("persona-numero_documento");
+
+            }
+        }
+
+        private void CalificacionDataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            AnalizarCalificaciones();
+        }
+
+     
         private void AnalizarCalificaciones()
         {
-            var dnisCalificaciones = calificacionOC.ColOfProp<string, Calificacion>("persona__numero_documento");
-            
-            IDictionary<string, Dictionary<string, object?>> personasExistentes = ContainerApp.db.Query("persona").
+            #region inicializar datos para analisis
+            List<string> dnisProcesados = new();
+            List<string> dnisCalificaciones = new();
+            foreach (Calificacion calificacion in calificacionOC)
+            {
+                dnisCalificaciones.Add(calificacion.Data_alumno.Data_persona.numero_documento);
+            }
+
+            IDictionary<string, Dictionary<string, object?>> personasExistentesPorDNI = ContainerApp.db.Query("persona").
                 Where("$numero_documento IN (@0)").
                 Parameters(dnisCalificaciones).
                 ColOfDictCache().
                 DictOfDictByKey<string>("numero_documento");
 
+            IDictionary<string, Dictionary<string, object?>>  alumnosExistentesPorDNI = ContainerApp.db.Query("alumno").
+                Where("$persona-numero_documento IN (@0)").
+                Parameters(dnisCalificaciones).
+                ColOfDictCache().
+                DictOfDictByKey<string>("persona-numero_documento");
+
+            IDictionary<string, Dictionary<string, object?>> asignacionesExistentesPorDNI = asignacionData.DictOfDictByKey<string>("persona-numero_documento");
+            #endregion
+
             foreach (Calificacion calificacion in calificacionOC)
             {
-                var c = calificacion.Dict();
-                EntityValues personaV = ContainerApp.db.Values("persona", "persona").Set(c);
-                string dni = (string)personaV.Get("numero_documento");
-                if (personasExistentes.ContainsKey(dni))
+                #region inicializacion y chequeos iniciales (calificacion vacía, desaprobada, dni definido, dni repetido)
+                calificacion.observaciones = "";
+                calificacion.procesar = true;
+                calificacion.agregar_persona = false;
+                calificacion.agregar_asignacion = false;
+                calificacion.agregar_alumno = false;
+                var dni = calificacion.Data_alumno!.Data_persona!.numero_documento;
+
+                if (calificacion.nota_final.IsNullOrEmptyOrDbNull() && calificacion.crec.IsNullOrEmptyOrDbNull())
                 {
-                    Dictionary<string, object?> pe = personasExistentes[dni];
-                    var l = new List<string> { "nombres", "apellidos", "numero_documento" };
-                    IDictionary<string, object?> compareResult = personaV.CompareFields(pe, l);
-                    if (!compareResult.IsNullOrEmpty())
+                    calificacion.observaciones += "Calificacion vacía. ";
+                    calificacion.procesar = false;
+                    continue;
+
+                }
+                else if (calificacion.nota_final <= 7 && calificacion.crec <= 4)
+                {
+                    calificacion.observaciones += "Desaprobado (se cargara la calificacion archivada). ";
+                    calificacion.archivado = true;
+                }
+
+                if (dni.IsNullOrEmpty())
+                {
+                    calificacion.observaciones = "No se encuentra definido el DNI. ";
+                    calificacion.procesar = false;
+                    continue;
+                }
+
+                if (dnisProcesados.Contains(dni!))
+                {
+                    calificacion.observaciones += "DNI repetido";
+                    calificacion.procesar = false;
+                    continue;
+                }
+
+                dnisProcesados.Add(dni!);
+                #endregion
+
+                #region chequeo de calificacion existente
+                if (calificacionesExistentesPorDNI.ContainsKey(calificacion.Data_alumno.Data_persona.numero_documento!))
+                {
+                    Calificacion cal = calificacionesExistentesPorDNI[calificacion.Data_alumno.Data_persona.numero_documento!].Obj<Calificacion>();
+                    if (cal.archivado == calificacion.archivado)
                     {
-                        foreach (string key in compareResult.Keys)
+                        calificacion.observaciones += "Calificacion existente. ";
+                        calificacion.procesar = false;
+
+                        if (!calificacion.nota_final.IsNullOrEmptyOrDbNull() && calificacion.nota_final >= 7)
                         {
-                            calificacion.observaciones += "Diferente " + key + ". ";
-                            calificacion.procesar = false;
+                            int n1 = (int)Math.Truncate(calificacion.nota_final ?? 0);
+                            int n2 = (int)Math.Truncate(cal.nota_final ?? 0);
+                            if (n1 != n2)
+                                calificacion.observaciones += "Nota final diferente. ";
+                        }
+                        else if (!calificacion.crec.IsNullOrEmptyOrDbNull() && calificacion.crec >= 4)
+                        {
+                            int n1 = (int)Math.Truncate(calificacion.crec ?? 0);
+                            int n2 = (int)Math.Truncate(cal.crec ?? 0);
+                            if (n1 != n2)
+                                calificacion.observaciones += "Crec diferente. ";
                         }
                     }
+                }
+                #endregion
+
+                #region chequeo de asignacion, alumno, persona existente, nombres de persona
+                if (!asignacionesExistentesPorDNI.ContainsKey(dni!))
+                {
+                    calificacion.observaciones += "Asignación inexistente, será agregada. ";                              
+                    calificacion.agregar_asignacion = true;
+
+                    if (!alumnosExistentesPorDNI.ContainsKey(dni!))
+                    {
+                        calificacion.observaciones += "Alumno inexistente, será agregado. ";
+                        calificacion.agregar_alumno = true;
+
+                        if (!personasExistentesPorDNI.ContainsKey(dni!))
+                        {
+                            calificacion.observaciones += "Persona inexistente, será agregada. ";
+                            calificacion.agregar_persona = true;
+                        }
+                        else
+                        {
+                            Values.Persona personaV = (Values.Persona)ContainerApp.db.Values("persona").SetObj(calificacion.Data_alumno.Data_persona!);
+                            Dictionary<string, object?> pe = personasExistentesPorDNI[dni!];
+                            var l = new List<string> { "nombres", "apellidos", "numero_documento" };
+                            IDictionary<string, object?> compareResult = personaV.CompareFields(pe, l);
+                            if (!compareResult.IsNullOrEmpty())
+                            {
+                                foreach (string key in compareResult.Keys)
+                                {
+                                    calificacion.observaciones += "Diferente " + key + ". ";
+                                    calificacion.procesar = false;
+                                }
+                            }
+
+                            calificacion.Data_alumno.persona = (string)personasExistentesPorDNI[dni!]["id"]!;
+                        }
+                    } else
+                    {
+                        calificacion.alumno = (string)alumnosExistentesPorDNI[dni!]["id"]!;
+                    }
+
                 } else
                 {
-                    calificacion.observaciones += "La persona no existe en la base de datos, será agregada. ";
-                    calificacion.agregar_persona = true;
+                    calificacion.alumno = (string)asignacionesExistentesPorDNI[dni!]["alumno"]!;
                 }
+                #endregion
             }
         }
 
@@ -146,11 +285,11 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
             IEnumerable<string> encabezados = fd.encabezados!.Split(",").Select(s => s.Trim());
             IEnumerable<string> datos = fd.datos!.Split("\r\n");
-            IDictionary<string, Dictionary<string, object?>> calificacionesExistentesPorDNI = calificacionExistenteOC.ColOfDict().DictOfDictByKey<string>("persona-numero_documento");
             List<string> dnisProcesados = new();
 
             EntityPersist p = ContainerApp.db.Persist();
             calificacionOC.Clear();
+            calificacionData.Clear();
             for (var j = 0; j < datos.Count(); j++)
             {
                 if (datos.ElementAt(j).IsNullOrEmpty())
@@ -165,59 +304,11 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                     calificacion.Sset(encabezados.ElementAt(i), values.ElementAt(i));
                 }
 
+                calificacionData.Add((Dictionary<string, object?>)calificacion.values);
                 var o = calificacion.values.Obj<Calificacion>();
+                o.Data_alumno!.Data_persona = calificacion.values.Obj<Data_persona>("persona");
                 o.curso = (string)idCurso;
-                o.observaciones = "";
-                if (o.persona__numero_documento.IsNullOrEmpty())
-                {
-                    o.observaciones += "No se encuentra definido el DNI. ";
-                    o.procesar = false;
-                    continue;
-                } 
-                
-                if(o.nota_final.IsNullOrEmptyOrDbNull() && o.crec.IsNullOrEmptyOrDbNull())
-                {
-                    o.observaciones += "Calificacion vacía. ";
-                    o.procesar = false;
-                    continue;
-
-                } else if (o.nota_final <= 7 && o.crec <= 4)
-                {
-                    o.observaciones += "Desaprobado (se cargara la calificacion archivada). ";
-                    o.archivado = true;
-                }
-
-                if (dnisProcesados.Contains(o.persona__numero_documento!))
-                {
-                    o.observaciones += "DNI repetido";
-                    o.procesar = false;
-                    continue;
-                }
-
-                dnisProcesados.Add(o.persona__numero_documento!);
-
-                if (calificacionesExistentesPorDNI.ContainsKey(o.persona__numero_documento)){
-                    Calificacion cal = calificacionesExistentesPorDNI[o.persona__numero_documento].Obj<Calificacion>();
-                    if (cal.archivado == o.archivado) { 
-                        o.observaciones += "Calificacion existente. ";
-                        o.procesar = false;
-
-                        if (!o.nota_final.IsNullOrEmptyOrDbNull() && o.nota_final >= 7)
-                        {
-                            string n1 = o.nota_final.ToString()!;
-                            string n2 = cal.nota_final?.ToString() ?? "0";
-                            if (n1 != n2)
-                                o.observaciones += "Nota final diferente. ";
-                        } else if (!o.crec.IsNullOrEmptyOrDbNull() && o.crec >= 4)
-                        {
-                            string n1 = o.crec.ToString()!;
-                            string n2 = cal.crec?.ToString() ?? "0";
-                            if (n1 != n2)
-                                o.observaciones += "Crec diferente. ";
-                        }
-                    }
-                }
-
+                o.disposicion = (string)idDisposicion;
                 calificacionOC.Add(o);
             }
 
@@ -227,36 +318,83 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
         private void ProcessButton_Click(object sender, RoutedEventArgs e)
         {
+
             foreach(Calificacion cal in calificacionOC)
             {
-                var calData = cal.Dict();
-
                 if (!cal.procesar)
-                    return;
+                    continue;
 
                 EntityPersist persist = ContainerApp.db.Persist();
+
+
                 if (cal.agregar_persona)
                 {
-                    EntityValues valPer = ContainerApp.db.Values("persona", "persona").Set(calData);
+                    EntityValues valPer = ContainerApp.db.Values("persona").SetObj(cal.Data_alumno!.Data_persona!).Default().Reset();
                     if (valPer.Check())
+                    {
                         persist.Insert(valPer);
+                        cal.Data_alumno.persona = (string)valPer.Get("id");
+                    }
+
                     else
-                    { 
+                    {
                         cal.observaciones += valPer.logging.ToString();
                         continue;
                     }
                 }
 
-                EntityValues valCal = ContainerApp.db.Values("calificacion").Set(calData).Reset();
+                if (cal.agregar_alumno)
+                {
+                    EntityValues valAlu = ContainerApp.db.Values("alumno").SetObj(cal.Data_alumno!).Default().Reset();
+                    if (valAlu.Check())
+                    {
+                        persist.Insert(valAlu);
+                        cal.alumno = (string)valAlu.Get("id");
+                    }
+                    else
+                    {
+                        cal.observaciones += valAlu.logging.ToString();
+                        continue;
+                    }
+                }
+
+                if (cal.agregar_asignacion)
+                {
+
+                    EntityValues valAc = ContainerApp.db.Values("alumno_comision").
+                        Set("comision", cursoData["comision"]).
+                        Set("alumno", cal.alumno).
+                        Set("estado", "Activo").
+                        Default().
+                        Reset();
+
+                    if (valAc.Check())
+                        persist.Insert(valAc);
+                    else
+                    {
+                        cal.observaciones += valAc.logging.ToString();
+                        continue;
+                    }
+                }
+
+                EntityValues valCal = ContainerApp.db.Values("calificacion").SetObj(cal).Default().Reset();
                 if (valCal.Check())
                     persist.Insert(valCal);
                 else { 
                     cal.observaciones += valCal.logging.ToString();
                     continue;
                 }
-
                 persist.Transaction().RemoveCache();
+
             }
+
+            new ToastContentBuilder()
+                .AddText("Calificaciones Guardadas")
+                .Show();
+            calificacionOC.Clear();
+            ConsultarAsignacionesExistentes();
+            ConsultarCalificacionesExistentes();
+
         }
     }
 }

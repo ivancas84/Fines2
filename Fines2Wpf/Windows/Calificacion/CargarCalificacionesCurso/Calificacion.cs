@@ -1,15 +1,37 @@
-﻿using Fines2Wpf.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Fines2Wpf.Data;
 
 namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 {
-    class Calificacion : Data_calificacion_r
+    class Calificacion : Data_calificacion
     {
-        public bool procesar { set; get; } = true;
-        public bool agregar_persona { set; get; } = true;
+
+        protected bool _procesar = true;
+        public bool procesar
+        {
+            get { return _procesar; }
+            set { _procesar = value; NotifyPropertyChanged(); }
+        }
+
+        protected bool _agregar_persona = false;
+        public bool agregar_persona
+        {
+            get { return _agregar_persona; }
+            set { _agregar_persona = value; NotifyPropertyChanged(); }
+        }
+
+        protected bool _agregar_alumno = false;
+        public bool agregar_alumno
+        {
+            get { return _agregar_alumno; }
+            set { _agregar_alumno = value; NotifyPropertyChanged(); }
+        }
+
+        protected bool _agregar_asignacion = false;
+        public bool agregar_asignacion
+        {
+            get { return _agregar_asignacion; }
+            set { _agregar_asignacion = value; NotifyPropertyChanged(); }
+        }
+
     }
 }

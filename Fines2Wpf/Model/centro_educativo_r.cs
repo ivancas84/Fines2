@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 
@@ -22,7 +23,7 @@ namespace Fines2Wpf.Model
             switch(mode)
             {
                 case DataInitMode.Default:
-                    _domicilio__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    domicilio__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
                 break;
             }
         }
@@ -33,7 +34,7 @@ namespace Fines2Wpf.Model
         public string? domicilio__id
         {
             get { return _domicilio__id; }
-            set { _domicilio__id = value; NotifyPropertyChanged(); }
+            set { _domicilio__id = value; _domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio__calle = null;
         public string? domicilio__calle

@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 
@@ -22,44 +23,44 @@ namespace Fines2Wpf.Model
             switch(mode)
             {
                 case DataInitMode.Default:
-                    _planilla_docente__id = (string?)ContainerApp.db.Values("planilla_docente").Default("id").Get("id");
-                    _planilla_docente__insertado = (DateTime?)ContainerApp.db.Values("planilla_docente").Default("insertado").Get("insertado");
-                    _toma__id = (string?)ContainerApp.db.Values("toma").Default("id").Get("id");
-                    _toma__alta = (DateTime?)ContainerApp.db.Values("toma").Default("alta").Get("alta");
-                    _toma__calificacion = (bool?)ContainerApp.db.Values("toma").Default("calificacion").Get("calificacion");
-                    _toma__temas_tratados = (bool?)ContainerApp.db.Values("toma").Default("temas_tratados").Get("temas_tratados");
-                    _toma__asistencia = (bool?)ContainerApp.db.Values("toma").Default("asistencia").Get("asistencia");
-                    _toma__sin_planillas = (bool?)ContainerApp.db.Values("toma").Default("sin_planillas").Get("sin_planillas");
-                    _toma__confirmada = (bool?)ContainerApp.db.Values("toma").Default("confirmada").Get("confirmada");
-                    _curso__id = (string?)ContainerApp.db.Values("curso").Default("id").Get("id");
-                    _curso__alta = (DateTime?)ContainerApp.db.Values("curso").Default("alta").Get("alta");
-                    _comision__id = (string?)ContainerApp.db.Values("comision").Default("id").Get("id");
-                    _comision__alta = (DateTime?)ContainerApp.db.Values("comision").Default("alta").Get("alta");
-                    _sede__id = (string?)ContainerApp.db.Values("sede").Default("id").Get("id");
-                    _sede__alta = (DateTime?)ContainerApp.db.Values("sede").Default("alta").Get("alta");
-                    _domicilio__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
-                    _centro_educativo__id = (string?)ContainerApp.db.Values("centro_educativo").Default("id").Get("id");
-                    _domicilio_cen__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
-                    _modalidad__id = (string?)ContainerApp.db.Values("modalidad").Default("id").Get("id");
-                    _planificacion__id = (string?)ContainerApp.db.Values("planificacion").Default("id").Get("id");
-                    _plan__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
-                    _calendario__id = (string?)ContainerApp.db.Values("calendario").Default("id").Get("id");
-                    _calendario__insertado = (DateTime?)ContainerApp.db.Values("calendario").Default("insertado").Get("insertado");
-                    _asignatura__id = (string?)ContainerApp.db.Values("asignatura").Default("id").Get("id");
-                    _docente__id = (string?)ContainerApp.db.Values("persona").Default("id").Get("id");
-                    _docente__alta = (DateTime?)ContainerApp.db.Values("persona").Default("alta").Get("alta");
-                    _docente__telefono_verificado = (bool?)ContainerApp.db.Values("persona").Default("telefono_verificado").Get("telefono_verificado");
-                    _docente__email_verificado = (bool?)ContainerApp.db.Values("persona").Default("email_verificado").Get("email_verificado");
-                    _docente__info_verificada = (bool?)ContainerApp.db.Values("persona").Default("info_verificada").Get("info_verificada");
-                    _domicilio_doc__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
-                    _reemplazo__id = (string?)ContainerApp.db.Values("persona").Default("id").Get("id");
-                    _reemplazo__alta = (DateTime?)ContainerApp.db.Values("persona").Default("alta").Get("alta");
-                    _reemplazo__telefono_verificado = (bool?)ContainerApp.db.Values("persona").Default("telefono_verificado").Get("telefono_verificado");
-                    _reemplazo__email_verificado = (bool?)ContainerApp.db.Values("persona").Default("email_verificado").Get("email_verificado");
-                    _reemplazo__info_verificada = (bool?)ContainerApp.db.Values("persona").Default("info_verificada").Get("info_verificada");
-                    _domicilio_ree__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
-                    _planilla_docente_tom__id = (string?)ContainerApp.db.Values("planilla_docente").Default("id").Get("id");
-                    _planilla_docente_tom__insertado = (DateTime?)ContainerApp.db.Values("planilla_docente").Default("insertado").Get("insertado");
+                    planilla_docente__id = (string?)ContainerApp.db.Values("planilla_docente").Default("id").Get("id");
+                    planilla_docente__insertado = (DateTime?)ContainerApp.db.Values("planilla_docente").Default("insertado").Get("insertado");
+                    toma__id = (string?)ContainerApp.db.Values("toma").Default("id").Get("id");
+                    toma__alta = (DateTime?)ContainerApp.db.Values("toma").Default("alta").Get("alta");
+                    toma__calificacion = (bool?)ContainerApp.db.Values("toma").Default("calificacion").Get("calificacion");
+                    toma__temas_tratados = (bool?)ContainerApp.db.Values("toma").Default("temas_tratados").Get("temas_tratados");
+                    toma__asistencia = (bool?)ContainerApp.db.Values("toma").Default("asistencia").Get("asistencia");
+                    toma__sin_planillas = (bool?)ContainerApp.db.Values("toma").Default("sin_planillas").Get("sin_planillas");
+                    toma__confirmada = (bool?)ContainerApp.db.Values("toma").Default("confirmada").Get("confirmada");
+                    curso__id = (string?)ContainerApp.db.Values("curso").Default("id").Get("id");
+                    curso__alta = (DateTime?)ContainerApp.db.Values("curso").Default("alta").Get("alta");
+                    comision__id = (string?)ContainerApp.db.Values("comision").Default("id").Get("id");
+                    comision__alta = (DateTime?)ContainerApp.db.Values("comision").Default("alta").Get("alta");
+                    sede__id = (string?)ContainerApp.db.Values("sede").Default("id").Get("id");
+                    sede__alta = (DateTime?)ContainerApp.db.Values("sede").Default("alta").Get("alta");
+                    domicilio__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    centro_educativo__id = (string?)ContainerApp.db.Values("centro_educativo").Default("id").Get("id");
+                    domicilio_cen__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    modalidad__id = (string?)ContainerApp.db.Values("modalidad").Default("id").Get("id");
+                    planificacion__id = (string?)ContainerApp.db.Values("planificacion").Default("id").Get("id");
+                    plan__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
+                    calendario__id = (string?)ContainerApp.db.Values("calendario").Default("id").Get("id");
+                    calendario__insertado = (DateTime?)ContainerApp.db.Values("calendario").Default("insertado").Get("insertado");
+                    asignatura__id = (string?)ContainerApp.db.Values("asignatura").Default("id").Get("id");
+                    docente__id = (string?)ContainerApp.db.Values("persona").Default("id").Get("id");
+                    docente__alta = (DateTime?)ContainerApp.db.Values("persona").Default("alta").Get("alta");
+                    docente__telefono_verificado = (bool?)ContainerApp.db.Values("persona").Default("telefono_verificado").Get("telefono_verificado");
+                    docente__email_verificado = (bool?)ContainerApp.db.Values("persona").Default("email_verificado").Get("email_verificado");
+                    docente__info_verificada = (bool?)ContainerApp.db.Values("persona").Default("info_verificada").Get("info_verificada");
+                    domicilio_doc__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    reemplazo__id = (string?)ContainerApp.db.Values("persona").Default("id").Get("id");
+                    reemplazo__alta = (DateTime?)ContainerApp.db.Values("persona").Default("alta").Get("alta");
+                    reemplazo__telefono_verificado = (bool?)ContainerApp.db.Values("persona").Default("telefono_verificado").Get("telefono_verificado");
+                    reemplazo__email_verificado = (bool?)ContainerApp.db.Values("persona").Default("email_verificado").Get("email_verificado");
+                    reemplazo__info_verificada = (bool?)ContainerApp.db.Values("persona").Default("info_verificada").Get("info_verificada");
+                    domicilio_ree__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    planilla_docente_tom__id = (string?)ContainerApp.db.Values("planilla_docente").Default("id").Get("id");
+                    planilla_docente_tom__insertado = (DateTime?)ContainerApp.db.Values("planilla_docente").Default("insertado").Get("insertado");
                 break;
             }
         }
@@ -70,7 +71,7 @@ namespace Fines2Wpf.Model
         public string? planilla_docente__id
         {
             get { return _planilla_docente__id; }
-            set { _planilla_docente__id = value; NotifyPropertyChanged(); }
+            set { _planilla_docente__id = value; _planilla_docente = value; NotifyPropertyChanged(); }
         }
         protected string? _planilla_docente__numero = null;
         public string? planilla_docente__numero
@@ -109,7 +110,7 @@ namespace Fines2Wpf.Model
         public string? toma__id
         {
             get { return _toma__id; }
-            set { _toma__id = value; NotifyPropertyChanged(); }
+            set { _toma__id = value; _toma = value; NotifyPropertyChanged(); }
         }
         protected DateTime? _toma__fecha_toma = null;
         public DateTime? toma__fecha_toma
@@ -214,7 +215,7 @@ namespace Fines2Wpf.Model
         public string? curso__id
         {
             get { return _curso__id; }
-            set { _curso__id = value; NotifyPropertyChanged(); }
+            set { _curso__id = value; _toma__curso = value; NotifyPropertyChanged(); }
         }
         protected int? _curso__horas_catedra = null;
         public int? curso__horas_catedra
@@ -259,7 +260,7 @@ namespace Fines2Wpf.Model
         public string? comision__id
         {
             get { return _comision__id; }
-            set { _comision__id = value; NotifyPropertyChanged(); }
+            set { _comision__id = value; _curso__comision = value; NotifyPropertyChanged(); }
         }
         protected string? _comision__turno = null;
         public string? comision__turno
@@ -358,7 +359,7 @@ namespace Fines2Wpf.Model
         public string? sede__id
         {
             get { return _sede__id; }
-            set { _sede__id = value; NotifyPropertyChanged(); }
+            set { _sede__id = value; _comision__sede = value; NotifyPropertyChanged(); }
         }
         protected string? _sede__numero = null;
         public string? sede__numero
@@ -433,7 +434,7 @@ namespace Fines2Wpf.Model
         public string? domicilio__id
         {
             get { return _domicilio__id; }
-            set { _domicilio__id = value; NotifyPropertyChanged(); }
+            set { _domicilio__id = value; _sede__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio__calle = null;
         public string? domicilio__calle
@@ -484,7 +485,7 @@ namespace Fines2Wpf.Model
         public string? centro_educativo__id
         {
             get { return _centro_educativo__id; }
-            set { _centro_educativo__id = value; NotifyPropertyChanged(); }
+            set { _centro_educativo__id = value; _sede__centro_educativo = value; NotifyPropertyChanged(); }
         }
         protected string? _centro_educativo__nombre = null;
         public string? centro_educativo__nombre
@@ -517,7 +518,7 @@ namespace Fines2Wpf.Model
         public string? domicilio_cen__id
         {
             get { return _domicilio_cen__id; }
-            set { _domicilio_cen__id = value; NotifyPropertyChanged(); }
+            set { _domicilio_cen__id = value; _centro_educativo__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio_cen__calle = null;
         public string? domicilio_cen__calle
@@ -568,7 +569,7 @@ namespace Fines2Wpf.Model
         public string? modalidad__id
         {
             get { return _modalidad__id; }
-            set { _modalidad__id = value; NotifyPropertyChanged(); }
+            set { _modalidad__id = value; _comision__modalidad = value; NotifyPropertyChanged(); }
         }
         protected string? _modalidad__nombre = null;
         public string? modalidad__nombre
@@ -589,7 +590,7 @@ namespace Fines2Wpf.Model
         public string? planificacion__id
         {
             get { return _planificacion__id; }
-            set { _planificacion__id = value; NotifyPropertyChanged(); }
+            set { _planificacion__id = value; _comision__planificacion = value; NotifyPropertyChanged(); }
         }
         protected string? _planificacion__anio = null;
         public string? planificacion__anio
@@ -622,7 +623,7 @@ namespace Fines2Wpf.Model
         public string? plan__id
         {
             get { return _plan__id; }
-            set { _plan__id = value; NotifyPropertyChanged(); }
+            set { _plan__id = value; _planificacion__plan = value; NotifyPropertyChanged(); }
         }
         protected string? _plan__orientacion = null;
         public string? plan__orientacion
@@ -655,7 +656,7 @@ namespace Fines2Wpf.Model
         public string? calendario__id
         {
             get { return _calendario__id; }
-            set { _calendario__id = value; NotifyPropertyChanged(); }
+            set { _calendario__id = value; _comision__calendario = value; NotifyPropertyChanged(); }
         }
         protected DateTime? _calendario__inicio = null;
         public DateTime? calendario__inicio
@@ -700,7 +701,7 @@ namespace Fines2Wpf.Model
         public string? asignatura__id
         {
             get { return _asignatura__id; }
-            set { _asignatura__id = value; NotifyPropertyChanged(); }
+            set { _asignatura__id = value; _curso__asignatura = value; NotifyPropertyChanged(); }
         }
         protected string? _asignatura__nombre = null;
         public string? asignatura__nombre
@@ -739,7 +740,7 @@ namespace Fines2Wpf.Model
         public string? docente__id
         {
             get { return _docente__id; }
-            set { _docente__id = value; NotifyPropertyChanged(); }
+            set { _docente__id = value; _toma__docente = value; NotifyPropertyChanged(); }
         }
         protected string? _docente__nombres = null;
         public string? docente__nombres
@@ -850,7 +851,7 @@ namespace Fines2Wpf.Model
         public string? domicilio_doc__id
         {
             get { return _domicilio_doc__id; }
-            set { _domicilio_doc__id = value; NotifyPropertyChanged(); }
+            set { _domicilio_doc__id = value; _docente__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio_doc__calle = null;
         public string? domicilio_doc__calle
@@ -901,7 +902,7 @@ namespace Fines2Wpf.Model
         public string? reemplazo__id
         {
             get { return _reemplazo__id; }
-            set { _reemplazo__id = value; NotifyPropertyChanged(); }
+            set { _reemplazo__id = value; _toma__reemplazo = value; NotifyPropertyChanged(); }
         }
         protected string? _reemplazo__nombres = null;
         public string? reemplazo__nombres
@@ -1012,7 +1013,7 @@ namespace Fines2Wpf.Model
         public string? domicilio_ree__id
         {
             get { return _domicilio_ree__id; }
-            set { _domicilio_ree__id = value; NotifyPropertyChanged(); }
+            set { _domicilio_ree__id = value; _reemplazo__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio_ree__calle = null;
         public string? domicilio_ree__calle
@@ -1063,7 +1064,7 @@ namespace Fines2Wpf.Model
         public string? planilla_docente_tom__id
         {
             get { return _planilla_docente_tom__id; }
-            set { _planilla_docente_tom__id = value; NotifyPropertyChanged(); }
+            set { _planilla_docente_tom__id = value; _toma__planilla_docente = value; NotifyPropertyChanged(); }
         }
         protected string? _planilla_docente_tom__numero = null;
         public string? planilla_docente_tom__numero

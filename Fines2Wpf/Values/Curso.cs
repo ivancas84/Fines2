@@ -1,4 +1,5 @@
-﻿using SqlOrganize;
+﻿using Fines2Wpf.DAO;
+using SqlOrganize;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,6 +56,28 @@ namespace Fines2Wpf.Values
             return s;
         }
 
+        public string ToStringAsignaturaSedeDocente()
+        {
+            var s = ToString();
+            s += " ";
+            s += ValuesRel("asignatura")?.GetOrNull("nombre") ?? "?";
+            s += " ";
+            s += ValuesRel("sede")?.GetOrNull("nombre") ?? "?";
+            s += " ";
+            s += ValuesTomaActiva()?.ValuesRel("docente")?.ToString() ?? "?";
+            return s;
+        }
+
+
+        public EntityValues? ValuesTomaActiva()
+        {
+            DAO.Curso cursoDAO = new DAO.Curso();
+            var idCurso = GetOrNull("id");
+            if (idCurso.IsNullOrEmpty())
+                return cursoDAO.TomaActivaDeCursoQuery(idCurso!).Values();
+
+            return null;
+        }
 
     }
 }

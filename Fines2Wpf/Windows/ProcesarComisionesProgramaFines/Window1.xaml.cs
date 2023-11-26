@@ -1,5 +1,4 @@
 ﻿using MySqlX.XDevAPI.Relational;
-using Newtonsoft.Json;
 using SqlOrganize;
 using System;
 using System.Collections;

@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 
@@ -22,14 +23,14 @@ namespace Fines2Wpf.Model
             switch(mode)
             {
                 case DataInitMode.Default:
-                    _persona__id = (string?)ContainerApp.db.Values("persona").Default("id").Get("id");
-                    _persona__alta = (DateTime?)ContainerApp.db.Values("persona").Default("alta").Get("alta");
-                    _persona__telefono_verificado = (bool?)ContainerApp.db.Values("persona").Default("telefono_verificado").Get("telefono_verificado");
-                    _persona__email_verificado = (bool?)ContainerApp.db.Values("persona").Default("email_verificado").Get("email_verificado");
-                    _persona__info_verificada = (bool?)ContainerApp.db.Values("persona").Default("info_verificada").Get("info_verificada");
-                    _domicilio__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
-                    _plan__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
-                    _resolucion_inscripcion__id = (string?)ContainerApp.db.Values("resolucion").Default("id").Get("id");
+                    persona__id = (string?)ContainerApp.db.Values("persona").Default("id").Get("id");
+                    persona__alta = (DateTime?)ContainerApp.db.Values("persona").Default("alta").Get("alta");
+                    persona__telefono_verificado = (bool?)ContainerApp.db.Values("persona").Default("telefono_verificado").Get("telefono_verificado");
+                    persona__email_verificado = (bool?)ContainerApp.db.Values("persona").Default("email_verificado").Get("email_verificado");
+                    persona__info_verificada = (bool?)ContainerApp.db.Values("persona").Default("info_verificada").Get("info_verificada");
+                    domicilio__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    plan__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
+                    resolucion_inscripcion__id = (string?)ContainerApp.db.Values("resolucion").Default("id").Get("id");
                 break;
             }
         }
@@ -40,7 +41,7 @@ namespace Fines2Wpf.Model
         public string? persona__id
         {
             get { return _persona__id; }
-            set { _persona__id = value; NotifyPropertyChanged(); }
+            set { _persona__id = value; _persona = value; NotifyPropertyChanged(); }
         }
         protected string? _persona__nombres = null;
         public string? persona__nombres
@@ -151,7 +152,7 @@ namespace Fines2Wpf.Model
         public string? domicilio__id
         {
             get { return _domicilio__id; }
-            set { _domicilio__id = value; NotifyPropertyChanged(); }
+            set { _domicilio__id = value; _persona__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio__calle = null;
         public string? domicilio__calle
@@ -202,7 +203,7 @@ namespace Fines2Wpf.Model
         public string? plan__id
         {
             get { return _plan__id; }
-            set { _plan__id = value; NotifyPropertyChanged(); }
+            set { _plan__id = value; _plan = value; NotifyPropertyChanged(); }
         }
         protected string? _plan__orientacion = null;
         public string? plan__orientacion
@@ -235,7 +236,7 @@ namespace Fines2Wpf.Model
         public string? resolucion_inscripcion__id
         {
             get { return _resolucion_inscripcion__id; }
-            set { _resolucion_inscripcion__id = value; NotifyPropertyChanged(); }
+            set { _resolucion_inscripcion__id = value; _resolucion_inscripcion = value; NotifyPropertyChanged(); }
         }
         protected string? _resolucion_inscripcion__numero = null;
         public string? resolucion_inscripcion__numero

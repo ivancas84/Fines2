@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 
@@ -22,9 +23,9 @@ namespace Fines2Wpf.Model
             switch(mode)
             {
                 case DataInitMode.Default:
-                    _domicilio__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
-                    _centro_educativo__id = (string?)ContainerApp.db.Values("centro_educativo").Default("id").Get("id");
-                    _domicilio_cen__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    domicilio__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
+                    centro_educativo__id = (string?)ContainerApp.db.Values("centro_educativo").Default("id").Get("id");
+                    domicilio_cen__id = (string?)ContainerApp.db.Values("domicilio").Default("id").Get("id");
                 break;
             }
         }
@@ -35,7 +36,7 @@ namespace Fines2Wpf.Model
         public string? domicilio__id
         {
             get { return _domicilio__id; }
-            set { _domicilio__id = value; NotifyPropertyChanged(); }
+            set { _domicilio__id = value; _domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio__calle = null;
         public string? domicilio__calle
@@ -86,7 +87,7 @@ namespace Fines2Wpf.Model
         public string? centro_educativo__id
         {
             get { return _centro_educativo__id; }
-            set { _centro_educativo__id = value; NotifyPropertyChanged(); }
+            set { _centro_educativo__id = value; _centro_educativo = value; NotifyPropertyChanged(); }
         }
         protected string? _centro_educativo__nombre = null;
         public string? centro_educativo__nombre
@@ -119,7 +120,7 @@ namespace Fines2Wpf.Model
         public string? domicilio_cen__id
         {
             get { return _domicilio_cen__id; }
-            set { _domicilio_cen__id = value; NotifyPropertyChanged(); }
+            set { _domicilio_cen__id = value; _centro_educativo__domicilio = value; NotifyPropertyChanged(); }
         }
         protected string? _domicilio_cen__calle = null;
         public string? domicilio_cen__calle
