@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 using System.ComponentModel;
@@ -7,17 +8,15 @@ using Utils;
 
 namespace Fines2Wpf.Data
 {
-    public class Data_horario : INotifyPropertyChanged, IDataErrorInfo
+    public class Data_horario : SqlOrganize.Data
     {
-
-        public bool Validate = false;
 
         public Data_horario ()
         {
             Initialize();
         }
 
-        public Data_horario (DataInitMode mode = DataInitMode.Default)
+        public Data_horario(DataInitMode mode = DataInitMode.Default)
         {
             Initialize(mode);
         }
@@ -31,9 +30,6 @@ namespace Fines2Wpf.Data
                     _id = (string?)ContainerApp.db.Values("horario").Default("id").Get("id");
                 break;
             }
-
-            Data_curso = new (mode);
-            Data_dia = new (mode);
         }
 
         public string? Label { get; set; }
@@ -44,88 +40,31 @@ namespace Fines2Wpf.Data
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-
         protected DateTime? _hora_inicio = null;
         public DateTime? hora_inicio
         {
             get { return _hora_inicio; }
             set { _hora_inicio = value; NotifyPropertyChanged(); }
         }
-
         protected DateTime? _hora_fin = null;
         public DateTime? hora_fin
         {
             get { return _hora_fin; }
             set { _hora_fin = value; NotifyPropertyChanged(); }
         }
-
         protected string? _curso = null;
         public string? curso
         {
             get { return _curso; }
             set { _curso = value; NotifyPropertyChanged(); }
         }
-
         protected string? _dia = null;
         public string? dia
         {
             get { return _dia; }
             set { _dia = value; NotifyPropertyChanged(); }
         }
-
-        protected Data_curso? _Data_curso = null;
-        public Data_curso? Data_curso
-        {
-            get { return _Data_curso; }
-            set { _Data_curso = value; NotifyPropertyChanged(); }
-        }
-
-        protected Data_dia? _Data_dia = null;
-        public Data_dia? Data_dia
-        {
-            get { return _Data_dia; }
-            set { _Data_dia = value; NotifyPropertyChanged(); }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        public string Error
-        {
-            get
-            {
-                PropertyInfo[] properties = this.GetType().GetProperties();
-
-                List<string> errors = new ();
-                foreach (PropertyInfo property in properties)
-                    if (this[property.Name] != "")
-                    {
-                        NotifyPropertyChanged(property.Name);
-                        errors.Add(this[property.Name]);
-                    }
-
-                if(errors.Count > 0)
-                    return String.Join(" - ", errors.ToArray());
-
-                return "";
-            }
-        }
-
-        public string this[string columnName]
-        {
-            get
-            {
-                if (!Validate)
-                    return "";
-
-                // If there's no error, empty string gets returned
-                return ValidateField(columnName);
-            }
-        }
-
-        protected virtual string ValidateField(string columnName)
+        protected override string ValidateField(string columnName)
         {
 
             switch (columnName)

@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 using System.ComponentModel;
@@ -7,17 +8,15 @@ using Utils;
 
 namespace Fines2Wpf.Data
 {
-    public class Data_planilla_docente : INotifyPropertyChanged, IDataErrorInfo
+    public class Data_planilla_docente : SqlOrganize.Data
     {
-
-        public bool Validate = false;
 
         public Data_planilla_docente ()
         {
             Initialize();
         }
 
-        public Data_planilla_docente (DataInitMode mode = DataInitMode.Default)
+        public Data_planilla_docente(DataInitMode mode = DataInitMode.Default)
         {
             Initialize(mode);
         }
@@ -32,7 +31,6 @@ namespace Fines2Wpf.Data
                     _insertado = (DateTime?)ContainerApp.db.Values("planilla_docente").Default("insertado").Get("insertado");
                 break;
             }
-
         }
 
         public string? Label { get; set; }
@@ -43,81 +41,37 @@ namespace Fines2Wpf.Data
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-
         protected string? _numero = null;
         public string? numero
         {
             get { return _numero; }
             set { _numero = value; NotifyPropertyChanged(); }
         }
-
         protected DateTime? _insertado = null;
         public DateTime? insertado
         {
             get { return _insertado; }
             set { _insertado = value; NotifyPropertyChanged(); }
         }
-
         protected DateTime? _fecha_contralor = null;
         public DateTime? fecha_contralor
         {
             get { return _fecha_contralor; }
             set { _fecha_contralor = value; NotifyPropertyChanged(); }
         }
-
         protected DateTime? _fecha_consejo = null;
         public DateTime? fecha_consejo
         {
             get { return _fecha_consejo; }
             set { _fecha_consejo = value; NotifyPropertyChanged(); }
         }
-
         protected string? _observaciones = null;
         public string? observaciones
         {
             get { return _observaciones; }
             set { _observaciones = value; NotifyPropertyChanged(); }
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        public string Error
-        {
-            get
-            {
-                PropertyInfo[] properties = this.GetType().GetProperties();
-
-                List<string> errors = new ();
-                foreach (PropertyInfo property in properties)
-                    if (this[property.Name] != "")
-                    {
-                        NotifyPropertyChanged(property.Name);
-                        errors.Add(this[property.Name]);
-                    }
-
-                if(errors.Count > 0)
-                    return String.Join(" - ", errors.ToArray());
-
-                return "";
-            }
-        }
-
-        public string this[string columnName]
-        {
-            get
-            {
-                if (!Validate)
-                    return "";
-
-                // If there's no error, empty string gets returned
-                return ValidateField(columnName);
-            }
-        }
-
-        protected virtual string ValidateField(string columnName)
+        protected override string ValidateField(string columnName)
         {
 
             switch (columnName)

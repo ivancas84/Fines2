@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 using System.ComponentModel;
@@ -7,17 +8,15 @@ using Utils;
 
 namespace Fines2Wpf.Data
 {
-    public class Data_file : INotifyPropertyChanged, IDataErrorInfo
+    public class Data_file : SqlOrganize.Data
     {
-
-        public bool Validate = false;
 
         public Data_file ()
         {
             Initialize();
         }
 
-        public Data_file (DataInitMode mode = DataInitMode.Default)
+        public Data_file(DataInitMode mode = DataInitMode.Default)
         {
             Initialize(mode);
         }
@@ -32,7 +31,6 @@ namespace Fines2Wpf.Data
                     _created = (DateTime?)ContainerApp.db.Values("file").Default("created").Get("created");
                 break;
             }
-
         }
 
         public string? Label { get; set; }
@@ -43,81 +41,37 @@ namespace Fines2Wpf.Data
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-
         protected string? _name = null;
         public string? name
         {
             get { return _name; }
             set { _name = value; NotifyPropertyChanged(); }
         }
-
         protected string? _type = null;
         public string? type
         {
             get { return _type; }
             set { _type = value; NotifyPropertyChanged(); }
         }
-
         protected string? _content = null;
         public string? content
         {
             get { return _content; }
             set { _content = value; NotifyPropertyChanged(); }
         }
-
         protected uint? _size = null;
         public uint? size
         {
             get { return _size; }
             set { _size = value; NotifyPropertyChanged(); }
         }
-
         protected DateTime? _created = null;
         public DateTime? created
         {
             get { return _created; }
             set { _created = value; NotifyPropertyChanged(); }
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        public string Error
-        {
-            get
-            {
-                PropertyInfo[] properties = this.GetType().GetProperties();
-
-                List<string> errors = new ();
-                foreach (PropertyInfo property in properties)
-                    if (this[property.Name] != "")
-                    {
-                        NotifyPropertyChanged(property.Name);
-                        errors.Add(this[property.Name]);
-                    }
-
-                if(errors.Count > 0)
-                    return String.Join(" - ", errors.ToArray());
-
-                return "";
-            }
-        }
-
-        public string this[string columnName]
-        {
-            get
-            {
-                if (!Validate)
-                    return "";
-
-                // If there's no error, empty string gets returned
-                return ValidateField(columnName);
-            }
-        }
-
-        protected virtual string ValidateField(string columnName)
+        protected override string ValidateField(string columnName)
         {
 
             switch (columnName)

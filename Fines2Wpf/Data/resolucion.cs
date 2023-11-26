@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 using System.ComponentModel;
@@ -7,17 +8,15 @@ using Utils;
 
 namespace Fines2Wpf.Data
 {
-    public class Data_resolucion : INotifyPropertyChanged, IDataErrorInfo
+    public class Data_resolucion : SqlOrganize.Data
     {
-
-        public bool Validate = false;
 
         public Data_resolucion ()
         {
             Initialize();
         }
 
-        public Data_resolucion (DataInitMode mode = DataInitMode.Default)
+        public Data_resolucion(DataInitMode mode = DataInitMode.Default)
         {
             Initialize(mode);
         }
@@ -31,7 +30,6 @@ namespace Fines2Wpf.Data
                     _id = (string?)ContainerApp.db.Values("resolucion").Default("id").Get("id");
                 break;
             }
-
         }
 
         public string? Label { get; set; }
@@ -42,67 +40,25 @@ namespace Fines2Wpf.Data
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-
         protected string? _numero = null;
         public string? numero
         {
             get { return _numero; }
             set { _numero = value; NotifyPropertyChanged(); }
         }
-
         protected short? _anio = null;
         public short? anio
         {
             get { return _anio; }
             set { _anio = value; NotifyPropertyChanged(); }
         }
-
         protected string? _tipo = null;
         public string? tipo
         {
             get { return _tipo; }
             set { _tipo = value; NotifyPropertyChanged(); }
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        public string Error
-        {
-            get
-            {
-                PropertyInfo[] properties = this.GetType().GetProperties();
-
-                List<string> errors = new ();
-                foreach (PropertyInfo property in properties)
-                    if (this[property.Name] != "")
-                    {
-                        NotifyPropertyChanged(property.Name);
-                        errors.Add(this[property.Name]);
-                    }
-
-                if(errors.Count > 0)
-                    return String.Join(" - ", errors.ToArray());
-
-                return "";
-            }
-        }
-
-        public string this[string columnName]
-        {
-            get
-            {
-                if (!Validate)
-                    return "";
-
-                // If there's no error, empty string gets returned
-                return ValidateField(columnName);
-            }
-        }
-
-        protected virtual string ValidateField(string columnName)
+        protected override string ValidateField(string columnName)
         {
 
             switch (columnName)

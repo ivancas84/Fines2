@@ -1,3 +1,4 @@
+#nullable enable
 using SqlOrganize;
 using System;
 using System.ComponentModel;
@@ -7,17 +8,15 @@ using Utils;
 
 namespace Fines2Wpf.Data
 {
-    public class Data_calificacion : INotifyPropertyChanged, IDataErrorInfo
+    public class Data_calificacion : SqlOrganize.Data
     {
-
-        public bool Validate = false;
 
         public Data_calificacion ()
         {
             Initialize();
         }
 
-        public Data_calificacion (DataInitMode mode = DataInitMode.Default)
+        public Data_calificacion(DataInitMode mode = DataInitMode.Default)
         {
             Initialize(mode);
         }
@@ -32,10 +31,6 @@ namespace Fines2Wpf.Data
                     _archivado = (bool?)ContainerApp.db.Values("calificacion").Default("archivado").Get("archivado");
                 break;
             }
-
-            Data_curso = new (mode);
-            Data_alumno = new (mode);
-            Data_disposicion = new (mode);
         }
 
         public string? Label { get; set; }
@@ -46,158 +41,85 @@ namespace Fines2Wpf.Data
             get { return _id; }
             set { _id = value; NotifyPropertyChanged(); }
         }
-
         protected decimal? _nota1 = null;
         public decimal? nota1
         {
             get { return _nota1; }
             set { _nota1 = value; NotifyPropertyChanged(); }
         }
-
         protected decimal? _nota2 = null;
         public decimal? nota2
         {
             get { return _nota2; }
             set { _nota2 = value; NotifyPropertyChanged(); }
         }
-
         protected decimal? _nota3 = null;
         public decimal? nota3
         {
             get { return _nota3; }
             set { _nota3 = value; NotifyPropertyChanged(); }
         }
-
         protected decimal? _nota_final = null;
         public decimal? nota_final
         {
             get { return _nota_final; }
             set { _nota_final = value; NotifyPropertyChanged(); }
         }
-
         protected decimal? _crec = null;
         public decimal? crec
         {
             get { return _crec; }
             set { _crec = value; NotifyPropertyChanged(); }
         }
-
         protected string? _curso = null;
         public string? curso
         {
             get { return _curso; }
             set { _curso = value; NotifyPropertyChanged(); }
         }
-
         protected int? _porcentaje_asistencia = null;
         public int? porcentaje_asistencia
         {
             get { return _porcentaje_asistencia; }
             set { _porcentaje_asistencia = value; NotifyPropertyChanged(); }
         }
-
         protected string? _observaciones = null;
         public string? observaciones
         {
             get { return _observaciones; }
             set { _observaciones = value; NotifyPropertyChanged(); }
         }
-
         protected string? _division = null;
         public string? division
         {
             get { return _division; }
             set { _division = value; NotifyPropertyChanged(); }
         }
-
         protected string? _alumno = null;
         public string? alumno
         {
             get { return _alumno; }
             set { _alumno = value; NotifyPropertyChanged(); }
         }
-
         protected string? _disposicion = null;
         public string? disposicion
         {
             get { return _disposicion; }
             set { _disposicion = value; NotifyPropertyChanged(); }
         }
-
         protected DateTime? _fecha = null;
         public DateTime? fecha
         {
             get { return _fecha; }
             set { _fecha = value; NotifyPropertyChanged(); }
         }
-
         protected bool? _archivado = null;
         public bool? archivado
         {
             get { return _archivado; }
             set { _archivado = value; NotifyPropertyChanged(); }
         }
-
-        protected Data_curso? _Data_curso = null;
-        public Data_curso? Data_curso
-        {
-            get { return _Data_curso; }
-            set { _Data_curso = value; NotifyPropertyChanged(); }
-        }
-
-        protected Data_alumno? _Data_alumno = null;
-        public Data_alumno? Data_alumno
-        {
-            get { return _Data_alumno; }
-            set { _Data_alumno = value; NotifyPropertyChanged(); }
-        }
-
-        protected Data_disposicion? _Data_disposicion = null;
-        public Data_disposicion? Data_disposicion
-        {
-            get { return _Data_disposicion; }
-            set { _Data_disposicion = value; NotifyPropertyChanged(); }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        public string Error
-        {
-            get
-            {
-                PropertyInfo[] properties = this.GetType().GetProperties();
-
-                List<string> errors = new ();
-                foreach (PropertyInfo property in properties)
-                    if (this[property.Name] != "")
-                    {
-                        NotifyPropertyChanged(property.Name);
-                        errors.Add(this[property.Name]);
-                    }
-
-                if(errors.Count > 0)
-                    return String.Join(" - ", errors.ToArray());
-
-                return "";
-            }
-        }
-
-        public string this[string columnName]
-        {
-            get
-            {
-                if (!Validate)
-                    return "";
-
-                // If there's no error, empty string gets returned
-                return ValidateField(columnName);
-            }
-        }
-
-        protected virtual string ValidateField(string columnName)
+        protected override string ValidateField(string columnName)
         {
 
             switch (columnName)
