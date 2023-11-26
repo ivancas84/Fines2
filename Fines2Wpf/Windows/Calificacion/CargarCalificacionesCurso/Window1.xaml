@@ -13,7 +13,13 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="{materialDesign:MaterialDesignFont}"
+        
+        xmlns:conv1="clr-namespace:WpfUtils.Converters"
+
         >
+    <Window.Resources>
+        <conv1:BoolToStringConverter x:Key="noSiConverter" FalseValue="No" TrueValue="Sí" />
+    </Window.Resources>
     <ScrollViewer>
 
 
@@ -110,9 +116,9 @@
                         </ContextMenu>
                     </DataGrid.ContextMenu>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Apellidos" Binding="{Binding Data_alumno.Data_persona.apellidos}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Nombres" Binding="{Binding Data_alumno.Data_persona.nombres}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="DNI" Binding="{Binding Data_alumno.Data_persona.numero_documento}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
 
                     </DataGrid.Columns>
@@ -132,9 +138,9 @@
                     AutoGenerateColumns="False" 
                     CanUserAddRows="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Apellidos" Binding="{Binding Data_alumno.Data_persona.apellidos}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="Nombres" Binding="{Binding Data_alumno.Data_persona.nombres}"></DataGridTextColumn>
-                        <DataGridTextColumn Header="DNI" Binding="{Binding Data_alumno.Data_persona.numero_documento}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Nota Final" Binding="{Binding nota_final}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Crec" Binding="{Binding crec}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Archivado" Binding="{Binding archivado}"></DataGridTextColumn>
@@ -168,13 +174,18 @@
                         CanUserAddRows="False">
 
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Apellidos" Binding="{Binding Data_alumno.Data_persona.apellidos, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Nombres" Binding="{Binding Data_alumno.Data_persona.nombres, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="DNI" Binding="{Binding Data_alumno.Data_persona.numero_documento, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Nota Final" Binding="{Binding nota_final, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Crec" Binding="{Binding crec, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
                             <DataGridTextColumn IsReadOnly="True" Header="Observaciones" Binding="{Binding observaciones, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
-                            <DataGridTextColumn IsReadOnly="True" Header="Procesar" Binding="{Binding procesar, UpdateSourceTrigger=LostFocus}"></DataGridTextColumn>
+                            <DataGridTextColumn 
+                                IsReadOnly="True" 
+                                Header="Procesar" 
+                                ClipboardContentBinding="{Binding procesar, Converter={StaticResource noSiConverter}}" 
+                                Binding="{Binding procesar, Converter={StaticResource noSiConverter}}"/>
+
 
                         </DataGrid.Columns>
                     </DataGrid>

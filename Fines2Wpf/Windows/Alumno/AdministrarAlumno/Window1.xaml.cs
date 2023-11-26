@@ -1,5 +1,5 @@
 ﻿
-using Fines2Wpf.Model;
+using Fines2Wpf.Data;
 using Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre;
 using Microsoft.Win32;
 using MimeTypes;
@@ -36,8 +36,8 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
 
         private ObservableCollection<Data_persona> personaOC = new(); //datos consultados de la base de datos
-        private ObservableCollection<Data_resolucion_r> resolucionOC = new(); //datos consultados de la base de datos
-        private ObservableCollection<Data_plan_r> planOC = new(); //datos consultados de la base de datos
+        private ObservableCollection<Data_resolucion> resolucionOC = new(); //datos consultados de la base de datos
+        private ObservableCollection<Data_plan> planOC = new(); //datos consultados de la base de datos
         private DispatcherTimer typingTimer;
 
 
@@ -101,7 +101,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             planOC.Clear();
             foreach (var item in dataPlan)
             {
-                var o = item.Obj<Data_plan_r>();
+                var o = item.Obj<Data_plan>();
                 o.Label = ContainerApp.db.Values("plan").Set(item).ToString();
                 planOC.Add(o);
             }
@@ -172,7 +172,8 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         private void LoadAsignaciones(Alumno a)
         {
             asignacionOC.Clear();
-
+            if (a.IsNullOrEmptyOrDbNull() || a.id.IsNullOrEmptyOrDbNull())
+                return;
             var data = ContainerApp.db.Query("alumno_comision").
                 Where("$alumno = @0").
                 Parameters(a.id!).ColOfDictCache();
@@ -197,6 +198,8 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             calificacionOC.Clear();
 
+            if (a.IsNullOrEmptyOrDbNull() || a.id.IsNullOrEmptyOrDbNull())
+                return;
             if (a.plan.IsNullOrEmpty())
                 return;
             
@@ -225,7 +228,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             disposicionOC.Clear();
 
-            if (a.plan.IsNullOrEmptyOrDbNull())
+            if(a.IsNullOrEmptyOrDbNull() || a.id.IsNullOrEmptyOrDbNull() || a.plan.IsNullOrEmptyOrDbNull())
                 return;
 
             var data = ContainerApp.db.Query("disposicion").

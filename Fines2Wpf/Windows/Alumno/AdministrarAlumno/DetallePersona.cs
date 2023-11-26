@@ -1,4 +1,4 @@
-﻿using Fines2Wpf.Model;
+﻿using Fines2Wpf.Data;
 using MaterialDesignColors;
 using SqlOrganize;
 

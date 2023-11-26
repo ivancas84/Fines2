@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
-using Fines2Wpf.Model;
+using Fines2Wpf.Data;
 
 namespace Fines2Wpf.Windows.AlumnoComision
 {

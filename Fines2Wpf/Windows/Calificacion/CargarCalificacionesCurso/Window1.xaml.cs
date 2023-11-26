@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using Utils;
 using CommunityToolkit.WinUI.Notifications;
 using System;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 {
@@ -30,10 +31,10 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
         private ObservableCollection<Calificacion> calificacionOC = new(); 
 
         private IEnumerable<Dictionary<string, object?>> asignacionData;
-        private ObservableCollection<Data_alumno_comision> asignacionOC = new();
+        private ObservableCollection<Data_alumno_comision_r> asignacionOC = new();
 
         private IEnumerable<Dictionary<string, object?>> calificacionExistenteData;
-        private ObservableCollection<Data_calificacion> calificacionExistenteOC = new();
+        private ObservableCollection<Data_calificacion_r> calificacionExistenteOC = new();
 
         private IDictionary<string, Dictionary<string, object?>> calificacionesExistentesPorDNI;
 
@@ -88,9 +89,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 {
                     foreach (Dictionary<string, object?> kvp in asignacionData)
                     {
-                        Data_alumno_comision asignacion = kvp.Obj<Data_alumno_comision>();
-                        asignacion.Data_alumno = kvp.Obj<Data_alumno>("alumno");
-                        asignacion.Data_alumno.Data_persona = kvp.Obj<Data_persona>("persona");
+                        Data_alumno_comision_r asignacion = kvp.Obj<Data_alumno_comision_r>();
                         asignacionOC.Add(asignacion);
                     }
                     new ToastContentBuilder()
@@ -118,9 +117,8 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 calificacionExistenteOC.Clear();
                 foreach (Dictionary<string, object?> kvp in calificacionExistenteData)
                 {
-                    Data_calificacion calificacion = kvp.Obj<Data_calificacion>();
-                    calificacion.Data_alumno = kvp.Obj<Data_alumno>("alumno");
-                    calificacion.Data_alumno.Data_persona = kvp.Obj<Data_persona>("persona");
+                    Data_calificacion_r calificacion = new(DataInitMode.Null);
+                    calificacion.SetData(kvp);
                     calificacionExistenteOC.Add(calificacion);
                 }
 
@@ -148,7 +146,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
             List<string> dnisCalificaciones = new();
             foreach (Calificacion calificacion in calificacionOC)
             {
-                dnisCalificaciones.Add(calificacion.Data_alumno.Data_persona.numero_documento);
+                dnisCalificaciones.Add(calificacion.persona__numero_documento!);
             }
 
             IDictionary<string, Dictionary<string, object?>> personasExistentesPorDNI = ContainerApp.db.Query("persona").
@@ -174,16 +172,16 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 calificacion.agregar_persona = false;
                 calificacion.agregar_asignacion = false;
                 calificacion.agregar_alumno = false;
-                var dni = calificacion.Data_alumno!.Data_persona!.numero_documento;
+                var dni = calificacion.persona__numero_documento!;
 
-                if (calificacion.nota_final.IsNullOrEmptyOrDbNull() && calificacion.crec.IsNullOrEmptyOrDbNull())
+                if (calificacion.nota_final == 0 && calificacion.crec == 0)
                 {
                     calificacion.observaciones += "Calificacion vacía. ";
                     calificacion.procesar = false;
                     continue;
 
                 }
-                else if (calificacion.nota_final <= 7 && calificacion.crec <= 4)
+                else if (calificacion.nota_final < 7 && calificacion.crec < 4)
                 {
                     calificacion.observaciones += "Desaprobado (se cargara la calificacion archivada). ";
                     calificacion.archivado = true;
@@ -207,26 +205,24 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 #endregion
 
                 #region chequeo de calificacion existente
-                if (calificacionesExistentesPorDNI.ContainsKey(calificacion.Data_alumno.Data_persona.numero_documento!))
+                if (calificacionesExistentesPorDNI.ContainsKey(calificacion.persona__numero_documento!))
                 {
-                    Calificacion cal = calificacionesExistentesPorDNI[calificacion.Data_alumno.Data_persona.numero_documento!].Obj<Calificacion>();
+                    Calificacion cal = calificacionesExistentesPorDNI[calificacion.persona__numero_documento!].Obj<Calificacion>();
                     if (cal.archivado == calificacion.archivado)
                     {
                         calificacion.observaciones += "Calificacion existente. ";
                         calificacion.procesar = false;
 
-                        if (!calificacion.nota_final.IsNullOrEmptyOrDbNull() && calificacion.nota_final >= 7)
+                        if (calificacion.nota_final >= 7)
                         {
-                            int n1 = (int)Math.Truncate(calificacion.nota_final ?? 0);
-                            int n2 = (int)Math.Truncate(cal.nota_final ?? 0);
-                            if (n1 != n2)
+                            decimal n2 = Math.Round(cal.nota_final ?? 0, MidpointRounding.AwayFromZero);
+                            if (calificacion.nota_final != n2)
                                 calificacion.observaciones += "Nota final diferente. ";
                         }
-                        else if (!calificacion.crec.IsNullOrEmptyOrDbNull() && calificacion.crec >= 4)
+                        else if (calificacion.crec >= 4)
                         {
-                            int n1 = (int)Math.Truncate(calificacion.crec ?? 0);
-                            int n2 = (int)Math.Truncate(cal.crec ?? 0);
-                            if (n1 != n2)
+                            decimal n2 = Math.Round(cal.crec ?? 0);
+                            if (calificacion.crec != n2)
                                 calificacion.observaciones += "Crec diferente. ";
                         }
                     }
@@ -251,7 +247,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                         }
                         else
                         {
-                            Values.Persona personaV = (Values.Persona)ContainerApp.db.Values("persona").SetObj(calificacion.Data_alumno.Data_persona!);
+                            Values.Persona personaV = (Values.Persona)ContainerApp.db.Values("persona", "persona").SetObj(calificacion!);
                             Dictionary<string, object?> pe = personasExistentesPorDNI[dni!];
                             var l = new List<string> { "nombres", "apellidos", "numero_documento" };
                             IDictionary<string, object?> compareResult = personaV.CompareFields(pe, l);
@@ -264,7 +260,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                                 }
                             }
 
-                            calificacion.Data_alumno.persona = (string)personasExistentesPorDNI[dni!]["id"]!;
+                            calificacion.alumno__persona = (string)personasExistentesPorDNI[dni!]["id"]!;
                         }
                     } else
                     {
@@ -305,10 +301,12 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 }
 
                 calificacionData.Add((Dictionary<string, object?>)calificacion.values);
-                var o = calificacion.values.Obj<Calificacion>();
-                o.Data_alumno!.Data_persona = calificacion.values.Obj<Data_persona>("persona");
+                Calificacion o = new (DataInitMode.Default);
+                o.SetData(calificacion.values);
                 o.curso = (string)idCurso;
                 o.disposicion = (string)idDisposicion;
+                o.nota_final = Math.Round(o.nota_final ?? 0, MidpointRounding.AwayFromZero);
+                o.crec = Math.Round(o.crec ?? 0, MidpointRounding.AwayFromZero);
                 calificacionOC.Add(o);
             }
 
@@ -329,11 +327,11 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
                 if (cal.agregar_persona)
                 {
-                    EntityValues valPer = ContainerApp.db.Values("persona").SetObj(cal.Data_alumno!.Data_persona!).Default().Reset();
+                    EntityValues valPer = ContainerApp.db.Values("persona","persona").SetObj(cal).Default().Reset();
                     if (valPer.Check())
                     {
                         persist.Insert(valPer);
-                        cal.Data_alumno.persona = (string)valPer.Get("id");
+                        cal.alumno__persona = (string)valPer.Get("id");
                     }
 
                     else
@@ -345,7 +343,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
                 if (cal.agregar_alumno)
                 {
-                    EntityValues valAlu = ContainerApp.db.Values("alumno").SetObj(cal.Data_alumno!).Default().Reset();
+                    EntityValues valAlu = ContainerApp.db.Values("alumno", "alumno").SetObj(cal!).Default().Reset();
                     if (valAlu.Check())
                     {
                         persist.Insert(valAlu);

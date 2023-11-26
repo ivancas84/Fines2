@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Utils;
-using Fines2Wpf.Model;
+using Fines2Wpf.Data;
 using ToastNotifications;
 using ToastNotifications.Lifetime;
 using ToastNotifications.Position;

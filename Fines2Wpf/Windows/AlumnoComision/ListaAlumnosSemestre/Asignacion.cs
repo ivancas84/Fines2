@@ -1,4 +1,4 @@
-﻿using Fines2Wpf.Model;
+﻿using Fines2Wpf.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

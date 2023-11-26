@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using Utils;
-using Fines2Wpf.Model;
+using Fines2Wpf.Data;
 using System.Windows.Controls;
 using SqlOrganize;
 using WpfUtils;

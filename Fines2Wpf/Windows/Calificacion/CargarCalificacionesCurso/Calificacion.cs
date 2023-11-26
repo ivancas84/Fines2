@@ -1,9 +1,19 @@
 ﻿using Fines2Wpf.Data;
+using SqlOrganize;
 
 namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 {
-    class Calificacion : Data_calificacion
+    class Calificacion : Data_calificacion_r
     {
+        public Calificacion() : base()
+        {
+            Initialize();
+        }
+
+        public Calificacion(DataInitMode mode = DataInitMode.Default) : base(mode)
+        {
+            Initialize(mode);
+        }
 
         protected bool _procesar = true;
         public bool procesar

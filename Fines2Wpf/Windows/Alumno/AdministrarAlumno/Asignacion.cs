@@ -1,4 +1,4 @@
-﻿using Fines2Wpf.Model;
+﻿using Fines2Wpf.Data;
 using System.Collections.ObjectModel;
 
 namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno

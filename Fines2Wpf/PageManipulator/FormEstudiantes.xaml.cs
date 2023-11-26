@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Utils;
 using Fines2Wpf.DAO;
-using Fines2Wpf.Model;
+using Fines2Wpf.Data;
 
 namespace Fines2Wpf.PageManipulator
 {

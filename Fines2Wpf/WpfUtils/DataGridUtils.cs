@@ -1,5 +1,5 @@
 ﻿using Fines2Wpf;
-using Fines2Wpf.Model;
+using Fines2Wpf.Data;
 using Google.Protobuf.WellKnownTypes;
 using Org.BouncyCastle.Bcpg;
 using SqlOrganize;
