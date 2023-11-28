@@ -7,10 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Utils;
 using Fines2Wpf.Data;
-using ToastNotifications;
-using ToastNotifications.Lifetime;
-using ToastNotifications.Position;
-using ToastNotifications.Messages;
 
 using System.Linq;
 using CommunityToolkit.WinUI.Notifications;
@@ -27,20 +23,7 @@ namespace Fines2Wpf.Windows.ListaCursos
         Fines2Wpf.DAO.Curso cursoDAO = new();
         private ObservableCollection<Data_curso_r> cursoData = new();
 
-        private Notifier notifier = new Notifier(cfg =>
-        {
-            cfg.PositionProvider = new WindowPositionProvider(
-                parentWindow: Application.Current.MainWindow,
-                corner: Corner.BottomRight,
-                offsetX: 10,
-                offsetY: 10);
-
-            cfg.LifetimeSupervisor = new TimeAndCountBasedLifetimeSupervisor(
-                notificationLifetime: TimeSpan.FromSeconds(3),
-                maximumNotificationCount: MaximumNotificationCount.FromCount(5));
-
-            cfg.Dispatcher = Application.Current.Dispatcher;
-        });
+        
 
         public Window1()
         {
@@ -66,7 +49,7 @@ namespace Fines2Wpf.Windows.ListaCursos
             }
             catch (Exception ex)
             {
-                notifier.ShowError(ex.Message);
+                MessageBox.Show(ex.Message);
             }
 
         }

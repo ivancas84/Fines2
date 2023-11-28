@@ -1,4 +1,5 @@
 ﻿using QuestPDF.Infrastructure;
+using System;
 using System.Windows;
 
 namespace Fines2Wpf
@@ -14,6 +15,7 @@ namespace Fines2Wpf
         {
             QuestPDF.Settings.License = LicenseType.Community;
             InitializeComponent();
+
         }
 
 
