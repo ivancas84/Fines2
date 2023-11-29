@@ -306,8 +306,6 @@ namespace ModelOrganize
                                 {
                                     fields[entityName][e.Key].CopyValues(e.Value, targetNull:false, sourceNotNull:true, compareNotNull:false);
 
-                                    var test = fields[entityName][e.Key];
-
                                     resetField(fields[entityName][e.Key]);
 
                                     Dictionary<string, object> f = fields[entityName][e.Key].checks;
