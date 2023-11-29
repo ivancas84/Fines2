@@ -47,7 +47,7 @@ namespace Fines2Wpf.Windows.Comision
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object>> list = dao.Search("comision",comisionSearch);
+            IEnumerable<Dictionary<string, object>> list = dao.SearchObj("comision",comisionSearch);
             comisionData.Clear();
             foreach (Dictionary<string, object> item in list)
             {

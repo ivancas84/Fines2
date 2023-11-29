@@ -53,7 +53,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object>> list = dao.Search("comision", comisionSearch);
+            IEnumerable<Dictionary<string, object>> list = dao.SearchObj("comision", comisionSearch);
             comisionData.Clear();
             foreach (IDictionary<string, object> item in list)
             {
