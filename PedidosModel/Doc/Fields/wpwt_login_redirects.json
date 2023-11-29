@@ -1,0 +1,116 @@
+{
+  "id": {
+    "checks": {
+      "type": "long",
+      "required": true
+    },
+    "resets": {},
+    "name": "id",
+    "alias": null,
+    "entityName": "wpwt_login_redirects",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": true,
+    "defaultValue": "max",
+    "maxLength": 20
+  },
+  "rul_type": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "rul_type",
+    "alias": null,
+    "entityName": "wpwt_login_redirects",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 100
+  },
+  "rul_value": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "rul_value",
+    "alias": null,
+    "entityName": "wpwt_login_redirects",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 191
+  },
+  "rul_url": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "rul_url",
+    "alias": null,
+    "entityName": "wpwt_login_redirects",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 4294967295
+  },
+  "rul_url_logout": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "rul_url_logout",
+    "alias": null,
+    "entityName": "wpwt_login_redirects",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 4294967295
+  },
+  "rul_order": {
+    "checks": {
+      "type": "int",
+      "required": true
+    },
+    "resets": {},
+    "name": "rul_order",
+    "alias": null,
+    "entityName": "wpwt_login_redirects",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": true,
+    "defaultValue": "0",
+    "maxLength": 2
+  }
+}

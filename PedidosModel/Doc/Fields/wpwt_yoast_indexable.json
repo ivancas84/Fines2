@@ -1,0 +1,937 @@
+{
+  "id": {
+    "checks": {
+      "type": "uint",
+      "required": true
+    },
+    "resets": {},
+    "name": "id",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "uint",
+    "notNull": true,
+    "defaultValue": "max",
+    "maxLength": 11
+  },
+  "permalink": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "permalink",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 4294967295
+  },
+  "permalink_hash": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "permalink_hash",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 40
+  },
+  "object_id": {
+    "checks": {
+      "type": "long"
+    },
+    "resets": {},
+    "name": "object_id",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 20
+  },
+  "object_type": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "object_type",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 32
+  },
+  "object_sub_type": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "object_sub_type",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 32
+  },
+  "author_id": {
+    "checks": {
+      "type": "long"
+    },
+    "resets": {},
+    "name": "author_id",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 20
+  },
+  "post_parent": {
+    "checks": {
+      "type": "long"
+    },
+    "resets": {},
+    "name": "post_parent",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 20
+  },
+  "title": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "title",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 65535
+  },
+  "description": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "description",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "mediumtext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 16777215
+  },
+  "breadcrumb_title": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "breadcrumb_title",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 65535
+  },
+  "post_status": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "post_status",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 20
+  },
+  "is_public": {
+    "checks": {
+      "type": "bool"
+    },
+    "resets": {},
+    "name": "is_public",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinyint",
+    "type": "bool",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 1
+  },
+  "is_protected": {
+    "checks": {
+      "type": "bool"
+    },
+    "resets": {},
+    "name": "is_protected",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinyint",
+    "type": "bool",
+    "notNull": false,
+    "defaultValue": false,
+    "maxLength": 1
+  },
+  "has_public_posts": {
+    "checks": {
+      "type": "bool"
+    },
+    "resets": {},
+    "name": "has_public_posts",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinyint",
+    "type": "bool",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 1
+  },
+  "number_of_pages": {
+    "checks": {
+      "type": "uint"
+    },
+    "resets": {},
+    "name": "number_of_pages",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "uint",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 11
+  },
+  "canonical": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "canonical",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 4294967295
+  },
+  "primary_focus_keyword": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "primary_focus_keyword",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 191
+  },
+  "primary_focus_keyword_score": {
+    "checks": {
+      "type": "int"
+    },
+    "resets": {},
+    "name": "primary_focus_keyword_score",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 3
+  },
+  "readability_score": {
+    "checks": {
+      "type": "int"
+    },
+    "resets": {},
+    "name": "readability_score",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 3
+  },
+  "is_cornerstone": {
+    "checks": {
+      "type": "bool"
+    },
+    "resets": {},
+    "name": "is_cornerstone",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinyint",
+    "type": "bool",
+    "notNull": false,
+    "defaultValue": false,
+    "maxLength": 1
+  },
+  "is_robots_noindex": {
+    "checks": {
+      "type": "bool"
+    },
+    "resets": {},
+    "name": "is_robots_noindex",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinyint",
+    "type": "bool",
+    "notNull": false,
+    "defaultValue": false,
+    "maxLength": 1
+  },
+  "is_robots_nofollow": {
+    "checks": {
+      "type": "bool"
+    },
+    "resets": {},
+    "name": "is_robots_nofollow",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinyint",
+    "type": "bool",
+    "notNull": false,
+    "defaultValue": false,
+    "maxLength": 1
+  },
+  "is_robots_noarchive": {
+    "checks": {
+      "type": "bool"
+    },
+    "resets": {},
+    "name": "is_robots_noarchive",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinyint",
+    "type": "bool",
+    "notNull": false,
+    "defaultValue": false,
+    "maxLength": 1
+  },
+  "is_robots_noimageindex": {
+    "checks": {
+      "type": "bool"
+    },
+    "resets": {},
+    "name": "is_robots_noimageindex",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinyint",
+    "type": "bool",
+    "notNull": false,
+    "defaultValue": false,
+    "maxLength": 1
+  },
+  "is_robots_nosnippet": {
+    "checks": {
+      "type": "bool"
+    },
+    "resets": {},
+    "name": "is_robots_nosnippet",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinyint",
+    "type": "bool",
+    "notNull": false,
+    "defaultValue": false,
+    "maxLength": 1
+  },
+  "twitter_title": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "twitter_title",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 65535
+  },
+  "twitter_image": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "twitter_image",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 4294967295
+  },
+  "twitter_description": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "twitter_description",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 4294967295
+  },
+  "twitter_image_id": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "twitter_image_id",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 191
+  },
+  "twitter_image_source": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "twitter_image_source",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 65535
+  },
+  "open_graph_title": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "open_graph_title",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 65535
+  },
+  "open_graph_description": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "open_graph_description",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 4294967295
+  },
+  "open_graph_image": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "open_graph_image",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 4294967295
+  },
+  "open_graph_image_id": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "open_graph_image_id",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 191
+  },
+  "open_graph_image_source": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "open_graph_image_source",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 65535
+  },
+  "open_graph_image_meta": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "open_graph_image_meta",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "mediumtext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 16777215
+  },
+  "link_count": {
+    "checks": {
+      "type": "int"
+    },
+    "resets": {},
+    "name": "link_count",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 11
+  },
+  "incoming_link_count": {
+    "checks": {
+      "type": "int"
+    },
+    "resets": {},
+    "name": "incoming_link_count",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 11
+  },
+  "prominent_words_version": {
+    "checks": {
+      "type": "uint"
+    },
+    "resets": {},
+    "name": "prominent_words_version",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "uint",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 11
+  },
+  "created_at": {
+    "checks": {
+      "type": "DateTime"
+    },
+    "resets": {},
+    "name": "created_at",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": null
+  },
+  "updated_at": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "updated_at",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "timestamp",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": "current_timestamp()",
+    "maxLength": null
+  },
+  "blog_id": {
+    "checks": {
+      "type": "long",
+      "required": true
+    },
+    "resets": {},
+    "name": "blog_id",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": true,
+    "defaultValue": "1",
+    "maxLength": 20
+  },
+  "language": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "language",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 32
+  },
+  "region": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "region",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 32
+  },
+  "schema_page_type": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "schema_page_type",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 64
+  },
+  "schema_article_type": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "schema_article_type",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 64
+  },
+  "has_ancestors": {
+    "checks": {
+      "type": "bool"
+    },
+    "resets": {},
+    "name": "has_ancestors",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinyint",
+    "type": "bool",
+    "notNull": false,
+    "defaultValue": false,
+    "maxLength": 1
+  },
+  "estimated_reading_time_minutes": {
+    "checks": {
+      "type": "int"
+    },
+    "resets": {},
+    "name": "estimated_reading_time_minutes",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 11
+  },
+  "version": {
+    "checks": {
+      "type": "int"
+    },
+    "resets": {},
+    "name": "version",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": false,
+    "defaultValue": "1",
+    "maxLength": 11
+  },
+  "object_last_modified": {
+    "checks": {
+      "type": "DateTime"
+    },
+    "resets": {},
+    "name": "object_last_modified",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": null
+  },
+  "object_published_at": {
+    "checks": {
+      "type": "DateTime"
+    },
+    "resets": {},
+    "name": "object_published_at",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": null
+  }
+}

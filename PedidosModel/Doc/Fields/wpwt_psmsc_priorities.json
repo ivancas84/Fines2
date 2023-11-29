@@ -1,0 +1,96 @@
+{
+  "id": {
+    "checks": {
+      "type": "long",
+      "required": true
+    },
+    "resets": {},
+    "name": "id",
+    "alias": null,
+    "entityName": "wpwt_psmsc_priorities",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": true,
+    "defaultValue": "max",
+    "maxLength": 20
+  },
+  "name": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "name",
+    "alias": null,
+    "entityName": "wpwt_psmsc_priorities",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 200
+  },
+  "color": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "color",
+    "alias": null,
+    "entityName": "wpwt_psmsc_priorities",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 50
+  },
+  "bg_color": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "bg_color",
+    "alias": null,
+    "entityName": "wpwt_psmsc_priorities",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 50
+  },
+  "load_order": {
+    "checks": {
+      "type": "int",
+      "required": true
+    },
+    "resets": {},
+    "name": "load_order",
+    "alias": null,
+    "entityName": "wpwt_psmsc_priorities",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": true,
+    "defaultValue": "1",
+    "maxLength": 11
+  }
+}

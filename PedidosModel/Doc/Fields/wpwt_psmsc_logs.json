@@ -1,0 +1,110 @@
+{
+  "id": {
+    "checks": {
+      "type": "long",
+      "required": true
+    },
+    "resets": {},
+    "name": "id",
+    "alias": null,
+    "entityName": "wpwt_psmsc_logs",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": true,
+    "defaultValue": "max",
+    "maxLength": 20
+  },
+  "type": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "type",
+    "alias": null,
+    "entityName": "wpwt_psmsc_logs",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 200
+  },
+  "ref_id": {
+    "checks": {
+      "type": "long",
+      "required": true
+    },
+    "resets": {},
+    "name": "ref_id",
+    "alias": null,
+    "entityName": "wpwt_psmsc_logs",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 20
+  },
+  "modified_by": {
+    "checks": {
+      "type": "long",
+      "required": true
+    },
+    "resets": {},
+    "name": "modified_by",
+    "alias": null,
+    "entityName": "wpwt_psmsc_logs",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 20
+  },
+  "body": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "body",
+    "alias": null,
+    "entityName": "wpwt_psmsc_logs",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 4294967295
+  },
+  "date_created": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "date_created",
+    "alias": null,
+    "entityName": "wpwt_psmsc_logs",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": null
+  }
+}

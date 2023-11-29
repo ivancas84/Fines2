@@ -1,0 +1,110 @@
+{
+  "meta_id": {
+    "checks": {
+      "type": "ulong",
+      "required": true
+    },
+    "resets": {},
+    "name": "meta_id",
+    "alias": null,
+    "entityName": "wpwt_frmt_form_entry_meta",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "ulong",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 20
+  },
+  "entry_id": {
+    "checks": {
+      "type": "ulong",
+      "required": true
+    },
+    "resets": {},
+    "name": "entry_id",
+    "alias": null,
+    "entityName": "wpwt_frmt_form_entry_meta",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "ulong",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 20
+  },
+  "meta_key": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "meta_key",
+    "alias": null,
+    "entityName": "wpwt_frmt_form_entry_meta",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 191
+  },
+  "meta_value": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "meta_value",
+    "alias": null,
+    "entityName": "wpwt_frmt_form_entry_meta",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 4294967295
+  },
+  "date_created": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "date_created",
+    "alias": null,
+    "entityName": "wpwt_frmt_form_entry_meta",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": "'0000-00-00 00:00:00'",
+    "maxLength": null
+  },
+  "date_updated": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "date_updated",
+    "alias": null,
+    "entityName": "wpwt_frmt_form_entry_meta",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": "'0000-00-00 00:00:00'",
+    "maxLength": null
+  }
+}

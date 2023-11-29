@@ -1,0 +1,157 @@
+{
+  "id": {
+    "checks": {
+      "type": "int",
+      "required": true
+    },
+    "resets": {},
+    "name": "id",
+    "alias": null,
+    "entityName": "wpwt_psmsc_scheduled_tasks",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": true,
+    "defaultValue": "guid",
+    "maxLength": 11
+  },
+  "class": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "class",
+    "alias": null,
+    "entityName": "wpwt_psmsc_scheduled_tasks",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 200
+  },
+  "method": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "method",
+    "alias": null,
+    "entityName": "wpwt_psmsc_scheduled_tasks",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 200
+  },
+  "args": {
+    "checks": {
+      "type": "tinytext"
+    },
+    "resets": {},
+    "name": "args",
+    "alias": null,
+    "entityName": "wpwt_psmsc_scheduled_tasks",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinytext",
+    "type": "tinytext",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 255
+  },
+  "is_manual": {
+    "checks": {
+      "type": "int",
+      "required": true
+    },
+    "resets": {},
+    "name": "is_manual",
+    "alias": null,
+    "entityName": "wpwt_psmsc_scheduled_tasks",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": true,
+    "defaultValue": "0",
+    "maxLength": 1
+  },
+  "warning_text": {
+    "checks": {
+      "type": "tinytext"
+    },
+    "resets": {},
+    "name": "warning_text",
+    "alias": null,
+    "entityName": "wpwt_psmsc_scheduled_tasks",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinytext",
+    "type": "tinytext",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 255
+  },
+  "warning_link_text": {
+    "checks": {
+      "type": "tinytext"
+    },
+    "resets": {},
+    "name": "warning_link_text",
+    "alias": null,
+    "entityName": "wpwt_psmsc_scheduled_tasks",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinytext",
+    "type": "tinytext",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 255
+  },
+  "progressbar_text": {
+    "checks": {
+      "type": "tinytext"
+    },
+    "resets": {},
+    "name": "progressbar_text",
+    "alias": null,
+    "entityName": "wpwt_psmsc_scheduled_tasks",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinytext",
+    "type": "tinytext",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 255
+  },
+  "pages": {
+    "checks": {
+      "type": "int",
+      "required": true
+    },
+    "resets": {},
+    "name": "pages",
+    "alias": null,
+    "entityName": "wpwt_psmsc_scheduled_tasks",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": true,
+    "defaultValue": "0",
+    "maxLength": 11
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "id": {
+    "checks": {
+      "type": "uint",
+      "required": true
+    },
+    "resets": {},
+    "name": "id",
+    "alias": null,
+    "entityName": "wpwt_yoast_primary_term",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "uint",
+    "notNull": true,
+    "defaultValue": "max",
+    "maxLength": 11
+  },
+  "post_id": {
+    "checks": {
+      "type": "long"
+    },
+    "resets": {},
+    "name": "post_id",
+    "alias": null,
+    "entityName": "wpwt_yoast_primary_term",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 20
+  },
+  "term_id": {
+    "checks": {
+      "type": "long"
+    },
+    "resets": {},
+    "name": "term_id",
+    "alias": null,
+    "entityName": "wpwt_yoast_primary_term",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 20
+  },
+  "taxonomy": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "taxonomy",
+    "alias": null,
+    "entityName": "wpwt_yoast_primary_term",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 32
+  },
+  "created_at": {
+    "checks": {
+      "type": "DateTime"
+    },
+    "resets": {},
+    "name": "created_at",
+    "alias": null,
+    "entityName": "wpwt_yoast_primary_term",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": null
+  },
+  "updated_at": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "updated_at",
+    "alias": null,
+    "entityName": "wpwt_yoast_primary_term",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "timestamp",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": "current_timestamp()",
+    "maxLength": null
+  },
+  "blog_id": {
+    "checks": {
+      "type": "long",
+      "required": true
+    },
+    "resets": {},
+    "name": "blog_id",
+    "alias": null,
+    "entityName": "wpwt_yoast_primary_term",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": true,
+    "defaultValue": "1",
+    "maxLength": 20
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "indexable_id": {
+    "checks": {
+      "type": "uint",
+      "required": true
+    },
+    "resets": {},
+    "name": "indexable_id",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable_hierarchy",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "uint",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 11
+  },
+  "ancestor_id": {
+    "checks": {
+      "type": "uint",
+      "required": true
+    },
+    "resets": {},
+    "name": "ancestor_id",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable_hierarchy",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "uint",
+    "notNull": true,
+    "defaultValue": null,
+    "maxLength": 11
+  },
+  "depth": {
+    "checks": {
+      "type": "uint"
+    },
+    "resets": {},
+    "name": "depth",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable_hierarchy",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "uint",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 11
+  },
+  "blog_id": {
+    "checks": {
+      "type": "long",
+      "required": true
+    },
+    "resets": {},
+    "name": "blog_id",
+    "alias": null,
+    "entityName": "wpwt_yoast_indexable_hierarchy",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": true,
+    "defaultValue": "1",
+    "maxLength": 20
+  }
+}
