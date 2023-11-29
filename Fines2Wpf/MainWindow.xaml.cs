@@ -154,6 +154,12 @@ namespace Fines2Wpf
             Windows.Alumno.AdministrarAlumno.Window1 window1 = new();
             window1.Show();
         }
+
+        private void GenerarPedidosCalificaciones_Click(object sender, RoutedEventArgs e)
+        {
+            Pedidos.Windows.GenerarTareasCalificacionesSemestre.Window1 window1 = new();
+            window1.Show();
+        }
     }
 }
 

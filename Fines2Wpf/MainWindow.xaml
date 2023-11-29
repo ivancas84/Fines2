@@ -64,6 +64,10 @@
                 <MenuItem Header="Transferir alumnos activos" Click="TransferirAlumnosActivos_Click"/>
 
             </MenuItem>
+
+            <MenuItem Header="_Pedidos">
+                <MenuItem Header="Generar pedidos calificaciones" Click="GenerarPedidosCalificaciones_Click"/>
+            </MenuItem>
         </Menu>
         <materialDesign:Card Padding="32" Margin="16">
             <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}">My First Material Design App</TextBlock>

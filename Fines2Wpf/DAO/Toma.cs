@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlOrganize;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,6 +35,21 @@ namespace Fines2Wpf.DAO
                 ")
                 .Parameters(calendarioAnio, calendarioSemestre).ColOfDictCache();
 
+        }
+
+
+        public EntityQuery TomasAprobadasSemestreQuery(object calendarioAnio, object calendarioSemestre)
+        {
+            return ContainerApp.db.Query("toma")
+                .Fields()
+                .Size(0)
+                .Where(@"
+                    $calendario-anio = @0 
+                    AND $calendario-semestre = @1 
+                    AND $estado = 'Aprobada'
+                    AND $estado_contralor = 'Pasar'
+                ")
+                .Parameters(calendarioAnio, calendarioSemestre);
         }
 
     }

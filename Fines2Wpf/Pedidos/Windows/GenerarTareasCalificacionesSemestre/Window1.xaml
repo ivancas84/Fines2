@@ -5,8 +5,115 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Fines2Wpf.Pedidos.Windows.GenerarTareasCalificacionesSemestre"
         mc:Ignorable="d"
-        Title="Window1" Height="450" Width="800">
-    <Grid>
+        Title="Window1" Height="450" Width="800"
         
-    </Grid>
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        >
+    <ScrollViewer HorizontalScrollBarVisibility="Visible">
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width = "*" />
+            </Grid.ColumnDefinitions>
+
+            <GroupBox Name="searchGroupBox"
+                Panel.ZIndex="1"
+                Header="Buscar"
+                Margin="16"
+	            materialDesign:ElevationAssist.Elevation="Dp3">
+
+
+                <Grid>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width = "Auto" />
+                        <ColumnDefinition Width = "*" />
+                        <ColumnDefinition Width = "Auto" />
+                        <ColumnDefinition Width = "*" />
+                    </Grid.ColumnDefinitions>
+
+
+                    <Label 
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin = "2">   
+                        _Año:
+                    </Label>
+                    <TextBox 
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Text="{Binding calendario__anio, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                        Margin = "2"/>
+
+                    <Label 
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin = "2">
+                        _Semestre:
+                    </Label>
+                    <TextBox 
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Text="{Binding calendario__semestre, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                        Margin = "2"/>
+                    
+                    
+                    <StackPanel Grid.Row = "2" Grid.ColumnSpan = "2">
+                        <Button 
+                            Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                            Content = "_Generar..." 
+                            Click="GenerarPedidos_Click"
+                            Margin = "20"/>
+                    </StackPanel>
+
+                    <StackPanel 
+                        Grid.Row = "2" 
+                        Grid.Column="2" 
+                        Grid.ColumnSpan = "2">
+                        <Button 
+                            Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                            Content = "_Guardar..." 
+                            Click="GuardarPedidos_Click"
+                            Margin = "20"/>
+                    </StackPanel>
+
+                </Grid>
+
+            </GroupBox>
+
+            <GroupBox Name="tomaGroupBox" 
+                                Grid.Row="1"
+                                Panel.ZIndex="1"
+                                Header="Asignaciones"
+                                Margin="16"
+	                        materialDesign:ElevationAssist.Elevation="Dp3">
+                <DataGrid Name="tomaDataGrid" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Nombres" Binding="{Binding docente__nombres}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Apellidos" Binding="{Binding docente__apellidos}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="DNI" Binding="{Binding docente__numero_documento}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Curso" Binding="{Binding curso__Label}"></DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
 </Window>
