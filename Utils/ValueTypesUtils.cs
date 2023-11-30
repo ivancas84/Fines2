@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -11,6 +13,12 @@ namespace Utils
     {
 
         private static Random random = new Random();
+
+        public static string ToTitleCase(this string str)
+        {
+            TextInfo textInfo = new CultureInfo("es-AR", false).TextInfo;
+            return textInfo.ToTitleCase(str);
+        }
 
         public static string RandomString(int length)
         {

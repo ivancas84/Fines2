@@ -126,8 +126,7 @@
     },
     "resets": {
       "trim": " ",
-      "removeMultipleSpaces": true,
-      "nullIfEmpty": true
+      "removeMultipleSpaces": true
     },
     "name": "assigned_agent",
     "alias": null,

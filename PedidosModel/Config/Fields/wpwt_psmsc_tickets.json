@@ -4,5 +4,9 @@
   },
   "is_active": {
     "type": "bool"
+  },
+
+  "assigned_agent": {
+    "resetsSub": [ "nullIfEmpty" ]
   }
 }

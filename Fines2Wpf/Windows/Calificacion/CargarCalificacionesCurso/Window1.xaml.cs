@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using Utils;
 using CommunityToolkit.WinUI.Notifications;
 using System;
-using Google.Protobuf.WellKnownTypes;
 
 namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 {
@@ -17,10 +16,12 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
     /// </summary>
     public partial class Window1 : Window
     {
+
+        private DAO.Toma tomaDAO = new();
         private FormData formData = new FormData();
 
         private object idCurso;
-        private IDictionary<string, object?> cursoData;
+        Data_curso_r curso = new();
 
         private IEnumerable<object> idsAlumnos; //ids de alumnos
         private object idDisposicion;
@@ -33,10 +34,14 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
         private IEnumerable<Dictionary<string, object?>> asignacionData;
         private ObservableCollection<Data_alumno_comision_r> asignacionOC = new();
 
+        private ObservableCollection<Data_alumno_comision_r> asignacionExistenteNoEvaluadaOC = new();
+
         private IEnumerable<Dictionary<string, object?>> calificacionExistenteData;
         private ObservableCollection<Data_calificacion_r> calificacionExistenteOC = new();
 
         private IDictionary<string, Dictionary<string, object?>> calificacionesExistentesPorDNI;
+
+
 
 
 
@@ -46,20 +51,27 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
             InitializeComponent();
             this.idCurso = idCurso;
 
-            #region  de curso
+            #region  consulta de curso
             {
-                cursoData = ContainerApp.db.Query("curso").CacheById(idCurso);
+                var cursoData = ContainerApp.db.Query("curso").CacheById(idCurso)!;
+                curso = cursoData.Obj<Data_curso_r>();
                 Values.Curso val = (Values.Curso)ContainerApp.db.Values("curso").Values(cursoData!);
-                formData.curso = val.ToStringSede();
+                formData.curso__Label = curso.sede__numero + curso.comision__division + "/"+curso.planificacion__anio + curso.planificacion__semestre;
             }
             #endregion
 
+            #region consulta de docente
+            {
+                Data_toma_r toma = tomaDAO.TomaAprobadaDeCursoQuery(idCurso).Dict()!.Obj<Data_toma_r>();
+                formData.docente__Label = toma.docente__apellidos!.ToUpper() + " " + toma.docente__nombres!.ToTitleCase() + " " + toma.docente__numero_documento + " " + toma.docente__telefono;
+            }
+            #endregion
             #region consulta de id disposicion
             {
                 idDisposicion = ContainerApp.db.Query("disposicion").
                 Where("$asignatura = @0").
                 Where(" AND $planificacion = @1").
-                Parameters(cursoData!["asignatura"]!, cursoData["comision-planificacion"]!).DictCache()!["id"]!;
+                Parameters(curso.asignatura!, curso.comision__planificacion!).DictCache()!["id"]!;
             }
             #endregion
 
@@ -71,6 +83,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
             calificacionDataGrid.ItemsSource = calificacionOC;
             calificacionExistenteDataGrid.ItemsSource = calificacionExistenteOC;
             asignacionDataGrid.ItemsSource = asignacionOC;
+            asignacionExistenteNoEvaluadaDataGrid.ItemsSource = asignacionExistenteNoEvaluadaOC;
             calificacionDataGrid.RowEditEnding += CalificacionDataGrid_RowEditEnding;
 
         }
@@ -81,7 +94,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 asignacionData = ContainerApp.db.Query("alumno_comision").
                 Where("$comision = @0").
                 Order("$estado ASC, $persona-apellidos ASC, $persona-nombres ASC").
-                Parameters(cursoData["comision"]!).ColOfDictCache();
+                Parameters(curso.comision!).ColOfDictCache();
                 idsAlumnos = asignacionData.ColOfVal<object>("alumno");
                 dnis = asignacionData.ColOfVal<string>("persona-numero_documento");
                 asignacionOC.Clear();
@@ -113,7 +126,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 Where(" AND $disposicion-planificacion = @1").
                 Where(" AND $alumno IN (@2)").
                 Where(" AND ($nota_final >= 7 OR $crec >= 4)").
-                Parameters(cursoData["asignatura"]!, cursoData["comision-planificacion"]!, idsAlumnos).ColOfDictCache();
+                Parameters(curso.asignatura!, curso.comision__planificacion!, idsAlumnos).ColOfDictCache();
                 calificacionExistenteOC.Clear();
                 foreach (Dictionary<string, object?> kvp in calificacionExistenteData)
                 {
@@ -265,11 +278,41 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                     } else
                     {
                         calificacion.alumno = (string)alumnosExistentesPorDNI[dni!]["id"]!;
+
+                        #region si no existe asignacion y existe alumno, informar las asignaciones existentes para verificar
+                        if (!calificacion.agregar_alumno)
+                        {
+                            IEnumerable<Dictionary<string, object?>> asignacionesExistentes = ContainerApp.db.Query("alumno_comision").
+                                Where("$alumno = @0").
+                                Parameters(calificacion.alumno).
+                                Order("$calendario-anio DESC, $calendario-semestre DESC").
+                                ColOfDictCache();
+                            List<string> asignacionesExistentesLabel = new();
+                            foreach (var item in asignacionesExistentes)
+                            {
+                                var asig = item.Obj<Data_alumno_comision_r>();
+                                asignacionesExistentesLabel.Add(asig.sede__numero! + asig.comision__division! + "/" + asig.planificacion__anio + asig.planificacion__semestre + " " + asig.calendario__anio + "-" +asig.calendario__semestre + " " + asig.estado?.Acronym() ?? "?");
+                            }
+                            if (asignacionesExistentesLabel.Count() > 0)
+                                calificacion.observaciones += " Asignaciones: " + String.Join(", ", asignacionesExistentesLabel);
+                        }
+                        #endregion
+
                     }
+
 
                 } else
                 {
                     calificacion.alumno = (string)asignacionesExistentesPorDNI[dni!]["alumno"]!;
+                }
+                #endregion
+
+                #region chequeo de asignaciones existentes no evaluadas
+                asignacionExistenteNoEvaluadaOC.Clear();
+                foreach (var item in asignacionOC)
+                {
+                    if (!dnisCalificaciones.Contains(item.persona__numero_documento))
+                        asignacionExistenteNoEvaluadaOC.Add(item);
                 }
                 #endregion
             }
@@ -301,7 +344,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 }
 
                 calificacionData.Add((Dictionary<string, object?>)calificacion.values);
-                Calificacion o = new (DataInitMode.Default);
+                Calificacion o = new (DataInitMode.DefaultMain);
                 o.SetData(calificacion.values);
                 o.curso = (string)idCurso;
                 o.disposicion = (string)idDisposicion;
@@ -327,6 +370,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
                 if (cal.agregar_persona)
                 {
+                    cal.domicilio_per__id = null;
                     EntityValues valPer = ContainerApp.db.Values("persona","persona").SetObj(cal).Default().Reset();
                     if (valPer.Check())
                     {
@@ -343,6 +387,10 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
                 if (cal.agregar_alumno)
                 {
+                    cal.alumno__plan = curso.plan__id;
+                    cal.alumno__anio_ingreso = "1";
+                    cal.alumno__semestre_ingreso = 1;
+                    cal.alumno__resolucion_inscripcion = null;
                     EntityValues valAlu = ContainerApp.db.Values("alumno", "alumno").SetObj(cal!).Default().Reset();
                     if (valAlu.Check())
                     {
@@ -358,9 +406,10 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
                 if (cal.agregar_asignacion)
                 {
-
+                    //Si el alumno existe pero no existe la asignacion, se consultan las asignaciones existentes del alumno
+                    
                     EntityValues valAc = ContainerApp.db.Values("alumno_comision").
-                        Set("comision", cursoData["comision"]).
+                        Set("comision", curso.comision).
                         Set("alumno", cal.alumno).
                         Set("estado", "Activo").
                         Default().

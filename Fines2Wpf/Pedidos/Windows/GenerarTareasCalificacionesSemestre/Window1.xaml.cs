@@ -57,18 +57,20 @@ namespace Fines2Wpf.Pedidos.Windows.GenerarTareasCalificacionesSemestre
 
             foreach (var t in tomaOC)
             {
+                string cursoLabel =  t.sede__numero + t.comision__division + "/" + t.planificacion__anio + t.planificacion__semestre + " " + t.calendario__anio + "-" + t.calendario__semestre + " " + t.asignatura__nombre + " " + t.asignatura__codigo;
                 EntityValues ticketsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_tickets").Default().
-                   Set("subject", "Calificaciones " + t.docente__nombres + " " + t.docente__apellidos).
+                   Set("subject", " " + cursoLabel + ": " + t.docente__apellidos!.ToUpper() + ", " + t.docente__nombres).
                    Set("status", 1).
                    Set("cust_24", t.docente__numero_documento).
                    Set("cust_27", t.docente__telefono).
-                   Set("cust_28", "Carga de calificación en período " + search.calendario__anio + "-" + search.calendario__semestre).
+                   Set("cust_28", "Carga de calificación período " + search.calendario__anio + "-" + search.calendario__semestre).
                    Set("assigned_agent", "").Reset();
 
                 EntityValues threadsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_threads").Default().
                     Set("ticket", ticketsValues.Get("id")).
                     Set("body", @"
-                        <p>Alumno activo en período 2023-1</p>
+                        <p>SEDE " + t.sede__nombre + @"</p>
+                        <p>ID CURSO " + t.curso__id + @"</p>
                     ").Reset();
 
                 if(!ticketsValues.Check() && !threadsValues.Check())

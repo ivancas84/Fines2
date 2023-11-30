@@ -6,12 +6,20 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
     class FormData : INotifyPropertyChanged
     {
 
-        private string? _curso = null;
+        private string? _curso__Label = null;
 
-        public string? curso
+        public string? curso__Label
         {
-            get { return _curso; }
-            set { _curso = value; NotifyPropertyChanged(); }
+            get { return _curso__Label; }
+            set { _curso__Label = value; NotifyPropertyChanged(); }
+        }
+
+        private string? _docente__Label = null;
+
+        public string? docente__Label
+        {
+            get { return _docente__Label; }
+            set { _docente__Label = value; NotifyPropertyChanged(); }
         }
 
         private string? _encabezados = "persona-apellidos, persona-nombres, persona-numero_documento, nota_final, crec";

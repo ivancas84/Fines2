@@ -26,9 +26,10 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height = "Auto" />
-                <RowDefinition Height = "*" />
-                <RowDefinition Height = "*" />
-                <RowDefinition Height = "*" />
+                <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "Auto" />
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -44,6 +45,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height = "Auto" />
                         <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
                         <RowDefinition Height = "150" MaxHeight="150"/>
                         <RowDefinition Height = "Auto" />
 
@@ -56,28 +58,38 @@
 
                     <Label>Curso</Label>
 
-                    <TextBlock
-                            Text="{Binding curso}" 
+                    <TextBox
+                            Text="{Binding curso__Label}" 
                             Grid.Column="1"
-                            Margin = "5,10"></TextBlock>
+                            Margin = "5,10"></TextBox>
 
                     <Label
+                        Grid.Row="1">Docente</Label>
+
+                    <TextBox
+                        Text="{Binding docente__Label}" 
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin = "5,10"></TextBox>
+
+                    
+                    <Label
                             Margin = "5,10"
-                            Grid.Row="1">Encabezados</Label>
+                            Grid.Row="2">Encabezados</Label>
 
                     <TextBox 
                             Margin = "5,10"
-                            Grid.Row="1"
-                            Grid.Column="2"
+                            Grid.Row="2"
+                            Grid.Column="1"
                             Text="{Binding encabezados}"></TextBox>
 
                     <Label 
                             Margin = "5,10"
-                            Grid.Row="2">Datos</Label>
+                            Grid.Row="3">Datos</Label>
 
                     <TextBox 
                         Margin = "5,10"
-                        Grid.Row="2"
+                        Grid.Row="3"
                         Grid.Column="1"
                         Text="{Binding datos}"
                         TextWrapping="Wrap"
@@ -86,7 +98,7 @@
                         VerticalScrollBarVisibility="Visible"
                         MaxHeight="500"></TextBox>
 
-                    <StackPanel Grid.Row = "3" Grid.ColumnSpan = "2">
+                    <StackPanel Grid.Row = "4" Grid.ColumnSpan = "2">
                         <Button 
                             Style="{DynamicResource MaterialDesignRaisedAccentButton}"
                             Content = "_Aceptar..." 
@@ -101,7 +113,7 @@
 
             <GroupBox 
                 Name="asignacionGroupBox" 
-                Grid.Row="3"
+                Grid.Row="4"
                 Header="Alumnos"
                 Margin="16"
 	            materialDesign:ElevationAssist.Elevation="Dp3">
@@ -126,8 +138,35 @@
             </GroupBox>
 
             <GroupBox 
-                Name="calificacionExistenteGroupBox" 
+                Name="asignacionExistenteNoEvaluadaGroupBox" 
                 Grid.Row="2"
+                Header="Alumnos existentes no evaluados"
+                Margin="16"
+	            materialDesign:ElevationAssist.Elevation="Dp3">
+
+                <DataGrid 
+                    Name="asignacionExistenteNoEvaluadaDataGrid" 
+                    AutoGenerateColumns="False" 
+                    CanUserAddRows="False">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy" Command="Copy" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
+
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+            
+
+            <GroupBox 
+                Name="calificacionExistenteGroupBox" 
+                Grid.Row="3"
                 Header="Calificaciones existentes"
                 Margin="16"
 	            materialDesign:ElevationAssist.Elevation="Dp3">
@@ -144,6 +183,7 @@
                         <DataGridTextColumn Header="Nota Final" Binding="{Binding nota_final}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Crec" Binding="{Binding crec}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Archivado" Binding="{Binding archivado}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Observaciones" Binding="{Binding observaciones}"></DataGridTextColumn>
 
                     </DataGrid.Columns>
                 </DataGrid>
