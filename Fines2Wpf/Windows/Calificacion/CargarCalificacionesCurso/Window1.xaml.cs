@@ -8,6 +8,8 @@ using System.Windows.Controls;
 using Utils;
 using CommunityToolkit.WinUI.Notifications;
 using System;
+using Microsoft.Extensions.Primitives;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 {
@@ -340,7 +342,21 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 for (var i = 0; i < encabezados.Count(); i++)
                 {
                     if (values.ElementAt(i).IsNullOrEmpty()) continue;
-                    calificacion.Sset(encabezados.ElementAt(i), values.ElementAt(i));
+                    if (encabezados.ElementAt(i) == "persona-numero_documento")
+                    {
+                        var value = ((string?)values.ElementAt(i)).CleanStringOfNonDigits();
+                        calificacion.Sset(encabezados.ElementAt(i), value);
+                    }
+                    else if ((encabezados.ElementAt(i) == "nota_final") || (encabezados.ElementAt(i) == "crec"))
+
+                    {
+                        var value = ((string?)values.ElementAt(i)).CleanStringOfNonDigits();
+                        calificacion.Sset(encabezados.ElementAt(i), value);
+                    } else
+                    {
+                        calificacion.Sset(encabezados.ElementAt(i), values.ElementAt(i));
+                    }
+
                 }
 
                 calificacionData.Add((Dictionary<string, object?>)calificacion.values);
