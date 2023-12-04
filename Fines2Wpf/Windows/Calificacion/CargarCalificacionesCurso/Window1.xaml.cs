@@ -58,7 +58,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 var cursoData = ContainerApp.db.Query("curso").CacheById(idCurso)!;
                 curso = cursoData.Obj<Data_curso_r>();
                 Values.Curso val = (Values.Curso)ContainerApp.db.Values("curso").Values(cursoData!);
-                formData.curso__Label = curso.sede__numero + curso.comision__division + "/"+curso.planificacion__anio + curso.planificacion__semestre;
+                formData.curso__Label = curso.sede__numero + curso.comision__division + "/"+curso.planificacion__anio + curso.planificacion__semestre + " " + curso.asignatura__nombre + " " + curso.asignatura__codigo;
             }
             #endregion
 
@@ -198,8 +198,9 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 }
                 else if (calificacion.nota_final < 7 && calificacion.crec < 4)
                 {
-                    calificacion.observaciones += "Desaprobado (se cargara la calificacion archivada). ";
-                    calificacion.archivado = true;
+
+                    calificacion.observaciones += "Desaprobado (no se cargara la calificacion). ";
+                    calificacion.procesar = false;
                 }
 
                 if (dni.IsNullOrEmpty())
@@ -360,7 +361,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 }
 
                 calificacionData.Add((Dictionary<string, object?>)calificacion.values);
-                Calificacion o = new (DataInitMode.DefaultMain);
+                Calificacion o = new (DataInitMode.Default);
                 o.SetData(calificacion.values);
                 o.curso = (string)idCurso;
                 o.disposicion = (string)idDisposicion;

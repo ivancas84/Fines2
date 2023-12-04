@@ -21,6 +21,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PedidosMigracion", "Pedidos
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PedidosModel", "PedidosModel\PedidosModel.csproj", "{D3966F23-2B5D-4376-BD16-DB4836CB0380}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fines2App", "Fines2App\Fines2App.csproj", "{C14E55AB-B2B4-454E-B19C-3FE05C0870BE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fines2App.Core", "Fines2App.Core\Fines2App.Core.csproj", "{C10D8F64-EB2C-4389-B6BA-52A8A383B550}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,14 @@ Global
 		{D3966F23-2B5D-4376-BD16-DB4836CB0380}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3966F23-2B5D-4376-BD16-DB4836CB0380}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3966F23-2B5D-4376-BD16-DB4836CB0380}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C14E55AB-B2B4-454E-B19C-3FE05C0870BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C14E55AB-B2B4-454E-B19C-3FE05C0870BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C14E55AB-B2B4-454E-B19C-3FE05C0870BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C14E55AB-B2B4-454E-B19C-3FE05C0870BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C10D8F64-EB2C-4389-B6BA-52A8A383B550}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C10D8F64-EB2C-4389-B6BA-52A8A383B550}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C10D8F64-EB2C-4389-B6BA-52A8A383B550}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C10D8F64-EB2C-4389-B6BA-52A8A383B550}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
