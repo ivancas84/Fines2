@@ -70,7 +70,7 @@ namespace Utils
                 if (
                     propT.IsNullOrEmpty() || (
                         targetNull
-                        && (valorTarget != null)
+                        && (!valorTarget.IsNullOrEmptyOrDbNull())
                     )
                 )
                     continue;
@@ -82,7 +82,7 @@ namespace Utils
 
                 var value = prop.GetValue(source, null);
 
-                if (sourceNotNull && value.IsNullOrEmpty())
+                if (sourceNotNull && value.IsNullOrEmptyOrDbNull())
                     continue;
 
                 propT.SetValue(target, value, null);
