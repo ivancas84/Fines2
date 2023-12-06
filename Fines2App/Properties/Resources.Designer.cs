@@ -268,5 +268,27 @@ namespace Fines2App.Properties {
                 return ResourceManager.GetString("ShellMenuItemViewsListaComisionesPageHeader", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to TransferirPersona.
+        /// </summary>
+        public static string TransferirPersonaPageTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("TransferirPersonaPageTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MenuItemViewsTransferirPersonaPageHeader.
+        /// </summary>
+        public static string ShellMenuItemViewsTransferirPersonaPageHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("ShellMenuItemViewsTransferirPersonaPageHeader", resourceCulture);
+            }
+        }
     }
 }

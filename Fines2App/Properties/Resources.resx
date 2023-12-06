@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
+    <data name="ShellMenuItemViewsTransferirPersonaPageHeader" xml:space="preserve">
+		    <value>TransferirPersona</value>
+    </data>
+    <data name="TransferirPersonaPageTitle" xml:space="preserve">
+		    <value>TransferirPersona</value>
+    </data>
     <data name="ShellMenuItemViewsListaComisionesPageHeader" xml:space="preserve">
 		    <value>ListaComisiones</value>
     </data>

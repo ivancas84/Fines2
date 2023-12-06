@@ -111,6 +111,8 @@ public partial class App : Application
 
         services.AddTransient<ListaComisionesPage>();
 
+        services.AddTransient<TransferirPersonaPage>();
+
         // Configuration
         services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
     }
