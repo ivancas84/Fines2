@@ -61,6 +61,9 @@ namespace Utils
             foreach (var prop in properties)
             {
                 var propT = target.GetType().GetProperty(prop.Name);
+                if (propT == null)
+                    continue;
+
                 var valorTarget = propT!.GetValue(target, null);
                 var valorSource = prop.GetValue(source, null);
 
