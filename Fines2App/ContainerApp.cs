@@ -29,10 +29,13 @@ namespace Fines2App
 
         public static SqlOrganize.DAO dao;
 
+        public static MemoryCache cache;
+
+
         static ContainerApp()
         {
 
-            MemoryCache cache = new MemoryCache(new MemoryCacheOptions());
+            cache = new MemoryCache(new MemoryCacheOptions());
 
             Schema model = new Schema();
             db = new DbApp(config, model, cache);
