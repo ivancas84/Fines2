@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.WinUI.Notifications;
 using Fines2App.Data;
-using Org.BouncyCastle.Asn1.Ocsp;
+using MySql.Data.MySqlClient;
 using SqlOrganize;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -20,6 +20,8 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
     private ObservableCollection<Data_persona> destinoOC = new(); //datos consultados de la base de datos
     private DispatcherTimer destinoTypingTimer; //timer para buscar
+    private MySqlConnection connection; //conexion para manejar transaccion
+    private MySqlTransaction transaction; //transaccion para consultas independientes
 
     public TransferirPersonaPage()
     {
@@ -200,67 +202,6 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
     }
 
     /// <summary>
-    /// </summary>
-    /// <remarks>Autocomplete 2 - SelectionChanged - v2023.11<br/>
-    /// https://github.com/Pericial/GAP/issues/54#issuecomment-1790604099</remarks>
-    private void DestinoComboBox_SelectionChanged(object sender, RoutedEventArgs e)
-    {
-        var cb = (ComboBox)sender;
-
-        if (cb.SelectedIndex < 0)
-            cb.IsDropDownOpen = true;
-    }
-    #endregion
-
-    private void TransferirButton_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            EntityPersist persist = ContainerApp.db.Persist();
-            var idOrigen = origenComboBox.SelectedValue;
-            var idDestino = destinoComboBox.SelectedValue;
-
-            if(idOrigen.IsNullOrEmptyOrDbNull() || idDestino.IsNullOrEmptyOrDbNull()) 
-                throw new Exception("Persona no seleccionada");
-
-            var alumnoOrigenData = ContainerApp.db.Query("alumno").Where("$persona = @0").Parameters(idOrigen).DictCache();
-            var alumnoDestinoData = ContainerApp.db.Query("alumno").Where("$persona = @0").Parameters(idDestino).DictCache();
-
-            EntityValues alumnoDestinoValues = ContainerApp.db.Values("alumno");
-            if (alumnoDestinoData != null)
-                alumnoDestinoValues.Set(alumnoDestinoData);
-
-            if (alumnoOrigenData != null)
-            {
-                persist.DeleteIds(new List<object> { alumnoOrigenData["id"] }, "alumno");
-                alumnoDestinoValues.values.Copy(alumnoOrigenData, sourceNotNull: true, compareNotNull: true, ignoreKeys: new List<string>() { "id" });
-            }
-            alumnoDestinoValues.Default();
-
-
-
-            var alumnoOrigen = new Data_alumno();
-            if (!alumnoOrigenData.IsNullOrEmptyOrDbNull())
-                alumnoOrigen.SetData(alumnoOrigenData);
-
-            if (!alumnoOrigenData.IsNullOrEmptyOrDbNull())
-                alumnoOrigen.SetData(alumnoOrigenData);
-
-            new ToastContentBuilder()
-                    .AddText("Búsqueda de Causas del WS")
-                    .AddText("La consulta no arrojó resultados")
-                    .Show();
-        }
-        catch (Exception ex)
-        {
-            new ToastContentBuilder()
-                .AddText("Búsqueda de Causas del WS")
-                .AddText(ex.Message)
-                .Show();
-        }
-    }
-
-    /// <summary>
     /// Autocomplete 2 - _TextChanged
     /// </summary>
     /// <remarks>Autocomplete 2 - _TextChanged - v 2023.11<br/>
@@ -285,6 +226,350 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
             destinoOC.Add(o);
         }
     }
+
+    /// <summary>
+    /// </summary>
+    /// <remarks>Autocomplete 2 - SelectionChanged - v2023.11<br/>
+    /// https://github.com/Pericial/GAP/issues/54#issuecomment-1790604099</remarks>
+    private void DestinoComboBox_SelectionChanged(object sender, RoutedEventArgs e)
+    {
+        var cb = (ComboBox)sender;
+
+        if (cb.SelectedIndex < 0)
+            cb.IsDropDownOpen = true;
+    }
+    #endregion
+
+    private void TransferirButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            connection = new(ContainerApp.config.connectionString);
+            connection.Open();
+            try
+            {
+                transaction = connection.BeginTransaction();
+                try
+                {
+                    var idOrigen = origenComboBox.SelectedValue;
+                    var idDestino = destinoComboBox.SelectedValue;
+
+                    if (idOrigen.IsNullOrEmptyOrDbNull() || idDestino.IsNullOrEmptyOrDbNull())
+                        throw new Exception("Persona no seleccionada");
+
+                    var alumnoOrigenData = ContainerApp.db.Query("alumno").SetConn(connection).Where("$persona = @0").Parameters(idOrigen).DictCache();
+                    var alumnoDestinoData = ContainerApp.db.Query("alumno").SetConn(connection).Where("$persona = @0").Parameters(idDestino).DictCache();
+
+                    if (alumnoOrigenData != null || alumnoDestinoData != null)
+                    {
+                        EntityValues alumnoDestinoValues = ContainerApp.db.Values("alumno");
+                        if (alumnoDestinoData != null)
+                            alumnoDestinoValues.Set(alumnoDestinoData);
+
+                        if (alumnoOrigenData != null)
+                        {
+                            alumnoDestinoValues.values.Copy(alumnoOrigenData, targetNull: true, sourceNotNull: true, createKey: false, compareNotNull: false, ignoreKeys: new List<string>() { "id" });
+                            ContainerApp.db.Persist("alumno").SetConn(connection).SetTran(transaction).Persist(alumnoDestinoValues).Exec();
+                            TransferirRelacionesAlumno(alumnoOrigenData["id"], alumnoDestinoValues.Get("id"));
+                            ContainerApp.db.Persist("alumno").SetConn(connection).SetTran(transaction).DeleteIds(new[] { alumnoOrigenData["id"] }).Exec();
+
+                        }
+                    }
+
+                    TransferirRelacionesPersona(alumnoOrigenData["persona"], alumnoDestinoData["persona"]);
+
+                    ContainerApp.db.Persist("persona").SetConn(connection).SetTran(transaction).DeleteIds(new[] { idOrigen }).Exec();
+
+                    transaction.Commit();
+
+                    ContainerApp.cache.Clear();
+
+                    new ToastContentBuilder()
+                            .AddText("Transferir Persona")
+                            .AddText("Transferencia realizada exitosamente")
+                            .Show();
+
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+                finally
+                {
+                    transaction.Dispose();
+                }
+            }
+            finally
+            {
+                connection.Close();
+                connection.Dispose();
+            }
+        }
+        catch (Exception ex)
+        {
+            new ToastContentBuilder()
+                .AddText("Búsqueda de Causas del WS")
+                .AddText(ex.Message)
+                .Show();
+        }
+    }
+
+
+    private void TransferirRelacionesAlumno(object idAlumnoOrigen, object idAlumnoDestino)
+    {
+
+        #region alumno_comision
+        IEnumerable<Dictionary<string, object?>> data = ContainerApp.db.Query("alumno_comision").
+            SetConn(connection).
+            Where("alumno = @0").
+            Parameters(idAlumnoOrigen).
+            ColOfDictCache();
+
+        foreach (var ac in data)
+        {
+            EntityValues values = ContainerApp.db.Values("alumno_comision").
+                Set(ac).
+                SetDefault("id"). //se reasigna id
+                Set("alumno", idAlumnoDestino);
+
+            ContainerApp.db.Persist("alumno_comision").
+                SetConn(connection).
+                SetTran(transaction).
+                Persist(values).
+                DeleteIds(new[] { ac["id"] }).
+                Exec();
+        }
+        #endregion
+
+        #region calificacion (solo aprobadas)
+        data = ContainerApp.db.Query("calificacion").
+            SetConn(connection).
+            Where("alumno = @0 AND ($nota_final >= 7 OR $crec >= 4)").
+            Parameters(idAlumnoOrigen).
+            ColOfDictCache();
+
+        foreach (var cal in data)
+        {
+            EntityValues values = ContainerApp.db.Values("calificacion").
+                Set(cal).
+                SetDefault("id"). //se reasigna id
+                Set("alumno", idAlumnoDestino);
+
+            ContainerApp.db.Persist("calificacion").
+                SetConn(connection).
+                SetTran(transaction).
+                Persist(values).
+                DeleteIds(new[] { cal["id"] }).
+                Exec();
+        }
+        #endregion
+
+        #region calificacion (eliminar no aprobadas)
+        var idsCalificacionesAprobadas = data.ColOfVal<object>("id");
+
+        data = ContainerApp.db.Query("calificacion").
+            SetConn(connection).
+            Where("$alumno = @0 AND $id NOT IN (@1)").
+            Parameters(idAlumnoOrigen, idsCalificacionesAprobadas).
+            ColOfDictCache();
+
+        foreach (var cal in data)
+        {
+            ContainerApp.db.Persist("calificacion").
+                SetConn(connection).
+                SetTran(transaction).
+                DeleteIds(new[] { cal["id"] }).
+                Exec();
+        }
+        #endregion
+
+    }
+
+    private void TransferirRelacionesPersona(object idPersonaOrigen, object idPersonaDestino)
+    {
+        
+        #region detalle_persona
+        IEnumerable<Dictionary<string, object?>> data = ContainerApp.db.Query("detalle_persona").
+            SetConn(connection).
+            Where("$persona = @0").
+            Parameters(idPersonaOrigen).
+            ColOfDictCache();
+
+        foreach (var dd in data)
+        {
+            EntityValues values = ContainerApp.db.Values("detalle_persona").
+                Set(dd).
+                SetDefault("id"). //se reasigna id
+                Set("persona", idPersonaDestino);
+
+            ContainerApp.db.Persist("detalle_persona").
+                SetConn(connection).
+                SetTran(transaction).
+                Persist(values).
+                DeleteIds(new[] { dd["id"] }).
+                Exec();
+        }
+        #endregion
+
+        #region designacion
+        data = ContainerApp.db.Query("designacion").
+            SetConn(connection).
+            Where("$persona = @0").
+            Parameters(idPersonaOrigen).
+            ColOfDictCache();
+
+        foreach (var dd in data)
+        {
+            EntityValues values = ContainerApp.db.Values("designacion").
+                Set(dd).
+                SetDefault("id"). //se reasigna id
+                Set("persona", idPersonaDestino);
+
+            EntityPersist persist = ContainerApp.db.Persist("designacion").
+                SetConn(connection).
+                SetTran(transaction).
+                Persist(values).
+                DeleteIds(new[] { dd["id"] }).
+                Exec();
+        }
+        #endregion
+
+        #region toma (docente)
+        data = ContainerApp.db.Query("toma").
+            SetConn(connection).
+            Where("$docente = @0").
+            Parameters(idPersonaOrigen).
+            ColOfDictCache();
+
+        foreach (var dd in data)
+        {
+            EntityValues values = ContainerApp.db.Values("toma").
+                Set(dd).
+                SetDefault("id"). //se reasigna id
+                Set("docente", idPersonaDestino);
+
+            EntityPersist persist = ContainerApp.db.Persist("toma").
+                SetConn(connection).
+                SetTran(transaction).
+                Persist(values).
+                Exec();
+
+            TransferirRelacionesToma(dd["id"], values.Get("id"));
+
+            persist = ContainerApp.db.Persist("toma").
+                SetConn(connection).
+                SetTran(transaction).
+                DeleteIds(new[] { dd["id"] }).
+                Exec();
+
+        }
+        #endregion
+
+        #region toma (reemplazo)
+        data = ContainerApp.db.Query("toma").
+            SetConn(connection).
+            Where("$reemplazo = @0").
+            Parameters(idPersonaOrigen).
+            ColOfDictCache();
+
+        foreach (var dd in data)
+        {
+            EntityValues values = ContainerApp.db.Values("toma").
+                Set(dd).
+                SetDefault("id"). //se reasigna id
+                Set("reemplazo", idPersonaDestino);
+
+            EntityPersist persist = ContainerApp.db.Persist("toma").
+                SetConn(connection).
+                SetTran(transaction).
+                Persist(values).Exec();
+
+            TransferirRelacionesToma(dd["id"], values.Get("id"));
+
+            persist = ContainerApp.db.Persist("toma").
+                SetConn(connection).
+                SetTran(transaction).
+                DeleteIds(new[] { dd["id"] }).
+                Exec();
+        }
+        #endregion
+
+        #region telefono
+        data = ContainerApp.db.Query("telefono").
+            SetConn(connection).
+            Where("$persona = @0").
+            Parameters(idPersonaOrigen).
+            ColOfDictCache();
+
+        foreach (var dd in data)
+        {
+            EntityValues values = ContainerApp.db.Values("telefono").
+                Set(dd).
+                SetDefault("id"). //se reasigna id
+                Set("persona", idPersonaDestino);
+
+            EntityPersist persist = ContainerApp.db.Persist("telefono").
+                SetConn(connection).
+                SetTran(transaction).
+                Persist(values).
+                DeleteIds(new[] { dd["id"] }).
+                Exec();
+        }
+        #endregion
+
+        #region email
+        data = ContainerApp.db.Query("email").
+            SetConn(connection).
+            Where("$persona = @0").
+            Parameters(idPersonaOrigen).
+            ColOfDictCache();
+
+        foreach (var dd in data)
+        {
+            EntityValues values = ContainerApp.db.Values("email").
+                Set(dd).
+                SetDefault("id"). //se reasigna id
+                Set("persona", idPersonaDestino);
+
+            EntityPersist persist = ContainerApp.db.Persist("email").
+                SetConn(connection).
+                SetTran(transaction).
+                Persist(values).
+                DeleteIds(new[] { dd["id"] }).
+                Exec();
+        }
+        #endregion
+    }
+
+
+    private void TransferirRelacionesToma(object idTomaOrigen, object idTomaDestino)
+    {
+        #region asignacion_planilla_docente
+        IEnumerable<Dictionary<string, object?>> data = ContainerApp.db.Query("asignacion_planilla_docente").
+            SetConn(connection).
+            Where("$toma = @0").
+            Parameters(idTomaOrigen).
+            ColOfDictCache();
+
+        foreach (var dd in data)
+        {
+            EntityValues values = ContainerApp.db.Values("asignacion_planilla_docente").
+                Set(dd).
+                SetDefault("id"). //se reasigna id
+                Set("toma", idTomaDestino);
+
+            EntityPersist persist = ContainerApp.db.Persist("asignacion_planilla_docente").
+                SetConn(connection).
+                SetTran(transaction).
+                Persist(values).
+                DeleteIds(new[] { dd["id"] }).
+                Exec();
+        }
+        #endregion
+    }
+
+
 
 
     public event PropertyChangedEventHandler PropertyChanged;
