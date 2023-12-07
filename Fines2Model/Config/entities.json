@@ -2,7 +2,12 @@
   "alumno_comision": {
     "fieldsSub": [ "activo" ],
     "uniqueMultiple": [
-      ["alumno", "comision"]
+      [ "alumno", "comision" ]
+    ]
+  },
+  "calificacion": {
+    "uniqueMultiple": [
+      [ "disposicion", "alumno", "archivado" ]
     ]
   },
   "comision": {
