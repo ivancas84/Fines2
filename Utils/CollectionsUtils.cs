@@ -14,6 +14,45 @@ namespace Utils
 {
     public static class CollectionUtils
     {
+
+        /// <summary>
+        /// Copiar valores de IDictionary
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target"></param>
+        /// <param name="source"></param>
+        /// <remarks>https://stackoverflow.com/questions/8702603/merging-two-objects-in-c-sharp</remarks>
+        public static void Copy(this IDictionary<string, object?> target, IDictionary<string, object?> source, bool targetNull = true, bool sourceNotNull = false, bool createKey = false, bool compareNotNull = false, IEnumerable<string>? ignoreKeys = default)
+        {
+            if(ignoreKeys == default)
+                ignoreKeys = new List<string>();
+
+            foreach(var (key, value) in source)
+            {
+                if (ignoreKeys.Contains(key)) 
+                    continue;
+
+                if(!target.ContainsKey(key))
+                { 
+                    if(!createKey)
+                        continue;
+                    target[key] = null;
+                }
+
+                if (!target[key].IsNullOrEmptyOrDbNull() && targetNull)
+                    continue;
+
+                if (source[key].IsNullOrEmptyOrDbNull() && sourceNotNull)
+                    continue;
+
+                if (compareNotNull && source[key] != null && target[key] != null)
+                    if (!source[key]!.ToString()!.Equals(target[key]!.ToString()))
+                        throw new Exception("Valores diferentes");
+
+                target[key] = source[key];
+            }
+        }
+
         /// <summary>
         /// Copiar valores de objectos
         /// </summary>

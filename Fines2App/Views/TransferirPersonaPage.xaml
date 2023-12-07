@@ -16,7 +16,7 @@
         <TextBlock
             Style="{StaticResource PageTitleStyle}"
             Margin="{StaticResource MediumLeftMargin}"
-            Text="{x:Static properties:Resources.TransferirPersonaPageTitle}" />
+            Text="Transferir persona" />
 		<ScrollViewer
 	HorizontalScrollBarVisibility="Visible"
 	Grid.Row="1"
@@ -38,10 +38,12 @@
 					Name="searchGroupBox"
 					Margin="10">
 					<GroupBox.Header>
+                        <StackPanel>
 						<Label Foreground="White">Formulario de Transferencia</Label>
 						<TextBlock>Todos los datos de origen serán transferidos a destino y la persona de origen se eliminará</TextBlock>
 						<TextBlock>Los datos de destino se mantienen</TextBlock>
-					</GroupBox.Header>
+                        </StackPanel>
+                    </GroupBox.Header>
 
 
 					<StackPanel Orientation="Horizontal">

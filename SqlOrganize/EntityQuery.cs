@@ -513,13 +513,7 @@ namespace SqlOrganize
             return q.Dict();
         }
 
-        public EntityValues? Values()
-        {
-            IDictionary<string, object>? dict = Dict();
-            if (dict.IsNullOrEmpty())
-                return null;
-            return Db.Values(entityName).Values(dict!);
-        }
+        
 
         public T Obj<T>() where T : class, new()
         {
