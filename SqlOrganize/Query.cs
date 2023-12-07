@@ -66,6 +66,7 @@ namespace SqlOrganize
         public abstract IEnumerable<T> ColOfObj<T>() where T : class, new();
 
         public abstract IDictionary<string, object?>? Dict();
+
         public abstract T Obj<T>() where T : class, new();
 
         public abstract IEnumerable<T> Column<T>(string columnName);

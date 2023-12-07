@@ -96,8 +96,6 @@ namespace SqlOrganize
         }
 
 
-       
-
         public EntityPersist DeleteIds(IEnumerable<object> ids, string? _entityName = null)
         {
             _entityName = _entityName ?? entityName;
@@ -425,11 +423,9 @@ VALUES (";
         public EntityPersist RemoveCache(EntityValues values)
         {
             RemoveCacheQueries();
-            Db.Cache.Remove(values.entityName + values.Get(Db.config.id));            
+            Db.Cache.Remove(values.entityName + values.Get(Db.config.id));
             return this;
         }
-
-
     }
 
 }
