@@ -694,7 +694,13 @@
       "disposicion",
       "archivado"
     ],
-    "uniqueMultiple": [],
+    "uniqueMultiple": [
+      [
+        "disposicion",
+        "alumno",
+        "archivado"
+      ]
+    ],
     "id": [
       "id"
     ],
