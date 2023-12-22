@@ -364,8 +364,18 @@ namespace Utils
         }
 
 
-
-
+        public static IDictionary<T, V> DictOfObjByProp<T, V>(this IEnumerable<V> source, string key)
+        {
+            Type t = typeof(V);
+            var p = t.GetProperty(key);
+            Dictionary<T, V> response = new();
+            foreach (var item in source)
+            { 
+                var k = p.GetValue(item);
+                response[(T)k!] = item;
+            }
+            return response;
+        }
 
         public static IDictionary<T, Dictionary<string, object?>> DictOfDictByKey<T>(this IEnumerable<Dictionary<string, object?>> source, string key)
         {
@@ -375,6 +385,8 @@ namespace Utils
 
             return response;
         }
+
+
 
         public static IDictionary<string, Dictionary<string, object>> DictOfDictByKeys(this IEnumerable<Dictionary<string, object?>> source, params string[] keys)
         {

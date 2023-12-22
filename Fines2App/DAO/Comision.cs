@@ -127,6 +127,10 @@ namespace Fines2App.DAO
                     OR
                     CONCAT($sede-numero, $division, '/', $planificacion-anio, $planificacion-semestre) LIKE @0
                     OR
+                    $identificacion LIKE @0
+                    OR
+                    $pfid LIKE @0
+                    OR
                     CONCAT($calendario-anio, '-', $calendario-semestre) LIKE @0
                 ")
                .Order("$sede-numero ASC, $division ASC, $calendario-anio, $calendario-semestre")

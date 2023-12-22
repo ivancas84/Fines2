@@ -10,6 +10,18 @@ namespace Fines2App
         {
         }
 
-        
+        public override EntityValues Values(string entityName, string? fieldId = null)
+        {
+            switch (entityName)
+            {
+
+                case "persona":
+                    return new Values.Persona(this, entityName, fieldId);
+
+            }
+
+            return new EntityValues(this, entityName, fieldId);
+
+        }
     }
 }

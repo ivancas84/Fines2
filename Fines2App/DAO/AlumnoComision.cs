@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utils;
+﻿using Utils;
 
 namespace Fines2App.DAO
 {
     public class AlumnoComision
     {
-
-
-
-
 
         /// <summary>
         /// Cantidad de disposiciones aprobadas por alumno de comision
@@ -35,9 +26,6 @@ namespace Fines2App.DAO
                  ")
                 .Having("SUM($disposicion) > 3")
                 .Parameters(idAlumnos, idPlan).ColOfDictCache().ColOfVal<object>("id");
-
-
-
         }
 
 

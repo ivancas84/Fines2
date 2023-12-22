@@ -1,5 +1,4 @@
-﻿//https://es.javascript.info/formdata
-///inicial/index4.php?a=7&b=1 Carga adicional no guarda al alumno, sirve para verificar en que comision esta
+﻿///inicial/index4.php?a=7&b=1 Carga adicional no guarda al alumno, sirve para verificar en que comision esta
 ///inicial/index4.php?a=7&b=2 Registro de alumno, si no se registra dispara Error 92
 
 var data = [

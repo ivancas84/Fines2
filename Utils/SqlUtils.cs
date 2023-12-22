@@ -93,7 +93,7 @@ namespace Utils
 
         public static bool IsDbNull(this object value)
         {
-            return (value == System.DBNull.Value);
+            return (value == null || value == System.DBNull.Value);
         }
 
         

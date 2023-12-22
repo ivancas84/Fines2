@@ -113,6 +113,8 @@ public partial class App : Application
 
         services.AddTransient<TransferirPersonaPage>();
 
+        services.AddTransient<AnalizarAlumnosComisionPage>();
+
         // Configuration
         services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
     }

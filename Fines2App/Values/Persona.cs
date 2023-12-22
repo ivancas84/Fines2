@@ -1,14 +1,9 @@
-﻿using SqlOrganize;
-using System;
-using System.Collections.Generic;
+﻿#nullable enable
+using SqlOrganize;
 using System.Globalization;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using Utils;
 
-namespace Fines2Wpf.Values
+namespace Fines2App.Values
 {
     class Persona : EntityValues
     {
@@ -17,19 +12,6 @@ namespace Fines2Wpf.Values
         {
         }
 
-        public override string ToString()
-        {
-            TextInfo myTI = new CultureInfo("es-AR", false).TextInfo;
-
-            string s = "";
-            s += (GetOrNull("apellidos")?.ToString() ?? "?").ToUpper();
-            s += ", ";
-            s += myTI.ToTitleCase(GetOrNull("nombres")?.ToString() ?? "?");
-            s += " ";
-            s += GetOrNull("numero_documento")?.ToString() ?? "?";
-            return s;
-
-        }
 
         /// <summary>
         /// Vuelve a comparar ciertos campos que necesitan verificacion adicional

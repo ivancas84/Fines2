@@ -290,5 +290,27 @@ namespace Fines2App.Properties {
                 return ResourceManager.GetString("ShellMenuItemViewsTransferirPersonaPageHeader", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to AnalizarAlumnosComision.
+        /// </summary>
+        public static string AnalizarAlumnosComisionPageTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("AnalizarAlumnosComisionPageTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MenuItemViewsAnalizarAlumnosComisionPageHeader.
+        /// </summary>
+        public static string ShellMenuItemViewsAnalizarAlumnosComisionPageHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("ShellMenuItemViewsAnalizarAlumnosComisionPageHeader", resourceCulture);
+            }
+        }
     }
 }
