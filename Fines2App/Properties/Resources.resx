@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
+    <data name="ShellMenuItemViewsDesactivarAlumnosNoCalificadosPageHeader" xml:space="preserve">
+		    <value>DesactivarAlumnosNoCalificados</value>
+    </data>
+    <data name="DesactivarAlumnosNoCalificadosPageTitle" xml:space="preserve">
+		    <value>DesactivarAlumnosNoCalificados</value>
+    </data>
     <data name="ShellMenuItemViewsAnalizarAlumnosComisionPageHeader" xml:space="preserve">
 		    <value>AnalizarAlumnosComision</value>
     </data>

@@ -73,7 +73,7 @@ namespace Fines2App.DAO
         }
 
 
-        public IEnumerable<Dictionary<string, object>> AsignacionesPorComisiones(List<object> idsComisiones)
+        public IEnumerable<Dictionary<string, object?>> AsignacionesPorComisiones(List<object> idsComisiones)
         {
             return ContainerApp.db.Query("alumno_comision")
                 .Fields()
@@ -84,7 +84,7 @@ namespace Fines2App.DAO
                 .Parameters(idsComisiones).ColOfDictCache();
         }
 
-        public IEnumerable<Dictionary<string, object>> AsignacionesActivasPorComisiones(IEnumerable<object> idsComisiones)
+        public IEnumerable<Dictionary<string, object?>> AsignacionesActivasPorComisiones(IEnumerable<object> idsComisiones)
         {
             return ContainerApp.db.Query("alumno_comision")
                 .Fields()
@@ -146,11 +146,14 @@ namespace Fines2App.DAO
                .Parameters(anio, semestre).ColOfDictCache().ColOfVal<object>("cantidad");
         }
 
-        public IEnumerable<Dictionary<string, object>> AsignacionesActivasDeComisionesAutorizadasPorSemestre(object anio, object semestre)
+        public IEnumerable<Dictionary<string, object?>> AsignacionesActivasDeComisionesAutorizadasPorSemestre(object anio, object semestre)
         {
             return ContainerApp.db.Query("alumno_comision")
                 .Size(0)
-                .Where("$calendario-anio = @0 AND $calendario-semestre = @1 AND $comision-autorizada = true AND $estado = 'Activo'")
+                .Where("$calendario-anio = @0 " +
+                    "AND $calendario-semestre = @1 " +
+                    "AND $comision-autorizada = true " +
+                    "AND $estado = 'Activo'")
                 .Parameters(anio, semestre).ColOfDictCache();
 
         }

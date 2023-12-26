@@ -192,6 +192,9 @@ public partial class AnalizarAlumnosComisionPage : Page, INotifyPropertyChanged
                     alumno.Label = "No se encuentra registrado en la base de datos programafines.ar.";
                     resultadoOC.Add(alumno);
 
+                    if(asign.estado.Equals("No activo"))
+                        alumno.Label += " No se encuentra activo.";
+
                     AlumnoParaCargar apc = new();
                     apc.nombre = asign.persona__nombres;
                     apc.apellido = asign.persona__apellidos;

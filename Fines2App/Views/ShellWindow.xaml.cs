@@ -84,6 +84,9 @@ public partial class ShellWindow : MetroWindow, IShellWindow, INotifyPropertyCha
     private void OnMenuViewsAnalizarAlumnosComision(object sender, RoutedEventArgs e)
         => _navigationService.NavigateTo(typeof(AnalizarAlumnosComisionPage), null, true);
 
+    private void OnMenuViewsDesactivarAlumnosNoCalificados(object sender, RoutedEventArgs e)
+        => _navigationService.NavigateTo(typeof(DesactivarAlumnosNoCalificadosPage), null, true);
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     private void Set<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)

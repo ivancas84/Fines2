@@ -23,8 +23,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.DesactivarAlumnosNoCalificados
     public partial class Window1 : Window
     {
 
-        Fines2Wpf.DAO.AlumnoComision asignacionDAO = new();
-        Fines2Wpf.DAO.Calificacion calificacionDAO = new();
+        DAO.AlumnoComision asignacionDAO = new();
+        DAO.Calificacion calificacionDAO = new();
 
 
         public Window1()

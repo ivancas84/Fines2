@@ -69,6 +69,7 @@ namespace Fines2App.DAO
                     $alumno = @0
                     AND $planificacion_dis-anio = @1
                     AND $planificacion_dis-semestre = @2
+                    AND $archivado = false
                 ")
                 .Parameters(alumno, anio, semestre);
         }

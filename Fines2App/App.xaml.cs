@@ -115,6 +115,8 @@ public partial class App : Application
 
         services.AddTransient<AnalizarAlumnosComisionPage>();
 
+        services.AddTransient<DesactivarAlumnosNoCalificadosPage>();
+
         // Configuration
         services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
     }

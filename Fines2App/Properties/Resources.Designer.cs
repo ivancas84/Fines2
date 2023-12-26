@@ -312,5 +312,27 @@ namespace Fines2App.Properties {
                 return ResourceManager.GetString("ShellMenuItemViewsAnalizarAlumnosComisionPageHeader", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to DesactivarAlumnosNoCalificados.
+        /// </summary>
+        public static string DesactivarAlumnosNoCalificadosPageTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("DesactivarAlumnosNoCalificadosPageTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MenuItemViewsDesactivarAlumnosNoCalificadosPageHeader.
+        /// </summary>
+        public static string ShellMenuItemViewsDesactivarAlumnosNoCalificadosPageHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("ShellMenuItemViewsDesactivarAlumnosNoCalificadosPageHeader", resourceCulture);
+            }
+        }
     }
 }
