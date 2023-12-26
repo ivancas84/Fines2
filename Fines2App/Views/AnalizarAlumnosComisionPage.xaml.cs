@@ -159,6 +159,7 @@ public partial class AnalizarAlumnosComisionPage : Page, INotifyPropertyChanged
                 AsignacionesPorComisiones(new List<object>() { idComision }).
                 DictOfDictByKey<string>("persona-numero_documento");
 
+            resultadoOC.Clear();
             foreach (var alumno in alumnos)
             {
                 if (asignaciones.ContainsKey(alumno.numero_documento!))
@@ -180,6 +181,7 @@ public partial class AnalizarAlumnosComisionPage : Page, INotifyPropertyChanged
 
             IDictionary<string, Data_persona> alumnosDict = alumnos.DictOfObjByProp<string, Data_persona>("numero_documento");
 
+            alumnosACargarOC.Clear();
             foreach (var (dni, asignacion) in asignaciones)
             {
                 var asign = asignacion.Obj<Data_alumno_comision_r>();
@@ -199,7 +201,7 @@ public partial class AnalizarAlumnosComisionPage : Page, INotifyPropertyChanged
                     apc.nombre = asign.persona__nombres;
                     apc.apellido = asign.persona__apellidos;
                     apc.dni_cargar = asign.persona__numero_documento;
-
+                    apc.subcategory = asign.comision__pfid;
                     if (asign.persona__genero != null && asign.persona__genero.Equals("Femenino"))
                         apc.sexo = "2";
                     else if (asign.persona__genero != null && asign.persona__genero.Equals("Otro"))
