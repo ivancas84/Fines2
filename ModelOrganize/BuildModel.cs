@@ -389,7 +389,7 @@ namespace ModelOrganize
 
         protected abstract List<string> GetTableNames();
 
-        protected abstract List<Column> GetColumns(string tableName);
+        protected abstract IEnumerable<Column> GetColumns(string tableName);
 
         protected abstract Dictionary<string, List<string>> GetInfoUnique(string tableName);
 

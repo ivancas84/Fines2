@@ -585,7 +585,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             {
                 if (!cb.SelectedValue.ToString()!.Equals(calificacion.disposicion))
                 {
-                    ContainerApp.db.Persist("calificacion").UpdateValue("disposicion", cb.SelectedValue, new List<object>() { calificacion.id }).Exec().RemoveCache();
+                    ContainerApp.db.Persist("calificacion").UpdateValueIds("disposicion", cb.SelectedValue, calificacion.id!).Exec().RemoveCache();
                     calificacion.disposicion = (string)cb.SelectedValue;
                 }
 
@@ -667,7 +667,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             var calificacion = (Calificacion)cb.DataContext; //se carga la asignacion que esta siendo editada
             if (cb.SelectedIndex > -1)
             {
-                ContainerApp.db.Persist("calificacion").UpdateValue("curso", cb.SelectedValue, new List<object>() { calificacion.id }).Exec().RemoveCache();
+                ContainerApp.db.Persist("calificacion").UpdateValueIds("curso", cb.SelectedValue,  calificacion.id!).Exec().RemoveCache();
                 calificacion.curso__Label = (cb.SelectedItem as Data_curso_r)!.Label;
             }
 
@@ -765,8 +765,8 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     archivo.size = Convert.ToUInt32(fileInfo.Length);
                     dp.archivo = archivo.id;
                     dp.archivo__name = archivo.name;
-                    EntityPersist p = ContainerApp.db.Persist().InsertObj(archivo, "file");
-                    p.UpdateValue("archivo", archivo.id, new List<object>() { dp.id! }, "detalle_persona" );
+                    EntityPersist p = ContainerApp.db.Persist().InsertObj("file", archivo);
+                    p.UpdateValueIds("detalle_persona", "archivo", archivo.id, dp.id! );
                     p.Transaction().RemoveCache();
                 }
                 catch (WebException ex)

@@ -38,12 +38,12 @@ namespace Fines2Wpf.Windows.AlumnoComision
             var alumnosComisiones = alumnoComisionDAO.AsignacionesActivasPorComisiones(idsComisiones);
             var idsComisionesSiguientes = alumnosComisiones.ColOfVal<object>("comision-comision_siguiente");
             var idsComisionesSiguientes_ = idsComisionesSiguientes.GroupBy(x => x.ToString()).Select(x => x.First()).ToList();
-            var comisionesSiguientesAgrupadasPorId = comisionDAO.ComisionesPorIds(idsComisionesSiguientes_).DictOfDictByKey<object>("id");
+            var comisionesSiguientesAgrupadasPorId = comisionDAO.ComisionesPorIds(idsComisionesSiguientes_).DictOfDictByKeys("id");
             data.Clear();
             
             foreach (var ac in alumnosComisiones)
             {
-                var cs = comisionesSiguientesAgrupadasPorId[ac["comision-comision_siguiente"]];
+                var cs = comisionesSiguientesAgrupadasPorId[ac["comision-comision_siguiente"].ToString()!];
                 ac["comision_siguiente-numero"] = cs["sede-numero"].ToString() + cs["division"].ToString() + cs["planificacion-anio"].ToString() + cs["planificacion-semestre"].ToString();
 
                 EntityValues v = ContainerApp.db.Values("alumno_comision");

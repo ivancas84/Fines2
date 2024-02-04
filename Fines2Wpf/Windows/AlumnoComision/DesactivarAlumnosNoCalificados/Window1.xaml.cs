@@ -49,7 +49,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.DesactivarAlumnosNoCalificados
             }
             if(ids.Count > 0) { 
                 alumnoComisionGrid.ItemsSource = data;
-                ContainerApp.db.Persist("alumno_comision").UpdateValue("estado", "No activo", ids).Exec().RemoveCache();
+                ContainerApp.db.Persist("alumno_comision").UpdateValueIds("estado", "No activo", ids).Exec().RemoveCache();
             }
 
 

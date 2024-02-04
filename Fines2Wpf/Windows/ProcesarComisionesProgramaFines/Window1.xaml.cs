@@ -70,7 +70,7 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
                             break;
                         }
                         List<object> ids = new List<object>() { id };
-                        var p = ContainerApp.db.Persist("persona").UpdateValue("cuil", String.Join("",cuil_), ids).Exec().RemoveCache();
+                        var p = ContainerApp.db.Persist("persona").UpdateValueIds("cuil", String.Join("",cuil_), ids).Exec().RemoveCache();
                         continue;
                     }
 
@@ -93,7 +93,7 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
                                 break;
                             }
                             List<object> ids = new List<object>() { dict["id"] };
-                            var p = ContainerApp.db.Persist("curso").UpdateValue("descripcion_horario", dict["descripcion_horario"].ToString()!, ids!).Exec().RemoveCache();
+                            var p = ContainerApp.db.Persist("curso").UpdateValueIds("descripcion_horario", dict["descripcion_horario"].ToString()!, ids!).Exec().RemoveCache();
                             procesar_docente = true;
                         }
                         break;

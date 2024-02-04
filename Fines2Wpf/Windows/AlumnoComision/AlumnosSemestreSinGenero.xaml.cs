@@ -62,7 +62,7 @@ namespace Fines2Wpf.Windows.AlumnoComision
 
                     if (!genero.IsNullOrEmpty())
                     {
-                        p.UpdateValue("genero", genero, new List<object>() { a.persona__id }).Exec().RemoveCache();
+                        p.UpdateValueIds("genero", genero, a.persona__id).Exec().RemoveCache();
                         genero = null;
                         break;
                     }

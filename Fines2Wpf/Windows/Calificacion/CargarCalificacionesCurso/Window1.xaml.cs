@@ -143,7 +143,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                     .AddText(calificacionExistenteData.Count() + " calificaciones")
                     .Show();
                 }
-                calificacionesExistentesPorDNI = calificacionExistenteData.DictOfDictByKey<string>("persona-numero_documento");
+                calificacionesExistentesPorDNI = calificacionExistenteData.DictOfDictByKeys("persona-numero_documento");
 
             }
         }
@@ -168,15 +168,15 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 Where("$numero_documento IN (@0)").
                 Parameters(dnisCalificaciones).
                 ColOfDictCache().
-                DictOfDictByKey<string>("numero_documento");
+                DictOfDictByKeys("numero_documento");
 
             IDictionary<string, Dictionary<string, object?>>  alumnosExistentesPorDNI = ContainerApp.db.Query("alumno").
                 Where("$persona-numero_documento IN (@0)").
                 Parameters(dnisCalificaciones).
                 ColOfDictCache().
-                DictOfDictByKey<string>("persona-numero_documento");
+                DictOfDictByKeys("persona-numero_documento");
 
-            IDictionary<string, Dictionary<string, object?>> asignacionesExistentesPorDNI = asignacionData.DictOfDictByKey<string>("persona-numero_documento");
+            IDictionary<string, Dictionary<string, object?>> asignacionesExistentesPorDNI = asignacionData.DictOfDictByKeys("persona-numero_documento");
             #endregion
 
             foreach (Calificacion calificacion in calificacionOC)
