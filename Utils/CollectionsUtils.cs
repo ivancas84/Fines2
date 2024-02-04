@@ -1,14 +1,7 @@
-﻿using FastMember;
-using Newtonsoft.Json;
-using System;
+﻿using Newtonsoft.Json;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Common;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Utils
 {
@@ -308,12 +301,12 @@ namespace Utils
         {
             key2 = key2 ?? key1;
 
-            var s = source2.DictOfDictByKey<object>(key2);
+            var s = source2.DictOfDictByKeys(key2);
 
             foreach (var item in source)
             {
-                if (s.ContainsKey(item[key1]))
-                    item.Merge(s[item[key1]], prefix);
+                if (s.ContainsKey(item[key1].ToString()))
+                    item.Merge(s[item[key1].ToString()], prefix);
             }
         }
 
@@ -321,13 +314,13 @@ namespace Utils
         {
             key2 = key2 ?? key1;
 
-            var s = source2.DictOfDictByKey<object>(key2);
+            var s = source2.DictOfDictByKeys(key2);
 
             foreach (var item in source)
             {
-                if (s.ContainsKey(item[key1]))
+                if (s.ContainsKey(item[key1]!.ToString()!))
                 {
-                    item.Merge(s[item[key1]]);
+                    item.Merge(s[item[key1]!.ToString()!]);
                     break;
                 }
             }
@@ -364,43 +357,41 @@ namespace Utils
         }
 
 
-        public static IDictionary<T, V> DictOfObjByProp<T, V>(this IEnumerable<V> source, string key)
+
+
+
+        
+
+        public static IDictionary<string, T> DictOfObjByPropertyNames<T>(this IEnumerable<T> source, params string[] propertyNames)
         {
-            Type t = typeof(V);
-            var p = t.GetProperty(key);
-            Dictionary<T, V> response = new();
-            foreach (var item in source)
-            { 
-                var k = p.GetValue(item);
-                response[(T)k!] = item;
+            Dictionary<string, T> response = new();
+            foreach (T obj in source)
+            {
+                List<string> val = new();
+                foreach (string propName in propertyNames)
+                {
+                    val.Add(obj.GetPropertyValue(propName)!.ToString()!);
+                }
+                string key = String.Join("~", val.ToArray());
+                response[key] = obj;
             }
-            return response;
+
+            return (IDictionary<string, T>)response;
         }
 
-        public static IDictionary<T, Dictionary<string, object?>> DictOfDictByKey<T>(this IEnumerable<Dictionary<string, object?>> source, string key)
+        public static IDictionary<string, Dictionary<string, object?>> DictOfDictByKeys(this IEnumerable<Dictionary<string, object?>> source, params string[] keys)
         {
-            Dictionary<T, Dictionary<string, object?>> response = new();
-            foreach (Dictionary<string, object?> row in source)
-                response[(T)row[key]!] = row;
-
-            return response;
-        }
-
-
-
-        public static IDictionary<string, Dictionary<string, object>> DictOfDictByKeys(this IEnumerable<Dictionary<string, object?>> source, params string[] keys)
-        {
-            Dictionary<object, Dictionary<string, object>> response = new();
-            foreach (Dictionary<string, object> row in source) {
+            Dictionary<object, Dictionary<string, object?>> response = new();
+            foreach (Dictionary<string, object?> row in source) {
                 List<string> val = new();
                 foreach (var k in keys)
-                    val.Add(row[k].ToString()!);
+                    val.Add(row[k]!.ToString()!);
 
                 string key = String.Join("~", val.ToArray());
                 response[key] = row;
             }
 
-            return (IDictionary<string, Dictionary<string, object>>)response;
+            return (IDictionary<string, Dictionary<string, object?>>)response;
         }
 
         public static IDictionary<string, object> DictOfDictByKeysValue(this IEnumerable<Dictionary<string, object?>> source, string keyValue, params string[] keys)
@@ -516,6 +507,16 @@ namespace Utils
             Type type = @this.GetType();
             PropertyInfo property = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
             return property.GetValue(@this);
+        }
+
+        /// <summary>
+        /// Clonar objeto 
+        /// </summary>
+        /// <remarks>https://www.wwt.com/article/how-to-clone-objects-in-dotnet-core</remarks>
+        public static T? Clone<T>(this T self)
+        {
+            var serialized = JsonConvert.SerializeObject(self);
+            return JsonConvert.DeserializeObject<T>(serialized);
         }
     }
 

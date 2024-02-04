@@ -1,5 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Tls;
 using SqlOrganize;
+using System.Data.Common;
 using Utils;
 
 namespace SqlOrganizeMy
@@ -11,14 +13,13 @@ namespace SqlOrganizeMy
         {
         }
 
-        protected override EntityPersist _Update(IDictionary<string, object> row, string? _entityName = null)
+        protected override EntityPersist _Update(string _entityName, IDictionary<string, object?> row)
         {
-            _entityName = _entityName ?? entityName;
-            string sna = Db.Entity(_entityName).schemaNameAlias;
+            string sna = Db.Entity(_entityName!).schemaNameAlias;
             sql += @"
 UPDATE " + sna + @" SET
 ";
-            List<string> fieldNames = Db.FieldNamesAdmin(_entityName);
+            List<string> fieldNames = Db.FieldNamesAdmin(_entityName!);
 
             foreach (string fieldName in fieldNames)
                 if (row.ContainsKey(fieldName))
@@ -28,6 +29,24 @@ UPDATE " + sna + @" SET
                     parameters.Add(row[fieldName]);
                 }
             sql = sql.RemoveLastChar(',');
+            return this;
+        }
+
+
+        public override EntityPersist Transaction()
+        {
+            using MySqlCommand command = new();
+
+            if (connection.IsNullOrEmpty())
+            {
+                connection = new MySqlConnection(Db.config.connectionString);
+                connection.Open();
+                _Transaction();
+                connection.Close();
+            }
+            else
+                _Transaction();
+
             return this;
         }
 
