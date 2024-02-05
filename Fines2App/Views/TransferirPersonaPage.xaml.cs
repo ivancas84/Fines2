@@ -269,16 +269,16 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
                         if (alumnoOrigenData != null)
                         {
                             alumnoDestinoValues.values.Copy(alumnoOrigenData, targetNull: true, sourceNotNull: true, createKey: false, compareNotNull: false, ignoreKeys: new List<string>() { "id" });
-                            ContainerApp.db.Persist("alumno").SetConn(connection).SetTran(transaction).Persist(alumnoDestinoValues).Exec();
+                            ContainerApp.db.Persist("alumno").SetConn(connection).Persist(alumnoDestinoValues).Exec();
                             TransferirRelacionesAlumno(alumnoOrigenData["id"], alumnoDestinoValues.Get("id"));
-                            ContainerApp.db.Persist("alumno").SetConn(connection).SetTran(transaction).DeleteIds(new[] { alumnoOrigenData["id"] }).Exec();
+                            ContainerApp.db.Persist("alumno").SetConn(connection).DeleteIds(new[] { alumnoOrigenData["id"] }).Exec();
 
                         }
                     }
 
                     TransferirRelacionesPersona(alumnoOrigenData["persona"], alumnoDestinoData["persona"]);
 
-                    ContainerApp.db.Persist("persona").SetConn(connection).SetTran(transaction).DeleteIds(new[] { idOrigen }).Exec();
+                    ContainerApp.db.Persist("persona").SetConn(connection).DeleteIds(new[] { idOrigen }).Exec();
 
                     transaction.Commit();
 
@@ -335,7 +335,6 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
             ContainerApp.db.Persist("alumno_comision").
                 SetConn(connection).
-                SetTran(transaction).
                 Persist(values).
                 DeleteIds(new[] { ac["id"] }).
                 Exec();
@@ -358,7 +357,6 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
             ContainerApp.db.Persist("calificacion").
                 SetConn(connection).
-                SetTran(transaction).
                 Persist(values).
                 DeleteIds(new[] { cal["id"] }).
                 Exec();
@@ -378,7 +376,6 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
         {
             ContainerApp.db.Persist("calificacion").
                 SetConn(connection).
-                SetTran(transaction).
                 DeleteIds(new[] { cal["id"] }).
                 Exec();
         }
@@ -405,7 +402,6 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
             ContainerApp.db.Persist("detalle_persona").
                 SetConn(connection).
-                SetTran(transaction).
                 Persist(values).
                 DeleteIds(new[] { dd["id"] }).
                 Exec();
@@ -428,7 +424,6 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
             EntityPersist persist = ContainerApp.db.Persist("designacion").
                 SetConn(connection).
-                SetTran(transaction).
                 Persist(values).
                 DeleteIds(new[] { dd["id"] }).
                 Exec();
@@ -451,7 +446,6 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
             EntityPersist persist = ContainerApp.db.Persist("toma").
                 SetConn(connection).
-                SetTran(transaction).
                 Persist(values).
                 Exec();
 
@@ -459,7 +453,6 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
             persist = ContainerApp.db.Persist("toma").
                 SetConn(connection).
-                SetTran(transaction).
                 DeleteIds(new[] { dd["id"] }).
                 Exec();
 
@@ -482,14 +475,12 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
             EntityPersist persist = ContainerApp.db.Persist("toma").
                 SetConn(connection).
-                SetTran(transaction).
                 Persist(values).Exec();
 
             TransferirRelacionesToma(dd["id"], values.Get("id"));
 
             persist = ContainerApp.db.Persist("toma").
                 SetConn(connection).
-                SetTran(transaction).
                 DeleteIds(new[] { dd["id"] }).
                 Exec();
         }
@@ -511,7 +502,6 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
             EntityPersist persist = ContainerApp.db.Persist("telefono").
                 SetConn(connection).
-                SetTran(transaction).
                 Persist(values).
                 DeleteIds(new[] { dd["id"] }).
                 Exec();
@@ -534,7 +524,6 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
             EntityPersist persist = ContainerApp.db.Persist("email").
                 SetConn(connection).
-                SetTran(transaction).
                 Persist(values).
                 DeleteIds(new[] { dd["id"] }).
                 Exec();
@@ -561,7 +550,6 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
             EntityPersist persist = ContainerApp.db.Persist("asignacion_planilla_docente").
                 SetConn(connection).
-                SetTran(transaction).
                 Persist(values).
                 DeleteIds(new[] { dd["id"] }).
                 Exec();

@@ -157,7 +157,7 @@ public partial class AnalizarAlumnosComisionPage : Page, INotifyPropertyChanged
             object idComision = comisionComboBox.SelectedValue;
             IDictionary<string, Dictionary<string, object?>> asignaciones = asignacionDAO.
                 AsignacionesPorComisiones(new List<object>() { idComision }).
-                DictOfDictByKey<string>("persona-numero_documento");
+                DictOfDictByKeys("persona-numero_documento");
 
             resultadoOC.Clear();
             foreach (var alumno in alumnos)
@@ -179,7 +179,7 @@ public partial class AnalizarAlumnosComisionPage : Page, INotifyPropertyChanged
                 resultadoOC.Add(alumno);
             }
 
-            IDictionary<string, Data_persona> alumnosDict = alumnos.DictOfObjByProp<string, Data_persona>("numero_documento");
+            IDictionary<string, Data_persona> alumnosDict = alumnos.DictOfObjByPropertyNames("numero_documento");
 
             alumnosACargarOC.Clear();
             foreach (var (dni, asignacion) in asignaciones)

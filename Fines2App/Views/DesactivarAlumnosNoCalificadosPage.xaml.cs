@@ -53,7 +53,7 @@ public partial class DesactivarAlumnosNoCalificadosPage : Page, INotifyPropertyC
             }
             if (ids.Count > 0)
             {
-                ContainerApp.db.Persist("alumno_comision").UpdateValue("estado", "No activo", ids).Exec().RemoveCache();
+                ContainerApp.db.Persist("alumno_comision").UpdateValueIds("estado", "No activo", ids).Exec().RemoveCache();
                 new ToastContentBuilder()
                 .AddText("Desactivar alumnos no calificados")
                 .AddText("Se han desactivado " + ids.Count + " alumnos.")

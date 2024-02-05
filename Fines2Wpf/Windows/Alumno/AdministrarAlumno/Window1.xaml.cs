@@ -45,7 +45,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         private ObservableCollection<Asignacion> asignacionOC = new(); //datos a visualizar
         private DispatcherTimer typingTimerComision; //timer para busqueda de comision en asignacion
         private Asignacion asignacion; //asignacion que esta siendo editada
-
         #endregion
 
         #region calificacionGroupBox
@@ -375,7 +374,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (this.personaComboBox.SelectedIndex > -1)
             {
                 var pgb = (Data_persona)personaGroupBox.DataContext;
-                var pcb = (Data_persona)this.personaComboBox.SelectedItem;
+                var pcb = (Data_persona)personaComboBox.SelectedItem;
                 if (pgb != null && pgb.id!.ToString().Equals(pcb.id))
                     return;
 
