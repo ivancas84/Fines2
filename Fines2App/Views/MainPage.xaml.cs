@@ -753,7 +753,6 @@ public partial class MainPage : Page, INotifyPropertyChanged
         WebClient client = new WebClient();
         client.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
 
-
         SaveFileDialog saveFileDialog = new SaveFileDialog();
         saveFileDialog.InitialDirectory = ContainerApp.config.download;
         saveFileDialog.RestoreDirectory = false;
@@ -761,11 +760,8 @@ public partial class MainPage : Page, INotifyPropertyChanged
         saveFileDialog.DefaultExt = Path.GetExtension(dp.archivo__name);
         saveFileDialog.FileName = dp.archivo__name;
         if (saveFileDialog.ShowDialog() == true)
-        {
-            client.DownloadFile(
-            ContainerApp.config.upload + dp.archivo__content, saveFileDialog.FileName);
-        }
-
+            client.DownloadFile(ContainerApp.config.upload + dp.archivo__content, saveFileDialog.FileName);
+        
     }
 
     private void BrowseButton_Click(object sender, RoutedEventArgs e)

@@ -715,7 +715,6 @@
                         <DataGrid.Columns>
 
                             <DataGridHyperlinkColumn 
-                             Binding="{Binding archivo__name}"
                              ContentBinding="{Binding archivo__name}"
                              Header="Product"
                              IsReadOnly="True">
