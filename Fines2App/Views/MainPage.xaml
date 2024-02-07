@@ -711,7 +711,10 @@
                     </GroupBox.Header>
 
 
-                    <DataGrid Name="detallePersonaDataGrid" AutoGenerateColumns="False">
+                    <DataGrid 
+                        Name="detallePersonaDataGrid" 
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False">
                         <DataGrid.Columns>
 
                             <DataGridHyperlinkColumn 

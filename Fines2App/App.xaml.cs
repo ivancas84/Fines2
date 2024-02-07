@@ -117,6 +117,8 @@ public partial class App : Application
 
         services.AddTransient<DesactivarAlumnosNoCalificadosPage>();
 
+        services.AddTransient<ListaAlumnosSemestrePage>();
+
         // Configuration
         services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
     }
