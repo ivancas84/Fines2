@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fines2Wpf.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,18 +30,11 @@ namespace Fines2Wpf.Windows.AlumnoComision.VerificarAlumnosDuplicados
         public Window1()
         {
             InitializeComponent();
-            var idsAlumnos = asignacionDAO.IdsAlumnosActivosDuplicadosPorSemestre("2023", "1");
+            var idsAlumnos = asignacionDAO.IdsAlumnosActivosDuplicadosPorSemestre("2023", "2");
             var alumnos = alumnoDAO.AlumnosPorIds(idsAlumnos);
 
-            alumnosGrid.ItemsSource = alumnos.ColOfObj<Alumno>();
+            alumnosGrid.ItemsSource = alumnos.ColOfObj<Data_alumno_r>();
         }
 
-        internal class Alumno
-        {
-            public string id { get; set; }
-            public string persona__nombres { get; set; }
-            public string persona__apellidos { get; set; }
-            public string persona__numero_documento { get; set; }
-        }
     }
 }

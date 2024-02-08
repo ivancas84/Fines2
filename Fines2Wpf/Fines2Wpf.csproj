@@ -6,9 +6,6 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 
-	  <PublishSingleFile>true</PublishSingleFile>
-	  <SelfContained>true</SelfContained>
-	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
 
   </PropertyGroup>
 
@@ -27,8 +24,5 @@
     <ProjectReference Include="..\Utils\Utils.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Images\" />
-  </ItemGroup>
 
 </Project>

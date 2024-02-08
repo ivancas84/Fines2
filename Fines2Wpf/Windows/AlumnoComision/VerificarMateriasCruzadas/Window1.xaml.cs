@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Fines2Wpf.Data;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -31,43 +32,13 @@ namespace Fines2Wpf.Windows.AlumnoComision.VerificarMateriasCruzadas
         {
             InitializeComponent();
 
-            var idsAlumnos = asignacionDAO.IdsAlumnosDeComisionesAutorizadasPorSemestre("2023", "1");
+            var idsAlumnos = asignacionDAO.IdsAlumnosDeComisionesAutorizadasPorSemestre("2023", "2");
             var idsAlumnosMateriasCruzadas = calificacionDAO.IdsAlumnosConCalificacionesAprobadasCruzadasNoArchivadasQuery(idsAlumnos).ColOfDictCache().ColOfVal<object>("cantidad_planes");
             var calificaciones = calificacionDAO.CalificacionesAprobadasNoArchivadasDeAlumnosQuery(idsAlumnosMateriasCruzadas).ColOfDictCache();
 
-            calificacionesGrid.ItemsSource = calificaciones.ColOfObj<Calificacion>();
+            calificacionesGrid.ItemsSource = calificaciones.ColOfObj<Data_calificacion_r>();
 
         }
     }
 
-    internal class Calificacion
-    {
-        public string id { get; set; }
-
-        public string persona__nombres { get; set; }
-        public string persona__apellidos { get; set; }
-        public string persona__numero_documento { get; set; }
-        public string plan_pla__id { get; set; }
-        public string plan_pla__orientacion { get; set; }
-
-        public string plan_pla__distribucion_horaria { get; set; }
-
-        public string planificacion_dis__anio { get; set; }
-        public string planificacion_dis__semestre { get; set; }
-
-        public string asignatura_dis__nombre { get; set; }
-        public decimal nota_final { get; set; }
-
-        public decimal crec { get; set; }
-
-
-
-
-
-
-
-
-
-
-    }
 }

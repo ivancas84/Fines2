@@ -171,6 +171,7 @@ namespace Fines2Wpf.DAO
                     $calendario-anio = @0
                     AND $calendario-semestre = @1
                     AND $estado = 'Activo'
+                    AND $comision-autorizada = true
                 ")
                .Having("cantidad > 1")
                .Parameters(anio, semestre).ColOfDictCache().ColOfVal<object>("cantidad");

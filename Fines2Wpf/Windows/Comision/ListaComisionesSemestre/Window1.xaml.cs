@@ -25,7 +25,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
     {
         private ComisionSearch comisionSearch = new();
         private DAO.Sede sedeDAO = new();
-        private ObservableCollection<Comision> comisionData = new();
+        private ObservableCollection<Data_comision_r> comisionData = new();
         private SqlOrganize.DAO dao = new(ContainerApp.db);
 
         public Window1()
@@ -54,13 +54,21 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
         private void LoadData()
         {
             IEnumerable<Dictionary<string, object>> list = dao.SearchObj("comision", comisionSearch);
+            IEnumerable<object> idsSede = list.ColOfVal<object>("sede");
+            if(idsSede.Count() > 0 ) { 
+                var referentesData = ContainerApp.db.Query("designacion").
+                Where("$cargo-descripcion IN ('Colaborador', 'Referente') AND $sede IN( @0 ) AND $hasta IS NULL").
+                Parameters(idsSede).
+                ColOfDictCache();
+            }
+
             comisionData.Clear();
             foreach (IDictionary<string, object> item in list)
             {
                 var comision = (Values.Comision)ContainerApp.db.Values("comision").Values(item);
-                var o = item.Obj<Comision>();
-                o.label = comision.ToString();
-                o.domicilio__label = comision.ValuesTree("domicilio")?.ToString() ?? "";
+                var o = item.Obj<Data_comision_r>();
+                o.Label = comision.ToString();
+                o.domicilio__Label = comision.ValuesRel("domicilio")?.ToString() ?? "";
                 comisionData.Add(o);
             }
         }

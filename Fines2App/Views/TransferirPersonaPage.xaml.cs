@@ -269,16 +269,16 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
                         if (alumnoOrigenData != null)
                         {
                             alumnoDestinoValues.values.Copy(alumnoOrigenData, targetNull: true, sourceNotNull: true, createKey: false, compareNotNull: false, ignoreKeys: new List<string>() { "id" });
-                            ContainerApp.db.Persist("alumno").SetConn(connection).Persist(alumnoDestinoValues).Exec();
+                            ContainerApp.db.Persist().SetConn(connection).Persist(alumnoDestinoValues).Exec();
                             TransferirRelacionesAlumno(alumnoOrigenData["id"], alumnoDestinoValues.Get("id"));
-                            ContainerApp.db.Persist("alumno").SetConn(connection).DeleteIds(new[] { alumnoOrigenData["id"] }).Exec();
+                            ContainerApp.db.Persist().SetConn(connection).DeleteIds("alumno", alumnoOrigenData["id"]).Exec();
 
                         }
                     }
 
                     TransferirRelacionesPersona(alumnoOrigenData["persona"], alumnoDestinoData["persona"]);
 
-                    ContainerApp.db.Persist("persona").SetConn(connection).DeleteIds(new[] { idOrigen }).Exec();
+                    ContainerApp.db.Persist().SetConn(connection).DeleteIds("persona", idOrigen).Exec();
 
                     transaction.Commit();
 
@@ -333,10 +333,10 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
                 SetDefault("id"). //se reasigna id
                 Set("alumno", idAlumnoDestino);
 
-            ContainerApp.db.Persist("alumno_comision").
+            ContainerApp.db.Persist().
                 SetConn(connection).
                 Persist(values).
-                DeleteIds(new[] { ac["id"] }).
+                DeleteIds("alumno_comision", ac["id"]).
                 Exec();
         }
         #endregion
@@ -355,10 +355,10 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
                 SetDefault("id"). //se reasigna id
                 Set("alumno", idAlumnoDestino);
 
-            ContainerApp.db.Persist("calificacion").
+            ContainerApp.db.Persist().
                 SetConn(connection).
                 Persist(values).
-                DeleteIds(new[] { cal["id"] }).
+                DeleteIds("calificacion", cal["id"]).
                 Exec();
         }
         #endregion
@@ -374,9 +374,9 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
         foreach (var cal in data)
         {
-            ContainerApp.db.Persist("calificacion").
+            ContainerApp.db.Persist().
                 SetConn(connection).
-                DeleteIds(new[] { cal["id"] }).
+                DeleteIds("calificacion", cal["id"]).
                 Exec();
         }
         #endregion
@@ -400,10 +400,10 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
                 SetDefault("id"). //se reasigna id
                 Set("persona", idPersonaDestino);
 
-            ContainerApp.db.Persist("detalle_persona").
+            ContainerApp.db.Persist().
                 SetConn(connection).
                 Persist(values).
-                DeleteIds(new[] { dd["id"] }).
+                DeleteIds("detalle_persona", dd["id"]).
                 Exec();
         }
         #endregion
@@ -422,10 +422,10 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
                 SetDefault("id"). //se reasigna id
                 Set("persona", idPersonaDestino);
 
-            EntityPersist persist = ContainerApp.db.Persist("designacion").
+            EntityPersist persist = ContainerApp.db.Persist().
                 SetConn(connection).
                 Persist(values).
-                DeleteIds(new[] { dd["id"] }).
+                DeleteIds("designacion", dd["id"]).
                 Exec();
         }
         #endregion
@@ -444,16 +444,16 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
                 SetDefault("id"). //se reasigna id
                 Set("docente", idPersonaDestino);
 
-            EntityPersist persist = ContainerApp.db.Persist("toma").
+            EntityPersist persist = ContainerApp.db.Persist().
                 SetConn(connection).
                 Persist(values).
                 Exec();
 
             TransferirRelacionesToma(dd["id"], values.Get("id"));
 
-            persist = ContainerApp.db.Persist("toma").
+            persist = ContainerApp.db.Persist().
                 SetConn(connection).
-                DeleteIds(new[] { dd["id"] }).
+                DeleteIds("toma", dd["id"]).
                 Exec();
 
         }
@@ -473,15 +473,15 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
                 SetDefault("id"). //se reasigna id
                 Set("reemplazo", idPersonaDestino);
 
-            EntityPersist persist = ContainerApp.db.Persist("toma").
+            EntityPersist persist = ContainerApp.db.Persist().
                 SetConn(connection).
                 Persist(values).Exec();
 
             TransferirRelacionesToma(dd["id"], values.Get("id"));
 
-            persist = ContainerApp.db.Persist("toma").
+            persist = ContainerApp.db.Persist().
                 SetConn(connection).
-                DeleteIds(new[] { dd["id"] }).
+                DeleteIds("toma", dd["id"]).
                 Exec();
         }
         #endregion
@@ -500,10 +500,10 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
                 SetDefault("id"). //se reasigna id
                 Set("persona", idPersonaDestino);
 
-            EntityPersist persist = ContainerApp.db.Persist("telefono").
+            EntityPersist persist = ContainerApp.db.Persist().
                 SetConn(connection).
                 Persist(values).
-                DeleteIds(new[] { dd["id"] }).
+                DeleteIds("telefono", dd["id"]).
                 Exec();
         }
         #endregion
@@ -522,10 +522,10 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
                 SetDefault("id"). //se reasigna id
                 Set("persona", idPersonaDestino);
 
-            EntityPersist persist = ContainerApp.db.Persist("email").
+            EntityPersist persist = ContainerApp.db.Persist().
                 SetConn(connection).
                 Persist(values).
-                DeleteIds(new[] { dd["id"] }).
+                DeleteIds("email", dd["id"]).
                 Exec();
         }
         #endregion
@@ -548,10 +548,10 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
                 SetDefault("id"). //se reasigna id
                 Set("toma", idTomaDestino);
 
-            EntityPersist persist = ContainerApp.db.Persist("asignacion_planilla_docente").
+            EntityPersist persist = ContainerApp.db.Persist().
                 SetConn(connection).
                 Persist(values).
-                DeleteIds(new[] { dd["id"] }).
+                DeleteIds("asignacion_planilla_docente", dd["id"]).
                 Exec();
         }
         #endregion

@@ -1,16 +1,18 @@
-﻿using System;
+﻿using Fines2Wpf.Data;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fines2Wpf.Data;
 
 namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 {
-    internal class Comision : Data_comision_r
+    public class Comision : Data_comision_r
     {
-        public string label { get; set; }
-        public string domicilio__label { get; set; }
+
+        protected List<string> _referentes = new();
+
+        public List<string>? referentes
+        {
+            get { return _referentes; }
+            set { _referentes = value; NotifyPropertyChanged(); }
+        }
 
     }
 }
