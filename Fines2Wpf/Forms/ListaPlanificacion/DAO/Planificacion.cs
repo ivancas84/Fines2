@@ -20,7 +20,7 @@ namespace Fines2Wpf.Forms.ListaPlanificacion.DAO
 
         public void UpdateValueRel(string key, object value, Dictionary<string, object> source)
         {
-            EntityPersist p = ContainerApp.db.Persist("planificacion").UpdateValueRel(key, value, source).Exec().RemoveCache();
+            EntityPersist p = ContainerApp.db.Persist().UpdateValueRel("planificacion", key, value, source).Exec().RemoveCache();
         }
 
 

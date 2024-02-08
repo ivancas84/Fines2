@@ -29,7 +29,7 @@ namespace Fines2Wpf.Forms.ListaModalidad
 
         public void UpdateValueRelModalidad(string key, object value, Dictionary<string, object> source)
         {
-            EntityPersist p = ContainerApp.db.Persist("modalidad").UpdateValueRel(key, value, source).Exec().RemoveCache();
+            EntityPersist p = ContainerApp.db.Persist().UpdateValueRel("modalidad", key, value, source).Exec().RemoveCache();
         }
 
 

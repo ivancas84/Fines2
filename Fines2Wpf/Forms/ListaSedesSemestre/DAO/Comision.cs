@@ -37,7 +37,7 @@ namespace Fines2Wpf.Forms.ListaSedesSemestre.DAO
 
         public void UpdateValueRel(string key, object value, Dictionary<string, object> source)
         {
-            EntityPersist p = ContainerApp.db.Persist("comision").UpdateValueRel(key, value, source).Exec().RemoveCache();
+            EntityPersist p = ContainerApp.db.Persist().UpdateValueRel("comision", key, value, source).Exec().RemoveCache();
         }
 
     }

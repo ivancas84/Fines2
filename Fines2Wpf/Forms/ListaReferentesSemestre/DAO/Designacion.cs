@@ -21,7 +21,7 @@ namespace Fines2Wpf.Forms.ListaReferentesSemestre.DAO
 
         public void UpdateValueRel(string key, object value, Dictionary<string, object> source)
         {
-            EntityPersist p = ContainerApp.db.Persist("designacion").UpdateValueRel(key, value, source).Exec().RemoveCache();
+            EntityPersist p = ContainerApp.db.Persist().UpdateValueRel("designacion", key, value, source).Exec().RemoveCache();
         }
     }
 }

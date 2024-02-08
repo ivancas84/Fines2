@@ -51,7 +51,7 @@ namespace Fines2Wpf.Windows.AlumnoComision
                     Set("alumno", ac["alumno"]).
                     Set("estado", "Activo");
                                
-                ContainerApp.db.Persist("alumno_comision").Persist(v).Exec();
+                ContainerApp.db.Persist().Persist(v).Exec();
 
                 data.Add(ac.Obj<Model>());
             }

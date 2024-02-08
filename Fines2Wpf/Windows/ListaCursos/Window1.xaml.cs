@@ -120,12 +120,12 @@ namespace Fines2Wpf.Windows.ListaCursos
                             if (v.Get(ContainerApp.config.id).IsNullOrEmpty())
                             {
                                 v.Default().Reset();
-                                var p = ContainerApp.db.Persist(entityName).Insert(v.values).Exec().RemoveCache();
+                                var p = ContainerApp.db.Persist().Insert(v).Exec().RemoveCache();
                             }
                             else
                             {
                                 v.Reset();
-                                var p = ContainerApp.db.Persist(entityName).Update(v.values).Exec().RemoveCache();
+                                var p = ContainerApp.db.Persist().Update(v).Exec().RemoveCache();
                             }
                         }
 

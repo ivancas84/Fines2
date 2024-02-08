@@ -42,10 +42,14 @@ namespace Fines2Wpf.Values
                 return "";
 
             var dd = cursoDAO.TomaActivaDeCursoQuery(idCurso!).DictCache();
-            var val = ContainerApp.db.Values("toma").Set(dd!);
             var s = ToString();
-            s += " ";
-            s += val?.ValuesRel("docente")?.ToString() ?? "?";
+            if (!dd.IsNullOrEmptyOrDbNull())
+            {
+                s += " ";
+                var val = ContainerApp.db.Values("toma").Set(dd!);
+                s += val?.ValuesRel("docente")?.ToString() ?? "?";
+
+            }
             return s;
         }
 

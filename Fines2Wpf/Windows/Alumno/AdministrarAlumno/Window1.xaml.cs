@@ -270,10 +270,10 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (persona.Error.IsNullOrEmpty())
             {
                 var per = (Data_persona)personaGroupBox.DataContext;
-                EntityPersist p = ContainerApp.db.Persist("persona");
+                EntityPersist p = ContainerApp.db.Persist();
                 try
                 {
-                    p.PersistObj(per).Exec().RemoveCache();
+                    p.PersistObj("persona", per).Exec().RemoveCache();
                     var alu = (Data_alumno)alumnoGroupBox.DataContext;
                     MessageBox.Show("Registro de persona realizado");
                 }
@@ -294,10 +294,10 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             var alu = (Alumno)alumnoGroupBox.DataContext;
 
-            EntityPersist p = ContainerApp.db.Persist("alumno");
+            EntityPersist p = ContainerApp.db.Persist();
             try
             {
-                p.PersistObj(alu).Exec().RemoveCache();
+                p.PersistObj("alumno", alu).Exec().RemoveCache();
                 SetAlumnoGroupBox(alu);
                 MessageBox.Show("Registro de alumno realizado");
             }
@@ -495,10 +495,10 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             var button = (e.OriginalSource as Button);
             var asignacion = (Data_alumno_comision)button!.DataContext;
-            var p = ContainerApp.db.Persist("alumno_comision");
+            var p = ContainerApp.db.Persist();
             try
             {
-                p.PersistObj(asignacion).Exec().RemoveCache();
+                p.PersistObj("alumno_comision", asignacion).Exec().RemoveCache();
                 MessageBox.Show("Registro realizado");
             }
             catch (Exception ex)
@@ -514,7 +514,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             try
             {
                 if (!a.id.IsNullOrEmpty())
-                    ContainerApp.db.Persist("alumno_comision").DeleteIds(new object[] { a.id! }).Exec().RemoveCache();
+                    ContainerApp.db.Persist().DeleteIds("alumno_comision", a.id!).Exec().RemoveCache();
                 asignacionOC.Remove(a);
 
             }
@@ -584,7 +584,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             {
                 if (!cb.SelectedValue.ToString()!.Equals(calificacion.disposicion))
                 {
-                    ContainerApp.db.Persist("calificacion").UpdateValueIds("disposicion", cb.SelectedValue, calificacion.id!).Exec().RemoveCache();
+                    ContainerApp.db.Persist().UpdateValueIds("calificacion", "disposicion", cb.SelectedValue, calificacion.id!).Exec().RemoveCache();
                     calificacion.disposicion = (string)cb.SelectedValue;
                 }
 
@@ -666,7 +666,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             var calificacion = (Calificacion)cb.DataContext; //se carga la asignacion que esta siendo editada
             if (cb.SelectedIndex > -1)
             {
-                ContainerApp.db.Persist("calificacion").UpdateValueIds("curso", cb.SelectedValue,  calificacion.id!).Exec().RemoveCache();
+                ContainerApp.db.Persist().UpdateValueIds("calificacion", "curso", cb.SelectedValue,  calificacion.id!).Exec().RemoveCache();
                 calificacion.curso__Label = (cb.SelectedItem as Data_curso_r)!.Label;
             }
 
@@ -711,25 +711,21 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void DescargarArchivo_Click(object sender, RoutedEventArgs e)
         {
-         
 
-                var dp = ((Hyperlink)e.OriginalSource).DataContext as DetallePersona;
+            var dp = ((Hyperlink)e.OriginalSource).DataContext as DetallePersona;
             WebClient client = new WebClient();
             client.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
-
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.InitialDirectory = ContainerApp.config.download;
             saveFileDialog.RestoreDirectory = false;
             saveFileDialog.Title = "Descargar archivo de legajo";
             saveFileDialog.DefaultExt = Path.GetExtension(dp.archivo__name);
-            saveFileDialog.FileName =  dp.archivo__name;
+            saveFileDialog.FileName = dp.archivo__name;
             if (saveFileDialog.ShowDialog() == true)
-            {
-                client.DownloadFile(
-                ContainerApp.config.upload + dp.archivo__content, saveFileDialog.FileName);
-            }
-        
+                client.DownloadFile(ContainerApp.config.upload + dp.archivo__content, saveFileDialog.FileName);
+
+
         }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)

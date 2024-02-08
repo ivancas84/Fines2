@@ -31,7 +31,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.DesactivarAlumnosNoCalificados
         {
             InitializeComponent();
 
-            var alumnosComisiones = asignacionDAO.AsignacionesActivasDeComisionesAutorizadasPorSemestre("2023", "1");
+            var alumnosComisiones = asignacionDAO.AsignacionesActivasDeComisionesAutorizadasPorSemestre("2023", "2");
             List<AlumnoComision> data = new();
             List<object> ids = new();
             foreach (var alumnoComision in alumnosComisiones)
@@ -49,7 +49,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.DesactivarAlumnosNoCalificados
             }
             if(ids.Count > 0) { 
                 alumnoComisionGrid.ItemsSource = data;
-                ContainerApp.db.Persist("alumno_comision").UpdateValueIds("estado", "No activo", ids).Exec().RemoveCache();
+                ContainerApp.db.Persist().UpdateValueIds("alumno_comision", "estado", "No activo", ids).Exec().RemoveCache();
             }
 
 

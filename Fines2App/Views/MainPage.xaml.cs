@@ -262,10 +262,10 @@ public partial class MainPage : Page, INotifyPropertyChanged
         if (persona.Error.IsNullOrEmpty())
         {
             var per = (Data_persona)personaGroupBox.DataContext;
-            EntityPersist p = ContainerApp.db.Persist("persona");
+            EntityPersist p = ContainerApp.db.Persist();
             try
             {
-                p.PersistObj(per).Exec().RemoveCache();
+                p.PersistObj("persona", per).Exec().RemoveCache();
                 var alu = (Data_alumno)alumnoGroupBox.DataContext;
                 MessageBox.Show("Registro de persona realizado");
             }
@@ -286,10 +286,10 @@ public partial class MainPage : Page, INotifyPropertyChanged
     {
         var alu = (Alumno)alumnoGroupBox.DataContext;
 
-        EntityPersist p = ContainerApp.db.Persist("alumno");
+        EntityPersist p = ContainerApp.db.Persist();
         try
         {
-            p.PersistObj(alu).Exec().RemoveCache();
+            p.PersistObj("alumno", alu).Exec().RemoveCache();
             SetAlumnoGroupBox(alu);
             MessageBox.Show("Registro de alumno realizado");
         }
@@ -531,10 +531,10 @@ public partial class MainPage : Page, INotifyPropertyChanged
     {
         var button = (e.OriginalSource as Button);
         var asignacion = (Data_alumno_comision)button!.DataContext;
-        var p = ContainerApp.db.Persist("alumno_comision");
+        var p = ContainerApp.db.Persist();
         try
         {
-            p.PersistObj(asignacion).Exec().RemoveCache();
+            p.PersistObj("alumno_comision", asignacion).Exec().RemoveCache();
             MessageBox.Show("Registro realizado");
         }
         catch (Exception ex)
@@ -550,7 +550,7 @@ public partial class MainPage : Page, INotifyPropertyChanged
         try
         {
             if (!a.id.IsNullOrEmpty())
-                ContainerApp.db.Persist("alumno_comision").DeleteIds(new object[] { a.id! }).Exec().RemoveCache();
+                ContainerApp.db.Persist().DeleteIds("alumno_comision", a.id!).Exec().RemoveCache();
             asignacionOC.Remove(a);
 
         }
@@ -620,7 +620,7 @@ public partial class MainPage : Page, INotifyPropertyChanged
         {
             if (!cb.SelectedValue.ToString()!.Equals(calificacion.disposicion))
             {
-                ContainerApp.db.Persist("calificacion").UpdateValueIds("disposicion", cb.SelectedValue, calificacion.id!).Exec().RemoveCache();
+                ContainerApp.db.Persist().UpdateValueIds("calificacion", "disposicion", cb.SelectedValue, calificacion.id!).Exec().RemoveCache();
                 calificacion.disposicion = (string)cb.SelectedValue;
             }
 
@@ -702,7 +702,7 @@ public partial class MainPage : Page, INotifyPropertyChanged
         var calificacion = (Calificacion)cb.DataContext; //se carga la asignacion que esta siendo editada
         if (cb.SelectedIndex > -1)
         {
-            ContainerApp.db.Persist("calificacion").UpdateValueIds("curso", cb.SelectedValue, calificacion.id!).Exec().RemoveCache();
+            ContainerApp.db.Persist().UpdateValueIds("calificacion", "curso", cb.SelectedValue, calificacion.id!).Exec().RemoveCache();
             calificacion.curso__Label = (cb.SelectedItem as Data_curso_r)!.Label;
         }
 

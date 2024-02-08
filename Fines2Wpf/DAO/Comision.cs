@@ -14,7 +14,7 @@ namespace Fines2Wpf.DAO
 
         public void UpdateValueRel(string key, object value, Dictionary<string, object> source)
         {
-            EntityPersist p = ContainerApp.db.Persist("comision").UpdateValueRel(key, value, source).Exec().RemoveCache();
+            EntityPersist p = ContainerApp.db.Persist().UpdateValueRel("comision", key, value, source).Exec().RemoveCache();
         }
 
         public IEnumerable<Dictionary<string, object>> ComisionesSemestre(object calendarioAnio, object calendarioSemestre, object? sede = null, bool? autorizada = null)

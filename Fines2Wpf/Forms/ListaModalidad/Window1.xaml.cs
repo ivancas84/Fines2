@@ -92,12 +92,12 @@ namespace Fines2Wpf.Forms.ListaModalidad
                             if (v.Get("_Id").IsNullOrEmpty() && v.Check())
                             {
                                 v.Default().Reset();
-                                EntityPersist p = ContainerApp.db.Persist(entityName).Insert(v.values).Exec();
+                                EntityPersist p = ContainerApp.db.Persist().Insert(v).Exec();
                                 ((Modalidad)e.Row.Item)._Id = (string)v.values["_Id"];
                             }
                             else
                             {
-                                ContainerApp.db.Persist(entityName).Update(v.values).Exec();
+                                ContainerApp.db.Persist().Update(v).Exec();
                             }
                         }
 

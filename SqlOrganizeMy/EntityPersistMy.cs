@@ -8,8 +8,7 @@ namespace SqlOrganizeMy
 {
     public class EntityPersistMy : EntityPersist
     {
-
-        public EntityPersistMy(Db db, string? entityName) : base(db, entityName)
+        public EntityPersistMy(Db db) : base(db)
         {
         }
 

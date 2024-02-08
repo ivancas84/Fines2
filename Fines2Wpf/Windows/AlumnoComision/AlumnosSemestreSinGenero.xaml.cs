@@ -48,7 +48,7 @@ namespace Fines2Wpf.Windows.AlumnoComision
 
                 foreach(var nombre in nombres)
                 {
-                    var p = ContainerApp.db.Persist("persona");
+                    var p = ContainerApp.db.Persist();
 
                     var lastChar = nombre.ToLower()[nombre.Length - 1];
                     
@@ -62,7 +62,7 @@ namespace Fines2Wpf.Windows.AlumnoComision
 
                     if (!genero.IsNullOrEmpty())
                     {
-                        p.UpdateValueIds("genero", genero, a.persona__id).Exec().RemoveCache();
+                        p.UpdateValueIds("persona", "genero", genero, a.persona__id).Exec().RemoveCache();
                         genero = null;
                         break;
                     }
