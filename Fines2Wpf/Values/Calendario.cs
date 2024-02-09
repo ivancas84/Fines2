@@ -26,5 +26,40 @@ namespace Fines2Wpf.Values
             return s.Trim();
         }
 
+        public (short anio, short semestre) AnioSemestreAnterior()
+        {
+            short anio = (short)Get("anio");
+            short semestre = (short)Get("semestre");
+
+            if(semestre == 1)
+            {
+                semestre = 2;
+                anio--; 
+            } else
+            {
+                semestre = 1;
+            }
+
+            return (anio, semestre);
+        }
+
+        public (short anio, short semestre) AnioSemestreSiguiente()
+        {
+            short anio = (short)Get("anio");
+            short semestre = (short)Get("semestre");
+
+            if (semestre == 2)
+            {
+                semestre = 1;
+                anio++;
+            }
+            else
+            {
+                semestre = 2;
+            }
+
+            return (anio, semestre);
+        }
+
     }
 }

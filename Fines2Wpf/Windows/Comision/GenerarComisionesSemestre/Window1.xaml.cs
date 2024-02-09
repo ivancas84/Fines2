@@ -1,4 +1,5 @@
 ﻿using Fines2Wpf.Data;
+using SqlOrganize;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,13 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
     /// </summary>
     public partial class Window1 : Window
     {
+
+        DAO.Planificacion planificacionDAO = new ();
         public Window1()
         {
             InitializeComponent();
 
-            var comisionObj = new Data_comision_r(SqlOrganize.DataInitMode.Null);
+            Data_comision_r comisionObj = new (SqlOrganize.DataInitMode.Null);
             comisionObj.calendario__anio = Convert.ToInt16(DateTime.Now.Year);
             comisionObj.calendario__semestre = Convert.ToInt16(DateTime.Now.ToSemester());
             comisionObj.autorizada = true;
@@ -34,13 +37,44 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
 
         private void GenerarButton_Click(object sender, RoutedEventArgs e)
         {
-            #region Consultar comisiones del semestre actual
-            IEnumerable<Dictionary<string, object?>> comisionesSemestreActual = ContainerApp.db.Query("comision").
-                SearchObj(formGroupBox.DataContext).
+
+            Data_comision_r comisionObj = ((Data_comision_r)formGroupBox.DataContext).Clone()!;
+
+
+            Values.Calendario calendarioVal = (Values.Calendario)ContainerApp.db.Values("calendario").
+                Set("anio", comisionObj.calendario__anio).Set("semestre",comisionObj.calendario__semestre);
+
+            (short anio, short semestre) anioSemestre = calendarioVal.AnioSemestreAnterior();
+            comisionObj.calendario__anio = anioSemestre.anio;
+            comisionObj.calendario__semestre = anioSemestre.semestre;
+
+
+            #region Consultar comisiones del semestre anterior
+            IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestreAnterior = ContainerApp.db.Query("comision").
+                SearchObj(comisionObj).
+                Where(@" 
+                    AND (
+                        ($planificacion-anio = '3' AND $planificacion-semestre = '1')
+                        OR ($planificacion-anio = '2' AND $planificacion-semestre = '2')
+                        OR ($planificacion-anio = '2' AND $planificacion-semestre = '1')
+                        OR ($planificacion-anio = '1' AND $planificacion-semestre = '2')
+                        OR ($planificacion-anio = '1' AND $planificacion-semestre = '1')
+                    )
+                ").
                 Size(0).
-                ColOfDictCache();
+                ColOfDict();
             #endregion
 
+
+            foreach(Dictionary<string, object?> com in comisionesAutorizadasSemestreAnterior)
+            {
+                Data_comision_r comObj = com.Obj<Data_comision_r>();
+
+                string idPlanificacionSiguiente = planificacionDAO.PlanificacionSiguiente(comObj.planificacion__anio!, comObj.planificacion__semestre!, comObj.plan__id!);
+
+                //calendarioV.SetDefault("id").Set("anio", anio).Set("semestre", semestre).Set("apertura", false);
+
+            }
 
         }
     }

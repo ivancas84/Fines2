@@ -53,7 +53,13 @@
                         Grid.Column="1"
                         Text="{Binding calendario__semestre, ValidatesOnDataErrors=True}"
                         Margin = "5,10"></TextBox>
-                    
+
+                    <TextBox 
+                        Name="idNuevoCalendarioTextBox"
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Margin = "5,10"></TextBox>
+
                     <Button
 							Content = "_Generar..."
 							Click="GenerarButton_Click" />
