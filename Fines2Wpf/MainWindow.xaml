@@ -62,6 +62,7 @@
                 <MenuItem Header="Verificar alumnos duplicados" Click="VerificarAlumnosDuplicados_Click"/>
                 <MenuItem Header="Desactivar alumnos no calificados" Click="DesactivarAlumnosNoCalificados_Click"/>
                 <MenuItem Header="Transferir alumnos activos" Click="TransferirAlumnosActivos_Click"/>
+                <MenuItem Header="Generar comisiones semestre siguiente" Click="GenerarComisionesSemestreSiguiente_Click"/>
 
             </MenuItem>
 

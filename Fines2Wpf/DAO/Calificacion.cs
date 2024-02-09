@@ -60,7 +60,7 @@ namespace Fines2Wpf.DAO
         /// <param name="anio"></param>
         /// <param name="semestre"></param>
         /// <returns></returns>
-        public EntityQuery CantidadCalificacionesAprobadasDeAlumnoPorTramoQuery(object alumno, object anio, object semestre)
+        public EntityQuery CantidadCalificacionesAprobadaNoArchivadasDeAlumnoPorTramoQuery(object alumno, object anio, object semestre)
         {
             return ContainerApp.db.Query("calificacion")
                 .Select("COUNT($id) as cantidad")
@@ -69,6 +69,8 @@ namespace Fines2Wpf.DAO
                     $alumno = @0
                     AND $planificacion_dis-anio = @1
                     AND $planificacion_dis-semestre = @2
+                    AND $archivado = false
+                    AND ($nota_final >= 7 OR $crec >= 4)
                 ")
                 .Parameters(alumno, anio, semestre);
         }

@@ -1,7 +1,9 @@
-﻿using Org.BouncyCastle.Crypto;
+﻿using Fines2Wpf.Data;
+using Org.BouncyCastle.Crypto;
 using SqlOrganize;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,45 +28,52 @@ namespace Fines2Wpf.Windows.AlumnoComision.DesactivarAlumnosNoCalificados
         DAO.AlumnoComision asignacionDAO = new();
         DAO.Calificacion calificacionDAO = new();
 
+        ObservableCollection<Data_alumno_comision_r> alumnosParaActivarOC = new();
+        ObservableCollection<Data_alumno_comision_r> alumnosParaDesactivarOC = new();
 
         public Window1()
         {
             InitializeComponent();
 
-            var alumnosComisiones = asignacionDAO.AsignacionesActivasDeComisionesAutorizadasPorSemestre("2023", "2");
-            List<AlumnoComision> data = new();
-            List<object> ids = new();
+            alumnosParaActivarDataGrid.ItemsSource = alumnosParaActivarOC;
+            alumnosParaDesactivarDataGrid.ItemsSource = alumnosParaDesactivarOC;
+
+            alumnosParaActivarOC.Clear();
+            alumnosParaDesactivarOC.Clear();
+
+            var alumnosComisiones = asignacionDAO.AsignacionesDeComisionesAutorizadasPorSemestre("2023", "2");
+            List<object> idsParaActivar = new();
+            List<object> idsParaDesactivar = new();
+
             foreach (var alumnoComision in alumnosComisiones)
             {
+                Data_alumno_comision_r alumnoComisionObj = alumnoComision.Obj<Data_alumno_comision_r>();
+                var qu = calificacionDAO.CantidadCalificacionesAprobadaNoArchivadasDeAlumnoPorTramoQuery(alumnoComisionObj.alumno, alumnoComisionObj.planificacion__anio, alumnoComisionObj.planificacion__semestre).DictCache();
+                var q = (!qu.IsNullOrEmptyOrDbNull()) ? (Int64)qu["cantidad"]! : 0;
 
-                var qu = calificacionDAO.CantidadCalificacionesAprobadasDeAlumnoPorTramoQuery(alumnoComision["alumno"], alumnoComision["planificacion-anio"], alumnoComision["planificacion-semestre"]).DictCache();
-                var q = (qu.IsNullOrEmpty()) ? (Int64)qu["cantidad"]! :  0;
-                
-                if (q < 3)
+                if (alumnoComisionObj.estado.Equals("Activo") && q < 3)
                 {
-                    ids.Add(alumnoComision["id"]);
-                    var a = alumnoComision.Obj<AlumnoComision>();
-                    data.Add(a);
+                    idsParaDesactivar.Add(alumnoComision["id"]);
+                    var a = alumnoComision.Obj<Data_alumno_comision_r>();
+                    alumnosParaDesactivarOC.Add(a);
+                }
+
+                if (alumnoComisionObj.estado.Equals("No activo") && q >= 3)
+                {
+                    idsParaActivar.Add(alumnoComision["id"]);
+                    var a = alumnoComision.Obj<Data_alumno_comision_r>();
+                    alumnosParaActivarOC.Add(a);
                 }
             }
-            if(ids.Count > 0) { 
-                alumnoComisionGrid.ItemsSource = data;
-                ContainerApp.db.Persist().UpdateValueIds("alumno_comision", "estado", "No activo", ids).Exec().RemoveCache();
-            }
 
+            if (idsParaDesactivar.Count > 0)
+                ContainerApp.db.Persist().UpdateValueIds("alumno_comision", "estado", "No activo", idsParaDesactivar.ToArray()).Exec().RemoveCache();
+
+
+            if (idsParaActivar.Count > 0)
+                ContainerApp.db.Persist().UpdateValueIds("alumno_comision", "estado", "Activo", idsParaActivar.ToArray()).Exec().RemoveCache();
 
         }
     }
 
-
-    internal class AlumnoComision { 
-        public string id { get; set; }
-        public string persona__nombres { get; set; }
-        public string persona__apellidos { get; set; }
-        public string persona__numero_documento { get; set; }
-        public string comision__division { get; set; }
-        public string sede__numero { get; set; }
-        public string planificacion__anio { get; set; }
-        public string planificacion__semestre { get; set; }
-    }
 }

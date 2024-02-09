@@ -1,4 +1,5 @@
 ﻿using Fines2Wpf.Values;
+using SqlOrganize;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -161,7 +162,7 @@ namespace Fines2Wpf.DAO
         }
 
 
-        public IEnumerable<object> IdsAlumnosActivosDuplicadosPorSemestre(object anio, object semestre)
+        public EntityQuery IdsAlumnosActivosDuplicadosPorSemestreDeComisionesAutorizadasQuery(object anio, object semestre)
         {
             return ContainerApp.db.Query("alumno_comision")
                .Select("COUNT($id) AS cantidad")
@@ -174,7 +175,7 @@ namespace Fines2Wpf.DAO
                     AND $comision-autorizada = true
                 ")
                .Having("cantidad > 1")
-               .Parameters(anio, semestre).ColOfDictCache().ColOfVal<object>("cantidad");
+               .Parameters(anio, semestre);
         }
 
         public IEnumerable<Dictionary<string, object>> AsignacionesActivasDeComisionesAutorizadasPorSemestre(object anio, object semestre)

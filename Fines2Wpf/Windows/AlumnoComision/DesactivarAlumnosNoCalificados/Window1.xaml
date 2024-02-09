@@ -6,6 +6,20 @@
         xmlns:local="clr-namespace:Fines2Wpf.Windows.AlumnoComision.DesactivarAlumnosNoCalificados"
         mc:Ignorable="d"
         Title="Window1" Height="450" Width="800">
-    <DataGrid Name="alumnoComisionGrid" AutoGenerateColumns="True">
-    </DataGrid>
+    <StackPanel>
+        <DataGrid 
+            Name="alumnosParaActivarDataGrid" 
+            AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid 
+            Name="alumnosParaDesactivarDataGrid" 
+            AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
+            </DataGrid.Columns>        
+        </DataGrid>
+    </StackPanel>
 </Window>

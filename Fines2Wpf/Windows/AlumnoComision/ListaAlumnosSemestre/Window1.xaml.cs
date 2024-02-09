@@ -106,6 +106,9 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         public void LoadAsignaciones()
         {
             var data = dao.SearchObj("alumno_comision", search);
+            if(data.IsNullOrEmptyOrDbNull())
+               return;
+            
             asignacionOC.Clear();
             List<object> alumnosYplanes = new();
             ObservableCollection<Asignacion> asignacionOCAux = new();

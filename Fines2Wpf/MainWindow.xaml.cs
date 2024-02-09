@@ -160,6 +160,12 @@ namespace Fines2Wpf
             Pedidos.Windows.GenerarTareasCalificacionesSemestre.Window1 window1 = new();
             window1.Show();
         }
+
+        private void GenerarComisionesSemestreSiguiente_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.Comision.GenerarComisionesSemestre.Window1 window1 = new();
+            window1.Show(); 
+        }
     }
 }
 
