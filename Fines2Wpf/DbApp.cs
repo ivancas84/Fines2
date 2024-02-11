@@ -11,7 +11,6 @@ namespace Fines2Wpf
         {
         }
 
-        public 
         public override EntityValues Values(string entityName, string? fieldId = null)
         {
             switch (entityName)
@@ -25,6 +24,9 @@ namespace Fines2Wpf
                 case "calendario":
                     return new Calendario(this, entityName, fieldId);
 
+                case "designacion":
+                    return new Designacion(this, entityName, fieldId);
+
                 case "domicilio":
                     return new Domicilio(this, entityName, fieldId);
 
@@ -36,6 +38,9 @@ namespace Fines2Wpf
 
                 case "plan":
                     return new Plan(this, entityName, fieldId);
+
+                case "planificacion":
+                    return new Planificacion(this, entityName, fieldId);
 
                 case "disposicion":
                     return new Disposicion(this, entityName, fieldId);

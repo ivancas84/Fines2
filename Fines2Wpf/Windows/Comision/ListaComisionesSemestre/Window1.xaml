@@ -103,6 +103,15 @@
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
+                            <ItemsControl ItemsSource="{Binding referentes}"></ItemsControl>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Cant alu act" Binding="{Binding cantidad_alumnos_activos}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Cant alu" Binding="{Binding cantidad_alumnos}"></DataGridTextColumn>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
                             <Button Click="CargarAlumnos_Click">Carga de alumnos</Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

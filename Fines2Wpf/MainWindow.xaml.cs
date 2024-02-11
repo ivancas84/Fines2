@@ -161,10 +161,16 @@ namespace Fines2Wpf
             window1.Show();
         }
 
-        private void GenerarComisionesSemestreSiguiente_Click(object sender, RoutedEventArgs e)
+        private void GenerarComisionesSemestre_Click(object sender, RoutedEventArgs e)
         {
             Windows.Comision.GenerarComisionesSemestre.Window1 window1 = new();
             window1.Show(); 
+        }
+
+        private void GenerarCursosSemestre_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.Curso.GenerarCursosSemestre.Window1 window1 = new();
+            window1.Show();
         }
     }
 }

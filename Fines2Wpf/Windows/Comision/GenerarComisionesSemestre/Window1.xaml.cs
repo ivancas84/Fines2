@@ -42,7 +42,7 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
 
 
             Values.Calendario calendarioVal = (Values.Calendario)ContainerApp.db.Values("calendario").
-                Set("anio", comisionObj.calendario__anio).Set("semestre",comisionObj.calendario__semestre);
+                Set("anio", comisionObj.calendario__anio).Set("semestre", comisionObj.calendario__semestre);
 
             (short anio, short semestre) anioSemestre = calendarioVal.AnioSemestreAnterior();
             comisionObj.calendario__anio = anioSemestre.anio;
@@ -66,15 +66,28 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
             #endregion
 
 
-            foreach(Dictionary<string, object?> com in comisionesAutorizadasSemestreAnterior)
+            EntityPersist persist = ContainerApp.db.Persist();
+            foreach (Dictionary<string, object?> com in comisionesAutorizadasSemestreAnterior)
             {
                 Data_comision_r comObj = com.Obj<Data_comision_r>();
 
                 string idPlanificacionSiguiente = planificacionDAO.PlanificacionSiguiente(comObj.planificacion__anio!, comObj.planificacion__semestre!, comObj.plan__id!);
 
-                //calendarioV.SetDefault("id").Set("anio", anio).Set("semestre", semestre).Set("apertura", false);
+                EntityValues comisionVal = ContainerApp.db.Values("comision").
+                    SetObj(comObj).
+                    SetDefault("id").
+                    Set("planificacion", idPlanificacionSiguiente).
+                    Set("apertura", false).
+                    Set("configuracion", "Histórica").
+                    Set("calendario", idNuevoCalendarioTextBox.Text).
+                    SetDefault("alta").
+                    Reset();
 
+                persist.Insert(comisionVal);
+                persist.UpdateValueIds("comision", "comision_siguiente", comisionVal.Get("id"), comObj.id);
             }
+
+            persist.Transaction().RemoveCache();
 
         }
     }

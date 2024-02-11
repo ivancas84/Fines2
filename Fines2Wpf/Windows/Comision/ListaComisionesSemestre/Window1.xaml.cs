@@ -55,21 +55,62 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
         {
             IEnumerable<Dictionary<string, object>> list = dao.SearchObj("comision", comisionSearch);
             IEnumerable<object> idsSede = list.ColOfVal<object>("sede");
+            IEnumerable<object> idsComision = list.ColOfVal<object>("id");
+
+            Dictionary<string, List<Dictionary<string, object?>>> referentesData = new();
             if(idsSede.Count() > 0 ) { 
-                var referentesData = ContainerApp.db.Query("designacion").
+                referentesData = (Dictionary<string, List<Dictionary<string, object?>>>)ContainerApp.db.Query("designacion").
                 Where("$cargo-descripcion IN ('Colaborador', 'Referente') AND $sede IN( @0 ) AND $hasta IS NULL").
                 Parameters(idsSede).
-                ColOfDictCache();
+                ColOfDictCache().
+                DictOfListByKeys("sede");
+            }
+
+            Dictionary<string, object?> cantidadAlumnosActivosPorComision = new();
+            Dictionary<string, object?> cantidadAlumnosPorComision = new();
+
+
+            if (idsComision.Count() > 0 )
+            {
+                cantidadAlumnosActivosPorComision = (Dictionary<string, object?>)ContainerApp.db.Query("alumno_comision").
+                    Select("COUNT($id) AS cantidad").
+                    Group("$comision").
+                    Size(0).
+                    Where(@"
+                        $comision IN ( @0 ) AND $estado = 'Activo'
+                    ").
+                    Parameters(idsComision).
+                    ColOfDict().
+                    DictOfDictByKeysValue("cantidad", "comision");
+
+                cantidadAlumnosPorComision = (Dictionary<string, object?>)ContainerApp.db.Query("alumno_comision").
+                    Select("COUNT($id) AS cantidad").
+                    Group("$comision").
+                    Size(0).
+                    Where(@"
+                        $comision IN ( @0 )
+                    ").
+                    Parameters(idsComision).
+                    ColOfDict().
+                    DictOfDictByKeysValue("cantidad", "comision");
+
             }
 
             comisionData.Clear();
             foreach (IDictionary<string, object> item in list)
             {
                 var comision = (Values.Comision)ContainerApp.db.Values("comision").Values(item);
-                var o = item.Obj<Data_comision_r>();
+                var o = item.Obj<Comision>();
                 o.Label = comision.ToString();
                 o.domicilio__Label = comision.ValuesRel("domicilio")?.ToString() ?? "";
+                if (referentesData.ContainsKey(o.sede!))
+                    foreach (Dictionary<string, object?> designacion in referentesData[o.sede!])
+                        o.referentes.Add(ContainerApp.db.Values("designacion").Set(designacion).ToString());
                 comisionData.Add(o);
+
+                o.cantidad_alumnos_activos = cantidadAlumnosActivosPorComision.ContainsKey(o.id!) ? (long?)cantidadAlumnosActivosPorComision[o.id!] : 0;
+                o.cantidad_alumnos = cantidadAlumnosPorComision.ContainsKey(o.id!) ? (long?)cantidadAlumnosPorComision[o.id!] :  0;
+
             }
         }
 
