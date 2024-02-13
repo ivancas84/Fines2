@@ -24,6 +24,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
     public partial class Window1 : Window
     {
         private ComisionSearch comisionSearch = new();
+        private DAO.Comision comisionDAO = new();
         private DAO.Sede sedeDAO = new();
         private ObservableCollection<Data_comision_r> comisionData = new();
         private SqlOrganize.DAO dao = new(ContainerApp.db);
@@ -66,6 +67,9 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                 DictOfListByKeys("sede");
             }
 
+            Dictionary<string, List<Dictionary<string, object?>>> horariosComision = new();
+
+
             Dictionary<string, object?> cantidadAlumnosActivosPorComision = new();
             Dictionary<string, object?> cantidadAlumnosPorComision = new();
 
@@ -94,6 +98,8 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                     ColOfDict().
                     DictOfDictByKeysValue("cantidad", "comision");
 
+                horariosComision = (Dictionary<string, List<Dictionary<string, object?>>>)comisionDAO.HorariosQuery(idsComision).ColOfDictCache().DictOfListByKeys("curso-comision");
+
             }
 
             comisionData.Clear();
@@ -103,14 +109,21 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                 var o = item.Obj<Comision>();
                 o.Label = comision.ToString();
                 o.domicilio__Label = comision.ValuesRel("domicilio")?.ToString() ?? "";
+
+                List<string> referentes = new();
                 if (referentesData.ContainsKey(o.sede!))
                     foreach (Dictionary<string, object?> designacion in referentesData[o.sede!])
-                        o.referentes.Add(ContainerApp.db.Values("designacion").Set(designacion).ToString());
-                comisionData.Add(o);
+                        referentes.Add(ContainerApp.db.Values("designacion").Set(designacion).ToString());
+
+                o.referentes = referentes;
+
+                if(horariosComision.ContainsKey(o.id))
+                    o.horario= comision.Horario(horariosComision[o.id]);
 
                 o.cantidad_alumnos_activos = cantidadAlumnosActivosPorComision.ContainsKey(o.id!) ? (long?)cantidadAlumnosActivosPorComision[o.id!] : 0;
-                o.cantidad_alumnos = cantidadAlumnosPorComision.ContainsKey(o.id!) ? (long?)cantidadAlumnosPorComision[o.id!] :  0;
+                o.cantidad_alumnos = cantidadAlumnosPorComision.ContainsKey(o.id!) ? (long?)cantidadAlumnosPorComision[o.id!] : 0;
 
+                comisionData.Add(o);
             }
         }
 

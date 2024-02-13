@@ -100,7 +100,9 @@
 
                 <DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Domicilio" Binding="{Binding domicilio__Label}"></DataGridTextColumn>
-                <DataGridTemplateColumn>
+                <DataGridTextColumn Header="Horario" Binding="{Binding horario}"></DataGridTextColumn>
+
+                <DataGridTemplateColumn ClipboardContentBinding="{Binding referentesJoin}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ItemsControl ItemsSource="{Binding referentes}"></ItemsControl>
@@ -109,6 +111,8 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Cant alu act" Binding="{Binding cantidad_alumnos_activos}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Cant alu" Binding="{Binding cantidad_alumnos}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Pfid" Binding="{Binding pfid}"></DataGridTextColumn>
+
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

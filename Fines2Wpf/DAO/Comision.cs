@@ -134,5 +134,13 @@ namespace Fines2Wpf.DAO
         }
 
 
+        public EntityQuery HorariosQuery(params object[] idComisiones)
+        {
+            return ContainerApp.db.Query("horario").
+                Where("$curso-comision IN ( @0 )").
+                Parameters(idComisiones).
+                Size(0);
+        }
+
     }
 }

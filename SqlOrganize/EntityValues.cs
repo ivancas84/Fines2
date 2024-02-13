@@ -531,7 +531,7 @@ namespace SqlOrganize
             if (!val.IsNullOrEmpty())
             {
                 var data = db.Query(tree.refEntityName)._CacheById(val);
-                return db.Values(tree.refEntityName).Set(data);
+                return (!data.IsNullOrEmptyOrDbNull()) ? db.Values(tree.refEntityName).Set(data) : null;
             }
             return null;
         }
@@ -557,7 +557,6 @@ namespace SqlOrganize
             }
             return null;
         }
-
 
 
         public override string ToString()
