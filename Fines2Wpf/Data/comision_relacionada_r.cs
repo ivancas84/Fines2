@@ -34,6 +34,8 @@ namespace Fines2Wpf.Data
                     planificacion__id = (string?)ContainerApp.db.Values("planificacion").Default("id").Get("id");
                     plan__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
                     calendario__id = (string?)ContainerApp.db.Values("calendario").Default("id").Get("id");
+                    calendario__anio = (short?)ContainerApp.db.Values("calendario").Default("anio").Get("anio");
+                    calendario__semestre = (short?)ContainerApp.db.Values("calendario").Default("semestre").Get("semestre");
                     calendario__insertado = (DateTime?)ContainerApp.db.Values("calendario").Default("insertado").Get("insertado");
                     relacion__id = (string?)ContainerApp.db.Values("comision").Default("id").Get("id");
                     relacion__alta = (DateTime?)ContainerApp.db.Values("comision").Default("alta").Get("alta");
@@ -46,6 +48,8 @@ namespace Fines2Wpf.Data
                     planificacion_rel__id = (string?)ContainerApp.db.Values("planificacion").Default("id").Get("id");
                     plan_pla__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
                     calendario_rel__id = (string?)ContainerApp.db.Values("calendario").Default("id").Get("id");
+                    calendario_rel__anio = (short?)ContainerApp.db.Values("calendario").Default("anio").Get("anio");
+                    calendario_rel__semestre = (short?)ContainerApp.db.Values("calendario").Default("semestre").Get("semestre");
                     calendario_rel__insertado = (DateTime?)ContainerApp.db.Values("calendario").Default("insertado").Get("insertado");
                 break;
             }

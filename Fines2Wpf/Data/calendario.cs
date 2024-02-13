@@ -28,6 +28,8 @@ namespace Fines2Wpf.Data
                 case DataInitMode.Default:
                 case DataInitMode.DefaultMain:
                     _id = (string?)ContainerApp.db.Values("calendario").Default("id").Get("id");
+                    _anio = (short?)ContainerApp.db.Values("calendario").Default("anio").Get("anio");
+                    _semestre = (short?)ContainerApp.db.Values("calendario").Default("semestre").Get("semestre");
                     _insertado = (DateTime?)ContainerApp.db.Values("calendario").Default("insertado").Get("insertado");
                 break;
             }
@@ -95,13 +97,9 @@ namespace Fines2Wpf.Data
                     return "";
 
                 case "anio":
-                    if (_anio == null)
-                        return "Debe completar valor.";
                     return "";
 
                 case "semestre":
-                    if (_semestre == null)
-                        return "Debe completar valor.";
                     return "";
 
                 case "insertado":

@@ -1,0 +1,8 @@
+{
+  "anio": {
+    "defaultValue": "current_year"
+  },
+  "semestre": {
+    "defaultValue": "current_semester"
+  }
+}

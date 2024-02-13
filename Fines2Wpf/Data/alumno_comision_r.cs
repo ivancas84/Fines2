@@ -34,6 +34,8 @@ namespace Fines2Wpf.Data
                     planificacion__id = (string?)ContainerApp.db.Values("planificacion").Default("id").Get("id");
                     plan__id = (string?)ContainerApp.db.Values("plan").Default("id").Get("id");
                     calendario__id = (string?)ContainerApp.db.Values("calendario").Default("id").Get("id");
+                    calendario__anio = (short?)ContainerApp.db.Values("calendario").Default("anio").Get("anio");
+                    calendario__semestre = (short?)ContainerApp.db.Values("calendario").Default("semestre").Get("semestre");
                     calendario__insertado = (DateTime?)ContainerApp.db.Values("calendario").Default("insertado").Get("insertado");
                     alumno__id = (string?)ContainerApp.db.Values("alumno").Default("id").Get("id");
                     alumno__anio_ingreso = (string?)ContainerApp.db.Values("alumno").Default("anio_ingreso").Get("anio_ingreso");

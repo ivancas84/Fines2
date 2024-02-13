@@ -696,6 +696,13 @@ namespace SqlOrganize
                     return Convert.ToUInt32(DefaultFieldInt(field));
 
                 case "short":
+                    //el tipo YEAR de mysql es mapeado a short
+                    if (field.defaultValue.ToString()!.ToLower().Contains("current_year"))
+                         return Convert.ToInt16(DateTime.Now.Year);
+
+                    if (field.defaultValue.ToString()!.ToLower().Contains("current_semester"))
+                        return DateTime.Now.ToSemester();
+
                     return Convert.ToInt16(DefaultFieldInt(field));
 
                 case "ushort":
@@ -717,10 +724,6 @@ namespace SqlOrganize
             {
                 long max = db.Query(field.entityName).GetMaxValue(field.name);
                 return max + 1;
-            }
-            else if (field.defaultValue.ToString()!.ToLower().Contains("next"))
-            {
-                throw new NotImplementedException(); //siguiente valor de la secuencia, cada motor debe tener su propia implementacion, definir subclase
             }
             else
             {

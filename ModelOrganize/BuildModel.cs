@@ -86,7 +86,7 @@ namespace ModelOrganize
                     f.type = (c.IS_UNSIGNED == 1) ? "uint" : "int";
                     break;
 
-                case "tinyint":
+                case "tinyint": 
                     if (f.maxLength == 1)
                         f.type = "bool";
                     else

@@ -569,6 +569,10 @@ namespace SqlOrganize
 
 
         #region metodos especiales que generan sql y devuelven directamente el valor
+        /// <summary>
+        /// Cada motor debe tener su propia forma de definir Next Value!!! Derivar metodo a subclase
+        /// </summary>
+        /// <returns></returns>
         public ulong GetNextValue()
         {
             var q = Db.Query();
@@ -581,6 +585,10 @@ namespace SqlOrganize
             return q.Value<ulong>();
         }
 
+        /// <summary>
+        /// Cada motor debe tener su propia forma de definir Max Value!!! Derivar metodo a subclase
+        /// </summary>
+        /// <returns></returns>
         public long GetMaxValue(string fieldName)
         {
             return Db.Query(entityName).Select("MAX($" + fieldName + ")").Value<long>();

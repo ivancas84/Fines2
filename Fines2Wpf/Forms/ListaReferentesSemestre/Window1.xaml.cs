@@ -71,7 +71,7 @@ namespace Fines2Wpf.Forms.ListaReferentesSemestre
     internal class Search
     {
         public string calendario__anio { get; set; } = DateTime.Now.Year.ToString();
-        public int calendario__semestre { get; set; } = DateTime.Now.ToSemester();
+        public short calendario__semestre { get; set; } = DateTime.Now.ToSemester();
         public bool? autorizada { get; set; } = true;
     }
 

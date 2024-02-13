@@ -53,8 +53,7 @@
   },
   "anio": {
     "checks": {
-      "type": "short",
-      "required": true
+      "type": "short"
     },
     "resets": {},
     "name": "anio",
@@ -64,14 +63,13 @@
     "refFieldName": null,
     "dataType": "year",
     "type": "short",
-    "notNull": true,
-    "defaultValue": null,
+    "notNull": false,
+    "defaultValue": "current_year",
     "maxLength": 4
   },
   "semestre": {
     "checks": {
-      "type": "short",
-      "required": true
+      "type": "short"
     },
     "resets": {},
     "name": "semestre",
@@ -81,8 +79,8 @@
     "refFieldName": null,
     "dataType": "smallint",
     "type": "short",
-    "notNull": true,
-    "defaultValue": null,
+    "notNull": false,
+    "defaultValue": "current_semester",
     "maxLength": 6
   },
   "insertado": {
