@@ -19,7 +19,7 @@ namespace Fines2Wpf.Values
             var s = "";
 
             EntityValues? v = ValuesTree("sede");
-            s += (!v.IsNullOrEmpty()) ? v.GetOrNull("numero")?.ToString() : "?";
+            s += (!v.IsNullOrEmpty()) ? (v.GetOrNull("numero")?.ToString() ?? "?") : "?";
             s += GetOrNull("division")?.ToString() ?? "?";
             s += "/";
             v = ValuesTree("planificacion");

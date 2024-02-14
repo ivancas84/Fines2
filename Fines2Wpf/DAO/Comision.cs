@@ -12,12 +12,12 @@ namespace Fines2Wpf.DAO
     public class Comision
     {
 
-        public void UpdateValueRel(string key, object value, Dictionary<string, object> source)
+        public void UpdateValueRel(string key, object value, Dictionary<string, object?> source)
         {
             EntityPersist p = ContainerApp.db.Persist().UpdateValueRel("comision", key, value, source).Exec().RemoveCache();
         }
 
-        public IEnumerable<Dictionary<string, object>> ComisionesSemestre(object calendarioAnio, object calendarioSemestre, object? sede = null, bool? autorizada = null)
+        public IEnumerable<Dictionary<string, object?>> ComisionesSemestre(object calendarioAnio, object calendarioSemestre, object? sede = null, bool? autorizada = null)
         {
             var q = ContainerApp.db.Query("comision")
                 .Fields()
@@ -44,21 +44,9 @@ namespace Fines2Wpf.DAO
             return q.ColOfDictCache();
         }
 
-        public IEnumerable<object> IdsComisionesAutorizadasConSiguientePorSemestre(object calendarioAnio, object calendarioSemestre)
-        {
-            return ContainerApp.db.Query("comision")
-                .Fields("id")
-                .Size(0)
-                .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
-                    AND $autorizada = true
-                    AND $comision_siguiente IS NOT NULL
-                ")
-                .Parameters(calendarioAnio, calendarioSemestre).ColOfDictCache().ColOfVal<object>("id");
-        }
 
-        public IEnumerable<Dictionary<string, object>> ComisionesPorIds(List<object> ids)
+
+        public IEnumerable<Dictionary<string, object?>> ComisionesPorIds(List<object> ids)
         {
             return ContainerApp.db.Query("comision")
                 .Fields()
@@ -70,7 +58,7 @@ namespace Fines2Wpf.DAO
             
         }
 
-        public IEnumerable<Dictionary<string, object>> ComisionesConSiguientePorCalendario(object anio, object semestre)
+        public IEnumerable<Dictionary<string, object?>> ComisionesConSiguientePorCalendario(object anio, object semestre)
         {
             return ContainerApp.db.Query("comision")
                 .Size(0)

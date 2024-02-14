@@ -13,7 +13,7 @@ namespace Fines2Wpf.Forms.ListaSedesSemestre.DAO
     class Comision
     {
 
-        public IEnumerable<Dictionary<string, object>> Search(ComisionSearch search)
+        public IEnumerable<Dictionary<string, object?>> Search(ComisionSearch search)
         {
             var q = ContainerApp.db.Query("comision")
                 .Fields("sede-*, domicilio-*")
@@ -35,7 +35,7 @@ namespace Fines2Wpf.Forms.ListaSedesSemestre.DAO
             return q.ColOfDictCache();
         }
 
-        public void UpdateValueRel(string key, object value, Dictionary<string, object> source)
+        public void UpdateValueRel(string key, object value, Dictionary<string, object?> source)
         {
             EntityPersist p = ContainerApp.db.Persist().UpdateValueRel("comision", key, value, source).Exec().RemoveCache();
         }

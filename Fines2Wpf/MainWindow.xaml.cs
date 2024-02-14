@@ -127,7 +127,7 @@ namespace Fines2Wpf
 
         private void TransferirAlumnosActivos_Click(object sender, RoutedEventArgs e)
         {
-            Windows.AlumnoComision.TransferirAlumnosActivos win = new();
+            Windows.AlumnoComision.TransferirAlumnosActivos.Window1 win = new();
             win.Show();
         }
 

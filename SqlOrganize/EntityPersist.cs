@@ -365,6 +365,46 @@ VALUES (";
         /// </summary>
         /// <returns></returns>
         abstract public EntityPersist Transaction();
+
+        /// <summary>
+        /// Metodo especial de ejecucion de transacciones que realiza un split en el sql para ejecutar las transacciones una por una.
+        /// </summary>
+        /// <returns></returns>
+        abstract public EntityPersist TransactionSplit();
+
+        /// <summary>
+        /// Transaction Split, debe existir una conexion abierta obligatorimientae
+        /// </summary>
+        protected void _TransactionSplit()
+        {
+            using DbTransaction tran = connection!.BeginTransaction();
+
+            try
+            {
+                string[] sqls = sql.Split(";");
+
+                foreach (string s in sqls)
+                {
+                    if (s.Trim().IsNullOrEmpty())
+                        continue;
+
+                    var qu = Db.Query();
+                    qu.connection = connection;
+                    qu.sql = s;
+                    qu.parameters = parameters;
+                    qu.Exec();
+                }
+
+                tran.Commit();
+            }
+
+            catch (Exception)
+            {
+                tran.Rollback();
+                throw;
+            }
+        }
+
         /// <summary>
         /// Ejecuta, abriendo una transaccion, realiza commit al finalizar o rollback si falla
         /// Debe existir una conexion abierta

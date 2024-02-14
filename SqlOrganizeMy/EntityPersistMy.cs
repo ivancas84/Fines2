@@ -49,6 +49,21 @@ UPDATE " + sna + @" SET
             return this;
         }
 
+        public override EntityPersist TransactionSplit()
+        {
+            if (connection.IsNullOrEmpty())
+            {
+                connection = new MySqlConnection(Db.config.connectionString);
+                connection.Open();
+                _TransactionSplit();
+                connection.Close();
+            }
+            else
+                _TransactionSplit();
+
+            return this;
+        }
+
     }
 
 }

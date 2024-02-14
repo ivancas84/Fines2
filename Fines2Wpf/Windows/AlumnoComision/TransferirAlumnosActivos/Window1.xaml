@@ -40,12 +40,12 @@
                     <Label
 	            		Margin= "2">Año:</Label>
                     <TextBox 
-                        Text="{Binding calendario__anio, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                        Name="calendarioAnioTextBox"
                         Margin = "2"/>
                     <Label
 			            Margin = "2">Semestre:</Label>
                     <TextBox 
-                        Text="{Binding calendario__semestre, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                        Name="calendarioSemestreTextBox"
                         Margin = "2"/>
                     <Button
             			Content = "_Transferir..."
@@ -61,7 +61,25 @@
                 <GroupBox.Header>
                     <Label Foreground="White">Grilla de datos</Label>
                 </GroupBox.Header>
+
+                <DataGrid 
+                    Name="asignacionDataGrid"
+                    IsReadOnly="True" 
+                    AutoGenerateColumns="False"
+                 >
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Comisión" Binding="{Binding comision__Label}"></DataGridTextColumn>
+
+                    </DataGrid.Columns>
+
+                </DataGrid>
+                
             </GroupBox>
+            
+            
         </Grid>
     </ScrollViewer>
     
