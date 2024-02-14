@@ -1,11 +1,6 @@
 ﻿using Fines2Wpf;
-using Fines2Wpf.Data;
-using Google.Protobuf.WellKnownTypes;
-using Org.BouncyCastle.Bcpg;
 using SqlOrganize;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Utils;
