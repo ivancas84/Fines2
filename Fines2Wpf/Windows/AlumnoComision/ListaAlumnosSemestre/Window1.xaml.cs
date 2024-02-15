@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Threading;
 using System;
 using System.Windows.Media;
+using Fines2Wpf.Forms.ListaReferentesSemestre;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 {
@@ -52,8 +53,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
             #endregion
 
             #region search
-            search.calendario__anio = 2023;
-            search.calendario__semestre = 2;
+            search.calendario__anio = Convert.ToInt16(DateTime.Now.Year);
+            search.calendario__semestre = DateTime.Now.ToSemester();
             search.estado = "Activo";
             DataContext = search;
             #endregion
@@ -105,11 +106,11 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 
         public void LoadAsignaciones()
         {
+            asignacionOC.Clear();
             var data = dao.SearchObj("alumno_comision", search);
             if(data.IsNullOrEmptyOrDbNull())
                return;
             
-            asignacionOC.Clear();
             List<object> alumnosYplanes = new();
             ObservableCollection<Asignacion> asignacionOCAux = new();
 
