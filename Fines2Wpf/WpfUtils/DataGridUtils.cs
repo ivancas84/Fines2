@@ -39,8 +39,9 @@ namespace WpfUtils
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="mainEntityName"></param>
-        /// <returns>v1 (2023-11)</returns>
-        public static bool DataGridRow_RecursiveEdit<T>(this DataGridRow row, string mainEntityName, string entityName, string fieldName, object? value, string? fieldId = null, bool reload = false) where T : class, new()
+        /// <param name="exceptionIfMainEntityExists">Dispara una excepcion si se esta modificando la entidad principal y si ya existe su valor con las modificaciones realizadas</param>
+        /// <remarks>v2 (2024-02): Compatible con v1. Se agrego el atributo exceptionIfMainEntityExists</remarks>
+        public static bool DataGridRow_RecursiveEdit<T>(this DataGridRow row, string mainEntityName, string entityName, string fieldName, object? value, string? fieldId = null, bool reload = false, bool exceptionIfMainEntityExists = true) where T : class, new()
         {
             IDictionary<string, object?> source = row.DataContext.Dict();
 
@@ -56,6 +57,9 @@ namespace WpfUtils
             IDictionary<string, object?>? rowDb = ContainerApp.dao.RowByUniqueFieldOrValues(fieldName, v);
             if (!rowDb.IsNullOrEmpty()) //con el nuevo valor ingresados se obtuvo un nuevo campo unico, no se realiza persistencia y se cambian los valores para reflejar el nuevo valor consultado
             {
+                if (fieldId.IsNullOrEmpty() && exceptionIfMainEntityExists)
+                    throw new System.Exception("Los datos ingresados en la edición de la celda ya pertenecen a otra fila. No se cumple la restricción de unicidad");
+
                 v.Values(rowDb!);
                 T data = v.Get().Obj<T>();
                 (row.Item as T).CopyValues<T>(data, sourceNotNull: true);
