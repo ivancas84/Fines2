@@ -18,7 +18,7 @@ namespace WpfUtils
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="mainEntityName"></param>
-        /// <returns></returns>
+        /// <returns>v1 (2023-11)</returns>
         public static bool DataGridCellEditEndingEventArgs_CellEditEnding<T>(this DataGridCellEditEndingEventArgs e, string mainEntityName, string key, object? value) where T : class, new()
         {
             string? fieldId = null;
@@ -39,7 +39,7 @@ namespace WpfUtils
         /// <param name="key"></param>
         /// <param name="value"></param>
         /// <param name="mainEntityName"></param>
-        /// <returns></returns>
+        /// <returns>v1 (2023-11)</returns>
         public static bool DataGridRow_RecursiveEdit<T>(this DataGridRow row, string mainEntityName, string entityName, string fieldName, object? value, string? fieldId = null, bool reload = false) where T : class, new()
         {
             IDictionary<string, object?> source = row.DataContext.Dict();
@@ -47,20 +47,18 @@ namespace WpfUtils
             EntityValues v = ContainerApp.db.Values(entityName, fieldId).Set(source);
             var val = v.GetOrNull(fieldName);
             if (val.IsNullOrEmptyOrDbNull())
-            { 
-                if (value.IsNullOrEmptyOrDbNull())
-                    return reload;
-            }
+                return reload;
             else
-                if(val.Equals(value))
+                if(val!.Equals(value))
                     return reload;
 
             v.Sset(fieldName, value);
-            IDictionary<string, object>? rowDb = ContainerApp.dao.RowByUniqueFieldOrValues(fieldName, v);
+            IDictionary<string, object?>? rowDb = ContainerApp.dao.RowByUniqueFieldOrValues(fieldName, v);
             if (!rowDb.IsNullOrEmpty()) //con el nuevo valor ingresados se obtuvo un nuevo campo unico, no se realiza persistencia y se cambian los valores para reflejar el nuevo valor consultado
             {
-                v.Set(rowDb!);
-                (row.Item as T).CopyValues<T>(v.Get().Obj<T>(), sourceNotNull: true);
+                v.Values(rowDb!);
+                T data = v.Get().Obj<T>();
+                (row.Item as T).CopyValues<T>(data, sourceNotNull: true);
             }
             else //con el nuevo valor ingresados no se obtuvo un nuevo campo unico, se realiza persistencia (insertar o modificar) del nuevo valor
             {
@@ -83,7 +81,7 @@ namespace WpfUtils
         }
 
         /// <summary>
-        /// Comportamiento general para persistir una celda (DataGridCheckBoxColumn)
+        /// Comportamiento general para persistir una celda checkbox (DataGridCheckBoxColumn) v2 (2024-02)
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="e"></param>
@@ -91,7 +89,6 @@ namespace WpfUtils
         /// <param name="value"></param>
         /// <param name="mainEntityName"></param>
         /// <returns></returns>
-
         public static bool DataGridCell_CheckBoxClick<T>(this DataGridCell cell, string entityName) where T : class, new()
         {
             #region definir key y value
@@ -125,8 +122,7 @@ namespace WpfUtils
             if (!v.Check())
                 return false;
 
-            List<object> ids = new List<object>() { v.Get(ContainerApp.db.config.id) };
-            ContainerApp.db.Persist().UpdateValueIds(entityName, fieldName, value, ids).Exec().RemoveCache();
+            ContainerApp.db.Persist().UpdateValueIds(entityName, fieldName, value, v.Get(ContainerApp.db.config.id)).Exec().RemoveCache();
             if (fieldId != null)
                 return true;
 

@@ -70,7 +70,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                     {
                         continueWhile = (fieldId == null) ? false : true;
                         EntityValues v = ContainerApp.db.Values(entityName, fieldId).Set(source);
-                        if (!v.values[fieldName].IsNullOrEmpty() && v.values[fieldName].Equals(value))
+                        if (!v.GetOrNull(fieldName).IsNullOrEmpty() && v.Get(fieldName).Equals(value))
                         {
                             if (reload)
                                 LoadData(); //debe recargarse para visualizar los cambios realizados en otras iteraciones.

@@ -16,12 +16,12 @@ namespace Fines2Wpf.Data
             Initialize();
         }
 
-        public Data_alumno_comision(DataInitMode mode = DataInitMode.Default)
+        public Data_alumno_comision(DataInitMode mode)
         {
             Initialize(mode);
         }
 
-        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Null)
         {
             switch(mode)
             {

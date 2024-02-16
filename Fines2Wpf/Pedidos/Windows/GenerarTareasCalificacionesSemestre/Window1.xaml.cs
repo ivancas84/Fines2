@@ -67,8 +67,8 @@ namespace Fines2Wpf.Pedidos.Windows.GenerarTareasCalificacionesSemestre
                 }
 
                 EntityPersist persist = ContainerApp.dbPedidos.Persist();
-                ticketsValues.Insert(persist);
-                threadsValues.Insert(persist);
+                persist.Insert(ticketsValues);
+                persist.Insert(threadsValues);
                 persist.Transaction().RemoveCache();
             }
         }

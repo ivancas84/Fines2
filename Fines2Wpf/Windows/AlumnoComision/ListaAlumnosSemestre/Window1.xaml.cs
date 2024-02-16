@@ -174,26 +174,31 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
             LoadAsignaciones();
         }
 
+
+        /// <summary>
+        /// Edición de celdas (no boolean)
+        /// </summary>
+        /// <remarks>DataGrid > CellEditEnding v1 (2023-11)</remarks>
         private void AsignacionDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             string key = "";
             object? value = null;
 
-            var columnT = e.Column as DataGridTemplateColumn;
+            var columnT = e.Column as DataGridTemplateColumn; //Date
             if (columnT != null)
             {
                 var datePicker = VisualTreeHelper.GetChild(e.EditingElement, 0) as DatePicker;
                
             }
 
-            var columnCo = e.Column as DataGridComboBoxColumn;
+            var columnCo = e.Column as DataGridComboBoxColumn;//ComboBox
             if (columnCo != null)
             {
                 key = ((Binding)columnCo.SelectedValueBinding).Path.Path; //column's binding
                 value = (e.EditingElement as ComboBox)!.SelectedValue;
             }
 
-            var column = e.Column as DataGridBoundColumn;
+            var column = e.Column as DataGridBoundColumn; //Text
             if (column != null)
             {
                 key = ((Binding)column.Binding).Path.Path; //column's binding
@@ -207,13 +212,16 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
                                     //Dada una relacion a : b, si se modifica b correspondiente a a.b, se deberan actualizar todas las filas
         }
 
+
+        /// <summary>Persistencia de celdas checkbox</summary>
+        /// <remarks>DataGrid > DataGridCheckBoxColumn v1 (2023-11)</remarks>
         private void EntityGrid_CellCheckBoxClick(object sender, RoutedEventArgs e)
         {
             var cell = sender as DataGridCell;
             bool reload = cell!.DataGridCell_CheckBoxClick<Data_alumno_comision_r>("alumno_comision");
             if (reload)
               LoadAsignaciones();//debe recargarse para visualizar los cambios realizados en otras iteraciones
-                                 //Dada una relacion a : b, si se modifica b correspondiente a a.b, se deberan actualizar todas las filas
+                                 //Dada una relaciobn a : b, si se modifica b correspondiente a a.b, se deberan actualizar todas las filas
         }
     }
 

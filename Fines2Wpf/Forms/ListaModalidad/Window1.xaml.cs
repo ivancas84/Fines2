@@ -80,7 +80,7 @@ namespace Fines2Wpf.Forms.ListaModalidad
                         if (ContainerApp.db.Field(entityName, fieldName).IsUnique())
                             row = dao.RowByEntityFieldValue(entityName, fieldName, value);
                         else
-                            row = dao.RowByEntityUnique(entityName, v.values);
+                            row = dao.RowByEntityUnique(entityName, v.Values());
 
                         if (!row.IsNullOrEmpty())
                         {
@@ -93,7 +93,7 @@ namespace Fines2Wpf.Forms.ListaModalidad
                             {
                                 v.Default().Reset();
                                 EntityPersist p = ContainerApp.db.Persist().Insert(v).Exec();
-                                ((Modalidad)e.Row.Item)._Id = (string)v.values["_Id"];
+                                ((Modalidad)e.Row.Item)._Id = (string)v.Get("_Id");
                             }
                             else
                             {

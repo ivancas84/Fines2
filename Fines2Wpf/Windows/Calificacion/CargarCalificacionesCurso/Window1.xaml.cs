@@ -360,9 +360,9 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
                 }
 
-                calificacionData.Add((Dictionary<string, object?>)calificacion.values);
+                calificacionData.Add((Dictionary<string, object?>)calificacion.Values());
                 Calificacion o = new (DataInitMode.Default);
-                o.SetData(calificacion.values);
+                o.SetData(calificacion.Values());
                 o.curso = (string)idCurso;
                 o.disposicion = (string)idDisposicion;
                 o.nota_final = Math.Round(o.nota_final ?? 0, MidpointRounding.AwayFromZero);
@@ -397,7 +397,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
                     else
                     {
-                        cal.observaciones += valPer.logging.ToString();
+                        cal.observaciones += valPer.Logging.ToString();
                         continue;
                     }
                 }
@@ -416,7 +416,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                     }
                     else
                     {
-                        cal.observaciones += valAlu.logging.ToString();
+                        cal.observaciones += valAlu.Logging.ToString();
                         continue;
                     }
                 }
@@ -436,7 +436,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                         persist.Insert(valAc);
                     else
                     {
-                        cal.observaciones += valAc.logging.ToString();
+                        cal.observaciones += valAc.Logging.ToString();
                         continue;
                     }
                 }
@@ -445,7 +445,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 if (valCal.Check())
                     persist.Insert(valCal);
                 else { 
-                    cal.observaciones += valCal.logging.ToString();
+                    cal.observaciones += valCal.Logging.ToString();
                     continue;
                 }
                 persist.Transaction().RemoveCache();

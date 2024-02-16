@@ -268,7 +268,7 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
                         if (alumnoOrigenData != null)
                         {
-                            alumnoDestinoValues.values.Copy(alumnoOrigenData, targetNull: true, sourceNotNull: true, createKey: false, compareNotNull: false, ignoreKeys: new List<string>() { "id" });
+                            alumnoDestinoValues.Values().Copy(alumnoOrigenData, targetNull: true, sourceNotNull: true, createKey: false, compareNotNull: false, ignoreKeys: new List<string>() { "id" });
                             ContainerApp.db.Persist().SetConn(connection).Persist(alumnoDestinoValues).Exec();
                             TransferirRelacionesAlumno(alumnoOrigenData["id"], alumnoDestinoValues.Get("id"));
                             ContainerApp.db.Persist().SetConn(connection).DeleteIds("alumno", alumnoOrigenData["id"]).Exec();

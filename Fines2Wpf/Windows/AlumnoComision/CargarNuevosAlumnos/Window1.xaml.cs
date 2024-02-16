@@ -97,7 +97,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                 }
                 else //no existen datos de persona en la base
                 {
-                    persona.Default().Reset().Insert(persist);
+                    persist.Insert(persona.Default().Reset());
                     statusData.Add(new ViewModel()
                     {
                         row = j,
@@ -148,7 +148,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                 }
                 else //no existen datos del alumno en la base
                 {
-                    alumno.Default().Set("plan", comision.planificacion__plan!).Reset().Insert(persist);
+                    persist.Insert(alumno.Default().Set("plan", comision.planificacion__plan!).Reset());
                     statusData.Add( new ViewModel()
                     {
                         row = j,
@@ -176,7 +176,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                 }
                 else //no existen datos de asignacion
                 {
-                    asignacion.Default().Reset().Insert(persist);
+                    persist.Insert(asignacion.Default().Reset());
                     statusData.Add(
                         new ViewModel()
                     {

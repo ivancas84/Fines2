@@ -38,10 +38,10 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                 #region insertar o actualizar docente (se insertan o actualizan todos)
                 var d = docente.Dict();
                 EntityValues vPersona = ContainerApp.db.Values("persona").Set(d).Reset();
-                var row = dao.RowByEntityUnique("persona", vPersona.values);
+                var row = dao.RowByEntityUnique("persona", vPersona.Values());
                 if (row != null) {
                     EntityValues vPersonaAux = ContainerApp.db.Values("persona").Set(row);
-                    IDictionary<string, object> valuesToUpdate = vPersonaAux.Compare(vPersona.values);
+                    IDictionary<string, object> valuesToUpdate = vPersonaAux.Compare(vPersona.Values());
                     vPersonaAux.SetNotNull(valuesToUpdate);
                     vPersona = vPersonaAux;
                     vPersona.Reset();

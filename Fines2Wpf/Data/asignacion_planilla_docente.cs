@@ -16,12 +16,12 @@ namespace Fines2Wpf.Data
             Initialize();
         }
 
-        public Data_asignacion_planilla_docente(DataInitMode mode = DataInitMode.Default)
+        public Data_asignacion_planilla_docente(DataInitMode mode)
         {
             Initialize(mode);
         }
 
-        protected virtual void Initialize(DataInitMode mode = DataInitMode.Default)
+        protected virtual void Initialize(DataInitMode mode = DataInitMode.Null)
         {
             switch(mode)
             {

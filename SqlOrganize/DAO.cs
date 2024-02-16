@@ -91,7 +91,7 @@ namespace SqlOrganize
         }
 
 
-        public IDictionary<string, object>? RowByUniqueFieldOrValues(string fieldName, EntityValues values)
+        public IDictionary<string, object?>? RowByUniqueFieldOrValues(string fieldName, EntityValues values)
         {
             try { 
                 if (Db.Field(values.entityName, fieldName).IsUnique())

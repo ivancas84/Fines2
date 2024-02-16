@@ -88,7 +88,7 @@ namespace Fines2Wpf.Windows.ListaCursos
                     {
                         continueWhile = (fieldId == null) ? false : true;
                         EntityValues v = ContainerApp.db.Values(entityName, fieldId).Set(source);
-                        if (!v.values[fieldName].IsNullOrEmpty() && v.values[fieldName].Equals(value))
+                        if (!v.GetOrNull(fieldName).IsNullOrEmpty() && v.Get(fieldName).Equals(value))
                         {
                             if (reload)
                                 LoadData(); //debe recargarse para visualizar los cambios realizados en otras iteraciones.
@@ -102,7 +102,7 @@ namespace Fines2Wpf.Windows.ListaCursos
                         if (ContainerApp.db.Field(entityName, fieldName).IsUnique())
                             row = ContainerApp.dao.RowByFieldValue(entityName, fieldName, value);
                         else
-                            row = ContainerApp.dao.RowByUniqueWithoutIdIfExists(entityName, v.values);
+                            row = ContainerApp.dao.RowByUniqueWithoutIdIfExists(entityName, v.Values());
 
                         if (!row.IsNullOrEmpty())
                         {
