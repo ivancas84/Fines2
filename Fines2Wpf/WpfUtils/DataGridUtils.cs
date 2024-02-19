@@ -52,8 +52,9 @@ namespace WpfUtils
                 if (value.IsNullOrEmptyOrDbNull())
                     return reload;
             }
-            else if (val!.Equals(value))
-                return reload;
+            else
+                if(val.Equals(value))
+                    return reload;
 
             v.Sset(fieldName, value);
             IDictionary<string, object?>? rowDb = ContainerApp.dao.RowByUniqueFieldOrValues(fieldName, v);
