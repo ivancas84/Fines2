@@ -180,7 +180,7 @@ public partial class MainPage : Page, INotifyPropertyChanged
 
 
             var val = ContainerApp.db.Values("comision", "comision").Set(item);
-            var comision = val.values.Obj<Data_comision_r>();
+            var comision = val.Values().Obj<Data_comision_r>();
             comision.Label = val.ToString();
 
             asignacion.comision__Label = comision.Label;
@@ -206,12 +206,12 @@ public partial class MainPage : Page, INotifyPropertyChanged
             var calificacion = item.Obj<Calificacion>();
 
             var val = ContainerApp.db.Values("disposicion", "disposicion").Set(item);
-            var disposicion = val.values.Obj<Data_disposicion_r>();
+            var disposicion = val.Values().Obj<Data_disposicion_r>();
             disposicion.Label = val.ToString();
             calificacion.Disposiciones.Add(disposicion);
 
             var valc = (Values.Curso)ContainerApp.db.Values("curso", "curso").Set(item);
-            var curso = val.values.Obj<Data_curso_r>();
+            var curso = val.Values().Obj<Data_curso_r>();
             curso.Label = valc.ToStringDocente();
             calificacion.curso__Label = curso.Label;
 
@@ -490,7 +490,7 @@ public partial class MainPage : Page, INotifyPropertyChanged
         foreach (var item in list)
         {
             var val = ContainerApp.db.Values("comision").Set(item);
-            var obj = val.values.Obj<Data_comision_r>();
+            var obj = val.Values().Obj<Data_comision_r>();
             obj.Label = val.ToString();
             asignacion.Comisiones.Add(obj);
         }
@@ -686,7 +686,7 @@ public partial class MainPage : Page, INotifyPropertyChanged
         foreach (var item in list)
         {
             var val = (Values.Curso)ContainerApp.db.Values("curso").Set(item);
-            var obj = val.values.Obj<Data_curso_r>();
+            var obj = val.Values().Obj<Data_curso_r>();
             obj.Label = val.ToStringDocente();
             calificacion.Cursos.Add(obj);
         }

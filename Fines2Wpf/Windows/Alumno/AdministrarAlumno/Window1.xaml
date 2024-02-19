@@ -29,6 +29,7 @@
                 <RowDefinition Height = "*" />
                 <RowDefinition Height = "*" />
                 <RowDefinition Height = "*" />
+                <RowDefinition Height = "*" />
 
             </Grid.RowDefinitions>
 
@@ -657,10 +658,13 @@
                       Header="Asignaciones"
                       Margin="16"
 	                  materialDesign:ElevationAssist.Elevation="Dp3">
-                <DataGrid Name="detallePersonaDataGrid" AutoGenerateColumns="False">
+                <StackPanel>
+
+                    <DataGrid Name="detallePersonaDataGrid" AutoGenerateColumns="False">
                     <DataGrid.Columns>
 
                         <DataGridHyperlinkColumn 
+                            x:Name="ArchivoName"
                              ContentBinding="{Binding archivo__name}"
                              Header="Product"
                              IsReadOnly="True">
@@ -703,8 +707,15 @@
                     </DataGrid.Columns>
 
                 </DataGrid>
-
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                        <Grid Width="{Binding ElementName=ArchivoName,Path=ActualWidth}">
+                            <TextBlock Margin="5,0,0,0" Text="Footer1"></TextBlock>
+                        </Grid>
+                    </StackPanel>
+                </StackPanel>
             </GroupBox>
+
+            
         </Grid>
 
     </ScrollViewer>

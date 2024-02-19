@@ -97,7 +97,7 @@ namespace SqlOrganize
                 if (Db.Field(values.entityName, fieldName).IsUnique())
                     return RowByFieldValue(values.entityName, fieldName, values.Get(fieldName));
                 else
-                    return RowByUniqueWithoutIdIfExists(values.entityName, values.Get());
+                    return RowByUniqueWithoutIdIfExists(values.entityName, values.Values());
             } catch (UniqueException ex)
             {
                 return null;

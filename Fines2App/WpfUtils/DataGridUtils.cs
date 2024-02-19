@@ -130,7 +130,7 @@ namespace WpfUtils
                 return false;
 
             List<object> ids = new List<object>() { v.Get(ContainerApp.db.config.id) };
-            ContainerApp.db.Persist(entityName).UpdateValueIds(fieldName, value, ids).Exec().RemoveCache();
+            ContainerApp.db.Persist().UpdateValueIds(entityName, fieldName, value, ids).Exec().RemoveCache();
             if (fieldId != null)
                 return true;
 

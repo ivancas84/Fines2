@@ -24,9 +24,5 @@
     <ProjectReference Include="..\Utils\Utils.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Windows\Comision\GenerarHorariosComision\" />
-  </ItemGroup>
-
 
 </Project>
