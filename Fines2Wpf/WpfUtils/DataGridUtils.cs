@@ -48,10 +48,12 @@ namespace WpfUtils
             EntityValues v = ContainerApp.db.Values(entityName, fieldId).Set(source);
             var val = v.GetOrNull(fieldName);
             if (val.IsNullOrEmptyOrDbNull())
-                return reload;
-            else
-                if(val!.Equals(value))
+            { 
+                if (value.IsNullOrEmptyOrDbNull())
                     return reload;
+            }
+            else if (val!.Equals(value))
+                return reload;
 
             v.Sset(fieldName, value);
             IDictionary<string, object?>? rowDb = ContainerApp.dao.RowByUniqueFieldOrValues(fieldName, v);
