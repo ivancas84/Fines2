@@ -770,6 +770,18 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 }
             }
         }
+
+        /// <summary>
+        /// DataGrid Add Button v 2024-02
+        /// </summary>
+        /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
+        private void AgregarArchivo_Click(object sender, RoutedEventArgs e)
+        {
+            var a = new DetallePersona(DataInitMode.Default);
+            var alumno = (Data_alumno)alumnoGroupBox.DataContext;
+            a.persona = alumno.id;
+            detallePersonaOC.Add(a);
+        }
     }
 
     public class EstadoData

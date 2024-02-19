@@ -661,7 +661,7 @@
                 <StackPanel>
 
                     <DataGrid Name="detallePersonaDataGrid" AutoGenerateColumns="False">
-                    <DataGrid.Columns>
+                        <DataGrid.Columns>
 
                         <DataGridHyperlinkColumn 
                             x:Name="ArchivoName"
@@ -705,12 +705,11 @@
                         </DataGridTemplateColumn>
                     
                     </DataGrid.Columns>
-
-                </DataGrid>
+                    </DataGrid>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                        <Grid Width="{Binding ElementName=ArchivoName,Path=ActualWidth}">
-                            <TextBlock Margin="5,0,0,0" Text="Footer1"></TextBlock>
-                        </Grid>
+                        <Button 
+                          Content="Agregar Archivo" 
+                          Click="AgregarArchivo_Click"/>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>

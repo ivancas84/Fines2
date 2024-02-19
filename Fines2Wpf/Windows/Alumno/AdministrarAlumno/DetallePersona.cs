@@ -11,7 +11,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
         }
 
-        public DetallePersona(DataInitMode mode = DataInitMode.Default) : base(mode)
+        public DetallePersona(DataInitMode mode) : base(mode)
         {
         }
 
