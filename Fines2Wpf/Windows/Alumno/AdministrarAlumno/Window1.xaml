@@ -660,36 +660,40 @@
 	                  materialDesign:ElevationAssist.Elevation="Dp3">
                 <StackPanel>
 
-                    <DataGrid Name="detallePersonaDataGrid" AutoGenerateColumns="False">
+                    <DataGrid 
+                        Name="detallePersonaDataGrid" 
+                        AutoGenerateColumns="False" 
+                        CanUserAddRows="False">
                         <DataGrid.Columns>
 
-                        <DataGridHyperlinkColumn 
-                            x:Name="ArchivoName"
-                             ContentBinding="{Binding archivo__name}"
-                             Header="Product"
-                             IsReadOnly="True">
-                                    <DataGridHyperlinkColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                           <EventSetter Event="Hyperlink.Click" Handler="DescargarArchivo_Click" />
-                                        </Style>
-                                    </DataGridHyperlinkColumn.ElementStyle>
-                        </DataGridHyperlinkColumn>
+                            <DataGridHyperlinkColumn 
+                                x:Name="ArchivoName"
+                                 ContentBinding="{Binding archivo__name}"
+                                 Header="Product"
+                                 IsReadOnly="True">
+                                        <DataGridHyperlinkColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                               <EventSetter Event="Hyperlink.Click" Handler="DescargarArchivo_Click" />
+                                            </Style>
+                                        </DataGridHyperlinkColumn.ElementStyle>
+                            </DataGridHyperlinkColumn>
 
-                        <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <WrapPanel>
-                                        <Button x:Name="BrowseButton"  Click="BrowseButton_Click" Style="{DynamicResource MaterialDesignFlatButton}">
-                                            <materialDesign:PackIcon Kind="Search"></materialDesign:PackIcon>
-                                        </Button>
-                                    </WrapPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTextColumn Binding="{Binding archivo__name}" ></DataGridTextColumn>
-                        
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <WrapPanel>
+                                            <Button x:Name="BrowseButton"  Click="BrowseButton_Click" Style="{DynamicResource MaterialDesignFlatButton}">
+                                                <materialDesign:PackIcon Kind="Search"></materialDesign:PackIcon>
+                                            </Button>
+                                        </WrapPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Binding="{Binding descripcion}" ></DataGridTextColumn>
+                            <DataGridTextColumn Binding="{Binding creado}" ></DataGridTextColumn>
 
-                        <DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn>
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <WrapPanel>

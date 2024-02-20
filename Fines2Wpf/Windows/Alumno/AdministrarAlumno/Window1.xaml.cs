@@ -734,7 +734,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             var button = (e.OriginalSource as Button);
             var dp = (DetallePersona)button!.DataContext;
-
+            var alu = (Data_alumno)alumnoGroupBox.DataContext;
             bool? result = openFileDlg.ShowDialog();  // Launch OpenFileDialog by calling ShowDialog method
 
             if (result == true)
@@ -754,14 +754,16 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 try
                 {
                     WebRequestUtils.UploadFile(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword, ContainerApp.config.upload + dir + "/" + fileName, openFileDlg.FileName);
-                    archivo.name = openFileDlg.SafeFileName;
-                    archivo.content = dir + "/" + fileName;
-                    archivo.type = MimeTypeMap.GetMimeType(fileInfo.Extension);
-                    archivo.size = Convert.ToUInt32(fileInfo.Length);
-                    dp.archivo = archivo.id;
-                    dp.archivo__name = archivo.name;
-                    EntityPersist p = ContainerApp.db.Persist().InsertObj("file", archivo);
-                    p.UpdateValueIds("detalle_persona", "archivo", archivo.id, dp.id! );
+                    dp.archivo__name = openFileDlg.SafeFileName;
+                    dp.archivo__content = dir + "/" + fileName;
+                    dp.archivo__type = MimeTypeMap.GetMimeType(fileInfo.Extension);
+                    dp.archivo__size = Convert.ToUInt32(fileInfo.Length);
+                    dp.descripcion = dp.descripcion.IsNullOrEmptyOrDbNull() ? dp.archivo__name : dp.descripcion;
+                    dp.persona = alu.persona;
+
+                    EntityValues archivoVal = ContainerApp.db.Values("file", "archivo").SetObj(dp);
+                    EntityPersist p = ContainerApp.db.Persist().Insert(archivoVal);
+                    p.PersistObj("detalle_persona", dp);
                     p.Transaction().RemoveCache();
                 }
                 catch (WebException ex)
