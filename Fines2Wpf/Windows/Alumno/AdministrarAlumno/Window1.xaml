@@ -678,37 +678,34 @@
                                         </DataGridHyperlinkColumn.ElementStyle>
                             </DataGridHyperlinkColumn>
 
-                            <DataGridTemplateColumn>
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <WrapPanel>
-                                            <Button x:Name="BrowseButton"  Click="BrowseButton_Click" Style="{DynamicResource MaterialDesignFlatButton}">
-                                                <materialDesign:PackIcon Kind="Search"></materialDesign:PackIcon>
-                                            </Button>
-                                        </WrapPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
                             <DataGridTextColumn Binding="{Binding descripcion}" ></DataGridTextColumn>
                             <DataGridTextColumn Binding="{Binding creado}" ></DataGridTextColumn>
 
 
                             <DataGridTemplateColumn>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <WrapPanel>
-                                        <Button x:Name="DownloadButton"  Click="DescargarArchivo_Click" Style="{DynamicResource MaterialDesignFlatButton}">
-                                            <materialDesign:PackIcon Kind="DownloadBoxOutline"></materialDesign:PackIcon>
-                                        </Button>
-                                        <Button x:Name="BrowseButton"  Click="BrowseButton_Click" Style="{DynamicResource MaterialDesignFlatButton}">
-                                            <materialDesign:PackIcon Kind="Search"></materialDesign:PackIcon>
-                                        </Button>
-                                    </WrapPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    
-                    </DataGrid.Columns>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <WrapPanel>
+                                            <Button 
+                                                x:Name="BrowseButton"  
+                                                Click="BrowseButton_Click" 
+                                                Style="{DynamicResource MaterialDesignFlatButton}">
+                                                <materialDesign:PackIcon Kind="Search"/>
+                                            </Button>
+                                        
+                                            <Button 
+                                                x:Name="EliminarDetallePersonaButton"  
+                                                Click="EliminarDetallePersonaButton_Click" 
+                                                Style="{DynamicResource MaterialDesignFlatButton}">
+                                                <materialDesign:PackIcon Kind="Delete"/>
+                                            </Button>
+                                        
+                                        </WrapPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            
+                        </DataGrid.Columns>
                     </DataGrid>
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                         <Button 

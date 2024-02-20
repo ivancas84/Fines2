@@ -1,4 +1,5 @@
 ﻿
+using CommunityToolkit.WinUI.Notifications;
 using Fines2Wpf.Data;
 using Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre;
 using Microsoft.Win32;
@@ -748,8 +749,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 string dir = year + "/" + month;
                 FileInfo fileInfo = new(openFileDlg.FileName);
 
-                Data_file archivo = new(DataInitMode.Default);
-                var fileName = archivo.id + fileInfo.Extension;
+                var fileName = dp.archivo__id + fileInfo.Extension;
                 
                 try
                 {
@@ -762,7 +762,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     dp.persona = alu.persona;
 
                     EntityValues archivoVal = ContainerApp.db.Values("file", "archivo").SetObj(dp);
-                    EntityPersist p = ContainerApp.db.Persist().Insert(archivoVal);
+                    EntityPersist p = ContainerApp.db.Persist().Persist(archivoVal);
                     p.PersistObj("detalle_persona", dp);
                     p.Transaction().RemoveCache();
                 }
@@ -783,6 +783,39 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             var alumno = (Data_alumno)alumnoGroupBox.DataContext;
             a.persona = alumno.id;
             detallePersonaOC.Add(a);
+        }
+
+        /// <summary>
+        /// DataGrid Delete Button v 2024-02
+        /// </summary>
+        /// <remarks>https://github.com/Pericial/GAP/issues/68#issuecomment-1878749790</remarks>
+        private void EliminarDetallePersonaButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var data = (DetallePersona)button.DataContext;
+            try
+            {
+                if (!data.id.IsNullOrEmpty())
+                    ContainerApp.db.Persist().
+                        DeleteIds("detalle_persona", data.id!).
+                        Exec().
+                        RemoveCache();
+                    
+                detallePersonaOC.Remove(data);
+                
+                new ToastContentBuilder()
+                    .AddText("Administración de Alumno")
+                    .AddText("Legajo eliminado")
+                    .Show();
+
+            }
+            catch (Exception ex)
+            {
+                new ToastContentBuilder()
+                    .AddText("Administración de Alumno")
+                    .AddText("Error al eliminar Legajo: " + ex.Message)
+                    .Show();
+            }
         }
     }
 
