@@ -74,7 +74,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                 }
 
                 #region Procesar persona
-                var persona = (Values.Persona)ContainerApp.db.Values("persona", "persona").Set(personaData).Reset();
+                var persona = (Values.Persona)ContainerApp.db.Values("persona", "persona").Sset(personaData).Reset();
                 var personaExistenteData = ContainerApp.db.Query("persona").Unique(persona).DictCache();
 
                 if (!personaExistenteData.IsNullOrEmpty()) //existen datos de persona en la base
