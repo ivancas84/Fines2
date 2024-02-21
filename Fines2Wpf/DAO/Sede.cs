@@ -13,14 +13,13 @@ namespace Fines2Wpf.DAO
         public EntityQuery BusquedaAproximadaQuery(string search)
         {
             return ContainerApp.db.Query("sede").
-                Fields("id, nombre").
-                Size(10).
+                Size(30).
                 Where(@"
                     $nombre LIKE @0 
                     OR $numero LIKE @1
                 ")
                 .Parameters("%" + search + "%", "%" + search + "%")
-                .Order("$nombre ASC");
+                .Order("$numero ASC");
         }
 
         public IEnumerable<object> IdsSedesActivasSemestre(object anio, object semestre)

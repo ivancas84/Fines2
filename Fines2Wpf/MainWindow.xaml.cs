@@ -172,6 +172,12 @@ namespace Fines2Wpf
             Windows.Curso.GenerarCursosSemestre.Window1 window1 = new();
             window1.Show();
         }
+
+        private void AdministrarComision_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.Comision.AdministrarComision.Window1 window1 = new();
+            window1.Show();
+        }
     }
 }
 
