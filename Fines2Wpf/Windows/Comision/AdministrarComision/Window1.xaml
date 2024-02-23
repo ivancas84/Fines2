@@ -26,17 +26,18 @@
                 <ColumnDefinition Width = "*" />
             </Grid.ColumnDefinitions>
 
-            <!-- region:-->
+            <!-- #region comisionGroupBox -->
             <GroupBox 
-                 Name="comisionGroupBox"
-                 Margin="16"
+                Name="comisionGroupBox"
+                Margin="16"
 	            materialDesign:ElevationAssist.Elevation="Dp3">
-                <GroupBox.Header>
+                    <GroupBox.Header>
                     <Label>Datos Principales</Label>
                 </GroupBox.Header>
 
                 <Grid>
 
+                    <!--#region comisionGroupBox > Grid structure-->
                     <Grid.RowDefinitions>
                         <RowDefinition Height = "Auto" />
                         <RowDefinition Height = "Auto" />
@@ -52,6 +53,7 @@
                         <ColumnDefinition Width = "Auto" />
                         <ColumnDefinition Width = "*" />
                     </Grid.ColumnDefinitions>
+                    <!--#endregion -->
 
                     <!--#region comisionGroupBox > Controls-->
                         <!--#region comisionGroupBox > Controls > Sede-->
@@ -79,13 +81,13 @@
 
                         <!-- #region comisionGroupBox > Controls > Modalidad -->
                         <Label 
-                            Grid.Row="2"
+                            Grid.Row="0"
                             Grid.Column="4"
                             Margin = "2">
                             _Modalidad:</Label>
 
                         <ComboBox 
-                            Grid.Row="2"
+                            Grid.Row="0"
                             Grid.Column="5"
                             Name = "modalidadComboBox"
                             SelectedValue="{Binding modalidad}" />
@@ -146,6 +148,34 @@
                             IsThreeState="False">Publicada</CheckBox>
                         <!-- #endregion -->
 
+                        <!-- #region comisionGroupBox > Controls > Planificacion -->
+                        <Label 
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin = "2">           
+                            _Planificacion:</Label>
+
+                        <ComboBox 
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Name = "planificacionComboBox"
+                            SelectedValue="{Binding planificacion}" />
+                        <!-- #endregion -->
+
+                        <!-- #region comisionGroupBox > Controls > Calendario -->
+                        <Label 
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin = "2">
+                            _Calendario:</Label>
+
+                        <ComboBox 
+                            Grid.Row="0"
+                            Grid.Column="5"
+                            Name = "planificacionComboBox"
+                            SelectedValue="{Binding calendario" />
+                        <!-- #endregion -->
+
                     <!--#endregion-->
 
                     <StackPanel Grid.Row = "3" Grid.ColumnSpan = "2">
@@ -160,6 +190,7 @@
 
 
             </GroupBox>
+            <!-- #endregion comisionGroupBox -->
 
             <GroupBox
                 Grid.Row="1"

@@ -21,6 +21,10 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
         private DAO.Sede sedeDAO = new();
         #endregion Autocomplete v2
 
+        private ObservableCollection<Data_modalidad> modalidadOC = new();
+
+        private ObservableCollection<Data_planificacion_r> planificacionOC = new();
+
         public Window1()
         {
             InitializeComponent();
@@ -42,6 +46,38 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             turnoComboBox.Items.Add(new KeyValuePair<string, string>("Mañana", "Mañana"));
             turnoComboBox.Items.Add(new KeyValuePair<string, string>("Tarde", "Tarde"));
             turnoComboBox.Items.Add(new KeyValuePair<string, string>("Vespertino", "Vespertino"));
+            #endregion
+
+            #region modalidadComboBox
+            modalidadComboBox.ItemsSource = modalidadOC;
+            modalidadComboBox.DisplayMemberPath = "nombre";
+            modalidadComboBox.SelectedValuePath = "id";
+
+            var data = ContainerApp.db.Query("modalidad").
+                Order("$nombre").
+                ColOfDictCache();
+
+            modalidadOC.Clear();
+            modalidadOC.AddRange(data);
+            #endregion
+
+            #region planificacionComboBox
+            planificacionComboBox.ItemsSource = planificacionOC;
+            planificacionComboBox.DisplayMemberPath = "Label";
+            planificacionComboBox.SelectedValuePath = "id";
+
+            data = ContainerApp.db.Query("planificacion").
+                Order("$plan-distribucion_horaria DESC, $anio ASC, $semestre ASC").
+                ColOfDictCache();
+
+            planificacionOC.Clear();
+            foreach (var item in data)
+            {
+                Data_planificacion_r obj = new();
+                obj.SetData(item);
+                obj.Label = obj.plan__distribucion_horaria + " " + obj.anio + "/" + obj.semestre;
+                planificacionOC.Add(obj);
+            }
             #endregion
 
         }
