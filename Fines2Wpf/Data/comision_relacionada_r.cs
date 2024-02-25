@@ -24,6 +24,9 @@ namespace Fines2Wpf.Data
             {
                 case DataInitMode.Default:
                     comision__id = (string?)ContainerApp.db.Values("comision").Default("id").Get("id");
+                    comision__autorizada = (bool?)ContainerApp.db.Values("comision").Default("autorizada").Get("autorizada");
+                    comision__apertura = (bool?)ContainerApp.db.Values("comision").Default("apertura").Get("apertura");
+                    comision__publicada = (bool?)ContainerApp.db.Values("comision").Default("publicada").Get("publicada");
                     comision__alta = (DateTime?)ContainerApp.db.Values("comision").Default("alta").Get("alta");
                     sede__id = (string?)ContainerApp.db.Values("sede").Default("id").Get("id");
                     sede__alta = (DateTime?)ContainerApp.db.Values("sede").Default("alta").Get("alta");
@@ -38,6 +41,9 @@ namespace Fines2Wpf.Data
                     calendario__semestre = (short?)ContainerApp.db.Values("calendario").Default("semestre").Get("semestre");
                     calendario__insertado = (DateTime?)ContainerApp.db.Values("calendario").Default("insertado").Get("insertado");
                     relacion__id = (string?)ContainerApp.db.Values("comision").Default("id").Get("id");
+                    relacion__autorizada = (bool?)ContainerApp.db.Values("comision").Default("autorizada").Get("autorizada");
+                    relacion__apertura = (bool?)ContainerApp.db.Values("comision").Default("apertura").Get("apertura");
+                    relacion__publicada = (bool?)ContainerApp.db.Values("comision").Default("publicada").Get("publicada");
                     relacion__alta = (DateTime?)ContainerApp.db.Values("comision").Default("alta").Get("alta");
                     sede_rel__id = (string?)ContainerApp.db.Values("sede").Default("id").Get("id");
                     sede_rel__alta = (DateTime?)ContainerApp.db.Values("sede").Default("alta").Get("alta");

@@ -93,7 +93,7 @@
     "dataType": "tinyint",
     "type": "bool",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": false,
     "maxLength": 1
   },
   "apertura": {
@@ -110,7 +110,7 @@
     "dataType": "tinyint",
     "type": "bool",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": false,
     "maxLength": 1
   },
   "publicada": {
@@ -127,7 +127,7 @@
     "dataType": "tinyint",
     "type": "bool",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": false,
     "maxLength": 1
   },
   "observaciones": {
