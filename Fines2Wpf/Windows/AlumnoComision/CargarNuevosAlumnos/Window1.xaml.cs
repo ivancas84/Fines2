@@ -15,7 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
-using Fines2Wpf.ViewModels;
 using Fines2Wpf.Data;
 
 namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
@@ -27,7 +26,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
     {
         private string? IdComision;
         private Data_comision_r comision;
-        private ObservableCollection<ViewModel> statusData = new();
+        private ObservableCollection<StatusData> statusData = new();
         private DAO.AlumnoComision alumnoComisionDAO = new();
         private EntityPersist persist = ContainerApp.db.Persist();
         private SqlOrganize.DAO dao = new(ContainerApp.db);
@@ -84,24 +83,44 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                 {
                     Values.Persona personaExistenteVal = (Values.Persona)ContainerApp.db.Values("persona").Values(personaExistenteData);
 
-                    var dataDifferent = personaVal.Compare(personaExistenteVal!, ignoreNull: true);
+                    var dataDifferent = personaVal.CompareFields(personaExistenteVal!, ignoreNull: true, fieldsToCompare:new List<string> { "apellidos", "nombres", "numero_documento" });
                     if (!dataDifferent.IsNullOrEmpty())
                     {
-                        statusData.Add(new ViewModel()
+                        statusData.Add(new StatusData()
                         {
                             row = j,
                             status = "error",
                             detail = "Los valores de persona existente son diferentes no se realizara ningún registro",
-                            data = "Nuevo: " + personaVal.ToString() + ". Existente: " + personaExistenteVal!.ToString()
+                            data = "Nuevo: " + personaVal.ToStringFields("nombres","apellidos","numero_documento") + ". Existente: " + personaExistenteVal!.ToStringFields("nombres", "apellidos", "numero_documento")
                         });
                         continue;
                     }
                     personaVal.Set("id", personaExistenteVal!.Get("id"));
+                    statusData.Add(new StatusData()
+                    {
+                        row = j,
+                        status = "info",
+                        detail = "Persona existente.",
+                        data = personaVal.ToString()
+                    });
+
+                    dataDifferent = personaVal.Compare(personaExistenteVal!, ignoreNull: true, ignoreFields: new List<string> { "apellidos", "nombres", "numero_documento" });
+                    if (!dataDifferent.IsNullOrEmpty())
+                    {
+                        statusData.Add(new StatusData()
+                        {
+                            row = j,
+                            status = "warning",
+                            detail = "Los valores de persona existente son diferentes, verificar y si es necesario cambiar",
+                            data = "Nuevo: " + personaVal.ToStringFields(dataDifferent.Keys.ToArray()) + ". Existente: " + personaExistenteVal!.ToStringFields(dataDifferent.Keys.ToArray())
+                        });
+                    }
+
                 }
                 else //no existen datos de persona en la base
                 {
                     persist.Insert(personaVal.Default().Reset());
-                    statusData.Add(new ViewModel()
+                    statusData.Add(new StatusData()
                     {
                         row = j,
                         status = "insert",
@@ -123,7 +142,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                     {
                         row = j,
                         status = "info",
-                        detail = "El alumno ya existe.",
+                        detail = "Alumno existente.",
                         data = personaVal.ToString()
                     });
                     alumnoVal.Set("id", alumnoExistente!.Get("id"));
@@ -133,13 +152,12 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                         {
                             row = j,
                             status = "update",
-                            detail = "Se actualizo el plan del alumno que estaba vacio.",
+                            detail = "Se actualizo el plan del alumno que estaba vacío.",
                             data = personaVal.ToString()
                         });
                     }
-                    else if (alumnoExistente!.Get("plan")!.ToString() != comision.planificacion__plan)
-                    {
-
+                    else if (alumnoExistente!.Get("plan")!.ToString()!.Equals(comision.planificacion__plan))
+                    { 
                         statusData.Add(new()
                         {
                             row = j,
@@ -151,13 +169,13 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                 }
                 else //no existen datos del alumno en la base
                 {
-                    persist.Insert(alumno.Default().Set("plan", comision.planificacion__plan!).Reset());
-                    statusData.Add( new ViewModel()
+                    persist.Insert(alumnoVal.Default().Set("plan", comision.planificacion__plan!).Reset());
+                    statusData.Add( new StatusData()
                     {
                         row = j,
                         status = "insert",
                         detail = "Alumno agregado.",
-                        data = persona.ToString()
+                        data = personaVal.ToString()
                     });
                 }
                 #endregion
@@ -165,7 +183,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                 #region procesar asignacion
                 var asignacion = ContainerApp.db.Values("alumno_comision").
                     Set("comision", comision.id!).
-                    Set("alumno", alumno.Get("id"));
+                    Set("alumno", alumnoVal.Get("id"));
+
                 var asignacionExistenteData = ContainerApp.db.Query("alumno_comision").Unique(asignacion).DictCache();
                 if (!asignacionExistenteData.IsNullOrEmpty()) //existen datos de alumno en la base
                 {
@@ -174,53 +193,53 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                         row = j,
                         status = "warning",
                         detail = "Ya existe asignacion en la comisión actual con estado " + asignacionExistenteData["estado"].ToString(),
-                        data = persona.ToString()
+                        data = personaVal.ToString()
                     });
                 }
                 else //no existen datos de asignacion
                 {
                     persist.Insert(asignacion.Default().Reset());
                     statusData.Add(
-                        new ViewModel()
+                    new StatusData()
                     {
                         row = j,
                         status = "insert",
                         detail = "Asignacion agregada.",
-                        data = persona.ToString()!
+                        data = personaVal.ToString()!
                     });
                 }
                 #endregion
 
                 #region controlar asignaciones activas del semestre
-                var otrasAsignacionesDelSemestre =  alumnoComisionDAO.AsignacionesDelAlumnoEnOtrasComisionesAutorizadasDelSemestre(comision.calendario__anio!, comision.calendario__semestre!, comision.id!, alumno.Get("id"));
+                var otrasAsignacionesDelSemestre =  alumnoComisionDAO.AsignacionesDelAlumnoEnOtrasComisionesAutorizadasDelSemestre(comision.calendario__anio!, comision.calendario__semestre!, comision.id!, alumnoVal.Get("id"));
                 foreach(var a in otrasAsignacionesDelSemestre)
                 {
                     var comD = ContainerApp.db.Query("comision").CacheById(a["comision"]);
                     var comV = (Values.Comision)ContainerApp.db.Values("comision").Values(comD!);
 
-                    statusData.Add(new ViewModel()
+                    statusData.Add(new StatusData()
                     {
                         row = j,
                         status = "warning",
                         detail = "Se encuentra en otra comision del mismo semestre",
-                        data = persona.ToString() + " en " + comV.ToString() + " con estado " + a["estado"].ToString()
+                        data = personaVal.ToString() + " en " + comV.ToString() + " con estado " + a["estado"].ToString()
                     });
                 }
                 #endregion
 
                 #region informar otras asignaciones activas del alumno
-                var otrasAsignaciones = alumnoComisionDAO.AsignacionesDelAlumnoEnOtrasComisionesAutorizadas(comision.id!, alumno.Get("id"));
+                var otrasAsignaciones = alumnoComisionDAO.AsignacionesDelAlumnoEnOtrasComisionesAutorizadas(comision.id!, alumnoVal.Get("id"));
                 foreach (var a in otrasAsignaciones)
                 {
-                    var comD = ContainerApp.db.Query("comision").CacheById(a["comision-id"]);
-                    var comV = (Values.Comision)ContainerApp.db.Values("comision").Values(comD!);
+                    IDictionary<string, object?> comD = ContainerApp.db.Query("comision").CacheById(a["comision-id"]);
+                    Values.Comision comV = (Values.Comision)ContainerApp.db.Values("comision").Values(comD!);
 
-                    statusData.Add(new ViewModel()
+                    statusData.Add(new StatusData()
                     {
                         row = j,
                         status = "info",
-                        detail = "Asignacion en otra comisión",
-                        data = persona.ToString() + " en " + comV.ToString() + " con estado " + a["estado"]
+                        detail = "Asignación en otra comisión",
+                        data = personaVal.ToString() + " en " + comV.ToString() + " con estado " + a["estado"]
                     });
                 }
                 #endregion

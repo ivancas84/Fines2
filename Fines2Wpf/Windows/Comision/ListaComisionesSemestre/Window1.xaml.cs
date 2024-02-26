@@ -107,7 +107,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             {
                 var comision = (Values.Comision)ContainerApp.db.Values("comision").Values(item);
                 var o = item.Obj<Comision>();
-                o.Label = comision.ToString();
+                o.Label = comision.Numero();
                 o.domicilio__Label = comision.ValuesRel("domicilio")?.ToString() ?? "";
 
                 List<string> referentes = new();
@@ -190,6 +190,13 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             var button = (e.OriginalSource as Button);
             var comision = (Data_comision)button.DataContext;
             AlumnoComision.CargarNuevosAlumnos.Window1 win = new(comision.id);
+            win.Show();
+        }
+
+        void OnNumeroClick(object sender, RoutedEventArgs e)
+        {
+            var data = ((Hyperlink)e.OriginalSource).DataContext as Data_comision;
+            AdministrarComision.Window1 win = new(data!.id!);
             win.Show();
         }
     }

@@ -31,6 +31,8 @@ namespace Fines2Wpf.Values
 
         }
 
+      
+
         /// <summary>
         /// Vuelve a comparar ciertos campos que necesitan verificacion adicional
         /// </summary>
@@ -117,6 +119,7 @@ namespace Fines2Wpf.Values
             var response = base.Compare(val, ignoreFields, ignoreNull, ignoreNonExistent);
             return Recompare(response);
         }
+
 
         public override IDictionary<string, object?> CompareFields(IDictionary<string, object?> val, IEnumerable<string> fieldsToCompare, bool ignoreNull = true, bool ignoreNonExistent = true)
         {

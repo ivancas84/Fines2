@@ -36,11 +36,11 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
 
         private ObservableCollection<Data_calendario> calendarioOC = new();
 
-        public Window1()
+        public Window1(string? idComision = null)
         {
             InitializeComponent();
 
-            comisionGroupBox.DataContext = new Data_comision(SqlOrganize.DataInitMode.DefaultMain);
+            
 
             #region Autocomplete 2 sede
             sedeComboBox.ItemsSource = sedeOC;
@@ -48,20 +48,11 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             sedeComboBox.SelectedValuePath = "id";
             #endregion Autocomplete 2
 
-            #region Autocomplete 2 sede (valor inicial)
-            //en construccion
-            #endregion Autocomplete 2
-
             #region Autocomplete 2 comision
             comisionSiguienteComboBox.ItemsSource = comisionOC;
             comisionSiguienteComboBox.DisplayMemberPath = "Label";
             comisionSiguienteComboBox.SelectedValuePath = "id";
             #endregion Autocomplete 2
-
-            #region Autocomplete 2 comision (valor inicial)
-            //en construccion
-            #endregion Autocomplete 2
-
 
             #region turnoComboBox
             turnoComboBox.SelectedValuePath = "Key";
@@ -121,6 +112,32 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
                 calendarioOC.Add(obj);
             }
             #endregion
+
+            #region definir datos iniciales
+            if (idComision.IsNullOrEmptyOrDbNull())
+                comisionGroupBox.DataContext = new Data_comision(DataInitMode.DefaultMain);
+            else
+            {
+                var comision = ContainerApp.dao.Get("comision", idComision!).Obj<Data_comision_r>();
+                comisionGroupBox.DataContext = comision;
+                sedeOC.Clear();
+                var sedeInicial = new Data_sede_r();
+                sedeInicial.id = comision.sede__id;
+                sedeInicial.Label = comision.sede__numero + " " + comision.sede__nombre;
+                sedeOC.Add(sedeInicial);
+
+                comisionOC.Clear();
+                if (!comision.comision_siguiente.IsNullOrEmptyOrDbNull())
+                {
+                    var comisionSiguienteInicial = ContainerApp.dao.Get("comision", comision.comision_siguiente!).Obj<Data_comision_r>();
+                    comisionSiguienteInicial.Label = comisionSiguienteInicial.sede__numero + comisionSiguienteInicial.division + "/" + comisionSiguienteInicial.planificacion__anio + comisionSiguienteInicial.planificacion__semestre + " " + comisionSiguienteInicial.calendario__anio + "-" + comisionSiguienteInicial.calendario__semestre;
+                    comisionOC.Add(comisionSiguienteInicial);
+                }
+                
+            }
+            #endregion
+
+
         }
 
         private void GuardarComisionButton_Click(object sender, RoutedEventArgs e)

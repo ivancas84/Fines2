@@ -238,7 +238,7 @@ namespace Fines2Wpf.DAO
         /// <param name="idComision">numero de comision a la que actualmente pertenece el alumno</param>
         /// <param name="idAlumno">numero de alumno</param>
         /// <returns></returns>
-        public IEnumerable<Dictionary<string, object>> AsignacionesDelAlumnoEnOtrasComisionesAutorizadas(object idComision, object idAlumno)
+        public IEnumerable<Dictionary<string, object?>> AsignacionesDelAlumnoEnOtrasComisionesAutorizadas(object idComision, object idAlumno)
         {
             return ContainerApp.db.Query("alumno_comision")
                 .Size(0)
