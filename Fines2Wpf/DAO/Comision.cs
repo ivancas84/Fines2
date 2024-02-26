@@ -117,7 +117,7 @@ namespace Fines2Wpf.DAO
                     OR
                     CONCAT($calendario-anio, '-', $calendario-semestre) LIKE @0
                 ")
-               .Order("$sede-numero ASC, $division ASC, $calendario-anio, $calendario-semestre")
+               .Order("$sede-numero ASC, $division ASC, $calendario-anio DESC, $calendario-semestre DESC")
                .Parameters("%"+search+"%");
         }
 

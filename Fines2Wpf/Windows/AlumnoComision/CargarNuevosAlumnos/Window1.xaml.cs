@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 using Fines2Wpf.ViewModels;
+using Fines2Wpf.Data;
 
 namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
 {
@@ -25,7 +26,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
     public partial class Window1 : Window
     {
         private string? IdComision;
-        private Comision comision;
+        private Data_comision_r comision;
         private ObservableCollection<ViewModel> statusData = new();
         private DAO.AlumnoComision alumnoComisionDAO = new();
         private EntityPersist persist = ContainerApp.db.Persist();
@@ -39,16 +40,15 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
             this.IdComision = idComision;
             labelTextBox.IsReadOnly = true;
             Loaded += CargarNuevosAlumnos_Loaded;
-            headers.Text = "persona-nombres, persona-apellidos, persona-numero_documento, persona-fecha_nacimiento";
+            headersTextBox.Text = "persona-nombres, persona-apellidos, persona-numero_documento, persona-fecha_nacimiento";
             statusGrid.ItemsSource = statusData;
         }
 
         private void CargarNuevosAlumnos_Loaded(object sender, RoutedEventArgs e)
         {
-            var data = dao.Get("comision", IdComision);
-            comision = data.Obj<Comision>();
-            comision.label = ((Values.Comision)ContainerApp.db.Values("comision").Values(data)).ToString();
-            DataContext = comision;
+            var data = dao.Get("comision", IdComision!);
+            labelTextBox.Text = ((Values.Comision)ContainerApp.db.Values("comision").Values(data)).ToString();
+            comision = data.Obj<Data_comision_r>();
         }
 
         
@@ -56,32 +56,35 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
 
         private void ProcesarButton_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<string> _headers = headers.Text.Split(",").Select(s => s.Trim());
+            IEnumerable<string> _headers = headersTextBox.Text.Split(",").Select(s => s.Trim());
             var _data = data.Text.Split("\r\n");
             statusData.Clear();
             for (var j = 0; j < _data.Length; j++)
             {
+                #region Inicializar datos de persona
                 if (_data[j].IsNullOrEmpty())
                     continue;
-
                 var values = _data[j].Split("\t");
 
-                var personaData = new Dictionary<string, object>();
+                var personaData = new Dictionary<string, object?>();
                 for (var i = 0; i < _headers.Count(); i++)
                 {
                     if (values.ElementAt(i).IsNullOrEmpty()) continue;
                     personaData.Add(_headers.ElementAt(i), values.ElementAt(i));
                 }
+                #endregion
 
                 #region Procesar persona
-                var persona = (Values.Persona)ContainerApp.db.Values("persona", "persona").Sset(personaData).Reset();
-                var personaExistenteData = ContainerApp.db.Query("persona").Unique(persona).DictCache();
+                Values.Persona personaVal = (Values.Persona)ContainerApp.db.Values("persona", "persona").Sset(personaData).Reset();
+                IDictionary<string, object?>? personaExistenteData = ContainerApp.db.Query("persona").
+                    Unique(personaVal).
+                    DictCache();
 
                 if (!personaExistenteData.IsNullOrEmpty()) //existen datos de persona en la base
                 {
-                    var personaExistente = ContainerApp.db.Values("persona").Values(personaExistenteData);
+                    Values.Persona personaExistenteVal = (Values.Persona)ContainerApp.db.Values("persona").Values(personaExistenteData);
 
-                    var dataDifferent = persona.Compare(personaExistente!, ignoreNull: true);
+                    var dataDifferent = personaVal.Compare(personaExistenteVal!, ignoreNull: true);
                     if (!dataDifferent.IsNullOrEmpty())
                     {
                         statusData.Add(new ViewModel()
@@ -89,41 +92,41 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                             row = j,
                             status = "error",
                             detail = "Los valores de persona existente son diferentes no se realizara ningún registro",
-                            data = "Nuevo: " + persona.ToString() + ". Existente: " + (personaExistente as Values.Persona)!.ToString()
+                            data = "Nuevo: " + personaVal.ToString() + ". Existente: " + personaExistenteVal!.ToString()
                         });
                         continue;
                     }
-                    persona.Set("id", personaExistente!.Get("id"));
+                    personaVal.Set("id", personaExistenteVal!.Get("id"));
                 }
                 else //no existen datos de persona en la base
                 {
-                    persist.Insert(persona.Default().Reset());
+                    persist.Insert(personaVal.Default().Reset());
                     statusData.Add(new ViewModel()
                     {
                         row = j,
                         status = "insert",
                         detail = "Persona agregada.",
-                        data = persona.ToString()
+                        data = personaVal.ToString()
                     });
                 }
                 #endregion
 
                 #region Procesar alumno
-                var alumno = ContainerApp.db.Values("alumno").Set("persona", persona.Get("id"));
-                var alumnoExistenteData = ContainerApp.db.Query("alumno").Unique(alumno).DictCache();
+                var alumnoVal = ContainerApp.db.Values("alumno").Set("persona", personaVal.Get("id"));
+                var alumnoExistenteData = ContainerApp.db.Query("alumno").Unique(alumnoVal).DictCache();
 
                 if (!alumnoExistenteData.IsNullOrEmpty()) //existen datos de alumno en la base
                 {
-                    var alumnoExistente = ContainerApp.db.Values("alumno").Values(alumnoExistenteData);
+                    var alumnoExistente = ContainerApp.db.Values("alumno").Values(alumnoExistenteData!);
 
                     statusData.Add(new()
                     {
                         row = j,
                         status = "info",
                         detail = "El alumno ya existe.",
-                        data = persona.ToString()
+                        data = personaVal.ToString()
                     });
-                    alumno.Set("id", alumnoExistente!.Get("id"));
+                    alumnoVal.Set("id", alumnoExistente!.Get("id"));
                     if (alumnoExistente!.Get("plan").IsNullOrEmptyOrDbNull())
                     {
                         statusData.Add(new()
@@ -131,7 +134,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                             row = j,
                             status = "update",
                             detail = "Se actualizo el plan del alumno que estaba vacio.",
-                            data = persona.ToString()
+                            data = personaVal.ToString()
                         });
                     }
                     else if (alumnoExistente!.Get("plan")!.ToString() != comision.planificacion__plan)

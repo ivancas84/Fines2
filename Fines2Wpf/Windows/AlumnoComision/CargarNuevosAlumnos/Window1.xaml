@@ -27,7 +27,6 @@
 
             <TextBox
                 Name="labelTextBox"
-                Text="{Binding label}"
                 Grid.Column="1"
             />
 
@@ -36,7 +35,7 @@
                 Margin = "2">Encabezados</Label>
 
             <TextBox
-                Name="headers"
+                Name="headersTextBox"
                 Grid.Row="1"
                 Grid.Column="1"
             />

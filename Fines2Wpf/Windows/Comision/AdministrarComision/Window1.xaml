@@ -31,163 +31,327 @@
                 Name="comisionGroupBox"
                 Margin="16"
 	            materialDesign:ElevationAssist.Elevation="Dp3">
-                    <GroupBox.Header>
+                <GroupBox.Header>
                     <Label>Datos Principales</Label>
                 </GroupBox.Header>
 
-                <Grid>
 
-                    <!--#region comisionGroupBox > Grid structure-->
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height = "Auto" />
-                        <RowDefinition Height = "Auto" />
-                        <RowDefinition Height = "Auto" />
-                        <RowDefinition Height = "Auto" />
-                    </Grid.RowDefinitions>
+                <StackPanel>
 
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width = "Auto" />
-                        <ColumnDefinition Width = "*" />
-                        <ColumnDefinition Width = "Auto" />
-                        <ColumnDefinition Width = "*" />
-                        <ColumnDefinition Width = "Auto" />
-                        <ColumnDefinition Width = "*" />
-                    </Grid.ColumnDefinitions>
-                    <!--#endregion -->
+                    <Grid>
 
-                    <!--#region comisionGroupBox > Controls-->
+
+                        <!--#region comisionGroupBox > Grid structure-->
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width = "Auto" />
+                            <ColumnDefinition Width = "*" />
+                            <ColumnDefinition Width = "Auto" />
+                            <ColumnDefinition Width = "*" />
+                            <ColumnDefinition Width = "Auto" />
+                            <ColumnDefinition Width = "*" />
+                        </Grid.ColumnDefinitions>
+                        <!--#endregion -->
+
+                        <!--#region comisionGroupBox > Controls-->
                         <!--#region comisionGroupBox > Controls > Sede-->
                         <Label 
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            Margin = "2">   
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Margin = "2">
                             _Sede:</Label>
 
-                            <!--#region AutoComplete v2-->
-                            <ComboBox 
-                                Grid.Row="0"
-                                Grid.Column="1"
-                                Name="sedeComboBox"
-                                IsTextSearchEnabled="False"
-                                IsEditable="True"
-                                StaysOpenOnEdit="True"
-                                TextBoxBase.TextChanged="SedeComboBox_TextChanged"
-                                GotFocus="SedeComboBox_GotFocus"
-                                TextBoxBase.SelectionChanged="SedeComboBox_SelectionChanged"
-                                SelectedValue="{Binding sede}"
-                                Margin = "2"/>
-                            <!--#endregion AutoComplete v2-->
+                        <!--#region AutoComplete v2 sede-->
+                        <ComboBox 
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    Name="sedeComboBox"
+                                    IsTextSearchEnabled="False"
+                                    IsEditable="True"
+                                    StaysOpenOnEdit="True"
+                                    TextBoxBase.TextChanged="SedeComboBox_TextChanged"
+                                    GotFocus="ComboBox_GotFocus"
+                                    TextBoxBase.SelectionChanged="SedeComboBox_SelectionChanged"
+                                    SelectedValue="{Binding sede}"
+                                    Margin = "2"/>
+                        <!--#endregion AutoComplete v2-->
                         <!--#endregion comisionGroupBox > Controls > Sede-->
 
                         <!-- #region comisionGroupBox > Controls > Modalidad -->
                         <Label 
-                            Grid.Row="0"
-                            Grid.Column="4"
-                            Margin = "2">
+                                Grid.Row="0"
+                                Grid.Column="4"
+                                Margin = "2">
                             _Modalidad:</Label>
 
                         <ComboBox 
-                            Grid.Row="0"
-                            Grid.Column="5"
-                            Name = "modalidadComboBox"
-                            SelectedValue="{Binding modalidad}" />
+                                Grid.Row="0"
+                                Grid.Column="5"
+                                Name = "modalidadComboBox"
+                                SelectedValue="{Binding modalidad}" />
                         <!-- #endregion -->
 
-                        <!--#region comisionGroupBox > Controls > Divisiones de la sede-->
+
+                        <!-- #region comisionGroupBox > Controls > Turno -->
+                        <Label 
+                                Grid.Row="1"
+                                Grid.Column="4"
+                                Margin = "2">
+                            _Turno:</Label>
+
+                        <ComboBox 
+                                Grid.Row="1"
+                                Grid.Column="5"
+                                Name = "turnoComboBox"
+                                SelectedValue="{Binding turno}" />
+                        <!-- #endregion comisionGroupBox > Controls > Turno -->
+
+                        <!-- #region comisionGroupBox > Controls > Checkboxs Fila 1 -->
+                        <CheckBox 
+	                            Grid.Row="2"
+	                            Grid.Column="0"
+	                            Grid.ColumnSpan ="2"
+	                            IsChecked="{Binding autorizada, ValidatesOnDataErrors=True}"
+                                IsThreeState="False">Autorizada</CheckBox>
+
+                        <CheckBox 
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                Grid.ColumnSpan ="2"
+                                IsChecked="{Binding apertura, ValidatesOnDataErrors=True}"
+                                IsThreeState="False">Apertura</CheckBox>
+
+                        <CheckBox 
+                                Grid.Row="2"
+                                Grid.Column="4"
+                                Grid.ColumnSpan ="2"
+                                IsChecked="{Binding publicada, ValidatesOnDataErrors=True}"
+                                IsThreeState="False">Publicada</CheckBox>
+                        <!-- #endregion -->
+
+                        <!-- #region comisionGroupBox > Controls > Planificacion -->
+                        <Label 
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Margin = "2">
+                            _Planificacion:</Label>
+
+                        <ComboBox 
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Name = "planificacionComboBox"
+                                SelectedValue="{Binding planificacion}" />
+                        <!-- #endregion -->
+
+                        <!-- #region comisionGroupBox > Controls > Calendario -->
+                        <Label 
+                                Grid.Row="1"
+                                Grid.Column="2"
+                                Margin = "2">
+                            _Calendario:</Label>
+
+                        <ComboBox 
+                                Grid.Row="1"
+                                Grid.Column="3"
+                                Name = "calendarioComboBox"
+                                SelectedValue="{Binding calendario}"
+                                Margin = "2"/>
+                        <!-- #endregion -->
+
+                        <!-- #region comisionGroupBox > Controls > Calendario -->
+                        <Label 
+                                Grid.Row="0"
+                                Grid.Column="2"
+                                Margin = "2">
+                            _Division:</Label>
+
+                        <TextBox 
+                                Grid.Row="0"
+                                Grid.Column="3"
+                                Text="{Binding division, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                                Margin = "2"/>
+                        <!-- #endregion -->
+                        <!--#endregion-->
+
+
+
+                    </Grid>
+                    <Grid>
+                        <!--#region comisionGroupBox > Datos adicionales > Grid structure-->
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width = "Auto" />
+                            <ColumnDefinition Width = "*" />
+                            <ColumnDefinition Width = "Auto" />
+                            <ColumnDefinition Width = "*" />
+                            <ColumnDefinition Width = "Auto" />
+                            <ColumnDefinition Width = "*" />
+                            <ColumnDefinition Width = "Auto" />
+                            <ColumnDefinition Width = "*" />
+                        </Grid.ColumnDefinitions>
+                        <!--#endregion -->
+
+                        <!--#region comisionGroupBox > Datos Adicionales > Controls > Divisiones de la sede-->
                         <Label 
                             Grid.Row="0"
-                            Grid.Column="2"
-                            Margin = "2">       
-                            _Divisiones:</Label>
+                            Grid.Column="0"
+                          
+                            Margin = "2">
+                            _Divisiones existentes:</Label>
 
                         <TextBox 
                             Grid.Row="0"
-                            Grid.Column="3"
+                            Grid.Column="1"
+                            Grid.ColumnSpan="3"
                             Name="divisionesTextBox"
                             Background="Transparent"
                             BorderThickness="0"
                             IsReadOnly="True"
                             TextWrapping="Wrap" 
-                            Margin = "2"/> 
-                        <!--#endregion comisionGroupBox > Controls > Divisiones de la sede-->
+                            Margin = "2"/>
+                        <!--#endregion comisionGroupBox > Datos adicionales > Controls > Divisiones de la sede-->
 
-                        <!-- #region comisionGroupBox > Controls > Turno -->
+                        <!--#region comisionGroupBox > Datos Adicionales > Controls > Comision siguiente-->
                         <Label 
-                            Grid.Row="2"
+                            Grid.Row="0"
                             Grid.Column="4"
                             Margin = "2">
-                            _Turno:</Label>
+                            _Comisión Siguiente:</Label>
 
-                        <ComboBox 
-                            Grid.Row="2"
-                            Grid.Column="5"
-                            Name = "turnoComboBox"
-                            SelectedValue="{Binding turno}" />
-                        <!-- #endregion comisionGroupBox > Controls > Turno -->
-
-                        <!-- #region comisionGroupBox > Controls > Checkboxs Fila 1 -->
-                        <CheckBox 
-	                        Grid.Row="1"
-	                        Grid.Column="0"
-	                        Grid.ColumnSpan ="2"
-	                        IsChecked="{Binding autorizada, ValidatesOnDataErrors=True}"
-                            IsThreeState="False">Autorizada</CheckBox>
-                    
-                        <CheckBox 
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            Grid.ColumnSpan ="2"
-                            IsChecked="{Binding apertura, ValidatesOnDataErrors=True}"
-                            IsThreeState="False">Apertura</CheckBox>
-
-                        <CheckBox 
-                            Grid.Row="1"
-                            Grid.Column="4"
-                            Grid.ColumnSpan ="2"
-                            IsChecked="{Binding publicada, ValidatesOnDataErrors=True}"
-                            IsThreeState="False">Publicada</CheckBox>
-                        <!-- #endregion -->
-
-                        <!-- #region comisionGroupBox > Controls > Planificacion -->
-                        <Label 
-                            Grid.Row="2"
-                            Grid.Column="0"
-                            Margin = "2">           
-                            _Planificacion:</Label>
-
-                        <ComboBox 
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            Name = "planificacionComboBox"
-                            SelectedValue="{Binding planificacion}" />
-                        <!-- #endregion -->
-
-                        <!-- #region comisionGroupBox > Controls > Calendario -->
-                        <Label 
-                            Grid.Row="2"
-                            Grid.Column="0"
-                            Margin = "2">
-                            _Calendario:</Label>
-
+                        <!--#region AutoComplete v2 comisionSiguiente-->
                         <ComboBox 
                             Grid.Row="0"
                             Grid.Column="5"
-                            Name = "planificacionComboBox"
-                            SelectedValue="{Binding calendario" />
-                        <!-- #endregion -->
+                            Grid.ColumnSpan="3"
+                            Name="comisionSiguienteComboBox"
+                            IsTextSearchEnabled="False"
+                            IsEditable="True"
+                            StaysOpenOnEdit="True"
+                            TextBoxBase.TextChanged="ComisionComboBox_TextChanged"
+                            GotFocus="ComboBox_GotFocus"
+                            TextBoxBase.SelectionChanged="ComboBox_SelectionChanged"
+                            SelectedValue="{Binding comision_siguiente}"
+                            Margin = "2"/>
+                        <!--#endregion AutoComplete v2-->
+                        <!--#endregion-->
 
+                        <!--#region comisionGroupBox > Datos Adicionales > Controls > Comentario-->
+                        <Label 
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin = "2">
+                            _Comentario:</Label>
+
+                        <TextBox
+                            Grid.Column="1"
+                            Grid.ColumnSpan="3"
+                            TextWrapping="Wrap"
+                            AcceptsReturn="True"
+                            VerticalScrollBarVisibility="Visible"
+                            Text="{Binding comentario, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                            Margin="2,26,2,5" Grid.RowSpan="2"/>
+                        <!--#endregion-->
+
+                        <!--#region comisionGroupBox > Datos Adicionales > Controls > Observaciones -->
+                        <Label 
+                            Grid.Row="1"
+                            Grid.Column="4"
+                            Margin = "2">
+                            _Observaciones:</Label>
+
+                        <TextBox
+                            Grid.Row="1"
+                            Grid.Column="5"
+                            Grid.ColumnSpan="3"
+                            TextWrapping="Wrap"
+                            AcceptsReturn="True"
+                            VerticalScrollBarVisibility="Visible"
+                            Text="{Binding observaciones, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                            Margin="2">
+                        </TextBox>
+                        <!--#endregion-->
+
+                        <!--#region comisionGroupBox > Datos Adicionales > Controls > Comentario-->
+                        <Label 
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin = "2">
+                            _Identificacion:</Label>
+
+                        <TextBox
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Text="{Binding identificacion, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                            Margin="2">
+                        </TextBox>
+                        <!--#endregion-->
+
+                        <!--#region comisionGroupBox > Datos Adicionales > Controls > Estado-->
+                        <Label 
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Margin = "2">
+                            _Estado:</Label>
+
+                        <TextBox
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            Text="{Binding estado, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                            Margin="2">
+                        </TextBox>
+                        <!--#endregion-->
+
+                        <!--#region comisionGroupBox > Datos Adicionales > Controls > Configuracion-->
+                        <Label 
+                            Grid.Row="2"
+                            Grid.Column="4"
+                            Margin = "2">
+                            _Configuracion:</Label>
+
+                        <TextBox
+                            Grid.Row="2"
+                            Grid.Column="5"
+                            Text="{Binding configuracion, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                            Margin="2">
+                        </TextBox>
+                        <!--#endregion-->
+
+                        <!--#region comisionGroupBox > Datos Adicionales > Controls > pfid-->
+                        <Label 
+                            Grid.Row="2"
+                            Grid.Column="6"
+                            Margin = "2">
+                            _PFID:</Label>
+
+                        <TextBox
+                            Grid.Row="2"
+                            Grid.Column="7"
+                            Text="{Binding pfid, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                            Margin="2">
+                        </TextBox>
+                        <!--#endregion-->
+                    </Grid>
+
+                    <!-- #region comisionGroupBox >Botón Guardar -->
+                    <Button 
+                        Content = "_Guardar..." 
+                        Click="GuardarComisionButton_Click"
+                        Margin = "20"/>
                     <!--#endregion-->
 
-                    <StackPanel Grid.Row = "3" Grid.ColumnSpan = "2">
-                        <Button 
-                            Content = "_Guardar..." 
-                            Click="GuardarComisionButton_Click"
-                            Margin = "20"/>
-
-                    </StackPanel>
-
-                </Grid>
-
+                </StackPanel>
 
             </GroupBox>
             <!-- #endregion comisionGroupBox -->
@@ -197,7 +361,7 @@
                 Name="filterGroupBox" 
                 Margin="16"
 	            materialDesign:ElevationAssist.Elevation="Dp3">
-                    
+
                 <GroupBox.Header>
                     <Label>Filtro</Label>
                 </GroupBox.Header>

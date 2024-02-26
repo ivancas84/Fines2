@@ -37,7 +37,9 @@ namespace Fines2Wpf.Values
     
         public override string ToString()
         {
-            var s = ToStringShort();
+            var s = Numero();
+            s += " ";
+            s += CalendarioAnioSemestre();
             s += " ";
             s += ValuesTree("sede")?.GetOrNull("nombre")?.ToString() ?? "?";
             return s;
@@ -56,14 +58,6 @@ namespace Fines2Wpf.Values
             return s;
         }
 
-        public string ToStringShort()
-        {
-            var s = Numero();
-            s += " ";
-            s += CalendarioAnioSemestre();
-            s += " ";
-            return s.Trim();
-        }
 
         /// <summary>
         /// Horario de la comision
