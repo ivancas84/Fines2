@@ -5,7 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Fines2Wpf.Windows.Comision.ListaComisionesSemestre"
         mc:Ignorable="d"
-        Title="Window1" Height="450" Width="800">
+        Title="Window1" Height="450" Width="800"
+        
+        xmlns:conv1="clr-namespace:WpfUtils.Converters">
+    <Window.Resources>
+        <conv1:BoolToStringConverter x:Key="noSiConverter" FalseValue="No" TrueValue="Sí" />
+    </Window.Resources>
     <DockPanel>
         <Grid DockPanel.Dock="Top">
 
@@ -106,11 +111,18 @@
                             <EventSetter Event="Hyperlink.Click" Handler="OnNumeroClick" />
                         </Style>
                     </DataGridHyperlinkColumn.ElementStyle>
+                    
                 </DataGridHyperlinkColumn>
                 
                 
 
-                <DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Background" Value="{Binding color_estado_inscripcion}"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Domicilio" Binding="{Binding domicilio__Label}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Horario" Binding="{Binding horario}"></DataGridTextColumn>
 
@@ -124,7 +136,17 @@
                 <DataGridTextColumn Header="Cant alu act" Binding="{Binding cantidad_alumnos_activos}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Cant alu" Binding="{Binding cantidad_alumnos}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Pfid" Binding="{Binding pfid}"></DataGridTextColumn>
-
+                <DataGridTextColumn 
+                        IsReadOnly="True" 
+                        Header="Autorizada" 
+                        ClipboardContentBinding="{Binding autorizada, Converter={StaticResource noSiConverter}}" 
+                        Binding="{Binding autorizada, Converter={StaticResource noSiConverter}}"/>
+                <DataGridTextColumn 
+                     IsReadOnly="True" 
+                     Header="Apertura" 
+                     ClipboardContentBinding="{Binding apertura, Converter={StaticResource noSiConverter}}" 
+                     Binding="{Binding apertura, Converter={StaticResource noSiConverter}}"/>
+                
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
