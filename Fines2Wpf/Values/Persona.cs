@@ -42,7 +42,7 @@ namespace Fines2Wpf.Values
         {
             if (response.ContainsKey("nombres") && !response["nombres"].IsNullOrEmpty())
             {
-                IEnumerable<string> nombres = response["nombres"].ToString()!.Trim().RemoveMultipleSpaces().Split(" ");
+                IEnumerable<string> nombres = response["nombres"].ToString()!.Trim().ToUpper().RemoveMultipleSpaces().Split(" ");
 
                 foreach (string nom in nombres)
                 {
@@ -52,13 +52,13 @@ namespace Fines2Wpf.Values
                         (
                             values.ContainsKey("nombres")
                             && !values["nombres"].IsNullOrEmpty()
-                            && values["nombres"].ToString().Contains(n)
+                            && values["nombres"].ToString().ToUpper().Contains(n)
                         )
                         ||
                         (
                             values.ContainsKey("apellidos")
                             && !values["apellidos"].IsNullOrEmpty()
-                            && values["apellidos"].ToString().Contains(n)
+                            && values["apellidos"].ToString().ToUpper().Contains(n)
                         )
                     )
                     {
@@ -70,7 +70,7 @@ namespace Fines2Wpf.Values
 
             if (response.ContainsKey("apellidos") && !response["apellidos"].IsNullOrEmpty())
             {
-                IEnumerable<string> apellidos = response["apellidos"].ToString()!.Trim().RemoveMultipleSpaces().Split(" ");
+                IEnumerable<string> apellidos = response["apellidos"].ToString()!.Trim().ToUpper().RemoveMultipleSpaces().Split(" ");
 
                 foreach (string ape in apellidos)
                 {
@@ -80,13 +80,13 @@ namespace Fines2Wpf.Values
                         (
                             values.ContainsKey("nombres")
                             && !values["nombres"].IsNullOrEmpty()
-                            && values["nombres"].ToString().Contains(a)
+                            && values["nombres"].ToString().ToUpper().Contains(a)
                         )
                         ||
                         (
                             values.ContainsKey("apellidos")
                             && !values["apellidos"].IsNullOrEmpty()
-                            && values["apellidos"].ToString().Contains(a)
+                            && values["apellidos"].ToString().ToUpper().Contains(a)
                         )
                     )
                     {
