@@ -6,6 +6,24 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 {
     public class Comision : Data_comision_r
     {
+        protected string? _colorApertura = null;
+        public string? colorApertura
+        {
+            get { return _colorApertura; }
+            set { _colorApertura = value; NotifyPropertyChanged(); }
+        }
+
+        public new bool? apertura
+        {
+            get { return _apertura; }
+            set { 
+                _apertura = value; 
+                if(value == true)
+                    colorApertura = "green";
+                NotifyPropertyChanged(); 
+            }
+        }
+
         protected string? _horario = null;
         public string? horario
         {
