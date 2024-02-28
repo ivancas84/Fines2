@@ -223,6 +223,7 @@
                         <ComboBoxItem>Correcto</ComboBoxItem>
                         <ComboBoxItem>Indeterminado</ComboBoxItem>
                         <ComboBoxItem>Caso particular</ComboBoxItem>
+                        <ComboBoxItem>Oyente</ComboBoxItem>
                         <ComboBoxItem>Titulado</ComboBoxItem>
                     </ComboBox>
 
