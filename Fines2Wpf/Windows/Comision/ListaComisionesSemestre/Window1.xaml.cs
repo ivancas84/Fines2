@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using Utils;
 using Fines2Wpf.Data;
 using Fines2Wpf.ViewModels;
+using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 {
@@ -23,18 +25,31 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
     /// </summary>
     public partial class Window1 : Window
     {
-        private ComisionSearch comisionSearch = new();
+        private Data_comision_r comisionSearch = new();
         private DAO.Comision comisionDAO = new();
-        private DAO.Sede sedeDAO = new();
-        private ObservableCollection<Data_comision_r> comisionData = new();
         private SqlOrganize.DAO dao = new(ContainerApp.db);
+
+        #region Filter con delay v1 - Atributos
+        private ObservableCollection<Data_comision_r> comisionOC = new();
+        private ICollectionView comisionCV;
+        DispatcherTimer comisionTypingTimer;
+        #endregion
 
         public Window1()
         {
             InitializeComponent();
-            this.sedeList.Visibility = Visibility.Collapsed; //al iniciar que no se vea la lista de opciones (estara vacia)
+
+            #region Filter con delay v1 - Inicializar atributos
+            var comisionCVS = new CollectionViewSource() { Source = comisionOC };
+            comisionCV = comisionCVS.View;
+            comisionCV.Filter = ComisionCV_Filter;
+            comisionGrid.ItemsSource = comisionCV;
+            #endregion
+
             comisionGrid.CellEditEnding += ComisionGrid_CellEditEnding!;
-            comisionGrid.ItemsSource = comisionData;
+            comisionSearch.calendario__anio  = Convert.ToInt16(DateTime.Now.Year);
+            comisionSearch.calendario__semestre  = DateTime.Now.ToSemester();
+            comisionSearch.autorizada  = true;
 
             DataContext = comisionSearch;
 
@@ -47,6 +62,51 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             Loaded += MainWindow_Loaded;
         }
 
+        /// <summary>Filter con delay v1 - Filter</summary>
+        private bool ComisionCV_Filter(object obj)
+        {
+            var o = obj as Data_comision_r;
+            string tramo = o.planificacion__anio + "/" + o.planificacion__semestre;
+            return comisionFilterTextBox.Text.IsNullOrEmpty()
+                || (tramo.ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
+                || (!o.pfid.IsNullOrEmptyOrDbNull() && o.pfid!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
+                || (!o.plan__orientacion.IsNullOrEmptyOrDbNull() && o.plan__orientacion!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
+                || (!o.Label.IsNullOrEmptyOrDbNull() && o.Label!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
+                || (!o.sede__nombre.IsNullOrEmptyOrDbNull() && o.sede__nombre!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
+                || (!o.sede__numero.IsNullOrEmptyOrDbNull() && o.sede__numero!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()));
+
+        }
+
+        /// <summary>Filter con delay v1 - TextChanged</summary>
+        private void ComisionFilterTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
+            if (comisionTypingTimer == null)
+            {
+                comisionTypingTimer = new DispatcherTimer();
+                comisionTypingTimer.Interval = TimeSpan.FromMilliseconds(300);
+                comisionTypingTimer.Tick += new EventHandler(ComisionFilterTextBox_HandleTypingTimerTimeout);
+
+            }
+
+            comisionTypingTimer.Stop(); // Resets the timer
+            comisionTypingTimer.Tag = (sender as TextBox).Text; // This should be done with EventArgs
+            comisionTypingTimer.Start();
+        }
+
+        /// <summary>Filter con delay v1 - HandleTypingTimerTimeout</summary>
+        private void ComisionFilterTextBox_HandleTypingTimerTimeout(object sender, EventArgs e)
+        {
+            var timer = sender as DispatcherTimer;
+            if (timer == null)
+                return;
+
+
+            if (comisionCV != null)
+                comisionCV.Refresh();
+
+            timer.Stop(); // The timer must be stopped! We want to act only once per keystroke.
+        }
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             LoadData();
@@ -54,7 +114,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object>> list = dao.SearchObj("comision", comisionSearch);
+            IEnumerable<Dictionary<string, object?>> list = dao.SearchObj("comision", comisionSearch);
             IEnumerable<object> idsSede = list.ColOfVal<object>("sede");
             IEnumerable<object> idsComision = list.ColOfVal<object>("id");
 
@@ -102,7 +162,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 
             }
 
-            comisionData.Clear();
+            comisionOC.Clear();
             foreach (IDictionary<string, object> item in list)
             {
                 var comision = (Values.Comision)ContainerApp.db.Values("comision").Values(item);
@@ -123,7 +183,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                 o.cantidad_alumnos_activos = cantidadAlumnosActivosPorComision.ContainsKey(o.id!) ? (long?)cantidadAlumnosActivosPorComision[o.id!] : 0;
                 o.cantidad_alumnos = cantidadAlumnosPorComision.ContainsKey(o.id!) ? (long?)cantidadAlumnosPorComision[o.id!] : 0;
 
-                comisionData.Add(o);
+                comisionOC.Add(o);
             }
         }
 
@@ -131,42 +191,6 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
         private void BuscarButton_Click(object sender, RoutedEventArgs e)
         {
             LoadData();
-        }
-
-        private void SedeText_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (this.sedeList.SelectedIndex > -1)
-                if (this.sedeText.Text.Equals(((Data_sede)this.sedeList.SelectedItem).nombre))
-                    return;
-                else
-                {
-                    this.sedeList.SelectedIndex = -1;
-                    this.comisionSearch.sede = null;
-                }
-
-
-
-            if (string.IsNullOrEmpty(this.sedeText.Text) || this.sedeText.Text.Length < 3)
-            {
-                this.sedeList.Visibility = Visibility.Collapsed;
-                return;
-            }
-
-            this.sedeList.Visibility = Visibility.Visible;
-
-            IEnumerable<Dictionary<string, object?>> list = sedeDAO.BusquedaAproximadaQuery(this.sedeText.Text).ColOfDictCache();
-            this.sedeList.ItemsSource = list.ColOfObj<Data_sede>();
-        }
-
-        private void SedeList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            this.sedeList.Visibility = Visibility.Collapsed;
-
-            if (this.sedeList.SelectedIndex > -1)
-            {
-                this.sedeText.Text = ((Data_sede)this.sedeList.SelectedItem).nombre;
-                this.comisionSearch.sede = ((Data_sede)this.sedeList.SelectedItem).id;
-            }
         }
 
 

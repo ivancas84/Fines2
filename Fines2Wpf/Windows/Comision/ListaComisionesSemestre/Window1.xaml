@@ -62,39 +62,20 @@
                 Grid.Row="2" 
                 Margin = "2" />
 
+            <!--#region Filter con delay v1-->
             <Label 
                 Name = "sedeLabel" 
                 Margin = "2" 
-                Grid.Row = "3">_Sede:</Label>
+                Grid.Row = "4">_Filtro:</Label>
 
             <TextBox 
-                Name="sedeText"
-                TextChanged="SedeText_TextChanged"
-                Margin="2"
-                Grid.Row = "3"
-                Grid.Column="2" />
-
-            <WrapPanel
-                Panel.ZIndex="2" 
                 Grid.Row = "4"
-                Grid.Column="2">
-
-                <ListBox 
-                    Name="sedeList"    
-                    Margin="2"
-                    SelectionChanged="SedeList_SelectionChanged">
-
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <TextBlock Text="{Binding nombre}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </WrapPanel>
-
-            <StackPanel Grid.Row = "4" Grid.ColumnSpan = "2">
+                Grid.Column="1"
+                Name ="comisionFilterTextBox"
+                TextChanged="ComisionFilterTextBox_TextChanged"/>
+            <!--#endregion-->
+            
+            <StackPanel Grid.Row = "3" Grid.ColumnSpan = "2">
                 <Button Content = "_Buscar..." Click="BuscarButton_Click" />
             </StackPanel>
         </Grid>
