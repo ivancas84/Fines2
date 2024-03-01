@@ -220,6 +220,10 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 calificacion.curso__Label = curso.Label;
 
                 calificacion.Validate = true;
+
+                calificacion.color_nota_final = ((calificacion.nota_final.IsNullOrEmptyOrDbNull() || calificacion.nota_final < 7) && calificacion.crec < 4) ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
+                calificacion.color_crec = ((calificacion.crec.IsNullOrEmptyOrDbNull() || calificacion.crec < 4) && calificacion.nota_final < 7) ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
+                
                 calificacionOC.Add(calificacion);
             }
         }
@@ -712,7 +716,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void DescargarArchivo_Click(object sender, RoutedEventArgs e)
         {
-
             var dp = ((Hyperlink)e.OriginalSource).DataContext as DetallePersona;
             WebClient client = new WebClient();
             client.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
@@ -725,8 +728,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             saveFileDialog.FileName = dp.archivo__name;
             if (saveFileDialog.ShowDialog() == true)
                 client.DownloadFile(ContainerApp.config.upload + dp.archivo__content, saveFileDialog.FileName);
-
-
         }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
@@ -816,6 +817,23 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     .AddText("Error al eliminar Legajo: " + ex.Message)
                     .Show();
             }
+        }
+
+        private void GenerarButton_Click(object sender, RoutedEventArgs e)
+        {
+            Data_alumno alumnoObj = (Data_alumno)alumnoGroupBox.DataContext;
+            if (alumnoObj.plan.IsNullOrEmptyOrDbNull())
+            {
+                new ToastContentBuilder()
+                    .AddText("Administración de Alumno")
+                    .AddText("Para generar las calificaciones, debe definir el plan de ingreso del alumno.")
+                    .Show();
+                return;
+            }
+
+            ContainerApp.db.Query("calificacion").
+                Where("");
+
         }
     }
 

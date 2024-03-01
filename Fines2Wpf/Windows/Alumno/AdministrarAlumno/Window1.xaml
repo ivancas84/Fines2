@@ -130,8 +130,6 @@
                         <ComboBoxItem Content="Femenino" />
                         <ComboBoxItem Content="Otro" />
                     </ComboBox>
-
-                    
                     
                     <Label Grid.Row="1"
                            Grid.Column="4"
@@ -140,8 +138,6 @@
                              Grid.Column="5"
                              SelectedDate="{Binding fecha_nacimiento, ValidatesOnDataErrors=True}"
                              Margin = "5,10"></DatePicker>
-
-
 
                     <Label Grid.Row="2" 
                            Margin = "5,10">_Telefono:</Label>
@@ -568,6 +564,7 @@
                         <Label>Filtro</Label>
                         <TextBox Name ="calificacionFilterTextBox"
                              TextChanged="CalificacionFilterTextBox_TextChanged" Width="200"></TextBox>
+                        <Button Click="GenerarButton_Click">Generar</Button>
                     </WrapPanel>
 
                     <DataGrid 
@@ -601,9 +598,21 @@
                                 </DataGridComboBoxColumn.EditingElementStyle>
                             </DataGridComboBoxColumn>
 
-                            <DataGridTextColumn Header="Nota" Binding="{Binding nota_final, ValidatesOnDataErrors=True}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Nota" Binding="{Binding nota_final, ValidatesOnDataErrors=True}">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Background" Value="{Binding color_nota_final}"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
 
-                            <DataGridTextColumn Header="Crec" Binding="{Binding crec, ValidatesOnDataErrors=True}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Crec" Binding="{Binding crec, ValidatesOnDataErrors=True}">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Background" Value="{Binding color_crec}"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
 
                             <DataGridTemplateColumn Header="Fecha">
                                 <DataGridTemplateColumn.CellTemplate>

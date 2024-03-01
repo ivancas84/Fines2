@@ -7,9 +7,11 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
     {
         public ObservableCollection<Data_disposicion_r> Disposiciones { get; set; } = new();
 
-
-
         public ObservableCollection<Data_curso_r> Cursos { get; set; } = new();
-        public string SearchCurso { get; set; } = "";        
+        
+        public string SearchCurso { get; set; } = "";
+
+        public string color_nota_final { get; set; } = "";
+        public string color_crec { get; set; } = "";
     }
 }
