@@ -88,6 +88,18 @@ namespace Fines2Wpf.DAO
                .Parameters(idAlumno, idPlan, archivado);
         }
 
+        public EntityQuery CalificacionesArchivadasDeAlumnoQuery(object idAlumno)
+        {
+            return ContainerApp.db.Query("calificacion")
+               .Size(0)
+               .Where(@"
+                    $alumno = @0
+                    AND $archivado = true
+                ")
+                .Order("$planificacion_dis-anio ASC, $planificacion_dis-semestre ASC, $asignatura-nombre")
+               .Parameters(idAlumno);
+        }
+
 
 
     }

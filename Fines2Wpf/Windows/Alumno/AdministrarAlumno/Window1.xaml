@@ -30,6 +30,7 @@
                 <RowDefinition Height = "*" />
                 <RowDefinition Height = "*" />
                 <RowDefinition Height = "*" />
+                <RowDefinition Height = "*" />
 
             </Grid.RowDefinitions>
 
@@ -725,8 +726,47 @@
                 </StackPanel>
             </GroupBox>
 
-            
-        </Grid>
 
+            <GroupBox Name="calificacionArchivadaGroupBox"
+                      Header="Calificaciones Archivadas"                      
+                      Grid.Row = "7" 
+                      Margin="16"
+	                  materialDesign:ElevationAssist.Elevation="Dp3">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width = "*" />
+                    </Grid.ColumnDefinitions>
+
+                    <WrapPanel>
+                        <Label>Filtro</Label>
+                        <TextBox Name ="calificacionArchivadaFilterTextBox"
+                             TextChanged="CalificacionArchivadaFilterTextBox_TextChanged" Width="200"></TextBox>
+                    </WrapPanel>
+
+                    <DataGrid 
+                        CanUserAddRows="False" 
+                        Grid.Row="1" 
+                        Name="calificacionArchivadaDataGrid" 
+                        AutoGenerateColumns="False"
+                        >
+
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn Header="Disposicion" Binding="{Binding disposicion__Label, ValidatesOnDataErrors=True}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Nota Final" Binding="{Binding nota_final, ValidatesOnDataErrors=True}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="CREC" Binding="{Binding crec, ValidatesOnDataErrors=True}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Fecha" Binding="{Binding fecha}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Curso" Binding="{Binding curso__Label}"></DataGridTextColumn>
+
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </GroupBox>
+        </Grid>
     </ScrollViewer>
 </Window>

@@ -1,7 +1,6 @@
 ﻿
 using CommunityToolkit.WinUI.Notifications;
 using Fines2Wpf.Data;
-using Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre;
 using Microsoft.Win32;
 using MimeTypes;
 using SqlOrganize;
@@ -10,8 +9,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -55,6 +54,13 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         Calificacion calificacion; //calificacion que esta siendo administrada
         private ObservableCollection<Data_disposicion_r> disposicionOC = new(); //datos a visualizar del comboBox
         private DispatcherTimer cursoTypingTimer; //timer para busqueda de comision en asignacion
+        #endregion
+
+        #region calificacionArchivadaGroupBox
+        private ObservableCollection<Data_calificacion_r> calificacionArchivadaOC = new(); //datos a visualizar
+        private ICollectionView calificacionArchivadaCV; //CV para filtro
+        DispatcherTimer calificacionArchivadaTypingTimer; //timer para filtro
+        Calificacion calificacionArchivada; //calificacion que esta siendo administrada
         #endregion
 
         #region detallePersonaGroupBox
@@ -125,6 +131,13 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             calificacionCV.Filter = CalificacionCV_Filter;
             calificacionDataGrid.ItemsSource = calificacionCV;
             calificacionDataGrid.CellEditEnding += CalificacionDataGrid_CellEditEnding;
+            #endregion
+
+            #region calificacionArchivadaGroupBox
+            var calificacionArchivadaCVS = new CollectionViewSource() { Source = calificacionArchivadaOC };
+            calificacionArchivadaCV = calificacionArchivadaCVS.View;
+            calificacionArchivadaCV.Filter = CalificacionArchivadaCV_Filter;
+            calificacionArchivadaDataGrid.ItemsSource = calificacionArchivadaCV;
             #endregion
 
             #region detallePersonaGroupBox
@@ -221,10 +234,39 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
                 calificacion.Validate = true;
 
-                calificacion.color_nota_final = ((calificacion.nota_final.IsNullOrEmptyOrDbNull() || calificacion.nota_final < 7) && calificacion.crec < 4) ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
-                calificacion.color_crec = ((calificacion.crec.IsNullOrEmptyOrDbNull() || calificacion.crec < 4) && calificacion.nota_final < 7) ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
+                calificacion.color_nota_final = ContainerApp.config.colorRed;
+                calificacion.color_crec = ContainerApp.config.colorRed;
+
+                if ((!calificacion.nota_final.IsNullOrEmptyOrDbNull() && calificacion.nota_final >= 7)
+                   || (!calificacion.crec.IsNullOrEmptyOrDbNull() && calificacion.crec >= 4))
+                {
+                    calificacion.color_nota_final = ContainerApp.config.colorGreen;
+                    calificacion.color_crec = ContainerApp.config.colorGreen;
+                }
                 
                 calificacionOC.Add(calificacion);
+            }
+        }
+
+        private void LoadCalificacionesArchivadas(Data_alumno a)
+        {
+            calificacionArchivadaOC.Clear();
+
+            if (a.IsNullOrEmptyOrDbNull() || a.id.IsNullOrEmptyOrDbNull())
+                return;
+
+            var data = calificacionDAO.CalificacionesArchivadasDeAlumnoQuery(a.id!).ColOfDictCache();
+
+            foreach (var item in data)
+            {
+                var calificacion = item.Obj<Data_calificacion_r>();
+
+                calificacion.disposicion__Label = ContainerApp.db.Values("disposicion", "disposicion").Set(item).ToString();
+
+                var valc = (Values.Curso)ContainerApp.db.Values("curso", "curso").Set(item);
+                calificacion.curso__Label = valc.ToStringDocente();
+
+                calificacionArchivadaOC.Add(calificacion);
             }
         }
 
@@ -389,6 +431,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 SetAlumnoGroupBox(a);
                 LoadAsignaciones(a);
                 LoadCalificaciones(a);
+                LoadCalificacionesArchivadas(a);
                 LoadDisposiciones(a);
                 LoadDetalles(pcb);
             }
@@ -400,7 +443,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 calificacionOC.Clear();
                 disposicionOC.Clear();
                 detallePersonaOC.Clear();
-
+                calificacionArchivadaOC.Clear();
                 this.personaComboBox.IsDropDownOpen = true;
             }
         }
@@ -531,6 +574,43 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         #endregion asignacionGroupBox
 
+
+        #region calificacionGroupBox
+        private bool CalificacionArchivadaCV_Filter(object obj)
+        {
+            var o = obj as Data_calificacion_r;
+            return calificacionArchivadaFilterTextBox.Text.IsNullOrEmpty()
+                || (!o.asignatura_dis__nombre.IsNullOrEmptyOrDbNull() && o.asignatura_dis__nombre.ToString().ToLower().Contains(calificacionArchivadaFilterTextBox.Text.ToLower()));
+
+        }
+
+        private void CalificacionArchivadaFilterTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (calificacionArchivadaTypingTimer == null)
+            {
+                calificacionArchivadaTypingTimer = new DispatcherTimer();
+                calificacionArchivadaTypingTimer.Interval = TimeSpan.FromMilliseconds(300);
+                calificacionArchivadaTypingTimer.Tick += new EventHandler(CalificacionArchivadaFilterTextBox_HandleTypingTimerTimeout);
+
+            }
+
+            calificacionArchivadaTypingTimer.Stop(); // Resets the timer
+            calificacionArchivadaTypingTimer.Tag = (sender as TextBox).Text; // This should be done with EventArgs
+            calificacionArchivadaTypingTimer.Start();
+        }
+
+        private void CalificacionArchivadaFilterTextBox_HandleTypingTimerTimeout(object sender, EventArgs e)
+        {
+            var timer = sender as DispatcherTimer;
+            if (timer == null)
+                return;
+
+            if (calificacionArchivadaCV != null)
+                calificacionArchivadaCV.Refresh();
+
+            timer.Stop();// The timer must be stopped! We want to act only once per keystroke.
+        }
+        #endregion
 
         #region calificacionGroupBox
         private bool CalificacionCV_Filter(object obj)
@@ -821,19 +901,167 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void GenerarButton_Click(object sender, RoutedEventArgs e)
         {
-            Data_alumno alumnoObj = (Data_alumno)alumnoGroupBox.DataContext;
-            if (alumnoObj.plan.IsNullOrEmptyOrDbNull())
+            try
+            {
+                Data_alumno alumnoObj = (Data_alumno)alumnoGroupBox.DataContext;
+                if (alumnoObj.plan.IsNullOrEmptyOrDbNull() || alumnoObj.anio_ingreso.IsNullOrEmptyOrDbNull() || alumnoObj.semestre_ingreso.IsNullOrEmptyOrDbNull())
+                    throw new Exception("Para generar las calificaciones, deben estar definidos los datos de ingreso: Plan, año y semestre.");
+
+                (string anio, string semestre) tramoAnterior = (ContainerApp.db.Values("planificacion").
+                    Sset("anio", alumnoObj.anio_ingreso!).
+                    Sset("semestre", alumnoObj.semestre_ingreso!) as Values.Planificacion)!.
+                    AnioSemestreAnterior();
+
+                EntityPersist persist = ContainerApp.db.Persist();
+
+                #region Eliminar calificaciones desaprobadas
+                IEnumerable<object> idsCalificaciones = ContainerApp.db.Query("calificacion").
+                    Size(0).
+                    Where(@"
+                        $alumno = @1
+                        AND (
+                            ($nota_final < 7 AND $crec < 4)
+                            OR ($nota_final < 7 AND $crec IS NULL)
+                            OR ($nota_final IS NULL AND $crec < 4)
+                            OR ($nota_final IS NULL AND $crec IS NULL)
+                        )
+                    ").
+                    Parameters(alumnoObj.plan!, alumnoObj.id!).
+                    Column<object>("id");
+                
+                if (idsCalificaciones.Count() > 0)
+                    persist.DeleteIds("calificacion", idsCalificaciones.ToArray());
+                #endregion
+
+                #region Archivar calificaciones aprobadas de otro plan
+                idsCalificaciones = ContainerApp.db.Query("calificacion").
+                    Size(0).
+                    Where(@"
+                        $planificacion_dis-plan != @0 AND $alumno = @1
+                        AND $archivado = false 
+                        AND ($nota_final >= 7 OR $crec >= 4)").
+                    Parameters(alumnoObj.plan!, alumnoObj.id!).
+                    Column<object>("id");
+
+                if (idsCalificaciones.Count() > 0)
+                    persist.UpdateValueIds("calificacion", "archivado", true, idsCalificaciones.ToArray());
+                #endregion
+
+                #region Archivar calificaciones aprobadas del mismo plan pero con año y semestre inferior
+                idsCalificaciones = ContainerApp.db.Query("calificacion").
+                    Size(0).
+                    Where(@"
+                        $planificacion_dis-plan = @0
+                        AND $planificacion_dis-anio <= @1 AND $planificacion_dis-semestre <= @2 
+                        AND $alumno = @3
+                        AND $archivado = false  
+                        AND ($nota_final >= 7 OR $crec >= 4)").
+                    Parameters(alumnoObj.plan!, tramoAnterior.anio!, tramoAnterior.semestre!, alumnoObj.id!).
+                    Column<object>("id");
+
+                if (idsCalificaciones.Count() > 0)
+                    persist.UpdateValueIds("calificacion", "archivado", true, idsCalificaciones.ToArray());
+                #endregion
+
+                #region Desarchivar calificaciones aprobadas del mismo plan
+                idsCalificaciones = ContainerApp.db.Query("calificacion").
+                    Size(0).
+                    Where(@"
+                        $planificacion_dis-plan = @0 
+                        AND $planificacion_dis-anio >= @1 
+                        AND $planificacion_dis-semestre >= @2 
+                        AND $archivado = true  
+                        AND ($nota_final >= 7 OR $crec >= 4)
+                        AND $alumno = @3").
+                    Parameters(alumnoObj.plan!, alumnoObj.anio_ingreso!, alumnoObj.semestre_ingreso!, alumnoObj.id!).
+                    Column<object>("id");
+
+                if (idsCalificaciones.Count() > 0)
+                    persist.UpdateValueIds("calificacion", "archivado", false, idsCalificaciones.ToArray());
+                #endregion
+
+                #region Consultar disposiciones del mismo plan
+                IEnumerable<object> idsDisposicionesAprobadas = ContainerApp.db.Query("calificacion").
+                    Size(0).
+                    Where(@"
+                        $planificacion_dis-plan = @0 
+                        AND $planificacion_dis-anio >= @1 
+                        AND $planificacion_dis-semestre >= @2 
+                        AND ($nota_final >= 7 OR $crec >= 4)
+                        AND $alumno = @3").
+                    Parameters(alumnoObj.plan!, alumnoObj.anio_ingreso!, alumnoObj.semestre_ingreso!, alumnoObj.id!).
+                    Column<object>("disposicion");
+                #endregion
+
+                #region consultar disposiciones segun el plan, anio y semestre de ingreso
+                IEnumerable<object> idsDisposiciones = ContainerApp.db.Query("disposicion").
+                    Size(0).
+                    Where(@"
+                        $planificacion-plan = @0 
+                        AND $planificacion-anio >= @1 
+                        AND $planificacion-semestre >= @2").
+                    Parameters(alumnoObj.plan!, alumnoObj.anio_ingreso!, alumnoObj.semestre_ingreso!).
+                    Column<object>("id");
+                #endregion
+
+
+                #region Insertar calificaciones de disposiciones faltantes
+                foreach (var id in idsDisposiciones)
+                {
+                    if (!idsDisposicionesAprobadas.Contains(id))
+                    {
+                        Data_calificacion calificacionObj = new(DataInitMode.Default);
+                        calificacionObj.disposicion = (string)id;
+                        calificacionObj.alumno = alumnoObj.id;
+                        calificacionObj.archivado = false;
+                        persist.InsertObj("calificacion", calificacionObj);
+                    }
+                }
+
+                #region Archivar calificaciones repetidas
+                idsDisposiciones = ContainerApp.db.Query("calificacion").
+                    Select("COUNT(*) as cantidad").
+                    Size(0).
+                    Group("$disposicion").
+                    Where(@"
+                        $planificacion_dis-plan = @0 
+                        AND $planificacion_dis-anio >= @1 
+                        AND $planificacion_dis-semestre >= @2 
+                        AND $archivado = false  
+                        AND ($nota_final >= 7 OR $crec >= 4)
+                        AND $alumno = @3").
+                    Having("cantidad > 1").
+                    Parameters(alumnoObj.plan!, alumnoObj.anio_ingreso!, alumnoObj.semestre_ingreso!, alumnoObj.id!).
+                    Column<object>("disposicion");
+
+                if (idsDisposiciones.Count() > 0)
+                {
+                    idsCalificaciones = ContainerApp.db.Query("calificacion").
+                        Select("MAX($id) AS id").
+                        Group("$disposicion").
+                        Size(0).
+                        Where("$disposicion IN ( @0 ) ").
+                        Parameters(idsDisposiciones).
+                        Column<object>("id");
+
+                    if (idsCalificaciones.Count() > 0)
+                        persist.UpdateValueIds("calificacion", "archivado", false, idsCalificaciones.ToArray());
+                }
+                #endregion
+
+                persist.TransactionSplit().RemoveCache();
+                LoadCalificaciones(alumnoObj);
+                LoadCalificacionesArchivadas(alumnoObj);
+                #endregion
+            }
+            catch (Exception ex)
             {
                 new ToastContentBuilder()
-                    .AddText("Administración de Alumno")
-                    .AddText("Para generar las calificaciones, debe definir el plan de ingreso del alumno.")
-                    .Show();
+                   .AddText("Administración de Alumno")
+                   .AddText("ERROR: " + ex.Message)
+                   .Show();
                 return;
             }
-
-            ContainerApp.db.Query("calificacion").
-                Where("");
-
         }
     }
 
