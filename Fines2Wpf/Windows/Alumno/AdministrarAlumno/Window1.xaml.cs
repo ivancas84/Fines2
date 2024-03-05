@@ -907,12 +907,32 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 if (alumnoObj.plan.IsNullOrEmptyOrDbNull() || alumnoObj.anio_ingreso.IsNullOrEmptyOrDbNull() || alumnoObj.semestre_ingreso.IsNullOrEmptyOrDbNull())
                     throw new Exception("Para generar las calificaciones, deben estar definidos los datos de ingreso: Plan, año y semestre.");
 
-                (string anio, string semestre) tramoAnterior = (ContainerApp.db.Values("planificacion").
+                EntityPersist persist = ContainerApp.db.Persist();
+
+                if (!alumnoObj.anio_ingreso.Equals("1") && alumnoObj.semestre_ingreso != 1)
+                {
+                    (string anio, string semestre) tramoAnterior = (ContainerApp.db.Values("planificacion").
                     Sset("anio", alumnoObj.anio_ingreso!).
                     Sset("semestre", alumnoObj.semestre_ingreso!) as Values.Planificacion)!.
                     AnioSemestreAnterior();
 
-                EntityPersist persist = ContainerApp.db.Persist();
+                    #region Archivar calificaciones aprobadas del mismo plan pero con año y semestre inferior
+                    IEnumerable<object> idsCalificaciones_ = ContainerApp.db.Query("calificacion").
+                        Size(0).
+                        Where(@"
+                        $planificacion_dis-plan = @0
+                        AND $planificacion_dis-anio <= @1 AND $planificacion_dis-semestre <= @2 
+                        AND $alumno = @3
+                        AND $archivado = false  
+                        AND ($nota_final >= 7 OR $crec >= 4)").
+                        Parameters(alumnoObj.plan!, tramoAnterior.anio!, tramoAnterior.semestre!, alumnoObj.id!).
+                        Column<object>("id");
+
+                    if (idsCalificaciones_.Count() > 0)
+                        persist.UpdateValueIds("calificacion", "archivado", true, idsCalificaciones_.ToArray());
+                    #endregion
+                }
+
 
                 #region Eliminar calificaciones desaprobadas
                 IEnumerable<object> idsCalificaciones = ContainerApp.db.Query("calificacion").
@@ -941,22 +961,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                         AND $archivado = false 
                         AND ($nota_final >= 7 OR $crec >= 4)").
                     Parameters(alumnoObj.plan!, alumnoObj.id!).
-                    Column<object>("id");
-
-                if (idsCalificaciones.Count() > 0)
-                    persist.UpdateValueIds("calificacion", "archivado", true, idsCalificaciones.ToArray());
-                #endregion
-
-                #region Archivar calificaciones aprobadas del mismo plan pero con año y semestre inferior
-                idsCalificaciones = ContainerApp.db.Query("calificacion").
-                    Size(0).
-                    Where(@"
-                        $planificacion_dis-plan = @0
-                        AND $planificacion_dis-anio <= @1 AND $planificacion_dis-semestre <= @2 
-                        AND $alumno = @3
-                        AND $archivado = false  
-                        AND ($nota_final >= 7 OR $crec >= 4)").
-                    Parameters(alumnoObj.plan!, tramoAnterior.anio!, tramoAnterior.semestre!, alumnoObj.id!).
                     Column<object>("id");
 
                 if (idsCalificaciones.Count() > 0)
