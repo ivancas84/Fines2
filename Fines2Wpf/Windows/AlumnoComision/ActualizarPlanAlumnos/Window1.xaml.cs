@@ -29,15 +29,17 @@ namespace Fines2Wpf.Windows.AlumnoComision.ActualizarPlanAlumnos
             InitializeComponent();
         
             var comisiones = comisionDAO.ComisionesAutorizadasPorSemestre("2023", "2");
-
+            bool persist_ = false;
             var persist = ContainerApp.db.Persist();
             foreach (var comision in comisiones)
             {
                 var idAlumnos = asignacionDAO.IdAlumnosConPlanDiferenteDeComision(comision["id"], comision["planificacion-plan"]);
                 if (idAlumnos.IsNullOrEmpty()) continue;
+                persist_ = true;
                 persist.UpdateValueIds("alumno", "plan", comision["planificacion-plan"], idAlumnos.ToArray());
             }
-            persist.Transaction().RemoveCache();
+            if(persist_)
+                   persist.Transaction().RemoveCache();
         }
     }
 }

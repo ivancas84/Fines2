@@ -88,7 +88,7 @@ namespace Fines2Wpf.DAO
         public IEnumerable<Dictionary<string, object>> ComisionesAutorizadasPorSemestre(object anio, object semestre)
         {
             IEnumerable<object> ids = IdsComisionesAutorizadasPorCalendario(anio, semestre);
-            return ContainerApp.db.Query("comision").CacheByIds(ids);
+            return ContainerApp.db.Query("comision").CacheByIds(ids.ToArray());
         }
 
         public EntityQuery ComisionesAutorizadasPorSemestreQuery(object anio, object semestre)
