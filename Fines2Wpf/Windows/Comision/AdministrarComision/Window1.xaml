@@ -19,7 +19,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height = "Auto" />
                 <RowDefinition Height = "Auto" />
-                <RowDefinition Height = "Auto" />
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -356,25 +355,32 @@
             </GroupBox>
             <!-- #endregion comisionGroupBox -->
 
-            <GroupBox
-                Grid.Row="1"
-                Name="filterGroupBox" 
-                Margin="16"
-	            materialDesign:ElevationAssist.Elevation="Dp3">
-
-                <GroupBox.Header>
-                    <Label>Filtro</Label>
-                </GroupBox.Header>
-            </GroupBox>
+      
 
             <GroupBox 
-                  Name="dataGroupBox" 
-                  Grid.Row="2"
+                  Name="cursosGroupBox" 
+                  Grid.Row="1"
                   Margin="16"
 	          materialDesign:ElevationAssist.Elevation="Dp3">
                 <GroupBox.Header>
-                    <Label>Grilla de datos</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <Label>Cursos de la Comisión</Label>
+                        <Button Click="GenerarCursosButton_Click">Generar Cursos</Button>
+                    </StackPanel>
                 </GroupBox.Header>
+                <DataGrid 
+                    Name="cursosDataGrid" 
+                    AutoGenerateColumns="False" 
+                    CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__nombre}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Codigo" Binding="{Binding asignatura__codigo}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Hs Cat" Binding="{Binding horas_catedra}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Horario PF" Binding="{Binding descripcion_horario}"></DataGridTextColumn>
+
+                    </DataGrid.Columns>
+                </DataGrid>
+
             </GroupBox>
         </Grid>
     </ScrollViewer>

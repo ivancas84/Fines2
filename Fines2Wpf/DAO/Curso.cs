@@ -56,5 +56,15 @@ namespace Fines2Wpf.DAO
                .Parameters("%" + search + "%");
         }
 
+        public EntityQuery CursosDeComisionQuery(object idComision)
+        {
+            return ContainerApp.db.Query("curso")
+              .Fields()
+              .Size(0)
+              .Where("$comision = @0")
+              .Parameters(idComision)
+              .Order("$asignatura-nombre ASC");
+        }
+
     }
 }

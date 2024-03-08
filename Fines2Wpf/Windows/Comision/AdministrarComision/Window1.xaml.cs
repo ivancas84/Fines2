@@ -18,6 +18,8 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
     /// </summary>
     public partial class Window1 : Window
     {
+        DAO.Curso cursoDAO = new();
+
         #region Autocomplete v2 sede
         private ObservableCollection<Data_sede_r> sedeOC = new(); //datos consultados de la base de datos
         private DispatcherTimer sedeTypingTimer; //timer para buscar
@@ -35,6 +37,10 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
         private ObservableCollection<Data_planificacion_r> planificacionOC = new();
 
         private ObservableCollection<Data_calendario> calendarioOC = new();
+
+        private ObservableCollection<Data_curso_r> cursoOC = new();
+
+
 
         public Window1(string? idComision = null)
         {
@@ -113,9 +119,15 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             }
             #endregion
 
+
+
             #region definir datos iniciales
-            if (idComision.IsNullOrEmptyOrDbNull())
+            cursosDataGrid.ItemsSource = cursoOC;
+            cursoOC.Clear();
+
+            if (idComision.IsNullOrEmptyOrDbNull()) { 
                 comisionGroupBox.DataContext = new Data_comision(DataInitMode.DefaultMain);
+            }
             else
             {
                 var comision = ContainerApp.dao.Get("comision", idComision!).Obj<Data_comision_r>();
@@ -133,10 +145,19 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
                     comisionSiguienteInicial.Label = comisionSiguienteInicial.sede__numero + comisionSiguienteInicial.division + "/" + comisionSiguienteInicial.planificacion__anio + comisionSiguienteInicial.planificacion__semestre + " " + comisionSiguienteInicial.calendario__anio + "-" + comisionSiguienteInicial.calendario__semestre;
                     comisionOC.Add(comisionSiguienteInicial);
                 }
-                
+
+                LoadCursos();
             }
             #endregion
 
+
+        }
+
+        private void LoadCursos()
+        {
+            var comision = (Data_comision)comisionGroupBox.DataContext;
+            cursoOC.Clear();
+            cursoOC.AddRange(cursoDAO.CursosDeComisionQuery(comision.id!).ColOfDictCache().ColOfObj<Data_curso_r>());
 
         }
 
@@ -315,6 +336,20 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
 
             if (cb.SelectedIndex < 0)
                 cb.IsDropDownOpen = true;
+        }
+
+        private void GenerarCursosButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                (ContainerApp.db.Values("comision").SetObj(comisionGroupBox.DataContext) as Values.Comision)!.GenerarCursos();
+                LoadCursos();
+            }catch(Exception ex) {
+                new ToastContentBuilder()
+                    .AddText(this.Title)
+                    .AddText("Error: " + ex.Message)
+                    .Show();
+            }
         }
     }
 }

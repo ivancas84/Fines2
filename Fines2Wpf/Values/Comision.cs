@@ -14,6 +14,7 @@ namespace Fines2Wpf.Values
         public Comision(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
         {
         }
+
         public string Numero()
         {
             var s = "";
@@ -85,5 +86,39 @@ namespace Fines2Wpf.Values
             return dias + " " + hora_inicio + " " + hora_fin;
         }
 
+        public void GenerarCursos()
+        {
+            EntityPersist persist = ContainerApp.db.Persist();
+            if (GetOrNull("id").IsNullOrEmptyOrDbNull() || GetOrNull("planificacion").IsNullOrEmptyOrDbNull())
+                throw new Exception("No se pueden generar los cursos: No está correctamente definido el id o la planificación");
+
+            IEnumerable<object> idsCursos = ContainerApp.db.Query("curso").
+                Where("$comision = @0").
+                Parameters(Get("id")).
+                ColOfDict().
+                ColOfVal<object>("id");
+            
+            if(idsCursos.Count()>0)
+                persist.DeleteIds("curso", idsCursos.ToArray());
+
+            IEnumerable<Dictionary<string, object?>> distribucionesHorariasData = ContainerApp.db.Query("distribucion_horaria").
+                Select("SUM($horas_catedra) AS suma_horas_catedra").
+                Group("$disposicion-asignatura").
+                Where("$disposicion-planificacion IN ( @0 )").
+                Parameters(Get("planificacion")).ColOfDict();
+
+            foreach(Dictionary<string, object?> dh in distribucionesHorariasData)
+            {
+                EntityValues cursoVal = ContainerApp.db.Values("curso").
+                    Set("comision", Get("id")).
+                    Set("asignatura", dh["disposicion-asignatura"]).
+                    Set("horas_catedra", dh["suma_horas_catedra"]).
+                    Default().Reset();
+
+                persist.Insert(cursoVal);
+            }
+
+            persist.Transaction().RemoveCache();
+        }
     }
 }
