@@ -34,13 +34,12 @@ namespace Fines2Wpf.Windows.EnviarEmailToma
 <p><strong>Para confirmar su toma de posesión, necesitamos que responda este email indicando que la información del documento adjunto es correcta.</strong></p>
 <p>Se recuerda que al aceptar su toma de posesión, usted se compromete a:</p>
   <ul>
-    <li>Tener al día las planillas de finalización y entregarlas cuando se le solicite respetando el formato y las instrucciones (<a href=""https://planfines2.com.ar/wp/planillas-de-finalizacion/"">Descargar planillas e instrucciones</a>).</li>
+    <li>Completar las planillas de finalización en tiempo y forma.</li>
     <li>Participar de las mesas de examen cuando se lo requiera.</li>
     <li>Atender a la brevedad cualquier solicitud indicada por el CENS.</li>
   </ul>
 </p>
-<p><strong>Importante</strong></p>
-<p>Los docentes que nunca hayan trabajado en el CENS 462 serán convocados a una breve entrevista virtual con el director.</p>
+<p><strong>Para cualquier duda comuníquese vía mensaje o audio de WhatsApp al número 2216713326</strong></p>
 <br>
 Saluda a Usted muy atentamente:
 <br>
