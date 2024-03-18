@@ -178,6 +178,12 @@ namespace Fines2Wpf
             Windows.Comision.AdministrarComision.Window1 window1 = new();
             window1.Show();
         }
+
+        private void GenerarPDFTomaPosesion_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.TomaPosesionPdf.Window1 window1 = new();
+            window1.Show();
+        }
     }
 }
 

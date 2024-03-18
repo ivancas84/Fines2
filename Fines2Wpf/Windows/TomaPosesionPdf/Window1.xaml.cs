@@ -18,6 +18,7 @@ using System.Windows.Shapes;
 using Fines2Wpf.Windows.TomaPosesionPdf;
 using Utils;
 using Fines2Wpf.Windows.ListaTomas;
+using Fines2Wpf.Data;
 
 namespace Fines2Wpf.Windows.TomaPosesionPdf
 {
@@ -28,17 +29,19 @@ namespace Fines2Wpf.Windows.TomaPosesionPdf
     {
 
         Search search = new();
-        DAO dao = new();
+        DAO.Toma tomaDao = new();
         QRCodeGenerator qrGenerator = new QRCodeGenerator();
 
         public Window1()
         {
+            string calendarioAnio = "2023"; //DateTime.Now.Year.ToString();
+            int calendarioSemestre = 2; //DateTime.Now.ToSemester();
+
             InitializeComponent();
-            IEnumerable<Dictionary<string, object>> list = dao.TomaAll(search);
+            IEnumerable<Dictionary<string, object>> list = tomaDao.TomasSemestre(calendarioAnio, calendarioSemestre) ;
             foreach(Dictionary<string, object> item in list)
             {
                 Toma toma = item.Obj<Toma>();
-                if (!toma.comision__pfid.Equals("10078") && !toma.comision__pfid.Equals("10089")) continue;
                 QRCodeData qrCodeData = qrGenerator.CreateQrCode("https://planfines2.com.ar/validar-toma/" + toma.id, QRCodeGenerator.ECCLevel.Q);
                 QRCode qrCode = new QRCode(qrCodeData);
                 Bitmap qrCodeImage = qrCode.GetGraphic(20);
@@ -61,38 +64,8 @@ namespace Fines2Wpf.Windows.TomaPosesionPdf
         public int calendario__semestre { get; set; } = DateTime.Now.ToSemester();
     }
 
-    internal class Toma
+    internal class Toma  : Data_toma_r
     {
-        public string id { get; set; }
-
-        public int curso__horas_catedra { get; set; }
-
-        public string curso__descripcion_horario { get; set; }
-
-        public string docente__nombres { get; set; }
-        public string docente__apellidos { get; set; }
-        public string docente__cuil { get; set; }
-        public string docente__numero_documento { get; set; }
-        public DateTime docente__fecha_nacimiento { get; set; }
-        public string docente__email { get; set; }
-        public string docente__email_abc { get; set; }
-
-        public string docente__descripcion_domicilio { get; set; }
-        
-        public string sede__nombre { get; set; }
-
-        public string domicilio__calle { get; set; }
-        public string domicilio__numero { get; set; }
-        public string domicilio__entre { get; set; }
-        public string domicilio__localidad { get; set; }
-        public string domicilio__barrio { get; set; }
-
-        public string asignatura__nombre { get; set; }
-        public string asignatura__codigo { get; set; }
-
-
-        public string comision__pfid { get; set; }
-
         public Byte[] qr_code { get; set; }
     }
 }

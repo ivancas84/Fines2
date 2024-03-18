@@ -50,7 +50,7 @@ namespace Fines2Wpf.Windows.TomaPosesionPdf
             {
                 row.RelativeItem(3).Height(75).AlignBottom().Column(column =>
                 {
-                    column.Item().Image("C:\\projects\\SqlOrganize\\Fines2Wpf\\Images\\logo.jpg").FitArea();
+                    column.Item().Image("C:\\projects\\Fines2\\Fines2Wpf\\Images\\logo.jpg").FitArea();
                 });
 
                 row.RelativeItem().AlignRight().Column(column =>
@@ -85,12 +85,12 @@ namespace Fines2Wpf.Windows.TomaPosesionPdf
                 {
                     row.RelativeItem(2).AlignRight().AlignBottom().PaddingRight(60).Column(column =>
                     {
-                        column.Item().Image("C:\\projects\\SqlOrganize\\Fines2Wpf\\Images\\sello_cens.png").FitArea();
+                        column.Item().Image("C:\\projects\\Fines2\\Fines2Wpf\\Images\\sello_cens.png").FitArea();
                     });
 
                     row.RelativeItem().AlignRight().AlignMiddle().Column(column =>
                     {
-                        column.Item().Image("C:\\projects\\SqlOrganize\\Fines2Wpf\\Images\\firma_director.png").FitArea();
+                        column.Item().Image("C:\\projects\\Fines2\\Fines2Wpf\\Images\\firma_director.png").FitArea();
                     });
                 });
             });
@@ -126,13 +126,13 @@ namespace Fines2Wpf.Windows.TomaPosesionPdf
                 });
                 // step 2
                 table.Cell().Row(1).Column(1).Element(BlockHeader).Text("Nombre").Bold();
-                table.Cell().Row(1).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.docente__apellidos.ToUpper() + ", " + textInfo.ToTitleCase(Model.docente__nombres));
+                table.Cell().Row(1).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.docente__apellidos!.ToUpper() + ", " + textInfo.ToTitleCase(Model.docente__nombres));
                 
                 table.Cell().Row(2).Column(1).Element(BlockHeader).Text("CUIL").Bold();
                 table.Cell().Row(2).Column(2).Element(BlockContent).Text(Model.docente__cuil);
                
                 table.Cell().Row(2).Column(3).Element(BlockHeader).Text("Fecha de Nacimiento:").Bold();
-                table.Cell().Row(2).Column(4).Element(BlockContent).Text(Model.docente__fecha_nacimiento.ToString("dd/MM/yyyy"));
+                table.Cell().Row(2).Column(4).Element(BlockContent).Text(((DateTime)Model.docente__fecha_nacimiento!).ToString("dd/MM/yyyy"));
                 
                 table.Cell().Row(3).Column(1).Element(BlockHeader).Text("Email").Bold();
                 table.Cell().Row(3).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.docente__email_abc);
