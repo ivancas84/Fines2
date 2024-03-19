@@ -132,5 +132,25 @@
     "notNull": false,
     "defaultValue": null,
     "maxLength": 255
+  },
+  "codigo": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "codigo",
+    "alias": null,
+    "entityName": "curso",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "maxLength": 45
   }
 }

@@ -77,6 +77,12 @@ namespace Fines2Wpf.Data
             get { return _descripcion_horario; }
             set { _descripcion_horario = value; NotifyPropertyChanged(); }
         }
+        protected string? _codigo = null;
+        public string? codigo
+        {
+            get { return _codigo; }
+            set { _codigo = value; NotifyPropertyChanged(); }
+        }
         protected override string ValidateField(string columnName)
         {
 
@@ -112,6 +118,9 @@ namespace Fines2Wpf.Data
                     return "";
 
                 case "descripcion_horario":
+                    return "";
+
+                case "codigo":
                     return "";
 
             }

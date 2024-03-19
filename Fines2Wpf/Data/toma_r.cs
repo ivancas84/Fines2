@@ -105,6 +105,12 @@ namespace Fines2Wpf.Data
             get { return _curso__descripcion_horario; }
             set { _curso__descripcion_horario = value; NotifyPropertyChanged(); }
         }
+        protected string? _curso__codigo = null;
+        public string? curso__codigo
+        {
+            get { return _curso__codigo; }
+            set { _curso__codigo = value; NotifyPropertyChanged(); }
+        }
 
         public string? comision__Label { get; set; }
 

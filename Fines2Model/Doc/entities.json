@@ -1504,7 +1504,8 @@
       "comision",
       "asignatura",
       "alta",
-      "descripcion_horario"
+      "descripcion_horario",
+      "codigo"
     ],
     "fk": [
       "comision",
