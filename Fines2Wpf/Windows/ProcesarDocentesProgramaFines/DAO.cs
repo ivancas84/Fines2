@@ -19,7 +19,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     AND $calendario-semestre = @1 
                     AND $pfid IS NOT NULL
                 ")
-                .Parameters("2023", "2").ColOfDictCache().ColOfVal<string>("pfid");
+                .Parameters("2024", "1").ColOfDictCache().ColOfVal<string>("pfid");
 
         }
 
@@ -34,7 +34,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     AND $calendario-anio = @2
                     AND $calendario-semestre = @3
                 ")
-                .Parameters(pfidComision, asignaturaCodigo, "2023", "2").DictCache();
+                .Parameters(pfidComision, asignaturaCodigo, "2024", "1").DictCache();
 
 
             if (d.IsNullOrEmptyOrDbNull()) return null;

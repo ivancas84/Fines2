@@ -85,7 +85,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                                 Set("estado", "Aprobada").
                                 Set("estado_contralor", "Pendiente").
                                 Set("tipo_movimiento", "AI").
-                                Set("fecha_toma",new DateTime(2023,08,07));
+                                Set("fecha_toma",new DateTime(2024,03,11));
                             vToma.Default().Reset();
                             var p = ContainerApp.db.Persist().Insert(vToma).Exec().RemoveCache();
                         }
