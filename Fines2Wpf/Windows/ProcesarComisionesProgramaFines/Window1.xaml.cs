@@ -43,38 +43,12 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
         private void ProcesarDocentes()
         {
             var pfidComisiones = dao.PfidComisiones();
-            bool procesar_docente = false;
             Dictionary<string, object> dict = new Dictionary<string, object>();
             foreach (var line in data.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
-                if(procesar_docente) {
-                    if (line.Contains("*")) {
-                        logs.Add("Docente sin designar en curso " + dict["comision__pfid"].ToString() + " " + dict["asignatura__codigo"].ToString());
-                        procesar_docente = false;
-                        continue;
-                    }
-                    else if (!line.Contains("-")){
-                        logs.Add("Salto de línea, en curso " + dict["comision__pfid"].ToString() + " " + dict["asignatura__codigo"].ToString());
-                        continue;
-                    }
-                    else
-                    {
-                        logs.Add("Procesando docente de curso" + dict["comision__pfid"].ToString() + " " + dict["asignatura__codigo"].ToString());
-                        procesar_docente = false;
-                        string cuil = line.Substring(line.IndexOf("-") - 2, 13);
-                        string[] cuil_ = cuil.Split("-");
-                        object? id = dao.IdPersona(cuil_[1]);
-                        if (id.IsNullOrEmpty() || id.IsDbNull())
-                        {
-                            logs.Add("No existe docente " + cuil);
-                            break;
-                        }
-                        List<object> ids = new List<object>() { id };
-                        var p = ContainerApp.db.Persist().UpdateValueIds("persona", "cuil", String.Join("",cuil_), ids).Exec().RemoveCache();
-                        continue;
-                    }
+                bool procesar_docente = false;
 
-                }
+                
                 foreach (var dia in dias)
                 {
                     if (line.Contains(dia))
@@ -92,15 +66,46 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
                                 logs.Add("No existe curso " + dict["comision__pfid"].ToString() + " " + dict["asignatura__codigo"].ToString());
                                 break;
                             }
-                            List<object> ids = new List<object>() { dict["id"] };
-                            var p = ContainerApp.db.Persist().UpdateValueIds("curso", "descripcion_horario", dict["descripcion_horario"].ToString()!, ids!).Exec().RemoveCache();
+                            var p = ContainerApp.db.Persist().UpdateValueIds("curso", "descripcion_horario", dict["descripcion_horario"].ToString()!, dict["id"]!).Exec().RemoveCache();
                             procesar_docente = true;
                         }
                         break;
 
                     }
                 }
-                
+
+                if (procesar_docente)
+                {
+                    if (line.Contains("*"))
+                    {
+                        logs.Add("Docente sin designar en curso " + dict["comision__pfid"].ToString() + " " + dict["asignatura__codigo"].ToString());
+                        procesar_docente = false;
+                        continue;
+                    }
+                    else if (!line.Contains("-"))
+                    {
+                        logs.Add("Salto de línea, en curso " + dict["comision__pfid"].ToString() + " " + dict["asignatura__codigo"].ToString());
+                        continue;
+                    }
+                    else
+                    {
+                        logs.Add("Procesando docente de curso" + dict["comision__pfid"].ToString() + " " + dict["asignatura__codigo"].ToString());
+                        procesar_docente = false;
+                        string cuil = line.Substring(line.IndexOf("-") - 2, 13);
+                        string[] cuil_ = cuil.Split("-");
+                        object? id = dao.IdPersona(cuil_[1]);
+                        if (id.IsNullOrEmpty() || id.IsDbNull())
+                        {
+                            logs.Add("No existe docente " + cuil);
+                            continue;
+                        }
+                        List<object> ids = new List<object>() { id };
+                        var p = ContainerApp.db.Persist().UpdateValueIds("persona", "cuil", String.Join("", cuil_), ids).Exec().RemoveCache();
+                        continue;
+                    }
+
+                }
+
             }
 
             info.Text += String.Join(@"

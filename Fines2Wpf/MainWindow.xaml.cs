@@ -184,6 +184,12 @@ namespace Fines2Wpf
             Windows.TomaPosesionPdf.Window1 window1 = new();
             window1.Show();
         }
+
+        private void ListaCursosToma_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.ListaCursosToma.Window1 window1 = new();
+            window1.Show();
+        }
     }
 }
 
