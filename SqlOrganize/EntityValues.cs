@@ -482,7 +482,11 @@ namespace SqlOrganize
                 if (ignoreNonExistent && !dict1_.ContainsKey(fieldName))
                     continue;
 
-                if (dict2_.ContainsKey(fieldName) && (ignoreNull && !dict2_[fieldName]!.IsDbNull()))
+                if (dict2_.ContainsKey(fieldName) && (ignoreNull && !dict2_[fieldName]!.IsNullOrEmptyOrDbNull()))
+                {
+                    if (dict1_[fieldName].IsNullOrEmptyOrDbNull() && dict2_[fieldName].IsNullOrEmptyOrDbNull())
+                        continue;
+
                     if (
                         !dict1_.ContainsKey(fieldName)
                         || (dict1_[fieldName].IsNullOrEmptyOrDbNull() && !dict2_[fieldName].IsNullOrEmptyOrDbNull())
@@ -490,6 +494,7 @@ namespace SqlOrganize
                         || !dict1_[fieldName]!.ToString()!.Equals(dict2_[fieldName]!.ToString()!)
                     )
                         response[fieldName] = dict2_[fieldName];
+                }
             }
             return response;
         }

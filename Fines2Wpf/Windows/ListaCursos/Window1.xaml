@@ -49,6 +49,7 @@
 
         <DataGrid Name="cursoGrid" AutoGenerateColumns="False">
             <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding id}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Nombre" Binding="{Binding sede__nombre}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Número" Binding="{Binding sede__numero}"></DataGridTextColumn>
                 <DataGridTextColumn Header="División" Binding="{Binding comision__division}"></DataGridTextColumn>

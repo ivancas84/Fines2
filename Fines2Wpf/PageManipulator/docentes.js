@@ -38,7 +38,7 @@ inputList.forEach((docente) => {
     while (info_cargos && info_cargos.textContent.includes("Comisión")) {
         info_cargos_array = info_cargos.textContent.split("Comisión");
         r["cargos"].push({
-            "comision": info_cargos_array[1].trim(),
+            "comision": info_cargos_array[1].trim().substring(0, info_cargos_array[1].lastIndexOf(" -")).trim(),
             "codigo": info_cargos_array[0].substring(
                 info_cargos_array[0].indexOf("(") + 1,
                 info_cargos_array[0].lastIndexOf(")")

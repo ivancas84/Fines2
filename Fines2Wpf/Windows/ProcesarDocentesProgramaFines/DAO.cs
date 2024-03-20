@@ -30,7 +30,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                 .Size(0)
                 .Where(@"
                     $comision-pfid = @0 
-                    AND $asignatura-codigo = @1
+                    AND ($asignatura-codigo = @1 OR $codigo = @1)
                     AND $calendario-anio = @2
                     AND $calendario-semestre = @3
                 ")

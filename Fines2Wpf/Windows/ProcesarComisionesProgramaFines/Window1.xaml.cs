@@ -55,6 +55,8 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
                     {
                         dict["comision__pfid"] = line.Substring(0, line.IndexOf("/"));
                         dict["asignatura__codigo"] = line.Substring(line.IndexOf("/")+1,line.IndexOf(" ")-line.IndexOf("/")-1);
+                        if (dict["asignatura__codigo"].ToString().Length > 5)
+                            dict["asignatura__codigo"] = dict["asignatura__codigo"].ToString().Substring(0, 5).Trim();
                         dict["descripcion_horario"] = line.Substring(line.IndexOf(dia));
                         if (pfidComisiones.Contains(dict["comision__pfid"]))
                         {

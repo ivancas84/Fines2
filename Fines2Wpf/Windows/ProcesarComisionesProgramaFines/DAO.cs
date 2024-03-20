@@ -25,12 +25,13 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
 
         public object? IdCurso(string pfidComision, string asignaturaCodigo)
         {
+
             var d = ContainerApp.db.Query("curso")
                 .Fields("id")
                 .Size(0)
                 .Where(@"
                     $comision-pfid = @0 
-                    AND $asignatura-codigo = @1
+                    AND ($asignatura-codigo = @1 OR $codigo = @1)
                     AND $calendario-anio = @2
                     AND $calendario-semestre = @3
                 ")
