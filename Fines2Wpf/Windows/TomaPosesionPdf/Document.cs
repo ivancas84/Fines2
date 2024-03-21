@@ -12,6 +12,7 @@ using QRCoder;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using Utils;
 
 namespace Fines2Wpf.Windows.TomaPosesionPdf
 {
@@ -132,8 +133,12 @@ namespace Fines2Wpf.Windows.TomaPosesionPdf
                 table.Cell().Row(2).Column(2).Element(BlockContent).Text(Model.docente__cuil);
                
                 table.Cell().Row(2).Column(3).Element(BlockHeader).Text("Fecha de Nacimiento:").Bold();
-                table.Cell().Row(2).Column(4).Element(BlockContent).Text(((DateTime)Model.docente__fecha_nacimiento!).ToString("dd/MM/yyyy"));
-                
+
+                if(Model.docente__fecha_nacimiento.IsNullOrEmptyOrDbNull())
+                    table.Cell().Row(2).Column(4).Element(BlockContent).Text("");
+                else
+                    table.Cell().Row(2).Column(4).Element(BlockContent).Text(((DateTime)Model.docente__fecha_nacimiento!).ToString("dd/MM/yyyy"));
+
                 table.Cell().Row(3).Column(1).Element(BlockHeader).Text("Email").Bold();
                 table.Cell().Row(3).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.docente__email_abc);
 
@@ -172,10 +177,10 @@ namespace Fines2Wpf.Windows.TomaPosesionPdf
                 table.Cell().Row(3).Column(2).ColumnSpan(5).Element(BlockContent).Text(Model.curso__descripcion_horario);
 
                 table.Cell().Row(4).Column(1).Element(BlockHeader).Text("Fecha Toma").Bold();
-                table.Cell().Row(4).Column(2).ColumnSpan(2).Element(BlockContent).Text("07/08/2023");
+                table.Cell().Row(4).Column(2).ColumnSpan(2).Element(BlockContent).Text("11/03/2024");
 
                 table.Cell().Row(4).Column(4).Element(BlockHeader).Text("Fecha Fin").Bold();
-                table.Cell().Row(4).Column(5).ColumnSpan(2).Element(BlockContent).Text("08/12/2023");
+                table.Cell().Row(4).Column(5).ColumnSpan(2).Element(BlockContent).Text("12/07/2024");
 
                 table.Cell().Row(5).Column(1).Element(BlockHeader).Text("Asignatura").Bold();
                 table.Cell().Row(5).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.asignatura__nombre + " " + Model.asignatura__codigo);
@@ -183,8 +188,10 @@ namespace Fines2Wpf.Windows.TomaPosesionPdf
                 table.Cell().Row(5).Column(5).Element(BlockHeader).Text("Hs Cát").Bold();
                 table.Cell().Row(5).Column(6).Element(BlockContent).Text(Model.curso__horas_catedra.ToString());
 
+                table.Cell().Row(6).Column(1).Element(BlockHeader).Text("Resolución").Bold();
+                table.Cell().Row(6).Column(2).ColumnSpan(5).Element(BlockContent).Text(Model.plan__resolucion);
 
-          
+
             });
         }
 

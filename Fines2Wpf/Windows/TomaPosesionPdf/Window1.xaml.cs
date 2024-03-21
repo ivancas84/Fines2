@@ -34,8 +34,8 @@ namespace Fines2Wpf.Windows.TomaPosesionPdf
 
         public Window1()
         {
-            string calendarioAnio = "2023"; //DateTime.Now.Year.ToString();
-            int calendarioSemestre = 2; //DateTime.Now.ToSemester();
+            string calendarioAnio = "2024"; //DateTime.Now.Year.ToString();
+            int calendarioSemestre = 1; //DateTime.Now.ToSemester();
 
             InitializeComponent();
             IEnumerable<Dictionary<string, object>> list = tomaDao.TomasSemestre(calendarioAnio, calendarioSemestre) ;
