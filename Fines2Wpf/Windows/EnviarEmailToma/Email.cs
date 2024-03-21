@@ -1,32 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿using System.Net;
 using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
-using Fines2Wpf.Windows.TomaPosesionPdf;
+using Fines2Wpf.Data;
 
 namespace Fines2Wpf.Windows.EnviarEmailToma
 {
     internal class Email : SmtpClient
     {
 
-        Toma Model;
+        Data_toma_r Model;
         public string? Subject = null;
         public string? Body = null;
         public string? To = null;
         public string? Bcc = null;
         public string? Attachment = null;
 
-        public Email(Toma model) : base() {
+        public Email(Data_toma_r model) : base() {
             Host = ContainerApp.config.emailDocenteHost;
             Port = 587;
             Credentials = new NetworkCredential(ContainerApp.config.emailDocenteUser, ContainerApp.config.emailDocentePassword);
             EnableSsl = true;
             Model = model;
-            Attachment = $"C:\\Users\\ivan\\Downloads\\{Model.comision__pfid}_{Model.asignatura__codigo}_{Model.docente__numero_documento}.pdf";
-            To = Model.docente__email_abc;
+            //Attachment = $"C:\\Users\\ivan\\Downloads\\{Model.comision__pfid}_{Model.asignatura__codigo}_{Model.docente__numero_documento}.pdf";
+            //To = Model.docente__email_abc;
+            Attachment = @"C:\Users\icastaneda\Downloads\Captura de pantalla 2024-03-21 114615.pdf";
+            To = "icastaneda@abc.gob.ar";
             Bcc = ContainerApp.config.emailDocenteBcc;
             Subject = $"Toma de posesión: {Model.comision__pfid} {Model.asignatura__nombre}";
             Body = $@"

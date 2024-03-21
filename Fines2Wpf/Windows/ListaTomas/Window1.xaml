@@ -50,9 +50,7 @@
         <DataGrid Name="tomaGrid" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Fecha Toma" Binding="{Binding fecha_toma}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Estado contralor" Binding="{Binding estado_contralor}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Tipo movimiento" Binding="{Binding tipo_movimiento}"></DataGridTextColumn>
+                
                 <DataGridTextColumn Header="Nombres" Binding="{Binding docente__nombres}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Apellidos" Binding="{Binding docente__apellidos}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Número Documento" Binding="{Binding docente__numero_documento}"></DataGridTextColumn>
@@ -61,6 +59,9 @@
                 <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__nombre}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Codigo" Binding="{Binding asignatura__codigo}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Observaciones" Binding="{Binding observaciones}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Estado contralor" Binding="{Binding estado_contralor}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Tipo movimiento" Binding="{Binding tipo_movimiento}"></DataGridTextColumn>
                 <DataGridCheckBoxColumn Binding="{Binding confirmada}" Header="Confirmada">
                     <DataGridCheckBoxColumn.CellStyle>
                         <Style>
@@ -69,7 +70,13 @@
                         </Style>
                     </DataGridCheckBoxColumn.CellStyle>
                 </DataGridCheckBoxColumn>
-
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Click="EmailTomaButton_Click">Email Toma</Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
             </DataGrid.Columns>
         </DataGrid>

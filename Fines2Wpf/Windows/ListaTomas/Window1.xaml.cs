@@ -1,4 +1,7 @@
-﻿using SqlOrganize;
+﻿using CommunityToolkit.WinUI.Notifications;
+using Fines2Wpf.Data;
+using Fines2Wpf.Windows.EnviarEmailToma;
+using SqlOrganize;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,7 +22,7 @@ namespace Fines2Wpf.Windows.ListaTomas
         Search search = new();
         Fines2Wpf.DAO.Toma tomaDAO = new();
         
-        private ObservableCollection<Toma> tomaData = new();
+        private ObservableCollection<Data_toma_r> tomaData = new();
 
         public Window1()
         {
@@ -39,7 +42,7 @@ namespace Fines2Wpf.Windows.ListaTomas
         {
             IEnumerable<Dictionary<string, object>> list = tomaDAO.TomasSemestre(search.calendario__anio, search.calendario__semestre);
             tomaData.Clear();
-            tomaData.AddRange(list.ColOfObj<Toma>());
+            tomaData.AddRange(list.ColOfObj<Data_toma_r>());
         }
         private void BuscarButton_Click(object sender, RoutedEventArgs e)
         {
@@ -57,7 +60,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                     string key = ((Binding)column.Binding).Path.Path; //column's binding
                     if (ignore.Contains(key)) return;
                     object value = (e.EditingElement as TextBox)!.Text;
-                    Dictionary<string, object> source = (Dictionary<string, object>)((Toma)e.Row.DataContext).Dict();
+                    Dictionary<string, object> source = (Dictionary<string, object>)((Data_toma_r)e.Row.DataContext).Dict();
                     string? fieldId = null;
                     string mainEntityName = "toma", entityName = "toma", fieldName = key;
 
@@ -91,14 +94,14 @@ namespace Fines2Wpf.Windows.ListaTomas
                         {
                             if (!v.Check())
                             {
-                                (e.Row.Item as Toma).CopyValues<Toma>(v.Get().Obj<Toma>(),sourceNotNull:true);
+                                (e.Row.Item as Data_toma_r).CopyValues<Data_toma_r>(v.Get().Obj<Data_toma_r>(),sourceNotNull:true);
                                 break;
                             }
 
                             ContainerApp.dao.Persist(v);
                         }
 
-                        (e.Row.Item as Toma).CopyValues<Toma>(v.Get().Obj<Toma>(), sourceNotNull: true);
+                        (e.Row.Item as Data_toma_r).CopyValues<Data_toma_r>(v.Get().Obj<Data_toma_r>(), sourceNotNull: true);
 
                         if (fieldId != null)
                         {
@@ -138,10 +141,10 @@ namespace Fines2Wpf.Windows.ListaTomas
             var cell = (sender as DataGridCell);
             var column = cell.Column as DataGridBoundColumn;
             var value = (cell.Content as CheckBox).IsChecked;
-            if (column != null && cell.DataContext is Toma)
+            if (column != null && cell.DataContext is Data_toma_r)
             {
                 string key = ((Binding)column.Binding).Path.Path; //column's binding.
-                IDictionary<string, object> source = (cell.DataContext as Toma).Dict(); 
+                IDictionary<string, object> source = (cell.DataContext as Data_toma_r).Dict(); 
                 if((bool)source[key] != value)
                 {
                     string? fieldId = null;
@@ -156,12 +159,30 @@ namespace Fines2Wpf.Windows.ListaTomas
                         ContainerApp.dao.Persist(v);
 
                     DataGridRow row = DataGridRow.GetRowContainingElement(cell);
-                    (row.Item as Toma).CopyValues<Toma>(v.Get().Obj<Toma>(),sourceNotNull:true);
+                    (row.Item as Data_toma_r).CopyValues<Data_toma_r>(v.Get().Obj<Data_toma_r>(),sourceNotNull:true);
 
                     if(!fieldId.IsNullOrEmpty())
                         LoadData(); //debe recargarse para visualizar los cambios realizados en otras iteraciones
                 }
             }
+        }
+
+        private void EmailTomaButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var toma = (Data_toma_r)button.DataContext;
+            if (toma.docente__email_abc.IsNullOrEmpty())
+            {
+                new ToastContentBuilder()
+                .AddText("Email abc no definido")
+                .Show();
+                  return;
+            }
+            Email email = new Email(toma);
+            email.Send();
+            new ToastContentBuilder()
+            .AddText("Email de toma enviado")
+            .Show();
         }
     }
 
@@ -172,125 +193,5 @@ namespace Fines2Wpf.Windows.ListaTomas
     }
 
 
-    internal class Toma : INotifyPropertyChanged
-    {
-        private string _id;
-        public string id
-        {
-            get { return _id; }
-            set { _id = value; NotifyPropertyChanged(); }
-        }
 
-        private DateTime _fecha_toma;
-        public DateTime fecha_toma
-        {
-            get { return _fecha_toma; }
-            set { _fecha_toma = value; NotifyPropertyChanged(); }
-        }
-
-        private string _estado;
-        public string estado
-        {
-            get { return _estado; }
-            set { _estado = value; NotifyPropertyChanged(); }
-        }
-
-        private string _estado_contralor;
-
-        public string estado_contralor
-        {
-            get { return _estado_contralor; }
-            set { _estado_contralor = value; NotifyPropertyChanged(); }
-        }
-
-        private string _tipo_movimiento;
-
-        public string tipo_movimiento
-        {
-            get { return _tipo_movimiento; }
-            set { _tipo_movimiento = value; NotifyPropertyChanged(); }
-        }
-
-
-        private string _docente__id;
-
-        public string docente__id
-        {
-            get { return _docente__id; }
-            set { _docente__id = value; NotifyPropertyChanged(); }
-        }
-
-        private string _docente__nombres;
-
-        public string docente__nombres
-        {
-            get { return _docente__nombres; }
-            set { _docente__nombres = value; NotifyPropertyChanged(); }
-        }
-
-        private string _docente__apellidos;
-
-        public string docente__apellidos
-        {
-            get { return _docente__apellidos; }
-            set { _docente__apellidos = value; NotifyPropertyChanged(); }
-        }
-
-        private string _docente__numero_documento;
-
-        public string docente__numero_documento
-        {
-            get { return _docente__numero_documento; }
-            set { _docente__numero_documento = value; NotifyPropertyChanged(); }
-        }
-
-        private string _docente__email_abc;
-
-        public string docente__email_abc
-        {
-            get { return _docente__email_abc; }
-            set { _docente__email_abc = value; NotifyPropertyChanged(); }
-        }
-
-        private string _docente;
-
-        public string docente
-        {
-            get { return _docente; }
-            set { _docente = value; NotifyPropertyChanged(); }
-        }
-
-        private bool _confirmada;
-
-        public bool confirmada
-        {
-            get { return _confirmada; }
-            set { _confirmada = value; NotifyPropertyChanged(); }
-        }
-
-        public string _observaciones;
-
-        public string observaciones
-        {
-            get { return _observaciones; }
-            set { _observaciones = value; NotifyPropertyChanged(); }
-        }
-
-        public string comision__pfid { get; set; }
-        public string asignatura__nombre { get; set; }
-        public string asignatura__codigo { get; set; }
-
-
-
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-
-
-
-    }
 }
