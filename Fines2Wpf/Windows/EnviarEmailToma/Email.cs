@@ -20,10 +20,10 @@ namespace Fines2Wpf.Windows.EnviarEmailToma
             Credentials = new NetworkCredential(ContainerApp.config.emailDocenteUser, ContainerApp.config.emailDocentePassword);
             EnableSsl = true;
             Model = model;
-            //Attachment = $"C:\\Users\\ivan\\Downloads\\{Model.comision__pfid}_{Model.asignatura__codigo}_{Model.docente__numero_documento}.pdf";
-            //To = Model.docente__email_abc;
-            Attachment = @"C:\Users\icastaneda\Downloads\Captura de pantalla 2024-03-21 114615.pdf";
-            To = "icastaneda@abc.gob.ar";
+            Attachment = $"C:\\Users\\ivan\\Downloads\\{Model.comision__pfid}_{Model.asignatura__codigo}_{Model.docente__numero_documento}.pdf";
+            To = Model.docente__email_abc;
+            //Attachment = @"C:\Users\ivan\Downloads\10077_WQQ_36936393.pdf";
+            //To = "icastaneda@abc.gob.ar";
             Bcc = ContainerApp.config.emailDocenteBcc;
             Subject = $"Toma de posesión: {Model.comision__pfid} {Model.asignatura__nombre}";
             Body = $@"

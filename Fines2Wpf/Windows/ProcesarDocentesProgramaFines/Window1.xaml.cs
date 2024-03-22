@@ -37,6 +37,8 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
 
                 #region insertar o actualizar docente (se insertan o actualizan todos)
                 var d = docente.Dict();
+                if (!d["anio_nacimiento"].IsNullOrEmpty() && !d["mes_nacimiento"].IsNullOrEmpty() && !d["dia_nacimiento"].IsNullOrEmpty())
+                    d["fecha_nacimiento"] = new DateTime((int)d["anio_nacimiento"], (int)d["mes_nacimiento"], (int)d["dia_nacimiento"]);
                 EntityValues vPersona = ContainerApp.db.Values("persona").Set(d).Reset();
                 var row = dao.RowByEntityUnique("persona", vPersona.Values());
                 if (row != null) {
@@ -47,7 +49,13 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     vPersona.Reset();
                     if (!valuesToUpdate.IsNullOrEmpty())
                     {
-                        var p = ContainerApp.db.Persist().Update(vPersona).Exec().RemoveCache();
+                        try {
+                            var p = ContainerApp.db.Persist().Update(vPersona).Exec().RemoveCache();
+                        } catch (Exception exception)
+                        {
+                            logs.Add("No se pudo agregar el docente " + exception.Message);
+
+                        }
                     }
                 } else
                 {
@@ -61,6 +69,9 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                 {
                     if (pfidComisiones.ToList().Contains(cargo["comision"]))
                     {
+                        if (cargo["comision"].Equals("10172"))
+                            logs.Add("Procesar");
+
                         object idCurso = dao.IdCurso(cargo["comision"], cargo["codigo"]);
                         if (idCurso.IsNullOrEmpty())
                         {
@@ -108,9 +119,12 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
         public string numero_documento { set; get; }
         public string nombres { set; get; }
         public string apellidos { set; get; }
-        public string descripcion_domicilio { set; get; }
-        public string telefono { set; get; }
-        public string email_abc { set; get; }
+        public string? descripcion_domicilio { set; get; }
+        public string? telefono { set; get; }
+        public string? email_abc { set; get; }
+        public int? dia_nacimiento { set; get; }
+        public int? mes_nacimiento { set; get; }
+        public int? anio_nacimiento { set; get; }
         public List<Dictionary<string, string>> cargos { set; get; }
     }
 }

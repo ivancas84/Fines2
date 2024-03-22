@@ -56,7 +56,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                 var column = e.Column as DataGridBoundColumn;
                 if (column != null)
                 {
-                    List<string> ignore = new List<string>() { "alumno__tiene_constancia", "alumno__tiene_dni", "alumno__tiene_partida", "alumno__tiene_certificado" };
+                    List<string> ignore = new List<string>() { "confirmada", "alumno__tiene_constancia", "alumno__tiene_dni", "alumno__tiene_partida", "alumno__tiene_certificado" };
                     string key = ((Binding)column.Binding).Path.Path; //column's binding
                     if (ignore.Contains(key)) return;
                     object value = (e.EditingElement as TextBox)!.Text;

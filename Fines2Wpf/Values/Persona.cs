@@ -98,9 +98,9 @@ namespace Fines2Wpf.Values
 
             if (
                 response.ContainsKey("fecha_nacimiento")
-                && !response["fecha_nacimiento"].IsNullOrEmpty()
+                && !response["fecha_nacimiento"].IsNullOrEmptyOrDbNull()
                 && values.ContainsKey("fecha_nacimiento")
-                && !values["fecha_nacimiento"].IsNullOrEmpty()
+                && !values["fecha_nacimiento"].IsNullOrEmptyOrDbNull()
             )
             {
                 var f1 = (DateTime)response["fecha_nacimiento"];

@@ -47,7 +47,7 @@
             </StackPanel>
         </Grid>
 
-        <DataGrid Name="tomaGrid" AutoGenerateColumns="False">
+        <DataGrid Name="tomaGrid" AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Fecha Toma" Binding="{Binding fecha_toma}"></DataGridTextColumn>
                 
