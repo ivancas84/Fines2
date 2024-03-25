@@ -1,15 +1,18 @@
 ﻿using CommunityToolkit.WinUI.Notifications;
 using Fines2Wpf.Data;
 using Fines2Wpf.Windows.EnviarEmailToma;
+using QRCoder;
 using SqlOrganize;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Utils;
+using QuestPDF.Fluent;
 
 namespace Fines2Wpf.Windows.ListaTomas
 {
@@ -21,8 +24,9 @@ namespace Fines2Wpf.Windows.ListaTomas
 
         Search search = new();
         Fines2Wpf.DAO.Toma tomaDAO = new();
-        
-        private ObservableCollection<Data_toma_r> tomaData = new();
+        QRCodeGenerator qrGenerator = new QRCodeGenerator();
+
+        private ObservableCollection<TomaPosesionPdf.Toma> tomaData = new();
 
         public Window1()
         {
@@ -42,7 +46,7 @@ namespace Fines2Wpf.Windows.ListaTomas
         {
             IEnumerable<Dictionary<string, object>> list = tomaDAO.TomasSemestre(search.calendario__anio, search.calendario__semestre);
             tomaData.Clear();
-            tomaData.AddRange(list.ColOfObj<Data_toma_r>());
+            tomaData.AddRange(list.ColOfObj<TomaPosesionPdf.Toma>());
         }
         private void BuscarButton_Click(object sender, RoutedEventArgs e)
         {
@@ -183,6 +187,19 @@ namespace Fines2Wpf.Windows.ListaTomas
             new ToastContentBuilder()
             .AddText("Email de toma enviado")
             .Show();
+        }
+
+        private void GenerarTomaButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var toma = (TomaPosesionPdf.Toma)button.DataContext;
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode("https://planfines2.com.ar/validar-toma/" + toma.id, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(20);
+            ImageConverter converter = new ImageConverter();
+            toma.qr_code = (byte[])converter.ConvertTo(qrCodeImage, typeof(byte[]));
+            TomaPosesionPdf.Document document = new(toma);
+            document.GeneratePdf("C:\\Users\\ivan\\Downloads\\" + toma.comision__pfid + "_" + toma.asignatura__codigo + "_" + toma.docente__numero_documento + ".pdf");
         }
     }
 

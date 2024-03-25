@@ -73,7 +73,11 @@
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Click="EmailTomaButton_Click">Email Toma</Button>
+                            <WrapPanel>
+                                <Button Click="EmailTomaButton_Click">Email Toma</Button>
+                                <Button Click="GenerarTomaButton_Click">Generar Toma</Button>
+
+                            </WrapPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

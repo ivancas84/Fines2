@@ -62,6 +62,8 @@
                 <DataGridTextColumn Header="Codigo Curso" Binding="{Binding codigo}"></DataGridTextColumn>
 
                 <DataGridTextColumn Header="Comisión Id" Binding="{Binding comision__identificacion}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Horario" Binding="{Binding descripcion_horario}"></DataGridTextColumn>
+
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

@@ -64,8 +64,5 @@ namespace Fines2Wpf.Windows.TomaPosesionPdf
         public int calendario__semestre { get; set; } = DateTime.Now.ToSemester();
     }
 
-    internal class Toma  : Data_toma_r
-    {
-        public Byte[] qr_code { get; set; }
-    }
+
 }
