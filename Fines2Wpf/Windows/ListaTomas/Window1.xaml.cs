@@ -201,6 +201,27 @@ namespace Fines2Wpf.Windows.ListaTomas
             TomaPosesionPdf.Document document = new(toma);
             document.GeneratePdf("C:\\Users\\ivan\\Downloads\\" + toma.comision__pfid + "_" + toma.asignatura__codigo + "_" + toma.docente__numero_documento + ".pdf");
         }
+
+        private void EliminarTomaButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var toma = (TomaPosesionPdf.Toma)button.DataContext;
+            try { 
+                ContainerApp.db.Persist().DeleteIds("toma", toma.id!).Exec().RemoveCache();
+                LoadData();
+                new ToastContentBuilder()
+                        .AddText(Title)
+                        .AddText("Toma eliminada")
+                        .Show();
+            } catch (Exception ex)
+            {
+                new ToastContentBuilder()
+                    .AddText(Title)
+                    .AddText("ERROR: " + ex.Message)
+                    .Show();
+
+            }
+        }
     }
 
     internal class Search

@@ -76,6 +76,7 @@
                             <WrapPanel>
                                 <Button Click="EmailTomaButton_Click">Email Toma</Button>
                                 <Button Click="GenerarTomaButton_Click">Generar Toma</Button>
+                                <Button Click="EliminarTomaButton_Click">Eliminar Toma</Button>
 
                             </WrapPanel>
                         </DataTemplate>

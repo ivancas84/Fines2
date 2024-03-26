@@ -22,10 +22,16 @@ inputList.forEach((docente) => {
     */
     var info_docente_split = info_docente.textContent.split(/\r?\n|\r|\n/g);
     r["descripcion_domicilio"] = info_docente_split[0].split(":")[1].trim();
-    let matches = info_docente_split[1].split(":")[1].trim().replaceAll(/\s/g, '').match(/(\d+)/);
+    r["dia_nacimiento"] = info_docente_split[1].split(":")[1].split("/")[0].trim();
+    r["mes_nacimiento"] = info_docente_split[1].split(":")[1].split("/")[1].trim();
+    r["anio_nacimiento"] = info_docente_split[1].split(":")[1].split("/")[2].trim();
+
+
+    let matches = info_docente_split[2].split(":")[1].trim().replaceAll(/\s/g, '').match(/(\d+)/);
     r["telefono"] = (matches) ? matches[0] : null;
-    r["email_abc"] = info_docente_split[2].split(":")[1].trim();
+    r["email_abc"] = info_docente_split[3].split(":")[1].trim();
     r["cargos"] = [];
+    console.log(r);
 
 
     /*
@@ -38,7 +44,7 @@ inputList.forEach((docente) => {
     while (info_cargos && info_cargos.textContent.includes("Comisión")) {
         info_cargos_array = info_cargos.textContent.split("Comisión");
         r["cargos"].push({
-            "comision": info_cargos_array[1].trim().substring(0, info_cargos_array[1].lastIndexOf(" -")).trim(),
+            "comision": info_cargos_array[1].trim().substring(0, info_cargos_array[1].indexOf(" -")).trim(),
             "codigo": info_cargos_array[0].substring(
                 info_cargos_array[0].indexOf("(") + 1,
                 info_cargos_array[0].lastIndexOf(")")
