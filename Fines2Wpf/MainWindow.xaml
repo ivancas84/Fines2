@@ -67,7 +67,7 @@
                 <MenuItem Header="Transferir alumnos activos" Click="TransferirAlumnosActivos_Click"/>
                 <MenuItem Header="Generar comisiones semestre" Click="GenerarComisionesSemestre_Click"/>
                 <MenuItem Header="Generar cursos semestre" Click="GenerarCursosSemestre_Click"/>
-
+                <MenuItem Header="Contralor" Click="Contralor_Click"/>
 
             </MenuItem>
 

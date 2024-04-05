@@ -190,6 +190,12 @@ namespace Fines2Wpf
             Windows.ListaCursosToma.Window1 window1 = new();
             window1.Show();
         }
+
+        private void Contralor_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.Toma.Contralor.Window1 window1 = new();
+            window1.Show();
+        }
     }
 }
 

@@ -52,6 +52,22 @@ namespace Fines2Wpf.DAO
                 .Parameters(calendarioAnio, calendarioSemestre);
         }
 
+        public EntityQuery TomasAprobadasConfirmadasQuery(object calendarioAnio, object calendarioSemestre)
+        {
+            return ContainerApp.db.Query("toma")
+                .Fields()
+                .Size(0)
+                .Where(@"
+                    $calendario-anio = @0 
+                    AND $calendario-semestre = @1 
+                    AND $estado = 'Aprobada'
+                    AND $confirmada = true
+                ")
+                .Parameters(calendarioAnio, calendarioSemestre);
+        }
+
+
+
         public EntityQuery TomaAprobadaDeCursoQuery(object idCurso)
         {
             return ContainerApp.db.Query("toma")
