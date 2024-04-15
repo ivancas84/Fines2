@@ -73,6 +73,8 @@ namespace Fines2Wpf.DAO
                 .Parameters(anio, semestre).ColOfDictCache().ColOfVal<object>("alumno");
 
         }
+
+
         public IEnumerable<object> IdsAlumnosActivosDeComisionesAutorizadasPorSemestre(object anio, object semestre)
         {
             return ContainerApp.db.Query("alumno_comision")
@@ -168,12 +170,15 @@ namespace Fines2Wpf.DAO
                .Parameters(anio, semestre);
         }
 
-        public IEnumerable<Dictionary<string, object>> AsignacionesActivasDeComisionesAutorizadasPorSemestre(object anio, object semestre)
+        public EntityQuery AsignacionesActivasDeComisionesAutorizadasPorSemestreQuery(object anio, object semestre)
         {
             return ContainerApp.db.Query("alumno_comision")
                 .Size(0)
-                .Where("$calendario-anio = @0 AND $calendario-semestre = @1 AND $comision-autorizada = true AND $estado = 'Activo'")
-                .Parameters(anio, semestre).ColOfDictCache();
+                .Where(@"$calendario-anio = @0 
+                    AND $calendario-semestre = @1 
+                    AND $comision-autorizada = true 
+                    AND $estado = 'Activo'")
+                .Parameters(anio, semestre);
 
         }
 

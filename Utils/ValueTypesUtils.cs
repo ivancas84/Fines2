@@ -122,6 +122,7 @@ namespace Utils
         /// <remarks>https://stackoverflow.com/questions/4000304/get-an-acronym-from-a-string-in-c-sharp-using-linq</remarks>
         public static string Acronym(this string @this)
         {
+
             return string.Join(string.Empty,
                 @this.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s[0])
             );

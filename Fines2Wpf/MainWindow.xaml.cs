@@ -196,6 +196,12 @@ namespace Fines2Wpf
             Windows.Toma.Contralor.Window1 window1 = new();
             window1.Show();
         }
+
+        private void ListaAlumnosProgramaFines_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.AlumnoComision.ListaAlumnosProgramaFines.Window1 window1 = new();
+            window1.Show();
+        }
     }
 }
 

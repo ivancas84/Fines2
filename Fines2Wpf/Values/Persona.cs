@@ -126,5 +126,51 @@ namespace Fines2Wpf.Values
             var response = base.CompareFields(val, fieldsToCompare, ignoreNull, ignoreNonExistent);
             return Recompare(response);
         }
+
+        public new EntityValues Sset(IDictionary<string, object?> row)
+        {
+            try
+            {
+                var fieldNames = db.FieldNames(entityName);
+                fieldNames.Add("cuil_dni");
+                foreach (var fieldName in fieldNames)
+                    if (row.ContainsKey(Pf() + fieldName))
+                        Sset(fieldName, row[Pf() + fieldName]);
+
+                return this;
+            } catch(Exception e) {
+                throw e;
+            }
+
+        }
+
+        public void Sset_cuil_dni(object? value)
+        {
+            if (value == null)
+            {
+                values["cuil"] = null;
+                values["numero_documento"] = null;
+                return;
+            }
+
+            string numbers = value!.ToString()!.CleanStringOfNonDigits()!;
+
+            if (numbers.Length == 11)
+            {
+                values["cuil"] = numbers;
+                values["numero_documento"] = numbers.Substring(2, 8);
+            }
+
+            else if (numbers.Length == 8 || numbers.Length == 7)
+            {
+                values["numero_documento"] = numbers;
+            }
+
+            else
+            {
+                throw new Exception("Error al definir CUIL o DNI");
+            }
+
+        }
     }
 }

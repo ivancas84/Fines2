@@ -27,8 +27,14 @@ namespace Fines2Wpf.Windows.Toma.Contralor
             foreach (var item in tomas)
             {
                 Contralor.Toma tomaObj = item.Obj<Contralor.Toma>();
-                tomaObj.docente__Label = tomaObj.docente__apellidos!.ToUpper() + " " + tomaObj.docente__nombres;
+                tomaObj.docente__Label = tomaObj.docente__apellidos!.ToUpper() + " " + tomaObj.docente__nombres!.ToTitleCase();
                 tomasOC.Add(tomaObj);
+                tomaObj.plan__Label = tomaObj.plan__orientacion!.Acronym();
+
+                if (tomaObj.comision__turno.IsNullOrEmpty())
+                    tomaObj.planificacion__Label = "V";
+                else
+                    tomaObj.planificacion__Label = tomaObj.comision__turno!.Acronym();
 
             }
 

@@ -19,6 +19,22 @@
                 <DataGridTextColumn Header="SEC" Binding="{Binding unknown}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Fecha Nacimiento" Binding="{Binding docente__fecha_nacimiento, StringFormat={}{0:d}}"/>
                 <DataGridTextColumn Header="Apellido y nombre" Binding="{Binding docente__Label}"/>
+                <DataGridTextColumn Header="REV" Binding="{Binding rev}"/>
+                <DataGridTextColumn Header="MOD" Binding="{Binding plan__Label}"/>
+                <DataGridTextColumn Header="ASIG" Binding="{Binding asignatura__codigo}"/>
+                <DataGridTextColumn Header="HS CAT" Binding="{Binding curso__horas_catedra}"/>
+                <DataGridTextColumn Header="FUNCION" Binding="{Binding funcion}"/>
+                <DataGridTextColumn Header="AÑO" Binding="{Binding planificacion__anio}"/>
+                <DataGridTextColumn Header="SECCION" Binding="{Binding planificacion__semestre}"/>
+                <DataGridTextColumn Header="TURNO" Binding="{Binding planificacion__Label}"/>
+                <DataGridTextColumn Header="TIPO" Binding="{Binding tipo_movimiento}"/>
+                <DataGridTextColumn Header="DIA" Binding="{Binding dia_desde}"/>
+                <DataGridTextColumn Header="MES" Binding="{Binding mes_desde}"/>
+                <DataGridTextColumn Header="AÑO" Binding="{Binding anio_desde}"/>
+                <DataGridTextColumn Header="DIA" Binding="{Binding dia_hasta}"/>
+                <DataGridTextColumn Header="MES" Binding="{Binding mes_hasta}"/>
+                <DataGridTextColumn Header="AÑO" Binding="{Binding anio_hasta}"/>
+
 
             </DataGrid.Columns>
         </DataGrid>

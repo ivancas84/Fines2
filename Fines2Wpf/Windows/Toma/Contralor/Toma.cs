@@ -15,6 +15,48 @@ namespace Fines2Wpf.Windows.Toma.Contralor
             get { return "S/N"; }
         }
 
+        public string rev
+        {
+            get { return "P"; }
+        }
+
+        public string funcion
+        {
+            get { return "PF"; }
+        }
+
+        public string dia_desde
+        {
+            get { return "11"; }
+        }
+
+        public string mes_desde
+        {
+            get { return "03"; }
+        }
+
+        public string anio_desde
+        {
+            get { return "24"; }
+        }
+
+        public string dia_hasta
+        {
+            get { return "12"; }
+        }
+
+        public string mes_hasta
+        {
+            get { return "07"; }
+        }
+
+        public string anio_hasta
+        {
+            get { return "24"; }
+        }
+
+
+
         protected string? _prefijo_cuil = null;
         public string? prefijo_cuil
         {

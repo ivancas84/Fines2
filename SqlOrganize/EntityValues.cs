@@ -170,9 +170,12 @@ namespace SqlOrganize
         {
             var method = "Sset_" + fieldName;
             Type thisType = this.GetType();
-            MethodInfo m = thisType.GetMethod(method);
+            MethodInfo? m = thisType.GetMethod(method);
             if (!m.IsNullOrEmpty())
-                m!.Invoke(this, new object[] { value });
+            {
+                m!.Invoke(this, new object?[] { value });
+                return this;
+            }
 
             Field field = db.Field(entityName, fieldName);
             if (value == null)
