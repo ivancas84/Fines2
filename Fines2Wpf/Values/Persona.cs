@@ -1,4 +1,5 @@
-﻿using SqlOrganize;
+﻿using Google.Protobuf.WellKnownTypes;
+using SqlOrganize;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -15,6 +16,12 @@ namespace Fines2Wpf.Values
 
         public Persona(Db db, string entityName, string? fieldId = null) : base(db, entityName, fieldId)
         {
+            fieldNames.Add("cuil_dni");
+            fieldNames.Add("cuil1");
+            fieldNames.Add("cuil2");
+            //fieldNames = new List<string>(db.FieldNames(entityName));
+
+
         }
 
         public override string ToString()
@@ -127,23 +134,6 @@ namespace Fines2Wpf.Values
             return Recompare(response);
         }
 
-        public new EntityValues Sset(IDictionary<string, object?> row)
-        {
-            try
-            {
-                var fieldNames = db.FieldNames(entityName);
-                fieldNames.Add("cuil_dni");
-                foreach (var fieldName in fieldNames)
-                    if (row.ContainsKey(Pf() + fieldName))
-                        Sset(fieldName, row[Pf() + fieldName]);
-
-                return this;
-            } catch(Exception e) {
-                throw e;
-            }
-
-        }
-
         public void Sset_cuil_dni(object? value)
         {
             if (value == null)
@@ -170,6 +160,71 @@ namespace Fines2Wpf.Values
             {
                 throw new Exception("Error al definir CUIL o DNI");
             }
+
+        }
+
+        public void Reset_cuil1()
+        {
+            if (
+                values.ContainsKey("cuil1") 
+                && values.ContainsKey("cuil2") 
+                && values.ContainsKey("numero_documento")
+                && (!values["cuil1"].IsNullOrEmptyOrDbNull() && !((string)values["cuil1"]!).Equals("0") && ((string)values["cuil1"]!).Length == 2)
+                && (!values["cuil2"].IsNullOrEmptyOrDbNull() && !((string)values["cuil2"]!).Equals("0") && ((string)values["cuil2"]!).Length == 1)
+                && (!values["numero_documento"].IsNullOrEmptyOrDbNull() && 
+                (
+                    ((string)values["numero_documento"]!).Length == 8
+                    || ((string)values["numero_documento"]!).Length == 7)
+                )
+            )
+            {
+                values["cuil"] = values["cuil1"]!.ToString() + values["numero_documento"]!.ToString() + values["cuil2"]!.ToString();
+
+            }
+            
+        }
+
+        public void Sset_fecha_nacimiento(object? value)
+        {
+            if (value.IsNullOrEmptyOrDbNull())
+                values["fecha_nacimiento"] = null;
+        
+            else if (value is DateTime)
+                values["fecha_nacimiento"] = (DateTime)value;
+            else
+                try
+                {
+                    values["fecha_nacimiento"] = DateTime.Parse(value.ToString()!);
+                } 
+                catch(Exception)
+                {
+                    values["fecha_nacimiento"] = null;
+                }
+        }
+
+        public void Sset_genero(object? value)
+        {
+            values["genero"] = null;
+
+            if (((string)value!)!.Contains("B"))
+            {
+                values["genero"] = "No binario";
+                return;
+            }
+
+            if(((string)value!)!.Contains("F"))
+            {
+                values["genero"] = "Femenino";
+                return;
+            }
+
+            if (((string)value!)!.Contains("M"))
+            {
+                values["genero"] = "Masculino";
+                return;
+            }
+
+
 
         }
     }

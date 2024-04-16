@@ -202,6 +202,12 @@ namespace Fines2Wpf
             Windows.AlumnoComision.ListaAlumnosProgramaFines.Window1 window1 = new();
             window1.Show();
         }
+
+        private void ProcesarAlumnosListadoGeneralProgramaFines_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.AlumnoComision.ProcesarAlumnosListadoGeneral.Window1 window1 = new();
+            window1.Show();
+        }
     }
 }
 

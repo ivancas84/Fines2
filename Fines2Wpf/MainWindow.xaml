@@ -69,6 +69,7 @@
                 <MenuItem Header="Generar cursos semestre" Click="GenerarCursosSemestre_Click"/>
                 <MenuItem Header="Contralor" Click="Contralor_Click"/>
                 <MenuItem Header="Lista alumnos programa fines" Click="ListaAlumnosProgramaFines_Click"/>
+                <MenuItem Header="Procesar alumnos listado general programa fines" Click="ProcesarAlumnosListadoGeneralProgramaFines_Click"/>
 
             </MenuItem>
 
