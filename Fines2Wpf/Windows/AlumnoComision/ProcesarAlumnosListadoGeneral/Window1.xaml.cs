@@ -126,7 +126,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                         statusData.Add(new StatusData()
                         {
                             row = j,
-                            status = "insert",
+                            id = (string?)personaVal.GetOrNull("id"),
+                            status = "insert persona",
                             detail = "Persona agregada  (procesando comision " + pfid + ")",
                             data = personaVal.ToString()
                         });
@@ -143,8 +144,9 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
 
                         statusData.Add(new()
                         {
+                            id = (string?)alumnoExistente.GetOrNull("id"),
                             row = j,
-                            status = "info",
+                            status = "info alumno",
                             detail = "Alumno existente.",
                             data = personaVal.ToString()
                         });
@@ -153,8 +155,9 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                         {
                             statusData.Add(new()
                             {
+                                id = (string?)alumnoExistente.GetOrNull("id"),
                                 row = j,
-                                status = "update",
+                                status = "update alumno",
                                 detail = "Se actualizo el plan del alumno que estaba vacío.",
                                 data = personaVal.ToString()
                             });
@@ -163,8 +166,10 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                         {
                             statusData.Add(new()
                             {
+
+                                id = (string?)alumnoExistente.GetOrNull("id"),
                                 row = j,
-                                status = "warning",
+                                status = "warning alumno",
                                 detail = "El plan del alumno es diferente del plan de la comision.",
                                 data = "Nuevo: " + comisiones[pfid].plan__orientacion + " " + comisiones[pfid].plan__resolucion + ". Existente: " + alumnoExistente.ValuesTree("plan")?.ToString()
                             });
@@ -176,7 +181,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                         statusData.Add(new StatusData()
                         {
                             row = j,
-                            status = "insert",
+                            id = (string?)alumnoVal.GetOrNull("id"),
+                            status = "insert alumno",
                             detail = "Alumno agregado correspondiente a comision " + pfid,
                             data = personaVal.ToString()
                         });
@@ -197,7 +203,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                         statusData.Add(new()
                         {
                             row = j,
-                            status = "warning",
+                            id = (string?)asignacionExistenteData["id"],
+                            status = "warning asignacion",
                             detail = "Ya existe asignacion en la comisión " + pfid + " actual con estado " + asignacionExistenteData["estado"].ToString() + " se actualizo programafines",
                             data = personaVal.ToString()
                         });
@@ -209,7 +216,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                         new StatusData()
                         {
                             row = j,
-                            status = "insert",
+                            id = (string?)asignacion.GetOrNull("id"),
+                            status = "insert asignacion",
                             detail = "Asignacion agregada en comision " + pfid + ". ",
                             data = personaVal.ToString()!
                         });
@@ -226,7 +234,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                         statusData.Add(new StatusData()
                         {
                             row = j,
-                            status = "warning",
+                            id = (string?)alumnoVal.Get("id"),
+                            status = "warning alumno",
                             detail = "Se encuentra en otra comision del mismo semestre ademas de " + pfid,
                             data = personaVal.ToString() + " en " + comV.ToString() + " con estado " + a["estado"].ToString()
                         });
@@ -243,7 +252,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                         statusData.Add(new StatusData()
                         {
                             row = j,
-                            status = "info",
+                            id = (string?)alumnoVal.Get("id"),
+                            status = "info alumno",
                             detail = "Asignación en otras comisiones ademas de " + pfid,
                             data = personaVal.ToString() + " en " + comV.ToString() + " con estado " + a["estado"]
                         });
@@ -258,7 +268,6 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                         row = j,
                         status = "error",
                         detail = ex.Message,
-                        data = "persona no definida"
                     });
                     continue;
                 }

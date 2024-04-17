@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
+namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
 {
     class StatusData
     {
