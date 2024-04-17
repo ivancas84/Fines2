@@ -28,9 +28,6 @@ namespace Fines2Wpf.Data
                 case DataInitMode.Default:
                 case DataInitMode.DefaultMain:
                     _id = (string?)ContainerApp.db.Values("comision").Default("id").Get("id");
-                    _autorizada = (bool?)ContainerApp.db.Values("comision").Default("autorizada").Get("autorizada");
-                    _apertura = (bool?)ContainerApp.db.Values("comision").Default("apertura").Get("apertura");
-                    _publicada = (bool?)ContainerApp.db.Values("comision").Default("publicada").Get("publicada");
                     _alta = (DateTime?)ContainerApp.db.Values("comision").Default("alta").Get("alta");
                 break;
             }

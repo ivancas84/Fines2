@@ -40,6 +40,8 @@ namespace Fines2Wpf.Values
         {
             var s = Numero();
             s += " ";
+            s += GetOrNull("pfid")?.ToString() ?? "?"; ;
+            s += " ";
             s += CalendarioAnioSemestre();
             s += " ";
             s += ValuesTree("sede")?.GetOrNull("nombre")?.ToString() ?? "?";

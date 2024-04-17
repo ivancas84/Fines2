@@ -53,7 +53,8 @@ namespace Fines2Wpf.Values
 
                 foreach (string nom in nombres)
                 {
-                    string n = nom.Substring(0, 3);
+                    int ll = (nom.Length >= 3) ? 3 : nom.Length;
+                    string n = nom.Substring(0, ll);
 
                     if (
                         (
@@ -81,7 +82,9 @@ namespace Fines2Wpf.Values
 
                 foreach (string ape in apellidos)
                 {
-                    string a = ape.Substring(0, 3);
+                    int ll = (ape.Length >= 3) ? 3 : ape.Length;
+
+                    string a = ape.Substring(0, ll);
 
                     if (
                         (

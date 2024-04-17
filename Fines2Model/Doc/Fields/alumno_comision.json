@@ -115,5 +115,22 @@
     "notNull": false,
     "defaultValue": "Activo",
     "maxLength": 100
+  },
+  "programafines": {
+    "checks": {
+      "type": "bool",
+      "required": true
+    },
+    "resets": {},
+    "name": "programafines",
+    "alias": null,
+    "entityName": "alumno_comision",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinyint",
+    "type": "bool",
+    "notNull": true,
+    "defaultValue": false,
+    "maxLength": 1
   }
 }

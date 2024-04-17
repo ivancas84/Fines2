@@ -24,9 +24,6 @@ namespace Fines2Wpf.Data
             {
                 case DataInitMode.Default:
                     comision__id = (string?)ContainerApp.db.Values("comision").Default("id").Get("id");
-                    comision__autorizada = (bool?)ContainerApp.db.Values("comision").Default("autorizada").Get("autorizada");
-                    comision__apertura = (bool?)ContainerApp.db.Values("comision").Default("apertura").Get("apertura");
-                    comision__publicada = (bool?)ContainerApp.db.Values("comision").Default("publicada").Get("publicada");
                     comision__alta = (DateTime?)ContainerApp.db.Values("comision").Default("alta").Get("alta");
                     sede__id = (string?)ContainerApp.db.Values("sede").Default("id").Get("id");
                     sede__alta = (DateTime?)ContainerApp.db.Values("sede").Default("alta").Get("alta");

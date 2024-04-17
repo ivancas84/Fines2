@@ -30,6 +30,7 @@ namespace Fines2Wpf.Data
                     _id = (string?)ContainerApp.db.Values("alumno_comision").Default("id").Get("id");
                     _creado = (DateTime?)ContainerApp.db.Values("alumno_comision").Default("creado").Get("creado");
                     _estado = (string?)ContainerApp.db.Values("alumno_comision").Default("estado").Get("estado");
+                    _programafines = (bool?)ContainerApp.db.Values("alumno_comision").Default("programafines").Get("programafines");
                 break;
             }
         }
@@ -72,6 +73,12 @@ namespace Fines2Wpf.Data
             get { return _estado; }
             set { _estado = value; NotifyPropertyChanged(); }
         }
+        protected bool? _programafines = null;
+        public bool? programafines
+        {
+            get { return _programafines; }
+            set { _programafines = value; NotifyPropertyChanged(); }
+        }
         protected override string ValidateField(string columnName)
         {
 
@@ -100,6 +107,11 @@ namespace Fines2Wpf.Data
                     return "";
 
                 case "estado":
+                    return "";
+
+                case "programafines":
+                    if (_programafines == null)
+                        return "Debe completar valor.";
                     return "";
 
             }

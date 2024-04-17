@@ -128,7 +128,8 @@
       "observaciones",
       "comision",
       "alumno",
-      "estado"
+      "estado",
+      "programafines"
     ],
     "fk": [
       "comision",
@@ -140,7 +141,8 @@
     "notNull": [
       "id",
       "creado",
-      "alumno"
+      "alumno",
+      "programafines"
     ],
     "uniqueMultiple": [
       [
