@@ -17,6 +17,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": "guid",
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "anio": {
@@ -37,6 +38,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "semestre": {
@@ -57,6 +59,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "plan": {
@@ -77,6 +80,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "pfid": {
@@ -97,6 +101,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   }
 }

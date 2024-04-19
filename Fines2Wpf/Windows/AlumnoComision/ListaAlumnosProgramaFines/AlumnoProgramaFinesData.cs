@@ -9,7 +9,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosProgramaFines
     internal class AlumnoProgramaFinesData
     {
         public string extranjero { get; set; } = "0";
-        public string? nacionalidad { get; set; }
+        public string? nacionalidad { get; set; } = "Argentina";
 
         public string? apellido { get; set; }
         public string? nombre { get; set; }

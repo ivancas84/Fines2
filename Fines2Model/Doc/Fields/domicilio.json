@@ -17,6 +17,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": "guid",
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "calle": {
@@ -37,6 +38,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "entre": {
@@ -57,6 +59,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "numero": {
@@ -77,6 +80,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "piso": {
@@ -97,6 +101,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "departamento": {
@@ -117,6 +122,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "barrio": {
@@ -137,6 +143,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 255
   },
   "localidad": {
@@ -157,6 +164,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 255
   }
 }

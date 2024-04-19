@@ -17,6 +17,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": "guid",
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "hora_inicio": {
@@ -34,6 +35,7 @@
     "type": "DateTime",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "hora_fin": {
@@ -51,6 +53,7 @@
     "type": "DateTime",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "curso": {
@@ -71,6 +74,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "dia": {
@@ -91,6 +95,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   }
 }

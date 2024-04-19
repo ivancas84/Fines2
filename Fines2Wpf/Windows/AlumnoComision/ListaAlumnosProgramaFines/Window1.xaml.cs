@@ -12,7 +12,6 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosProgramaFines
     public partial class Window1 : Window
     {
 
-        DAO.AlumnoComision alumnoComisionDAO = new();
 
         ObservableCollection<AlumnoProgramaFinesData> alumnosOC = new();
 
@@ -21,7 +20,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosProgramaFines
             InitializeComponent();
             alumnosDataGrid.ItemsSource = alumnosOC;
 
-            var alumnoComisionData = alumnoComisionDAO.AsignacionesActivasDeComisionesAutorizadasPorSemestreQuery("2024", "1").ColOfDictCache();
+            var alumnoComisionData = DAO.AlumnoComision2.AsignacionesActivasDeComisionesAutorizadasSinProgramafinesPorSemestreQuery("2024", "1").ColOfDictCache();
             foreach(var ac in alumnoComisionData)
             {
                 var acObj = ac.Obj<Data_alumno_comision_r>();

@@ -1,6 +1,7 @@
 #nullable enable
 using SqlOrganize;
 using System;
+using Newtonsoft.Json;
 
 namespace Fines2Wpf.Data
 {
@@ -31,30 +32,40 @@ namespace Fines2Wpf.Data
         public string? plan__Label { get; set; }
 
         protected string? _plan__id = null;
+
+        [JsonProperty("plan-id")]
         public string? plan__id
         {
             get { return _plan__id; }
             set { _plan__id = value; _plan = value; NotifyPropertyChanged(); }
         }
         protected string? _plan__orientacion = null;
+
+        [JsonProperty("plan-orientacion")]
         public string? plan__orientacion
         {
             get { return _plan__orientacion; }
             set { _plan__orientacion = value; NotifyPropertyChanged(); }
         }
         protected string? _plan__resolucion = null;
+
+        [JsonProperty("plan-resolucion")]
         public string? plan__resolucion
         {
             get { return _plan__resolucion; }
             set { _plan__resolucion = value; NotifyPropertyChanged(); }
         }
         protected string? _plan__distribucion_horaria = null;
+
+        [JsonProperty("plan-distribucion_horaria")]
         public string? plan__distribucion_horaria
         {
             get { return _plan__distribucion_horaria; }
             set { _plan__distribucion_horaria = value; NotifyPropertyChanged(); }
         }
         protected string? _plan__pfid = null;
+
+        [JsonProperty("plan-pfid")]
         public string? plan__pfid
         {
             get { return _plan__pfid; }

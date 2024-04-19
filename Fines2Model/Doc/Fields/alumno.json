@@ -17,6 +17,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": "guid",
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "anio_ingreso": {
@@ -37,6 +38,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": "1",
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "observaciones": {
@@ -57,6 +59,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 65535
   },
   "persona": {
@@ -77,6 +80,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "estado_inscripcion": {
@@ -97,6 +101,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "fecha_titulacion": {
@@ -113,6 +118,7 @@
     "type": "DateTime",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "plan": {
@@ -133,6 +139,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "resolucion_inscripcion": {
@@ -153,6 +160,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "anio_inscripcion": {
@@ -169,6 +177,7 @@
     "type": "short",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "semestre_inscripcion": {
@@ -185,6 +194,7 @@
     "type": "short",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "semestre_ingreso": {
@@ -201,6 +211,7 @@
     "type": "short",
     "notNull": false,
     "defaultValue": 1,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "adeuda_legajo": {
@@ -221,6 +232,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 255
   },
   "adeuda_deudores": {
@@ -241,6 +253,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 255
   },
   "documentacion_inscripcion": {
@@ -261,6 +274,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 255
   },
   "anio_inscripcion_completo": {
@@ -277,6 +291,7 @@
     "type": "bool",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "establecimiento_inscripcion": {
@@ -297,6 +312,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 255
   },
   "libro_folio": {
@@ -317,6 +333,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 255
   },
   "libro": {
@@ -337,6 +354,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "folio": {
@@ -357,6 +375,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "comentarios": {
@@ -377,6 +396,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 65535
   },
   "tiene_dni": {
@@ -394,6 +414,7 @@
     "type": "bool",
     "notNull": true,
     "defaultValue": false,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "tiene_constancia": {
@@ -411,6 +432,7 @@
     "type": "bool",
     "notNull": true,
     "defaultValue": false,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "tiene_certificado": {
@@ -428,6 +450,7 @@
     "type": "bool",
     "notNull": true,
     "defaultValue": false,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "previas_completas": {
@@ -445,6 +468,7 @@
     "type": "bool",
     "notNull": true,
     "defaultValue": false,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "tiene_partida": {
@@ -462,6 +486,7 @@
     "type": "bool",
     "notNull": true,
     "defaultValue": false,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "creado": {
@@ -479,6 +504,7 @@
     "type": "DateTime",
     "notNull": true,
     "defaultValue": "current_timestamp()",
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "confirmado_direccion": {
@@ -496,6 +522,7 @@
     "type": "bool",
     "notNull": true,
     "defaultValue": false,
+    "defaultValueClassData": true,
     "maxLength": 1
   }
 }

@@ -17,6 +17,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": "guid",
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "inicio": {
@@ -33,6 +34,7 @@
     "type": "DateTime",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "fin": {
@@ -49,6 +51,7 @@
     "type": "DateTime",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "anio": {
@@ -65,6 +68,7 @@
     "type": "short",
     "notNull": false,
     "defaultValue": "current_year",
+    "defaultValueClassData": true,
     "maxLength": 4
   },
   "semestre": {
@@ -81,6 +85,7 @@
     "type": "short",
     "notNull": false,
     "defaultValue": "current_semester",
+    "defaultValueClassData": true,
     "maxLength": 6
   },
   "insertado": {
@@ -98,6 +103,7 @@
     "type": "DateTime",
     "notNull": true,
     "defaultValue": "current_timestamp()",
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "descripcion": {
@@ -118,6 +124,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 255
   }
 }

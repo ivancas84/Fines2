@@ -17,6 +17,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": "guid",
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "comision": {
@@ -37,6 +38,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "relacion": {
@@ -57,6 +59,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   }
 }

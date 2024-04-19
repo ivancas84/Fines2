@@ -17,6 +17,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": "guid",
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "fecha_toma": {
@@ -33,6 +34,7 @@
     "type": "DateTime",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "estado": {
@@ -53,6 +55,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "observaciones": {
@@ -73,6 +76,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 65535
   },
   "comentario": {
@@ -93,6 +97,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "tipo_movimiento": {
@@ -113,6 +118,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "estado_contralor": {
@@ -133,6 +139,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "alta": {
@@ -150,6 +157,7 @@
     "type": "DateTime",
     "notNull": true,
     "defaultValue": "current_timestamp()",
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "curso": {
@@ -170,6 +178,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "docente": {
@@ -190,6 +199,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "reemplazo": {
@@ -210,6 +220,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "planilla_docente": {
@@ -230,6 +241,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "calificacion": {
@@ -247,6 +259,7 @@
     "type": "bool",
     "notNull": true,
     "defaultValue": false,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "temas_tratados": {
@@ -264,6 +277,7 @@
     "type": "bool",
     "notNull": true,
     "defaultValue": false,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "asistencia": {
@@ -281,6 +295,7 @@
     "type": "bool",
     "notNull": true,
     "defaultValue": false,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "sin_planillas": {
@@ -298,6 +313,7 @@
     "type": "bool",
     "notNull": true,
     "defaultValue": false,
+    "defaultValueClassData": true,
     "maxLength": 1
   },
   "confirmada": {
@@ -315,6 +331,7 @@
     "type": "bool",
     "notNull": true,
     "defaultValue": false,
+    "defaultValueClassData": true,
     "maxLength": 1
   }
 }

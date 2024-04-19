@@ -17,6 +17,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": "guid",
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "fecha_contralor": {
@@ -33,6 +34,7 @@
     "type": "DateTime",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "fecha_consejo": {
@@ -49,6 +51,7 @@
     "type": "DateTime",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "insertado": {
@@ -66,6 +69,7 @@
     "type": "DateTime",
     "notNull": true,
     "defaultValue": "current_timestamp()",
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "planilla_docente": {
@@ -86,6 +90,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   }
 }

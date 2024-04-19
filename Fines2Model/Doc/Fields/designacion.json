@@ -17,6 +17,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": "guid",
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "desde": {
@@ -33,6 +34,7 @@
     "type": "DateTime",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "hasta": {
@@ -49,6 +51,7 @@
     "type": "DateTime",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "cargo": {
@@ -69,6 +72,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "sede": {
@@ -89,6 +93,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "persona": {
@@ -109,6 +114,7 @@
     "type": "string",
     "notNull": true,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   },
   "alta": {
@@ -126,6 +132,7 @@
     "type": "DateTime",
     "notNull": true,
     "defaultValue": "current_timestamp()",
+    "defaultValueClassData": true,
     "maxLength": null
   },
   "pfid": {
@@ -146,6 +153,7 @@
     "type": "string",
     "notNull": false,
     "defaultValue": null,
+    "defaultValueClassData": true,
     "maxLength": 45
   }
 }
