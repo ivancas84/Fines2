@@ -94,8 +94,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             planificacionOC.Clear();
             foreach (var item in data)
             {
-                Data_planificacion_r obj = new();
-                obj.SetData(item);
+                var obj = item.Obj<Data_planificacion_r>();
                 obj.Label = obj.plan__distribucion_horaria + " " + obj.anio + "/" + obj.semestre + " " + obj.plan__orientacion!.Acronym();
                 planificacionOC.Add(obj);
             }
@@ -253,8 +252,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
 
             foreach (var item in list)
             {
-                var o = new Data_sede_r();
-                o.SetData(item);
+                var o = item.Obj<Data_sede_r>();
                 o.Label = o.numero + " " + o.nombre;
                 sedeOC.Add(o);
             }

@@ -40,6 +40,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         private ObservableCollection<Data_plan> planOC = new(); //datos consultados de la base de datos
         private DispatcherTimer typingTimer;
 
+        DataGridUtils dgu = new(ContainerApp.db);
 
         #region asignacionGroupBox
         private ObservableCollection<Asignacion> asignacionOC = new(); //datos a visualizar
@@ -789,7 +790,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (key.IsNullOrEmpty())
                 return;
 
-            e.DataGridCellEditEndingEventArgs_CellEditEnding<Data_alumno_comision_r>("calificacion", key, value);
+            dgu.DataGridCellEditEndingEventArgs_CellEditEnding<Data_alumno_comision_r>(e, "calificacion", key, value);
 
         }
         #endregion

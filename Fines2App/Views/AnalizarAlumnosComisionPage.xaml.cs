@@ -126,8 +126,7 @@ public partial class AnalizarAlumnosComisionPage : Page, INotifyPropertyChanged
 
         foreach (var item in list)
         {
-            var o = new Data_comision_r();
-            o.SetData(item);
+            var o = item.Obj<Data_comision_r>();
             o.Label = o.sede__numero + o.division + "/" + o.planificacion__anio + o.planificacion__semestre + " " + o.calendario__anio + "-" + o.calendario__semestre;
             comisionOC.Add(o);
         }

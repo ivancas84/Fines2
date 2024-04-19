@@ -21,6 +21,7 @@ public partial class ListaAlumnosSemestrePage : Page, INotifyPropertyChanged
     private ObservableCollection<Asignacion> asignacionOC = new();
     private Data_alumno_comision_r search = new(DataInitMode.Null);
     private ICollectionView asignacionCV;
+    private DataGridUtils dgu = new(ContainerApp.db);
 
     DispatcherTimer typingTimer;
 
@@ -188,7 +189,7 @@ public partial class ListaAlumnosSemestrePage : Page, INotifyPropertyChanged
         }
 
 
-        var reload = e.DataGridCellEditEndingEventArgs_CellEditEnding<Data_alumno_comision_r>("alumno_comision", key, value);
+        var reload = dgu.DataGridCellEditEndingEventArgs_CellEditEnding<Data_alumno_comision_r>(e, "alumno_comision", key, value);
         if (reload)
             LoadAsignaciones(); //debe recargarse para visualizar los cambios realizados en otras iteraciones
                                 //Dada una relacion a : b, si se modifica b correspondiente a a.b, se deberan actualizar todas las filas
@@ -197,7 +198,7 @@ public partial class ListaAlumnosSemestrePage : Page, INotifyPropertyChanged
     private void EntityGrid_CellCheckBoxClick(object sender, RoutedEventArgs e)
     {
         var cell = sender as DataGridCell;
-        bool reload = cell!.DataGridCell_CheckBoxClick<Data_alumno_comision_r>("alumno_comision");
+        bool reload = dgu.DataGridCell_CheckBoxClick<Data_alumno_comision_r>(cell!, "alumno_comision");
         if (reload)
             LoadAsignaciones();//debe recargarse para visualizar los cambios realizados en otras iteraciones
                                //Dada una relacion a : b, si se modifica b correspondiente a a.b, se deberan actualizar todas las filas

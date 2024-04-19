@@ -33,6 +33,8 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
         public Window1()
         {
             InitializeComponent();
+
+
         }
 
         private void ProcesarButton_Click(object sender, RoutedEventArgs e)

@@ -159,7 +159,7 @@ namespace WpfUtils
             }
             catch (Exception ex)
             {
-                ToastUtils.ShowExceptionMessageWithFileNameAndLineNumber(ex, title);
+                //ToastUtils.ShowExceptionMessageWithFileNameAndLineNumber(ex, title);
             }
         }
 

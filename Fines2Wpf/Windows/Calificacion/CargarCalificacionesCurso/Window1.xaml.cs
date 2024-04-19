@@ -132,8 +132,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 calificacionExistenteOC.Clear();
                 foreach (Dictionary<string, object?> kvp in calificacionExistenteData)
                 {
-                    Data_calificacion_r calificacion = new(DataInitMode.Null);
-                    calificacion.SetData(kvp);
+                    var calificacion = kvp.Obj<Data_calificacion_r>();
                     calificacionExistenteOC.Add(calificacion);
                 }
 
@@ -361,8 +360,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 }
 
                 calificacionData.Add((Dictionary<string, object?>)calificacion.Values());
-                Calificacion o = new (DataInitMode.Default);
-                o.SetData(calificacion.Values());
+                var o = calificacion.Values().Obj<Calificacion>();
                 o.curso = (string)idCurso;
                 o.disposicion = (string)idDisposicion;
                 o.nota_final = Math.Round(o.nota_final ?? 0, MidpointRounding.AwayFromZero);

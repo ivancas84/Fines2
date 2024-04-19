@@ -44,8 +44,7 @@ public partial class DesactivarAlumnosNoCalificadosPage : Page, INotifyPropertyC
 
                 if (q < 3)
                 {
-                    Data_alumno_comision_r alumnoParaDesactivar = new(DataInitMode.Null);
-                    alumnoParaDesactivar.SetData(alumnoComision);
+                    var alumnoParaDesactivar = alumnoComision.Obj<Data_alumno_comision_r>();
                     alumnoParaDesactivar.comision__Label = alumnoParaDesactivar.sede__numero + alumnoParaDesactivar.comision__division + "/" + alumnoParaDesactivar.planificacion__anio + alumnoParaDesactivar.planificacion__semestre + " " + alumnoParaDesactivar.calendario__anio + "-" + alumnoParaDesactivar.calendario__semestre + " (" + alumnoParaDesactivar.comision__pfid + ")";
                     ids.Add(alumnoParaDesactivar.id);
                     resultado.Add(alumnoParaDesactivar);

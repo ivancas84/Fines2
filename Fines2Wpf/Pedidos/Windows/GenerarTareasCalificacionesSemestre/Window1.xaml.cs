@@ -31,8 +31,7 @@ namespace Fines2Wpf.Pedidos.Windows.GenerarTareasCalificacionesSemestre
             foreach (var item in data)
             {
                 //item.Obj<Data_disposicion_r>();
-                Data_toma_r obj = new(DataInitMode.Null);
-                obj.SetData(item);
+                Data_toma_r obj = item.Obj<Data_toma_r>();
                 obj.curso__Label = obj.sede__numero + obj.comision__division + "/" + obj.planificacion__anio + obj.planificacion__semestre + " " + obj.sede__nombre;
                 tomaOC.Add(obj);
             }

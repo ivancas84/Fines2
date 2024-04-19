@@ -21,6 +21,7 @@ namespace Fines2App.Views;
 
 public partial class MainPage : Page, INotifyPropertyChanged
 {
+    DataGridUtils dgu = new(ContainerApp.db);
     #region oc
     private ObservableCollection<Data_persona> personaOC = new(); //datos consultados de la base de datos
     private ObservableCollection<Data_resolucion> resolucionOC = new(); //datos consultados de la base de datos
@@ -381,8 +382,7 @@ public partial class MainPage : Page, INotifyPropertyChanged
 
         foreach (var item in list)
         {
-            var o = new Data_persona();
-            o.SetData(item);
+            var o = item.Obj<Data_persona>();
             o.Label = o.nombres + " " + o.apellidos + " " + o.numero_documento;
             personaOC.Add(o);
         }
@@ -740,7 +740,7 @@ public partial class MainPage : Page, INotifyPropertyChanged
         if (key.IsNullOrEmpty())
             return;
 
-        e.DataGridCellEditEndingEventArgs_CellEditEnding<Data_alumno_comision_r>("calificacion", key, value);
+        dgu.DataGridCellEditEndingEventArgs_CellEditEnding<Data_alumno_comision_r>(e, "calificacion", key, value);
 
     }
     #endregion

@@ -119,8 +119,7 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
         foreach (var item in list)
         {
-            var o = new Data_persona();
-            o.SetData(item);
+            var o = item.Obj<Data_persona>();
             o.Label = o.nombres + " " + o.apellidos + " " + o.numero_documento;
             origenOC.Add(o);
         }
@@ -220,8 +219,7 @@ public partial class TransferirPersonaPage : Page, INotifyPropertyChanged
 
         foreach (var item in list)
         {
-            var o = new Data_persona();
-            o.SetData(item);
+            var o = item.Obj<Data_persona>();
             o.Label = o.nombres + " " + o.apellidos + " " + o.numero_documento;
             destinoOC.Add(o);
         }
