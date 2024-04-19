@@ -211,6 +211,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                     }
                     else //no existen datos de asignacion
                     {
+                        asignacion.Set("programafines", true);
                         persist.Insert(asignacion.Default().Reset());
                         statusData.Add(
                         new StatusData()
