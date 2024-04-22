@@ -26,7 +26,7 @@ namespace Fines2Wpf.Windows.ListaTomas
         Fines2Wpf.DAO.Toma tomaDAO = new();
         QRCodeGenerator qrGenerator = new QRCodeGenerator();
 
-        private ObservableCollection<TomaPosesionPdf.Toma> tomaData = new();
+        private ObservableCollection<TomaPosesionPdf.ConstanciaData> tomaData = new();
 
         public Window1()
         {
@@ -46,7 +46,7 @@ namespace Fines2Wpf.Windows.ListaTomas
         {
             IEnumerable<Dictionary<string, object>> list = tomaDAO.TomasSemestre(search.calendario__anio, search.calendario__semestre);
             tomaData.Clear();
-            tomaData.AddRange(list.ColOfObj<TomaPosesionPdf.Toma>());
+            tomaData.AddRange(list.ColOfObj<TomaPosesionPdf.ConstanciaData>());
         }
         private void BuscarButton_Click(object sender, RoutedEventArgs e)
         {
@@ -192,20 +192,20 @@ namespace Fines2Wpf.Windows.ListaTomas
         private void GenerarTomaButton_Click(object sender, RoutedEventArgs e)
         {
             var button = (e.OriginalSource as Button);
-            var toma = (TomaPosesionPdf.Toma)button.DataContext;
+            var toma = (TomaPosesionPdf.ConstanciaData)button.DataContext;
             QRCodeData qrCodeData = qrGenerator.CreateQrCode("https://planfines2.com.ar/validar-toma/" + toma.id, QRCodeGenerator.ECCLevel.Q);
             QRCode qrCode = new QRCode(qrCodeData);
             Bitmap qrCodeImage = qrCode.GetGraphic(20);
             ImageConverter converter = new ImageConverter();
             toma.qr_code = (byte[])converter.ConvertTo(qrCodeImage, typeof(byte[]));
-            TomaPosesionPdf.Document document = new(toma);
+            TomaPosesionPdf.ConstanciaDocument document = new(toma);
             document.GeneratePdf("C:\\Users\\ivan\\Downloads\\" + toma.comision__pfid + "_" + toma.asignatura__codigo + "_" + toma.docente__numero_documento + ".pdf");
         }
 
         private void EliminarTomaButton_Click(object sender, RoutedEventArgs e)
         {
             var button = (e.OriginalSource as Button);
-            var toma = (TomaPosesionPdf.Toma)button.DataContext;
+            var toma = (TomaPosesionPdf.ConstanciaData)button.DataContext;
             try { 
                 ContainerApp.db.Persist().DeleteIds("toma", toma.id!).Exec().RemoveCache();
                 LoadData();

@@ -29,7 +29,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
     /// </summary>
     public partial class Window1 : Window
     {
-        private DAO.Persona personaDAO = new(); //objeto de acceso a datos de persona
         private DAO.Comision comisionDAO = new(); //objeto de acceso a datos de comision
         private DAO.Curso cursoDAO = new(); //objeto de acceso a datos de curso
         private DAO.Calificacion calificacionDAO = new(); //objeto de acceso a datos de calificacion
@@ -406,7 +405,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (string.IsNullOrEmpty(this.personaComboBox.Text) || this.personaComboBox.Text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object>> list = personaDAO.SearchLikeQuery(this.personaComboBox.Text).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object>> list = DAO.Persona.SearchLikeQuery(this.personaComboBox.Text).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
 
             foreach (var item in list)
             {

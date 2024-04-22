@@ -24,14 +24,13 @@ namespace Fines2Wpf.Windows.AlumnoComision.VerificarAlumnosDuplicados
     public partial class Window1 : Window
     {
         Fines2Wpf.DAO.AlumnoComision asignacionDAO = new();
-        Fines2Wpf.DAO.Alumno alumnoDAO = new();
         List<string> logs = new();
 
         public Window1()
         {
             InitializeComponent();
             IEnumerable<object> idsAlumnos = asignacionDAO.IdsAlumnosActivosDuplicadosPorSemestreDeComisionesAutorizadasQuery("2023", "2").Column<object>("alumno");
-            var alumnos = alumnoDAO.AlumnosPorIds(idsAlumnos);
+            var alumnos = DAO.Alumno.AlumnosPorIds(idsAlumnos);
 
             alumnosGrid.ItemsSource = alumnos.ColOfObj<Data_alumno_r>();
         }

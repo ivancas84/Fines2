@@ -17,15 +17,15 @@ using Utils;
 namespace Fines2Wpf.Windows.TomaPosesionPdf
 {
 
-    internal class Document : IDocument
+    internal class ConstanciaDocument : IDocument
     {
-        public Toma Model;
+        public ConstanciaData Model;
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
         public DocumentSettings GetSettings() => DocumentSettings.Default;
 
         TextInfo textInfo = new CultureInfo("es-AR", false).TextInfo;
 
-        public Document(Toma model)
+        public ConstanciaDocument(ConstanciaData model)
         {
             Model = model;
         }

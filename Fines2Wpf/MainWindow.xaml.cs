@@ -208,6 +208,18 @@ namespace Fines2Wpf
             Windows.AlumnoComision.ProcesarAlumnosListadoGeneral.Window1 window1 = new();
             window1.Show();
         }
+
+        private void GenerarConstanciasAlumnos_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.Alumno.ConstanciaPdf.Window1 window1 = new();
+            window1.Show();
+        }
+
+        private void GenerarConstanciaAlumnoRegular_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.Alumno.ConstanciaAlumnoRegularPdf.Window1 window1 = new();
+            window1.Show();
+        }
     }
 }
 

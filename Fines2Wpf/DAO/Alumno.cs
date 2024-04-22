@@ -1,15 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using SqlOrganize;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Fines2Wpf.DAO
 {
-    public class Alumno
+    public static class Alumno
     {
 
-        public IEnumerable<Dictionary<string, object>> AlumnosPorIds(IEnumerable<object> ids)
+        public static IEnumerable<Dictionary<string, object>> AlumnosPorIds(IEnumerable<object> ids)
         {
             if (ids.Count() == 0) return Enumerable.Empty<Dictionary<string, object>>();
             return ContainerApp.db.Query("alumno").CacheByIds(ids.ToArray());
+        }
+
+        public static EntityQuery SearchLikeQuery(string search)
+        {
+            return ContainerApp.db.Query("alumno").
+                Where("$persona-nombres LIKE @0 ").
+                Where("OR $persona-apellidos LIKE @0 ").
+                Where("OR $persona-numero_documento LIKE @0 ").
+                Where("OR $persona-email LIKE @0 ").
+                Where("OR $persona-telefono LIKE @0 ").
+                Order("$persona-nombres ASC, $persona-apellidos ASC").
+                Parameters("%" + search + "%");
         }
     }
 }

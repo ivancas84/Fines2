@@ -17,6 +17,18 @@ namespace Fines2Wpf.DAO
                 .Parameters(anio, semestre);
 
         }
+
+        public static EntityQuery AsignacionActivaDeAlumnoAnioSemestreQuery(object alumno, object anio, object semestre)
+        {
+            return ContainerApp.db.Query("alumno_comision")
+                .Size(0)
+                .Where(@"$alumno = @0
+                    AND $calendario-anio = @1 
+                    AND $calendario-semestre = @2 
+                    AND $comision-autorizada = true 
+                    AND $estado = 'Activo'")
+                .Parameters(alumno, anio, semestre);
+        }
     }
 
 }

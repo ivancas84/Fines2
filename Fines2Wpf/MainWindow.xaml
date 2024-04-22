@@ -34,6 +34,8 @@
                 </MenuItem>
                 <MenuItem Header="Lista de Asignaciones para programafines" Click="listaAsignacionesProgramaFines_Click"/>
                 <MenuItem Header="Lista de Alumnos semestre sin genero" Click="ListaAlumnosSinGenero_Click"/>
+                <MenuItem Header="Constancia Alumno Regular" Click="GenerarConstanciaAlumnoRegular_Click"/>
+                <MenuItem Header="Constancias Alumnos" Click="GenerarConstanciasAlumnos_Click"/>
 
             </MenuItem>
             

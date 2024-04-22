@@ -199,17 +199,15 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<Dictionary<string, object>> AlumnosActivosDeComisionesAutorizadasPorSemestre(object anio, object semestre)
         {
-            var alumnoDao = new DAO.Alumno();
             IEnumerable<object> ids = IdsAlumnosActivosDeComisionesAutorizadasPorSemestre(anio, semestre);
-            return alumnoDao.AlumnosPorIds(ids);
+            return DAO.Alumno.AlumnosPorIds(ids);
         } 
 
 
         public IEnumerable<Dictionary<string, object>> AlumnosActivosDeComisionesAutorizadasPorSemestreSinGenero(object anio, object semestre)
         {
-            var alumnoDao = new DAO.Alumno();
             IEnumerable<object> ids = IdsAlumnosActivosDeComisionesAutorizadasPorSemestreSinGenero(anio, semestre);
-            return alumnoDao.AlumnosPorIds(ids);
+            return DAO.Alumno.AlumnosPorIds(ids);
         }
 
         /// <summary>

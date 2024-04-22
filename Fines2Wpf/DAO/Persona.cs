@@ -3,10 +3,10 @@
 
 namespace Fines2Wpf.DAO
 {
-    public class Persona
+    public static class Persona
     {
 
-        public EntityQuery SearchLikeQuery(string search)
+        public static EntityQuery SearchLikeQuery(string search)
         {
             return ContainerApp.db.Query("persona").
                 Where("$nombres LIKE @0 ").
