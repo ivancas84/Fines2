@@ -25,10 +25,11 @@ namespace Fines2Wpf
         public override string id { get; set; } = "id";
 
         public string upload { get; set; } = "./upload/";
-        public string download { get; set; } = "./download/";
+        public string downloadPath { get; set; } = "Downloads/";
+        public string imagePath { get; set; } = "Images/";
 
         public string ftpUserName { get; set; } = "planfi10";
-        public string ftpUserPassword { get; set; } = "./download/";
+        public string ftpUserPassword { get; set; }
 
 
 

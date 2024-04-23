@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
 
     internal class ConstanciaDocument : IDocument
     {
+        private string imagePath = Path.Combine(Directory.GetCurrentDirectory(), ContainerApp.config.imagePath);
+
         public ConstanciaData Model;
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
         public DocumentSettings GetSettings() => DocumentSettings.Default;
@@ -51,7 +54,7 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
             {
                 row.RelativeItem(3).Height(75).AlignBottom().Column(column =>
                 {
-                    column.Item().Image("C:\\projects\\Fines2\\Fines2Wpf\\Images\\logo.jpg").FitArea();
+                    column.Item().Image(imagePath + "logo.jpg").FitArea();
                 });
 
                 row.RelativeItem().AlignRight().Column(column =>
@@ -106,18 +109,19 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
 
         void ComposeFooter(IContainer container)
         {
+
             container.Layers(layers =>
             {
                 layers.PrimaryLayer().Row(row =>
                 {
-                    row.RelativeItem(2).AlignRight().AlignBottom().PaddingRight(60).Column(column =>
+                    row.RelativeItem(2).AlignRight().PaddingRight(60).Column(column =>
                     {
-                        column.Item().Image("C:\\projects\\Fines2\\Fines2Wpf\\Images\\sello_cens.png").FitArea();
+                        column.Item().Image(imagePath + "sello_cens.png").FitArea();
                     });
 
                     row.RelativeItem().AlignRight().AlignMiddle().Column(column =>
                     {
-                        column.Item().Image("C:\\projects\\Fines2\\Fines2Wpf\\Images\\firma_director.png").FitArea();
+                        column.Item().Image(imagePath + "firma_director.png").FitArea();
                     });
                 });
             });

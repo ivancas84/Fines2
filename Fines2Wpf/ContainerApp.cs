@@ -27,9 +27,11 @@ namespace Fines2Wpf
             emailDocenteFromName = ConfigurationManager.AppSettings.Get("emailDocenteFromName"),
             emailDocenteBcc = ConfigurationManager.AppSettings.Get("emailDocenteBcc"),
             upload = ConfigurationManager.AppSettings.Get("upload")!,
-            download = ConfigurationManager.AppSettings.Get("download")!,
+            downloadPath = ConfigurationManager.AppSettings.Get("downloadPath")!,
             ftpUserName = ConfigurationManager.AppSettings.Get("ftpUserName")!,
             ftpUserPassword = ConfigurationManager.AppSettings.Get("ftpUserPassword")!,
+            imagePath = ConfigurationManager.AppSettings.Get("imagePath")!,
+
         };
 
         public static Db dbPedidos;

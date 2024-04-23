@@ -796,12 +796,14 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void DescargarArchivo_Click(object sender, RoutedEventArgs e)
         {
+            var downloadPath = Path.Combine(Directory.GetCurrentDirectory(), ContainerApp.config.downloadPath);
+
             var dp = ((Hyperlink)e.OriginalSource).DataContext as DetallePersona;
             WebClient client = new WebClient();
             client.Credentials = new NetworkCredential(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword);
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.InitialDirectory = ContainerApp.config.download;
+            saveFileDialog.InitialDirectory = downloadPath;
             saveFileDialog.RestoreDirectory = false;
             saveFileDialog.Title = "Descargar archivo de legajo";
             saveFileDialog.DefaultExt = Path.GetExtension(dp.archivo__name);

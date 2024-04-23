@@ -63,24 +63,22 @@
                         StaysOpenOnEdit="True"
                         TextBoxBase.TextChanged="AlumnoComboBox_TextChanged"
                         GotFocus="ComboBox_GotFocus"
-                        SelectionChanged="ComboBox_SelectionChanged" />
+                        SelectionChanged="ComboBox_SelectionChanged" 
+                        />
 
 
                 <Label 
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Margin = "2">
-                    _Año:</Label>
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin = "2">
+                    URL:</Label>
 
-                <ComboBox 
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Name="constanciaComboBox">
-                    <ComboBoxItem Content = "Auto" />
-                    <ComboBoxItem Content = "1" />
-                    <ComboBoxItem Content = "2" />
-                    <ComboBoxItem Content = "3" />
-                </ComboBox>
+                <TextBox 
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Name="urlTextBox"
+                />
+
 
 
                 <StackPanel Grid.Row = "2" >

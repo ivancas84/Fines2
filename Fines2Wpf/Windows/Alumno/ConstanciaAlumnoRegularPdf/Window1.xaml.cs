@@ -1,10 +1,12 @@
-﻿using Fines2Wpf.Data;
+﻿using CommunityToolkit.WinUI.Notifications;
+using Fines2Wpf.Data;
 using QRCoder;
 using QuestPDF.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +28,7 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
     /// </summary>
     public partial class Window1 : Window
     {
+        private string downloadPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), ContainerApp.config.downloadPath);
 
         #region Autocomplete v2 - alumnoComboBox
         private ObservableCollection<ConstanciaData> alumnoOC = new(); //datos consultados de la base de datos
@@ -47,30 +50,41 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
 
         private void GenerarConstanciaButton_Click(object sender, RoutedEventArgs e)
         {
-            ConstanciaData alumno = (ConstanciaData)alumnoComboBox.SelectedItem;
-            int anio = DateTime.Now.Year;
-            short semester = DateTime.Now.ToSemester();
+            try
+            {
+                ConstanciaData alumno = (ConstanciaData)alumnoComboBox.SelectedItem;
 
-            Data_alumno_comision_r asignacionActiva = DAO.AlumnoComision2.
+                alumno.url = urlTextBox.Text;
+
+                int anio = DateTime.Now.Year;
+                short semester = DateTime.Now.ToSemester();
+
+                Data_alumno_comision_r asignacionActiva = DAO.AlumnoComision2.
                 AsignacionActivaDeAlumnoAnioSemestreQuery(alumno.id, anio, semester).
                 DictCache().
                 Obj<Data_alumno_comision_r>();
 
-            alumno.anio_constancia = asignacionActiva.planificacion__anio!;
+                alumno.anio_constancia = asignacionActiva.planificacion__anio!;
 
-            alumno.resolucion_constancia = asignacionActiva.plan__resolucion!;
+                alumno.resolucion_constancia = asignacionActiva.plan__resolucion!;
 
-            alumno.orientacion_constancia = asignacionActiva.plan__orientacion;
+                alumno.orientacion_constancia = asignacionActiva.plan__orientacion;
 
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(alumno.url, QRCodeGenerator.ECCLevel.Q);
-            QRCode qrCode = new QRCode(qrCodeData);
-            Bitmap qrCodeImage = qrCode.GetGraphic(20);
-            ImageConverter converter = new ImageConverter();
-            alumno.qr_code = (byte[])converter.ConvertTo(qrCodeImage, typeof(byte[]));
-            ConstanciaDocument document = new(alumno);
-            document.GeneratePdf("C:\\Users\\ivan\\Downloads\\" + alumno.persona__numero_documento + ".pdf");
-
+                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(alumno.url, QRCodeGenerator.ECCLevel.Q);
+                QRCode qrCode = new QRCode(qrCodeData);
+                Bitmap qrCodeImage = qrCode.GetGraphic(20);
+                ImageConverter converter = new ImageConverter();
+                alumno.qr_code = (byte[])converter.ConvertTo(qrCodeImage, typeof(byte[]));
+                ConstanciaDocument document = new(alumno);
+                document.GeneratePdf(downloadPath + alumno.persona__numero_documento + ".pdf");
+            } catch (Exception ex)
+            {
+                new ToastContentBuilder()
+                   .AddText(Title)
+                   .AddText("ERROR: " + ex.Message)
+                   .Show();
+            }
         }
 
         #region Métodos generales Autocomplete v.2.2
