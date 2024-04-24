@@ -20,20 +20,16 @@ namespace Fines2Wpf.Windows.AlumnoComision.ActualizarPlanAlumnos
     /// </summary>
     public partial class Window1 : Window
     {
-        Fines2Wpf.DAO.AlumnoComision asignacionDAO = new();
-        Fines2Wpf.DAO.Comision comisionDAO = new();
-
-        List<string> logs = new();
         public Window1()
         {
             InitializeComponent();
         
-            var comisiones = comisionDAO.ComisionesAutorizadasPorSemestre("2023", "2");
+            var comisiones = DAO.Comision2.ComisionesAutorizadasDeAnioSemestreQuery("2024", "1").ColOfDictCache();
             bool persist_ = false;
             var persist = ContainerApp.db.Persist();
             foreach (var comision in comisiones)
             {
-                var idAlumnos = asignacionDAO.IdAlumnosConPlanDiferenteDeComision(comision["id"], comision["planificacion-plan"]);
+                var idAlumnos = DAO.AlumnoComision2.AsignacionesDeComisionSinPlanQuery(comision["id"]!, comision["planificacion-plan"]!).ColOfDictCache().ColOfVal<object>("alumno");
                 if (idAlumnos.IsNullOrEmpty()) continue;
                 persist_ = true;
                 persist.UpdateValueIds("alumno", "plan", comision["planificacion-plan"], idAlumnos.ToArray());

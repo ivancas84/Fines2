@@ -64,6 +64,9 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
                 DictCache().
                 Obj<Data_alumno_comision_r>();
 
+                if (asignacionActiva.IsNullOrEmptyOrDbNull())
+                    throw new Exception("No existe asignación activa! Verificar las comisiones del alumno!");
+                
                 alumno.anio_constancia = asignacionActiva.planificacion__anio!;
 
                 alumno.resolucion_constancia = asignacionActiva.plan__resolucion!;

@@ -1,4 +1,6 @@
 ﻿using SqlOrganize;
+using System.Collections.Generic;
+using Utils;
 
 namespace Fines2Wpf.DAO
 {
@@ -28,6 +30,20 @@ namespace Fines2Wpf.DAO
                     AND $comision-autorizada = true 
                     AND $estado = 'Activo'")
                 .Parameters(alumno, anio, semestre);
+        }
+
+        public static EntityQuery AsignacionesDeComisionSinPlanQuery(object comision, object plan)
+        {
+            return ContainerApp.db.Query("alumno_comision")
+               .Fields("alumno")
+               .Size(0)
+               .Where(@"
+                    $alumno-plan != @0
+                    AND $comision = @1
+                    AND $activo = true
+                ")
+               .Parameters(plan, comision);
+
         }
     }
 

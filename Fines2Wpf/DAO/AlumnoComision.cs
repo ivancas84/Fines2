@@ -139,19 +139,7 @@ namespace Fines2Wpf.DAO
                 ").ColOfDictCache().ColOfVal<object>("alumno");
         }
 
-        public IEnumerable<object> IdAlumnosConPlanDiferenteDeComision(object comision, object plan)
-        {
-            return ContainerApp.db.Query("alumno_comision")
-               .Fields("alumno")
-               .Size(0)
-               .Where(@"
-                    $alumno-plan != @0
-                    AND $comision = @1
-                    AND $activo = true
-                ")
-               .Parameters(plan, comision).ColOfDictCache().ColOfVal<object>("alumno");
-
-        }
+        
 
 
         public EntityQuery IdsAlumnosActivosDuplicadosPorSemestreDeComisionesAutorizadasQuery(object anio, object semestre)

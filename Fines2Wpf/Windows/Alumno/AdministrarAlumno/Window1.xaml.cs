@@ -189,6 +189,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 return;
             var data = ContainerApp.db.Query("alumno_comision").
                 Where("$alumno = @0").
+                Order("$calendario-anio DESC, $calendario-semestre DESC").
                 Parameters(a.id!).ColOfDictCache();
 
             foreach (var item in data)
