@@ -40,6 +40,8 @@
                     <RowDefinition Height = "Auto" />
                     <RowDefinition Height = "Auto" />
                     <RowDefinition Height = "Auto" />
+                    <RowDefinition Height = "Auto" />
+                    <RowDefinition Height = "Auto" />
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -79,9 +81,22 @@
                     Name="urlTextBox"
                 />
 
+                <Label 
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    Margin = "2">
+                    URL:</Label>
+
+                <TextBox 
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Name="observaciones"
+                />
 
 
-                <StackPanel Grid.Row = "2" >
+
+                <StackPanel Grid.Row = "4" >
                     <Button 
                             Content = "_Generar..." 
                             Click="GenerarConstanciaButton_Click"

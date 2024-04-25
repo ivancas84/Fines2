@@ -96,6 +96,14 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
                 {
                     text.Justify();
                     text.Span("Se extiende el presente a pedido del interesado en La Plata el día ").Style(contentStyle);
+                    text.Span($" {DateTime.Now.Day.ToString()} de {DateTime.Now.ToString("MMMM")} de {DateTime.Now.Year.ToString()} ").Underline().SemiBold().Style(contentStyle);
+                    text.Span(" para ser presentado ante ").Style(contentStyle);
+                    text.Span($" quien corresponda ").Underline().SemiBold().Style(contentStyle);
+                });
+                column.Item().AlignLeft().PaddingLeft(20).PaddingRight(20).Text(text =>
+                {
+                    text.Justify();
+                    text.Span("Se extiende el presente a pedido del interesado en La Plata el día ").Style(contentStyle);
                     text.Span($" {DateTime.Now.Day.ToString() } de {DateTime.Now.ToString("MMMM")} de {DateTime.Now.Year.ToString()} ").Underline().SemiBold().Style(contentStyle);
                     text.Span(" para ser presentado ante ").Style(contentStyle);
                     text.Span($" quien corresponda ").Underline().SemiBold().Style(contentStyle);

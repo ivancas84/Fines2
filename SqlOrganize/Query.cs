@@ -49,31 +49,183 @@ namespace SqlOrganize
         /// </summary>
         /// <returns>Resultado como List -Dictionary -string, object- -</returns>
         /// <remarks>Convert the result to json with "JsonConvert.SerializeObject(data, Formatting.Indented)"</remarks>
-        public abstract IEnumerable<Dictionary<string, object?>> ColOfDict();
+        public IEnumerable<Dictionary<string, object?>> ColOfDict()
+        {
+            using DbCommand command = NewCommand();
+            if (connection.IsNullOrEmpty())
+            {
+                using DbConnection conn = NewConnection();
+                conn.Open();
+                Exec(conn, command);
+                using DbDataReader reader = command.ExecuteReader();
+                return reader.Serialize();
+            }
+            else
+            {
+                Exec(connection!, command);
+                using DbDataReader reader = command.ExecuteReader();
+                return reader.Serialize();
+            }
+        }
 
-        public abstract IEnumerable<T> ColOfObj<T>() where T : class, new();
+        public IEnumerable<T> ColOfObj<T>() where T : class, new()
+        {
+            using DbCommand command = NewCommand();
+            if (connection.IsNullOrEmpty())
+            {
+                using DbConnection conn = NewConnection();
+                conn.Open();
+                Exec(conn, command);
+                using DbDataReader reader = command.ExecuteReader();
+                return reader.ColOfObj<T>();
+            }
+            else
+            {
+                Exec(connection!, command);
+                using DbDataReader reader = command.ExecuteReader();
+                return reader.ColOfObj<T>();
+            }
+        }
 
-        public abstract IDictionary<string, object?>? Dict();
+        public Dictionary<string, object?>? Dict()
+        {
+            using DbCommand command = NewCommand();
+            if (connection.IsNullOrEmpty())
+            {
+                using DbConnection conn = NewConnection();
+                conn.Open();
+                Exec(conn, command);
+                using DbDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.SingleResult);
+                return reader.SerializeRow();
+            }
+            else
+            {
+                Exec(connection!, command);
+                using DbDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.SingleResult);
+                return reader.SerializeRow();
+            }
+        }
 
-        public abstract T? Obj<T>() where T : class, new();
+        public T? Obj<T>() where T : class, new()
+        {
+            using DbCommand command = NewCommand();
+            if (connection.IsNullOrEmpty())
+            {
+                using DbConnection conn = NewConnection();
+                conn.Open();
+                Exec(conn, command);
+                using DbDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.SingleResult);
+                return reader.Obj<T>();
+            }
+            else
+            {
+                Exec(connection!, command);
+                using DbDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.SingleResult);
+                return reader.Obj<T>();
+            }
+        }
 
-        public abstract IEnumerable<T> Column<T>(string columnName);
+        public IEnumerable<T> Column<T>(string columnName)
+        {
+            using DbCommand command = NewCommand();
+            if (connection.IsNullOrEmpty())
+            {
+                using DbConnection conn = NewConnection();
+                conn.Open();
+                Exec(conn, command);
+                using DbDataReader reader = command.ExecuteReader();
+                return reader.ColumnValues<T>(columnName);
+            }
+            else
+            {
+                Exec(connection!, command);
+                using DbDataReader reader = command.ExecuteReader();
+                return reader.ColumnValues<T>(columnName);
+            }
+        }
 
-        public abstract IEnumerable<T> Column<T>(int columnValue = 0);
+        public IEnumerable<T> Column<T>(int columnNumber = 0)
+        {
+            using DbCommand command = NewCommand();
+            if (connection.IsNullOrEmpty())
+            {
+                using DbConnection conn = NewConnection();
+                conn.Open();
+                Exec(conn, command);
+                using DbDataReader reader = command.ExecuteReader();
+                return reader.ColumnValues<T>(columnNumber);
+            }
+            else
+            {
+                Exec(connection!, command);
+                using DbDataReader reader = command.ExecuteReader();
+                return reader.ColumnValues<T>(columnNumber);
+            }
+        }
 
         /// <summary>Value</summary>
         /// <remarks>La consulta debe retornar 1 o mas valores</remarks>
-        public abstract T Value<T>(string columnName);
+        public T Value<T>(string columnName)
+        {
+            using DbCommand command = NewCommand();
+            if (connection.IsNullOrEmpty())
+            {
+                using DbConnection conn = NewConnection();
+                conn.Open();
+                Exec(conn, command);
+                using DbDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.SingleResult);
+                return reader.Read() ? (T)reader[columnName] : default(T);
+            }
+            else
+            {
+                Exec(connection!, command);
+                using DbDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.SingleResult);
+                return reader.Read() ? (T)reader[columnName] : default(T);
+            }
+        }
+
+
 
         /// <summary>Value</summary>
         /// <remarks>La consulta debe retornar 1 o mas valores</remarks>
-        public abstract T Value<T>(int columnValue = 0);
+        public T Value<T>(int columnNumber = 0)
+        {
+            using DbCommand command = NewCommand();
+            if (connection.IsNullOrEmpty())
+            {
+                using DbConnection conn = NewConnection();
+                conn.Open();
+                Exec(conn, command);
+                using DbDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.SingleResult);
+                return (reader.Read()) ? (T)reader.GetValue(columnNumber) : default(T);
+            }
+            else
+            {
+                Exec(connection!, command);
+                using DbDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.SingleResult);
+                return (reader.Read()) ? (T)reader.GetValue(columnNumber) : default(T);
+            }
+        }
 
         /// <summary>
         /// Verifica conexion, si no existe la crea
         /// </summary>
-        public abstract void Exec();
+        public void Exec()
+        {
+            using var command = NewCommand();
+            if (connection.IsNullOrEmpty())
+            {
+                using var conn = NewConnection();
+                conn.Open();
+                Exec(conn, command);
+                conn.Close();
+            }
+            else
+                Exec(connection!, command);
+        }
 
+        public abstract DbConnection NewConnection();
+        public abstract DbCommand NewCommand();
         protected abstract void AddWithValue(DbCommand command, string columnName, object value);
 
         /// <summary>

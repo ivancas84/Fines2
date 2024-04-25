@@ -23,6 +23,9 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height = "Auto" />
                 <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "Auto" />
+
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
@@ -33,7 +36,7 @@
                 Name="firstGroupBox"
                 Margin="10">
                 <GroupBox.Header>
-                    <Label Foreground="White">Formulario de Búsqueda</Label>
+                    <Label Foreground="White">Alumnos activos que no se encuentran en programafines</Label>
                 </GroupBox.Header>
                 <DataGrid Name="alumnosDataGrid"></DataGrid>
             </GroupBox>
@@ -43,9 +46,19 @@
                 Grid.Row="1"
                 Margin="10">
                 <GroupBox.Header>
-                    <Label Foreground="White">Asignaciones</Label>
+                    <Label Foreground="White">JSON para cargar en programafines</Label>
                 </GroupBox.Header>
                 <TextBox Name="jsonTextBox"></TextBox>
+            </GroupBox>
+
+            <GroupBox 
+                Name="alumnosNoActivosGroupBox"
+                Grid.Row="2"
+                Margin="10">        
+                <GroupBox.Header>
+                    <Label Foreground="White">Alumnos no activos qu se encuentran en programafines</Label>
+                </GroupBox.Header>
+                <DataGrid Name="alumnosNoActivosDataGrid"></DataGrid>
             </GroupBox>
         </Grid>
 

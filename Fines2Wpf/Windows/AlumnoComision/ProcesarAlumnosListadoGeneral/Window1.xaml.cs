@@ -45,7 +45,6 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                 ColOfObj<Data_comision_r>().
                 DictOfObjByPropertyNames<Data_comision_r>("pfid");
 
-
             Dictionary<string, object> dict = new Dictionary<string, object>();
 
             IEnumerable<string> _headers = headerTextBox.Text.Split(", ").Select(s => s.Trim());
