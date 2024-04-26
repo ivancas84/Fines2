@@ -318,10 +318,10 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (persona.Error.IsNullOrEmpty())
             {
                 var per = (Data_persona)personaGroupBox.DataContext;
-                EntityPersist p = ContainerApp.db.Persist();
+                
                 try
                 {
-                    p.PersistObj("persona", per).Exec().RemoveCache();
+                    ContainerApp.db.Persist().PersistObj("persona", per).Exec().RemoveCache();
                     var alu = (Data_alumno)alumnoGroupBox.DataContext;
                     MessageBox.Show("Registro de persona realizado");
                 }
@@ -342,10 +342,10 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             var alu = (Alumno)alumnoGroupBox.DataContext;
 
-            EntityPersist p = ContainerApp.db.Persist();
             try
             {
-                p.PersistObj("alumno", alu).Exec().RemoveCache();
+                ContainerApp.db.Persist().
+                    PersistObj("alumno", alu).Exec().RemoveCache();
                 SetAlumnoGroupBox(alu);
                 MessageBox.Show("Registro de alumno realizado");
             }
@@ -846,9 +846,11 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     dp.persona = alu.persona;
 
                     EntityValues archivoVal = ContainerApp.db.Values("file", "archivo").SetObj(dp);
-                    EntityPersist p = ContainerApp.db.Persist().Persist(archivoVal);
-                    p.PersistObj("detalle_persona", dp);
-                    p.Transaction().RemoveCache();
+                    
+                    ContainerApp.db.Persist().Persist(archivoVal)
+                        .PersistObj("detalle_persona", dp)
+                        .Transaction()
+                        .RemoveCache();
                 }
                 catch (WebException ex)
                 {
@@ -904,13 +906,13 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void GenerarButton_Click(object sender, RoutedEventArgs e)
         {
+            List<EntityPersist> persists = new();
+
             try
             {
                 Data_alumno alumnoObj = (Data_alumno)alumnoGroupBox.DataContext;
                 if (alumnoObj.plan.IsNullOrEmptyOrDbNull() || alumnoObj.anio_ingreso.IsNullOrEmptyOrDbNull() || alumnoObj.semestre_ingreso.IsNullOrEmptyOrDbNull())
                     throw new Exception("Para generar las calificaciones, deben estar definidos los datos de ingreso: Plan, año y semestre.");
-
-                EntityPersist persist = ContainerApp.db.Persist();
 
                 if (!alumnoObj.anio_ingreso.Equals("1") && alumnoObj.semestre_ingreso != 1)
                 {
@@ -932,7 +934,9 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                         Column<object>("id");
 
                     if (idsCalificaciones_.Count() > 0)
-                        persist.UpdateValueIds("calificacion", "archivado", true, idsCalificaciones_.ToArray());
+                        ContainerApp.db.Persist().
+                            UpdateValueIds("calificacion", "archivado", true, idsCalificaciones_.ToArray()).
+                            AddTo(persists);
                     #endregion
                 }
 
@@ -953,7 +957,9 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     Column<object>("id");
                 
                 if (idsCalificaciones.Count() > 0)
-                    persist.DeleteIds("calificacion", idsCalificaciones.ToArray());
+                    ContainerApp.db.Persist().
+                        DeleteIds("calificacion", idsCalificaciones.ToArray()).
+                        AddTo(persists);
                 #endregion
 
                 #region Archivar calificaciones aprobadas de otro plan
@@ -967,7 +973,9 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     Column<object>("id");
 
                 if (idsCalificaciones.Count() > 0)
-                    persist.UpdateValueIds("calificacion", "archivado", true, idsCalificaciones.ToArray());
+                    ContainerApp.db.Persist().
+                        UpdateValueIds("calificacion", "archivado", true, idsCalificaciones.ToArray()).
+                        AddTo(persists);
                 #endregion
 
                 #region Desarchivar calificaciones aprobadas del mismo plan
@@ -984,7 +992,9 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     Column<object>("id");
 
                 if (idsCalificaciones.Count() > 0)
-                    persist.UpdateValueIds("calificacion", "archivado", false, idsCalificaciones.ToArray());
+                    ContainerApp.db.Persist().
+                        UpdateValueIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
+                        AddTo(persists);
                 #endregion
 
                 #region Consultar disposiciones del mismo plan
@@ -1021,7 +1031,9 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                         calificacionObj.disposicion = (string)id;
                         calificacionObj.alumno = alumnoObj.id;
                         calificacionObj.archivado = false;
-                        persist.InsertObj("calificacion", calificacionObj);
+                        ContainerApp.db.Persist().
+                            InsertObj("calificacion", calificacionObj).
+                            AddTo(persists);
                     }
                 }
 
@@ -1052,11 +1064,12 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                         Column<object>("id");
 
                     if (idsCalificaciones.Count() > 0)
-                        persist.UpdateValueIds("calificacion", "archivado", false, idsCalificaciones.ToArray());
+                        ContainerApp.db.Persist().UpdateValueIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
+                            AddTo(persists);
                 }
                 #endregion
 
-                persist.TransactionSplit().RemoveCache();
+                persists.Transaction().RemoveCache();
                 LoadCalificaciones(alumnoObj);
                 LoadCalificacionesArchivadas(alumnoObj);
                 #endregion

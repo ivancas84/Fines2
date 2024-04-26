@@ -275,7 +275,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                persist.Transaction().RemoveCache();
+                persist.Exec().RemoveCache();
             }
         }
     }

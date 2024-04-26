@@ -25,7 +25,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ActualizarPlanAlumnos
                 persist.UpdateValueIds("alumno", "plan", comision["planificacion-plan"], idAlumnos.ToArray());
             }
             if(persist_)
-                   persist.Transaction().RemoveCache();
+                   persist.Exec().RemoveCache();
         }
     }
 }

@@ -1,21 +1,10 @@
 ﻿using Fines2Wpf.Data;
-using Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos;
-using Org.BouncyCastle.Utilities;
 using SqlOrganize;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Utils;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
@@ -28,7 +17,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
         DAO.Comision comisionDAO = new();
         DAO.AlumnoComision alumnoComisionDAO = new();
         private ObservableCollection<StatusData> statusData = new();
-        private EntityPersist persist = ContainerApp.db.Persist();
+        private List<EntityPersist> persists = new();
 
         public Window1()
         {
@@ -121,7 +110,10 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                     }
                     else //no existen datos de persona en la base
                     {
-                        persist.Insert(personaVal.Default().Reset());
+                        ContainerApp.db.Persist().
+                            Insert(personaVal.Default().Reset()).
+                            AddTo(persists);
+
                         statusData.Add(new StatusData()
                         {
                             row = j,
@@ -176,7 +168,10 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                     }
                     else //no existen datos del alumno en la base
                     {
-                        persist.Insert(alumnoVal.Default().Set("plan", comisiones[pfid].planificacion__plan!).Reset());
+                        ContainerApp.db.Persist().
+                            Insert(alumnoVal.Default().Set("plan", comisiones[pfid].planificacion__plan!).Reset()).
+                            AddTo(persists);
+
                         statusData.Add(new StatusData()
                         {
                             row = j,
@@ -196,7 +191,9 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                     var asignacionExistenteData = ContainerApp.db.Sql("alumno_comision").Unique(asignacion).DictCache();
                     if (!asignacionExistenteData.IsNullOrEmpty()) //existen datos de alumno en la base
                     {
-                        persist.UpdateValueIds("alumno_comision", "programafines", true, asignacionExistenteData["id"]);
+                        ContainerApp.db.Persist().
+                            UpdateValueIds("alumno_comision", "programafines", true, asignacionExistenteData["id"]).
+                            AddTo(persists);
 
 
                         statusData.Add(new()
@@ -211,7 +208,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                     else //no existen datos de asignacion
                     {
                         asignacion.Set("programafines", true);
-                        persist.Insert(asignacion.Default().Reset());
+                        ContainerApp.db.Persist().Insert(asignacion.Default().Reset()).
+                            AddTo(persists);
                         statusData.Add(
                         new StatusData()
                         {
@@ -285,7 +283,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                persist.TransactionSplit().RemoveCache();
+                persists.Exec().RemoveCache();
             }
         }
     }

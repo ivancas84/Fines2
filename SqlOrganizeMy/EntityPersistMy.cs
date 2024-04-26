@@ -32,38 +32,7 @@ UPDATE " + sna + @" SET
         }
 
 
-        public override EntityPersist Transaction()
-        {
-            using MySqlCommand command = new();
-
-            if (connection.IsNullOrEmpty())
-            {
-                connection = new MySqlConnection(Db.config.connectionString);
-                connection.Open();
-                _Transaction();
-                connection.Close();
-            }
-            else
-                _Transaction();
-
-            return this;
-        }
-
-        public override EntityPersist TransactionSplit()
-        {
-            if (connection.IsNullOrEmpty())
-            {
-                connection = new MySqlConnection(Db.config.connectionString);
-                connection.Open();
-                _TransactionSplit();
-                connection.Close();
-                connection = null;
-            }
-            else
-                _TransactionSplit();
-
-            return this;
-        }
+        
 
     }
 

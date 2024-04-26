@@ -1,20 +1,9 @@
 ﻿using Fines2Wpf.Data;
-using Fines2Wpf.Windows.Curso.ListaCursoSemestreSinTomasAprobadas;
 using SqlOrganize;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Utils;
 
 namespace Fines2Wpf.Windows.AlumnoComision.TransferirAlumnosActivos
@@ -26,6 +15,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.TransferirAlumnosActivos
     {
 
         ObservableCollection<Data_alumno_comision_r> asignacionOC = new();
+
         public Window1()
         {
             InitializeComponent();
@@ -36,6 +26,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.TransferirAlumnosActivos
 
         private void TransferirButton_Click(object sender, RoutedEventArgs e)
         {
+            List<EntityPersist> persists = new();
 
             IDictionary < string, List<Dictionary<string, object?>>> alumnosComisiones = ContainerApp.db.Sql("alumno_comision")
                 .Fields()
@@ -50,8 +41,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.TransferirAlumnosActivos
                 .Parameters(calendarioAnioTextBox.Text, calendarioSemestreTextBox.Text)
                 .ColOfDictCache()
                 .DictOfListByKeys("comision-comision_siguiente");
-
-            EntityPersist persist = ContainerApp.db.Persist();
+           
             asignacionOC.Clear();
             foreach (var (idComisionSiguiente, acs) in alumnosComisiones)
             {
@@ -67,11 +57,11 @@ namespace Fines2Wpf.Windows.AlumnoComision.TransferirAlumnosActivos
                         Set("alumno", acObj.alumno).
                         Set("estado", "Activo").Default().Reset();
 
-                    persist.Insert(acVal);
+                    ContainerApp.db.Persist().Insert(acVal).AddTo(persists);
                 }
             }
 
-            persist.TransactionSplit().RemoveCache();
+            persists.Exec().RemoveCache();
 
         }
     }

@@ -28,13 +28,21 @@ namespace SqlOrganizeMy
                 return new MySqlCommand();
             }
 
-        public override DbConnection NewConnection()
+        public override DbConnection OpenConnection()
         {
-            return new MySqlConnection(db.config.connectionString);
+            connection = new MySqlConnection(db.config.connectionString);
+            connection.Open();
+            return connection;
         }
-            
-            
-       
+
+        public Query CloseConnection()
+        {
+            connection!.Close();
+            return this;
+        }
+
+
+
 
         protected override void AddWithValue(DbCommand command, string columnName, object value)
         {
@@ -43,8 +51,7 @@ namespace SqlOrganizeMy
 
         public override List<string> GetTableNames()
         {
-            using DbConnection connection = NewConnection();
-            connection.Open();
+            using DbConnection connection = OpenConnection();
             using DbCommand command = NewCommand();
             command.CommandText = @"SHOW TABLES FROM " + db.config.dbName;
             command.Connection = connection;

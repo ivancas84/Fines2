@@ -120,7 +120,7 @@ namespace Fines2Wpf.Values
                 persist.Insert(cursoVal);
             }
 
-            persist.Transaction().RemoveCache();
+            persist.Exec().RemoveCache();
         }
     }
 }
