@@ -50,7 +50,7 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
 
 
             #region Consultar comisiones del semestre anterior
-            IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestreAnterior = ContainerApp.db.Query("comision").
+            IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestreAnterior = ContainerApp.db.Sql("comision").
                 SearchObj(comisionObj).
                 Where(@" 
                     AND (

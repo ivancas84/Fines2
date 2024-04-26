@@ -15,7 +15,7 @@ namespace Fines2Wpf.Forms.ListaReferentesSemestre.DAO
 
         public IEnumerable<object> IdSedesSemestre(Search search)
         {
-            var q = ContainerApp.db.Query("comision")
+            var q = ContainerApp.db.Sql("comision")
                 .Fields("sede-_Id")
                 .Size(0)
                 .Where(@"

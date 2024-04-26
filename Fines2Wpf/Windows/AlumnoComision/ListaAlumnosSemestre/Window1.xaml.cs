@@ -245,7 +245,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         public ObservableCollection<Data_sede> Sedes()
         {
             ObservableCollection<Data_sede> r = new ObservableCollection<Data_sede>();
-            var data = ContainerApp.db.Query("sede").Size(0).Parameters().ColOfDictCache();
+            var data = ContainerApp.db.Sql("sede").Size(0).Parameters().ColOfDictCache();
             r.Clear();
             r.AddRange(data);
             return r;

@@ -15,7 +15,15 @@ namespace SqlOrganizeMy
         {
         }
 
-            public override DbCommand NewCommand()
+        public QueryMy(Db db, EntitySql sql) : base(db, sql)
+        {
+        }
+
+        public QueryMy(Db db, EntityPersist persist) : base(db, persist)
+        {
+        }
+
+        public override DbCommand NewCommand()
             {
                 return new MySqlCommand();
             }

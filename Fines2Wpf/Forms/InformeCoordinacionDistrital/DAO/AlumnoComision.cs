@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Utils;
+using SqlOrganize;
 
 namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
 {
@@ -11,7 +9,7 @@ namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
     {
         protected IEnumerable<Dictionary<string, object>> FiltroInformeCoordinacionDistrital(string modalidad, string anioCalendario, int semestreCalendario, bool? comisionSiguienteNull = null)
         {
-            var q = ContainerApp.db.Query("alumno_comision").
+            var q = ContainerApp.db.Sql("alumno_comision").
                 Fields("estado, sede-nombre, comision-identificacion, alumno-id, plan_alu-id, persona-apellidos, persona-nombres, persona-numero_documento, persona-genero, persona-fecha_nacimiento, persona-telefono, persona-email, alumno-tiene_dni, alumno-tiene_partida, alumno-tiene_certificado, alumno-creado, alumno-estado_inscripcion, planificacion-plan").
                 Select(@"CONCAT($planificacion-anio, '°', $planificacion-semestre, 'C') AS tramo").
                 Size(0).

@@ -27,7 +27,7 @@ namespace Fines2Wpf.DAO
             }
 
 
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Where("$persona-numero_documento IN (@0)")
                 .Parameters(dnis).ColOfDictCache();
 
@@ -43,7 +43,7 @@ namespace Fines2Wpf.DAO
             var alumnoComision_ = AsignacionesActivasPorComisionesQuery(new List<object>() { comision }).ColOfDictCache();
             var idAlumnos = alumnoComision_.ColOfVal<object>("alumno").Distinct().ToList();
             var idPlan = alumnoComision_.ElementAt(0)["planificacion-plan"];
-            return ContainerApp.db.Query("calificacion")
+            return ContainerApp.db.Sql("calificacion")
                 .Select("$SUM($disposicion) AS cantidad")
                 .Group("$alumno")
                 .Size(0)
@@ -62,7 +62,7 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<object> IdsAlumnosDeComisionesAutorizadasPorSemestre(object anio, object semestre)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Fields("$alumno")
                 .Size(0)
                 .Where(@"
@@ -77,7 +77,7 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<object> IdsAlumnosActivosDeComisionesAutorizadasPorSemestre(object anio, object semestre)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Fields("$alumno")
                 .Size(0)
                 .Where(@"
@@ -92,7 +92,7 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<object> IdsAlumnosActivosDeComisionesAutorizadasPorSemestreSinGenero(object anio, object semestre)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Fields("$alumno")
                 .Size(0)
                 .Where(@"
@@ -108,7 +108,7 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<Dictionary<string, object>> AsignacionesPorComisiones(List<object> idsComisiones)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -117,9 +117,9 @@ namespace Fines2Wpf.DAO
                 .Parameters(idsComisiones).ColOfDictCache();
         }
 
-        public EntityQuery AsignacionesActivasPorComisionesQuery(IEnumerable<object> idsComisiones)
+        public EntitySql AsignacionesActivasPorComisionesQuery(IEnumerable<object> idsComisiones)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -131,7 +131,7 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<object> IdsAlumnosPorComisiones(List<object> comisiones)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Fields("alumno")
                 .Size(0)
                 .Where(@"
@@ -142,9 +142,9 @@ namespace Fines2Wpf.DAO
         
 
 
-        public EntityQuery IdsAlumnosActivosDuplicadosPorSemestreDeComisionesAutorizadasQuery(object anio, object semestre)
+        public EntitySql IdsAlumnosActivosDuplicadosPorSemestreDeComisionesAutorizadasQuery(object anio, object semestre)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                .Select("COUNT($id) AS cantidad")
                .Group("$alumno")
                .Size(0)
@@ -158,9 +158,9 @@ namespace Fines2Wpf.DAO
                .Parameters(anio, semestre);
         }
 
-        public EntityQuery AsignacionesActivasDeComisionesAutorizadasPorSemestreQuery(object anio, object semestre)
+        public EntitySql AsignacionesActivasDeComisionesAutorizadasPorSemestreQuery(object anio, object semestre)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where(@"$calendario-anio = @0 
                     AND $calendario-semestre = @1 
@@ -172,7 +172,7 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<Dictionary<string, object>> AsignacionesDeComisionesAutorizadasPorSemestre(object anio, object semestre)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where("$calendario-anio = @0 AND $calendario-semestre = @1 AND $comision-autorizada = true")
                 .Parameters(anio, semestre).ColOfDictCache();
@@ -182,7 +182,7 @@ namespace Fines2Wpf.DAO
         public IEnumerable<Dictionary<string, object>> AlumnosDeComisionesAutorizadasPorSemestre(object anio, object semestre)
         {
             IEnumerable<object> ids = IdsAlumnosDeComisionesAutorizadasPorSemestre(anio, semestre);
-            return ContainerApp.db.Query("alumno").CacheByIds(ids.ToArray());
+            return ContainerApp.db.Sql("alumno").CacheByIds(ids.ToArray());
         }
 
         public IEnumerable<Dictionary<string, object>> AlumnosActivosDeComisionesAutorizadasPorSemestre(object anio, object semestre)
@@ -208,7 +208,7 @@ namespace Fines2Wpf.DAO
         /// <returns></returns>
         public IEnumerable<Dictionary<string, object>> AsignacionesDelAlumnoEnOtrasComisionesAutorizadasDelSemestre(object anio, object semestre, object idComision, object idAlumno)
         {
-            var r = ContainerApp.db.Query("alumno_comision")
+            var r = ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where(@"
                     $calendario-anio = @0
@@ -231,7 +231,7 @@ namespace Fines2Wpf.DAO
         /// <returns></returns>
         public IEnumerable<Dictionary<string, object?>> AsignacionesDelAlumnoEnOtrasComisionesAutorizadas(object idComision, object idAlumno)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where(@"
                     $comision-id != @0

@@ -15,7 +15,7 @@ namespace Fines2Wpf.Forms.ListaSedesSemestre.DAO
 
         public IEnumerable<Dictionary<string, object?>> Search(ComisionSearch search)
         {
-            var q = ContainerApp.db.Query("comision")
+            var q = ContainerApp.db.Sql("comision")
                 .Fields("sede-*, domicilio-*")
                 .Size(0)
                 .Where(@"

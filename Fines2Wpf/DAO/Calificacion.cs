@@ -12,9 +12,9 @@ namespace Fines2Wpf.DAO
     public class Calificacion
     {
 
-        public EntityQuery CalificacionesAprobadasNoArchivadasDeAlumnosQuery(IEnumerable<object> idsAlumnos)
+        public EntitySql CalificacionesAprobadasNoArchivadasDeAlumnosQuery(IEnumerable<object> idsAlumnos)
         {
-            return ContainerApp.db.Query("calificacion")
+            return ContainerApp.db.Sql("calificacion")
                 .Size(0)
                 .Where(@"
                     $alumno IN (@0)
@@ -27,7 +27,7 @@ namespace Fines2Wpf.DAO
         }
 
 
-        public EntityQuery IdsAlumnosConCalificacionesAprobadasCruzadasNoArchivadasQuery(IEnumerable<object> ids)
+        public EntitySql IdsAlumnosConCalificacionesAprobadasCruzadasNoArchivadasQuery(IEnumerable<object> ids)
         {
             return CalificacionesAprobadasNoArchivadasDeAlumnosQuery(ids).
                 Select("COUNT(DISTINCT $plan_pla-id) as cantidad_planes").
@@ -37,9 +37,9 @@ namespace Fines2Wpf.DAO
 
 
 
-        public EntityQuery CantidadCalificacionesAprobadasAgrupadasPorPlanificacionSinArchivarPorAlumnosYPlanesQuery(List<object> alumnosYplanes)
+        public EntitySql CantidadCalificacionesAprobadasAgrupadasPorPlanificacionSinArchivarPorAlumnosYPlanesQuery(List<object> alumnosYplanes)
         {
-            return ContainerApp.db.Query("calificacion")
+            return ContainerApp.db.Sql("calificacion")
                 .Select("COUNT($id) as cantidad")
                 .Group("$alumno, $planificacion_dis-anio, $planificacion_dis-semestre")
                 .Size(0)
@@ -60,9 +60,9 @@ namespace Fines2Wpf.DAO
         /// <param name="anio"></param>
         /// <param name="semestre"></param>
         /// <returns></returns>
-        public EntityQuery CantidadCalificacionesAprobadaNoArchivadasDeAlumnoPorTramoQuery(object alumno, object anio, object semestre)
+        public EntitySql CantidadCalificacionesAprobadaNoArchivadasDeAlumnoPorTramoQuery(object alumno, object anio, object semestre)
         {
-            return ContainerApp.db.Query("calificacion")
+            return ContainerApp.db.Sql("calificacion")
                 .Select("COUNT($id) as cantidad")
                 .Size(0)
                 .Where(@"
@@ -75,9 +75,9 @@ namespace Fines2Wpf.DAO
                 .Parameters(alumno, anio, semestre);
         }
 
-        public EntityQuery CalificacionesDeAlumnoPlanArchivoQuery(object idAlumno, object idPlan, bool archivado = false)
+        public EntitySql CalificacionesDeAlumnoPlanArchivoQuery(object idAlumno, object idPlan, bool archivado = false)
         {
-            return ContainerApp.db.Query("calificacion")
+            return ContainerApp.db.Sql("calificacion")
                .Size(0)
                .Where(@"
                     $alumno = @0
@@ -88,9 +88,9 @@ namespace Fines2Wpf.DAO
                .Parameters(idAlumno, idPlan, archivado);
         }
 
-        public EntityQuery CalificacionesArchivadasDeAlumnoQuery(object idAlumno)
+        public EntitySql CalificacionesArchivadasDeAlumnoQuery(object idAlumno)
         {
-            return ContainerApp.db.Query("calificacion")
+            return ContainerApp.db.Sql("calificacion")
                .Size(0)
                .Where(@"
                     $alumno = @0

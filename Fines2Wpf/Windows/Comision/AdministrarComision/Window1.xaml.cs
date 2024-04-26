@@ -74,7 +74,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             modalidadComboBox.DisplayMemberPath = "nombre";
             modalidadComboBox.SelectedValuePath = "id";
 
-            var data = ContainerApp.db.Query("modalidad").
+            var data = ContainerApp.db.Sql("modalidad").
                 Order("$nombre").
                 ColOfDictCache();
 
@@ -87,7 +87,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             planificacionComboBox.DisplayMemberPath = "Label";
             planificacionComboBox.SelectedValuePath = "id";
 
-            data = ContainerApp.db.Query("planificacion").
+            data = ContainerApp.db.Sql("planificacion").
                 Order("$plan-distribucion_horaria DESC, $anio ASC, $semestre ASC").
                 ColOfDictCache();
 
@@ -105,7 +105,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             calendarioComboBox.DisplayMemberPath = "Label";
             calendarioComboBox.SelectedValuePath = "id";
 
-            data = ContainerApp.db.Query("calendario").
+            data = ContainerApp.db.Sql("calendario").
                 Order("$anio DESC, $semestre DESC, $inicio DESC, $fin DESC, $descripcion ASC").
                 ColOfDictCache();
 
@@ -276,7 +276,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
 
             else
             {
-                IEnumerable<string> divisiones = ContainerApp.db.Query("comision").
+                IEnumerable<string> divisiones = ContainerApp.db.Sql("comision").
                     Fields("$division").
                     Where("$sede = @0").
                     Parameters(cb.SelectedValue).

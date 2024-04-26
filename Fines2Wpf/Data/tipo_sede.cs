@@ -61,7 +61,7 @@ namespace Fines2Wpf.Data
                     if (_descripcion == null)
                         return "Debe completar valor.";
                     if (!_descripcion.IsNullOrEmptyOrDbNull()) {
-                        var row = ContainerApp.db.Query("tipo_sede").Where("$descripcion = @0").Parameters(_descripcion).DictCache();
+                        var row = ContainerApp.db.Sql("tipo_sede").Where("$descripcion = @0").Parameters(_descripcion).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

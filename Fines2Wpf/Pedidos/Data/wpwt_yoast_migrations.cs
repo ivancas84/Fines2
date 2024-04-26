@@ -59,7 +59,7 @@ namespace Fines2Wpf.Pedidos.Data
 
                 case "version":
                     if (!_version.IsNullOrEmptyOrDbNull()) {
-                        var row = ContainerApp.db.Query("wpwt_yoast_migrations").Where("$version = @0").Parameters(_version).DictCache();
+                        var row = ContainerApp.db.Sql("wpwt_yoast_migrations").Where("$version = @0").Parameters(_version).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

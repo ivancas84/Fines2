@@ -19,7 +19,7 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<Dictionary<string, object?>> ComisionesSemestre(object calendarioAnio, object calendarioSemestre, object? sede = null, bool? autorizada = null)
         {
-            var q = ContainerApp.db.Query("comision")
+            var q = ContainerApp.db.Sql("comision")
                 .Fields()
                 .Select("CONCAT($sede-numero, $division, '/', $planificacion-anio, $planificacion-semestre) AS numero")
                 .Size(0)
@@ -48,7 +48,7 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<Dictionary<string, object?>> ComisionesPorIds(List<object> ids)
         {
-            return ContainerApp.db.Query("comision")
+            return ContainerApp.db.Sql("comision")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -60,7 +60,7 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<Dictionary<string, object?>> ComisionesConSiguientePorCalendario(object anio, object semestre)
         {
-            return ContainerApp.db.Query("comision")
+            return ContainerApp.db.Sql("comision")
                 .Size(0)
                 .Where(@"
                     $calendario-anio = @0
@@ -73,7 +73,7 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<object> IdsComisionesAutorizadasPorCalendario(object anio, object semestre)
         {
-            return ContainerApp.db.Query("comision")
+            return ContainerApp.db.Sql("comision")
                 .Fields(ContainerApp.db.config.id)
                 .Size(0)
                 .Where(@"
@@ -88,12 +88,12 @@ namespace Fines2Wpf.DAO
         public IEnumerable<Dictionary<string, object>> ComisionesAutorizadasPorSemestre(object anio, object semestre)
         {
             IEnumerable<object> ids = IdsComisionesAutorizadasPorCalendario(anio, semestre);
-            return ContainerApp.db.Query("comision").CacheByIds(ids.ToArray());
+            return ContainerApp.db.Sql("comision").CacheByIds(ids.ToArray());
         }
 
-        public EntityQuery ComisionesAutorizadasPorSemestreQuery(object anio, object semestre)
+        public EntitySql ComisionesAutorizadasPorSemestreQuery(object anio, object semestre)
         {
-            return ContainerApp.db.Query("comision")
+            return ContainerApp.db.Sql("comision")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -105,9 +105,9 @@ namespace Fines2Wpf.DAO
         }
 
 
-        public EntityQuery BusquedaAproximadaQuery(string search)
+        public EntitySql BusquedaAproximadaQuery(string search)
         {
-            return ContainerApp.db.Query("comision")
+            return ContainerApp.db.Sql("comision")
                .Fields()
                .Size(0)
                .Where(@"
@@ -122,9 +122,9 @@ namespace Fines2Wpf.DAO
         }
 
 
-        public EntityQuery HorariosQuery(params object[] idComisiones)
+        public EntitySql HorariosQuery(params object[] idComisiones)
         {
-            return ContainerApp.db.Query("horario").
+            return ContainerApp.db.Sql("horario").
                 Where("$curso-comision IN ( @0 )").
                 Parameters(idComisiones).
                 Size(0);

@@ -7,9 +7,9 @@ namespace Fines2Wpf.DAO
     public static class AlumnoComision2
     {
 
-        public static EntityQuery AsignacionesActivasDeComisionesAutorizadasSinProgramafinesPorSemestreQuery(object anio, object semestre)
+        public static EntitySql AsignacionesActivasDeComisionesAutorizadasSinProgramafinesPorSemestreQuery(object anio, object semestre)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where(@"$calendario-anio = @0 
                     AND $calendario-semestre = @1 
@@ -20,9 +20,9 @@ namespace Fines2Wpf.DAO
 
         }
 
-        public static EntityQuery AsignacionesNoActivasDeComisionesAutorizadasConProgramafinesPorSemestreQuery(object anio, object semestre)
+        public static EntitySql AsignacionesNoActivasDeComisionesAutorizadasConProgramafinesPorSemestreQuery(object anio, object semestre)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where(@"$calendario-anio = @0 
                     AND $calendario-semestre = @1 
@@ -33,9 +33,9 @@ namespace Fines2Wpf.DAO
 
         }
 
-        public static EntityQuery AsignacionActivaDeAlumnoAnioSemestreQuery(object alumno, object anio, object semestre)
+        public static EntitySql AsignacionActivaDeAlumnoAnioSemestreQuery(object alumno, object anio, object semestre)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where(@"$alumno = @0
                     AND $calendario-anio = @1 
@@ -45,9 +45,9 @@ namespace Fines2Wpf.DAO
                 .Parameters(alumno, anio, semestre);
         }
 
-        public static EntityQuery AsignacionesDeComisionSinPlanQuery(object comision, object plan)
+        public static EntitySql AsignacionesDeComisionSinPlanQuery(object comision, object plan)
         {
-            return ContainerApp.db.Query("alumno_comision")
+            return ContainerApp.db.Sql("alumno_comision")
                .Fields("alumno")
                .Size(0)
                .Where(@"

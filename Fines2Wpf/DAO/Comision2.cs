@@ -12,9 +12,9 @@ namespace Fines2Wpf.DAO
     internal static class Comision2
     {
       
-        public static EntityQuery ComisionesAutorizadasDeAnioSemestreQuery(object anio, object semestre)
+        public static EntitySql ComisionesAutorizadasDeAnioSemestreQuery(object anio, object semestre)
         {
-            return ContainerApp.db.Query("comision")
+            return ContainerApp.db.Sql("comision")
                 .Size(0)
                 .Where(@"
                     $calendario-anio = @0

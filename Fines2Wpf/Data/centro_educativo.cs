@@ -82,7 +82,7 @@ namespace Fines2Wpf.Data
 
                 case "cue":
                     if (!_cue.IsNullOrEmptyOrDbNull()) {
-                        var row = ContainerApp.db.Query("centro_educativo").Where("$cue = @0").Parameters(_cue).DictCache();
+                        var row = ContainerApp.db.Sql("centro_educativo").Where("$cue = @0").Parameters(_cue).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

@@ -12,7 +12,7 @@ namespace Fines2Wpf.DAO
     {
         public IEnumerable<Dictionary<string, object>> CursosAutorizadosSemestre(object calendarioAnio, object calendarioSemestre, object? sede = null, bool? autorizada = null)
         {
-            return ContainerApp.db.Query("curso")
+            return ContainerApp.db.Sql("curso")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -26,7 +26,7 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<Dictionary<string, object>> CursosSemestre(object calendarioAnio, object calendarioSemestre)
         {
-            return ContainerApp.db.Query("curso")
+            return ContainerApp.db.Sql("curso")
                 .Fields()
                 .Select("CONCAT($sede-numero, $comision-division, '/', $planificacion-anio, $planificacion-semestre) AS numero")
                 .Size(0)
@@ -37,16 +37,16 @@ namespace Fines2Wpf.DAO
                 .Parameters(calendarioAnio, calendarioSemestre).ColOfDictCache();
         }
 
-        public EntityQuery TomaActivaDeCursoQuery(object idCurso)
+        public EntitySql TomaActivaDeCursoQuery(object idCurso)
         {
-            return ContainerApp.db.Query("toma").
+            return ContainerApp.db.Sql("toma").
                 Where("$curso = @0 AND $estado = 'Aprobada' AND $estado_contralor = 'Pasar'").
                 Parameters(idCurso);
         }
 
-        public EntityQuery BusquedaAproximadaQuery(string search)
+        public EntitySql BusquedaAproximadaQuery(string search)
         {
-            return ContainerApp.db.Query("curso")
+            return ContainerApp.db.Sql("curso")
                .Fields()
                .Size(0)
                .Where(@"
@@ -56,9 +56,9 @@ namespace Fines2Wpf.DAO
                .Parameters("%" + search + "%");
         }
 
-        public EntityQuery CursosDeComisionQuery(object idComision)
+        public EntitySql CursosDeComisionQuery(object idComision)
         {
-            return ContainerApp.db.Query("curso")
+            return ContainerApp.db.Sql("curso")
               .Fields()
               .Size(0)
               .Where("$comision = @0")

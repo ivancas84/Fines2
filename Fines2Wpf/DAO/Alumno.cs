@@ -10,12 +10,12 @@ namespace Fines2Wpf.DAO
         public static IEnumerable<Dictionary<string, object>> AlumnosPorIds(IEnumerable<object> ids)
         {
             if (ids.Count() == 0) return Enumerable.Empty<Dictionary<string, object>>();
-            return ContainerApp.db.Query("alumno").CacheByIds(ids.ToArray());
+            return ContainerApp.db.Sql("alumno").CacheByIds(ids.ToArray());
         }
 
-        public static EntityQuery SearchLikeQuery(string search)
+        public static EntitySql SearchLikeQuery(string search)
         {
-            return ContainerApp.db.Query("alumno").
+            return ContainerApp.db.Sql("alumno").
                 Where("$persona-nombres LIKE @0 ").
                 Where("OR $persona-apellidos LIKE @0 ").
                 Where("OR $persona-numero_documento LIKE @0 ").

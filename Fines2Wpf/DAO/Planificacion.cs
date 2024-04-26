@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Utils;
+using SqlOrganize;
 
 namespace Fines2Wpf.DAO
 {
@@ -15,7 +16,7 @@ namespace Fines2Wpf.DAO
 
             (string  anio_, string semestre_) = planificacionValues.AnioSemestreSiguiente();
 
-            var data = ContainerApp.db.Query("planificacion").
+            var data = ContainerApp.db.Sql("planificacion").
                 Where(@"
                     $anio = @0 AND $semestre = @1 AND $plan = @2
                 ").Parameters(anio_, semestre_, plan__id).DictCache();

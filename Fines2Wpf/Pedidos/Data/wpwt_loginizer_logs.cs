@@ -111,7 +111,7 @@ namespace Fines2Wpf.Pedidos.Data
                     if (_ip == null)
                         return "Debe completar valor.";
                     if (!_ip.IsNullOrEmptyOrDbNull()) {
-                        var row = ContainerApp.db.Query("wpwt_loginizer_logs").Where("$ip = @0").Parameters(_ip).DictCache();
+                        var row = ContainerApp.db.Sql("wpwt_loginizer_logs").Where("$ip = @0").Parameters(_ip).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

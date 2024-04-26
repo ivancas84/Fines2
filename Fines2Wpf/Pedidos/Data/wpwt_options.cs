@@ -80,7 +80,7 @@ namespace Fines2Wpf.Pedidos.Data
                     if (_option_name == null)
                         return "Debe completar valor.";
                     if (!_option_name.IsNullOrEmptyOrDbNull()) {
-                        var row = ContainerApp.db.Query("wpwt_options").Where("$option_name = @0").Parameters(_option_name).DictCache();
+                        var row = ContainerApp.db.Sql("wpwt_options").Where("$option_name = @0").Parameters(_option_name).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

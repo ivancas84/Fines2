@@ -67,7 +67,7 @@ namespace Fines2Wpf.Data
                     if (_numero == null)
                         return "Debe completar valor.";
                     if (!_numero.IsNullOrEmptyOrDbNull()) {
-                        var row = ContainerApp.db.Query("dia").Where("$numero = @0").Parameters(_numero).DictCache();
+                        var row = ContainerApp.db.Sql("dia").Where("$numero = @0").Parameters(_numero).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -77,7 +77,7 @@ namespace Fines2Wpf.Data
                     if (_dia == null)
                         return "Debe completar valor.";
                     if (!_dia.IsNullOrEmptyOrDbNull()) {
-                        var row = ContainerApp.db.Query("dia").Where("$dia = @0").Parameters(_dia).DictCache();
+                        var row = ContainerApp.db.Sql("dia").Where("$dia = @0").Parameters(_dia).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

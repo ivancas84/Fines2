@@ -14,7 +14,7 @@ namespace Fines2Wpf.Forms.ListaReferentesSemestre.DAO
         public IEnumerable<Dictionary<string, object>> referentesSemestre(Search search)
         {
             IEnumerable<object> idSedes = comisionDAO.IdSedesSemestre(search);
-            return ContainerApp.db.Query("designacion").
+            return ContainerApp.db.Sql("designacion").
                 Where("$sede-_Id IN (@0) AND $cargo = '1'").
                 Parameters(idSedes).ColOfDictCache();
         }

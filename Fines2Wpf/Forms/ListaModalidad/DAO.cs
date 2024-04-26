@@ -13,17 +13,17 @@ namespace Fines2Wpf.Forms.ListaModalidad
 
         public IEnumerable<Dictionary<string, object>> AllModalidad()
         {
-            return ContainerApp.db.Query("modalidad").ColOfDictCache();
+            return ContainerApp.db.Sql("modalidad").ColOfDictCache();
         }
 
         public IDictionary<string, object>? RowByEntityFieldValue(string entityName, string fieldName, object value)
         {
-            return ContainerApp.db.Query(entityName).Where("$"+fieldName+" = @0").Parameters(value).DictCache();
+            return ContainerApp.db.Sql(entityName).Where("$"+fieldName+" = @0").Parameters(value).DictCache();
         }
 
         public IDictionary<string, object>? RowByEntityUnique(string entityName, IDictionary<string, object> source)
         {
-            return ContainerApp.db.Query(entityName).Unique(source).DictCache();
+            return ContainerApp.db.Sql(entityName).Unique(source).DictCache();
         }
 
 

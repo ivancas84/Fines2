@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using SqlOrganize;
 using Utils;
 
 namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
@@ -11,7 +8,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
     {
         public IEnumerable<string> PfidComisiones()
         {
-           return ContainerApp.db.Query("comision")
+           return ContainerApp.db.Sql("comision")
                 .Fields("pfid")
                 .Size(0)
                 .Where(@"
@@ -25,7 +22,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
 
         public object? IdCurso(object pfidComision, object asignaturaCodigo)
         {
-            var d = ContainerApp.db.Query("curso")
+            var d = ContainerApp.db.Sql("curso")
                 .Fields("id")
                 .Size(0)
                 .Where(@"
@@ -43,7 +40,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
 
         public IDictionary<string, object>? TomaActiva(object idCurso)
         {
-            return ContainerApp.db.Query("toma")
+            return ContainerApp.db.Sql("toma")
                 .Size(0)
                 .Where(@"
                     $curso = @0 
@@ -57,12 +54,12 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
 
         public IDictionary<string, object>? RowByEntityFieldValue(string entityName, string fieldName, object value)
         {
-            return ContainerApp.db.Query(entityName).Where("$" + fieldName + " = @0").Parameters(value).DictCache();
+            return ContainerApp.db.Sql(entityName).Where("$" + fieldName + " = @0").Parameters(value).DictCache();
         }
 
         public IDictionary<string, object>? RowByEntityUnique(string entityName, IDictionary<string, object> source)
         {
-            var q = ContainerApp.db.Query(entityName).Unique(source);
+            var q = ContainerApp.db.Sql(entityName).Unique(source);
 
             if (source.ContainsKey(ContainerApp.config.id) && !source[ContainerApp.config.id].IsNullOrEmpty())
                 q.Where("($" + ContainerApp.config.id + " != @0)").Parameters(source[ContainerApp.config.id]);

@@ -10,9 +10,9 @@ namespace Fines2Wpf.DAO
 {
     public class Sede
     {
-        public EntityQuery BusquedaAproximadaQuery(string search)
+        public EntitySql BusquedaAproximadaQuery(string search)
         {
-            return ContainerApp.db.Query("sede").
+            return ContainerApp.db.Sql("sede").
                 Size(30).
                 Where(@"
                     $nombre LIKE @0 

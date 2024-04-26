@@ -187,7 +187,7 @@ namespace Fines2Wpf.Pedidos.Data
                     if (_hash_id == null)
                         return "Debe completar valor.";
                     if (!_hash_id.IsNullOrEmptyOrDbNull()) {
-                        var row = ContainerApp.db.Query("wpwt_e_submissions").Where("$hash_id = @0").Parameters(_hash_id).DictCache();
+                        var row = ContainerApp.db.Sql("wpwt_e_submissions").Where("$hash_id = @0").Parameters(_hash_id).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

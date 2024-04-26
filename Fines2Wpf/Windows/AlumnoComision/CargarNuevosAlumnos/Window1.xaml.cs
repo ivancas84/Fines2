@@ -81,7 +81,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                     personaVal.Sset(personaData).Reset();
 
 
-                    IDictionary<string, object?>? personaExistenteData = ContainerApp.db.Query("persona").
+                    IDictionary<string, object?>? personaExistenteData = ContainerApp.db.Sql("persona").
                         Unique(personaVal).
                         DictCache();
 
@@ -138,7 +138,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
 
                     #region Procesar alumno
                     var alumnoVal = ContainerApp.db.Values("alumno").Set("persona", personaVal.Get("id"));
-                    var alumnoExistenteData = ContainerApp.db.Query("alumno").Unique(alumnoVal).DictCache();
+                    var alumnoExistenteData = ContainerApp.db.Sql("alumno").Unique(alumnoVal).DictCache();
 
                     if (!alumnoExistenteData.IsNullOrEmpty()) //existen datos de alumno en la base
                     {
@@ -191,7 +191,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                         Set("comision", comision.id!).
                         Set("alumno", alumnoVal.Get("id"));
 
-                    var asignacionExistenteData = ContainerApp.db.Query("alumno_comision").Unique(asignacion).DictCache();
+                    var asignacionExistenteData = ContainerApp.db.Sql("alumno_comision").Unique(asignacion).DictCache();
                     if (!asignacionExistenteData.IsNullOrEmpty()) //existen datos de alumno en la base
                     {
                         statusData.Add(new()
@@ -220,7 +220,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                     var otrasAsignacionesDelSemestre =  alumnoComisionDAO.AsignacionesDelAlumnoEnOtrasComisionesAutorizadasDelSemestre(comision.calendario__anio!, comision.calendario__semestre!, comision.id!, alumnoVal.Get("id"));
                     foreach(var a in otrasAsignacionesDelSemestre)
                     {
-                        var comD = ContainerApp.db.Query("comision").CacheById(a["comision"]);
+                        var comD = ContainerApp.db.Sql("comision").CacheById(a["comision"]);
                         var comV = (Values.Comision)ContainerApp.db.Values("comision").Values(comD!);
 
                         statusData.Add(new StatusData()
@@ -237,7 +237,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                     var otrasAsignaciones = alumnoComisionDAO.AsignacionesDelAlumnoEnOtrasComisionesAutorizadas(comision.id!, alumnoVal.Get("id"));
                     foreach (var a in otrasAsignaciones)
                     {
-                        IDictionary<string, object?> comD = ContainerApp.db.Query("comision").CacheById(a["comision-id"]);
+                        IDictionary<string, object?> comD = ContainerApp.db.Sql("comision").CacheById(a["comision-id"]);
                         Values.Comision comV = (Values.Comision)ContainerApp.db.Values("comision").Values(comD!);
 
                         statusData.Add(new StatusData()

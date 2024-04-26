@@ -2,21 +2,15 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Utils;
 using Fines2Wpf.Data;
-using Fines2Wpf.ViewModels;
 using System.ComponentModel;
 using System.Windows.Threading;
+using SqlOrganize;
 
 namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 {
@@ -120,7 +114,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 
             Dictionary<string, List<Dictionary<string, object?>>> referentesData = new();
             if(idsSede.Count() > 0 ) { 
-                referentesData = (Dictionary<string, List<Dictionary<string, object?>>>)ContainerApp.db.Query("designacion").
+                referentesData = (Dictionary<string, List<Dictionary<string, object?>>>)ContainerApp.db.Sql("designacion").
                 Where("$cargo-descripcion IN ('Colaborador', 'Referente') AND $sede IN( @0 ) AND $hasta IS NULL").
                 Parameters(idsSede).
                 ColOfDictCache().
@@ -136,7 +130,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 
             if (idsComision.Count() > 0 )
             {
-                cantidadAlumnosActivosPorComision = (Dictionary<string, object?>)ContainerApp.db.Query("alumno_comision").
+                cantidadAlumnosActivosPorComision = (Dictionary<string, object?>)ContainerApp.db.Sql("alumno_comision").
                     Select("COUNT($id) AS cantidad").
                     Group("$comision").
                     Size(0).
@@ -147,7 +141,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                     ColOfDict().
                     DictOfDictByKeysValue("cantidad", "comision");
 
-                cantidadAlumnosPorComision = (Dictionary<string, object?>)ContainerApp.db.Query("alumno_comision").
+                cantidadAlumnosPorComision = (Dictionary<string, object?>)ContainerApp.db.Sql("alumno_comision").
                     Select("COUNT($id) AS cantidad").
                     Group("$comision").
                     Size(0).

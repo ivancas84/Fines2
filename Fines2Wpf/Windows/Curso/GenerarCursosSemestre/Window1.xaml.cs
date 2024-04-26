@@ -45,7 +45,7 @@ namespace Fines2Wpf.Windows.Curso.GenerarCursosSemestre
         {
 
             #region Consultar comisiones del semestre para generar cursos
-            IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestre = ContainerApp.db.Query("comision").
+            IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestre = ContainerApp.db.Sql("comision").
                 SearchObj(formGroupBox.DataContext).
                 Size(0).
                 ColOfDict();
@@ -54,7 +54,7 @@ namespace Fines2Wpf.Windows.Curso.GenerarCursosSemestre
             #region consultar cursos de comisiones para verificar si ya existen cursos  (las comisiones con cursos generados se ignoran)
             IEnumerable<string> idComisionesAutorizadasSemestre = comisionesAutorizadasSemestre.ColOfVal<string>("id");
 
-            IDictionary<string, List<Dictionary<string, object?>>> cursosDeComisionesAutorizadasSemestre = ContainerApp.db.Query("curso").
+            IDictionary<string, List<Dictionary<string, object?>>> cursosDeComisionesAutorizadasSemestre = ContainerApp.db.Sql("curso").
                 Where("$comision IN (@0)").
                 Size(0).
                 Parameters(idComisionesAutorizadasSemestre).
@@ -74,7 +74,7 @@ namespace Fines2Wpf.Windows.Curso.GenerarCursosSemestre
 
                 comisionesSinCursosOC.Add(comObj);
 
-                IDictionary<string, object?> asignaturasDeComision = ContainerApp.db.Query("distribucion_horaria").
+                IDictionary<string, object?> asignaturasDeComision = ContainerApp.db.Sql("distribucion_horaria").
                     Select("SUM($horas_catedra) AS suma_horas_catedra").
                     Group("$disposicion-asignatura").
                     Where("$disposicion-planificacion = @0").

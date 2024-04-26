@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Data.Common;
 using Utils;
 
@@ -42,6 +45,29 @@ namespace SqlOrganize
         public Query(Db _db)
         {
             db = _db;
+        }
+
+        /// <summary>
+        /// Constructor para EntityPersist
+        /// </summary>
+        /// <param name="_db">Contenedor principal del proyecto</param>
+        public Query(Db _db, EntityPersist persist)
+        {
+            db = _db;
+            sql = persist.Sql();
+            parameters = persist.parameters;
+        }
+
+        /// <summary>
+        /// Constructor para EntitySelect
+        /// </summary>
+        /// <param name="_db">Contenedor principal del proyecto</param>
+        public Query(Db _db, EntitySql select)
+        {
+            db = _db;
+            sql = select.Sql();
+            parameters = select.parameters;
+            parametersDict = select.parametersDict;
         }
 
         /// <summary>
@@ -302,6 +328,38 @@ namespace SqlOrganize
         }
 
         public abstract List<string> GetTableNames();
+
+
+
+     
+
+        #region metodos especiales que generan sql y devuelven directamente el valor
+        /// <summary>
+        /// Cada motor debe tener su propia forma de definir Next Value!!! Derivar metodo a subclase
+        /// </summary>
+        /// <returns></returns>
+        public ulong GetNextValue(string entityName)
+        {
+            var q = db.Query();
+            q.connection = connection;
+            q.sql = @"
+                            SELECT auto_increment 
+                            FROM INFORMATION_SCHEMA.TABLES 
+                            WHERE TABLE_NAME = @0";
+            q.parameters.Add(entityName);
+            return q.Value<ulong>();
+        }
+
+        /// <summary>
+        /// Cada motor debe tener su propia forma de definir Max Value!!! Derivar metodo a subclase
+        /// </summary>
+        /// <returns></returns>
+        public long GetMaxValue(string entityName, string fieldName)
+        {
+            EntitySql sql = db.Sql(entityName).Select("MAX($" + fieldName + ")");
+            return db.Query(sql).Value<long>();
+        }
+        #endregion
     }
 }
  

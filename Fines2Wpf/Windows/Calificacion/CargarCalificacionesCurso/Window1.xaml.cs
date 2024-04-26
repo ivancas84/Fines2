@@ -55,7 +55,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
             #region  consulta de curso
             {
-                var cursoData = ContainerApp.db.Query("curso").CacheById(idCurso)!;
+                var cursoData = ContainerApp.db.Sql("curso").CacheById(idCurso)!;
                 curso = cursoData.Obj<Data_curso_r>();
                 Values.Curso val = (Values.Curso)ContainerApp.db.Values("curso").Values(cursoData!);
                 formData.curso__Label = curso.sede__numero + curso.comision__division + "/"+curso.planificacion__anio + curso.planificacion__semestre + " " + curso.asignatura__nombre + " " + curso.asignatura__codigo;
@@ -70,7 +70,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
             #endregion
             #region consulta de id disposicion
             {
-                idDisposicion = ContainerApp.db.Query("disposicion").
+                idDisposicion = ContainerApp.db.Sql("disposicion").
                 Where("$asignatura = @0").
                 Where(" AND $planificacion = @1").
                 Parameters(curso.asignatura!, curso.comision__planificacion!).DictCache()!["id"]!;
@@ -93,7 +93,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
         private void ConsultarAsignacionesExistentes()
         {
             {
-                asignacionData = ContainerApp.db.Query("alumno_comision").
+                asignacionData = ContainerApp.db.Sql("alumno_comision").
                 Where("$comision = @0").
                 Order("$estado ASC, $persona-apellidos ASC, $persona-nombres ASC").
                 Parameters(curso.comision!).ColOfDictCache();
@@ -123,7 +123,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
         private void ConsultarCalificacionesExistentes()
         {
             {
-                calificacionExistenteData = ContainerApp.db.Query("calificacion").
+                calificacionExistenteData = ContainerApp.db.Sql("calificacion").
                 Where("$disposicion-asignatura = @0").
                 Where(" AND $disposicion-planificacion = @1").
                 Where(" AND $alumno IN (@2)").
@@ -163,13 +163,13 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 dnisCalificaciones.Add(calificacion.persona__numero_documento!);
             }
 
-            IDictionary<string, Dictionary<string, object?>> personasExistentesPorDNI = ContainerApp.db.Query("persona").
+            IDictionary<string, Dictionary<string, object?>> personasExistentesPorDNI = ContainerApp.db.Sql("persona").
                 Where("$numero_documento IN (@0)").
                 Parameters(dnisCalificaciones).
                 ColOfDictCache().
                 DictOfDictByKeys("numero_documento");
 
-            IDictionary<string, Dictionary<string, object?>>  alumnosExistentesPorDNI = ContainerApp.db.Query("alumno").
+            IDictionary<string, Dictionary<string, object?>>  alumnosExistentesPorDNI = ContainerApp.db.Sql("alumno").
                 Where("$persona-numero_documento IN (@0)").
                 Parameters(dnisCalificaciones).
                 ColOfDictCache().
@@ -284,7 +284,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                         #region si no existe asignacion y existe alumno, informar las asignaciones existentes para verificar
                         if (!calificacion.agregar_alumno)
                         {
-                            IEnumerable<Dictionary<string, object?>> asignacionesExistentes = ContainerApp.db.Query("alumno_comision").
+                            IEnumerable<Dictionary<string, object?>> asignacionesExistentes = ContainerApp.db.Sql("alumno_comision").
                                 Where("$alumno = @0").
                                 Parameters(calificacion.alumno).
                                 Order("$calendario-anio DESC, $calendario-semestre DESC").

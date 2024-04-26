@@ -93,7 +93,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             resolucionInscripcionComboBox.SelectedValuePath = "id";
             resolucionInscripcionComboBox.DisplayMemberPath = "numero";
             resolucionInscripcionComboBox.ItemsSource = resolucionOC;
-            var data = ContainerApp.db.Query("resolucion").Order("$numero ASC").ColOfDictCache();
+            var data = ContainerApp.db.Sql("resolucion").Order("$numero ASC").ColOfDictCache();
             resolucionOC.Clear();
             resolucionOC.AddRange(data);
             #endregion
@@ -102,7 +102,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             planComboBox.SelectedValuePath = "id";
             planComboBox.DisplayMemberPath = "Label";
             planComboBox.ItemsSource = planOC;
-            var dataPlan = ContainerApp.db.Query("plan").Order("$orientacion ASC").ColOfDictCache();
+            var dataPlan = ContainerApp.db.Sql("plan").Order("$orientacion ASC").ColOfDictCache();
 
             planOC.Clear();
             foreach (var item in dataPlan)
@@ -187,7 +187,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             asignacionOC.Clear();
             if (a.IsNullOrEmptyOrDbNull() || a.id.IsNullOrEmptyOrDbNull())
                 return;
-            var data = ContainerApp.db.Query("alumno_comision").
+            var data = ContainerApp.db.Sql("alumno_comision").
                 Where("$alumno = @0").
                 Order("$calendario-anio DESC, $calendario-semestre DESC").
                 Parameters(a.id!).ColOfDictCache();
@@ -278,7 +278,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if(a.IsNullOrEmptyOrDbNull() || a.id.IsNullOrEmptyOrDbNull() || a.plan.IsNullOrEmptyOrDbNull())
                 return;
 
-            var data = ContainerApp.db.Query("disposicion").
+            var data = ContainerApp.db.Sql("disposicion").
                 Where("$planificacion-plan = @0").
                 Parameters(a.plan!).ColOfDictCache();
 
@@ -294,7 +294,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             detallePersonaOC.Clear();
 
-            var data = ContainerApp.db.Query("detalle_persona").
+            var data = ContainerApp.db.Sql("detalle_persona").
                 Where("$persona = @0").
                 Parameters(p.id!).ColOfDictCache();
 
@@ -426,7 +426,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 if (pgb != null && pgb.id!.ToString().Equals(pcb.id))
                     return;
 
-                var a = ContainerApp.db.Query("alumno").Where("$persona = @0").Parameters(pcb.id!).Obj<Alumno>();
+                var a = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(pcb.id!).Obj<Alumno>();
 
                 SetPersonaGroupBox(pcb);
                 SetAlumnoGroupBox(a);
@@ -920,7 +920,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     AnioSemestreAnterior();
 
                     #region Archivar calificaciones aprobadas del mismo plan pero con año y semestre inferior
-                    IEnumerable<object> idsCalificaciones_ = ContainerApp.db.Query("calificacion").
+                    IEnumerable<object> idsCalificaciones_ = ContainerApp.db.Sql("calificacion").
                         Size(0).
                         Where(@"
                         $planificacion_dis-plan = @0
@@ -938,7 +938,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
 
                 #region Eliminar calificaciones desaprobadas
-                IEnumerable<object> idsCalificaciones = ContainerApp.db.Query("calificacion").
+                IEnumerable<object> idsCalificaciones = ContainerApp.db.Sql("calificacion").
                     Size(0).
                     Where(@"
                         $alumno = @1
@@ -957,7 +957,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 #endregion
 
                 #region Archivar calificaciones aprobadas de otro plan
-                idsCalificaciones = ContainerApp.db.Query("calificacion").
+                idsCalificaciones = ContainerApp.db.Sql("calificacion").
                     Size(0).
                     Where(@"
                         $planificacion_dis-plan != @0 AND $alumno = @1
@@ -971,7 +971,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 #endregion
 
                 #region Desarchivar calificaciones aprobadas del mismo plan
-                idsCalificaciones = ContainerApp.db.Query("calificacion").
+                idsCalificaciones = ContainerApp.db.Sql("calificacion").
                     Size(0).
                     Where(@"
                         $planificacion_dis-plan = @0 
@@ -988,7 +988,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 #endregion
 
                 #region Consultar disposiciones del mismo plan
-                IEnumerable<object> idsDisposicionesAprobadas = ContainerApp.db.Query("calificacion").
+                IEnumerable<object> idsDisposicionesAprobadas = ContainerApp.db.Sql("calificacion").
                     Size(0).
                     Where(@"
                         $planificacion_dis-plan = @0 
@@ -1001,7 +1001,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 #endregion
 
                 #region consultar disposiciones segun el plan, anio y semestre de ingreso
-                IEnumerable<object> idsDisposiciones = ContainerApp.db.Query("disposicion").
+                IEnumerable<object> idsDisposiciones = ContainerApp.db.Sql("disposicion").
                     Size(0).
                     Where(@"
                         $planificacion-plan = @0 
@@ -1026,7 +1026,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 }
 
                 #region Archivar calificaciones repetidas
-                idsDisposiciones = ContainerApp.db.Query("calificacion").
+                idsDisposiciones = ContainerApp.db.Sql("calificacion").
                     Select("COUNT(*) as cantidad").
                     Size(0).
                     Group("$disposicion").
@@ -1043,7 +1043,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
                 if (idsDisposiciones.Count() > 0)
                 {
-                    idsCalificaciones = ContainerApp.db.Query("calificacion").
+                    idsCalificaciones = ContainerApp.db.Sql("calificacion").
                         Select("MAX($id) AS id").
                         Group("$disposicion").
                         Size(0).

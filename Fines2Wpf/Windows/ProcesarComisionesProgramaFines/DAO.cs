@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using SqlOrganize;
 using Utils;
 
 namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
@@ -11,7 +8,7 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
     {
         public IEnumerable<string> PfidComisiones()
         {
-            return ContainerApp.db.Query("comision")
+            return ContainerApp.db.Sql("comision")
                 .Fields("pfid")
                 .Size(0)
                 .Where(@"
@@ -26,7 +23,7 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
         public object? IdCurso(string pfidComision, string asignaturaCodigo)
         {
 
-            var d = ContainerApp.db.Query("curso")
+            var d = ContainerApp.db.Sql("curso")
                 .Fields("id")
                 .Size(0)
                 .Where(@"
@@ -44,7 +41,7 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
 
         public object? IdPersona(string dni)
         {
-            var d = ContainerApp.db.Query("persona")
+            var d = ContainerApp.db.Sql("persona")
                 .Fields("id")
                 .Size(0)
                 .Where(@"

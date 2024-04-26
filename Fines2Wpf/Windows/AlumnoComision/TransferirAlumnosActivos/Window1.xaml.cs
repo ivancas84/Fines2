@@ -37,7 +37,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.TransferirAlumnosActivos
         private void TransferirButton_Click(object sender, RoutedEventArgs e)
         {
 
-            IDictionary < string, List<Dictionary<string, object?>>> alumnosComisiones = ContainerApp.db.Query("alumno_comision")
+            IDictionary < string, List<Dictionary<string, object?>>> alumnosComisiones = ContainerApp.db.Sql("alumno_comision")
                 .Fields()
                 .Size(0)
                 .Where(@"

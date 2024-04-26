@@ -12,7 +12,7 @@ namespace Fines2Wpf.DAO
     {
         public IEnumerable<object> IdCursosConTomasAprobadasSemestre(object calendarioAnio, object calendarioSemestre)
         {
-            return ContainerApp.db.Query("toma").
+            return ContainerApp.db.Sql("toma").
                 Fields("curso").
                 Size(0).
                 Where(@"
@@ -26,7 +26,7 @@ namespace Fines2Wpf.DAO
 
         public IEnumerable<Dictionary<string, object>> TomasSemestre(object calendarioAnio, object calendarioSemestre)
         {
-            return ContainerApp.db.Query("toma")
+            return ContainerApp.db.Sql("toma")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -38,9 +38,9 @@ namespace Fines2Wpf.DAO
         }
 
 
-        public EntityQuery TomasAprobadasSemestreQuery(object calendarioAnio, object calendarioSemestre)
+        public EntitySql TomasAprobadasSemestreQuery(object calendarioAnio, object calendarioSemestre)
         {
-            return ContainerApp.db.Query("toma")
+            return ContainerApp.db.Sql("toma")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -52,9 +52,9 @@ namespace Fines2Wpf.DAO
                 .Parameters(calendarioAnio, calendarioSemestre);
         }
 
-        public EntityQuery TomasAprobadasConfirmadasQuery(object calendarioAnio, object calendarioSemestre)
+        public EntitySql TomasAprobadasConfirmadasQuery(object calendarioAnio, object calendarioSemestre)
         {
-            return ContainerApp.db.Query("toma")
+            return ContainerApp.db.Sql("toma")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -68,9 +68,9 @@ namespace Fines2Wpf.DAO
 
 
 
-        public EntityQuery TomaAprobadaDeCursoQuery(object idCurso)
+        public EntitySql TomaAprobadaDeCursoQuery(object idCurso)
         {
-            return ContainerApp.db.Query("toma")
+            return ContainerApp.db.Sql("toma")
                 .Fields()
                 .Size(0)
                 .Where(@"

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using Utils;
+using SqlOrganize;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosProgramaFines
 {

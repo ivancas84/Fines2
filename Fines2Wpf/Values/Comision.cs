@@ -94,7 +94,7 @@ namespace Fines2Wpf.Values
             if (GetOrNull("id").IsNullOrEmptyOrDbNull() || GetOrNull("planificacion").IsNullOrEmptyOrDbNull())
                 throw new Exception("No se pueden generar los cursos: No está correctamente definido el id o la planificación");
 
-            IEnumerable<object> idsCursos = ContainerApp.db.Query("curso").
+            IEnumerable<object> idsCursos = ContainerApp.db.Sql("curso").
                 Where("$comision = @0").
                 Parameters(Get("id")).
                 ColOfDict().
@@ -103,7 +103,7 @@ namespace Fines2Wpf.Values
             if(idsCursos.Count()>0)
                 persist.DeleteIds("curso", idsCursos.ToArray());
 
-            IEnumerable<Dictionary<string, object?>> distribucionesHorariasData = ContainerApp.db.Query("distribucion_horaria").
+            IEnumerable<Dictionary<string, object?>> distribucionesHorariasData = ContainerApp.db.Sql("distribucion_horaria").
                 Select("SUM($horas_catedra) AS suma_horas_catedra").
                 Group("$disposicion-asignatura").
                 Where("$disposicion-planificacion IN ( @0 )").

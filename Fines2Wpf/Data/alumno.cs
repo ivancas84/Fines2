@@ -226,7 +226,7 @@ namespace Fines2Wpf.Data
                     if (_persona == null)
                         return "Debe completar valor.";
                     if (!_persona.IsNullOrEmptyOrDbNull()) {
-                        var row = ContainerApp.db.Query("alumno").Where("$persona = @0").Parameters(_persona).DictCache();
+                        var row = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(_persona).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -270,7 +270,7 @@ namespace Fines2Wpf.Data
 
                 case "libro_folio":
                     if (!_libro_folio.IsNullOrEmptyOrDbNull()) {
-                        var row = ContainerApp.db.Query("alumno").Where("$libro_folio = @0").Parameters(_libro_folio).DictCache();
+                        var row = ContainerApp.db.Sql("alumno").Where("$libro_folio = @0").Parameters(_libro_folio).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

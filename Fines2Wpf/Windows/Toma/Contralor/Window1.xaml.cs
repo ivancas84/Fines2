@@ -1,7 +1,7 @@
-﻿using Fines2Wpf.Data;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using Utils;
+using SqlOrganize;
 
 
 namespace Fines2Wpf.Windows.Toma.Contralor

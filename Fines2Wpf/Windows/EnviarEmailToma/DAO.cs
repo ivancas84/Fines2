@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using SqlOrganize;
 
 namespace Fines2Wpf.Windows.EnviarEmailToma
 {
@@ -10,7 +7,7 @@ namespace Fines2Wpf.Windows.EnviarEmailToma
     {
         public IEnumerable<Dictionary<string, object>> TomaAll()
         {
-            return ContainerApp.db.Query("toma")
+            return ContainerApp.db.Sql("toma")
                 .Fields()
                 .Size(0)
                 .Where(@"
