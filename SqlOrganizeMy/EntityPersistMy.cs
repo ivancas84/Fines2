@@ -31,9 +31,6 @@ UPDATE " + sna + @" SET
             return this;
         }
 
-
-        
-
     }
 
 }

@@ -123,6 +123,7 @@ WHERE " + id + " = @" + count + @";
             detail.Add((_entityName!, row[Db.config.id]!, "update"));
             return this;
         }
+
         public EntityPersist UpdateIds(string _entityName, Dictionary<string, object?> row, params object[] ids)
         {
             _Update(_entityName, row);
@@ -339,17 +340,6 @@ VALUES (";
             return Insert(v.entityName, v.Values());
         }
 
-        
-
-
-      
-
-
-
-
-
-
-        
     }
 
 }

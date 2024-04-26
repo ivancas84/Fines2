@@ -372,8 +372,6 @@ namespace SqlOrganize
             }
             return result!;
         }
-
-
         
     }
 

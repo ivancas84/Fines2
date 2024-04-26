@@ -24,9 +24,9 @@ namespace SqlOrganizeMy
         }
 
         public override DbCommand NewCommand()
-            {
-                return new MySqlCommand();
-            }
+        {
+            return new MySqlCommand();
+        }
 
         public override DbConnection OpenConnection()
         {
@@ -34,15 +34,6 @@ namespace SqlOrganizeMy
             connection.Open();
             return connection;
         }
-
-        public Query CloseConnection()
-        {
-            connection!.Close();
-            return this;
-        }
-
-
-
 
         protected override void AddWithValue(DbCommand command, string columnName, object value)
         {

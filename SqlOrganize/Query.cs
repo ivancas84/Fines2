@@ -167,6 +167,12 @@ namespace SqlOrganize
 
         public abstract DbConnection OpenConnection();
 
+        public void CloseConnection()
+        {
+            connection!.Close();
+        }
+
+
         public void BeginTransaction()
         {
             transaction = connection!.BeginTransaction();

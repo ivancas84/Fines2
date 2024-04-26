@@ -1,8 +1,6 @@
 ﻿#nullable enable
 using CommunityToolkit.WinUI.Notifications;
 using SqlOrganize;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Windows.Data;
