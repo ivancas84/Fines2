@@ -173,9 +173,10 @@ namespace SqlOrganize
         }
 
 
-        public void BeginTransaction()
+        public DbTransaction BeginTransaction()
         {
             transaction = connection!.BeginTransaction();
+            return transaction;
         }
 
         public void CommitTransaction()

@@ -28,8 +28,12 @@ namespace Fines2Wpf
         public string downloadPath { get; set; } = "Downloads/";
         public string imagePath { get; set; } = "Images/";
 
-        public string ftpUserName { get; set; } = "planfi10";
+        public string ftpUserName { get; set; }
         public string ftpUserPassword { get; set; }
+        
+        public string pfUser { get; set; }
+        public string pfPassword { get; set; }
+
 
 
 

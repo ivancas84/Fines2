@@ -220,6 +220,12 @@ namespace Fines2Wpf
             Windows.Alumno.ConstanciaAlumnoRegularPdf.Window1 window1 = new();
             window1.Show();
         }
+
+        private void ProcesarAsignacionesProgramaFines_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.AlumnoComision.ProcesarAsignacionesProgramaFines.Window1 window1 = new();
+            window1.Show();
+        }
     }
 }
 

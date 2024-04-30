@@ -127,23 +127,35 @@ namespace SqlOrganize
                 return persists;
 
             var query = persists.ElementAt(0).Db.Query();
-            using DbConnection connection = query.OpenConnection();
-            query.BeginTransaction();
+            DbConnection connection = query.OpenConnection();
             try
             {
-                foreach (EntityPersist persist in persists)
+                DbTransaction transaction = query.BeginTransaction();
+                var j = 0;
+                try
                 {
-                    query.SetEntityPersist(persist);
-                    query.ExecTransaction();
+                    foreach (EntityPersist persist in persists)
+                    {
+                        j++;
+                        query.SetEntityPersist(persist);
+                        query.ExecTransaction();
+                    }
+
+                    query.CommitTransaction();
                 }
-
-                query.CommitTransaction();
-            } catch (Exception ex)
+                catch (Exception ex)
+                {
+                    query.RollbackTransaction();
+                    throw new Exception("Error en persist " + j + ": " + ex.Message);
+                }
+                finally
+                {
+                    transaction.Dispose();
+                }
+            } finally
             {
-                query.RollbackTransaction();
-                throw ex;
+                connection.Close();
             }
-
             return persists;
         }
 

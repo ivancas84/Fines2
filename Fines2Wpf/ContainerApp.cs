@@ -31,6 +31,9 @@ namespace Fines2Wpf
             ftpUserName = ConfigurationManager.AppSettings.Get("ftpUserName")!,
             ftpUserPassword = ConfigurationManager.AppSettings.Get("ftpUserPassword")!,
             imagePath = ConfigurationManager.AppSettings.Get("imagePath")!,
+            pfUser = ConfigurationManager.AppSettings.Get("pfUser")!,
+            pfPassword = ConfigurationManager.AppSettings.Get("pfPassword")!,
+
 
         };
 

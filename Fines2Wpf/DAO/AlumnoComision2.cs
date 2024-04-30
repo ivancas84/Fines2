@@ -7,17 +7,28 @@ namespace Fines2Wpf.DAO
     public static class AlumnoComision2
     {
 
-        public static EntitySql AsignacionesActivasDeComisionesAutorizadasSinProgramafinesPorSemestreQuery(object anio, object semestre)
+        public static EntitySql AsignacionesActivasDeComisionesAutorizadasPorSemestreYProgramafinesQuery(object anio, object semestre, bool programafines)
         {
             return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where(@"$calendario-anio = @0 
                     AND $calendario-semestre = @1 
-                    AND $programafines = false
+                    AND $programafines = @2
                     AND $comision-autorizada = true 
                     AND $estado = 'Activo'")
-                .Parameters(anio, semestre);
+                .Parameters(anio, semestre, programafines);
 
+        }
+
+        public static EntitySql AsignacionesActivasDeComisionesAutorizadasConProgramafinesPorSemestreQuery(object anio, object semestre)
+        {
+            return AsignacionesActivasDeComisionesAutorizadasPorSemestreYProgramafinesQuery(anio, semestre, true);
+
+        }
+
+        public static EntitySql AsignacionesActivasDeComisionesAutorizadasSinProgramafinesPorSemestreQuery(object anio, object semestre)
+        {
+            return AsignacionesActivasDeComisionesAutorizadasPorSemestreYProgramafinesQuery(anio, semestre, false);
         }
 
         public static EntitySql AsignacionesNoActivasDeComisionesAutorizadasConProgramafinesPorSemestreQuery(object anio, object semestre)

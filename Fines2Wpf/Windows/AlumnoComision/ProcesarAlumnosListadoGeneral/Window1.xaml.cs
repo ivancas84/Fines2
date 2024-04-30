@@ -17,7 +17,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
         DAO.Comision comisionDAO = new();
         DAO.AlumnoComision alumnoComisionDAO = new();
         private ObservableCollection<StatusData> statusData = new();
-        private List<EntityPersist> persists = new();
+        private List<EntityPersist> persists;
 
         public Window1()
         {
@@ -28,11 +28,19 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
 
         private void ProcesarAlumnosButton_Click(object sender, RoutedEventArgs e)
         {
+            persists = new();
+
+            object[] asignacionesIds = DAO.AlumnoComision2.AsignacionesActivasDeComisionesAutorizadasConProgramafinesPorSemestreQuery("2024", "1").
+                Column<object>("id").ToArray();
+            
+            if(!asignacionesIds.IsNullOrEmpty())
+                ContainerApp.db.Persist().UpdateValueIds("alumno_comision", "programafines", false, asignacionesIds).AddTo(persists);
+
             IDictionary<string, Data_comision_r> comisiones = comisionDAO.
                 ComisionesAutorizadasPorSemestreQuery("2024", "1").
                 ColOfDictCache().
                 ColOfObj<Data_comision_r>().
-                DictOfObjByPropertyNames<Data_comision_r>("pfid");
+                DictOfObjByPropertyNames("pfid");
 
             Dictionary<string, object> dict = new Dictionary<string, object>();
 
@@ -283,7 +291,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                persists.Exec().RemoveCache();
+                persists.Transaction().RemoveCache();
             }
         }
     }
