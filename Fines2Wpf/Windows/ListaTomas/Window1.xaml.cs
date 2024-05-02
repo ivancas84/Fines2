@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using Utils;
 using QuestPDF.Fluent;
+using System.Linq;
 
 namespace Fines2Wpf.Windows.ListaTomas
 {
@@ -221,6 +222,46 @@ namespace Fines2Wpf.Windows.ListaTomas
                     .Show();
 
             }
+        }
+
+        private void ActualizarPlanillaDocente_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var idTomas = DAO.Toma2.IdTomasAprobadasSinPlanillaDocenteSemestre(calendarioAnioText.Text, calendarioSemestreText.Text);
+
+                if (!idTomas.Any())
+                    throw new Exception("No existen tomas para cargar planilla docente");
+
+                EntityPersist persist = ContainerApp.db.Persist();
+
+                foreach (var idToma in idTomas)
+                {
+                    ContainerApp.db.Values("asignacion_planilla_docente").
+                        Set("toma", idToma).
+                        Set("planilla_docente", idPlanillaDocenteTextBox.Text).
+                        Default().
+                        Reset().
+                        Insert(persist);
+                }
+
+                persist.Exec().RemoveCache();
+            }catch (Exception ex)
+            {
+                new ToastContentBuilder()
+                .AddText(Title)
+                .AddText("ERROR: " + ex.Message)
+                .Show();
+            }
+        }
+
+        private void PasarTodoButton_Click(object sender, RoutedEventArgs e)
+        {
+            IEnumerable<object> id_tomas_aprobadas = DAO.Toma2.TomasAprobadasDePeriodoSql(calendarioAnioText.Text, calendarioSemestreText.Text).ColOfDictCache().ColOfVal<object>("id");
+
+            ContainerApp.db.Persist().UpdateValueIds("toma", "estado_contralor", "Pasar", id_tomas_aprobadas.ToArray()).Exec().RemoveCacheDetail();
+            
+            LoadData();
         }
     }
 

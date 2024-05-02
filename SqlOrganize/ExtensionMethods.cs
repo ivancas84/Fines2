@@ -216,6 +216,12 @@ namespace SqlOrganize
             return persist;
         }
 
+        public static EntityValues Insert(this EntityValues values, EntityPersist persist)
+        {
+            persist.Insert(values);
+            return values;
+        }
+
 
     }
 }

@@ -7,45 +7,49 @@
         mc:Ignorable="d"
         Title="Window1" Height="450" Width="800">
     <DockPanel>
-        <Grid DockPanel.Dock="Top">
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height = "Auto" />
-                <RowDefinition Height = "Auto" />
-                <RowDefinition Height = "Auto" />
-            </Grid.RowDefinitions>
+        <StackPanel DockPanel.Dock="Top">
+            <WrapPanel>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width = "Auto" />
-                <ColumnDefinition Width = "200" />
-            </Grid.ColumnDefinitions>
-
-            <Label 
+                <Label 
                 Name = "calendarioAnioLabel"
                 Margin = "2">_Año:</Label>
 
-            <TextBox 
+                <TextBox 
                 Name = "calendarioAnioText" 
                 Text="{Binding calendario__anio}"
-                Grid.Column = "1" 
+                Width="200" 
                 Margin = "2" />
 
-            <Label 
-                Name = "calendarioSemestreLabel" 
+                <Label 
+                Name = "calendarioSemestreLabel"    
                 Margin = "2" 
-                Grid.Row = "1">_Semestre:</Label>
+                >_Semestre:</Label>
 
-            <TextBox 
+                <TextBox 
                 Name = "calendarioSemestreText" 
                 Text="{Binding calendario__semestre}"
-                Grid.Column = "1" 
-                Grid.Row = "1" 
+                Width="200" 
                 Margin = "2" />
 
-            <StackPanel Grid.Row = "4" Grid.ColumnSpan = "2">
                 <Button Content = "_Buscar..." Click="BuscarButton_Click" />
-            </StackPanel>
-        </Grid>
+                <Button Content = "_Pasar todo..." Click="PasarTodoButton_Click" />
+
+            </WrapPanel>
+            <WrapPanel>
+                <Label 
+                     Margin = "2" 
+                     >Id Planilla Docente:</Label>
+
+                <TextBox 
+                     Name = "idPlanillaDocenteTextBox" 
+                     Width="200" 
+                     Margin = "2" />
+
+                <Button Content = "_Actualizar..." Click="ActualizarPlanillaDocente_Click" />
+
+            </WrapPanel>
+        </StackPanel>
 
         <DataGrid Name="tomaGrid" AutoGenerateColumns="False" CanUserAddRows="False">
             <DataGrid.Columns>
