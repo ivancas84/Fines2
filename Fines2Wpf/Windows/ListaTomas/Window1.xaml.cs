@@ -14,6 +14,8 @@ using System.Windows.Data;
 using Utils;
 using QuestPDF.Fluent;
 using System.Linq;
+using WpfUtils;
+using System.Windows.Media;
 
 namespace Fines2Wpf.Windows.ListaTomas
 {
@@ -26,6 +28,7 @@ namespace Fines2Wpf.Windows.ListaTomas
         Search search = new();
         Fines2Wpf.DAO.Toma tomaDAO = new();
         QRCodeGenerator qrGenerator = new QRCodeGenerator();
+        DataGridUtils dgu = new DataGridUtils(ContainerApp.db);
 
         private ObservableCollection<TomaPosesionPdf.ConstanciaData> tomaData = new();
 
@@ -35,7 +38,7 @@ namespace Fines2Wpf.Windows.ListaTomas
             DataContext = search;
             tomaGrid.ItemsSource = tomaData;
             this.Loaded += MainWindow_Loaded;
-            tomaGrid.CellEditEnding += TomaGrid_CellEditEnding!;
+            tomaGrid.CellEditEnding += TomaDataGrid_CellEditEnding!;
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -54,87 +57,72 @@ namespace Fines2Wpf.Windows.ListaTomas
             LoadData();
         }
 
-        private void TomaGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        /// <summary>Edición de celdas (no boolean) - CellEditEnding v1</summary>
+        private void TomaDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            if (e.EditAction == DataGridEditAction.Commit)
+            string key = "";
+            object? value = null;
+
+            var column = e.Column as DataGridBoundColumn;
+            if (column != null)
             {
-                var column = e.Column as DataGridBoundColumn;
-                if (column != null)
+                key = ((Binding)column.Binding).Path.Path; //column's binding
+                value = (e.EditingElement as TextBox)!.Text;
+            }
+
+            var columnT = e.Column as DataGridTemplateColumn;
+            if (columnT != null)
+            {
+                var datePicker = VisualTreeHelper.GetChild(e.EditingElement, 0) as DatePicker;
+                if (datePicker != null)
                 {
-                    List<string> ignore = new List<string>() { "confirmada", "alumno__tiene_constancia", "alumno__tiene_dni", "alumno__tiene_partida", "alumno__tiene_certificado" };
-                    string key = ((Binding)column.Binding).Path.Path; //column's binding
-                    if (ignore.Contains(key)) return;
-                    object value = (e.EditingElement as TextBox)!.Text;
-                    Dictionary<string, object> source = (Dictionary<string, object>)((Data_toma_r)e.Row.DataContext).Dict();
-                    string? fieldId = null;
-                    string mainEntityName = "toma", entityName = "toma", fieldName = key;
-
-                    if (key.Contains("__"))
-                        (fieldId, fieldName, entityName) = ContainerApp.db.KeyDeconstruction(entityName, key);
-
-                    bool continueWhile;
-                    bool reload = false;
-                    do
-                    {
-                        continueWhile = (fieldId == null) ? false : true;
-                        EntityValues v = ContainerApp.db.Values(entityName, fieldId).Set(source);
-                        if (!v.GetOrNull(fieldName).IsNullOrEmpty() && v.Get(fieldName).Equals(value))
-                        {
-                            if (reload)
-                                LoadData(); //debe recargarse para visualizar los cambios realizados en otras iteraciones.
-                            break;
-                        }
-
-                        v.Sset(fieldName, value);
-                        IDictionary<string, object>? row;
-
-                        row = ContainerApp.dao.RowByUniqueFieldOrValues(fieldName, v);
-
-                        if (!row.IsNullOrEmpty())
-                        {
-                            v = ContainerApp.db.Values(entityName).Set(row!);
-                            v.fieldId = fieldId;
-                        }
-                        else
-                        {
-                            if (!v.Check())
-                            {
-                                (e.Row.Item as Data_toma_r).CopyValues<Data_toma_r>(v.Get().Obj<Data_toma_r>(),sourceNotNull:true);
-                                break;
-                            }
-
-                            ContainerApp.dao.Persist(v);
-                        }
-
-                        (e.Row.Item as Data_toma_r).CopyValues<Data_toma_r>(v.Get().Obj<Data_toma_r>(), sourceNotNull: true);
-
-                        if (fieldId != null)
-                        {
-                            string? parentId = ContainerApp.db.Entity(mainEntityName).relations[fieldId].parentId;
-                            if (parentId != null)
-                            {
-                                var parentFieldName = ContainerApp.db.Entity(mainEntityName).relations[fieldId].fieldName;
-                                value = v.Get()[fieldId + "-" + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
-                                fieldId = parentId;
-                                fieldName = parentFieldName;
-                                entityName = ContainerApp.db.Entity(mainEntityName).relations[parentId].refEntityName;
-
-                            }
-                            else
-                            {
-                                entityName = mainEntityName;
-                                value = v.Get()[fieldId + "-" + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
-                                fieldName = ContainerApp.db.Entity(mainEntityName).relations[fieldId].fieldName;
-                                fieldId = null;
-                            }
-                        }
-                        reload = true;
-                    }
-                    while (continueWhile);
+                    key = datePicker.Name;
+                    value = datePicker.SelectedDate;
                 }
+            }
+
+            if (key.IsNullOrEmpty())
+                return;
+
+            var reload = dgu.DataGridCellEditEndingEventArgs_CellEditEnding<Data_toma_r>(e, "toma", key, value);
+            if (reload)
+                LoadData(); //debe recargarse para visualizar los cambios realizados en otras iteraciones
+                                    //Dada una relacion a : b, si se modifica b correspondiente a a.b, se deberan actualizar todas las filas
+        }
+
+        /// <summary>DataGrid Delete Button v3 > Usuario</summary>
+        /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
+        private void EliminarToma_Click(object sender, RoutedEventArgs e)
+        {
+            if (MessageBox.Show("¿Está seguro que desea eliminar?",
+                "Eliminar Toma",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                var button = (e.OriginalSource as Button);
+                var data = (TomaPosesionPdf.ConstanciaData)button.DataContext;
+                dgu.DeleteRowFromDataGrid("toma", tomaData, data, "Eliminar Toma");
             }
         }
 
+        /// <summary>DataGrid Add Button v3 > Seccion</summary>
+        /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
+        private void AgregarToma_Click(object sender, RoutedEventArgs e)
+        {
+            var data = new TomaPosesionPdf.ConstanciaData(DataInitMode.Default);
+            //var someDataRelated = (Data_related)someGroupBox.DataContext; 
+            //data.data_related = someDataRelated.id;
+            tomaData.Add(data);
+        }
+
+        /// <summary>DataGrid Save Button v3 > Seccion</summary>
+        /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
+        private void GuardarToma_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var data = (TomaPosesionPdf.ConstanciaData)button.DataContext;
+            dgu.SaveRowFromDataGrid("seccion", data, Title);
+        }
 
         /// <summary>
         /// Actualizar checkbox

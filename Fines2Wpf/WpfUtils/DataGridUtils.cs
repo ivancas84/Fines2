@@ -4,6 +4,7 @@ using SqlOrganize;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using Utils;
@@ -181,6 +182,8 @@ namespace WpfUtils
                 ToastUtils.ShowExceptionMessageWithFileNameAndLineNumber(ex, title);
             }
         }
+
+      
 
     }
 }

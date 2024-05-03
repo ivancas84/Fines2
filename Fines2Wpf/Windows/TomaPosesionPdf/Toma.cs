@@ -1,4 +1,5 @@
 ﻿using Fines2Wpf.Data;
+using SqlOrganize;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,18 @@ using System.Threading.Tasks;
 
 namespace Fines2Wpf.Windows.TomaPosesionPdf
 {
+
     internal class ConstanciaData : Data_toma_r
     {
+
+        public ConstanciaData() : base()
+        {
+        }
+
+        public ConstanciaData(DataInitMode mode) : base(mode)
+        {
+        }
+
         public Byte[] qr_code { get; set; }
 
     }

@@ -5,89 +5,148 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Fines2Wpf.Windows.ListaTomas"
         mc:Ignorable="d"
-        Title="Window1" Height="450" Width="800">
-    <DockPanel>
+        Title="Window1" Height="450" Width="800"
+        
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        
+        xmlns:control="clr-namespace:WpfUtils.Controls">
+    <ScrollViewer HorizontalScrollBarVisibility="Visible">
 
-        <StackPanel DockPanel.Dock="Top">
-            <WrapPanel>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "Auto" />
+            </Grid.RowDefinitions>
 
-                <Label 
-                Name = "calendarioAnioLabel"
-                Margin = "2">_Año:</Label>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width = "*" />
+            </Grid.ColumnDefinitions>
 
-                <TextBox 
-                Name = "calendarioAnioText" 
-                Text="{Binding calendario__anio}"
-                Width="200" 
-                Margin = "2" />
+            <GroupBox 
+                Name="searchGroupBox"
+                Margin="16"
+	            materialDesign:ElevationAssist.Elevation="Dp3">
+                <GroupBox.Header>
+                    <Label>Formulario de Búsqueda y modificación conjunta</Label>
+                </GroupBox.Header>
 
-                <Label 
-                Name = "calendarioSemestreLabel"    
-                Margin = "2" 
-                >_Semestre:</Label>
+                <StackPanel DockPanel.Dock="Top">
+                    <WrapPanel>
 
-                <TextBox 
-                Name = "calendarioSemestreText" 
-                Text="{Binding calendario__semestre}"
-                Width="200" 
-                Margin = "2" />
+                        <Label 
+                            Name = "calendarioAnioLabel"
+                            Margin = "2">_Año:</Label>
 
-                <Button Content = "_Buscar..." Click="BuscarButton_Click" />
-                <Button Content = "_Pasar todo..." Click="PasarTodoButton_Click" />
+                        <TextBox 
+                            Name = "calendarioAnioText" 
+                            Text="{Binding calendario__anio}"
+                            Width="200" 
+                            Margin = "2" />
 
-            </WrapPanel>
-            <WrapPanel>
-                <Label 
-                     Margin = "2" 
-                     >Id Planilla Docente:</Label>
+                        <Label 
+                            Name = "calendarioSemestreLabel"    
+                            Margin = "2" 
+                            >_Semestre:</Label>
 
-                <TextBox 
-                     Name = "idPlanillaDocenteTextBox" 
-                     Width="200" 
-                     Margin = "2" />
+                        <TextBox 
+                            Name = "calendarioSemestreText" 
+                            Text="{Binding calendario__semestre}"
+                            Width="200" 
+                            Margin = "2" />
 
-                <Button Content = "_Actualizar..." Click="ActualizarPlanillaDocente_Click" />
+                        <Button Content = "_Buscar..." Click="BuscarButton_Click" />
+                        <Button Content = "_Pasar todo..." Click="PasarTodoButton_Click" />
 
-            </WrapPanel>
-        </StackPanel>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <Label 
+                             Margin = "2" 
+                             >Id Planilla Docente:</Label>
 
-        <DataGrid Name="tomaGrid" AutoGenerateColumns="False" CanUserAddRows="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Fecha Toma" Binding="{Binding fecha_toma}"></DataGridTextColumn>
-                
-                <DataGridTextColumn Header="Nombres" Binding="{Binding docente__nombres}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Apellidos" Binding="{Binding docente__apellidos}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Número Documento" Binding="{Binding docente__numero_documento}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Email ABC" Binding="{Binding docente__email_abc}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Comision" Binding="{Binding comision__pfid}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__nombre}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Codigo" Binding="{Binding asignatura__codigo}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Observaciones" Binding="{Binding observaciones}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Estado contralor" Binding="{Binding estado_contralor}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Tipo movimiento" Binding="{Binding tipo_movimiento}"></DataGridTextColumn>
-                <DataGridCheckBoxColumn Binding="{Binding confirmada}" Header="Confirmada">
-                    <DataGridCheckBoxColumn.CellStyle>
-                        <Style>
-                            <EventSetter Event="CheckBox.Checked" Handler="TomaGrid_CellCheckBoxClick"/>
-                            <EventSetter Event="CheckBox.Unchecked" Handler="TomaGrid_CellCheckBoxClick"/>
-                        </Style>
-                    </DataGridCheckBoxColumn.CellStyle>
-                </DataGridCheckBoxColumn>
-                <DataGridTemplateColumn>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <WrapPanel>
-                                <Button Click="EmailTomaButton_Click">Email Toma</Button>
-                                <Button Click="GenerarTomaButton_Click">Generar Toma</Button>
-                                <Button Click="EliminarTomaButton_Click">Eliminar Toma</Button>
+                        <TextBox 
+                             Name = "idPlanillaDocenteTextBox" 
+                             Width="200" 
+                             Margin = "2" />
 
-                            </WrapPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                        <Button Content = "_Actualizar..." Click="ActualizarPlanillaDocente_Click" />
 
-            </DataGrid.Columns>
-        </DataGrid>
-    </DockPanel>
+                    </WrapPanel>
+                </StackPanel>
+
+            </GroupBox>
+
+       
+
+            <GroupBox 
+                  Name="dataGroupBox" 
+                  Grid.Row="1"
+                  Margin="16"
+	          materialDesign:ElevationAssist.Elevation="Dp3">
+                <GroupBox.Header>
+                    <Label>Grilla de datos</Label>
+                </GroupBox.Header>
+
+                <StackPanel>
+                <DataGrid Name="tomaGrid" AutoGenerateColumns="False" CanUserAddRows="False">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Fecha Toma" ClipboardContentBinding="{Binding fecha_toma, StringFormat={}{0:dd/MM/yyyy}}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding fecha_toma, StringFormat={}{0:dd/MM/yyyy}}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                            <DataGridTemplateColumn.CellEditingTemplate>
+                                <DataTemplate>
+                                    <control:CustomDatePicker x:Name="fecha_toma" SelectedDate="{Binding fecha_toma}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellEditingTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTextColumn Header="Nombres" Binding="{Binding docente__nombres}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Apellidos" Binding="{Binding docente__apellidos}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Número Documento" Binding="{Binding docente__numero_documento}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Email ABC" Binding="{Binding docente__email_abc}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Comision" Binding="{Binding comision__pfid}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__nombre}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Codigo" Binding="{Binding asignatura__codigo}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Observaciones" Binding="{Binding observaciones}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Estado contralor" Binding="{Binding estado_contralor}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Tipo movimiento" Binding="{Binding tipo_movimiento}"></DataGridTextColumn>
+                        <DataGridCheckBoxColumn Binding="{Binding confirmada}" Header="Confirmada">
+                            <DataGridCheckBoxColumn.CellStyle>
+                                <Style>
+                                    <EventSetter Event="CheckBox.Checked" Handler="TomaGrid_CellCheckBoxClick"/>
+                                    <EventSetter Event="CheckBox.Unchecked" Handler="TomaGrid_CellCheckBoxClick"/>
+                                </Style>
+                            </DataGridCheckBoxColumn.CellStyle>
+                        </DataGridCheckBoxColumn>
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <WrapPanel>
+                                        <Button Click="EmailTomaButton_Click">Email Toma</Button>
+                                        <Button Click="GenerarTomaButton_Click">Generar Toma</Button>
+                                        <Button Click="EliminarTomaButton_Click">Eliminar Toma</Button>
+
+                                    </WrapPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                    </DataGrid.Columns>
+                </DataGrid>
+                    <Button 
+              Content="Agregar Toma" 
+              Click="AgregarToma_Click"/>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
 </Window>
