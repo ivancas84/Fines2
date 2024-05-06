@@ -21,7 +21,6 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
     {
         private Data_comision_r comisionSearch = new();
         private DAO.Comision comisionDAO = new();
-        private SqlOrganize.DAO dao = new(ContainerApp.db);
 
         #region Filter con delay v1 - Atributos
         private ObservableCollection<Data_comision_r> comisionOC = new();
@@ -108,7 +107,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object?>> list = dao.SearchObj("comision", comisionSearch);
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.Sql("comision").SearchObj(comisionSearch).Size(0).ColOfDictCache();
             IEnumerable<object> idsSede = list.ColOfVal<object>("sede");
             IEnumerable<object> idsComision = list.ColOfVal<object>("id");
 
@@ -198,7 +197,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                     string key = ((Binding)column.Binding).Path.Path; //column's binding
                     Dictionary<string, object> source = (Dictionary<string, object>)((Data_comision_r)e.Row.DataContext).Dict();
                     string value = (e.EditingElement as TextBox)!.Text;
-                    dao.UpdateValueRel("comision", key, value, source);
+                    ContainerApp.db.Persist().UpdateValueRel("comision", key, value, source).Exec().RemoveCache();
                 }
             }
         }

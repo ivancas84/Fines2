@@ -12,8 +12,6 @@ namespace Fines2Wpf.Windows.Toma.Contralor
     public partial class Window1 : Window
     {
 
-        DAO.Toma tomaDAO = new();
-
         ObservableCollection<Contralor.Toma> tomasOC = new();
 
         public Window1()
@@ -21,7 +19,8 @@ namespace Fines2Wpf.Windows.Toma.Contralor
             InitializeComponent();
             tomaDataGrid.ItemsSource = tomasOC;
 
-            var tomas = tomaDAO.TomasAprobadasConfirmadasQuery("2024", "1").ColOfDictCache();
+            var idTomas = DAO.Toma2.TomasPasarSinPlanillaDocenteDePeriodoSql("2024", "1");
+            var tomas = ContainerApp.db.Sql("toma").Where("$id IN (@0)").Parameters(idTomas).ColOfDictCache();
 
             tomasOC.Clear();
             foreach (var item in tomas)

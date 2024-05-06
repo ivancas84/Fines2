@@ -29,8 +29,6 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
         private ObservableCollection<StatusData> statusData = new();
         private DAO.AlumnoComision alumnoComisionDAO = new();
         private EntityPersist persist = ContainerApp.db.Persist();
-        private SqlOrganize.DAO dao = new(ContainerApp.db);
-
 
         public Window1(string? idComision = null)
         {
@@ -45,7 +43,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
 
         private void CargarNuevosAlumnos_Loaded(object sender, RoutedEventArgs e)
         {
-            var data = dao.Get("comision", IdComision!);
+            var data = ContainerApp.db.Sql("comision").Get(IdComision!);
             labelTextBox.Text = ((Values.Comision)ContainerApp.db.Values("comision").Values(data)).ToString();
             comision = data.Obj<Data_comision_r>();
         }

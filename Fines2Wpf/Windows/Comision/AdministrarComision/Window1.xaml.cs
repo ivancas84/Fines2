@@ -129,7 +129,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             }
             else
             {
-                var comision = ContainerApp.dao.Get("comision", idComision!).Obj<Data_comision_r>();
+                var comision = ContainerApp.db.Sql("comision").Get(idComision!).Obj<Data_comision_r>();
                 comisionGroupBox.DataContext = comision;
                 sedeOC.Clear();
                 var sedeInicial = new Data_sede_r();
@@ -140,7 +140,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
                 comisionOC.Clear();
                 if (!comision.comision_siguiente.IsNullOrEmptyOrDbNull())
                 {
-                    var comisionSiguienteInicial = ContainerApp.dao.Get("comision", comision.comision_siguiente!).Obj<Data_comision_r>();
+                    var comisionSiguienteInicial = ContainerApp.db.Sql("comision").Get(comision.comision_siguiente!).Obj<Data_comision_r>();
                     comisionSiguienteInicial.Label = comisionSiguienteInicial.sede__numero + comisionSiguienteInicial.division + "/" + comisionSiguienteInicial.planificacion__anio + comisionSiguienteInicial.planificacion__semestre + " " + comisionSiguienteInicial.calendario__anio + "-" + comisionSiguienteInicial.calendario__semestre;
                     comisionOC.Add(comisionSiguienteInicial);
                 }

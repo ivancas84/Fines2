@@ -71,20 +71,26 @@ namespace WpfUtils
         /// <param name="exceptionIfMainEntityExists">Dispara una excepcion si se esta modificando la entidad principal y si ya existe su valor con las modificaciones realizadas</param>
         public bool DataGridRow_RecursiveEdit<T>(DataGridRow row, string mainEntityName, string entityName, string fieldName, object? value, string? fieldId = null, bool reload = false, bool exceptionIfMainEntityExists = true) where T : class, new()
         {
-            var dao = new DAO(db);
-
             IDictionary<string, object?> source = row.DataContext.Dict();
 
             EntityValues v = db.Values(entityName, fieldId).Set(source);
-            if (v.GetOrNull(fieldName).Equals(value))
-                return reload;
+            var fieldValue = v.GetOrNull(fieldName);
+            if(fieldValue.IsNullOrEmptyOrDbNull()) {
+                if (value.IsNullOrEmptyOrDbNull())
+                    return (reload) ? v.Check() : false;
+            }
+            else
+            {
+                if (fieldValue!.Equals(value))
+                    return (reload) ? v.Check() : false;
+            }
 
             v.Sset(fieldName, value);
-            IDictionary<string, object?>? rowDb = dao.RowByUniqueFieldOrValues(fieldName, v);
+            IDictionary<string, object?>? rowDb = v.RowByUniqueFieldOrValues(fieldName);
             if (!rowDb.IsNullOrEmpty()) //con el nuevo valor ingresados se obtuvo un nuevo campo unico, no se realiza persistencia y se cambian los valores para reflejar el nuevo valor consultado
             {
                 if (fieldId.IsNullOrEmpty() && exceptionIfMainEntityExists)
-                    throw new System.Exception("Los datos ingresados en la edición de la celda ya pertenecen a otra fila. No se cumple la restricción de unicidad");
+                    throw new Exception("Los datos ingresados en la edición de la celda ya pertenecen a otra fila. No se cumple la restricción de unicidad");
 
                 v.Values(rowDb!);
                 T data = v.Get().Obj<T>();
@@ -94,11 +100,17 @@ namespace WpfUtils
             {
                 if (!v.Check())
                 {
+                    new ToastContentBuilder()
+                    .AddText("ERROR: " + v.Logging.ToString())
+                    .Show();
                     row.Item.SetPropertyValue(fieldName, value);
                     return false;
                 }
 
-                dao.Persist(v);
+                v.Persist();
+                new ToastContentBuilder()
+                    .AddText("Registro realizado de " + entityName)
+                    .Show();
             }
 
             if (fieldId != null)

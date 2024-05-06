@@ -39,8 +39,6 @@ namespace Fines2Wpf
 
         public static Db dbPedidos;
 
-        public static SqlOrganize.DAO dao;
-
         static ContainerApp()
         {
 
@@ -48,8 +46,6 @@ namespace Fines2Wpf
 
             Schema model = new Schema();
             db = new DbApp(config, model, cache);
-            dao = new(db);
-
 
             SqlOrganize.Config configPedidos = new()
             {

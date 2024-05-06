@@ -11,10 +11,12 @@ using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Utils;
 using QuestPDF.Fluent;
 using System.Linq;
 using WpfUtils;
+using Utils;
+
+
 using System.Windows.Media;
 
 namespace Fines2Wpf.Windows.ListaTomas
@@ -26,19 +28,28 @@ namespace Fines2Wpf.Windows.ListaTomas
     {
 
         Search search = new();
-        Fines2Wpf.DAO.Toma tomaDAO = new();
         QRCodeGenerator qrGenerator = new QRCodeGenerator();
         DataGridUtils dgu = new DataGridUtils(ContainerApp.db);
 
-        private ObservableCollection<TomaPosesionPdf.ConstanciaData> tomaData = new();
+        private ObservableCollection<TomaPosesionPdf.ConstanciaData> tomasAprobadasOC = new();
+        private ObservableCollection<TomaPosesionPdf.ConstanciaData> tomasParticularesOC = new();
+        private ObservableCollection<TomaPosesionPdf.ConstanciaData> tomasRenunciadasOC = new();
+        private ObservableCollection<TomaContralor> tomasContralorOC = new();
+
 
         public Window1()
         {
             InitializeComponent();
             DataContext = search;
-            tomaGrid.ItemsSource = tomaData;
+            tomasAprobadasDataGrid.ItemsSource = tomasAprobadasOC;
+            tomasRenunciadasDataGrid.ItemsSource = tomasRenunciadasOC;
+            tomasParticularesDataGrid.ItemsSource = tomasParticularesOC;
+            tomasContralorDataGrid.ItemsSource = tomasContralorOC;
             this.Loaded += MainWindow_Loaded;
-            tomaGrid.CellEditEnding += TomaDataGrid_CellEditEnding!;
+            tomasAprobadasDataGrid.CellEditEnding += TomaDataGrid_CellEditEnding!;
+            tomasRenunciadasDataGrid.CellEditEnding += TomaDataGrid_CellEditEnding!;
+            tomasParticularesDataGrid.CellEditEnding += TomaDataGrid_CellEditEnding!;
+
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -48,9 +59,47 @@ namespace Fines2Wpf.Windows.ListaTomas
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object>> list = tomaDAO.TomasSemestre(search.calendario__anio, search.calendario__semestre);
-            tomaData.Clear();
-            tomaData.AddRange(list.ColOfObj<TomaPosesionPdf.ConstanciaData>());
+            tomasAprobadasOC.Clear();
+            tomasAprobadasOC.AddRange(
+                DAO.Toma2.TomasAprobadasSinModificarDePeriodoSql(search.calendario__anio, search.calendario__semestre).
+                ColOfDictCache().
+                ColOfObj<TomaPosesionPdf.ConstanciaData>()
+            );
+
+            tomasRenunciadasOC.Clear();
+            tomasRenunciadasOC.AddRange(
+                DAO.Toma2.TomasRenunciaBajaSinModificarDePeriodoSql(search.calendario__anio, search.calendario__semestre).
+                ColOfDictCache().
+                ColOfObj<TomaPosesionPdf.ConstanciaData>()
+            );
+
+            tomasParticularesOC.Clear();
+            tomasParticularesOC.AddRange(
+                DAO.Toma2.TomasParticularesDePeriodoSql(search.calendario__anio, search.calendario__semestre).
+                ColOfDictCache().
+                ColOfObj<TomaPosesionPdf.ConstanciaData>()
+            );
+
+            var tomasContralorData = DAO.Toma2.TomasPasarSinPlanillaDocenteDePeriodoSql(search.calendario__anio, search.calendario__semestre).
+                ColOfDictCache();
+
+            tomasContralorOC.Clear();
+                
+            foreach (var item in tomasContralorData)
+            {
+                var tomaObj = item.Obj<TomaContralor>();
+                tomaObj.docente__Label = tomaObj.docente__apellidos!.ToUpper() + " " + tomaObj.docente__nombres!.ToTitleCase();
+                tomasContralorOC.Add(tomaObj);
+                tomaObj.plan__Label = tomaObj.plan__orientacion!.Acronym();
+
+                if (tomaObj.comision__turno.IsNullOrEmpty())
+                    tomaObj.planificacion__Label = "V";
+                else
+                    tomaObj.planificacion__Label = tomaObj.comision__turno!.Acronym();
+
+            }
+
+
         }
         private void BuscarButton_Click(object sender, RoutedEventArgs e)
         {
@@ -60,59 +109,55 @@ namespace Fines2Wpf.Windows.ListaTomas
         /// <summary>Edición de celdas (no boolean) - CellEditEnding v1</summary>
         private void TomaDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
-            string key = "";
-            object? value = null;
-
-            var column = e.Column as DataGridBoundColumn;
-            if (column != null)
+            try
             {
-                key = ((Binding)column.Binding).Path.Path; //column's binding
-                value = (e.EditingElement as TextBox)!.Text;
-            }
+                string key = "";
+                object? value = null;
+                if (e.Column is DataGridCheckBoxColumn)
+                    return;
 
-            var columnT = e.Column as DataGridTemplateColumn;
-            if (columnT != null)
-            {
-                var datePicker = VisualTreeHelper.GetChild(e.EditingElement, 0) as DatePicker;
-                if (datePicker != null)
+                var column = e.Column as DataGridBoundColumn;
+                if (column != null)
                 {
-                    key = datePicker.Name;
-                    value = datePicker.SelectedDate;
+                    key = ((Binding)column.Binding).Path.Path; //column's binding
+                    value = (e.EditingElement as TextBox)!.Text;
                 }
-            }
 
-            if (key.IsNullOrEmpty())
-                return;
+                var columnT = e.Column as DataGridTemplateColumn;
+                if (columnT != null)
+                {
+                    var datePicker = VisualTreeHelper.GetChild(e.EditingElement, 0) as DatePicker;
+                    if (datePicker != null)
+                    {
+                        key = datePicker.Name;
+                        value = datePicker.SelectedDate;
+                    }
+                }
 
-            var reload = dgu.DataGridCellEditEndingEventArgs_CellEditEnding<Data_toma_r>(e, "toma", key, value);
-            if (reload)
-                LoadData(); //debe recargarse para visualizar los cambios realizados en otras iteraciones
-                                    //Dada una relacion a : b, si se modifica b correspondiente a a.b, se deberan actualizar todas las filas
-        }
+                if (key.IsNullOrEmpty())
+                    return;
 
-        /// <summary>DataGrid Delete Button v3 > Usuario</summary>
-        /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
-        private void EliminarToma_Click(object sender, RoutedEventArgs e)
-        {
-            if (MessageBox.Show("¿Está seguro que desea eliminar?",
-                "Eliminar Toma",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question) == MessageBoxResult.Yes)
+                var reload = dgu.DataGridCellEditEndingEventArgs_CellEditEnding<Data_toma_r>(e, "toma", key, value);
+                if (reload)
+                    LoadData(); //debe recargarse para visualizar los cambios realizados en otras iteraciones
+                                //Dada una relacion a : b, si se modifica b correspondiente a a.b, se deberan actualizar todas las filas
+            } catch (Exception ex)
             {
-                var button = (e.OriginalSource as Button);
-                var data = (TomaPosesionPdf.ConstanciaData)button.DataContext;
-                dgu.DeleteRowFromDataGrid("toma", tomaData, data, "Eliminar Toma");
+                new ToastContentBuilder()
+                .AddText("ERROR: " + ex.Message)
+                .Show();
             }
         }
+
 
         /// <summary>DataGrid Add Button v3 > Seccion</summary>
         /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
         private void AgregarToma_Click(object sender, RoutedEventArgs e)
         {
-            var data = new TomaPosesionPdf.ConstanciaData(DataInitMode.Default);
+            var data = new TomaPosesionPdf.ConstanciaData(DataInitMode.DefaultMain);
             //var someDataRelated = (Data_related)someGroupBox.DataContext; 
             //data.data_related = someDataRelated.id;
-            tomaData.Add(data);
+            tomasAprobadasOC.Add(data);
         }
 
         /// <summary>DataGrid Save Button v3 > Seccion</summary>
@@ -149,7 +194,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                     v.Sset(fieldName, value);
 
                     if (v.Check())
-                        ContainerApp.dao.Persist(v);
+                        v.Persist();
 
                     DataGridRow row = DataGridRow.GetRowContainingElement(cell);
                     (row.Item as Data_toma_r).CopyValues<Data_toma_r>(v.Get().Obj<Data_toma_r>(),sourceNotNull:true);
@@ -216,7 +261,7 @@ namespace Fines2Wpf.Windows.ListaTomas
         {
             try
             {
-                var idTomas = DAO.Toma2.IdTomasAprobadasSinPlanillaDocenteSemestre(calendarioAnioText.Text, calendarioSemestreText.Text);
+                var idTomas = DAO.Toma2.IdTomasPasarSinPlanillaDocenteDePeriodo(calendarioAnioText.Text, calendarioSemestreText.Text);
 
                 if (!idTomas.Any())
                     throw new Exception("No existen tomas para cargar planilla docente");
@@ -245,7 +290,7 @@ namespace Fines2Wpf.Windows.ListaTomas
 
         private void PasarTodoButton_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<object> id_tomas_aprobadas = DAO.Toma2.TomasAprobadasDePeriodoSql(calendarioAnioText.Text, calendarioSemestreText.Text).ColOfDictCache().ColOfVal<object>("id");
+            IEnumerable<object> id_tomas_aprobadas = DAO.Toma2.TomasPasarDePeriodoSql(calendarioAnioText.Text, calendarioSemestreText.Text).ColOfDictCache().ColOfVal<object>("id");
 
             ContainerApp.db.Persist().UpdateValueIds("toma", "estado_contralor", "Pasar", id_tomas_aprobadas.ToArray()).Exec().RemoveCacheDetail();
             

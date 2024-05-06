@@ -11,16 +11,6 @@ namespace Fines2Wpf
         {
         }
 
-        public object Dao(string entityName)
-        {
-            switch(entityName)
-            {
-                case "comision":
-                    return new DAO.Comision();
-            }
-
-            return new SqlOrganize.DAO(this);
-        }
 
         public override EntityValues Values(string entityName, string? fieldId = null)
         {

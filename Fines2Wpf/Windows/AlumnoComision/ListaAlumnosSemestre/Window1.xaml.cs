@@ -21,7 +21,6 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
     public partial class Window1 : Window
     {
         private DAO.Calificacion calificacionDAO = new();
-        private SqlOrganize.DAO dao = new(ContainerApp.db);
         private ObservableCollection<Asignacion> asignacionOC = new();
         private Data_alumno_comision_r search = new(DataInitMode.Null);
         private DataGridUtils dgu = new(ContainerApp.db);
@@ -108,7 +107,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         public void LoadAsignaciones()
         {
             asignacionOC.Clear();
-            var data = dao.SearchObj("alumno_comision", search);
+            var data = ContainerApp.db.Sql("alumno_comision").SearchObj(search).Size(0).ColOfDictCache();
             if(data.IsNullOrEmptyOrDbNull())
                return;
             

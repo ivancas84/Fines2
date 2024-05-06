@@ -100,9 +100,9 @@ namespace Fines2Wpf.Windows.ListaCursos
 
                         //en caso de que el campo editado sea unico, se consultan sus valores
                         if (ContainerApp.db.Field(entityName, fieldName).IsUnique())
-                            row = ContainerApp.dao.RowByFieldValue(entityName, fieldName, value);
+                            row = ContainerApp.db.Sql(entityName).RowByFieldValue(fieldName, value);
                         else
-                            row = ContainerApp.dao.RowByUniqueWithoutIdIfExists(entityName, v.Values());
+                            row = v.RowByUniqueWithoutIdIfExists();
 
                         if (!row.IsNullOrEmpty())
                         {

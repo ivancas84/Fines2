@@ -1,13 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SqlOrganize.Exceptions;
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 using Utils;
 
 namespace SqlOrganize
@@ -224,32 +217,29 @@ namespace SqlOrganize
             return values;
         }
 
-        public static EntityPersist UpdateValueRel(this Db db, string entityName, string key, object? value, IDictionary<string, object?> source)
+        public static IEnumerable<Dictionary<string, object?>> SearchKeyValue(this EntitySql entitySql, string key, object value)
         {
-            return db.Persist().UpdateValueRel(entityName, key, value, source).Exec().RemoveCache();
-        }
-
-        public static IEnumerable<Dictionary<string, object?>> SearchKeyValue(this Db db, string entityName, string key, object value)
-        {
-            return db.Sql(entityName).
+            return entitySql.
                 Where(key + " = @0").
                 Parameters(value).
                 Size(0).
                 ColOfDictCache();
         }
-        public static IEnumerable<Dictionary<string, object?>> SearchObj(this Db db, string entityName, object param)
+
+
+        public static IDictionary<string, object?> Get(this EntitySql entitySql, object id)
         {
-            return db.Sql(entityName).SearchObj(param).Size(0).ColOfDictCache();
+            return entitySql.CacheByIds(id).ElementAt(0);
         }
 
-        public static IDictionary<string, object?> Get(this Db db, string entityName, object id)
+        public static IDictionary<string, object?>? RowByFieldValue(this EntityValues entityValues, string fieldName)
         {
-            return db.Sql(entityName).CacheByIds(id).ElementAt(0);
+            return entityValues.db.Sql(entityValues.entityName).RowByFieldValue(fieldName, entityValues.Get(fieldName));
         }
 
-        public static IDictionary<string, object?>? RowByFieldValue(this Db db, string entityName, string fieldName, object value)
+        public static IDictionary<string, object?>? RowByFieldValue(this EntitySql entitySql, string fieldName, object value)
         {
-            return db.Sql(entityName).Where("$" + fieldName + " = @0").Parameters(value).DictCache();
+            return entitySql.Where("$" + fieldName + " = @0").Parameters(value).DictCache();
         }
 
         public static IDictionary<string, object?>? RowByUniqueFieldOrValues(this EntityValues values, string fieldName)
@@ -257,9 +247,9 @@ namespace SqlOrganize
             try
             {
                 if (values.db.Field(values.entityName, fieldName).IsUnique())
-                    return values.db.RowByFieldValue(values.entityName, fieldName, values.Get(fieldName));
+                    return values.RowByFieldValue(fieldName);
                 else
-                    return values.db.RowByUniqueWithoutIdIfExists(values.entityName, values.Values());
+                    return values.RowByUniqueWithoutIdIfExists();
             }
             catch (UniqueException ex)
             {
@@ -267,27 +257,29 @@ namespace SqlOrganize
             }
         }
 
-        public static IDictionary<string, object?>? RowByUniqueWithoutIdIfExists(this Db db, string entityName, IDictionary<string, object?> source)
+        public static IDictionary<string, object?>? RowByUniqueWithoutIdIfExists(this EntityValues values)
         {
-
-            var q = db.Sql(entityName).Unique(source);
-
-            if (source.ContainsKey(db.config.id) && !source[db.config.id]!.IsNullOrEmptyOrDbNull())
-                q.And("$" + db.config.id + " != @" + q.parameters.Count()).Parameters(source[db.config.id]!);
-
-            return q.DictCache();
+            return values.db.Sql(values.entityName).RowByUniqueWithoutIdIfExists(values.Values());
         }
 
+        public static IDictionary<string, object?>? RowByUniqueWithoutIdIfExists(this EntitySql entitySql, IDictionary<string, object?> source)
+        {
+            entitySql.Unique(source);
+
+            if (source.ContainsKey(entitySql.Db.config.id) && !source[entitySql.Db.config.id]!.IsNullOrEmptyOrDbNull())
+                entitySql.And("$" + entitySql.Db.config.id + " != @" + entitySql.parameters.Count()).Parameters(source[entitySql.Db.config.id]!);
+
+            return entitySql.DictCache();
+        }
 
         public static IDictionary<string, object?>? RowByUnique(this EntityValues ev)
         {
-            return ev.db.RowByUnique(ev.entityName, ev.Values());
+            return ev.db.Sql(ev.entityName).RowByUnique(ev.Values());
         }
 
-        public static IDictionary<string, object?>? RowByUnique(this Db db, string entityName, IDictionary<string, object?> source)
+        public static IDictionary<string, object?>? RowByUnique(this EntitySql entitySql, IDictionary<string, object?> source)
         {
-            EntitySql q = db.Sql(entityName).Unique(source);
-            IEnumerable<Dictionary<string, object?>> rows = q.ColOfDict();
+            IEnumerable<Dictionary<string, object?>> rows = entitySql.Unique(source).ColOfDict();
 
             if (rows.Count() > 1)
                 throw new Exception("La consulta por campos unicos retorno mas de un resultado");
@@ -335,8 +327,5 @@ namespace SqlOrganize
 
             return p;
         }
-
-
-
     }
 }
