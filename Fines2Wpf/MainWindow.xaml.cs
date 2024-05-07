@@ -226,6 +226,12 @@ namespace Fines2Wpf
             Windows.AlumnoComision.ProcesarAsignacionesProgramaFines.Window1 window1 = new();
             window1.Show();
         }
+
+        private void ProcesarAsignacionesProgresar_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.AlumnoComision.VerificarAlumnosProgresar.Window1 window1 = new();
+            window1.Show(); 
+        }
     }
 }
 

@@ -88,6 +88,13 @@ namespace Fines2Wpf.Windows.ListaTomas
             foreach (var item in tomasContralorData)
             {
                 var tomaObj = item.Obj<TomaContralor>();
+
+                tomaObj.docente__cuil = tomaObj.docente__cuil;
+
+                tomaObj.dia_desde = ((DateTime)tomaObj.fecha_toma!).ToString("dd");
+                tomaObj.mes_desde = ((DateTime)tomaObj.fecha_toma!).ToString("MM");
+                tomaObj.anio_desde = ((DateTime)tomaObj.fecha_toma!).ToString("yyyy");
+
                 tomaObj.docente__Label = tomaObj.docente__apellidos!.ToUpper() + " " + tomaObj.docente__nombres!.ToTitleCase();
                 tomasContralorOC.Add(tomaObj);
                 tomaObj.plan__Label = tomaObj.plan__orientacion!.Acronym();

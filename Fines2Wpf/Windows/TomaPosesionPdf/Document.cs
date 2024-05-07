@@ -177,7 +177,7 @@ namespace Fines2Wpf.Windows.TomaPosesionPdf
                 table.Cell().Row(3).Column(2).ColumnSpan(5).Element(BlockContent).Text(Model.curso__descripcion_horario);
 
                 table.Cell().Row(4).Column(1).Element(BlockHeader).Text("Fecha Toma").Bold();
-                table.Cell().Row(4).Column(2).ColumnSpan(2).Element(BlockContent).Text("11/03/2024");
+                table.Cell().Row(4).Column(2).ColumnSpan(2).Element(BlockContent).Text(((DateTime)Model.fecha_toma!).ToString("dd/MM/yyyy"));
 
                 table.Cell().Row(4).Column(4).Element(BlockHeader).Text("Fecha Fin").Bold();
                 table.Cell().Row(4).Column(5).ColumnSpan(2).Element(BlockContent).Text("12/07/2024");

@@ -6,6 +6,17 @@ namespace Fines2Wpf.DAO
 {
     public static class AlumnoComision2
     {
+        public static EntitySql TodasLasAsignacionesAsignacionesDelSemestrePorDNIQuery(object anio, object semestre, IEnumerable<object> dni)
+        {
+            return ContainerApp.db.Sql("alumno_comision")
+                .Size(0)
+                .Where(@"$calendario-anio = @0 
+                    AND $calendario-semestre = @1
+                    AND $persona-numero_documento IN (@2)")
+                .Parameters(anio, semestre, dni);
+
+        }
+
 
         public static EntitySql AsignacionesActivasDeComisionesAutorizadasPorSemestreYProgramafinesQuery(object anio, object semestre, bool programafines)
         {

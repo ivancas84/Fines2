@@ -25,19 +25,25 @@ namespace Fines2Wpf.Windows.ListaTomas
             get { return "PF"; }
         }
 
+        public string _dia_desde;
         public string dia_desde
         {
-            get { return "11"; }
+            get { return _dia_desde; }
+            set { _dia_desde = value; }
         }
 
+        public string _mes_desde;
         public string mes_desde
         {
-            get { return "03"; }
+            get { return _mes_desde; }
+            set { _mes_desde = value; }
         }
 
+        public string _anio_desde;
         public string anio_desde
         {
-            get { return "24"; }
+            get { return _anio_desde; }
+            set { _anio_desde = value; }
         }
 
         public string dia_hasta
@@ -61,12 +67,15 @@ namespace Fines2Wpf.Windows.ListaTomas
         public string? prefijo_cuil
         {
             get { return _prefijo_cuil; }
+            set { _prefijo_cuil = value; }
+
         }
 
         protected string? _sufijo_cuil = null;
         public string? sufijo_cuil
         {
             get { return _sufijo_cuil; }
+            set { _sufijo_cuil = value; }
         }
 
         public new string? docente__cuil
