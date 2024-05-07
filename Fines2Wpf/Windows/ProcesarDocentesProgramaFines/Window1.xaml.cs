@@ -69,9 +69,6 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                 {
                     if (pfidComisiones.ToList().Contains(cargo["comision"]))
                     {
-                        if (cargo["comision"].Equals("10172"))
-                            logs.Add("Procesar");
-
                         object idCurso = dao.IdCurso(cargo["comision"], cargo["codigo"]);
                         if (idCurso.IsNullOrEmpty())
                         {
