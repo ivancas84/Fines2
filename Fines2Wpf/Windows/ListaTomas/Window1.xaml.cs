@@ -29,7 +29,6 @@ namespace Fines2Wpf.Windows.ListaTomas
 
         Search search = new();
         QRCodeGenerator qrGenerator = new QRCodeGenerator();
-        DataGridUtils dgu = new DataGridUtils(ContainerApp.db);
 
         private ObservableCollection<TomaPosesionPdf.ConstanciaData> tomasAprobadasOC = new();
         private ObservableCollection<TomaPosesionPdf.ConstanciaData> tomasParticularesOC = new();
@@ -144,7 +143,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                 if (key.IsNullOrEmpty())
                     return;
 
-                var reload = dgu.DataGridCellEditEndingEventArgs_CellEditEnding<Data_toma_r>(e, "toma", key, value);
+                var reload = ContainerApp.db.DataGridCellEditEndingEventArgs_CellEditEnding<Data_toma_r>(e, "toma", key, value);
                 if (reload)
                     LoadData(); //debe recargarse para visualizar los cambios realizados en otras iteraciones
                                 //Dada una relacion a : b, si se modifica b correspondiente a a.b, se deberan actualizar todas las filas
@@ -173,7 +172,7 @@ namespace Fines2Wpf.Windows.ListaTomas
         {
             var button = (e.OriginalSource as Button);
             var data = (TomaPosesionPdf.ConstanciaData)button.DataContext;
-            dgu.SaveRowFromDataGrid("seccion", data, Title);
+            ContainerApp.db.SaveRowFromDataGrid("seccion", data, Title);
         }
 
         /// <summary>

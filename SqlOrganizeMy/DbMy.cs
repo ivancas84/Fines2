@@ -61,7 +61,8 @@ namespace SqlOrganizeMy
 
         public override long GetMaxValue(string entityName, string fieldName)
         {
-            return Sql(entityName).Select("CAST ( ISNULL( MAX($" + fieldName + "), 0) AS bigint)").Value<long>();
+            var max =  Sql(entityName).Select("IFNULL(MAX($" + fieldName + "), 0) AS max_value").Value<object>();
+            return long.Parse(max.ToString());
         }
     }
 }

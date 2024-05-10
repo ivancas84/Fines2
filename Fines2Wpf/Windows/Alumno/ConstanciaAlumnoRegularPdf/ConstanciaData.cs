@@ -18,6 +18,7 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
         public string resolucion_constancia { get; set; }
 
         public string orientacion_constancia { get; set; }
+        public string? observaciones_constancia { get; set; }
 
 
     }

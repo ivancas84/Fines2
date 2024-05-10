@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Utils;
 using SqlOrganize;
+using System.Text;
 
 namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
 {
@@ -37,6 +38,13 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
             alumnoComboBox.SelectedValuePath = "id";
             #endregion
 
+            #region urlComboBox
+            urlComboBox.SelectedValuePath = "Key";
+            urlComboBox.DisplayMemberPath = "Value";
+            urlComboBox.Items.Add(new KeyValuePair<bool, string>(true, "Sí"));
+            urlComboBox.Items.Add(new KeyValuePair<bool, string>(false, "No"));
+            urlComboBox.SelectedIndex = 0;
+            #endregion
         }
 
 
@@ -46,7 +54,6 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
             {
                 ConstanciaData alumno = (ConstanciaData)alumnoComboBox.SelectedItem;
 
-                alumno.url = urlTextBox.Text;
 
                 int anio = DateTime.Now.Year;
                 short semester = DateTime.Now.ToSemester();
@@ -64,6 +71,12 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
                 alumno.resolucion_constancia = asignacionActiva.plan__resolucion!;
 
                 alumno.orientacion_constancia = asignacionActiva.plan__orientacion;
+                
+                if (!observacionesTextBox.Text.IsNullOrEmptyOrDbNull())
+                    alumno.observaciones_constancia = observacionesTextBox.Text;
+
+                if ((bool)urlComboBox.SelectedValue)
+                    GenerarPedido(alumno);
 
                 QRCodeGenerator qrGenerator = new QRCodeGenerator();
                 QRCodeData qrCodeData = qrGenerator.CreateQrCode(alumno.url, QRCodeGenerator.ECCLevel.Q);
@@ -138,5 +151,62 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
         }
         #endregion
 
+
+        private void GenerarPedido(ConstanciaData alumno)
+        {
+            StringBuilder threads_body = new StringBuilder();
+            threads_body.Append("La Dirección de la escuela CENS 462 de La Plata, hace constar por la presente que ");
+            threads_body.Append(alumno.persona__apellidos!.ToUpper());
+            threads_body.Append(", ");
+            threads_body.Append(alumno.persona__nombres!.ToTitleCase());
+            threads_body.Append(" DNI N° ");
+            threads_body.Append(alumno.persona__numero_documento);
+            threads_body.Append(" es alumno regular de ");
+            threads_body.Append(alumno.anio_constancia.ToOrdinalSpanish().ToUpper());
+            threads_body.Append(" año Programa Fines 2 Trayecto Secundario con orientación en ");
+            threads_body.Append(alumno.orientacion_constancia);
+            threads_body.Append(" resolución ");
+            threads_body.Append(alumno.resolucion_constancia);
+            if (!alumno.observaciones_constancia.IsNullOrEmptyOrDbNull())
+            {
+                threads_body.Append(" - "); // Add line break
+                threads_body.Append(alumno.observaciones_constancia); // Add line break
+
+            }
+
+
+
+            EntityValues ticketsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_tickets").Default().
+               Set("subject", " Constancia de alumno regular : " + alumno.persona__apellidos!.ToUpper() + ", " + alumno.persona__nombres!.ToTitleCase()).
+               Set("status", 4). //cerado
+               Set("category", 10). //constancia
+               Set("cust_24", alumno.persona__numero_documento).
+               //Set("cust_27", alumno.persona__telefono).
+               Set("cust_28", "Válido por 30 días").
+               Set("assigned_agent", "").Reset();
+
+            EntityValues threadsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_threads").Default().
+                Set("ticket", ticketsValues.Get("id")).
+                Set("body", threads_body.ToString()).Reset();
+
+            if (!ticketsValues.Check() && !threadsValues.Check())
+            {
+                throw new Exception("El chequeo de valores es incorrecto");
+            }
+
+            EntityPersist persist = ContainerApp.dbPedidos.Persist();
+
+            persist.Insert(ticketsValues)
+                .Insert(threadsValues)
+                .Exec()
+                .RemoveCache();
+
+
+            var id = ticketsValues.Get("id").ToString() ;
+            var authCode = ticketsValues.Get("auth_code").ToString();
+            alumno.url = "https://planfines2.com.ar/wp/pedidos/?wpsc-section=ticket-list&ticket-id=" + id + "&auth-code=" + authCode;
+        }
     }
+
+
 }
