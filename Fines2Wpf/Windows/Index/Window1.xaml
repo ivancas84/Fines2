@@ -1,0 +1,25 @@
+﻿<Window x:Class="Fines2Wpf.Windows.Index.Window1"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Fines2Wpf.Windows.Index"
+        mc:Ignorable="d"
+        Title="Window1" Height="450" Width="800">
+    <Grid Margin="10">
+            <StackPanel>
+                <TextBlock>
+                     <Hyperlink NavigateUri="newwindow://lista_asignaciones_programa_fines" RequestNavigate="Hyperlink_RequestNavigate">Lista de Asignaciones de Programa Fines</Hyperlink>
+                </TextBlock>
+                <TextBlock>
+                    <Hyperlink NavigateUri="newwindow://lista_alumnos_semestre_sin_genero" RequestNavigate="Hyperlink_RequestNavigate">Lista de Alumnos del Semestre sin Genero</Hyperlink>
+                </TextBlock>
+                <TextBlock>
+                    <Hyperlink NavigateUri="newwindow://procesar_asignaciones_programa_fines" RequestNavigate="Hyperlink_RequestNavigate">Procesar asignaciones programa fines</Hyperlink>
+                </TextBlock>
+                <TextBlock>
+                    <Hyperlink NavigateUri="newwindow://procesar_asignaciones_progresar" RequestNavigate="Hyperlink_RequestNavigate">Procesar asignaciones progresar</Hyperlink>
+                </TextBlock>
+            </StackPanel>
+    </Grid>
+</Window>

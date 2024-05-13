@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -1082,6 +1083,63 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 return;
             }
         }
+
+        private void GenerarPedidoButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            var persona = (Data_persona)personaGroupBox.DataContext;
+            var html = descripcionTextBox.Text.ConvertTextToHtml();
+
+            StringBuilder threads_body = new StringBuilder();
+            threads_body.Append(persona.apellidos!.ToUpper());
+            threads_body.Append(", ");
+            threads_body.Append(persona.nombres!.ToTitleCase());
+            threads_body.Append(" DNI N° ");
+            threads_body.Append(persona.numero_documento);
+            threads_body.Append("<br><br>");
+            foreach (string text in descripcionTextBox.Text.Split("\r\n"))
+            {
+                threads_body.Append(html);
+                threads_body.Append("<br>");
+            }
+
+
+
+            EntityValues ticketsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_tickets").Default().
+               Set("subject", persona.apellidos!.ToUpper() + ", " + persona.nombres!.ToTitleCase() + ": " + tituloTextBox.Text).
+               Set("status", 4). //cerrada
+               Set("category", 2). //legajo
+               Set("cust_24", persona.numero_documento).
+               Set("cust_27", persona.telefono).
+               Set("cust_28", comentarioTextBox.Text). //comentario
+               Set("assigned_agent", "").Reset();
+
+            EntityValues threadsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_threads").Default().
+                Set("ticket", ticketsValues.Get("id")).
+                Set("body", threads_body.ToString()).Reset();
+
+            if (!ticketsValues.Check() && !threadsValues.Check())
+            {
+                throw new Exception("El chequeo de valores es incorrecto");
+            }
+
+            EntityPersist persist = ContainerApp.dbPedidos.Persist();
+
+            persist.Insert(ticketsValues)
+                .Insert(threadsValues)
+                .Exec()
+                .RemoveCache();
+
+
+            var id = ticketsValues.Get("id").ToString();
+            var authCode = ticketsValues.Get("auth_code").ToString();
+            string url = "https://planfines2.com.ar/wp/pedidos/?wpsc-section=ticket-list&ticket-id=" + id + "&auth-code=" + authCode;
+
+            new ToastContentBuilder()
+                    .AddText("Se ha generado nuevo pedido con id " + id)
+                    .Show();
+        }
+
     }
 
     public class EstadoData

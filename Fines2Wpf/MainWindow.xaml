@@ -32,12 +32,7 @@
                     </MenuItem.Icon>
 
                 </MenuItem>
-                <MenuItem Header="Lista de Asignaciones para programafines" Click="listaAsignacionesProgramaFines_Click"/>
-                <MenuItem Header="Lista de Alumnos semestre sin genero" Click="ListaAlumnosSinGenero_Click"/>
                 <MenuItem Header="Constancia Alumno Regular" Click="GenerarConstanciaAlumnoRegular_Click"/>
-                <MenuItem Header="Procesar asignaciones programafines" Click="ProcesarAsignacionesProgramaFines_Click"/>
-                <MenuItem Header="Procesar asignaciones progresar" Click="ProcesarAsignacionesProgresar_Click"/>
-
             </MenuItem>
             
             <MenuItem Header="_Comisiones">
@@ -53,7 +48,9 @@
                 <MenuItem Header="Administrar Comisión" Click="AdministrarComision_Click"/>
 
             </MenuItem>
-            <MenuItem Header="_Informes">
+            <MenuItem Header="_Herramientas">
+                <MenuItem Header="Indice Herramientas" Click="IndiceHerramientasMenuItem_Click"/>
+
                 <MenuItem Header="Informe Coordinación Distrital" Click="informeCoordinacionDistrital_Click"/>
             </MenuItem>
             <MenuItem Header="_Administracion especial">

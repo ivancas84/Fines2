@@ -31,6 +31,7 @@
                 <RowDefinition Height = "*" />
                 <RowDefinition Height = "*" />
                 <RowDefinition Height = "*" />
+                <RowDefinition Height = "*" />
 
             </Grid.RowDefinitions>
 
@@ -166,7 +167,7 @@
                              Margin = "5,10"></TextBox>
 
 
-                    <StackPanel Grid.Row = "3" Grid.ColumnSpan = "6">
+                    <StackPanel Grid.Row = "3" Grid.ColumnSpan = "4">
                         <Button 
                             Style="{DynamicResource MaterialDesignRaisedAccentButton}"
                             Content = "_Guardar..." 
@@ -174,7 +175,7 @@
                             Margin = "20"/>
 
                     </StackPanel>
-
+                    
                 </Grid>
 
             </GroupBox>
@@ -766,6 +767,39 @@
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
+            </GroupBox>
+
+            <GroupBox 
+                Name="pedidoRapidoGroupBox"
+                Header="Pedido Rapido"                      
+                Grid.Row = "8" 
+                Margin="16"
+                materialDesign:ElevationAssist.Elevation="Dp3">
+
+                <StackPanel>
+                    <Label Margin = "5,10">_Titulo:</Label>
+                    <TextBox 
+                        Name="tituloTextBox"
+                        Margin = "5,10"></TextBox>
+                    <Label Margin = "5,10">_Comentario:</Label>
+                    <TextBox 
+                        Name="comentarioTextBox"
+                        Margin = "5,10"></TextBox>
+                    <Label Margin = "5,10">_Descripcion:</Label>
+                    <TextBox 
+                        Name="descripcionTextBox"
+                        TextWrapping="Wrap"
+                        AcceptsReturn="True"
+                        VerticalScrollBarVisibility="Visible"
+
+                        Margin = "5,10"></TextBox>
+                    <Button 
+                         Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                         Content = "_Generar Pedido..." 
+                         Click="GenerarPedidoButton_Click"
+                         Margin = "20"/>
+
+                </StackPanel>
             </GroupBox>
         </Grid>
     </ScrollViewer>

@@ -174,8 +174,6 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
 
             }
 
-
-
             EntityValues ticketsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_tickets").Default().
                Set("subject", " Constancia de alumno regular : " + alumno.persona__apellidos!.ToUpper() + ", " + alumno.persona__nombres!.ToTitleCase()).
                Set("status", 4). //cerado

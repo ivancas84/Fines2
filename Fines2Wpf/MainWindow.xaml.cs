@@ -143,11 +143,6 @@ namespace Fines2Wpf
             win.Show();
         }
 
-        private void ListaAlumnosSinGenero_Click(object sender, RoutedEventArgs e)
-        {
-            Windows.AlumnoComision.AlumnosSemestreSinGenero win = new();
-            win.Show();
-        }
 
         private void AdministrarAlumno_Click(object sender, RoutedEventArgs e)
         {
@@ -231,6 +226,12 @@ namespace Fines2Wpf
         {
             Windows.AlumnoComision.VerificarAlumnosProgresar.Window1 window1 = new();
             window1.Show(); 
+        }
+
+        private void IndiceHerramientasMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.Index.Window1 window1 = new();
+            window1.Show();
         }
     }
 }
