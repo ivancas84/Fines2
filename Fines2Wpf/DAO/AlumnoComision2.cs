@@ -1,4 +1,5 @@
-﻿using SqlOrganize;
+﻿using Fines2Wpf.Values;
+using SqlOrganize;
 using System.Collections.Generic;
 using Utils;
 
@@ -70,7 +71,6 @@ namespace Fines2Wpf.DAO
         public static EntitySql AsignacionesDeComisionSinPlanQuery(object comision, object plan)
         {
             return ContainerApp.db.Sql("alumno_comision")
-               .Fields("alumno")
                .Size(0)
                .Where(@"
                     $alumno-plan != @0
@@ -79,6 +79,31 @@ namespace Fines2Wpf.DAO
                 ")
                .Parameters(plan, comision);
 
+        }
+
+
+        public static EntitySql AsignacionesDeComisionesSql(this Db db, params object[] id_comisiones)
+        {
+            return db.Sql("alumno_comision")
+               .Size(0)
+               .Where(@"
+                    $comision IN ( @0 )
+                "
+            )
+               .Parameters(id_comisiones);
+        }
+
+        public static EntitySql AsignacionesDeComisionesAutorizadasDelPeriodoSql(this Db db, object anio, object semestre)
+        {
+            return db.Sql("alumno_comision")
+               .Size(0)
+               .Where(@"
+                    $calendario-anio = @0 
+                    AND $calendario-semestre = @1 
+                    AND $comision-autorizada = true
+                "
+                )
+               .Parameters(anio, semestre);
         }
     }
 

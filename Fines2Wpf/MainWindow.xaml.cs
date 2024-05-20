@@ -1,6 +1,7 @@
 ﻿using QuestPDF.Infrastructure;
 using System;
 using System.Windows;
+using System.Windows.Navigation;
 
 namespace Fines2Wpf
 {
@@ -218,8 +219,8 @@ namespace Fines2Wpf
 
         private void ProcesarAsignacionesProgramaFines_Click(object sender, RoutedEventArgs e)
         {
-            Windows.AlumnoComision.ProcesarAsignacionesProgramaFines.Window1 window1 = new();
-            window1.Show();
+            //Windows.AlumnoComision.ProcesarAsignacionesProgramaFines.Window1 window1 = new();
+            //window1.Show();
         }
 
         private void ProcesarAsignacionesProgresar_Click(object sender, RoutedEventArgs e)
@@ -232,6 +233,23 @@ namespace Fines2Wpf
         {
             Windows.Index.Window1 window1 = new();
             window1.Show();
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Window window;
+            switch (e.Uri.AbsoluteUri.Substring(12).Replace("/", ""))
+            {
+                case "pf_procesar_interfaz_asignaciones":
+                    window = new Windows.Programafines.ProcesarInterfazAsignaciones.Window1();
+                    break;
+
+                default:
+                    window = new Window();
+                    break;
+            }
+
+            window.Show();
         }
     }
 }

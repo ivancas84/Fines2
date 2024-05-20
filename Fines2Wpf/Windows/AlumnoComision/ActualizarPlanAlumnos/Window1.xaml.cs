@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows;
+using Fines2Wpf.DAO;
 using SqlOrganize;
 using Utils;
 
@@ -14,7 +15,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ActualizarPlanAlumnos
         {
             InitializeComponent();
         
-            var comisiones = DAO.Comision2.ComisionesAutorizadasDeAnioSemestreQuery("2024", "1").ColOfDictCache();
+            var comisiones = ContainerApp.db.ComisionesAutorizadasDePeriodoSql("2024", "1").ColOfDictCache();
             bool persist_ = false;
             var persist = ContainerApp.db.Persist();
             foreach (var comision in comisiones)

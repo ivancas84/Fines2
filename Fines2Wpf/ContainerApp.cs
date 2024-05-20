@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net.Http;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
@@ -39,6 +41,13 @@ namespace Fines2Wpf
 
         public static Db dbPedidos;
 
+        public static HttpClientHandler pfHandler;
+
+        internal static string pfLoginPageUrl = "https://www.programafines.ar/index.php";
+
+        internal static string pfLoginEndpointUrl = "https://www.programafines.ar/validar.php";
+
+
         static ContainerApp()
         {
 
@@ -55,7 +64,17 @@ namespace Fines2Wpf
             };
             dbPedidos = new DbMy(configPedidos, new Pedidos.Schema(), new MemoryCache(new MemoryCacheOptions()));
 
+            // URL of the login page and the login endpoint
+            
 
+            // Create an HttpClientHandler to store cookies and maintain session
+            pfHandler = new HttpClientHandler
+            {
+                CookieContainer = new CookieContainer(),
+                UseCookies = true,
+                UseDefaultCredentials = false,
+                AllowAutoRedirect = true // Allow automatic redirection
+            };
         }
 
     }

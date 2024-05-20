@@ -6,15 +6,18 @@ using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
+using Windows.UI.Composition;
 
 namespace Fines2Wpf.DAO
 {
     internal static class Comision2
     {
       
-        public static EntitySql ComisionesAutorizadasDeAnioSemestreQuery(object anio, object semestre)
+     
+
+        public static EntitySql ComisionesAutorizadasDePeriodoSql(this Db db, object anio, object semestre)
         {
-            return ContainerApp.db.Sql("comision")
+            return db.Sql("comision")
                 .Size(0)
                 .Where(@"
                     $calendario-anio = @0
@@ -22,6 +25,7 @@ namespace Fines2Wpf.DAO
                     AND $autorizada = true
                 ")
                 .Parameters(anio, semestre);
+
         }
 
 

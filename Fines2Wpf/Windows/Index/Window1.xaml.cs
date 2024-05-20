@@ -41,11 +41,7 @@ namespace Fines2Wpf.Windows.Index
                     window = new Windows.AlumnoComision.AlumnosSemestreSinGenero();
                     break;
 
-                case "procesar_asignaciones_programa_fines":
-                    window = new Windows.AlumnoComision.ProcesarAsignacionesProgramaFines.Window1();
-                    break;
-
-                case "procesar_asignaciones_progresar":
+                case "verificar_alumnos_progresar":
                     window = new Windows.AlumnoComision.VerificarAlumnosProgresar.Window1();
                     break;
                     

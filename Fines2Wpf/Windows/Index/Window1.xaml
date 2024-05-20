@@ -18,7 +18,7 @@
                     <Hyperlink NavigateUri="newwindow://procesar_asignaciones_programa_fines" RequestNavigate="Hyperlink_RequestNavigate">Procesar asignaciones programa fines</Hyperlink>
                 </TextBlock>
                 <TextBlock>
-                    <Hyperlink NavigateUri="newwindow://procesar_asignaciones_progresar" RequestNavigate="Hyperlink_RequestNavigate">Procesar asignaciones progresar</Hyperlink>
+                    <Hyperlink NavigateUri="newwindow://verificar_alumnos_progresar" RequestNavigate="Hyperlink_RequestNavigate">Verificar alumnos progresar</Hyperlink>
                 </TextBlock>
             </StackPanel>
     </Grid>

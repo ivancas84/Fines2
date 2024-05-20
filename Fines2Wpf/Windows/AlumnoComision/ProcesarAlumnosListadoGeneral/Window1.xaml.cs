@@ -1,4 +1,5 @@
-﻿using Fines2Wpf.Data;
+﻿using Fines2Wpf.DAO;
+using Fines2Wpf.Data;
 using SqlOrganize;
 using System;
 using System.Collections.Generic;
@@ -30,14 +31,17 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
         {
             persists = new();
 
-            object[] asignacionesIds = DAO.AlumnoComision2.AsignacionesActivasDeComisionesAutorizadasConProgramafinesPorSemestreQuery("2024", "1").
+            #region Consultar todas las asignaciones activas o no de comisiones autorizadas del semestre
+            object[] asignacionesIds = ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, DateTime.Now.ToSemester()).
                 Column<object>("id").ToArray();
-            
-            if(!asignacionesIds.IsNullOrEmpty())
-                ContainerApp.db.Persist().UpdateValueIds("alumno_comision", "programafines", false, asignacionesIds).AddTo(persists);
+            #endregion
 
-            IDictionary<string, Data_comision_r> comisiones = comisionDAO.
-                ComisionesAutorizadasPorSemestreQuery("2024", "1").
+            #region Poner false el campo programafines
+            //El campo programafines esta obsoleto, utilizar pfid con el id de la asignacion en el programafines
+            if (!asignacionesIds.IsNullOrEmpty())
+            ContainerApp.db.Persist().UpdateValueIds("alumno_comision", "programafines", false, asignacionesIds).AddTo(persists);
+            #endregion
+            IDictionary<string, Data_comision_r> comisiones = ContainerApp.db.ComisionesAutorizadasDePeriodoSql(DateTime.Now.Year, DateTime.Now.ToSemester()).
                 ColOfDictCache().
                 ColOfObj<Data_comision_r>().
                 DictOfObjByPropertyNames("pfid");

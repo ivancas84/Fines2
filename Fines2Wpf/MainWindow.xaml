@@ -78,7 +78,13 @@
             </MenuItem>
         </Menu>
         <materialDesign:Card Padding="32" Margin="16">
-            <TextBlock Style="{DynamicResource MaterialDesignTitleTextBlock}">My First Material Design App</TextBlock>
+            <Grid Margin="10">
+                <StackPanel>
+                    <TextBlock>
+                         <Hyperlink NavigateUri="newwindow://pf_procesar_interfaz_asignaciones" RequestNavigate="Hyperlink_RequestNavigate">Procesar asignaciones programa fines</Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
         </materialDesign:Card>
 
 

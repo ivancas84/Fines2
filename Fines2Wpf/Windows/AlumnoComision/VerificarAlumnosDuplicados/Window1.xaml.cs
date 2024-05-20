@@ -19,7 +19,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.VerificarAlumnosDuplicados
         public Window1()
         {
             InitializeComponent();
-            IEnumerable<object> idsAlumnos = asignacionDAO.IdsAlumnosActivosDuplicadosPorSemestreDeComisionesAutorizadasQuery("2023", "2").Column<object>("alumno");
+            IEnumerable<object> idsAlumnos = asignacionDAO.IdsAlumnosActivosDuplicadosPorSemestreDeComisionesAutorizadasQuery("2024", "1").Column<object>("alumno");
             var alumnos = DAO.Alumno.AlumnosPorIds(idsAlumnos);
 
             alumnosGrid.ItemsSource = alumnos.ColOfObj<Data_alumno_r>();
