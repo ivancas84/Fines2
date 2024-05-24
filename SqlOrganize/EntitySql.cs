@@ -483,10 +483,22 @@ namespace SqlOrganize
             return eq;
         }
 
+        public string SqlValueString(object value)
+        {
+            return "'" + value.ToString() + "'";
+        }
 
-        
+        public string SqlValueNumber(object value)
+        {
+            if (value.IsNullOrEmptyOrDbNull())
+                return "null";
+            return value.ToString();
+        }
 
- 
+
+
+
+
 
 
 

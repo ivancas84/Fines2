@@ -534,7 +534,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void AgregarAsignacion_Click(object sender, RoutedEventArgs e)
         {
-            var a = new Asignacion();
+            var a = new Asignacion(DataInitMode.DefaultMain);
             var alumno = (Data_alumno)alumnoGroupBox.DataContext;
             a.alumno = alumno.id;
             asignacionOC.Add(a);

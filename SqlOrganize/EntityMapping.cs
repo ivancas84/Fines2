@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualBasic;
+﻿using Microsoft.Extensions.Primitives;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 using Utils;
@@ -52,10 +53,11 @@ namespace SqlOrganize
             return _Map(fieldName);
         }
 
-        /*
-        Para sql server se debe aplicar trim porque agrega espacios adicionales
-        cuidado de no generar strings mayores a 255 
-        */
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <todo>Refactorizar para cada motor</todo>
         public string _Id()
         {
             List<string> map_ = new();
@@ -75,5 +77,9 @@ namespace SqlOrganize
             return Pt() + "." + fieldName;
         }
 
+        public static string ValueString(string value)
+        {
+            return "'"+value+"'";
+        }
     }
 }
