@@ -1,0 +1,65 @@
+{
+  "id": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "id",
+    "alias": null,
+    "entityName": "comision_relacionada",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "guid",
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "comision": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "comision",
+    "alias": "com",
+    "entityName": "comision_relacionada",
+    "refEntityName": "comision",
+    "refFieldName": "id",
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "relacion": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "relacion",
+    "alias": "rel",
+    "entityName": "comision_relacionada",
+    "refEntityName": "comision",
+    "refFieldName": "id",
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  }
+}

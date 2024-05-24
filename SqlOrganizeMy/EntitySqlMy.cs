@@ -36,8 +36,8 @@ namespace SqlOrganizeMy
             return _Clone(eq);
         }
 		
-	protected override SqlFields()
-	{
+	    protected override string SqlFields()
+	    {
 
             var f = _SqlFieldsInit();
             return f + @"

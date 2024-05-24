@@ -1,0 +1,86 @@
+{
+  "id": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "id",
+    "alias": null,
+    "entityName": "disposicion_pendiente",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "guid",
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "disposicion": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "disposicion",
+    "alias": "dis",
+    "entityName": "disposicion_pendiente",
+    "refEntityName": "disposicion",
+    "refFieldName": "id",
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "alumno": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "alumno",
+    "alias": "alu",
+    "entityName": "disposicion_pendiente",
+    "refEntityName": "alumno",
+    "refFieldName": "id",
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "modo": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "modo",
+    "alias": null,
+    "entityName": "disposicion_pendiente",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  }
+}

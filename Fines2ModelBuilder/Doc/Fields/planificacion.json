@@ -1,0 +1,107 @@
+{
+  "id": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "id",
+    "alias": null,
+    "entityName": "planificacion",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "guid",
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "anio": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "anio",
+    "alias": null,
+    "entityName": "planificacion",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "semestre": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "semestre",
+    "alias": null,
+    "entityName": "planificacion",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "plan": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "plan",
+    "alias": "pla",
+    "entityName": "planificacion",
+    "refEntityName": "plan",
+    "refFieldName": "id",
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "pfid": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "pfid",
+    "alias": null,
+    "entityName": "planificacion",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  }
+}

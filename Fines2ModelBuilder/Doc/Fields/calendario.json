@@ -1,0 +1,130 @@
+{
+  "id": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "id",
+    "alias": null,
+    "entityName": "calendario",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "guid",
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "inicio": {
+    "checks": {
+      "type": "DateTime"
+    },
+    "resets": {},
+    "name": "inicio",
+    "alias": null,
+    "entityName": "calendario",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "date",
+    "type": "DateTime",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "fin": {
+    "checks": {
+      "type": "DateTime"
+    },
+    "resets": {},
+    "name": "fin",
+    "alias": null,
+    "entityName": "calendario",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "date",
+    "type": "DateTime",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "anio": {
+    "checks": {
+      "type": "short"
+    },
+    "resets": {},
+    "name": "anio",
+    "alias": null,
+    "entityName": "calendario",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "year",
+    "type": "short",
+    "notNull": false,
+    "defaultValue": "current_year",
+    "defaultValueClassData": true,
+    "maxLength": 4
+  },
+  "semestre": {
+    "checks": {
+      "type": "short"
+    },
+    "resets": {},
+    "name": "semestre",
+    "alias": null,
+    "entityName": "calendario",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "smallint",
+    "type": "short",
+    "notNull": false,
+    "defaultValue": "current_semester",
+    "defaultValueClassData": true,
+    "maxLength": 6
+  },
+  "insertado": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "insertado",
+    "alias": null,
+    "entityName": "calendario",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "timestamp",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": "current_timestamp()",
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "descripcion": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "descripcion",
+    "alias": null,
+    "entityName": "calendario",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 255
+  }
+}

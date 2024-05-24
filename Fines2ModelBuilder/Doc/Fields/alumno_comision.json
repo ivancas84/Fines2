@@ -1,0 +1,143 @@
+{
+  "id": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "id",
+    "alias": null,
+    "entityName": "alumno_comision",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "guid",
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "creado": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "creado",
+    "alias": null,
+    "entityName": "alumno_comision",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "timestamp",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": "current_timestamp()",
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "observaciones": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "observaciones",
+    "alias": null,
+    "entityName": "alumno_comision",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 65535
+  },
+  "comision": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "comision",
+    "alias": "com",
+    "entityName": "alumno_comision",
+    "refEntityName": "comision",
+    "refFieldName": "id",
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "alumno": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "alumno",
+    "alias": "alu",
+    "entityName": "alumno_comision",
+    "refEntityName": "alumno",
+    "refFieldName": "id",
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "estado": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "estado",
+    "alias": null,
+    "entityName": "alumno_comision",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": "Activo",
+    "defaultValueClassData": true,
+    "maxLength": 100
+  },
+  "programafines": {
+    "checks": {
+      "type": "bool",
+      "required": true
+    },
+    "resets": {},
+    "name": "programafines",
+    "alias": null,
+    "entityName": "alumno_comision",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinyint",
+    "type": "bool",
+    "notNull": true,
+    "defaultValue": false,
+    "defaultValueClassData": true,
+    "maxLength": 1
+  }
+}

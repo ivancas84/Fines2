@@ -1,0 +1,101 @@
+{
+  "id": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "id",
+    "alias": null,
+    "entityName": "horario",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "guid",
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "hora_inicio": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "hora_inicio",
+    "alias": null,
+    "entityName": "horario",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "time",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "hora_fin": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "hora_fin",
+    "alias": null,
+    "entityName": "horario",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "time",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "curso": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "curso",
+    "alias": "cur",
+    "entityName": "horario",
+    "refEntityName": "curso",
+    "refFieldName": "id",
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  },
+  "dia": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "dia",
+    "alias": "dia",
+    "entityName": "horario",
+    "refEntityName": "dia",
+    "refFieldName": "id",
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 45
+  }
+}

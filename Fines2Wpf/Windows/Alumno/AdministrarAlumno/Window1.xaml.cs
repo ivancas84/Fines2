@@ -153,7 +153,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             }
 
             personaGroupBox.DataContext = persona;
-            persona.Validate = true;
+            persona._Validate = true;
 
         }
         private void SetAlumnoGroupBox(Alumno? alumno = null)
@@ -175,7 +175,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             alumno!.color_tiene_partida = alumno.tiene_partida ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
             alumno!.color_tiene_dni = alumno.tiene_dni ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
             alumno!.color_previas_completas = alumno.previas_completas ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
-            alumno!.Validate = true;
+            alumno!._Validate = true;
             
 
             alumnoGroupBox.DataContext = alumno;
@@ -233,7 +233,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 curso.Label = valc.ToStringDocente();
                 calificacion.curso__Label = curso.Label;
 
-                calificacion.Validate = true;
+                calificacion._Validate = true;
 
                 calificacion.color_nota_final = ContainerApp.config.colorRed;
                 calificacion.color_crec = ContainerApp.config.colorRed;
