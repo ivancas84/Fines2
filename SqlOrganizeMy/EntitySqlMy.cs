@@ -35,6 +35,20 @@ namespace SqlOrganizeMy
             var eq = new EntitySqlMy(Db, entityName);
             return _Clone(eq);
         }
-    }
+		
+	protected override SqlFields()
+	{
+
+            var f = _SqlFieldsInit();
+            return f + @"
+";
+        }
+
+        public override EntitySql SelectMaxValueCast(string fieldName, string sqlType)
+        {
+            select += "CAST ( ISNULL( MAX($" + fieldName + "), 0) AS " + sqlType + ")";
+            return this;
+        } 
+    }   
 
 }

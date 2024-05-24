@@ -1,80 +1,66 @@
-﻿using System.Collections;
+﻿ using System.Collections;
+using System.Data;
 using System.Data.Common;
 using Utils;
 
 namespace SqlOrganize
 {
     /// <summary>
-    /// Unificar metodos para ejecutar consultas a la base de datos
+    /// Simplificar ejecucion de consultas a la base de datos y definicion de de parametros en las consultas de sql
     /// </summary>    
-    public abstract class Query
+    public abstract class Query : IDisposable
     {
-        /// <summary>conexion opcional, si no existe al ejecutar se crea</summary>       
-        public DbConnection? connection;
+        private bool disposed = false;
 
-        /// <summary>transaccion opcional, si no existe y la necesita, la crea
+        /// <summary>conexion</summary>
+        public DbConnection connection;
+
+        /// <summary>transaccion</summary>
         public DbTransaction? transaction;
 
-        /// Contenedor principal del proyecto
-        /// </summary>
+        /// <summary>Contenedor principal del proyecto</summary>
         public Db db { get; }
 
-        /// <summary>
-        /// Parametros de las consultas
-        /// </summary>
+        /// <summary>Parametros de las consultas</summary>
+        /// <remarks>Las consulas sql definidas con Query, pueden utilizar parametros que deben ser identificados con un número entero secuencial. <br/>
+        /// Cada parametro dentro de la lista de parameters será asociado al número entero definido en el sql</remarks>
+        /// <example>
+        ///     sql = "SELECT .. WHERE something = @0 AND $something_else = @1<br/> //la sintaxis debe ser compatible con el motor de base de datos
+        ///     parameters = [value0, value1] //los valores pueden ser de cualquier tipo, que será reformateado para adaptarlo a las necesidades
+        /// </example>
+        /// 
         public List<object?> parameters { get; set; } = new List<object?>();
 
-        /// <summary>
-        /// Parametros de las consultas
-        /// </summary>
-        public Dictionary<string, object> parametersDict { get; set; } = new ();
-
-        /// <summary>
-        /// Consultas en SQL
-        /// </summary>
+        /// <summary>Consultas en SQL</summary>
         public string sql { get; set; } = "";
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
+        /// <summary>Constructor</summary>
         /// <param name="_db">Contenedor principal del proyecto</param>
         public Query(Db _db)
         {
             db = _db;
         }
-
-        /// <summary>
-        /// Constructor para EntityPersist
-        /// </summary>
-        /// <param name="_db">Contenedor principal del proyecto</param>
-        public Query(Db _db, EntityPersist persist)
+    
+        ~Query()
         {
-            db = _db;
-            SetEntityPersist(persist);
+            Dispose();
         }
 
-        public void SetEntityPersist(EntityPersist persist)
+       
+
+        // Implement IDisposable interface
+        public void Dispose()
         {
-            sql = persist.Sql();
-            parameters = persist.parameters;
+            CloseConnection();
+            if (connection != null)
+            {
+                connection.Dispose();
+                connection = null;
+            }
+            GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Constructor para EntitySelect
-        /// </summary>
-        /// <param name="_db">Contenedor principal del proyecto</param>
-        public Query(Db _db, EntitySql select)
-        {
-            db = _db;
-            SetEntitySql(select);
-        }
-
-        public void SetEntitySql(EntitySql select)
-        {
-            sql = select.Sql();
-            parameters = select.parameters;
-            parametersDict = select.parametersDict;
-        }
+              
 
         /// <summary>
         /// Ejecutar sql y devolver resultado
@@ -132,7 +118,7 @@ namespace SqlOrganize
 
         /// <summary>Value</summary>
         /// <remarks>La consulta debe retornar 1 o mas valores</remarks>
-        public T Value<T>(string columnName)
+        public T? Value<T>(string columnName)
         {
             using DbCommand command = NewCommand();
             Exec(connection!, command);
@@ -165,7 +151,25 @@ namespace SqlOrganize
             Exec(connection!, transaction!, command);
         }
 
-        public abstract DbConnection OpenConnection();
+        public abstract DbConnection NewConnection();
+
+        public DbConnection OpenConnection()
+        {
+            if (connection == null)
+                connection = NewConnection();
+
+            if (connection.State == ConnectionState.Closed)
+                connection.Open();
+
+            return connection;
+        }
+
+        // Method to close the connection
+        public void CloseConnection()
+        {
+            if (connection.State == ConnectionState.Open)
+                connection.Close();
+        }
 
         public void BeginTransaction()
         {
@@ -186,9 +190,7 @@ namespace SqlOrganize
 
         protected abstract void AddWithValue(DbCommand command, string columnName, object value);
 
-        /// <summary>
-        /// Ejecutar command con transaction
-        /// </summary>
+        /// <summary>Ejecutar command con transaction</summary>
         /// <param name="connection">Conexión abierta</param>
         /// <param name="command">Comando</param>
         protected void Exec(DbConnection connection, DbTransaction transaction, DbCommand command)
@@ -197,32 +199,12 @@ namespace SqlOrganize
             Exec(connection, command);
         }
 
-        /// <summary>
-        /// Ejecutar command
-        /// </summary>
+        /// <summary>Ejecutar command</summary>
         /// <param name="connection">Conexión abierta</param>
         /// <param name="command">Comando</param>
         protected void Exec(DbConnection connection, DbCommand command)
         {
             command.Connection = connection;
-
-            #region Transformar parametersDict to parameters
-            if (parametersDict.Keys.Count > 0)
-            {
-                //debe recorrerse de forma ordenada por longitud, si un campo se llama "persona" y otro "persona_adicional"  y no se recorre ordenado descendiente, el resultado es erroneo.
-                var keys = parametersDict.Keys.SortByLength("DESC");
-
-                var j = parameters.Count;
-
-                foreach (string key in keys)
-                    while (sql.Contains("@" + key))
-                    {
-                        sql = sql.Replace("@" + key, "@" + j.ToString());
-                        parameters.Add(parametersDict[key]);
-                        j++;
-                    }
-            }
-            #endregion
 
             #region Procesar parameters
             for (var i = parameters.Count - 1; i >= 0; i--) //recorremos la lista al revez para evitar renombrar parametros no deseados con nombre similar
@@ -284,8 +266,7 @@ namespace SqlOrganize
         /// <returns></returns>
         public long GetMaxValue(string entityName, string fieldName)
         {
-            EntitySql sql = db.Sql(entityName).Select("MAX($" + fieldName + ")");
-            return db.Query(sql).Value<long>();
+            return db.Sql(entityName).Select("MAX($" + fieldName + ")").Value<long>();
         }
         #endregion
     }

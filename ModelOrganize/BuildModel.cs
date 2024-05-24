@@ -527,7 +527,6 @@ namespace ModelOrganize
                 sw.WriteLine("using System;");
                 sw.WriteLine("using System.ComponentModel;");
                 sw.WriteLine("using System.Collections.Generic;");
-                sw.WriteLine("using System.Reflection;");
                 sw.WriteLine("using Utils;");
                 sw.WriteLine("");
                 sw.WriteLine("namespace " + Config.dataClassesNamespace);
@@ -537,32 +536,26 @@ namespace ModelOrganize
                 sw.WriteLine("");
                 sw.WriteLine("        public Data_" + entityName + " ()");
                 sw.WriteLine("        {");
-                sw.WriteLine("            Initialize();");
                 sw.WriteLine("        }");
                 sw.WriteLine("");
-                sw.WriteLine("        public Data_" + entityName + "(DataInitMode mode)");
+                sw.WriteLine("        public Data_" + entityName + "(Db db)");
                 sw.WriteLine("        {");
-                sw.WriteLine("            Initialize(mode);");
+                sw.WriteLine("            this.db = db;");
+                sw.WriteLine("            Init();");
                 sw.WriteLine("        }");
                 sw.WriteLine("");
-                sw.WriteLine("        protected virtual void Initialize(DataInitMode mode = DataInitMode.Null)");
+                sw.WriteLine("        protected void Init()");
                 sw.WriteLine("        {");
-                sw.WriteLine("            switch(mode)");
-                sw.WriteLine("            {");
-                sw.WriteLine("                case DataInitMode.Default:");
-                sw.WriteLine("                case DataInitMode.DefaultMain:");
 
                 foreach (var (fieldName, field) in fields[entityName])
                 {
                     if (field.defaultValue != null && field.defaultValueClassData)
                     {
-                        string df = "(" + field.type + "?)ContainerApp.db.Values(\"" + entityName + "\").Default(\"" + fieldName + "\").Get(\"" + fieldName + "\")";
-                        sw.WriteLine("                    _" + fieldName + " = " + df + ";");
+                        string df = "(" + field.type + "?)db!.Values(\"" + entityName + "\").GetDefault(\"" + fieldName + "\")";
+                        sw.WriteLine("            _" + fieldName + " = " + df + ";");
                     }
                 }
 
-                sw.WriteLine("                break;");
-                sw.WriteLine("            }");
                 sw.WriteLine("        }");
 
                 sw.WriteLine("");
@@ -611,7 +604,7 @@ namespace ModelOrganize
                     if (entity.unique.Contains(field.name))
                     {
                         sw.WriteLine("                    if (!_" + fieldName + ".IsNullOrEmptyOrDbNull()) {");
-                        sw.WriteLine("                        var row = ContainerApp.db.Sql(\"" + entityName + "\").Where(\"$" + fieldName + " = @0\").Parameters(_" + fieldName + ").DictCache();");
+                        sw.WriteLine("                        var row = db.Sql(\"" + entityName + "\").Where(\"$" + fieldName + " = @0\").Parameters(_" + fieldName + ").DictCache();");
                         sw.WriteLine("                        if (!row.IsNullOrEmpty() && !_" + Config.id + ".ToString().Equals(row![\"" + Config.id + "\"]!.ToString()))");
                         sw.WriteLine("                            return \"Valor existente.\";");
                         sw.WriteLine("                    }");
@@ -650,41 +643,46 @@ namespace ModelOrganize
                 sw.WriteLine("    {");
 
                 sw.WriteLine("");
-
                 sw.WriteLine("        public Data_" + entityName + "_r () : base()");
                 sw.WriteLine("        {");
-                sw.WriteLine("            Initialize();");
                 sw.WriteLine("        }");
                 sw.WriteLine("");
-                sw.WriteLine("        public Data_" + entityName + "_r (DataInitMode mode) : base(mode)");
+                sw.WriteLine("        public Data_" + entityName + "_r (Db db) : base(db)");
                 sw.WriteLine("        {");
-                sw.WriteLine("            Initialize(mode);");
+                sw.WriteLine("        }");
+                sw.WriteLine("");
+                sw.WriteLine("        public Data_" + entityName + "_r (Db db, params string[] fieldIds) : this(db)");
+                sw.WriteLine("        {");
+                sw.WriteLine("            Init(fieldIds);");
                 sw.WriteLine("        }");
 
                 sw.WriteLine("");
 
-                sw.WriteLine("        protected override void Initialize(DataInitMode mode = DataInitMode.Null)");
+                #region Generar valores por defecto (por el momento no generamos valores por defecto para las relaciones, puede dar lugar a confusion)
+                sw.WriteLine("        protected void Init(params string[] fieldIds)");
                 sw.WriteLine("        {");
-                sw.WriteLine("            base.Initialize(mode);");
-                sw.WriteLine("            switch(mode)");
+                sw.WriteLine("            foreach(string fieldId in fieldIds)");
                 sw.WriteLine("            {");
-                sw.WriteLine("                case DataInitMode.Default:");
+                sw.WriteLine("                switch(fieldId)");
+                sw.WriteLine("                {");               
 
                 foreach (var (fieldId, relation) in entities[entityName].relations)
                 {
+                    sw.WriteLine("                    case \"" + fieldId + "\":");
                     foreach (var (fieldName, field) in fields[relation.refEntityName])
                         if (field.defaultValue != null && field.defaultValueClassData)
                         {
-                            string df = "(" + field.type + "?)ContainerApp.db.Values(\"" + relation.refEntityName + "\").Default(\"" + fieldName + "\").Get(\"" + fieldName + "\")";
-                            sw.WriteLine("                    " + fieldId + "__" + fieldName + " = " + df + ";");
-                        }
-
                     
+                            string df = "(" + field.type + "?)db!.Values(\"" + relation.refEntityName + "\").GetDefault(\"" + fieldName + "\")";
+                            sw.WriteLine("                        " + fieldId + "__" + fieldName + " = " + df + ";");
+                        }
+                    sw.WriteLine("                    break;");
+
                 }
-                sw.WriteLine("                break;");
+                sw.WriteLine("                }");
                 sw.WriteLine("            }");
                 sw.WriteLine("        }");
-
+                #endregion
                 foreach (var (fieldId, relation) in entities[entityName].relations)
                 {
                     var fs = "";

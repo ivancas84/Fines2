@@ -16,7 +16,8 @@ namespace SqlOrganize
     /// -sql: Transformar a sql<br/>
     /// </summary>
     /// <remarks>
-    /// Los valores son almacenados en una colección. La ventaja es que se puede utilizar el estado "NO DEFINIDO" (no existe en la colección).
+    /// Los valores son almacenados en una colección. La ventaja es que se puede utilizar el estado "NO DEFINIDO" (no existe en la colección).</br>
+    /// Es necesario acceder a la base de datos para consultar la estructura y puede ser necesario para definir el valor por defecto de algunos elementos
     /// </remarks>
     public class EntityValues : EntityFieldId
     {
@@ -298,11 +299,11 @@ namespace SqlOrganize
 
                     case "defaultifnull":
                         if (values[fieldName].IsNullOrEmptyOrDbNull())
-                            values[fieldName] = DefaultField(fieldName);
+                            values[fieldName] = GetDefault(fieldName);
                         break;
 
                     case "setdefault":
-                        values[fieldName] = DefaultField(fieldName);
+                        values[fieldName] = GetDefault(fieldName);
                     break;
                 }
             }
@@ -385,7 +386,7 @@ namespace SqlOrganize
                 return this;
             }
 
-            values[fieldName] = DefaultField(fieldName);
+            values[fieldName] = GetDefault(fieldName);
             return this;
         }
 
@@ -731,13 +732,13 @@ namespace SqlOrganize
         }
 
         /// <summary>
-        /// Valor por defecto de field
+        /// Devolver valor por defecto de field
         /// </summary>
         /// <param name="entityName"></param>
         /// <param name="fieldName"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public object? DefaultField(string fieldName)
+        public object? GetDefault(string fieldName)
         {
             var field = db.Field(entityName, fieldName);
 
@@ -767,24 +768,24 @@ namespace SqlOrganize
                         return field.defaultValue;
 
                 case "sbyte":
-                    return Convert.ToSByte(DefaultFieldInt(field));
+                    return Convert.ToSByte(GetDefaultInt(field));
 
                 case "byte":
-                    return Convert.ToByte(DefaultFieldInt(field));
+                    return Convert.ToByte(GetDefaultInt(field));
 
                 case "long":
-                    return Convert.ToInt64(DefaultFieldInt(field));
+                    return Convert.ToInt64(GetDefaultInt(field));
 
                 case "ulong":
-                    return Convert.ToUInt64(DefaultFieldInt(field));
+                    return Convert.ToUInt64(GetDefaultInt(field));
 
                 case "int":
                 case "nint":
-                    return Convert.ToInt32(DefaultFieldInt(field));
+                    return Convert.ToInt32(GetDefaultInt(field));
 
                 case "uint":
                 case "nuint":
-                    return Convert.ToUInt32(DefaultFieldInt(field));
+                    return Convert.ToUInt32(GetDefaultInt(field));
 
                 case "short":
                     //el tipo YEAR de mysql es mapeado a short
@@ -794,23 +795,27 @@ namespace SqlOrganize
                     if (field.defaultValue.ToString()!.ToLower().Contains("current_semester"))
                         return DateTime.Now.ToSemester();
 
-                    return Convert.ToInt16(DefaultFieldInt(field));
+                    return Convert.ToInt16(GetDefaultInt(field));
 
                 case "ushort":
-                    return Convert.ToUInt16(DefaultFieldInt(field));
+                    return Convert.ToUInt16(GetDefaultInt(field));
 
                 case "Guid":
                     if (field.defaultValue.ToString()!.ToLower().Contains("new"))
                         return Guid.NewGuid();
                     else
-                        return field.defaultValue;
+                    {
+                        var guidString = Regex.Replace(field.defaultValue.ToString()!, @"[^a-zA-Z0-9-]", string.Empty);
+                        return Guid.Parse(guidString);
+                    }
+                        
 
                 default:
                     return field.defaultValue;
             }
         }
 
-        protected object? DefaultFieldInt(Field field)
+        protected object? GetDefaultInt(Field field)
         {
             if (field.defaultValue.ToString()!.ToLower().Contains("next"))
             {
@@ -819,7 +824,7 @@ namespace SqlOrganize
             }
             else if (field.defaultValue.ToString()!.ToLower().Contains("max"))
             {
-                long max = db.GetMaxValue(field.entityName, field.name);
+                long max = db.Sql(field.entityName).SelectMaxValueCast(field.name, "long").Value<long>();
                 return max + 1;
             }
             else

@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using SqlOrganize;
+using System.Data;
 using System.Data.Common;
 using Utils;
 
@@ -15,23 +16,14 @@ namespace SqlOrganizeMy
         {
         }
 
-        public QueryMy(Db db, EntitySql sql) : base(db, sql)
-        {
-        }
-
-        public QueryMy(Db db, EntityPersist persist) : base(db, persist)
-        {
-        }
-
         public override DbCommand NewCommand()
         {
             return new MySqlCommand();
         }
 
-        public override DbConnection OpenConnection()
+        public override DbConnection NewConnection()
         {
-            connection = new MySqlConnection(db.config.connectionString);
-            connection.Open();
+            connection = new MySqlCommand(db.config.connectionString);
             return connection;
         }
 

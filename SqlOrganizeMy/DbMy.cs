@@ -49,20 +49,5 @@ namespace SqlOrganizeMy
             return new QueryMy(this);
         }
 
-        public override Query Query(EntitySql sql)
-        {
-            return new QueryMy(this, sql);
-        }
-
-        public override Query Query(EntityPersist persist)
-        {
-            return new QueryMy(this, persist);
-        }
-
-        public override long GetMaxValue(string entityName, string fieldName)
-        {
-            var max =  Sql(entityName).Select("IFNULL(MAX($" + fieldName + "), 0) AS max_value").Value<object>();
-            return long.Parse(max.ToString());
-        }
     }
 }
