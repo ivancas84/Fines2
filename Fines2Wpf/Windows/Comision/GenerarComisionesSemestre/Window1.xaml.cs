@@ -51,7 +51,7 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
 
             #region Consultar comisiones del semestre anterior
             IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestreAnterior = ContainerApp.db.Sql("comision").
-                SearchObj(comisionObj).
+                Search(comisionObj).
                 Where(@" 
                     AND (
                         ($planificacion-anio = '3' AND $planificacion-semestre = '1')
@@ -74,7 +74,7 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
                 string idPlanificacionSiguiente = planificacionDAO.PlanificacionSiguiente(comObj.planificacion__anio!, comObj.planificacion__semestre!, comObj.plan__id!);
 
                 EntityValues comisionVal = ContainerApp.db.Values("comision").
-                    SetObj(comObj).
+                    Set(comObj).
                     SetDefault("id").
                     Set("planificacion", idPlanificacionSiguiente).
                     Set("apertura", false).

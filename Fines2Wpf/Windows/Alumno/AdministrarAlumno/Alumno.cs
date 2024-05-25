@@ -1,4 +1,4 @@
-﻿using Fines2Wpf.Data;
+﻿using Fines2Model3.Data;
 using SqlOrganize;
 
 namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
@@ -9,12 +9,9 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
         }
 
-        public Alumno(DataInitMode mode = DataInitMode.Default) : base(mode)
+        public Alumno(Db db) : base(db)
         {
         }
-
-
-
 
         public string? _color_estado_inscripcion { set; get; } = null;
 

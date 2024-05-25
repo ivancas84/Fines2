@@ -1,4 +1,4 @@
-﻿using Fines2Wpf.Data;
+﻿using Fines2Model3.Data;
 using SqlOrganize;
 using System.Collections.ObjectModel;
 
@@ -10,7 +10,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
         }
 
-        public Asignacion(DataInitMode mode) : base(mode)
+        public Asignacion(Db db) : base(db)
         {
         }
 

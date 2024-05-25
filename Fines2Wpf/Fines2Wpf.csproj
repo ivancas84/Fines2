@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fines2Model3\Fines2Model3.csproj" />
     <ProjectReference Include="..\SqlOrganizeMy\SqlOrganizeMy.csproj" />
     <ProjectReference Include="..\Utils\Utils.csproj" />
 	  <Content Include="Images\*">

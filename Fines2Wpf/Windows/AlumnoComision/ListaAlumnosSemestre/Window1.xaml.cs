@@ -106,7 +106,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         public void LoadAsignaciones()
         {
             asignacionOC.Clear();
-            var data = ContainerApp.db.Sql("alumno_comision").SearchObj(search).Size(0).ColOfDictCache();
+            var data = ContainerApp.db.Sql("alumno_comision").Search(search).Size(0).ColOfDictCache();
             if(data.IsNullOrEmptyOrDbNull())
                return;
             

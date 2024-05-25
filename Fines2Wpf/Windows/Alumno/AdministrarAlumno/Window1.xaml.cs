@@ -1,6 +1,6 @@
 ﻿
 using CommunityToolkit.WinUI.Notifications;
-using Fines2Wpf.Data;
+using Fines2Model3.Data;
 using Microsoft.Win32;
 using MimeTypes;
 using SqlOrganize;
@@ -76,7 +76,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             personaComboBox.ItemsSource = personaOC;
             personaComboBox.DisplayMemberPath = "Label";
             personaComboBox.SelectedValuePath = "id";
-            personaGroupBox.DataContext = new Data_persona(SqlOrganize.DataInitMode.Default);
+            personaGroupBox.DataContext = new Data_persona(ContainerApp.db);
             #endregion
 
             #region documentacion_inscripcion
@@ -149,7 +149,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             if (persona.IsNullOrEmpty())
             {
-                persona = new Data_persona(SqlOrganize.DataInitMode.Default);
+                persona = new Data_persona(ContainerApp.db);
             }
 
             personaGroupBox.DataContext = persona;
@@ -160,11 +160,11 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             if (alumno.IsNullOrEmpty())
             {
-                alumno = new Alumno(SqlOrganize.DataInitMode.Default);
+                alumno = new Alumno(ContainerApp.db);
                 var per = (Data_persona)personaGroupBox.DataContext;
                 alumno.persona = per.id;
             }
-            var value = (Values.Alumno)ContainerApp.db.Values("alumno").SetObj(alumno!);
+            var value = (Values.Alumno)ContainerApp.db.Values("alumno").Set(alumno!);
             alumno!.color_anio_ingreso = alumno.anio_ingreso.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
             alumno!.color_semestre_ingreso = alumno.semestre_ingreso.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
             alumno!.color_plan = alumno.plan.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
@@ -321,7 +321,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 
                 try
                 {
-                    ContainerApp.db.Persist().PersistObj("persona", per).Exec().RemoveCache();
+                    ContainerApp.db.Persist().Persist("persona", per).Exec().RemoveCache();
                     var alu = (Data_alumno)alumnoGroupBox.DataContext;
                     MessageBox.Show("Registro de persona realizado");
                 }
@@ -345,7 +345,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             try
             {
                 ContainerApp.db.Persist().
-                    PersistObj("alumno", alu).Exec().RemoveCache();
+                    Persist("alumno", alu).Exec().RemoveCache();
                 SetAlumnoGroupBox(alu);
                 MessageBox.Show("Registro de alumno realizado");
             }
@@ -534,7 +534,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void AgregarAsignacion_Click(object sender, RoutedEventArgs e)
         {
-            var a = new Asignacion(DataInitMode.DefaultMain);
+            var a = new Asignacion(ContainerApp.db);
             var alumno = (Data_alumno)alumnoGroupBox.DataContext;
             a.alumno = alumno.id;
             asignacionOC.Add(a);
@@ -547,7 +547,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             var p = ContainerApp.db.Persist();
             try
             {
-                p.PersistObj("alumno_comision", asignacion).Exec().RemoveCache();
+                p.Persist("alumno_comision", asignacion).Exec().RemoveCache();
                 MessageBox.Show("Registro realizado");
             }
             catch (Exception ex)
@@ -845,10 +845,10 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     dp.descripcion = dp.descripcion.IsNullOrEmptyOrDbNull() ? dp.archivo__name : dp.descripcion;
                     dp.persona = alu.persona;
 
-                    EntityValues archivoVal = ContainerApp.db.Values("file", "archivo").SetObj(dp);
+                    EntityValues archivoVal = ContainerApp.db.Values("file", "archivo").Set(dp);
                     
                     ContainerApp.db.Persist().Persist(archivoVal)
-                        .PersistObj("detalle_persona", dp)
+                        .Persist("detalle_persona", dp)
                         .Transaction()
                         .RemoveCache();
                 }
@@ -1027,12 +1027,12 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 {
                     if (!idsDisposicionesAprobadas.Contains(id))
                     {
-                        Data_calificacion calificacionObj = new(DataInitMode.Default);
+                        Data_calificacion calificacionObj = new(ContainerApp.db);
                         calificacionObj.disposicion = (string)id;
                         calificacionObj.alumno = alumnoObj.id;
                         calificacionObj.archivado = false;
                         ContainerApp.db.Persist().
-                            InsertObj("calificacion", calificacionObj).
+                            Insert("calificacion", calificacionObj).
                             AddTo(persists);
                     }
                 }

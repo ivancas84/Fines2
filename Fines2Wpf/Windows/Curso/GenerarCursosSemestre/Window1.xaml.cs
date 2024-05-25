@@ -46,7 +46,7 @@ namespace Fines2Wpf.Windows.Curso.GenerarCursosSemestre
 
             #region Consultar comisiones del semestre para generar cursos
             IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestre = ContainerApp.db.Sql("comision").
-                SearchObj(formGroupBox.DataContext).
+                Search((Data_comision_r)formGroupBox.DataContext).
                 Size(0).
                 ColOfDict();
             #endregion

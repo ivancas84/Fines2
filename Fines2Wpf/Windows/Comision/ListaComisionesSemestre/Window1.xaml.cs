@@ -107,7 +107,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.Sql("comision").SearchObj(comisionSearch).Size(0).ColOfDictCache();
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.Sql("comision").Search(comisionSearch).Size(0).ColOfDictCache();
             IEnumerable<object> idsSede = list.ColOfVal<object>("sede");
             IEnumerable<object> idsComision = list.ColOfVal<object>("id");
 
