@@ -139,6 +139,72 @@ namespace Fines2Model3.Data
             get { return _descripcion_domicilio; }
             set { _descripcion_domicilio = value; NotifyPropertyChanged(nameof(descripcion_domicilio)); }
         }
+        protected byte? _cuil1 = null;
+        public byte? cuil1
+        {
+            get { return _cuil1; }
+            set { _cuil1 = value; NotifyPropertyChanged(nameof(cuil1)); }
+        }
+        protected byte? _cuil2 = null;
+        public byte? cuil2
+        {
+            get { return _cuil2; }
+            set { _cuil2 = value; NotifyPropertyChanged(nameof(cuil2)); }
+        }
+        protected string? _departamento = null;
+        public string? departamento
+        {
+            get { return _departamento; }
+            set { _departamento = value; NotifyPropertyChanged(nameof(departamento)); }
+        }
+        protected string? _localidad = null;
+        public string? localidad
+        {
+            get { return _localidad; }
+            set { _localidad = value; NotifyPropertyChanged(nameof(localidad)); }
+        }
+        protected string? _partido = null;
+        public string? partido
+        {
+            get { return _partido; }
+            set { _partido = value; NotifyPropertyChanged(nameof(partido)); }
+        }
+        protected string? _codigo_area = null;
+        public string? codigo_area
+        {
+            get { return _codigo_area; }
+            set { _codigo_area = value; NotifyPropertyChanged(nameof(codigo_area)); }
+        }
+        protected string? _nacionalidad = null;
+        public string? nacionalidad
+        {
+            get { return _nacionalidad; }
+            set { _nacionalidad = value; NotifyPropertyChanged(nameof(nacionalidad)); }
+        }
+        protected byte? _sexo = null;
+        public byte? sexo
+        {
+            get { return _sexo; }
+            set { _sexo = value; NotifyPropertyChanged(nameof(sexo)); }
+        }
+        protected byte? _dia_nacimiento = null;
+        public byte? dia_nacimiento
+        {
+            get { return _dia_nacimiento; }
+            set { _dia_nacimiento = value; NotifyPropertyChanged(nameof(dia_nacimiento)); }
+        }
+        protected byte? _mes_nacimiento = null;
+        public byte? mes_nacimiento
+        {
+            get { return _mes_nacimiento; }
+            set { _mes_nacimiento = value; NotifyPropertyChanged(nameof(mes_nacimiento)); }
+        }
+        protected byte? _anio_nacimiento = null;
+        public byte? anio_nacimiento
+        {
+            get { return _anio_nacimiento; }
+            set { _anio_nacimiento = value; NotifyPropertyChanged(nameof(anio_nacimiento)); }
+        }
         protected override string ValidateField(string columnName)
         {
 
@@ -226,6 +292,39 @@ namespace Fines2Model3.Data
                     return "";
 
                 case "descripcion_domicilio":
+                    return "";
+
+                case "cuil1":
+                    return "";
+
+                case "cuil2":
+                    return "";
+
+                case "departamento":
+                    return "";
+
+                case "localidad":
+                    return "";
+
+                case "partido":
+                    return "";
+
+                case "codigo_area":
+                    return "";
+
+                case "nacionalidad":
+                    return "";
+
+                case "sexo":
+                    return "";
+
+                case "dia_nacimiento":
+                    return "";
+
+                case "mes_nacimiento":
+                    return "";
+
+                case "anio_nacimiento":
                     return "";
 
             }

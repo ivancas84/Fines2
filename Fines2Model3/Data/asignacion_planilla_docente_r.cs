@@ -1140,6 +1140,94 @@ namespace Fines2Model3.Data
             get { return _docente__descripcion_domicilio; }
             set { _docente__descripcion_domicilio = value; NotifyPropertyChanged(nameof(docente__descripcion_domicilio)); }
         }
+        protected byte? _docente__cuil1 = null;
+
+        [JsonProperty("docente-cuil1")]
+        public byte? docente__cuil1
+        {
+            get { return _docente__cuil1; }
+            set { _docente__cuil1 = value; NotifyPropertyChanged(nameof(docente__cuil1)); }
+        }
+        protected byte? _docente__cuil2 = null;
+
+        [JsonProperty("docente-cuil2")]
+        public byte? docente__cuil2
+        {
+            get { return _docente__cuil2; }
+            set { _docente__cuil2 = value; NotifyPropertyChanged(nameof(docente__cuil2)); }
+        }
+        protected string? _docente__departamento = null;
+
+        [JsonProperty("docente-departamento")]
+        public string? docente__departamento
+        {
+            get { return _docente__departamento; }
+            set { _docente__departamento = value; NotifyPropertyChanged(nameof(docente__departamento)); }
+        }
+        protected string? _docente__localidad = null;
+
+        [JsonProperty("docente-localidad")]
+        public string? docente__localidad
+        {
+            get { return _docente__localidad; }
+            set { _docente__localidad = value; NotifyPropertyChanged(nameof(docente__localidad)); }
+        }
+        protected string? _docente__partido = null;
+
+        [JsonProperty("docente-partido")]
+        public string? docente__partido
+        {
+            get { return _docente__partido; }
+            set { _docente__partido = value; NotifyPropertyChanged(nameof(docente__partido)); }
+        }
+        protected string? _docente__codigo_area = null;
+
+        [JsonProperty("docente-codigo_area")]
+        public string? docente__codigo_area
+        {
+            get { return _docente__codigo_area; }
+            set { _docente__codigo_area = value; NotifyPropertyChanged(nameof(docente__codigo_area)); }
+        }
+        protected string? _docente__nacionalidad = null;
+
+        [JsonProperty("docente-nacionalidad")]
+        public string? docente__nacionalidad
+        {
+            get { return _docente__nacionalidad; }
+            set { _docente__nacionalidad = value; NotifyPropertyChanged(nameof(docente__nacionalidad)); }
+        }
+        protected byte? _docente__sexo = null;
+
+        [JsonProperty("docente-sexo")]
+        public byte? docente__sexo
+        {
+            get { return _docente__sexo; }
+            set { _docente__sexo = value; NotifyPropertyChanged(nameof(docente__sexo)); }
+        }
+        protected byte? _docente__dia_nacimiento = null;
+
+        [JsonProperty("docente-dia_nacimiento")]
+        public byte? docente__dia_nacimiento
+        {
+            get { return _docente__dia_nacimiento; }
+            set { _docente__dia_nacimiento = value; NotifyPropertyChanged(nameof(docente__dia_nacimiento)); }
+        }
+        protected byte? _docente__mes_nacimiento = null;
+
+        [JsonProperty("docente-mes_nacimiento")]
+        public byte? docente__mes_nacimiento
+        {
+            get { return _docente__mes_nacimiento; }
+            set { _docente__mes_nacimiento = value; NotifyPropertyChanged(nameof(docente__mes_nacimiento)); }
+        }
+        protected byte? _docente__anio_nacimiento = null;
+
+        [JsonProperty("docente-anio_nacimiento")]
+        public byte? docente__anio_nacimiento
+        {
+            get { return _docente__anio_nacimiento; }
+            set { _docente__anio_nacimiento = value; NotifyPropertyChanged(nameof(docente__anio_nacimiento)); }
+        }
 
         public string? domicilio_doc__Label { get; set; }
 
@@ -1353,6 +1441,94 @@ namespace Fines2Model3.Data
         {
             get { return _reemplazo__descripcion_domicilio; }
             set { _reemplazo__descripcion_domicilio = value; NotifyPropertyChanged(nameof(reemplazo__descripcion_domicilio)); }
+        }
+        protected byte? _reemplazo__cuil1 = null;
+
+        [JsonProperty("reemplazo-cuil1")]
+        public byte? reemplazo__cuil1
+        {
+            get { return _reemplazo__cuil1; }
+            set { _reemplazo__cuil1 = value; NotifyPropertyChanged(nameof(reemplazo__cuil1)); }
+        }
+        protected byte? _reemplazo__cuil2 = null;
+
+        [JsonProperty("reemplazo-cuil2")]
+        public byte? reemplazo__cuil2
+        {
+            get { return _reemplazo__cuil2; }
+            set { _reemplazo__cuil2 = value; NotifyPropertyChanged(nameof(reemplazo__cuil2)); }
+        }
+        protected string? _reemplazo__departamento = null;
+
+        [JsonProperty("reemplazo-departamento")]
+        public string? reemplazo__departamento
+        {
+            get { return _reemplazo__departamento; }
+            set { _reemplazo__departamento = value; NotifyPropertyChanged(nameof(reemplazo__departamento)); }
+        }
+        protected string? _reemplazo__localidad = null;
+
+        [JsonProperty("reemplazo-localidad")]
+        public string? reemplazo__localidad
+        {
+            get { return _reemplazo__localidad; }
+            set { _reemplazo__localidad = value; NotifyPropertyChanged(nameof(reemplazo__localidad)); }
+        }
+        protected string? _reemplazo__partido = null;
+
+        [JsonProperty("reemplazo-partido")]
+        public string? reemplazo__partido
+        {
+            get { return _reemplazo__partido; }
+            set { _reemplazo__partido = value; NotifyPropertyChanged(nameof(reemplazo__partido)); }
+        }
+        protected string? _reemplazo__codigo_area = null;
+
+        [JsonProperty("reemplazo-codigo_area")]
+        public string? reemplazo__codigo_area
+        {
+            get { return _reemplazo__codigo_area; }
+            set { _reemplazo__codigo_area = value; NotifyPropertyChanged(nameof(reemplazo__codigo_area)); }
+        }
+        protected string? _reemplazo__nacionalidad = null;
+
+        [JsonProperty("reemplazo-nacionalidad")]
+        public string? reemplazo__nacionalidad
+        {
+            get { return _reemplazo__nacionalidad; }
+            set { _reemplazo__nacionalidad = value; NotifyPropertyChanged(nameof(reemplazo__nacionalidad)); }
+        }
+        protected byte? _reemplazo__sexo = null;
+
+        [JsonProperty("reemplazo-sexo")]
+        public byte? reemplazo__sexo
+        {
+            get { return _reemplazo__sexo; }
+            set { _reemplazo__sexo = value; NotifyPropertyChanged(nameof(reemplazo__sexo)); }
+        }
+        protected byte? _reemplazo__dia_nacimiento = null;
+
+        [JsonProperty("reemplazo-dia_nacimiento")]
+        public byte? reemplazo__dia_nacimiento
+        {
+            get { return _reemplazo__dia_nacimiento; }
+            set { _reemplazo__dia_nacimiento = value; NotifyPropertyChanged(nameof(reemplazo__dia_nacimiento)); }
+        }
+        protected byte? _reemplazo__mes_nacimiento = null;
+
+        [JsonProperty("reemplazo-mes_nacimiento")]
+        public byte? reemplazo__mes_nacimiento
+        {
+            get { return _reemplazo__mes_nacimiento; }
+            set { _reemplazo__mes_nacimiento = value; NotifyPropertyChanged(nameof(reemplazo__mes_nacimiento)); }
+        }
+        protected byte? _reemplazo__anio_nacimiento = null;
+
+        [JsonProperty("reemplazo-anio_nacimiento")]
+        public byte? reemplazo__anio_nacimiento
+        {
+            get { return _reemplazo__anio_nacimiento; }
+            set { _reemplazo__anio_nacimiento = value; NotifyPropertyChanged(nameof(reemplazo__anio_nacimiento)); }
         }
 
         public string? domicilio_ree__Label { get; set; }

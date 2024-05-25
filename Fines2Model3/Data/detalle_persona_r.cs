@@ -242,6 +242,94 @@ namespace Fines2Model3.Data
             get { return _persona__descripcion_domicilio; }
             set { _persona__descripcion_domicilio = value; NotifyPropertyChanged(nameof(persona__descripcion_domicilio)); }
         }
+        protected byte? _persona__cuil1 = null;
+
+        [JsonProperty("persona-cuil1")]
+        public byte? persona__cuil1
+        {
+            get { return _persona__cuil1; }
+            set { _persona__cuil1 = value; NotifyPropertyChanged(nameof(persona__cuil1)); }
+        }
+        protected byte? _persona__cuil2 = null;
+
+        [JsonProperty("persona-cuil2")]
+        public byte? persona__cuil2
+        {
+            get { return _persona__cuil2; }
+            set { _persona__cuil2 = value; NotifyPropertyChanged(nameof(persona__cuil2)); }
+        }
+        protected string? _persona__departamento = null;
+
+        [JsonProperty("persona-departamento")]
+        public string? persona__departamento
+        {
+            get { return _persona__departamento; }
+            set { _persona__departamento = value; NotifyPropertyChanged(nameof(persona__departamento)); }
+        }
+        protected string? _persona__localidad = null;
+
+        [JsonProperty("persona-localidad")]
+        public string? persona__localidad
+        {
+            get { return _persona__localidad; }
+            set { _persona__localidad = value; NotifyPropertyChanged(nameof(persona__localidad)); }
+        }
+        protected string? _persona__partido = null;
+
+        [JsonProperty("persona-partido")]
+        public string? persona__partido
+        {
+            get { return _persona__partido; }
+            set { _persona__partido = value; NotifyPropertyChanged(nameof(persona__partido)); }
+        }
+        protected string? _persona__codigo_area = null;
+
+        [JsonProperty("persona-codigo_area")]
+        public string? persona__codigo_area
+        {
+            get { return _persona__codigo_area; }
+            set { _persona__codigo_area = value; NotifyPropertyChanged(nameof(persona__codigo_area)); }
+        }
+        protected string? _persona__nacionalidad = null;
+
+        [JsonProperty("persona-nacionalidad")]
+        public string? persona__nacionalidad
+        {
+            get { return _persona__nacionalidad; }
+            set { _persona__nacionalidad = value; NotifyPropertyChanged(nameof(persona__nacionalidad)); }
+        }
+        protected byte? _persona__sexo = null;
+
+        [JsonProperty("persona-sexo")]
+        public byte? persona__sexo
+        {
+            get { return _persona__sexo; }
+            set { _persona__sexo = value; NotifyPropertyChanged(nameof(persona__sexo)); }
+        }
+        protected byte? _persona__dia_nacimiento = null;
+
+        [JsonProperty("persona-dia_nacimiento")]
+        public byte? persona__dia_nacimiento
+        {
+            get { return _persona__dia_nacimiento; }
+            set { _persona__dia_nacimiento = value; NotifyPropertyChanged(nameof(persona__dia_nacimiento)); }
+        }
+        protected byte? _persona__mes_nacimiento = null;
+
+        [JsonProperty("persona-mes_nacimiento")]
+        public byte? persona__mes_nacimiento
+        {
+            get { return _persona__mes_nacimiento; }
+            set { _persona__mes_nacimiento = value; NotifyPropertyChanged(nameof(persona__mes_nacimiento)); }
+        }
+        protected byte? _persona__anio_nacimiento = null;
+
+        [JsonProperty("persona-anio_nacimiento")]
+        public byte? persona__anio_nacimiento
+        {
+            get { return _persona__anio_nacimiento; }
+            set { _persona__anio_nacimiento = value; NotifyPropertyChanged(nameof(persona__anio_nacimiento)); }
+        }
 
         public string? domicilio__Label { get; set; }
 

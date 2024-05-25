@@ -2561,7 +2561,18 @@
       "telefono_verificado",
       "email_verificado",
       "info_verificada",
-      "descripcion_domicilio"
+      "descripcion_domicilio",
+      "cuil1",
+      "cuil2",
+      "departamento",
+      "localidad",
+      "partido",
+      "codigo_area",
+      "nacionalidad",
+      "sexo",
+      "dia_nacimiento",
+      "mes_nacimiento",
+      "anio_nacimiento"
     ],
     "fk": [
       "domicilio"
