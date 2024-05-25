@@ -553,7 +553,7 @@
   },
   "anio_nacimiento": {
     "checks": {
-      "type": "byte"
+      "type": "ushort"
     },
     "resets": {},
     "name": "anio_nacimiento",
@@ -561,11 +561,11 @@
     "entityName": "persona",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "tinyint",
-    "type": "byte",
+    "dataType": "smallint",
+    "type": "ushort",
     "notNull": false,
     "defaultValue": null,
     "defaultValueClassData": true,
-    "maxLength": 3
+    "maxLength": 5
   }
 }

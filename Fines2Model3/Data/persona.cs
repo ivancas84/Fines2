@@ -199,8 +199,8 @@ namespace Fines2Model3.Data
             get { return _mes_nacimiento; }
             set { _mes_nacimiento = value; NotifyPropertyChanged(nameof(mes_nacimiento)); }
         }
-        protected byte? _anio_nacimiento = null;
-        public byte? anio_nacimiento
+        protected ushort? _anio_nacimiento = null;
+        public ushort? anio_nacimiento
         {
             get { return _anio_nacimiento; }
             set { _anio_nacimiento = value; NotifyPropertyChanged(nameof(anio_nacimiento)); }

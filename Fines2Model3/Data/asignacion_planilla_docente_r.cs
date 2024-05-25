@@ -1220,10 +1220,10 @@ namespace Fines2Model3.Data
             get { return _docente__mes_nacimiento; }
             set { _docente__mes_nacimiento = value; NotifyPropertyChanged(nameof(docente__mes_nacimiento)); }
         }
-        protected byte? _docente__anio_nacimiento = null;
+        protected ushort? _docente__anio_nacimiento = null;
 
         [JsonProperty("docente-anio_nacimiento")]
-        public byte? docente__anio_nacimiento
+        public ushort? docente__anio_nacimiento
         {
             get { return _docente__anio_nacimiento; }
             set { _docente__anio_nacimiento = value; NotifyPropertyChanged(nameof(docente__anio_nacimiento)); }
@@ -1522,10 +1522,10 @@ namespace Fines2Model3.Data
             get { return _reemplazo__mes_nacimiento; }
             set { _reemplazo__mes_nacimiento = value; NotifyPropertyChanged(nameof(reemplazo__mes_nacimiento)); }
         }
-        protected byte? _reemplazo__anio_nacimiento = null;
+        protected ushort? _reemplazo__anio_nacimiento = null;
 
         [JsonProperty("reemplazo-anio_nacimiento")]
-        public byte? reemplazo__anio_nacimiento
+        public ushort? reemplazo__anio_nacimiento
         {
             get { return _reemplazo__anio_nacimiento; }
             set { _reemplazo__anio_nacimiento = value; NotifyPropertyChanged(nameof(reemplazo__anio_nacimiento)); }

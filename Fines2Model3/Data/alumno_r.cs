@@ -273,10 +273,10 @@ namespace Fines2Model3.Data
             get { return _persona__mes_nacimiento; }
             set { _persona__mes_nacimiento = value; NotifyPropertyChanged(nameof(persona__mes_nacimiento)); }
         }
-        protected byte? _persona__anio_nacimiento = null;
+        protected ushort? _persona__anio_nacimiento = null;
 
         [JsonProperty("persona-anio_nacimiento")]
-        public byte? persona__anio_nacimiento
+        public ushort? persona__anio_nacimiento
         {
             get { return _persona__anio_nacimiento; }
             set { _persona__anio_nacimiento = value; NotifyPropertyChanged(nameof(persona__anio_nacimiento)); }
