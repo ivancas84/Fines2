@@ -1,4 +1,5 @@
-﻿using Google.Protobuf.WellKnownTypes;
+﻿using Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones;
+using Google.Protobuf.WellKnownTypes;
 using SqlOrganize;
 using System;
 using System.Collections.Generic;
@@ -226,9 +227,34 @@ namespace Fines2Wpf.Values
                 values["genero"] = "Masculino";
                 return;
             }
+        }
 
+        public void Sset_cuil1(object? value)
+        {
 
+            if (value.IsNullOrEmptyOrDbNull())
+            { 
+                values["cuil1"] = null;
+                return;
 
+            }
+            bool success = int.TryParse(value!.ToString(), out int cuil1);
+
+            values["cuil1"] = (success && cuil1 >= 20 && cuil1 <= 30) ? cuil1 : null;
+        }
+
+        public void Sset_cuil2(object? value)
+        {
+
+            if (value.IsNullOrEmptyOrDbNull())
+            {
+                values["cuil2"] = null;
+                return;
+            }
+
+            bool success = int.TryParse(value!.ToString(), out int cuil1);
+
+            values["cuil2"] = (success && cuil1 >= 0 && cuil1 <= 9) ? cuil1 : null;
         }
     }
 }

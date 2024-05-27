@@ -26,6 +26,12 @@
                     </MenuItem.Icon>
                     
                 </MenuItem>
+                <MenuItem Header="Transferir Alumno" Click="TransferirAlumno_Click">
+                    <MenuItem.Icon>
+                        <materialDesign:PackIcon Kind="ListBox"></materialDesign:PackIcon>
+                    </MenuItem.Icon>
+
+                </MenuItem>
                 <MenuItem Header="Administrar Alumno" Click="AdministrarAlumno_Click">
                     <MenuItem.Icon>
                         <materialDesign:PackIcon Kind="ListBox"></materialDesign:PackIcon>

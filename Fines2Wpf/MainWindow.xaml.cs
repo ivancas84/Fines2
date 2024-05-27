@@ -251,6 +251,12 @@ namespace Fines2Wpf
 
             window.Show();
         }
+
+        private void TransferirAlumno_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.Alumno.TransferirAlumno.Window1 window1 = new();
+            window1.Show();
+        }
     }
 }
 

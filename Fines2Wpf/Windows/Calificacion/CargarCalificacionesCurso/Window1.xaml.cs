@@ -262,7 +262,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                         }
                         else
                         {
-                            Values.Persona personaV = (Values.Persona)ContainerApp.db.Values("persona", "persona").SetObj(calificacion!);
+                            Values.Persona personaV = (Values.Persona)ContainerApp.db.Values("persona", "persona").Set(calificacion!);
                             Dictionary<string, object?> pe = personasExistentesPorDNI[dni!];
                             var l = new List<string> { "nombres", "apellidos", "numero_documento" };
                             IDictionary<string, object?> compareResult = personaV.CompareFields(pe, l);
@@ -386,7 +386,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 if (cal.agregar_persona)
                 {
                     cal.domicilio_per__id = null;
-                    EntityValues valPer = ContainerApp.db.Values("persona","persona").SetObj(cal).Default().Reset();
+                    EntityValues valPer = ContainerApp.db.Values("persona","persona").Set(cal).Default().Reset();
                     if (valPer.Check())
                     {
                         persist.Insert(valPer);
@@ -406,7 +406,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                     cal.alumno__anio_ingreso = "1";
                     cal.alumno__semestre_ingreso = 1;
                     cal.alumno__resolucion_inscripcion = null;
-                    EntityValues valAlu = ContainerApp.db.Values("alumno", "alumno").SetObj(cal!).Default().Reset();
+                    EntityValues valAlu = ContainerApp.db.Values("alumno", "alumno").Set(cal!).Default().Reset();
                     if (valAlu.Check())
                     {
                         persist.Insert(valAlu);
@@ -439,7 +439,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                     }
                 }
 
-                EntityValues valCal = ContainerApp.db.Values("calificacion").SetObj(cal).Default().Reset();
+                EntityValues valCal = ContainerApp.db.Values("calificacion").Set(cal).Default().Reset();
                 if (valCal.Check())
                     persist.Insert(valCal);
                 else { 

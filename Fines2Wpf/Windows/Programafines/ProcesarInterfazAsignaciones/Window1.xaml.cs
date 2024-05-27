@@ -64,21 +64,36 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                         data.comision = pfid;
 
                         //Obtener datos del alumno del formulario de modificacion pf
-                        IDictionary<string, string> dataForm = await PF_InfoAlumnoFormularioModificacion(client, data.dni);
+                        IDictionary<string, object> dataForm = await PF_InfoAlumnoFormularioModificacion(client, data.dni);
 
                         #region Comparar datos del alumno en la base de datos local
                         if (alumnosObj.ContainsKey(data.dni))
                         {
                             data.existe = true;
 
-                            var personaPfVal = (Values.Persona)ContainerApp.db.Values("persona").
-                                Sset("nombres", data.nombre).
-                                Sset("apellidos", data.nombre).
-                                Sset("telefono", data.telefono).
-                                Sset("numero_documento", data.dni).
-                                Sset("fecha_nacimiento", data.nacimiento);
+                            
 
                             var personaDbVal = (Values.Persona)ContainerApp.db.Values("persona", "persona").Set(alumnosObj[data.dni]);
+                           
+                            var personaPfVal = (Values.Persona)ContainerApp.db.Values("persona").
+                                Sset("nombres", dataForm["nombre"]).
+                                Sset("apellidos", dataForm["apellido"]).
+                                Sset("cuil1", dataForm["cuil1"]).
+                                Sset("numero_documento", data.dni).
+                                Sset("cuil2", dataForm["cuil2"]).
+                                Sset("descripcion_domicilio", dataForm["direccion"]).
+                                Sset("departamento", dataForm["departamento"]).
+                                Sset("localidad", dataForm["localidad"]).
+                                Sset("partido", dataForm["partido"]).
+                                Sset("nacionalidad", dataForm["nacionalidad"]).
+                                Sset("email", dataForm["email"]).
+                                Sset("codigo_area", dataForm["cod_area"]).
+                                Sset("telefono", dataForm["nro_telefono"]).
+                                Sset("sexo", dataForm["sexo"]).
+                                Sset("fecha_nacimiento", data.nacimiento).
+                                Sset("dia_nacimiento", dataForm["dia_nac"]).
+                                Sset("mes_nacimiento", dataForm["mes_nac"]).
+                                Sset("anio_nacimiento", dataForm["ano_nac"]);
 
                             var comp = personaDbVal.Compare(personaPfVal, ignoreNull: false);
                                 
@@ -87,8 +102,21 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 
                             foreach (string key in comp.Keys)
                             {
-                                break;
-                                Dictionary<string, object?> valuesToUpdatePf = new();
+                                bool updatePf = false; //flag para indicar que se va a actualizar el formulario de alumno de programafines
+                                Values.Persona updatePersonaDb = (Values.Persona)ContainerApp.db.Values("persona");
+
+                                switch (key)
+                                {
+                                    case "cuil1":
+                                        if (personaPfVal.GetOrNull("cuil1").IsNullOrEmptyOrDbNull()){
+                                            if (!personaDbVal.GetOrNull("cuil1").IsNullOrEmptyOrDbNull())
+                                            {
+                                                updatePf = true;
+                                                dataForm["cuil1"] = personaDbVal.Get("cuil1");
+                                            }
+                                        }
+                                        break;
+                                }
                                 if (personaPfVal.IsNullOrEmpty(key) && !personaDbVal.IsNullOrEmpty(key))
                                 {
                                     switch (key)
@@ -105,7 +133,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
     
 
                         }
-                        else
+                       else
                         {
                             data.comparacion = "El alumno no existe en la base de datos";
                         }
@@ -120,7 +148,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             }
         }
 
-        async protected Task<IDictionary<string, string>> PF_InfoAlumnoFormularioModificacion(HttpClient client, string dni)
+        async protected Task<IDictionary<string, object>> PF_InfoAlumnoFormularioModificacion(HttpClient client, string dni)
         {
             var formDataSeleccionarDNI = new Dictionary<string, string>
             {
@@ -139,7 +167,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 
             var inputs = doc.DocumentNode.SelectNodes("//form//input");
 
-            var inputFields = new Dictionary<string, string>();
+            var inputFields = new Dictionary<string, object>();
 
             if (inputs != null)
             {

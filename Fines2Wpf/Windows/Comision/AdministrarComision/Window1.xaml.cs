@@ -166,7 +166,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             {
                 var comisionData = (Data_comision)comisionGroupBox.DataContext;
                 EntityPersist persist = ContainerApp.db.Persist().
-                    PersistObj("comision", comisionData).
+                    Persist("comision", comisionData).
                     Exec().
                     RemoveCache();
             }
@@ -340,7 +340,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
         {
             try
             {
-                (ContainerApp.db.Values("comision").SetObj(comisionGroupBox.DataContext) as Values.Comision)!.GenerarCursos();
+                (ContainerApp.db.Values("comision").Set((Data_comision)comisionGroupBox.DataContext) as Values.Comision)!.GenerarCursos();
                 LoadCursos();
             }catch(Exception ex) {
                 new ToastContentBuilder()
