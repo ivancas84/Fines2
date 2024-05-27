@@ -84,7 +84,6 @@ namespace SqlOrganize
             return Search(d);
         }
 
-
         /// <summary>
         /// Crear condicion de busqueda del diccionario
         /// </summary>
