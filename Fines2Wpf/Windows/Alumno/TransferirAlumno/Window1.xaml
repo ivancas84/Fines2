@@ -27,7 +27,7 @@
             IsTextSearchEnabled="False"
             IsEditable="True"
             StaysOpenOnEdit="True"
-            KeyUp="OrigenAutoCompleteComboBox_KeyUp"/>
+            KeyUp="DestinoAutoCompleteComboBox_KeyUp"/>
 
         <Button
             Content = "_Transferir..."

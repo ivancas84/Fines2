@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Utils;
 using SqlOrganize;
+using WpfUtils;
 
 namespace Fines2Wpf.Windows.Alumno.TransferirAlumno
 {
@@ -150,7 +151,42 @@ namespace Fines2Wpf.Windows.Alumno.TransferirAlumno
 
         private void TransferirButton_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                var personaOrigenObj = (Data_persona)origenComboBox.SelectedItem;
+                var personaDestinoObj = (Data_persona)destinoComboBox.SelectedItem;
 
+                if (personaOrigenObj.IsNullOrEmptyOrDbNull() || personaDestinoObj.IsNullOrEmptyOrDbNull())
+                    throw new Exception("Debe seleccionar ambas personas");
+
+                var persist = ContainerApp.db.Persist();
+                List < Field > fieldsOmPersona = ContainerApp.db.Entity("persona").FieldOm();
+                persist.TransferOm("persona",  personaDestinoObj.id!, personaOrigenObj.id!);
+
+                IDictionary<string, object?>? alumnoOrigenData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(personaOrigenObj.id!).Dict();
+                IDictionary<string, object?>? alumnoDestinoData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(personaDestinoObj.id!).Dict();
+
+                if (!alumnoOrigenData.IsNullOrEmptyOrDbNull())
+                {
+                    if (alumnoDestinoData.IsNullOrEmptyOrDbNull())
+                    { 
+                        persist.UpdateValueIds("alumno", "persona", personaOrigenObj.id!, personaDestinoObj.id!);
+                    }
+                    else
+                    {
+                        persist.TransferOm("alumno", alumnoOrigenData["id"]!, alumnoDestinoData["id"]!);
+                        persist.DeleteIds("alumno", alumnoOrigenData["id"]!);
+
+                    }
+                }
+                persist.DeleteIds("persona", personaOrigenObj.id!);
+                persist.Transaction().RemoveCache();
+            } 
+            catch(Exception ex)
+            {
+                ToastUtils.ShowExceptionMessageWithFileNameAndLineNumber(ex);
+            }
+            
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using SqlOrganize.Exceptions;
 using System.Data.Common;
+using System.Runtime.CompilerServices;
 using Utils;
 
 namespace SqlOrganize
@@ -58,6 +59,15 @@ namespace SqlOrganize
             using DbConnection connection = query.OpenConnection();
             return query.ColOfDict();
         }
+
+        /// <summary>Ejecucion rapida de EntitySql</summary>
+        public static IDictionary<string, object?>? Dict(this EntitySql esql)
+        {
+            using Query query = esql.Query();
+            using DbConnection connection = query.OpenConnection();
+            return query.Dict();
+        }
+
 
         public static T? Obj<T>(this EntitySql esql) where T : class, new()
         {
@@ -170,6 +180,18 @@ namespace SqlOrganize
         public static IEnumerable<EntityPersist> Transaction(this IEnumerable<EntityPersist> persists)
         {
             return persists.Exec();
+        }
+        
+        public static EntityPersist TransferOm(this EntityPersist persist, string entityName, object origenId, object destinoId)
+        {
+            List<Field> fieldsOmPersona = persist.Db.Entity(entityName).FieldOm();
+            foreach (var field in fieldsOmPersona)
+            {
+                IEnumerable<object> ids = persist.Db.Sql(field.entityName).Where(field.name + " = @0").Parameters(origenId).Column<object>("id");
+                if(ids.Any())
+                    persist.UpdateValueIds(field.entityName, field.name, destinoId!, ids.ToArray());
+            }
+            return persist;
         }
         #endregion
 
