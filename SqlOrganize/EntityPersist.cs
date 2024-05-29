@@ -227,6 +227,12 @@ WHERE " + id + " = @" + count + @";
             return UpdateValueIds(_entityName, key, value, ids);
         }
 
+        /// <summary>Insercion de value</summary>
+        public EntityPersist Insert(string _entityName, EntityValues val)
+        {
+            return Insert(_entityName, val.Values());
+        }
+
         /// <summary>Insercion de objeto</summary>
         /// <remarks>Transforma el objeto en un diccionario y ejecuta insercion basica</remarks>
         public EntityPersist Insert(string _entityName, Data obj)

@@ -64,18 +64,9 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                         data.comision = pfid;
 
                         //Obtener datos del alumno del formulario de modificacion pf
-                        IDictionary<string, object> dataForm = await PF_InfoAlumnoFormularioModificacion(client, data.dni);
+                        IDictionary<string, string> dataForm = await PF_InfoAlumnoFormularioModificacion(client, data.dni);
 
-                        #region Comparar datos del alumno en la base de datos local
-                        if (alumnosObj.ContainsKey(data.dni))
-                        {
-                            data.existe = true;
-
-                            
-
-                            var personaDbVal = (Values.Persona)ContainerApp.db.Values("persona", "persona").Set(alumnosObj[data.dni]);
-                           
-                            var personaPfVal = (Values.Persona)ContainerApp.db.Values("persona").
+                        var personaPfVal = (Values.Persona)ContainerApp.db.Values("persona").
                                 Sset("nombres", dataForm["nombre"]).
                                 Sset("apellidos", dataForm["apellido"]).
                                 Sset("cuil1", dataForm["cuil1"]).
@@ -95,15 +86,26 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                 Sset("mes_nacimiento", dataForm["mes_nac"]).
                                 Sset("anio_nacimiento", dataForm["ano_nac"]);
 
+
+                        #region Comparar datos del alumno en la base de datos local
+                        if (alumnosObj.ContainsKey(data.dni))
+                        {
+                            data.existe = true;
+
+                            var personaDbVal = (Values.Persona)ContainerApp.db.Values("persona", "persona").Set(alumnosObj[data.dni]);
+                           
+                            
                             var comp = personaDbVal.Compare(personaPfVal, ignoreNull: false);
                                 
                             if (!comp.IsNullOrEmptyOrDbNull())
                                 data.comparacion = "db: " + personaDbVal.ToStringFields(comp.Keys.ToArray()) + ". pf: " + personaPfVal!.ToStringFields(comp.Keys.ToArray());
 
+                            Dictionary<string, object?> updatePersonaDb = new(); //datos a actualizar de la base local
+                            bool updatePf = false; //flag para indicar que se debe actualizar programafines
                             foreach (string key in comp.Keys)
                             {
-                                bool updatePf = false; //flag para indicar que se va a actualizar el formulario de alumno de programafines
-                                Values.Persona updatePersonaDb = (Values.Persona)ContainerApp.db.Values("persona");
+
+
 
                                 switch (key)
                                 {
@@ -112,8 +114,62 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                             if (!personaDbVal.GetOrNull("cuil1").IsNullOrEmptyOrDbNull())
                                             {
                                                 updatePf = true;
-                                                dataForm["cuil1"] = personaDbVal.Get("cuil1");
+                                                dataForm["cuil1"] = personaDbVal.Get("cuil1").ToString()!;
                                             }
+                                        } else
+                                        {
+                                            if (personaDbVal.GetOrNull("cuil1").IsNullOrEmptyOrDbNull())
+                                                updatePersonaDb["cuil1"] = personaPfVal.GetOrNull("cuil1");
+                                        }
+
+                                        break;
+
+                                    case "cuil2":
+                                        if (personaPfVal.GetOrNull("cuil2").IsNullOrEmptyOrDbNull())
+                                        {
+                                            if (!personaDbVal.GetOrNull("cuil2").IsNullOrEmptyOrDbNull())
+                                            {
+                                                updatePf = true;
+                                                dataForm["cuil2"] = personaDbVal.Get("cuil2").ToString()!;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (personaDbVal.GetOrNull("cuil2").IsNullOrEmptyOrDbNull())
+                                                updatePersonaDb["cuil2"] = personaPfVal.GetOrNull("cuil2");
+                                        }
+
+                                        break;
+
+                                    case "descripcion_domicilio":
+                                        if (personaPfVal.GetOrNull("descripcion_domicilio").IsNullOrEmptyOrDbNull() || personaPfVal.GetOrNull("descripcion_domicilio").ToString().Contains("40"))
+                                        {
+                                            if (!personaDbVal.GetOrNull("descripcion_domicilio").IsNullOrEmptyOrDbNull())
+                                            {
+                                                updatePf = true;
+                                                dataForm["descripcion_domicilio"] = personaDbVal.Get("descripcion_domicilio").ToString()!;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (personaDbVal.GetOrNull("descripcion_domicilio").IsNullOrEmptyOrDbNull())
+                                                updatePersonaDb["descripcion_domicilio"] = personaPfVal.GetOrNull("descripcion_domicilio");
+                                        }
+                                        break;
+
+                                    case "telefono":
+                                        if (personaPfVal.GetOrNull("telefono").IsNullOrEmptyOrDbNull() || personaPfVal.GetOrNull("telefono").ToString().Equals("0"))
+                                        {
+                                            if (!personaDbVal.GetOrNull("telefono").IsNullOrEmptyOrDbNull())
+                                            {
+                                                updatePf = true;
+                                                dataForm["nro_telefono"] = personaDbVal.Get("telefono").ToString()!;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (personaDbVal.GetOrNull("telefono").IsNullOrEmptyOrDbNull())
+                                                updatePersonaDb["telefono"] = personaPfVal.GetOrNull("telefono");
                                         }
                                         break;
                                 }
@@ -127,15 +183,24 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                     }
                                 }
                             }
-                                
-                                
-                              
-    
 
+                            if (updatePf)
+                            {
+                                await PF_ActualizarFormularioAlumno(client, dataForm);
+                            }
+
+                            if (!updatePersonaDb.IsNullOrEmpty())
+                            {
+                                updatePersonaDb["id"] = personaDbVal.Get("id");
+                                ContainerApp.db.Persist().Update("persona", updatePersonaDb);
+                            }
                         }
                        else
-                        {
-                            data.comparacion = "El alumno no existe en la base de datos";
+                       {
+                            data.comparacion = "Se agregó al alumno en la base de datos";
+                            personaPfVal.Default().Reset();
+                            ContainerApp.db.Persist().Insert("persona", personaPfVal);
+
                         }
                         #endregion
 
@@ -148,7 +213,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             }
         }
 
-        async protected Task<IDictionary<string, object>> PF_InfoAlumnoFormularioModificacion(HttpClient client, string dni)
+        async protected Task<IDictionary<string, string>> PF_InfoAlumnoFormularioModificacion(HttpClient client, string dni)
         {
             var formDataSeleccionarDNI = new Dictionary<string, string>
             {
@@ -167,7 +232,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 
             var inputs = doc.DocumentNode.SelectNodes("//form//input");
 
-            var inputFields = new Dictionary<string, object>();
+            var inputFields = new Dictionary<string, string>();
 
             if (inputs != null)
             {
@@ -271,6 +336,20 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             string responseData = await response.Content.ReadAsStringAsync();
             return responseData.Split(new string[] { "<h2 align='left'>" }, StringSplitOptions.None);
 
+        }
+
+        public async Task PF_ActualizarFormularioAlumno(HttpClient client, IDictionary<string, string> formData)
+        {
+            var content = new FormUrlEncodedContent(formData);
+
+            var response = await client.PostAsync("https://www.programafines.ar/inicial/index4.php?a=8&b=2", content);
+            response.EnsureSuccessStatusCode(); // Ensure a successful response
+
+            // Check if the login was successful
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new Exception("Error:" + response.StatusCode.ToString());
+
+            string res = await response.Content.ReadAsStringAsync();
         }
 
         private Data? ProcesarAlumnoLista(string infoAlumno)
