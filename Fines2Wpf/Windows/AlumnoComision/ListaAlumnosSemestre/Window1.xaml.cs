@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using Utils;
-using Fines2Wpf.Data;
+using Fines2Model3.Data;
 using System.Windows.Controls;
 using SqlOrganize;
 using WpfUtils;
@@ -22,7 +22,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
     {
         private DAO.Calificacion calificacionDAO = new();
         private ObservableCollection<Asignacion> asignacionOC = new();
-        private Data_alumno_comision_r search = new(DataInitMode.Null);
+        private Data_alumno_comision_r search = new();
 
         private ICollectionView asignacionCV;
 

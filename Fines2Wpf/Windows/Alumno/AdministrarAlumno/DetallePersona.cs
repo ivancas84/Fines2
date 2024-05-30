@@ -1,4 +1,4 @@
-﻿using Fines2Wpf.Data;
+﻿using Fines2Model3.Data;
 using MaterialDesignColors;
 using SqlOrganize;
 
@@ -11,7 +11,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
         }
 
-        public DetallePersona(DataInitMode mode) : base(mode)
+        public DetallePersona(Db db) : base(db)
         {
         }
 

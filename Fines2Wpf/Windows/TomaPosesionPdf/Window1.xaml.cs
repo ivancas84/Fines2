@@ -18,7 +18,7 @@ using System.Windows.Shapes;
 using Fines2Wpf.Windows.TomaPosesionPdf;
 using Utils;
 using Fines2Wpf.Windows.ListaTomas;
-using Fines2Wpf.Data;
+using Fines2Model3.Data;
 
 namespace Fines2Wpf.Windows.TomaPosesionPdf
 {

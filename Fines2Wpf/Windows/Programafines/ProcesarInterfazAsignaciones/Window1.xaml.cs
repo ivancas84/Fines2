@@ -11,10 +11,6 @@ using SqlOrganize;
 using Utils;
 using Fines2Model3.Data;
 using HtmlAgilityPack;
-using MySqlX.XDevAPI;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Windows.Media.Protection.PlayReady;
-using static MaterialDesignThemes.Wpf.Theme.ToolBar;
 
 namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 {
@@ -24,7 +20,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
     public partial class Window1 : Window
     {
 
-        private ObservableCollection<Data> infoOC = new();
+        private ObservableCollection<AsignacionPfItem> infoOC = new();
 
         public Window1()
         {
@@ -40,37 +36,38 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             var pfidsComisiones = ContainerApp.db.
                 ComisionesAutorizadasDePeriodoSql(DateTime.Now.Year, DateTime.Now.ToSemester()).
                 ColOfDictCache().
-                ColOfVal<string>("pfid");
+                DictOfDictByKeysValue("id","pfid");
 
-            IDictionary<string, Data_alumno_comision_r> alumnosObj = ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, DateTime.Now.ToSemester()).
+            IDictionary<string, AsignacionDbItem> asignacionesDb = ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, DateTime.Now.ToSemester()).
                 ColOfDictCache().
-                ColOfObj<Data_alumno_comision_r>().
+                ColOfObj<AsignacionDbItem>().
                 DictOfObjByPropertyNames("persona__numero_documento");
 
             using (HttpClient client = new HttpClient(ContainerApp.pfHandler))
             {
                 await PF_Login(client);
 
-                foreach (string pfid in pfidsComisiones)
+                foreach (var (pfidComision, idComision) in pfidsComisiones)
                 {
-                    string[] infoListaAlumnos = await PF_InfoListaAlumnos(client, pfid);
+                    string[] infoListaAlumnos = await PF_InfoListaAlumnos(client, (string)pfidComision);
 
                     foreach (string infoAlumno in infoListaAlumnos)
                     {
-                        Data? data = ProcesarAlumnoLista(infoAlumno);
-                        if (data == null)
+                        var persist = ContainerApp.db.Persist();
+                        AsignacionPfItem? asignacionPf = ObtenerAsignacionPfDeInfoAlumno(infoAlumno);
+                        if (asignacionPf == null)
                             continue;
 
-                        data.comision = pfid;
+                        asignacionPf.comision = (string)pfidComision;
 
                         //Obtener datos del alumno del formulario de modificacion pf
-                        IDictionary<string, string> dataForm = await PF_InfoAlumnoFormularioModificacion(client, data.dni);
+                        IDictionary<string, string> dataForm = await PF_InfoAlumnoFormularioModificacion(client, asignacionPf.dni);
 
-                        var personaPfVal = (Values.Persona)ContainerApp.db.Values("persona").
+                        Values.Persona personaPfVal = (Values.Persona)ContainerApp.db.Values("persona").
                                 Sset("nombres", dataForm["nombre"]).
                                 Sset("apellidos", dataForm["apellido"]).
                                 Sset("cuil1", dataForm["cuil1"]).
-                                Sset("numero_documento", data.dni).
+                                Sset("numero_documento", asignacionPf.dni).
                                 Sset("cuil2", dataForm["cuil2"]).
                                 Sset("descripcion_domicilio", dataForm["direccion"]).
                                 Sset("departamento", dataForm["departamento"]).
@@ -81,32 +78,29 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                 Sset("codigo_area", dataForm["cod_area"]).
                                 Sset("telefono", dataForm["nro_telefono"]).
                                 Sset("sexo", dataForm["sexo"]).
-                                Sset("fecha_nacimiento", data.nacimiento).
+                                Sset("fecha_nacimiento", asignacionPf.nacimiento).
                                 Sset("dia_nacimiento", dataForm["dia_nac"]).
                                 Sset("mes_nacimiento", dataForm["mes_nac"]).
                                 Sset("anio_nacimiento", dataForm["ano_nac"]);
 
 
-                        #region Comparar datos del alumno en la base de datos local
-                        if (alumnosObj.ContainsKey(data.dni))
+                        if (asignacionesDb.ContainsKey(asignacionPf.dni))
                         {
-                            data.existe = true;
+                            AsignacionDbItem asignacionDb = asignacionesDb[asignacionPf.dni];
+                            asignacionDb.existeEnPf = true;
 
-                            var personaDbVal = (Values.Persona)ContainerApp.db.Values("persona", "persona").Set(alumnosObj[data.dni]);
+                            #region Comparar datos de persona pf con persona db
+                            var personaDbVal = (Values.Persona)ContainerApp.db.Values("persona", "persona").Set(asignacionDb);
                            
-                            
                             var comp = personaDbVal.Compare(personaPfVal, ignoreNull: false);
                                 
                             if (!comp.IsNullOrEmptyOrDbNull())
-                                data.comparacion = "db: " + personaDbVal.ToStringFields(comp.Keys.ToArray()) + ". pf: " + personaPfVal!.ToStringFields(comp.Keys.ToArray());
+                                asignacionPf.Msg += "Comparacion diferente PF = " + personaPfVal.ToStringFields(comp.Keys.ToArray()) + ". DB = " + personaDbVal!.ToStringFields(comp.Keys.ToArray()) + ". ";
 
                             Dictionary<string, object?> updatePersonaDb = new(); //datos a actualizar de la base local
                             bool updatePf = false; //flag para indicar que se debe actualizar programafines
                             foreach (string key in comp.Keys)
                             {
-
-
-
                                 switch (key)
                                 {
                                     case "cuil1":
@@ -186,27 +180,59 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 
                             if (updatePf)
                             {
+                                asignacionPf.Msg += "Alumno PF actualizado. ";
                                 await PF_ActualizarFormularioAlumno(client, dataForm);
                             }
 
                             if (!updatePersonaDb.IsNullOrEmpty())
                             {
+                                asignacionPf.Msg += "Persona DB actualizada. ";
                                 updatePersonaDb["id"] = personaDbVal.Get("id");
-                                ContainerApp.db.Persist().Update("persona", updatePersonaDb);
+                                persist.Update("persona", updatePersonaDb);
                             }
+                            #endregion
+
+                            #region comparar datos asignacion pf con asignacion db
+                            if (!asignacionDb.comision__pfid.Equals(pfidComision))
+                            {
+                                asignacionPf.Msg += "Comisiones diferentes PF = " + asignacionPf.comision + ". DB = " + asignacionDb.comision__pfid + ". ";
+                                asignacionPf.revisar = true;
+                            }
+                            else if (asignacionDb.pfid.IsNullOrEmptyOrDbNull() || !asignacionDb.pfid.Equals(asignacionPf.pfid))
+                            {
+                                ContainerApp.db.Persist().UpdateValueIds("alumno_comision", "pfid", asignacionPf.pfid, asignacionDb.id!).Exec().RemoveCache();
+                                asignacionPf.Msg += "Asignacion.pfid DB actualizada. "; 
+                            }
+                            #endregion
+
                         }
-                       else
-                       {
-                            data.comparacion = "Se agregó al alumno en la base de datos";
+
+                        else
+                        {
+                            #region Insertar persona / alumno / asignacion en DB
                             personaPfVal.Default().Reset();
-                            ContainerApp.db.Persist().Insert("persona", personaPfVal);
-
+                            persist.Insert("persona", personaPfVal);
+                            var alumnoVal = ContainerApp.db.Values("alumno_comision").
+                                Set("persona", personaPfVal.Get("id")).
+                                Default().Reset().Insert(persist);
+                            ContainerApp.db.Values("alumno_comision").
+                                Set("alumno", alumnoVal.Get("id")).
+                                Set("comision", idComision).
+                                Default().Reset().Insert(persist);
+                            asignacionPf.Msg += "Persona / Alumno / Asignacion DB insertadas. ";
+                            #endregion
                         }
-                        #endregion
 
-                        //data.dni = h2Item.Substring(pos8 + str8.Length, pos9 - (pos8 + str8.Length));
-                        infoOC.Add(data);
+                        try
+                        {
+                            persist.Transaction().RemoveCache();
+                        } catch(Exception ex)
+                        {
+                            asignacionPf.Msg += ex.Message;
+                            asignacionPf.revisar = true;
+                        }
 
+                        infoOC.Add(asignacionPf);
                     }
                 }
                
@@ -352,7 +378,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             string res = await response.Content.ReadAsStringAsync();
         }
 
-        private Data? ProcesarAlumnoLista(string infoAlumno)
+        private AsignacionPfItem? ObtenerAsignacionPfDeInfoAlumno(string infoAlumno)
         {
             string str1 = " ";
             string str2 = " DNI ";
@@ -402,16 +428,16 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             if (pos9 == -1)
                 return null;
 
-            var data = new Data();
+            var item = new AsignacionPfItem();
             //data.nombre = h2Item.Substring(pos1 + str1.Length, pos2 - (pos1 + str1.Length));
-            data.telefono = infoAlumno.Substring(pos5 + str5.Length, pos6 - (pos5 + str5.Length)).Trim().Replace(" ", "");
-            bool success = int.TryParse(data.telefono, out int tel);
-            data.telefono = (success && tel > 0) ? tel.ToString() : null;
-            //data.nacimiento = h2Item.Substring(pos3 + str3.Length, pos4 - (pos3 + str3.Length));
-            data.pfid = infoAlumno.Substring(pos7 + str7.Length, pos8 - (pos7 + str7.Length)); 
-            data.dni = infoAlumno.Substring(pos2 + str2.Length, pos3 - (pos2 + str2.Length));
+            //data.telefono = infoAlumno.Substring(pos5 + str5.Length, pos6 - (pos5 + str5.Length)).Trim().Replace(" ", "");
+            //bool success = int.TryParse(data.telefono, out int tel);
+            //data.telefono = (success && tel > 0) ? tel.ToString() : null;
+            item.nacimiento = infoAlumno.Substring(pos3 + str3.Length, pos4 - (pos3 + str3.Length));
+            item.pfid = infoAlumno.Substring(pos7 + str7.Length, pos8 - (pos7 + str7.Length));
+            item.dni = infoAlumno.Substring(pos2 + str2.Length, pos3 - (pos2 + str2.Length));
 
-            return data;
+            return item;
         }
     }
 }

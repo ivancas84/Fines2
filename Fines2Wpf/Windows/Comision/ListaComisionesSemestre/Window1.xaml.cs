@@ -7,7 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using Utils;
-using Fines2Wpf.Data;
+using Fines2Model3.Data;
 using System.ComponentModel;
 using System.Windows.Threading;
 using SqlOrganize;

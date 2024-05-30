@@ -1,4 +1,4 @@
-﻿using Fines2Wpf.Data;
+﻿using Fines2Model3.Data;
 using SqlOrganize;
 using System;
 using System.Collections.Generic;
@@ -31,7 +31,7 @@ namespace Fines2Wpf.Windows.Curso.GenerarCursosSemestre
         {
             InitializeComponent();
 
-            Data_comision_r comisionObj = new(SqlOrganize.DataInitMode.Null);
+            Data_comision_r comisionObj = new();
             comisionObj.calendario__anio = Convert.ToInt16(DateTime.Now.Year);
             comisionObj.calendario__semestre = Convert.ToInt16(DateTime.Now.ToSemester());
             comisionObj.autorizada = true;

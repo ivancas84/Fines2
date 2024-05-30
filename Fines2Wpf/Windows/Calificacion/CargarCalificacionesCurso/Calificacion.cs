@@ -1,4 +1,4 @@
-﻿using Fines2Wpf.Data;
+﻿using Fines2Model3.Data;
 using SqlOrganize;
 
 namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
@@ -7,12 +7,10 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
     {
         public Calificacion() : base()
         {
-            Initialize();
         }
 
-        public Calificacion(DataInitMode mode = DataInitMode.Default) : base(mode)
+        public Calificacion(Db db) : base(db)
         {
-            Initialize(mode);
         }
 
         protected bool _procesar = true;

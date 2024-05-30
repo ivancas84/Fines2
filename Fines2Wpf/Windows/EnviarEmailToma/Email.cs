@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Net.Mail;
-using Fines2Wpf.Data;
+using Fines2Model3.Data;
 
 namespace Fines2Wpf.Windows.EnviarEmailToma
 {

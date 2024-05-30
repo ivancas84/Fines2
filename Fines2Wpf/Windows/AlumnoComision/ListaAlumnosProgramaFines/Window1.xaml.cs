@@ -1,4 +1,4 @@
-﻿using Fines2Wpf.Data;
+﻿using Fines2Model3.Data;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,7 +25,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosProgramaFines
             alumnosDataGrid.ItemsSource = alumnosOC;
             alumnosNoActivosDataGrid.ItemsSource = alumnosNoActivosEnProgramaFinesOC;
 
-            var alumnoComisionData = DAO.AlumnoComision2.AsignacionesActivasDeComisionesAutorizadasSinProgramafinesPorSemestreQuery("2024", "1").ColOfDictCache();
+            var alumnoComisionData = new List<Dictionary<string,object?>>();
+            //var alumnoComisionData = DAO.AlumnoComision2.AsignacionesActivasDeComisionesAutorizadasSinProgramafinesPorSemestreQuery("2024", "1").ColOfDictCache();
 
             alumnosOC.Clear();
             foreach(var ac in alumnoComisionData)

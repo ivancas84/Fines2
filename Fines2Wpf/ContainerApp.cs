@@ -53,7 +53,7 @@ namespace Fines2Wpf
 
             MemoryCache cache = new MemoryCache(new MemoryCacheOptions());
 
-            Schema model = new Schema();
+            Schema model = new Fines2Model3.Schema();
             db = new DbApp(config, model, cache);
 
             SqlOrganize.Config configPedidos = new()

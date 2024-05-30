@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Utils;
 using Fines2Wpf.DAO;
-using Fines2Wpf.Data;
+using Fines2Model3.Data;
 using SqlOrganize;
 
 namespace Fines2Wpf.PageManipulator

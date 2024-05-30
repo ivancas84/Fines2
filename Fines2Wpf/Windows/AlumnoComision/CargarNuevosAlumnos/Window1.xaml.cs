@@ -15,7 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
-using Fines2Wpf.Data;
+using Fines2Model3.Data;
 
 namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
 {

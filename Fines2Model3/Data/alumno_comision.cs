@@ -25,7 +25,6 @@ namespace Fines2Model3.Data
             _id = (string?)db!.Values("alumno_comision").GetDefault("id");
             _creado = (DateTime?)db!.Values("alumno_comision").GetDefault("creado");
             _estado = (string?)db!.Values("alumno_comision").GetDefault("estado");
-            _programafines = (bool?)db!.Values("alumno_comision").GetDefault("programafines");
         }
 
         public string? Label { get; set; }
@@ -66,11 +65,11 @@ namespace Fines2Model3.Data
             get { return _estado; }
             set { _estado = value; NotifyPropertyChanged(nameof(estado)); }
         }
-        protected bool? _programafines = null;
-        public bool? programafines
+        protected uint? _pfid = null;
+        public uint? pfid
         {
-            get { return _programafines; }
-            set { _programafines = value; NotifyPropertyChanged(nameof(programafines)); }
+            get { return _pfid; }
+            set { _pfid = value; NotifyPropertyChanged(nameof(pfid)); }
         }
         protected override string ValidateField(string columnName)
         {
@@ -102,9 +101,7 @@ namespace Fines2Model3.Data
                 case "estado":
                     return "";
 
-                case "programafines":
-                    if (_programafines == null)
-                        return "Debe completar valor.";
+                case "pfid":
                     return "";
 
             }

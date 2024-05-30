@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.WinUI.Notifications;
-using Fines2Wpf.Data;
+using Fines2Model3.Data;
 using Org.BouncyCastle.Asn1.Ocsp;
 using SqlOrganize;
 using System;
@@ -125,7 +125,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             cursoOC.Clear();
 
             if (idComision.IsNullOrEmptyOrDbNull()) { 
-                comisionGroupBox.DataContext = new Data_comision(DataInitMode.DefaultMain);
+                comisionGroupBox.DataContext = new Data_comision(ContainerApp.db);
             }
             else
             {

@@ -1,4 +1,4 @@
-﻿using Fines2Wpf.Data;
+﻿using Fines2Model3.Data;
 using SqlOrganize;
 using System;
 using System.Collections.ObjectModel;
@@ -19,7 +19,7 @@ namespace Fines2Wpf.Pedidos.Windows.GenerarTareasCalificacionesSemestre
         public Window1()
         {
             InitializeComponent();
-            searchGroupBox.DataContext = new Data_toma_r(DataInitMode.Null);
+            searchGroupBox.DataContext = new Data_toma_r();
             tomaDataGrid.ItemsSource = tomaOC;
         }
 

@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.WinUI.Notifications;
-using Fines2Wpf.Data;
+using Fines2Model3.Data;
 using Fines2Wpf.Windows.EnviarEmailToma;
 using QRCoder;
 using SqlOrganize;
@@ -160,7 +160,7 @@ namespace Fines2Wpf.Windows.ListaTomas
         /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
         private void AgregarToma_Click(object sender, RoutedEventArgs e)
         {
-            var data = new TomaPosesionPdf.ConstanciaData(DataInitMode.DefaultMain);
+            var data = new TomaPosesionPdf.ConstanciaData(ContainerApp.db);
             //var someDataRelated = (Data_related)someGroupBox.DataContext; 
             //data.data_related = someDataRelated.id;
             tomasAprobadasOC.Add(data);

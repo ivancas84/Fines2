@@ -129,7 +129,6 @@
       "comision",
       "alumno",
       "estado",
-      "programafines"
     ],
     "fk": [
       "comision",
@@ -142,7 +141,6 @@
       "id",
       "creado",
       "alumno",
-      "programafines"
     ],
     "uniqueMultiple": [
       [

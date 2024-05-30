@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using Utils;
-using Fines2Wpf.Data;
+using Fines2Model3.Data;
 using SqlOrganize;
 
 namespace Fines2Wpf.Windows.AlumnoComision

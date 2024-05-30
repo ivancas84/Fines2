@@ -122,22 +122,21 @@
     "defaultValueClassData": true,
     "maxLength": 100
   },
-  "programafines": {
+  "pfid": {
     "checks": {
-      "type": "bool",
-      "required": true
+      "type": "uint"
     },
     "resets": {},
-    "name": "programafines",
+    "name": "pfid",
     "alias": null,
     "entityName": "alumno_comision",
     "refEntityName": null,
     "refFieldName": null,
-    "dataType": "tinyint",
-    "type": "bool",
-    "notNull": true,
-    "defaultValue": false,
+    "dataType": "int",
+    "type": "uint",
+    "notNull": false,
+    "defaultValue": null,
     "defaultValueClassData": true,
-    "maxLength": 1
+    "maxLength": 10
   }
 }
