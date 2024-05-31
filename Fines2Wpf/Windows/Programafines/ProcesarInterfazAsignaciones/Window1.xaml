@@ -20,6 +20,7 @@ FontFamily="{materialDesign:MaterialDesignFont}"
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height = "Auto" />
+            <RowDefinition Height = "Auto" />
 
         </Grid.RowDefinitions>
 
@@ -30,15 +31,25 @@ FontFamily="{materialDesign:MaterialDesignFont}"
 
 
         <GroupBox 
-                Name="alumnosGroupBox"
-                Grid.Row="2"
+                Name="asignacionPfGroupBox"
+                Grid.Row="0"
                 Margin="10">
             <GroupBox.Header>
                 <Label Foreground="White">Alumnos programafines</Label>
             </GroupBox.Header>
-            <DataGrid Name="infoDataGrid"></DataGrid>
+            <DataGrid Name="asignacionPfDataGrid"></DataGrid>
         </GroupBox>
-    </Grid>
+
+            <GroupBox 
+        Name="asignacionDbGroupBox"
+        Grid.Row="1"
+        Margin="10">
+                <GroupBox.Header>
+                    <Label Foreground="White">Asignaciones db que no existen en PF</Label>
+                </GroupBox.Header>
+                <DataGrid Name="asignacionDbDataGrid"></DataGrid>
+            </GroupBox>
+        </Grid>
 
 
     </ScrollViewer>

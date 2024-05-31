@@ -11,6 +11,10 @@ using SqlOrganize;
 using Utils;
 using Fines2Model3.Data;
 using HtmlAgilityPack;
+using Mysqlx.Crud;
+using System.Linq;
+using System.Collections;
+
 
 namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 {
@@ -20,13 +24,15 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
     public partial class Window1 : Window
     {
 
-        private ObservableCollection<AsignacionPfItem> infoOC = new();
+        private ObservableCollection<AsignacionPfItem> asignacionPfOC = new();
+        private ObservableCollection<AsignacionDbItem> asignacionDbOC = new();
 
         public Window1()
         {
             InitializeComponent();
 
-            infoDataGrid.ItemsSource = infoOC;
+            asignacionPfDataGrid.ItemsSource = asignacionPfOC;
+            asignacionDbDataGrid.ItemsSource = asignacionDbOC;
 
             Loaded += MainWindow_Loaded;
         }
@@ -63,6 +69,9 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                         //Obtener datos del alumno del formulario de modificacion pf
                         IDictionary<string, string> dataForm = await PF_InfoAlumnoFormularioModificacion(client, asignacionPf.dni);
 
+                        if (!dataForm.ContainsKey("nombre"))
+                            continue;
+
                         Values.Persona personaPfVal = (Values.Persona)ContainerApp.db.Values("persona").
                                 Sset("nombres", dataForm["nombre"]).
                                 Sset("apellidos", dataForm["apellido"]).
@@ -79,12 +88,19 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                 Sset("telefono", dataForm["nro_telefono"]).
                                 Sset("sexo", dataForm["sexo"]).
                                 Sset("fecha_nacimiento", asignacionPf.nacimiento).
-                                Sset("dia_nacimiento", dataForm["dia_nac"]).
+                                Set("update_pf", false);
+
+                        //si esta correctamente seteada la fecha nacimiento, significa que la fecha es correcta
+                        if (personaPfVal.GetOrNull("fecha_nacimiento").IsNullOrEmptyOrDbNull())
+                        {
+                            personaPfVal.Sset("dia_nacimiento", dataForm["dia_nac"]).
                                 Sset("mes_nacimiento", dataForm["mes_nac"]).
                                 Sset("anio_nacimiento", dataForm["ano_nac"]);
+                        }
 
 
-                        if (asignacionesDb.ContainsKey(asignacionPf.dni))
+
+                            if (asignacionesDb.ContainsKey(asignacionPf.dni))
                         {
                             AsignacionDbItem asignacionDb = asignacionesDb[asignacionPf.dni];
                             asignacionDb.existeEnPf = true;
@@ -98,87 +114,41 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                 asignacionPf.Msg += "Comparacion diferente PF = " + personaPfVal.ToStringFields(comp.Keys.ToArray()) + ". DB = " + personaDbVal!.ToStringFields(comp.Keys.ToArray()) + ". ";
 
                             Dictionary<string, object?> updatePersonaDb = new(); //datos a actualizar de la base local
-                            bool updatePf = false; //flag para indicar que se debe actualizar programafines
+                            
                             foreach (string key in comp.Keys)
                             {
+
+                                bool check = true;
+
                                 switch (key)
                                 {
-                                    case "cuil1":
-                                        if (personaPfVal.GetOrNull("cuil1").IsNullOrEmptyOrDbNull()){
-                                            if (!personaDbVal.GetOrNull("cuil1").IsNullOrEmptyOrDbNull())
-                                            {
-                                                updatePf = true;
-                                                dataForm["cuil1"] = personaDbVal.Get("cuil1").ToString()!;
-                                            }
-                                        } else
-                                        {
-                                            if (personaDbVal.GetOrNull("cuil1").IsNullOrEmptyOrDbNull())
-                                                updatePersonaDb["cuil1"] = personaPfVal.GetOrNull("cuil1");
-                                        }
-
-                                        break;
-
-                                    case "cuil2":
-                                        if (personaPfVal.GetOrNull("cuil2").IsNullOrEmptyOrDbNull())
-                                        {
-                                            if (!personaDbVal.GetOrNull("cuil2").IsNullOrEmptyOrDbNull())
-                                            {
-                                                updatePf = true;
-                                                dataForm["cuil2"] = personaDbVal.Get("cuil2").ToString()!;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (personaDbVal.GetOrNull("cuil2").IsNullOrEmptyOrDbNull())
-                                                updatePersonaDb["cuil2"] = personaPfVal.GetOrNull("cuil2");
-                                        }
-
-                                        break;
+                                 
 
                                     case "descripcion_domicilio":
-                                        if (personaPfVal.GetOrNull("descripcion_domicilio").IsNullOrEmptyOrDbNull() || personaPfVal.GetOrNull("descripcion_domicilio").ToString().Contains("40"))
-                                        {
-                                            if (!personaDbVal.GetOrNull("descripcion_domicilio").IsNullOrEmptyOrDbNull())
-                                            {
-                                                updatePf = true;
-                                                dataForm["descripcion_domicilio"] = personaDbVal.Get("descripcion_domicilio").ToString()!;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (personaDbVal.GetOrNull("descripcion_domicilio").IsNullOrEmptyOrDbNull())
-                                                updatePersonaDb["descripcion_domicilio"] = personaPfVal.GetOrNull("descripcion_domicilio");
-                                        }
+                                        CheckFieldToUpdate(key, personaPfVal, personaDbVal, dataForm, updatePersonaDb, "40");                                        
                                         break;
 
                                     case "telefono":
-                                        if (personaPfVal.GetOrNull("telefono").IsNullOrEmptyOrDbNull() || personaPfVal.GetOrNull("telefono").ToString().Equals("0"))
-                                        {
-                                            if (!personaDbVal.GetOrNull("telefono").IsNullOrEmptyOrDbNull())
-                                            {
-                                                updatePf = true;
-                                                dataForm["nro_telefono"] = personaDbVal.Get("telefono").ToString()!;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (personaDbVal.GetOrNull("telefono").IsNullOrEmptyOrDbNull())
-                                                updatePersonaDb["telefono"] = personaPfVal.GetOrNull("telefono");
-                                        }
+                                    case "codigo_area":
+                                        CheckFieldToUpdate(key, personaPfVal, personaDbVal, dataForm, updatePersonaDb, "0");
                                         break;
-                                }
-                                if (personaPfVal.IsNullOrEmpty(key) && !personaDbVal.IsNullOrEmpty(key))
-                                {
-                                    switch (key)
-                                    {
-                                        case "fecha_nacimiento":
-                                            break;
 
-                                    }
+
+                                    default:
+                                        check = CheckFieldToUpdate(key, personaPfVal, personaDbVal, dataForm, updatePersonaDb);
+                                        break;
+
                                 }
+
+                                if (!check)
+                                {
+                                    asignacionPf.Msg += key + " diferente PF = " + personaPfVal.Get(key) + ". DB = " + personaDbVal.Get(key) + ". ";
+                                    asignacionPf.revisar = true;
+                                }
+
                             }
 
-                            if (updatePf)
+                            if ((bool)personaPfVal.Get("update_pf"))
                             {
                                 asignacionPf.Msg += "Alumno PF actualizado. ";
                                 await PF_ActualizarFormularioAlumno(client, dataForm);
@@ -198,7 +168,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                 asignacionPf.Msg += "Comisiones diferentes PF = " + asignacionPf.comision + ". DB = " + asignacionDb.comision__pfid + ". ";
                                 asignacionPf.revisar = true;
                             }
-                            else if (asignacionDb.pfid.IsNullOrEmptyOrDbNull() || !asignacionDb.pfid.Equals(asignacionPf.pfid))
+                            else if (asignacionDb.pfid.IsNullOrEmptyOrDbNull() || !asignacionDb.pfid.ToString().Equals(asignacionPf.pfid))
                             {
                                 ContainerApp.db.Persist().UpdateValueIds("alumno_comision", "pfid", asignacionPf.pfid, asignacionDb.id!).Exec().RemoveCache();
                                 asignacionPf.Msg += "Asignacion.pfid DB actualizada. "; 
@@ -212,7 +182,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                             #region Insertar persona / alumno / asignacion en DB
                             personaPfVal.Default().Reset();
                             persist.Insert("persona", personaPfVal);
-                            var alumnoVal = ContainerApp.db.Values("alumno_comision").
+                            var alumnoVal = ContainerApp.db.Values("alumno").
                                 Set("persona", personaPfVal.Get("id")).
                                 Default().Reset().Insert(persist);
                             ContainerApp.db.Values("alumno_comision").
@@ -225,18 +195,49 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 
                         try
                         {
-                            persist.Transaction().RemoveCache();
+                            if(!persist.sql.IsNullOrEmptyOrDbNull())
+                                persist.Transaction().RemoveCache();
                         } catch(Exception ex)
                         {
                             asignacionPf.Msg += ex.Message;
                             asignacionPf.revisar = true;
                         }
 
-                        infoOC.Add(asignacionPf);
+                        asignacionPfOC.Add(asignacionPf);
                     }
                 }
-               
             }
+
+            ObservableCollection<AsignacionDbItem> asignacionesDbFiltradas = new ObservableCollection<AsignacionDbItem>(asignacionesDb.Values.Where(p => p.existeEnPf));
+
+            asignacionDbOC.Clear();
+            foreach (var asig in asignacionesDbFiltradas)
+            {
+                asignacionDbOC.Add(asig);
+            }
+        }
+
+        private bool CheckFieldToUpdate(string fieldName, Values.Persona personaPfVal, Values.Persona personaDbVal, IDictionary<string, string> dataForm, IDictionary<string, object?> updatePersonaDb, string? pfContains = null)
+        {
+
+            if (personaPfVal.GetOrNull(fieldName).IsNullOrEmptyOrDbNull() || (!pfContains.IsNullOrEmptyOrDbNull() && personaPfVal.Get(fieldName).ToString()!.Contains(pfContains!)))
+            {
+                if (!personaDbVal.GetOrNull(fieldName).IsNullOrEmptyOrDbNull())
+                {
+                    personaPfVal.Set("update_pf", true);
+                    dataForm[fieldName] = personaDbVal.Get(fieldName).ToString()!;
+                }
+                return true;
+            }
+            
+            if (personaDbVal.GetOrNull(fieldName).IsNullOrEmptyOrDbNull())
+            { 
+                updatePersonaDb[fieldName] = personaPfVal.GetOrNull(fieldName);
+                return true;
+            }
+
+            return false; 
+
         }
 
         async protected Task<IDictionary<string, string>> PF_InfoAlumnoFormularioModificacion(HttpClient client, string dni)

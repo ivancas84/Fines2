@@ -173,13 +173,13 @@ namespace Fines2Wpf.Values
                 values.ContainsKey("cuil1") 
                 && values.ContainsKey("cuil2") 
                 && values.ContainsKey("numero_documento")
-                && (!values["cuil1"].IsNullOrEmptyOrDbNull() && !((string)values["cuil1"]!).Equals("0") && ((string)values["cuil1"]!).Length == 2)
-                && (!values["cuil2"].IsNullOrEmptyOrDbNull() && !((string)values["cuil2"]!).Equals("0") && ((string)values["cuil2"]!).Length == 1)
+                && (!values["cuil1"].IsNullOrEmptyOrDbNull() && !values["cuil1"].ToString().Equals("0") && values["cuil1"].ToString()!.Length == 2)
+                && (!values["cuil2"].IsNullOrEmptyOrDbNull() && !values["cuil2"].ToString().Equals("0") && values["cuil2"].ToString()!.Length == 1)
                 && (!values["numero_documento"].IsNullOrEmptyOrDbNull() && 
                 (
-                    ((string)values["numero_documento"]!).Length == 8
-                    || ((string)values["numero_documento"]!).Length == 7)
-                )
+                    values["numero_documento"].ToString()!.Length == 8
+                    || values["numero_documento"]!.ToString().Length == 7
+                ))
             )
             {
                 values["cuil"] = values["cuil1"]!.ToString() + values["numero_documento"]!.ToString() + values["cuil2"]!.ToString();
