@@ -145,7 +145,7 @@ namespace SqlOrganize
             return _ref;
         }
 
-        public List<Field> FieldOor()
+        public List<Field> FieldsOor()
         {
 
             if (_oor != null)
@@ -156,7 +156,7 @@ namespace SqlOrganize
             return _oor!;
         }
 
-        public List<Field> FieldOm()
+        public List<Field> FieldsOm()
         {
 
             if (_om != null)

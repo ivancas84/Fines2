@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SqlOrganize.Exceptions;
 using System.Data.Common;
-using System.Runtime.CompilerServices;
 using Utils;
 
 namespace SqlOrganize
