@@ -53,8 +53,8 @@ namespace Fines2Model3.Data
                 case "descripcion":
                     if (_descripcion == null)
                         return "Debe completar valor.";
-                    if (!_descripcion.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("cargo").Where("$descripcion = @0").Parameters(_descripcion).DictCache();
+                    if (db != null && !_descripcion.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("cargo").Where("$descripcion = @0").Parameters(_descripcion).Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

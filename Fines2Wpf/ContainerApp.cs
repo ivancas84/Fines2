@@ -67,14 +67,7 @@ namespace Fines2Wpf
             // URL of the login page and the login endpoint
             
 
-            // Create an HttpClientHandler to store cookies and maintain session
-            pfHandler = new HttpClientHandler
-            {
-                CookieContainer = new CookieContainer(),
-                UseCookies = true,
-                UseDefaultCredentials = false,
-                AllowAutoRedirect = true // Allow automatic redirection
-            };
+         
         }
 
     }

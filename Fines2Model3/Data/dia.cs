@@ -59,8 +59,8 @@ namespace Fines2Model3.Data
                 case "numero":
                     if (_numero == null)
                         return "Debe completar valor.";
-                    if (!_numero.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("dia").Where("$numero = @0").Parameters(_numero).DictCache();
+                    if (db != null && !_numero.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("dia").Where("$numero = @0").Parameters(_numero).Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -69,8 +69,8 @@ namespace Fines2Model3.Data
                 case "dia":
                     if (_dia == null)
                         return "Debe completar valor.";
-                    if (!_dia.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("dia").Where("$dia = @0").Parameters(_dia).DictCache();
+                    if (db != null && !_dia.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("dia").Where("$dia = @0").Parameters(_dia).Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

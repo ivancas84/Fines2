@@ -79,6 +79,15 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             personaGroupBox.DataContext = new Data_persona(ContainerApp.db);
             #endregion
 
+            #region sexoComboBox
+            sexoComboBox.SelectedValuePath = "Key";
+            sexoComboBox.DisplayMemberPath = "Value";
+            sexoComboBox.Items.Add(new KeyValuePair<byte?, string>(null, "(No seleccionado)")); //quitar esta linea si no permite valor null
+            sexoComboBox.Items.Add(new KeyValuePair<byte, string>(1, "Masculino"));
+            sexoComboBox.Items.Add(new KeyValuePair<byte, string>(2, "Femenino"));
+            sexoComboBox.Items.Add(new KeyValuePair<byte, string>(3, "Otro"));
+            #endregion
+
             #region documentacion_inscripcion
             documentacionInscripcionComboBox.SelectedValuePath = "Key";
             documentacionInscripcionComboBox.DisplayMemberPath = "Value";
@@ -1140,6 +1149,10 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     .Show();
         }
 
+        private void GuardarPfButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
     public class EstadoData
@@ -1155,7 +1168,9 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         }
     }
 
+  
 
-   
+
+
 
 }

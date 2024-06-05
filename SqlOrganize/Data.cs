@@ -32,7 +32,10 @@ namespace SqlOrganize
             }
         }
 
-        protected abstract string ValidateField(string columnName);
+        protected virtual string ValidateField(string columnName)
+        {
+            return "";
+        }
 
         /// <summary>
         /// Verificar error en propiedades

@@ -89,6 +89,14 @@
                     <TextBlock>
                          <Hyperlink NavigateUri="newwindow://pf_procesar_interfaz_asignaciones" RequestNavigate="Hyperlink_RequestNavigate">Procesar asignaciones programa fines</Hyperlink>
                     </TextBlock>
+                        <ListBox>
+                            <ListBoxItem>Compara alumnos de PF con los de BD.</ListBoxItem>
+                            <ListBoxItem>En función de la comparación realizada puede actualizar datos de PF y/o DB.</ListBoxItem>
+                            <ListBoxItem>Cuando existe un error relevante en la comparación visualiza los datos del alumno para una verificación manual.</ListBoxItem>
+                            <ListBoxItem>Los alumnos que se encunetran en PF y no se encuentran en DB son agregados a DB.</ListBoxItem>
+                            <ListBoxItem>Los alumnos que se encuentran en DB y no están en PF son listados para verificar (puede que existan en otra comisión).</ListBoxItem>
+                            <ListBoxItem>Opcionalmente se puede ingresar el PFID de la comisión, si no se ingresa se procesan todas las comisiones.</ListBoxItem>
+                        </ListBox>
                 </StackPanel>
             </Grid>
         </materialDesign:Card>

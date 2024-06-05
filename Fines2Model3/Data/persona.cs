@@ -230,16 +230,16 @@ namespace Fines2Model3.Data
                 case "numero_documento":
                     if (_numero_documento == null)
                         return "Debe completar valor.";
-                    if (!_numero_documento.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("persona").Where("$numero_documento = @0").Parameters(_numero_documento).DictCache();
+                    if (db != null && !_numero_documento.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("persona").Where("$numero_documento = @0").Parameters(_numero_documento).Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
 
                 case "cuil":
-                    if (!_cuil.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("persona").Where("$cuil = @0").Parameters(_cuil).DictCache();
+                    if (db != null && !_cuil.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("persona").Where("$cuil = @0").Parameters(_cuil).Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -258,8 +258,8 @@ namespace Fines2Model3.Data
                     return "";
 
                 case "email_abc":
-                    if (!_email_abc.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("persona").Where("$email_abc = @0").Parameters(_email_abc).DictCache();
+                    if (db != null && !_email_abc.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("persona").Where("$email_abc = @0").Parameters(_email_abc).Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
