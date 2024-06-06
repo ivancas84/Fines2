@@ -15,6 +15,11 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
         }
 
+        public DetallePersona(Db db, params string[] fieldIds) : base(db, fieldIds)
+        {
+        }
+
+
         protected string? _arch = null;
 
         public string? arch

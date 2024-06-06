@@ -12,6 +12,7 @@ using Utils;
 using HtmlAgilityPack;
 using CommunityToolkit.WinUI.Notifications;
 using WpfUtils;
+using MySqlX.XDevAPI;
 
 
 namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
@@ -24,6 +25,8 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 
         private ObservableCollection<AsignacionPfItem> asignacionPfOC = new();
         private ObservableCollection<AsignacionDbItem> asignacionDbOC = new();
+        HttpClientHandler handler;
+        HttpClient client;
 
         public Window1()
         {
@@ -32,7 +35,19 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             formGroupBox.DataContext = new FormItem();
             asignacionPfDataGrid.ItemsSource = asignacionPfOC;
             asignacionDbDataGrid.ItemsSource = asignacionDbOC;
+            Closing += Window_Closing;
 
+
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Dispose HttpClient and HttpClientHandler
+            if (!client.IsNullOrEmpty())
+                client.Dispose();
+
+            if (!handler.IsNullOrEmpty())
+                handler.Dispose();
         }
 
         private bool CheckToUpdateBoth(string fieldName, Values.Persona personaPfVal, Values.Persona personaDbVal, IDictionary<string, string> dataForm, IDictionary<string, object?> updatePersonaDb, string? pfContains = null)
@@ -184,7 +199,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             return (pfidsComisiones, asignacionesDb);
 
         }
-      
+
         private async void BuscarButton_Click(object sender, RoutedEventArgs e)
         {
             asignacionPfOC.Clear();
@@ -193,18 +208,9 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             var datosIniciales = ConsultarDatosIniciales();
 
 
-            using (var pfHandler = new HttpClientHandler
+            using (handler = ProgramaFines.NewHandler())
             {
-                CookieContainer = new CookieContainer(),
-                UseCookies = true,
-                UseDefaultCredentials = false,
-                AllowAutoRedirect = true // Allow automatic redirection
-            })
-            {
-
-
-
-                using (HttpClient client = new HttpClient(pfHandler))
+                using (client = new HttpClient(handler))
                 {
                     await ProgramaFines.PF_Login(client);
 
@@ -357,7 +363,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                         }
                     }
 
-                 
+
                 }
             }
 

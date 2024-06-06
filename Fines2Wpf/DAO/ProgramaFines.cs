@@ -156,5 +156,16 @@ namespace Fines2Model3.DAO
             ContainerApp.pfHandler.CookieContainer = new CookieContainer();
         }
 
+        public static HttpClientHandler NewHandler ()
+        {
+            return new HttpClientHandler
+            {
+                CookieContainer = new CookieContainer(),
+                UseCookies = true,
+                UseDefaultCredentials = false,
+                AllowAutoRedirect = true // Allow automatic redirection
+            };
+        }
+
     }
 }

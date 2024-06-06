@@ -235,7 +235,10 @@ Margin = "5,10">_Nacionalidad:</Label>
   Text="{Binding nacionalidad, ValidatesOnDataErrors=True}"
   Margin = "5,10"></TextBox>
 
-                    <StackPanel Grid.Row = "5" Grid.ColumnSpan = "4">
+                    <StackPanel 
+                        Orientation="Horizontal"
+                        Grid.Row = "5" 
+                        Grid.ColumnSpan = "4">
                         <Button 
                             Style="{DynamicResource MaterialDesignRaisedAccentButton}"
                             Content = "_Guardar..." 
@@ -597,6 +600,9 @@ Margin = "5,10">_Nacionalidad:</Label>
                                 ItemsSource="{Binding Source={StaticResource estados}}">
                             </DataGridComboBoxColumn>
 
+                            <DataGridTextColumn Header="pfid" IsReadOnly="True" Binding="{Binding pfid}"></DataGridTextColumn>
+
+
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -739,7 +745,7 @@ Margin = "5,10">_Nacionalidad:</Label>
             <GroupBox Name="detallePersonaGroupBox" 
                       Grid.Row="5"
                       Panel.ZIndex="1"
-                      Header="Asignaciones"
+                      Header="Legajo"
                       Margin="16"
 	                  materialDesign:ElevationAssist.Elevation="Dp3">
                 <StackPanel>

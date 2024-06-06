@@ -1,6 +1,8 @@
 ﻿
 using CommunityToolkit.WinUI.Notifications;
+using Fines2Model3.DAO;
 using Fines2Model3.Data;
+using Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre;
 using Microsoft.Win32;
 using MimeTypes;
 using SqlOrganize;
@@ -11,7 +13,9 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -30,6 +34,11 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
     /// </summary>
     public partial class Window1 : Window
     {
+        #region pf connection
+        HttpClientHandler handler;
+        HttpClient client;
+        #endregion
+
         private DAO.Comision comisionDAO = new(); //objeto de acceso a datos de comision
         private DAO.Curso cursoDAO = new(); //objeto de acceso a datos de curso
         private DAO.Calificacion calificacionDAO = new(); //objeto de acceso a datos de calificacion
@@ -152,7 +161,20 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             #region detallePersonaGroupBox
             detallePersonaDataGrid.ItemsSource = detallePersonaOC;
             #endregion
+
+            Closing += Window_Closing;
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Dispose HttpClient and HttpClientHandler
+            if (!client.IsNullOrEmpty())
+                client.Dispose();
+
+            if (!handler.IsNullOrEmpty())
+                handler.Dispose();
+        }
+
 
         private void SetPersonaGroupBox(Data_persona? persona = null)
         {
@@ -321,31 +343,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             SetAlumnoGroupBox();
         }
 
-        private void GuardarPersonaButton_Click(object sender, RoutedEventArgs e)
-        {
-            var persona = (Data_persona)personaGroupBox.DataContext;
-            if (persona.Error.IsNullOrEmpty())
-            {
-                var per = (Data_persona)personaGroupBox.DataContext;
-                
-                try
-                {
-                    ContainerApp.db.Persist().Persist("persona", per).Exec().RemoveCache();
-                    var alu = (Data_alumno)alumnoGroupBox.DataContext;
-                    MessageBox.Show("Registro de persona realizado");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Verificar formulario: " + persona.Error);
-            }
-            return;
-
-        }
+ 
 
         private void GuardarAlumnoButton_Click(object sender, RoutedEventArgs e)
         {
@@ -854,7 +852,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     dp.descripcion = dp.descripcion.IsNullOrEmptyOrDbNull() ? dp.archivo__name : dp.descripcion;
                     dp.persona = alu.persona;
 
-                    EntityValues archivoVal = ContainerApp.db.Values("file", "archivo").Set(dp);
+                    EntityValues archivoVal = ContainerApp.db.Values("file", "archivo").Set(dp).Default();
                     
                     ContainerApp.db.Persist().Persist(archivoVal)
                         .Persist("detalle_persona", dp)
@@ -874,7 +872,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
         private void AgregarArchivo_Click(object sender, RoutedEventArgs e)
         {
-            var a = new DetallePersona(ContainerApp.db);
+            var a = new DetallePersona(ContainerApp.db, "archivo");
             var alumno = (Data_alumno)alumnoGroupBox.DataContext;
             a.persona = alumno.id;
             detallePersonaOC.Add(a);
@@ -1149,10 +1147,90 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     .Show();
         }
 
-        private void GuardarPfButton_Click(object sender, RoutedEventArgs e)
+        #region eventos persona
+        private void GuardarPersonaButton_Click(object sender, RoutedEventArgs e)
         {
+            var persona = (Data_persona)personaGroupBox.DataContext;
+            if (persona.Error.IsNullOrEmpty())
+            {
+                var per = (Data_persona)personaGroupBox.DataContext;
+
+                try
+                {
+                    ContainerApp.db.Persist().Persist("persona", per).Exec().RemoveCache();
+                    var alu = (Data_alumno)alumnoGroupBox.DataContext;
+                    MessageBox.Show("Registro de persona realizado");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Verificar formulario: " + persona.Error);
+            }
+            return;
 
         }
+
+
+        private async void GuardarPfButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+
+                var persona = (Data_persona)personaGroupBox.DataContext;
+
+                using (handler = ProgramaFines.NewHandler())
+                {
+                    using (client = new HttpClient(handler))
+                    {
+                        await ProgramaFines.PF_Login(client);
+
+                        //Obtener datos del alumno del formulario de modificacion pf
+                        IDictionary<string, string> dataForm = await ProgramaFines.PF_InfoAlumnoFormularioModificacion(client, persona.numero_documento);
+
+                        if (!dataForm.ContainsKey("nombre"))
+                            throw new Exception("No se pueden obtener datos del PF, debe revisarse desde el PF");
+
+                        dataForm["nombre"] = persona.nombres!;
+                        dataForm["apellido"] = persona.apellidos!;
+                        dataForm["cuil1"] = persona.cuil1?.ToString() ?? "0";
+                        dataForm["cuil2"] = persona.cuil2?.ToString() ?? "0";
+                        dataForm["direccion"] = persona.descripcion_domicilio ?? "";
+                        dataForm["departamento"] = persona.departamento ?? "";
+                        dataForm["localidad"] = persona.localidad ?? "";
+                        dataForm["partido"] = persona.partido ?? "";
+                        dataForm["nacionalidad"] = persona.nacionalidad ?? "";
+                        dataForm["email"] = persona.email ?? "";
+                        dataForm["cod_area"] = persona.codigo_area ?? "";
+                        dataForm["nro_telefono"] = persona.telefono ?? "";
+                        if (!persona.fecha_nacimiento.IsNullOrEmpty())
+                        {
+                            dataForm["dia_nac"] = ((DateTime)persona.fecha_nacimiento!).Day.ToString();
+                            dataForm["mes_nac"] = ((DateTime)persona.fecha_nacimiento!).Month.ToString();
+                            dataForm["ano_nac"] = ((DateTime)persona.fecha_nacimiento!).Year.ToString(); ;
+                        }
+                        dataForm["sexo"] = persona.sexo?.ToString() ?? "1";
+
+                        await ProgramaFines.PF_ActualizarFormularioAlumno(client, dataForm);
+
+                        new ToastContentBuilder()
+                                        .AddText("Registro PF")
+                                        .AddText("Registro PF realizado correctamente")
+                                    .Show();
+                    }
+                }
+            } catch (Exception ex)
+            {
+                ToastUtils.ShowExceptionMessageWithFileNameAndLineNumber(ex, "Error al actualizar PF");
+            }
+        }
+
+        #endregion
+
+     
     }
 
     public class EstadoData
