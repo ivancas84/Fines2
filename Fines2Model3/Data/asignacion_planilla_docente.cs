@@ -14,17 +14,19 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_asignacion_planilla_docente(Db db)
+        public Data_asignacion_planilla_docente(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("asignacion_planilla_docente").GetDefault("id");
-            _insertado = (DateTime?)db!.Values("asignacion_planilla_docente").GetDefault("insertado");
-            _reclamo = (bool?)db!.Values("asignacion_planilla_docente").GetDefault("reclamo");
+            EntityValues val = db!.Values("asignacion_planilla_docente");
+            _id = (string?)val.GetDefault("id");
+            _insertado = (DateTime?)val.GetDefault("insertado");
+            _reclamo = (bool?)val.GetDefault("reclamo");
         }
 
         public string? Label { get; set; }

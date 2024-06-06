@@ -14,16 +14,18 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_contralor(Db db)
+        public Data_contralor(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("contralor").GetDefault("id");
-            _insertado = (DateTime?)db!.Values("contralor").GetDefault("insertado");
+            EntityValues val = db!.Values("contralor");
+            _id = (string?)val.GetDefault("id");
+            _insertado = (DateTime?)val.GetDefault("insertado");
         }
 
         public string? Label { get; set; }

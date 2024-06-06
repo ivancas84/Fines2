@@ -14,15 +14,17 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_centro_educativo(Db db)
+        public Data_centro_educativo(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("centro_educativo").GetDefault("id");
+            EntityValues val = db!.Values("centro_educativo");
+            _id = (string?)val.GetDefault("id");
         }
 
         public string? Label { get; set; }
@@ -74,8 +76,8 @@ namespace Fines2Model3.Data
                     return "";
 
                 case "cue":
-                    if (db != null && !_cue.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("centro_educativo").Where("$cue = @0").Parameters(_cue).Dict();
+                    if (!_cue.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("centro_educativo").Where("$cue = @0").Parameters(_cue).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

@@ -14,17 +14,19 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_detalle_persona(Db db)
+        public Data_detalle_persona(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("detalle_persona").GetDefault("id");
-            _creado = (DateTime?)db!.Values("detalle_persona").GetDefault("creado");
-            _fecha = (DateTime?)db!.Values("detalle_persona").GetDefault("fecha");
+            EntityValues val = db!.Values("detalle_persona");
+            _id = (string?)val.GetDefault("id");
+            _creado = (DateTime?)val.GetDefault("creado");
+            _fecha = (DateTime?)val.GetDefault("fecha");
         }
 
         public string? Label { get; set; }

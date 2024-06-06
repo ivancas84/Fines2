@@ -14,17 +14,19 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_alumno_comision(Db db)
+        public Data_alumno_comision(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("alumno_comision").GetDefault("id");
-            _creado = (DateTime?)db!.Values("alumno_comision").GetDefault("creado");
-            _estado = (string?)db!.Values("alumno_comision").GetDefault("estado");
+            EntityValues val = db!.Values("alumno_comision");
+            _id = (string?)val.GetDefault("id");
+            _creado = (DateTime?)val.GetDefault("creado");
+            _estado = (string?)val.GetDefault("estado");
         }
 
         public string? Label { get; set; }

@@ -14,15 +14,17 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_domicilio(Db db)
+        public Data_domicilio(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("domicilio").GetDefault("id");
+            EntityValues val = db!.Values("domicilio");
+            _id = (string?)val.GetDefault("id");
         }
 
         public string? Label { get; set; }

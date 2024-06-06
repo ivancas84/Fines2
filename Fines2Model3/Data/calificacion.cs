@@ -14,16 +14,18 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_calificacion(Db db)
+        public Data_calificacion(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("calificacion").GetDefault("id");
-            _archivado = (bool?)db!.Values("calificacion").GetDefault("archivado");
+            EntityValues val = db!.Values("calificacion");
+            _id = (string?)val.GetDefault("id");
+            _archivado = (bool?)val.GetDefault("archivado");
         }
 
         public string? Label { get; set; }

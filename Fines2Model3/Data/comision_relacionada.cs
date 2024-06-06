@@ -14,15 +14,17 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_comision_relacionada(Db db)
+        public Data_comision_relacionada(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("comision_relacionada").GetDefault("id");
+            EntityValues val = db!.Values("comision_relacionada");
+            _id = (string?)val.GetDefault("id");
         }
 
         public string? Label { get; set; }

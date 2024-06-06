@@ -14,16 +14,18 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_telefono(Db db)
+        public Data_telefono(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("telefono").GetDefault("id");
-            _insertado = (DateTime?)db!.Values("telefono").GetDefault("insertado");
+            EntityValues val = db!.Values("telefono");
+            _id = (string?)val.GetDefault("id");
+            _insertado = (DateTime?)val.GetDefault("insertado");
         }
 
         public string? Label { get; set; }

@@ -12,60 +12,70 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_disposicion_pendiente_r (Db db) : base(db)
+        public Data_disposicion_pendiente_r (Db db, bool init = true) : base(db, init)
         {
         }
 
-        public Data_disposicion_pendiente_r (Db db, params string[] fieldIds) : this(db)
+        public Data_disposicion_pendiente_r (Db db, bool init = true, params string[] fieldIds) : this(db, init)
         {
             Init(fieldIds);
         }
 
         protected void Init(params string[] fieldIds)
         {
+            EntityValues val;
             foreach(string fieldId in fieldIds)
             {
                 switch(fieldId)
                 {
                     case "disposicion":
-                        disposicion__id = (string?)db!.Values("disposicion").GetDefault("id");
+                        val = db!.Values("disposicion");
+                        disposicion__id = (string?)val.GetDefault("id");
                     break;
                     case "asignatura":
-                        asignatura__id = (string?)db!.Values("asignatura").GetDefault("id");
+                        val = db!.Values("asignatura");
+                        asignatura__id = (string?)val.GetDefault("id");
                     break;
                     case "planificacion":
-                        planificacion__id = (string?)db!.Values("planificacion").GetDefault("id");
+                        val = db!.Values("planificacion");
+                        planificacion__id = (string?)val.GetDefault("id");
                     break;
                     case "plan":
-                        plan__id = (string?)db!.Values("plan").GetDefault("id");
+                        val = db!.Values("plan");
+                        plan__id = (string?)val.GetDefault("id");
                     break;
                     case "alumno":
-                        alumno__id = (string?)db!.Values("alumno").GetDefault("id");
-                        alumno__anio_ingreso = (string?)db!.Values("alumno").GetDefault("anio_ingreso");
-                        alumno__semestre_ingreso = (short?)db!.Values("alumno").GetDefault("semestre_ingreso");
-                        alumno__tiene_dni = (bool?)db!.Values("alumno").GetDefault("tiene_dni");
-                        alumno__tiene_constancia = (bool?)db!.Values("alumno").GetDefault("tiene_constancia");
-                        alumno__tiene_certificado = (bool?)db!.Values("alumno").GetDefault("tiene_certificado");
-                        alumno__previas_completas = (bool?)db!.Values("alumno").GetDefault("previas_completas");
-                        alumno__tiene_partida = (bool?)db!.Values("alumno").GetDefault("tiene_partida");
-                        alumno__creado = (DateTime?)db!.Values("alumno").GetDefault("creado");
-                        alumno__confirmado_direccion = (bool?)db!.Values("alumno").GetDefault("confirmado_direccion");
+                        val = db!.Values("alumno");
+                        alumno__id = (string?)val.GetDefault("id");
+                        alumno__anio_ingreso = (string?)val.GetDefault("anio_ingreso");
+                        alumno__semestre_ingreso = (short?)val.GetDefault("semestre_ingreso");
+                        alumno__tiene_dni = (bool?)val.GetDefault("tiene_dni");
+                        alumno__tiene_constancia = (bool?)val.GetDefault("tiene_constancia");
+                        alumno__tiene_certificado = (bool?)val.GetDefault("tiene_certificado");
+                        alumno__previas_completas = (bool?)val.GetDefault("previas_completas");
+                        alumno__tiene_partida = (bool?)val.GetDefault("tiene_partida");
+                        alumno__creado = (DateTime?)val.GetDefault("creado");
+                        alumno__confirmado_direccion = (bool?)val.GetDefault("confirmado_direccion");
                     break;
                     case "persona":
-                        persona__id = (string?)db!.Values("persona").GetDefault("id");
-                        persona__alta = (DateTime?)db!.Values("persona").GetDefault("alta");
-                        persona__telefono_verificado = (bool?)db!.Values("persona").GetDefault("telefono_verificado");
-                        persona__email_verificado = (bool?)db!.Values("persona").GetDefault("email_verificado");
-                        persona__info_verificada = (bool?)db!.Values("persona").GetDefault("info_verificada");
+                        val = db!.Values("persona");
+                        persona__id = (string?)val.GetDefault("id");
+                        persona__alta = (DateTime?)val.GetDefault("alta");
+                        persona__telefono_verificado = (bool?)val.GetDefault("telefono_verificado");
+                        persona__email_verificado = (bool?)val.GetDefault("email_verificado");
+                        persona__info_verificada = (bool?)val.GetDefault("info_verificada");
                     break;
                     case "domicilio":
-                        domicilio__id = (string?)db!.Values("domicilio").GetDefault("id");
+                        val = db!.Values("domicilio");
+                        domicilio__id = (string?)val.GetDefault("id");
                     break;
-                    case "plan_alu":
-                        plan_alu__id = (string?)db!.Values("plan").GetDefault("id");
+                    case "plan_alumno":
+                        val = db!.Values("plan");
+                        plan_alumno__id = (string?)val.GetDefault("id");
                     break;
                     case "resolucion_inscripcion":
-                        resolucion_inscripcion__id = (string?)db!.Values("resolucion").GetDefault("id");
+                        val = db!.Values("resolucion");
+                        resolucion_inscripcion__id = (string?)val.GetDefault("id");
                     break;
                 }
             }
@@ -764,47 +774,47 @@ namespace Fines2Model3.Data
             set { _domicilio__localidad = value; NotifyPropertyChanged(nameof(domicilio__localidad)); }
         }
 
-        public string? plan_alu__Label { get; set; }
+        public string? plan_alumno__Label { get; set; }
 
-        protected string? _plan_alu__id = null;
+        protected string? _plan_alumno__id = null;
 
-        [JsonProperty("plan_alu-id")]
-        public string? plan_alu__id
+        [JsonProperty("plan_alumno-id")]
+        public string? plan_alumno__id
         {
-            get { return _plan_alu__id; }
-            set { _plan_alu__id = value; alumno__plan = value; NotifyPropertyChanged(nameof(plan_alu__id)); }
+            get { return _plan_alumno__id; }
+            set { _plan_alumno__id = value; alumno__plan = value; NotifyPropertyChanged(nameof(plan_alumno__id)); }
         }
-        protected string? _plan_alu__orientacion = null;
+        protected string? _plan_alumno__orientacion = null;
 
-        [JsonProperty("plan_alu-orientacion")]
-        public string? plan_alu__orientacion
+        [JsonProperty("plan_alumno-orientacion")]
+        public string? plan_alumno__orientacion
         {
-            get { return _plan_alu__orientacion; }
-            set { _plan_alu__orientacion = value; NotifyPropertyChanged(nameof(plan_alu__orientacion)); }
+            get { return _plan_alumno__orientacion; }
+            set { _plan_alumno__orientacion = value; NotifyPropertyChanged(nameof(plan_alumno__orientacion)); }
         }
-        protected string? _plan_alu__resolucion = null;
+        protected string? _plan_alumno__resolucion = null;
 
-        [JsonProperty("plan_alu-resolucion")]
-        public string? plan_alu__resolucion
+        [JsonProperty("plan_alumno-resolucion")]
+        public string? plan_alumno__resolucion
         {
-            get { return _plan_alu__resolucion; }
-            set { _plan_alu__resolucion = value; NotifyPropertyChanged(nameof(plan_alu__resolucion)); }
+            get { return _plan_alumno__resolucion; }
+            set { _plan_alumno__resolucion = value; NotifyPropertyChanged(nameof(plan_alumno__resolucion)); }
         }
-        protected string? _plan_alu__distribucion_horaria = null;
+        protected string? _plan_alumno__distribucion_horaria = null;
 
-        [JsonProperty("plan_alu-distribucion_horaria")]
-        public string? plan_alu__distribucion_horaria
+        [JsonProperty("plan_alumno-distribucion_horaria")]
+        public string? plan_alumno__distribucion_horaria
         {
-            get { return _plan_alu__distribucion_horaria; }
-            set { _plan_alu__distribucion_horaria = value; NotifyPropertyChanged(nameof(plan_alu__distribucion_horaria)); }
+            get { return _plan_alumno__distribucion_horaria; }
+            set { _plan_alumno__distribucion_horaria = value; NotifyPropertyChanged(nameof(plan_alumno__distribucion_horaria)); }
         }
-        protected string? _plan_alu__pfid = null;
+        protected string? _plan_alumno__pfid = null;
 
-        [JsonProperty("plan_alu-pfid")]
-        public string? plan_alu__pfid
+        [JsonProperty("plan_alumno-pfid")]
+        public string? plan_alumno__pfid
         {
-            get { return _plan_alu__pfid; }
-            set { _plan_alu__pfid = value; NotifyPropertyChanged(nameof(plan_alu__pfid)); }
+            get { return _plan_alumno__pfid; }
+            set { _plan_alumno__pfid = value; NotifyPropertyChanged(nameof(plan_alumno__pfid)); }
         }
 
         public string? resolucion_inscripcion__Label { get; set; }

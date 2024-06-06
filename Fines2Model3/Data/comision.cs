@@ -14,16 +14,18 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_comision(Db db)
+        public Data_comision(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("comision").GetDefault("id");
-            _alta = (DateTime?)db!.Values("comision").GetDefault("alta");
+            EntityValues val = db!.Values("comision");
+            _id = (string?)val.GetDefault("id");
+            _alta = (DateTime?)val.GetDefault("alta");
         }
 
         public string? Label { get; set; }

@@ -14,17 +14,19 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_email(Db db)
+        public Data_email(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("email").GetDefault("id");
-            _verificado = (bool?)db!.Values("email").GetDefault("verificado");
-            _insertado = (DateTime?)db!.Values("email").GetDefault("insertado");
+            EntityValues val = db!.Values("email");
+            _id = (string?)val.GetDefault("id");
+            _verificado = (bool?)val.GetDefault("verificado");
+            _insertado = (DateTime?)val.GetDefault("insertado");
         }
 
         public string? Label { get; set; }

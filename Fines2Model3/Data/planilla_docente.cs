@@ -14,16 +14,18 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_planilla_docente(Db db)
+        public Data_planilla_docente(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("planilla_docente").GetDefault("id");
-            _insertado = (DateTime?)db!.Values("planilla_docente").GetDefault("insertado");
+            EntityValues val = db!.Values("planilla_docente");
+            _id = (string?)val.GetDefault("id");
+            _insertado = (DateTime?)val.GetDefault("insertado");
         }
 
         public string? Label { get; set; }

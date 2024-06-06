@@ -14,15 +14,17 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_tipo_sede(Db db)
+        public Data_tipo_sede(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("tipo_sede").GetDefault("id");
+            EntityValues val = db!.Values("tipo_sede");
+            _id = (string?)val.GetDefault("id");
         }
 
         public string? Label { get; set; }
@@ -53,8 +55,8 @@ namespace Fines2Model3.Data
                 case "descripcion":
                     if (_descripcion == null)
                         return "Debe completar valor.";
-                    if (db != null && !_descripcion.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("tipo_sede").Where("$descripcion = @0").Parameters(_descripcion).Dict();
+                    if (!_descripcion.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("tipo_sede").Where("$descripcion = @0").Parameters(_descripcion).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

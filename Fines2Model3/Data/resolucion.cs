@@ -14,15 +14,17 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_resolucion(Db db)
+        public Data_resolucion(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("resolucion").GetDefault("id");
+            EntityValues val = db!.Values("resolucion");
+            _id = (string?)val.GetDefault("id");
         }
 
         public string? Label { get; set; }

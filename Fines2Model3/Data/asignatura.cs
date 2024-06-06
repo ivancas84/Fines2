@@ -14,15 +14,17 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_asignatura(Db db)
+        public Data_asignatura(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("asignatura").GetDefault("id");
+            EntityValues val = db!.Values("asignatura");
+            _id = (string?)val.GetDefault("id");
         }
 
         public string? Label { get; set; }
@@ -77,8 +79,8 @@ namespace Fines2Model3.Data
                 case "nombre":
                     if (_nombre == null)
                         return "Debe completar valor.";
-                    if (db != null && !_nombre.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("asignatura").Where("$nombre = @0").Parameters(_nombre).Dict();
+                    if (!_nombre.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("asignatura").Where("$nombre = @0").Parameters(_nombre).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

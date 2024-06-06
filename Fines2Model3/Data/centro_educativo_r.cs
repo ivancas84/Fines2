@@ -12,23 +12,25 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_centro_educativo_r (Db db) : base(db)
+        public Data_centro_educativo_r (Db db, bool init = true) : base(db, init)
         {
         }
 
-        public Data_centro_educativo_r (Db db, params string[] fieldIds) : this(db)
+        public Data_centro_educativo_r (Db db, bool init = true, params string[] fieldIds) : this(db, init)
         {
             Init(fieldIds);
         }
 
         protected void Init(params string[] fieldIds)
         {
+            EntityValues val;
             foreach(string fieldId in fieldIds)
             {
                 switch(fieldId)
                 {
                     case "domicilio":
-                        domicilio__id = (string?)db!.Values("domicilio").GetDefault("id");
+                        val = db!.Values("domicilio");
+                        domicilio__id = (string?)val.GetDefault("id");
                     break;
                 }
             }

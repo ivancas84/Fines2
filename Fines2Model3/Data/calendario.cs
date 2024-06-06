@@ -14,18 +14,20 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_calendario(Db db)
+        public Data_calendario(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("calendario").GetDefault("id");
-            _anio = (short?)db!.Values("calendario").GetDefault("anio");
-            _semestre = (short?)db!.Values("calendario").GetDefault("semestre");
-            _insertado = (DateTime?)db!.Values("calendario").GetDefault("insertado");
+            EntityValues val = db!.Values("calendario");
+            _id = (string?)val.GetDefault("id");
+            _anio = (short?)val.GetDefault("anio");
+            _semestre = (short?)val.GetDefault("semestre");
+            _insertado = (DateTime?)val.GetDefault("insertado");
         }
 
         public string? Label { get; set; }
