@@ -46,9 +46,9 @@ namespace Fines2Model3.Data
                         val = db!.Values("centro_educativo");
                         centro_educativo__id = (string?)val.GetDefault("id");
                     break;
-                    case "domicilio_centro_educativo":
+                    case "domicilio_cen":
                         val = db!.Values("domicilio");
-                        domicilio_centro_educativo__id = (string?)val.GetDefault("id");
+                        domicilio_cen__id = (string?)val.GetDefault("id");
                     break;
                     case "modalidad":
                         val = db!.Values("modalidad");
@@ -417,71 +417,71 @@ namespace Fines2Model3.Data
             set { _centro_educativo__observaciones = value; NotifyPropertyChanged(nameof(centro_educativo__observaciones)); }
         }
 
-        public string? domicilio_centro_educativo__Label { get; set; }
+        public string? domicilio_cen__Label { get; set; }
 
-        protected string? _domicilio_centro_educativo__id = null;
+        protected string? _domicilio_cen__id = null;
 
-        [JsonProperty("domicilio_centro_educativo-id")]
-        public string? domicilio_centro_educativo__id
+        [JsonProperty("domicilio_cen-id")]
+        public string? domicilio_cen__id
         {
-            get { return _domicilio_centro_educativo__id; }
-            set { _domicilio_centro_educativo__id = value; centro_educativo__domicilio = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__id)); }
+            get { return _domicilio_cen__id; }
+            set { _domicilio_cen__id = value; centro_educativo__domicilio = value; NotifyPropertyChanged(nameof(domicilio_cen__id)); }
         }
-        protected string? _domicilio_centro_educativo__calle = null;
+        protected string? _domicilio_cen__calle = null;
 
-        [JsonProperty("domicilio_centro_educativo-calle")]
-        public string? domicilio_centro_educativo__calle
+        [JsonProperty("domicilio_cen-calle")]
+        public string? domicilio_cen__calle
         {
-            get { return _domicilio_centro_educativo__calle; }
-            set { _domicilio_centro_educativo__calle = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__calle)); }
+            get { return _domicilio_cen__calle; }
+            set { _domicilio_cen__calle = value; NotifyPropertyChanged(nameof(domicilio_cen__calle)); }
         }
-        protected string? _domicilio_centro_educativo__entre = null;
+        protected string? _domicilio_cen__entre = null;
 
-        [JsonProperty("domicilio_centro_educativo-entre")]
-        public string? domicilio_centro_educativo__entre
+        [JsonProperty("domicilio_cen-entre")]
+        public string? domicilio_cen__entre
         {
-            get { return _domicilio_centro_educativo__entre; }
-            set { _domicilio_centro_educativo__entre = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__entre)); }
+            get { return _domicilio_cen__entre; }
+            set { _domicilio_cen__entre = value; NotifyPropertyChanged(nameof(domicilio_cen__entre)); }
         }
-        protected string? _domicilio_centro_educativo__numero = null;
+        protected string? _domicilio_cen__numero = null;
 
-        [JsonProperty("domicilio_centro_educativo-numero")]
-        public string? domicilio_centro_educativo__numero
+        [JsonProperty("domicilio_cen-numero")]
+        public string? domicilio_cen__numero
         {
-            get { return _domicilio_centro_educativo__numero; }
-            set { _domicilio_centro_educativo__numero = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__numero)); }
+            get { return _domicilio_cen__numero; }
+            set { _domicilio_cen__numero = value; NotifyPropertyChanged(nameof(domicilio_cen__numero)); }
         }
-        protected string? _domicilio_centro_educativo__piso = null;
+        protected string? _domicilio_cen__piso = null;
 
-        [JsonProperty("domicilio_centro_educativo-piso")]
-        public string? domicilio_centro_educativo__piso
+        [JsonProperty("domicilio_cen-piso")]
+        public string? domicilio_cen__piso
         {
-            get { return _domicilio_centro_educativo__piso; }
-            set { _domicilio_centro_educativo__piso = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__piso)); }
+            get { return _domicilio_cen__piso; }
+            set { _domicilio_cen__piso = value; NotifyPropertyChanged(nameof(domicilio_cen__piso)); }
         }
-        protected string? _domicilio_centro_educativo__departamento = null;
+        protected string? _domicilio_cen__departamento = null;
 
-        [JsonProperty("domicilio_centro_educativo-departamento")]
-        public string? domicilio_centro_educativo__departamento
+        [JsonProperty("domicilio_cen-departamento")]
+        public string? domicilio_cen__departamento
         {
-            get { return _domicilio_centro_educativo__departamento; }
-            set { _domicilio_centro_educativo__departamento = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__departamento)); }
+            get { return _domicilio_cen__departamento; }
+            set { _domicilio_cen__departamento = value; NotifyPropertyChanged(nameof(domicilio_cen__departamento)); }
         }
-        protected string? _domicilio_centro_educativo__barrio = null;
+        protected string? _domicilio_cen__barrio = null;
 
-        [JsonProperty("domicilio_centro_educativo-barrio")]
-        public string? domicilio_centro_educativo__barrio
+        [JsonProperty("domicilio_cen-barrio")]
+        public string? domicilio_cen__barrio
         {
-            get { return _domicilio_centro_educativo__barrio; }
-            set { _domicilio_centro_educativo__barrio = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__barrio)); }
+            get { return _domicilio_cen__barrio; }
+            set { _domicilio_cen__barrio = value; NotifyPropertyChanged(nameof(domicilio_cen__barrio)); }
         }
-        protected string? _domicilio_centro_educativo__localidad = null;
+        protected string? _domicilio_cen__localidad = null;
 
-        [JsonProperty("domicilio_centro_educativo-localidad")]
-        public string? domicilio_centro_educativo__localidad
+        [JsonProperty("domicilio_cen-localidad")]
+        public string? domicilio_cen__localidad
         {
-            get { return _domicilio_centro_educativo__localidad; }
-            set { _domicilio_centro_educativo__localidad = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__localidad)); }
+            get { return _domicilio_cen__localidad; }
+            set { _domicilio_cen__localidad = value; NotifyPropertyChanged(nameof(domicilio_cen__localidad)); }
         }
 
         public string? modalidad__Label { get; set; }

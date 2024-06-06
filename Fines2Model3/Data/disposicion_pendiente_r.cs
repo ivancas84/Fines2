@@ -69,9 +69,9 @@ namespace Fines2Model3.Data
                         val = db!.Values("domicilio");
                         domicilio__id = (string?)val.GetDefault("id");
                     break;
-                    case "plan_alumno":
+                    case "plan_alu":
                         val = db!.Values("plan");
-                        plan_alumno__id = (string?)val.GetDefault("id");
+                        plan_alu__id = (string?)val.GetDefault("id");
                     break;
                     case "resolucion_inscripcion":
                         val = db!.Values("resolucion");
@@ -774,47 +774,47 @@ namespace Fines2Model3.Data
             set { _domicilio__localidad = value; NotifyPropertyChanged(nameof(domicilio__localidad)); }
         }
 
-        public string? plan_alumno__Label { get; set; }
+        public string? plan_alu__Label { get; set; }
 
-        protected string? _plan_alumno__id = null;
+        protected string? _plan_alu__id = null;
 
-        [JsonProperty("plan_alumno-id")]
-        public string? plan_alumno__id
+        [JsonProperty("plan_alu-id")]
+        public string? plan_alu__id
         {
-            get { return _plan_alumno__id; }
-            set { _plan_alumno__id = value; alumno__plan = value; NotifyPropertyChanged(nameof(plan_alumno__id)); }
+            get { return _plan_alu__id; }
+            set { _plan_alu__id = value; alumno__plan = value; NotifyPropertyChanged(nameof(plan_alu__id)); }
         }
-        protected string? _plan_alumno__orientacion = null;
+        protected string? _plan_alu__orientacion = null;
 
-        [JsonProperty("plan_alumno-orientacion")]
-        public string? plan_alumno__orientacion
+        [JsonProperty("plan_alu-orientacion")]
+        public string? plan_alu__orientacion
         {
-            get { return _plan_alumno__orientacion; }
-            set { _plan_alumno__orientacion = value; NotifyPropertyChanged(nameof(plan_alumno__orientacion)); }
+            get { return _plan_alu__orientacion; }
+            set { _plan_alu__orientacion = value; NotifyPropertyChanged(nameof(plan_alu__orientacion)); }
         }
-        protected string? _plan_alumno__resolucion = null;
+        protected string? _plan_alu__resolucion = null;
 
-        [JsonProperty("plan_alumno-resolucion")]
-        public string? plan_alumno__resolucion
+        [JsonProperty("plan_alu-resolucion")]
+        public string? plan_alu__resolucion
         {
-            get { return _plan_alumno__resolucion; }
-            set { _plan_alumno__resolucion = value; NotifyPropertyChanged(nameof(plan_alumno__resolucion)); }
+            get { return _plan_alu__resolucion; }
+            set { _plan_alu__resolucion = value; NotifyPropertyChanged(nameof(plan_alu__resolucion)); }
         }
-        protected string? _plan_alumno__distribucion_horaria = null;
+        protected string? _plan_alu__distribucion_horaria = null;
 
-        [JsonProperty("plan_alumno-distribucion_horaria")]
-        public string? plan_alumno__distribucion_horaria
+        [JsonProperty("plan_alu-distribucion_horaria")]
+        public string? plan_alu__distribucion_horaria
         {
-            get { return _plan_alumno__distribucion_horaria; }
-            set { _plan_alumno__distribucion_horaria = value; NotifyPropertyChanged(nameof(plan_alumno__distribucion_horaria)); }
+            get { return _plan_alu__distribucion_horaria; }
+            set { _plan_alu__distribucion_horaria = value; NotifyPropertyChanged(nameof(plan_alu__distribucion_horaria)); }
         }
-        protected string? _plan_alumno__pfid = null;
+        protected string? _plan_alu__pfid = null;
 
-        [JsonProperty("plan_alumno-pfid")]
-        public string? plan_alumno__pfid
+        [JsonProperty("plan_alu-pfid")]
+        public string? plan_alu__pfid
         {
-            get { return _plan_alumno__pfid; }
-            set { _plan_alumno__pfid = value; NotifyPropertyChanged(nameof(plan_alumno__pfid)); }
+            get { return _plan_alu__pfid; }
+            set { _plan_alu__pfid = value; NotifyPropertyChanged(nameof(plan_alu__pfid)); }
         }
 
         public string? resolucion_inscripcion__Label { get; set; }

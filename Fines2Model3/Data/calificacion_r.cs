@@ -51,9 +51,9 @@ namespace Fines2Model3.Data
                         val = db!.Values("centro_educativo");
                         centro_educativo__id = (string?)val.GetDefault("id");
                     break;
-                    case "domicilio_centro_educativo":
+                    case "domicilio_cen":
                         val = db!.Values("domicilio");
-                        domicilio_centro_educativo__id = (string?)val.GetDefault("id");
+                        domicilio_cen__id = (string?)val.GetDefault("id");
                     break;
                     case "modalidad":
                         val = db!.Values("modalidad");
@@ -99,13 +99,13 @@ namespace Fines2Model3.Data
                         persona__email_verificado = (bool?)val.GetDefault("email_verificado");
                         persona__info_verificada = (bool?)val.GetDefault("info_verificada");
                     break;
-                    case "domicilio_persona":
+                    case "domicilio_per":
                         val = db!.Values("domicilio");
-                        domicilio_persona__id = (string?)val.GetDefault("id");
+                        domicilio_per__id = (string?)val.GetDefault("id");
                     break;
-                    case "plan_alumno":
+                    case "plan_alu":
                         val = db!.Values("plan");
-                        plan_alumno__id = (string?)val.GetDefault("id");
+                        plan_alu__id = (string?)val.GetDefault("id");
                     break;
                     case "resolucion_inscripcion":
                         val = db!.Values("resolucion");
@@ -115,17 +115,17 @@ namespace Fines2Model3.Data
                         val = db!.Values("disposicion");
                         disposicion__id = (string?)val.GetDefault("id");
                     break;
-                    case "asignatura_disposicion":
+                    case "asignatura_dis":
                         val = db!.Values("asignatura");
-                        asignatura_disposicion__id = (string?)val.GetDefault("id");
+                        asignatura_dis__id = (string?)val.GetDefault("id");
                     break;
-                    case "planificacion_disposicion":
+                    case "planificacion_dis":
                         val = db!.Values("planificacion");
-                        planificacion_disposicion__id = (string?)val.GetDefault("id");
+                        planificacion_dis__id = (string?)val.GetDefault("id");
                     break;
-                    case "plan_planificacion_disposicion":
+                    case "plan_pla":
                         val = db!.Values("plan");
-                        plan_planificacion_disposicion__id = (string?)val.GetDefault("id");
+                        plan_pla__id = (string?)val.GetDefault("id");
                     break;
                 }
             }
@@ -538,71 +538,71 @@ namespace Fines2Model3.Data
             set { _centro_educativo__observaciones = value; NotifyPropertyChanged(nameof(centro_educativo__observaciones)); }
         }
 
-        public string? domicilio_centro_educativo__Label { get; set; }
+        public string? domicilio_cen__Label { get; set; }
 
-        protected string? _domicilio_centro_educativo__id = null;
+        protected string? _domicilio_cen__id = null;
 
-        [JsonProperty("domicilio_centro_educativo-id")]
-        public string? domicilio_centro_educativo__id
+        [JsonProperty("domicilio_cen-id")]
+        public string? domicilio_cen__id
         {
-            get { return _domicilio_centro_educativo__id; }
-            set { _domicilio_centro_educativo__id = value; centro_educativo__domicilio = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__id)); }
+            get { return _domicilio_cen__id; }
+            set { _domicilio_cen__id = value; centro_educativo__domicilio = value; NotifyPropertyChanged(nameof(domicilio_cen__id)); }
         }
-        protected string? _domicilio_centro_educativo__calle = null;
+        protected string? _domicilio_cen__calle = null;
 
-        [JsonProperty("domicilio_centro_educativo-calle")]
-        public string? domicilio_centro_educativo__calle
+        [JsonProperty("domicilio_cen-calle")]
+        public string? domicilio_cen__calle
         {
-            get { return _domicilio_centro_educativo__calle; }
-            set { _domicilio_centro_educativo__calle = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__calle)); }
+            get { return _domicilio_cen__calle; }
+            set { _domicilio_cen__calle = value; NotifyPropertyChanged(nameof(domicilio_cen__calle)); }
         }
-        protected string? _domicilio_centro_educativo__entre = null;
+        protected string? _domicilio_cen__entre = null;
 
-        [JsonProperty("domicilio_centro_educativo-entre")]
-        public string? domicilio_centro_educativo__entre
+        [JsonProperty("domicilio_cen-entre")]
+        public string? domicilio_cen__entre
         {
-            get { return _domicilio_centro_educativo__entre; }
-            set { _domicilio_centro_educativo__entre = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__entre)); }
+            get { return _domicilio_cen__entre; }
+            set { _domicilio_cen__entre = value; NotifyPropertyChanged(nameof(domicilio_cen__entre)); }
         }
-        protected string? _domicilio_centro_educativo__numero = null;
+        protected string? _domicilio_cen__numero = null;
 
-        [JsonProperty("domicilio_centro_educativo-numero")]
-        public string? domicilio_centro_educativo__numero
+        [JsonProperty("domicilio_cen-numero")]
+        public string? domicilio_cen__numero
         {
-            get { return _domicilio_centro_educativo__numero; }
-            set { _domicilio_centro_educativo__numero = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__numero)); }
+            get { return _domicilio_cen__numero; }
+            set { _domicilio_cen__numero = value; NotifyPropertyChanged(nameof(domicilio_cen__numero)); }
         }
-        protected string? _domicilio_centro_educativo__piso = null;
+        protected string? _domicilio_cen__piso = null;
 
-        [JsonProperty("domicilio_centro_educativo-piso")]
-        public string? domicilio_centro_educativo__piso
+        [JsonProperty("domicilio_cen-piso")]
+        public string? domicilio_cen__piso
         {
-            get { return _domicilio_centro_educativo__piso; }
-            set { _domicilio_centro_educativo__piso = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__piso)); }
+            get { return _domicilio_cen__piso; }
+            set { _domicilio_cen__piso = value; NotifyPropertyChanged(nameof(domicilio_cen__piso)); }
         }
-        protected string? _domicilio_centro_educativo__departamento = null;
+        protected string? _domicilio_cen__departamento = null;
 
-        [JsonProperty("domicilio_centro_educativo-departamento")]
-        public string? domicilio_centro_educativo__departamento
+        [JsonProperty("domicilio_cen-departamento")]
+        public string? domicilio_cen__departamento
         {
-            get { return _domicilio_centro_educativo__departamento; }
-            set { _domicilio_centro_educativo__departamento = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__departamento)); }
+            get { return _domicilio_cen__departamento; }
+            set { _domicilio_cen__departamento = value; NotifyPropertyChanged(nameof(domicilio_cen__departamento)); }
         }
-        protected string? _domicilio_centro_educativo__barrio = null;
+        protected string? _domicilio_cen__barrio = null;
 
-        [JsonProperty("domicilio_centro_educativo-barrio")]
-        public string? domicilio_centro_educativo__barrio
+        [JsonProperty("domicilio_cen-barrio")]
+        public string? domicilio_cen__barrio
         {
-            get { return _domicilio_centro_educativo__barrio; }
-            set { _domicilio_centro_educativo__barrio = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__barrio)); }
+            get { return _domicilio_cen__barrio; }
+            set { _domicilio_cen__barrio = value; NotifyPropertyChanged(nameof(domicilio_cen__barrio)); }
         }
-        protected string? _domicilio_centro_educativo__localidad = null;
+        protected string? _domicilio_cen__localidad = null;
 
-        [JsonProperty("domicilio_centro_educativo-localidad")]
-        public string? domicilio_centro_educativo__localidad
+        [JsonProperty("domicilio_cen-localidad")]
+        public string? domicilio_cen__localidad
         {
-            get { return _domicilio_centro_educativo__localidad; }
-            set { _domicilio_centro_educativo__localidad = value; NotifyPropertyChanged(nameof(domicilio_centro_educativo__localidad)); }
+            get { return _domicilio_cen__localidad; }
+            set { _domicilio_cen__localidad = value; NotifyPropertyChanged(nameof(domicilio_cen__localidad)); }
         }
 
         public string? modalidad__Label { get; set; }
@@ -1282,114 +1282,114 @@ namespace Fines2Model3.Data
             set { _persona__anio_nacimiento = value; NotifyPropertyChanged(nameof(persona__anio_nacimiento)); }
         }
 
-        public string? domicilio_persona__Label { get; set; }
+        public string? domicilio_per__Label { get; set; }
 
-        protected string? _domicilio_persona__id = null;
+        protected string? _domicilio_per__id = null;
 
-        [JsonProperty("domicilio_persona-id")]
-        public string? domicilio_persona__id
+        [JsonProperty("domicilio_per-id")]
+        public string? domicilio_per__id
         {
-            get { return _domicilio_persona__id; }
-            set { _domicilio_persona__id = value; persona__domicilio = value; NotifyPropertyChanged(nameof(domicilio_persona__id)); }
+            get { return _domicilio_per__id; }
+            set { _domicilio_per__id = value; persona__domicilio = value; NotifyPropertyChanged(nameof(domicilio_per__id)); }
         }
-        protected string? _domicilio_persona__calle = null;
+        protected string? _domicilio_per__calle = null;
 
-        [JsonProperty("domicilio_persona-calle")]
-        public string? domicilio_persona__calle
+        [JsonProperty("domicilio_per-calle")]
+        public string? domicilio_per__calle
         {
-            get { return _domicilio_persona__calle; }
-            set { _domicilio_persona__calle = value; NotifyPropertyChanged(nameof(domicilio_persona__calle)); }
+            get { return _domicilio_per__calle; }
+            set { _domicilio_per__calle = value; NotifyPropertyChanged(nameof(domicilio_per__calle)); }
         }
-        protected string? _domicilio_persona__entre = null;
+        protected string? _domicilio_per__entre = null;
 
-        [JsonProperty("domicilio_persona-entre")]
-        public string? domicilio_persona__entre
+        [JsonProperty("domicilio_per-entre")]
+        public string? domicilio_per__entre
         {
-            get { return _domicilio_persona__entre; }
-            set { _domicilio_persona__entre = value; NotifyPropertyChanged(nameof(domicilio_persona__entre)); }
+            get { return _domicilio_per__entre; }
+            set { _domicilio_per__entre = value; NotifyPropertyChanged(nameof(domicilio_per__entre)); }
         }
-        protected string? _domicilio_persona__numero = null;
+        protected string? _domicilio_per__numero = null;
 
-        [JsonProperty("domicilio_persona-numero")]
-        public string? domicilio_persona__numero
+        [JsonProperty("domicilio_per-numero")]
+        public string? domicilio_per__numero
         {
-            get { return _domicilio_persona__numero; }
-            set { _domicilio_persona__numero = value; NotifyPropertyChanged(nameof(domicilio_persona__numero)); }
+            get { return _domicilio_per__numero; }
+            set { _domicilio_per__numero = value; NotifyPropertyChanged(nameof(domicilio_per__numero)); }
         }
-        protected string? _domicilio_persona__piso = null;
+        protected string? _domicilio_per__piso = null;
 
-        [JsonProperty("domicilio_persona-piso")]
-        public string? domicilio_persona__piso
+        [JsonProperty("domicilio_per-piso")]
+        public string? domicilio_per__piso
         {
-            get { return _domicilio_persona__piso; }
-            set { _domicilio_persona__piso = value; NotifyPropertyChanged(nameof(domicilio_persona__piso)); }
+            get { return _domicilio_per__piso; }
+            set { _domicilio_per__piso = value; NotifyPropertyChanged(nameof(domicilio_per__piso)); }
         }
-        protected string? _domicilio_persona__departamento = null;
+        protected string? _domicilio_per__departamento = null;
 
-        [JsonProperty("domicilio_persona-departamento")]
-        public string? domicilio_persona__departamento
+        [JsonProperty("domicilio_per-departamento")]
+        public string? domicilio_per__departamento
         {
-            get { return _domicilio_persona__departamento; }
-            set { _domicilio_persona__departamento = value; NotifyPropertyChanged(nameof(domicilio_persona__departamento)); }
+            get { return _domicilio_per__departamento; }
+            set { _domicilio_per__departamento = value; NotifyPropertyChanged(nameof(domicilio_per__departamento)); }
         }
-        protected string? _domicilio_persona__barrio = null;
+        protected string? _domicilio_per__barrio = null;
 
-        [JsonProperty("domicilio_persona-barrio")]
-        public string? domicilio_persona__barrio
+        [JsonProperty("domicilio_per-barrio")]
+        public string? domicilio_per__barrio
         {
-            get { return _domicilio_persona__barrio; }
-            set { _domicilio_persona__barrio = value; NotifyPropertyChanged(nameof(domicilio_persona__barrio)); }
+            get { return _domicilio_per__barrio; }
+            set { _domicilio_per__barrio = value; NotifyPropertyChanged(nameof(domicilio_per__barrio)); }
         }
-        protected string? _domicilio_persona__localidad = null;
+        protected string? _domicilio_per__localidad = null;
 
-        [JsonProperty("domicilio_persona-localidad")]
-        public string? domicilio_persona__localidad
+        [JsonProperty("domicilio_per-localidad")]
+        public string? domicilio_per__localidad
         {
-            get { return _domicilio_persona__localidad; }
-            set { _domicilio_persona__localidad = value; NotifyPropertyChanged(nameof(domicilio_persona__localidad)); }
+            get { return _domicilio_per__localidad; }
+            set { _domicilio_per__localidad = value; NotifyPropertyChanged(nameof(domicilio_per__localidad)); }
         }
 
-        public string? plan_alumno__Label { get; set; }
+        public string? plan_alu__Label { get; set; }
 
-        protected string? _plan_alumno__id = null;
+        protected string? _plan_alu__id = null;
 
-        [JsonProperty("plan_alumno-id")]
-        public string? plan_alumno__id
+        [JsonProperty("plan_alu-id")]
+        public string? plan_alu__id
         {
-            get { return _plan_alumno__id; }
-            set { _plan_alumno__id = value; alumno__plan = value; NotifyPropertyChanged(nameof(plan_alumno__id)); }
+            get { return _plan_alu__id; }
+            set { _plan_alu__id = value; alumno__plan = value; NotifyPropertyChanged(nameof(plan_alu__id)); }
         }
-        protected string? _plan_alumno__orientacion = null;
+        protected string? _plan_alu__orientacion = null;
 
-        [JsonProperty("plan_alumno-orientacion")]
-        public string? plan_alumno__orientacion
+        [JsonProperty("plan_alu-orientacion")]
+        public string? plan_alu__orientacion
         {
-            get { return _plan_alumno__orientacion; }
-            set { _plan_alumno__orientacion = value; NotifyPropertyChanged(nameof(plan_alumno__orientacion)); }
+            get { return _plan_alu__orientacion; }
+            set { _plan_alu__orientacion = value; NotifyPropertyChanged(nameof(plan_alu__orientacion)); }
         }
-        protected string? _plan_alumno__resolucion = null;
+        protected string? _plan_alu__resolucion = null;
 
-        [JsonProperty("plan_alumno-resolucion")]
-        public string? plan_alumno__resolucion
+        [JsonProperty("plan_alu-resolucion")]
+        public string? plan_alu__resolucion
         {
-            get { return _plan_alumno__resolucion; }
-            set { _plan_alumno__resolucion = value; NotifyPropertyChanged(nameof(plan_alumno__resolucion)); }
+            get { return _plan_alu__resolucion; }
+            set { _plan_alu__resolucion = value; NotifyPropertyChanged(nameof(plan_alu__resolucion)); }
         }
-        protected string? _plan_alumno__distribucion_horaria = null;
+        protected string? _plan_alu__distribucion_horaria = null;
 
-        [JsonProperty("plan_alumno-distribucion_horaria")]
-        public string? plan_alumno__distribucion_horaria
+        [JsonProperty("plan_alu-distribucion_horaria")]
+        public string? plan_alu__distribucion_horaria
         {
-            get { return _plan_alumno__distribucion_horaria; }
-            set { _plan_alumno__distribucion_horaria = value; NotifyPropertyChanged(nameof(plan_alumno__distribucion_horaria)); }
+            get { return _plan_alu__distribucion_horaria; }
+            set { _plan_alu__distribucion_horaria = value; NotifyPropertyChanged(nameof(plan_alu__distribucion_horaria)); }
         }
-        protected string? _plan_alumno__pfid = null;
+        protected string? _plan_alu__pfid = null;
 
-        [JsonProperty("plan_alumno-pfid")]
-        public string? plan_alumno__pfid
+        [JsonProperty("plan_alu-pfid")]
+        public string? plan_alu__pfid
         {
-            get { return _plan_alumno__pfid; }
-            set { _plan_alumno__pfid = value; NotifyPropertyChanged(nameof(plan_alumno__pfid)); }
+            get { return _plan_alu__pfid; }
+            set { _plan_alu__pfid = value; NotifyPropertyChanged(nameof(plan_alu__pfid)); }
         }
 
         public string? resolucion_inscripcion__Label { get; set; }
@@ -1462,141 +1462,141 @@ namespace Fines2Model3.Data
             set { _disposicion__orden_informe_coordinacion_distrital = value; NotifyPropertyChanged(nameof(disposicion__orden_informe_coordinacion_distrital)); }
         }
 
-        public string? asignatura_disposicion__Label { get; set; }
+        public string? asignatura_dis__Label { get; set; }
 
-        protected string? _asignatura_disposicion__id = null;
+        protected string? _asignatura_dis__id = null;
 
-        [JsonProperty("asignatura_disposicion-id")]
-        public string? asignatura_disposicion__id
+        [JsonProperty("asignatura_dis-id")]
+        public string? asignatura_dis__id
         {
-            get { return _asignatura_disposicion__id; }
-            set { _asignatura_disposicion__id = value; disposicion__asignatura = value; NotifyPropertyChanged(nameof(asignatura_disposicion__id)); }
+            get { return _asignatura_dis__id; }
+            set { _asignatura_dis__id = value; disposicion__asignatura = value; NotifyPropertyChanged(nameof(asignatura_dis__id)); }
         }
-        protected string? _asignatura_disposicion__nombre = null;
+        protected string? _asignatura_dis__nombre = null;
 
-        [JsonProperty("asignatura_disposicion-nombre")]
-        public string? asignatura_disposicion__nombre
+        [JsonProperty("asignatura_dis-nombre")]
+        public string? asignatura_dis__nombre
         {
-            get { return _asignatura_disposicion__nombre; }
-            set { _asignatura_disposicion__nombre = value; NotifyPropertyChanged(nameof(asignatura_disposicion__nombre)); }
+            get { return _asignatura_dis__nombre; }
+            set { _asignatura_dis__nombre = value; NotifyPropertyChanged(nameof(asignatura_dis__nombre)); }
         }
-        protected string? _asignatura_disposicion__formacion = null;
+        protected string? _asignatura_dis__formacion = null;
 
-        [JsonProperty("asignatura_disposicion-formacion")]
-        public string? asignatura_disposicion__formacion
+        [JsonProperty("asignatura_dis-formacion")]
+        public string? asignatura_dis__formacion
         {
-            get { return _asignatura_disposicion__formacion; }
-            set { _asignatura_disposicion__formacion = value; NotifyPropertyChanged(nameof(asignatura_disposicion__formacion)); }
+            get { return _asignatura_dis__formacion; }
+            set { _asignatura_dis__formacion = value; NotifyPropertyChanged(nameof(asignatura_dis__formacion)); }
         }
-        protected string? _asignatura_disposicion__clasificacion = null;
+        protected string? _asignatura_dis__clasificacion = null;
 
-        [JsonProperty("asignatura_disposicion-clasificacion")]
-        public string? asignatura_disposicion__clasificacion
+        [JsonProperty("asignatura_dis-clasificacion")]
+        public string? asignatura_dis__clasificacion
         {
-            get { return _asignatura_disposicion__clasificacion; }
-            set { _asignatura_disposicion__clasificacion = value; NotifyPropertyChanged(nameof(asignatura_disposicion__clasificacion)); }
+            get { return _asignatura_dis__clasificacion; }
+            set { _asignatura_dis__clasificacion = value; NotifyPropertyChanged(nameof(asignatura_dis__clasificacion)); }
         }
-        protected string? _asignatura_disposicion__codigo = null;
+        protected string? _asignatura_dis__codigo = null;
 
-        [JsonProperty("asignatura_disposicion-codigo")]
-        public string? asignatura_disposicion__codigo
+        [JsonProperty("asignatura_dis-codigo")]
+        public string? asignatura_dis__codigo
         {
-            get { return _asignatura_disposicion__codigo; }
-            set { _asignatura_disposicion__codigo = value; NotifyPropertyChanged(nameof(asignatura_disposicion__codigo)); }
+            get { return _asignatura_dis__codigo; }
+            set { _asignatura_dis__codigo = value; NotifyPropertyChanged(nameof(asignatura_dis__codigo)); }
         }
-        protected string? _asignatura_disposicion__perfil = null;
+        protected string? _asignatura_dis__perfil = null;
 
-        [JsonProperty("asignatura_disposicion-perfil")]
-        public string? asignatura_disposicion__perfil
+        [JsonProperty("asignatura_dis-perfil")]
+        public string? asignatura_dis__perfil
         {
-            get { return _asignatura_disposicion__perfil; }
-            set { _asignatura_disposicion__perfil = value; NotifyPropertyChanged(nameof(asignatura_disposicion__perfil)); }
-        }
-
-        public string? planificacion_disposicion__Label { get; set; }
-
-        protected string? _planificacion_disposicion__id = null;
-
-        [JsonProperty("planificacion_disposicion-id")]
-        public string? planificacion_disposicion__id
-        {
-            get { return _planificacion_disposicion__id; }
-            set { _planificacion_disposicion__id = value; disposicion__planificacion = value; NotifyPropertyChanged(nameof(planificacion_disposicion__id)); }
-        }
-        protected string? _planificacion_disposicion__anio = null;
-
-        [JsonProperty("planificacion_disposicion-anio")]
-        public string? planificacion_disposicion__anio
-        {
-            get { return _planificacion_disposicion__anio; }
-            set { _planificacion_disposicion__anio = value; NotifyPropertyChanged(nameof(planificacion_disposicion__anio)); }
-        }
-        protected string? _planificacion_disposicion__semestre = null;
-
-        [JsonProperty("planificacion_disposicion-semestre")]
-        public string? planificacion_disposicion__semestre
-        {
-            get { return _planificacion_disposicion__semestre; }
-            set { _planificacion_disposicion__semestre = value; NotifyPropertyChanged(nameof(planificacion_disposicion__semestre)); }
-        }
-        protected string? _planificacion_disposicion__plan = null;
-
-        [JsonProperty("planificacion_disposicion-plan")]
-        public string? planificacion_disposicion__plan
-        {
-            get { return _planificacion_disposicion__plan; }
-            set { _planificacion_disposicion__plan = value; NotifyPropertyChanged(nameof(planificacion_disposicion__plan)); }
-        }
-        protected string? _planificacion_disposicion__pfid = null;
-
-        [JsonProperty("planificacion_disposicion-pfid")]
-        public string? planificacion_disposicion__pfid
-        {
-            get { return _planificacion_disposicion__pfid; }
-            set { _planificacion_disposicion__pfid = value; NotifyPropertyChanged(nameof(planificacion_disposicion__pfid)); }
+            get { return _asignatura_dis__perfil; }
+            set { _asignatura_dis__perfil = value; NotifyPropertyChanged(nameof(asignatura_dis__perfil)); }
         }
 
-        public string? plan_planificacion_disposicion__Label { get; set; }
+        public string? planificacion_dis__Label { get; set; }
 
-        protected string? _plan_planificacion_disposicion__id = null;
+        protected string? _planificacion_dis__id = null;
 
-        [JsonProperty("plan_planificacion_disposicion-id")]
-        public string? plan_planificacion_disposicion__id
+        [JsonProperty("planificacion_dis-id")]
+        public string? planificacion_dis__id
         {
-            get { return _plan_planificacion_disposicion__id; }
-            set { _plan_planificacion_disposicion__id = value; planificacion_disposicion__plan = value; NotifyPropertyChanged(nameof(plan_planificacion_disposicion__id)); }
+            get { return _planificacion_dis__id; }
+            set { _planificacion_dis__id = value; disposicion__planificacion = value; NotifyPropertyChanged(nameof(planificacion_dis__id)); }
         }
-        protected string? _plan_planificacion_disposicion__orientacion = null;
+        protected string? _planificacion_dis__anio = null;
 
-        [JsonProperty("plan_planificacion_disposicion-orientacion")]
-        public string? plan_planificacion_disposicion__orientacion
+        [JsonProperty("planificacion_dis-anio")]
+        public string? planificacion_dis__anio
         {
-            get { return _plan_planificacion_disposicion__orientacion; }
-            set { _plan_planificacion_disposicion__orientacion = value; NotifyPropertyChanged(nameof(plan_planificacion_disposicion__orientacion)); }
+            get { return _planificacion_dis__anio; }
+            set { _planificacion_dis__anio = value; NotifyPropertyChanged(nameof(planificacion_dis__anio)); }
         }
-        protected string? _plan_planificacion_disposicion__resolucion = null;
+        protected string? _planificacion_dis__semestre = null;
 
-        [JsonProperty("plan_planificacion_disposicion-resolucion")]
-        public string? plan_planificacion_disposicion__resolucion
+        [JsonProperty("planificacion_dis-semestre")]
+        public string? planificacion_dis__semestre
         {
-            get { return _plan_planificacion_disposicion__resolucion; }
-            set { _plan_planificacion_disposicion__resolucion = value; NotifyPropertyChanged(nameof(plan_planificacion_disposicion__resolucion)); }
+            get { return _planificacion_dis__semestre; }
+            set { _planificacion_dis__semestre = value; NotifyPropertyChanged(nameof(planificacion_dis__semestre)); }
         }
-        protected string? _plan_planificacion_disposicion__distribucion_horaria = null;
+        protected string? _planificacion_dis__plan = null;
 
-        [JsonProperty("plan_planificacion_disposicion-distribucion_horaria")]
-        public string? plan_planificacion_disposicion__distribucion_horaria
+        [JsonProperty("planificacion_dis-plan")]
+        public string? planificacion_dis__plan
         {
-            get { return _plan_planificacion_disposicion__distribucion_horaria; }
-            set { _plan_planificacion_disposicion__distribucion_horaria = value; NotifyPropertyChanged(nameof(plan_planificacion_disposicion__distribucion_horaria)); }
+            get { return _planificacion_dis__plan; }
+            set { _planificacion_dis__plan = value; NotifyPropertyChanged(nameof(planificacion_dis__plan)); }
         }
-        protected string? _plan_planificacion_disposicion__pfid = null;
+        protected string? _planificacion_dis__pfid = null;
 
-        [JsonProperty("plan_planificacion_disposicion-pfid")]
-        public string? plan_planificacion_disposicion__pfid
+        [JsonProperty("planificacion_dis-pfid")]
+        public string? planificacion_dis__pfid
         {
-            get { return _plan_planificacion_disposicion__pfid; }
-            set { _plan_planificacion_disposicion__pfid = value; NotifyPropertyChanged(nameof(plan_planificacion_disposicion__pfid)); }
+            get { return _planificacion_dis__pfid; }
+            set { _planificacion_dis__pfid = value; NotifyPropertyChanged(nameof(planificacion_dis__pfid)); }
+        }
+
+        public string? plan_pla__Label { get; set; }
+
+        protected string? _plan_pla__id = null;
+
+        [JsonProperty("plan_pla-id")]
+        public string? plan_pla__id
+        {
+            get { return _plan_pla__id; }
+            set { _plan_pla__id = value; planificacion_dis__plan = value; NotifyPropertyChanged(nameof(plan_pla__id)); }
+        }
+        protected string? _plan_pla__orientacion = null;
+
+        [JsonProperty("plan_pla-orientacion")]
+        public string? plan_pla__orientacion
+        {
+            get { return _plan_pla__orientacion; }
+            set { _plan_pla__orientacion = value; NotifyPropertyChanged(nameof(plan_pla__orientacion)); }
+        }
+        protected string? _plan_pla__resolucion = null;
+
+        [JsonProperty("plan_pla-resolucion")]
+        public string? plan_pla__resolucion
+        {
+            get { return _plan_pla__resolucion; }
+            set { _plan_pla__resolucion = value; NotifyPropertyChanged(nameof(plan_pla__resolucion)); }
+        }
+        protected string? _plan_pla__distribucion_horaria = null;
+
+        [JsonProperty("plan_pla-distribucion_horaria")]
+        public string? plan_pla__distribucion_horaria
+        {
+            get { return _plan_pla__distribucion_horaria; }
+            set { _plan_pla__distribucion_horaria = value; NotifyPropertyChanged(nameof(plan_pla__distribucion_horaria)); }
+        }
+        protected string? _plan_pla__pfid = null;
+
+        [JsonProperty("plan_pla-pfid")]
+        public string? plan_pla__pfid
+        {
+            get { return _plan_pla__pfid; }
+            set { _plan_pla__pfid = value; NotifyPropertyChanged(nameof(plan_pla__pfid)); }
         }
     }
 }

@@ -184,7 +184,7 @@ namespace SqlOrganize
         
         public static EntityPersist TransferOm(this EntityPersist persist, string entityName, object origenId, object destinoId)
         {
-            List<Field> fieldsOmPersona = persist.Db.Entity(entityName).FieldOm();
+            List<Field> fieldsOmPersona = persist.Db.Entity(entityName).FieldsOm();
             foreach (var field in fieldsOmPersona)
             {
                 IEnumerable<object> ids = persist.Db.Sql(field.entityName).Where(field.name + " = @0").Parameters(origenId).Column<object>("id");
