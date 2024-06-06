@@ -84,7 +84,7 @@
             </MenuItem>
         </Menu>
         <materialDesign:Card Padding="32" Margin="16">
-            <Grid Margin="10">
+            <ScrollViewer VerticalScrollBarVisibility="Visible">
                 <StackPanel>
                     <TextBlock>
                          <Hyperlink NavigateUri="newwindow://pf_procesar_interfaz_asignaciones" RequestNavigate="Hyperlink_RequestNavigate">Procesar asignaciones programa fines</Hyperlink>
@@ -97,8 +97,19 @@
                             <ListBoxItem>Los alumnos que se encuentran en DB y no están en PF son listados para verificar (puede que existan en otra comisión).</ListBoxItem>
                             <ListBoxItem>Opcionalmente se puede ingresar el PFID de la comisión, si no se ingresa se procesan todas las comisiones.</ListBoxItem>
                         </ListBox>
+
+                    <Separator  Margin="0,10,0,10" HorizontalAlignment="Stretch"/>
+
+                    <TextBlock>
+                        <Hyperlink NavigateUri="newwindow://cargar_conjunto_asignaciones" RequestNavigate="Hyperlink_RequestNavigate">Cargar conjunto de alumnos</Hyperlink>
+                    </TextBlock>
+                    <ListBox>
+                        <ListBoxItem>Recibe un conjunto de alumnos y los carga en BD.</ListBoxItem>
+                        <ListBoxItem>Antes de cargar verifica los datos del alumno</ListBoxItem>
+                        
+                    </ListBox>
                 </StackPanel>
-            </Grid>
+            </ScrollViewer>
         </materialDesign:Card>
 
 

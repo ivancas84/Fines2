@@ -149,6 +149,29 @@ namespace Fines2Model3.DAO
             string res = await response.Content.ReadAsStringAsync();
         }
 
+        public static async Task PF_InscribirEstudiante(HttpClient client, IDictionary<string, string> formData)
+        {
+            var content = new FormUrlEncodedContent(formData);
+
+            var response = await client.PostAsync("https://www.programafines.ar/inicial/index4.php?a=7&b=1", content);
+            response.EnsureSuccessStatusCode(); // Ensure a successful response
+
+            // Check if the login was successful
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new Exception("Error:" + response.StatusCode.ToString());
+
+            content = new FormUrlEncodedContent(formData);
+            response = await client.PostAsync("https://www.programafines.ar/inicial/index4.php?a=7&b=2", content);
+
+            response.EnsureSuccessStatusCode(); // Ensure a successful response
+
+            // Check if the login was successful
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new Exception("Error:" + response.StatusCode.ToString());
+
+            string res = await response.Content.ReadAsStringAsync();
+        }
+
         public static void Dispose(HttpClient client)
         {
             client.Dispose();

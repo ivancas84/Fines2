@@ -580,6 +580,52 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             }
         }
 
+        private async void AgregarAsignacionPF_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var a = (Asignacion)button!.DataContext;
+            try
+            {
+                var persona = (Data_persona)personaGroupBox.DataContext;
+
+                using (handler = ProgramaFines.NewHandler())
+                {
+                    using (client = new HttpClient(handler))
+                    {
+                        await ProgramaFines.PF_Login(client);
+
+                        Dictionary<string, string> dataForm = new();
+
+                        dataForm["nombre"] = persona.nombres!;
+                        dataForm["apellido"] = persona.apellidos!;
+                        dataForm["cuil1"] = persona.cuil1?.ToString() ?? "0";
+                        dataForm["dni_cargar"] = persona.numero_documento!;
+                        dataForm["cuil2"] = persona.cuil2?.ToString() ?? "0";
+                        dataForm["direccion"] = persona.descripcion_domicilio ?? "";
+                        dataForm["departamento"] = persona.departamento ?? "";
+                        dataForm["localidad"] = persona.localidad ?? "";
+                        dataForm["partido"] = persona.partido ?? "";
+                        dataForm["email"] = persona.email ?? "";
+                        dataForm["cod_area"] = persona.codigo_area ?? "";
+                        dataForm["telefono"] = persona.telefono ?? "";
+                        dataForm["nacionalidad"] = persona.nacionalidad ?? "Argentina";
+                        dataForm["sexo"] = persona.sexo?.ToString() ?? "1";
+                        dataForm["subcategory"] = asignacion.comision__pfid!;
+
+                        await ProgramaFines.PF_InscribirEstudiante(client, dataForm);
+
+                        new ToastContentBuilder()
+                                        .AddText("Inscripción PF")
+                                        .AddText("Inscripción PF realizado correctamente")
+                                    .Show();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
         #endregion asignacionGroupBox
 
 
@@ -1228,9 +1274,10 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             }
         }
 
+
         #endregion
 
-     
+        
     }
 
     public class EstadoData

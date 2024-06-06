@@ -611,6 +611,9 @@ Margin = "5,10">_Nacionalidad:</Label>
                                                     Click="GuardarAsignacion_Click">Guardar</Button>
                                             <Button Style="{DynamicResource MaterialDesignRaisedAccentButton}"
                                                     Click="EliminarAsignacion_Click">Eliminar</Button>
+                                            <Button 
+                                                Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                                                Click="AgregarAsignacionPF_Click">Agregar a PF</Button>
                                         </WrapPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
