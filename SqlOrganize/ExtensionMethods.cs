@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SqlOrganize.Exceptions;
 using System.Data.Common;
-using System.Runtime.CompilerServices;
 using Utils;
 
 namespace SqlOrganize
@@ -83,7 +82,7 @@ namespace SqlOrganize
             return query.Column<T>(columnName);
         }
 
-        public static IEnumerable<T> Column<T>(this EntitySql esql, int columnNumber = 0)
+        public static T[] Column<T>(this EntitySql esql, int columnNumber = 0)
         {
             using Query query = esql.Query();
             using DbConnection connection = query.OpenConnection();
@@ -196,9 +195,25 @@ namespace SqlOrganize
         #endregion
 
         #region EntityPersist + EntityValues
+        public static EntityPersist Insert(this EntityValues values)
+        {
+            return values.db.Persist().Insert(values);
+        }
+
+        public static EntityPersist Update(this EntityValues values)
+        {
+            return values.db.Persist().Update(values);
+        }
+
         public static EntityValues Insert(this EntityValues values, EntityPersist persist)
         {
             persist.Insert(values);
+            return values;
+        }
+
+        public static EntityValues Update(this EntityValues values, EntityPersist persist)
+        {
+            persist.Update(values);
             return values;
         }
 
@@ -233,15 +248,14 @@ namespace SqlOrganize
             if (row.IsNullOrEmptyOrDbNull())
             {
                 v.Default().Reset();
-                p = v.db.Persist().Insert(v).Exec().RemoveCache();
+                return v.db.Persist().Insert(v);
             }
             else
             {
                 v.Reset();
-                p = v.db.Persist().Update(v).Exec().RemoveCache();
+                return v.db.Persist().Update(v);
             }
 
-            return p;
         }
 
         public static EntityValues Persist(this EntityValues v, EntityPersist persist)

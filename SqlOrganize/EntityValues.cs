@@ -352,8 +352,7 @@ namespace SqlOrganize
         public EntityValues Default()
         {
             foreach (var fieldName in fieldNames)
-                if (!values.ContainsKey(fieldName))
-                    Default(fieldName);
+                Default(fieldName); //Default chequea la existencia del campo fieldName en Values
 
             return this;
         }
@@ -411,14 +410,6 @@ namespace SqlOrganize
         {
             if (values.ContainsKey(fieldName))
                 return this;
-
-            var method = "Default_" + fieldName;
-            Type thisType = this.GetType();
-            MethodInfo m = thisType.GetMethod(method);
-            if (!m.IsNullOrEmpty()) {
-                m!.Invoke(this, new object[] { });
-                return this;
-            }
 
             values[fieldName] = GetDefault(fieldName);
             return this;
@@ -765,18 +756,23 @@ namespace SqlOrganize
             return (newFieldId, fieldName, entityName, value);
         }
 
-        /// <summary>
-        /// Devolver valor por defecto de field
-        /// </summary>
-        /// <param name="entityName"></param>
-        /// <param name="fieldName"></param>
-        /// <returns></returns>
-        /// <exception cref="Exception"></exception>
+        /// <summary>Devolver valor por defecto de field</summary>
+        /// <remarks>El valor especial "?" indica que se define valor por defecto fuera del modelo<br/>
+        /// El valor especial "max" indica que se define valor maximo posible<br/>
+        /// El valor especial "next" indica que se define valor siguiente de la secuencia</remarks>
         public object? GetDefault(string fieldName)
         {
+            #region verificar existencia de metodo local
+            var method = "GetDefault_" + fieldName;
+            Type thisType = this.GetType();
+            MethodInfo m = thisType.GetMethod(method);
+            if (!m.IsNullOrEmpty())
+                return m!.Invoke(this, new object[] { });
+            #endregion
+
             var field = db.Field(entityName, fieldName);
 
-            if (field.defaultValue is null)
+            if (field.defaultValue is null || field.defaultValue.ToString()!.StartsWith("?"))
                 return null;
 
             switch (field.type)

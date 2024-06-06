@@ -108,7 +108,7 @@ namespace SqlOrganize
             return reader.ColumnValues<T>(columnName);
         }
 
-        public IEnumerable<T> Column<T>(int columnNumber = 0)
+        public T[] Column<T>(int columnNumber = 0)
         {
             using DbCommand command = NewCommand();
             Exec(connection!, command);
@@ -240,7 +240,7 @@ namespace SqlOrganize
             command.ExecuteNonQuery();
         }
 
-        public abstract List<string> GetTableNames();
+        public abstract string[] GetTableNames();
      
 
         #region metodos especiales que generan sql y devuelven directamente el valor
