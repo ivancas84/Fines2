@@ -11,11 +11,11 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
         }
 
-        public DetallePersona(Db db) : base(db)
+        public DetallePersona(Db db, bool init = true) : base(db, init)
         {
         }
 
-        public DetallePersona(Db db, params string[] fieldIds) : base(db, fieldIds)
+        public DetallePersona(Db db, bool init = true, params string[] fieldIds) : base(db, init, fieldIds)
         {
         }
 

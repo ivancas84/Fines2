@@ -160,7 +160,7 @@ namespace Fines2Wpf.Windows.Alumno.TransferirAlumno
                     throw new Exception("Debe seleccionar ambas personas");
 
                 var persist = ContainerApp.db.Persist();
-                List < Field > fieldsOmPersona = ContainerApp.db.Entity("persona").FieldOm();
+                List < Field > fieldsOmPersona = ContainerApp.db.Entity("persona").FieldsOm();
                 persist.TransferOm("persona",  personaDestinoObj.id!, personaOrigenObj.id!);
 
                 IDictionary<string, object?>? alumnoOrigenData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(personaOrigenObj.id!).Dict();

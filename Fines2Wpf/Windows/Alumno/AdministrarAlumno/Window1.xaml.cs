@@ -872,7 +872,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
         private void AgregarArchivo_Click(object sender, RoutedEventArgs e)
         {
-            var a = new DetallePersona(ContainerApp.db, "archivo");
+            var a = new DetallePersona(ContainerApp.db, true, "archivo");
             var alumno = (Data_alumno)alumnoGroupBox.DataContext;
             a.persona = alumno.id;
             detallePersonaOC.Add(a);
