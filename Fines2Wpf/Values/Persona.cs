@@ -39,7 +39,7 @@ namespace Fines2Wpf.Values
 
         }
 
-      
+
 
         /// <summary>
         /// Vuelve a comparar ciertos campos que necesitan verificacion adicional
@@ -55,7 +55,7 @@ namespace Fines2Wpf.Values
                 foreach (string nom in nombres)
                 {
                     int ll = (nom.Length >= 3) ? 3 : nom.Length;
-                    string n = nom.Substring(0, ll);
+                    string n = nom.Substring(0, ll).ToUpper();
 
                     if (
                         (
@@ -72,6 +72,7 @@ namespace Fines2Wpf.Values
                     )
                     {
                         response.Remove("nombres");
+                        response.Remove("apellidos");
                         break;
                     }
                 }
@@ -85,7 +86,7 @@ namespace Fines2Wpf.Values
                 {
                     int ll = (ape.Length >= 3) ? 3 : ape.Length;
 
-                    string a = ape.Substring(0, ll);
+                    string a = ape.Substring(0, ll).ToUpper();
 
                     if (
                         (
@@ -102,6 +103,7 @@ namespace Fines2Wpf.Values
                     )
                     {
                         response.Remove("apellidos");
+                        response.Remove("nombres");
                         break;
                     }
                 }
@@ -166,6 +168,72 @@ namespace Fines2Wpf.Values
             }
 
         }
+
+        public void Reset_dia_nacimiento()
+        {
+            DateTime? fechaNacimiento = (DateTime?)GetOrNull("fecha_nacimiento");
+
+            if (!fechaNacimiento.IsNullOrEmptyOrDbNull() && GetOrNull("dia_nacimiento").IsNullOrEmptyOrDbNull())
+                Set("dia_nacimiento", ((DateTime)fechaNacimiento!).Day);
+        }
+
+        public void Reset_mes_nacimiento()
+        {
+            DateTime? fechaNacimiento = (DateTime?)GetOrNull("fecha_nacimiento");
+
+            if (!fechaNacimiento.IsNullOrEmptyOrDbNull() && GetOrNull("mes_nacimiento").IsNullOrEmptyOrDbNull())
+                Set("mes_nacimiento", ((DateTime)fechaNacimiento!).Month);
+        }
+
+        public void Reset_anio_nacimiento()
+        {
+            DateTime? fechaNacimiento = (DateTime?)GetOrNull("fecha_nacimiento");
+
+            if (!fechaNacimiento.IsNullOrEmptyOrDbNull() && GetOrNull("anio_nacimiento").IsNullOrEmptyOrDbNull())
+                Set("anio_nacimiento", ((DateTime)fechaNacimiento!).Year);
+        }
+
+        public void Reset_numero_documento()
+        {
+            string? numero_documento = (string?)GetOrNull("numero_documento");
+
+            if (!numero_documento.IsNullOrEmptyOrDbNull())
+                Set("numero_documento", ((string)numero_documento!).CleanStringOfNonDigits());
+        }
+
+        public void Reset_genero()
+        {
+            byte? sexo = (byte?)GetOrNull("sexo");
+
+            if (!sexo.IsNullOrEmptyOrDbNull() && GetOrNull("genero").IsNullOrEmptyOrDbNull())
+            {
+                if (sexo.Equals(1))
+                    Set("genero", "Masculino");
+                else if (sexo.Equals(2))
+                    Set("genero", "Femenino");
+                else
+                    Set("genero", "Otro");
+            }
+        }
+
+        public void Reset_sexo()
+        {
+            string? genero = (string?)GetOrNull("genero");
+
+            if (!genero.IsNullOrEmptyOrDbNull() && GetOrNull("sexo").IsNullOrEmptyOrDbNull())
+            {
+                if (((string)genero!).ToLower().Contains("mas"))
+                    Set("sexo", 1);
+
+                else if (((string)genero!).ToLower().Contains("fem"))
+                    Set("sexo", 2);
+
+                else
+                    Set("sexo", 3);
+            }
+        }
+
+
 
         public void Reset_cuil1()
         {

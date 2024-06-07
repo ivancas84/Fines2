@@ -76,7 +76,7 @@ namespace Fines2Model3.Data
                     return "";
 
                 case "cue":
-                    if (!_cue.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNullOrEmpty() && !_cue.IsNullOrEmptyOrDbNull()) {
                         var row = db.Sql("centro_educativo").Where("$cue = @0").Parameters(_cue).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";

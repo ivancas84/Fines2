@@ -1,5 +1,6 @@
 ﻿using Fines2Wpf;
 using HtmlAgilityPack;
+using SqlOrganize;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -149,6 +150,29 @@ namespace Fines2Model3.DAO
             string res = await response.Content.ReadAsStringAsync();
         }
 
+        public static async Task PF_InscribirEstudianteValues(HttpClient client, string comisionPfid, EntityValues persona)
+        {
+            Dictionary<string, string> dataForm = new();
+
+            dataForm["nombre"] = persona.GetOrNull("nombres")?.ToString() ?? "";
+            dataForm["apellido"] = persona.GetOrNull("apellidos")?.ToString() ?? "";
+            dataForm["cuil1"] = persona.GetOrNull("cuil1")?.ToString() ?? ""; ;
+            dataForm["dni_cargar"] = persona.GetOrNull("numero_documento")?.ToString() ?? "";
+            dataForm["cuil2"] = persona.GetOrNull("cuil2")?.ToString() ?? "";
+            dataForm["direccion"] = persona.GetOrNull("descripcion_domicilio")?.ToString() ?? "";
+            dataForm["departamento"] = persona.GetOrNull("departamento")?.ToString() ?? "";
+            dataForm["localidad"] = persona.GetOrNull("localidad")?.ToString() ?? "";
+            dataForm["partido"] = persona.GetOrNull("partido")?.ToString() ?? "";
+            dataForm["email"] = persona.GetOrNull("email")?.ToString() ?? "";
+            dataForm["cod_area"] = persona.GetOrNull("codigo_area")?.ToString() ?? "";
+            dataForm["telefono"] = persona.GetOrNull("telefono")?.ToString() ?? "";
+            dataForm["nacionalidad"] = persona.GetOrNull("nacionalidad")?.ToString() ?? "Argentina";
+            dataForm["sexo"] = persona.GetOrNull("sexo")?.ToString() ?? "1";
+            dataForm["subcategory"] = comisionPfid!;
+
+            await PF_InscribirEstudiante(client, dataForm);
+        }
+
         public static async Task PF_InscribirEstudiante(HttpClient client, IDictionary<string, string> formData)
         {
             var content = new FormUrlEncodedContent(formData);
@@ -170,6 +194,8 @@ namespace Fines2Model3.DAO
                 throw new Exception("Error:" + response.StatusCode.ToString());
 
             string res = await response.Content.ReadAsStringAsync();
+            if (res.Contains("existe un estudiante con ese dni en esta"))
+                throw new Exception("Estudiante en otra comisión, revisar desde PF");
         }
 
         public static void Dispose(HttpClient client)

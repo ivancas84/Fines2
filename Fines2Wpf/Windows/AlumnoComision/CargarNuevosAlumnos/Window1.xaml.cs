@@ -3,17 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Utils;
 using Fines2Model3.Data;
 
@@ -123,7 +113,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                     }
                     else //no existen datos de persona en la base
                     {
-                        persist.Insert(personaVal.Default().Reset());
+                        personaVal.Default().Reset().Insert(persist);
                         statusData.Add(new StatusData()
                         {
                             row = j,
@@ -160,20 +150,21 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                                 data = personaVal.ToString()
                             });
                         }
-                        else if (alumnoExistente!.Get("plan")!.ToString()!.Equals(comision.planificacion__plan))
-                        { 
+                        else if (!alumnoExistente!.Get("plan")!.ToString()!.ToLower().Equals(comision.planificacion__plan.ToString().ToLower()))
+                        {
+                            var alumnoPlan = alumnoExistente.ValuesTree("plan");
                             statusData.Add(new()
                             {
                                 row = j,
                                 status = "warning",
                                 detail = "El plan del alumno es diferente del plan de la comision.",
-                                data = "Nuevo: " + comision.plan__orientacion + " " + comision.plan__resolucion + ". Existente: " + alumnoExistente.ValuesTree("plan")?.ToString()
+                                data = "Nuevo: " + comision.plan__orientacion + " " + comision.plan__resolucion + ". Existente: " + alumnoPlan.Get("orientacion").ToString() + " " +alumnoPlan.Get("resolucion").ToString()
                             });
                         }
                     }
                     else //no existen datos del alumno en la base
                     {
-                        persist.Insert(alumnoVal.Default().Set("plan", comision.planificacion__plan!).Reset());
+                        alumnoVal.Default().Set("plan", comision.planificacion__plan!).Reset().Insert(persist);
                         statusData.Add( new StatusData()
                         {
                             row = j,
@@ -202,7 +193,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                     }
                     else //no existen datos de asignacion
                     {
-                        persist.Insert(asignacion.Default().Reset());
+                        asignacion.Default().Reset().Insert(persist);
                         statusData.Add(
                         new StatusData()
                         {

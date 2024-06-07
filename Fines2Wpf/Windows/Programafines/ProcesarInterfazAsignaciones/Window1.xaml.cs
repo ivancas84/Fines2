@@ -2,17 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net.Http;
-using System.Net;
-using System.Threading.Tasks;
 using System.Windows;
 using SqlOrganize;
 using Utils;
-using HtmlAgilityPack;
 using CommunityToolkit.WinUI.Notifications;
+using Fines2Model3.Data;
+using System.Windows.Controls;
 using WpfUtils;
-using MySqlX.XDevAPI;
 
 
 namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
@@ -374,5 +371,36 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                     asignacionDbOC.Add(asignacion);
             }      
         }
+
+        private async void AgregarAsignacionPF_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var asignacion = (AsignacionDbItem)button!.DataContext;
+            try
+            {
+                var values = ContainerApp.db.Values("persona", "persona").Set(asignacion);
+
+                using (handler = ProgramaFines.NewHandler())
+                {
+                    using (client = new HttpClient(handler))
+                    {
+                        await ProgramaFines.PF_Login(client);
+
+                        await ProgramaFines.PF_InscribirEstudianteValues(client, asignacion.comision__pfid!, values);
+
+                        new ToastContentBuilder()
+                                        .AddText("Inscripción PF")
+                                        .AddText("Inscripción PF realizado correctamente")
+                                    .Show();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ToastUtils.ShowError(ex.Message, "Error al inscribir estudiante");
+            }
+        }
     }
+
+
 }

@@ -79,7 +79,7 @@ namespace Fines2Model3.Data
                 case "nombre":
                     if (_nombre == null)
                         return "Debe completar valor.";
-                    if (!_nombre.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNullOrEmpty() && !_nombre.IsNullOrEmptyOrDbNull()) {
                         var row = db.Sql("asignatura").Where("$nombre = @0").Parameters(_nombre).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";

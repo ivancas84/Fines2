@@ -220,7 +220,7 @@ namespace Fines2Model3.Data
                 case "persona":
                     if (_persona == null)
                         return "Debe completar valor.";
-                    if (!_persona.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNullOrEmpty() && !_persona.IsNullOrEmptyOrDbNull()) {
                         var row = db.Sql("alumno").Where("$persona = @0").Parameters(_persona).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
@@ -264,7 +264,7 @@ namespace Fines2Model3.Data
                     return "";
 
                 case "libro_folio":
-                    if (!_libro_folio.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNullOrEmpty() && !_libro_folio.IsNullOrEmptyOrDbNull()) {
                         var row = db.Sql("alumno").Where("$libro_folio = @0").Parameters(_libro_folio).DictCache();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";

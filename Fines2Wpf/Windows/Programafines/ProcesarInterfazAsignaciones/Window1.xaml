@@ -94,6 +94,17 @@ FontFamily="{materialDesign:MaterialDesignFont}"
                         <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
                         <DataGridTextColumn Header="Comision" Binding="{Binding comision__pfid}"></DataGridTextColumn>
 
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <WrapPanel>
+                                        <Button 
+                                            Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                                            Click="AgregarAsignacionPF_Click">Agregar a PF</Button>
+                                    </WrapPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>

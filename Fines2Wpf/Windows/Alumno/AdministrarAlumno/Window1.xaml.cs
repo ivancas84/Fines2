@@ -587,6 +587,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             try
             {
                 var persona = (Data_persona)personaGroupBox.DataContext;
+                var values = ContainerApp.db.Values("persona").Set(persona);
 
                 using (handler = ProgramaFines.NewHandler())
                 {
@@ -596,23 +597,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
                         Dictionary<string, string> dataForm = new();
 
-                        dataForm["nombre"] = persona.nombres!;
-                        dataForm["apellido"] = persona.apellidos!;
-                        dataForm["cuil1"] = persona.cuil1?.ToString() ?? "0";
-                        dataForm["dni_cargar"] = persona.numero_documento!;
-                        dataForm["cuil2"] = persona.cuil2?.ToString() ?? "0";
-                        dataForm["direccion"] = persona.descripcion_domicilio ?? "";
-                        dataForm["departamento"] = persona.departamento ?? "";
-                        dataForm["localidad"] = persona.localidad ?? "";
-                        dataForm["partido"] = persona.partido ?? "";
-                        dataForm["email"] = persona.email ?? "";
-                        dataForm["cod_area"] = persona.codigo_area ?? "";
-                        dataForm["telefono"] = persona.telefono ?? "";
-                        dataForm["nacionalidad"] = persona.nacionalidad ?? "Argentina";
-                        dataForm["sexo"] = persona.sexo?.ToString() ?? "1";
-                        dataForm["subcategory"] = asignacion.comision__pfid!;
-
-                        await ProgramaFines.PF_InscribirEstudiante(client, dataForm);
+                        await ProgramaFines.PF_InscribirEstudianteValues(client, asignacion.comision__pfid!, values);
 
                         new ToastContentBuilder()
                                         .AddText("Inscripción PF")
