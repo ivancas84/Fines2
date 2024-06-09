@@ -87,16 +87,6 @@ namespace Fines2Wpf.DAO
                 .Parameters(calendarioAnio, calendarioSemestre);
         }
 
-        public static EntitySql TomasPasarSinPlanillaDocenteDePeriodoSql(object calendarioAnio, object calendarioSemestre)
-        {
-            IEnumerable<object> idTomas = IdTomasPasarSinPlanillaDocenteDePeriodo(calendarioAnio, calendarioSemestre);
-            return ContainerApp.db.Sql("toma")
-                .Size(0)
-                .Where(@"
-                    $id IN ( @0 ) 
-                ")
-                .Parameters(idTomas);
-        }
 
         public static IEnumerable<object> IdTomasPasarSinPlanillaDocenteDePeriodo(object calendarioAnio, object calendarioSemestre)
         {

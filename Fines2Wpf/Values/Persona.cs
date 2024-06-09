@@ -18,8 +18,6 @@ namespace Fines2Wpf.Values
         public Persona(Db db, string entityName, string? fieldId = null) : base(db, entityName, fieldId)
         {
             fieldNames.Add("cuil_dni");
-            fieldNames.Add("cuil1");
-            fieldNames.Add("cuil2");
             //fieldNames = new List<string>(db.FieldNames(entityName));
 
 
@@ -39,15 +37,9 @@ namespace Fines2Wpf.Values
 
         }
 
-
-
-        /// <summary>
-        /// Vuelve a comparar ciertos campos que necesitan verificacion adicional
-        /// </summary>
-        /// <param name="response"></param>
-        /// <returns></returns>
-        protected IDictionary<string, object?> Recompare(IDictionary<string, object?> response)
+        public override IDictionary<string, object?> Compare(CompareParams cp)
         {
+            var response = base.Compare(cp);
             if (response.ContainsKey("nombres") && !response["nombres"].IsNullOrEmpty())
             {
                 IEnumerable<string> nombres = response["nombres"].ToString()!.Trim().ToUpper().RemoveMultipleSpaces().Split(" ");
@@ -127,20 +119,19 @@ namespace Fines2Wpf.Values
             return response;
         }
 
-        public override IDictionary<string, object?> Compare(IDictionary<string, object?> val, IEnumerable<string>? ignoreFields = null, bool ignoreNull = true, bool ignoreNonExistent = true)
+        public void Sset_telefono(object? value)
         {
-            var response = base.Compare(val, ignoreFields, ignoreNull, ignoreNonExistent);
-            return Recompare(response);
+            if (value == null)
+            {
+                values["telefono"] = null;
+                return;
+            }
+
+            values["telefono"] = value.ToString().CleanStringOfNonDigits();
         }
 
 
-        public override IDictionary<string, object?> CompareFields(IDictionary<string, object?> val, IEnumerable<string> fieldsToCompare, bool ignoreNull = true, bool ignoreNonExistent = true)
-        {
-            var response = base.CompareFields(val, fieldsToCompare, ignoreNull, ignoreNonExistent);
-            return Recompare(response);
-        }
-
-        public void Sset_cuil_dni(object? value)
+            public void Sset_cuil_dni(object? value)
         {
             if (value == null)
             {

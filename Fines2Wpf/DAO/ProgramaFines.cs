@@ -198,6 +198,37 @@ namespace Fines2Model3.DAO
                 throw new Exception("Estudiante en otra comisión, revisar desde PF");
         }
 
+
+        public static async Task PF_CambiarComision(HttpClient client, string dni, string comisionDestino)
+        {
+            Dictionary<string, string> formData = new();
+            formData["dni_cargar"] = dni;
+            formData["comision_destino"] = comisionDestino;
+
+            var content = new FormUrlEncodedContent(formData);
+
+            var response = await client.PostAsync("https://www.programafines.ar/inicial/index4.php?a=22&b=1", content);
+            response.EnsureSuccessStatusCode(); // Ensure a successful response
+
+            // Check if the login was successful
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new Exception("Error:" + response.StatusCode.ToString());
+
+            content = new FormUrlEncodedContent(formData);
+            response = await client.PostAsync("https://www.programafines.ar/inicial/index4.php?a=22&b=2", content);
+
+            response.EnsureSuccessStatusCode(); // Ensure a successful response
+
+            // Check if the login was successful
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new Exception("Error:" + response.StatusCode.ToString());
+
+            string res = await response.Content.ReadAsStringAsync();
+            if (res.Contains("existe un estudiante con ese dni en esta"))
+                throw new Exception("Estudiante en otra comisión, revisar desde PF");
+        }
+
+
         public static void Dispose(HttpClient client)
         {
             client.Dispose();

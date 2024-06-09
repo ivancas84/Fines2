@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using Utils;
 using SqlOrganize;
 using System.Text;
+using WpfUtils;
 
 namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
 {
@@ -56,7 +57,7 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
 
 
                 int anio = DateTime.Now.Year;
-                short semester = DateTime.Now.ToSemester();
+                short semester = 1;
 
                 Data_alumno_comision_r asignacionActiva = DAO.AlumnoComision2.
                 AsignacionActivaDeAlumnoAnioSemestreQuery(alumno.id, anio, semester).
@@ -65,7 +66,11 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
 
                 if (asignacionActiva.IsNullOrEmptyOrDbNull())
                     throw new Exception("No existe asignación activa! Verificar las comisiones del alumno!");
-                
+
+                if (!alumno.estado_inscripcion.Equals("Correcto"))
+                {
+                    ToastUtils.ShowError("El estado de la alumna no es correcto, verifique el legajo antes de entregar el certificado de alumno regular y reclamelo");
+                }
                 alumno.anio_constancia = asignacionActiva.planificacion__anio!;
 
                 alumno.resolucion_constancia = asignacionActiva.plan__resolucion!;
@@ -86,7 +91,11 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
                 alumno.qr_code = (byte[])converter.ConvertTo(qrCodeImage, typeof(byte[]));
                 ConstanciaDocument document = new(alumno);
                 document.GeneratePdf(downloadPath + alumno.persona__numero_documento + ".pdf");
-            } catch (Exception ex)
+
+                ToastUtils.ShowError("Se ha generado el certificado, descarguelo desde " + downloadPath + alumno.persona__numero_documento + ".pdf");
+
+            }
+            catch (Exception ex)
             {
                 new ToastContentBuilder()
                    .AddText(Title)

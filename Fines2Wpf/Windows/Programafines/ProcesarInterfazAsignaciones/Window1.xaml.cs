@@ -271,7 +271,8 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                 #region Comparar datos de persona pf con persona db
                                 var personaDbVal = (Values.Persona)ContainerApp.db.Values("persona", "persona").Set(asignacionDb);
 
-                                var comp = personaDbVal.Compare(personaPfVal, ignoreNull: false);
+                                CompareParams cp = new() { val = personaPfVal, ignoreNull = false };
+                                var comp = personaDbVal.Compare(cp);
 
                                 Dictionary<string, object?> updatePersonaDb = new(); //datos a actualizar de la base local
 
@@ -391,6 +392,35 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                         new ToastContentBuilder()
                                         .AddText("Inscripción PF")
                                         .AddText("Inscripción PF realizado correctamente")
+                                    .Show();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ToastUtils.ShowError(ex.Message, "Error al inscribir estudiante");
+            }
+        }
+
+        private async void CambiarComisionPF_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var asignacion = (AsignacionDbItem)button!.DataContext;
+            try
+            {
+                var values = ContainerApp.db.Values("persona", "persona").Set(asignacion);
+
+                using (handler = ProgramaFines.NewHandler())
+                {
+                    using (client = new HttpClient(handler))
+                    {
+                        await ProgramaFines.PF_Login(client);
+
+                        await ProgramaFines.PF_CambiarComision(client, asignacion.persona__numero_documento!, asignacion.comision__pfid);
+
+                        new ToastContentBuilder()
+                                        .AddText("Cambio Comisión")
+                                        .AddText("Cambio Comisión realizado correctamente")
                                     .Show();
                     }
                 }

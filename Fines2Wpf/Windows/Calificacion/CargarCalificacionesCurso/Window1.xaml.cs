@@ -264,8 +264,12 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                         {
                             Values.Persona personaV = (Values.Persona)ContainerApp.db.Values("persona", "persona").Set(calificacion!);
                             Dictionary<string, object?> pe = personasExistentesPorDNI[dni!];
-                            var l = new List<string> { "nombres", "apellidos", "numero_documento" };
-                            IDictionary<string, object?> compareResult = personaV.CompareFields(pe, l);
+                            CompareParams cp = new CompareParams()
+                            {
+                                val = ContainerApp.db.Values("persona").Set(pe),
+                                fieldsToCompare = new List<string> { "nombres", "apellidos", "numero_documento" }
+                            };
+                            IDictionary<string, object?> compareResult = personaV.Compare(cp);
                             if (!compareResult.IsNullOrEmpty())
                             {
                                 foreach (string key in compareResult.Keys)

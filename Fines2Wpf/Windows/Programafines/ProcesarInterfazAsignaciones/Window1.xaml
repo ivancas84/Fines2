@@ -101,6 +101,9 @@ FontFamily="{materialDesign:MaterialDesignFont}"
                                         <Button 
                                             Style="{DynamicResource MaterialDesignRaisedAccentButton}"
                                             Click="AgregarAsignacionPF_Click">Agregar a PF</Button>
+                                        <Button 
+                                    Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                                    Click="CambiarComisionPF_Click">Cambiar comision</Button>
                                     </WrapPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>

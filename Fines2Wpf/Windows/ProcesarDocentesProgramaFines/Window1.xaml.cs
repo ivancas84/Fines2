@@ -43,7 +43,11 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                 var row = dao.RowByEntityUnique("persona", vPersona.Values());
                 if (row != null) {
                     EntityValues vPersonaAux = ContainerApp.db.Values("persona").Set(row);
-                    IDictionary<string, object> valuesToUpdate = vPersonaAux.Compare(vPersona);
+                    CompareParams cp = new()
+                    {
+                        val = vPersona
+                    };
+                    IDictionary<string, object> valuesToUpdate = vPersonaAux.Compare(cp);
                     vPersonaAux.SetNotNull(valuesToUpdate);
                     vPersona = vPersonaAux;
                     vPersona.Reset();

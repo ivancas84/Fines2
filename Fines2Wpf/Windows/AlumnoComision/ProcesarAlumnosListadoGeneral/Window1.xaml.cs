@@ -86,7 +86,13 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                     {
                         Values.Persona personaExistenteVal = (Values.Persona)ContainerApp.db.Values("persona").Values(personaExistenteData);
 
-                        var dataDifferent = personaVal.CompareFields(personaExistenteVal!, ignoreNull: true, fieldsToCompare: new List<string> { "apellidos", "nombres", "numero_documento" });
+                        CompareParams cp = new()
+                        {
+                            val = personaExistenteVal!,
+                            ignoreNull = true,
+                            fieldsToCompare = new List<string> { "apellidos", "nombres", "numero_documento" },
+                        };
+                        var dataDifferent = personaVal.Compare(cp);
                         if (!dataDifferent.IsNullOrEmpty())
                         {
                             statusData.Add(new StatusData()
@@ -107,7 +113,13 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                             data = personaVal.ToString()
                         });
 
-                        dataDifferent = personaVal.Compare(personaExistenteVal!, ignoreNull: true, ignoreFields: new List<string> { "apellidos", "nombres", "numero_documento" });
+                        cp = new()
+                        {
+                            val = personaExistenteVal,
+                            ignoreNull = true,
+                            ignoreFields = new List<string> { "apellidos", "nombres", "numero_documento" },
+                        };
+                        dataDifferent = personaVal.Compare(cp);
                         if (!dataDifferent.IsNullOrEmpty())
                         {
                             statusData.Add(new StatusData()

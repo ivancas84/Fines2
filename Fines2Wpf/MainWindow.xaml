@@ -83,8 +83,10 @@
                 <MenuItem Header="Generar pedidos calificaciones" Click="GenerarPedidosCalificaciones_Click"/>
             </MenuItem>
         </Menu>
-        <materialDesign:Card Padding="32" Margin="16">
+        <materialDesign:Card >
             <ScrollViewer VerticalScrollBarVisibility="Visible">
+                <StackPanel>
+                <GroupBox Header="Programa Fines">
                 <StackPanel>
                     <TextBlock>
                          <Hyperlink NavigateUri="newwindow://pf_procesar_interfaz_asignaciones" RequestNavigate="Hyperlink_RequestNavigate">Procesar asignaciones programa fines</Hyperlink>
@@ -100,18 +102,26 @@
 
                     <Separator  Margin="0,10,0,10" HorizontalAlignment="Stretch"/>
 
+                </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Tomas de Posesion">
+                <StackPanel>
                     <TextBlock>
-                        <Hyperlink NavigateUri="newwindow://cargar_conjunto_asignaciones" RequestNavigate="Hyperlink_RequestNavigate">Cargar conjunto de alumnos</Hyperlink>
+                     <Hyperlink NavigateUri="newwindow://lista_tomas_posesion" RequestNavigate="Hyperlink_RequestNavigate">Procesar asignaciones programa fines</Hyperlink>
                     </TextBlock>
                     <ListBox>
-                        <ListBoxItem>Recibe un conjunto de alumnos y los carga en BD.</ListBoxItem>
-                        <ListBoxItem>Antes de cargar verifica los datos del alumno</ListBoxItem>
-                        
+                        <ListBoxItem>Muestra 4 listas con datos de las tomas de posesión</ListBoxItem>
+                        <ListBoxItem>Lista 1) Tomas Aprobadas</ListBoxItem>
+                        <ListBoxItem>Lista 2) Tomas Renunciadas</ListBoxItem>
+                        <ListBoxItem>Lista 3) Tomas Modificadas</ListBoxItem>
+                        <ListBoxItem>Lista 4) Tomas Contralor: Actualmente no tienen asignadas planillas docente</ListBoxItem>
                     </ListBox>
+                        </StackPanel>
+
+                    </GroupBox>
                 </StackPanel>
             </ScrollViewer>
         </materialDesign:Card>
-
 
     </DockPanel>
 
