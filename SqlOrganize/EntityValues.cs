@@ -172,7 +172,6 @@ namespace SqlOrganize
                 return this;
             }
 
-            
             Field field = db.Field(entityName, fieldName);
             if (value == null)
             {
@@ -331,6 +330,7 @@ namespace SqlOrganize
                             values[fieldName] = values[fieldName]!.ToString().CleanStringOfDigits();
                         }
                         break;
+
                     case "cleannondigits":
                         if (!values[fieldName].IsNullOrEmptyOrDbNull())
                         {

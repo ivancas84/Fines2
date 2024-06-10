@@ -12,11 +12,7 @@ namespace SqlOrganize
     public class Logging
     {
 
-        /*
-        Ejemplo
-                   
-        
-        */
+
         /// <summary>Atributo para registrar errores</summary>
         /// <example>
         /// [

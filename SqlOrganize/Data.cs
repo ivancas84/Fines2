@@ -34,9 +34,6 @@ namespace SqlOrganize
 
         public EntityValues Values()
         {
-            if (db.IsNullOrEmpty())
-                throw new Exception("Db no definida");
-
             return db!.Values(entityName).Set(this);
         }
 
