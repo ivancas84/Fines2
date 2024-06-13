@@ -40,8 +40,8 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             #endregion
 
             comisionGrid.CellEditEnding += ComisionGrid_CellEditEnding!;
-            comisionSearch.calendario__anio  = Convert.ToInt16(DateTime.Now.Year);
-            comisionSearch.calendario__semestre  = DateTime.Now.ToSemester();
+            comisionSearch.calendario__anio  = ContainerApp.config.anio;
+            comisionSearch.calendario__semestre  = ContainerApp.config.semestre;
             comisionSearch.autorizada  = true;
 
             DataContext = comisionSearch;

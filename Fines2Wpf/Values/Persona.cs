@@ -40,6 +40,8 @@ namespace Fines2Wpf.Values
         public override IDictionary<string, object?> Compare(CompareParams cp)
         {
             var response = base.Compare(cp);
+            if (!response.Any())
+                return response;
             if (response.ContainsKey("nombres") && !response["nombres"].IsNullOrEmpty())
             {
                 IEnumerable<string> nombres = response["nombres"].ToString()!.Trim().ToUpper().RemoveMultipleSpaces().Split(" ");
