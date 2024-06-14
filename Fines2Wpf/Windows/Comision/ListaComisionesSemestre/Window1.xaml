@@ -131,7 +131,10 @@
                 <DataGridTemplateColumn>
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Click="CargarAlumnos_Click">Carga de alumnos</Button>
+                            <WrapPanel>
+                                <Button Click="CargarAlumnos_Click">Carga de alumnos</Button>
+                                <Button Click="EliminarAlumnos_Click">Eliminar todos los alumnos</Button>
+                            </WrapPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
