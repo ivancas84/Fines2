@@ -24,13 +24,16 @@ namespace Fines2Wpf.Windows.Informe.CantidadesPorComision
     public partial class Window1 : Window
     {
 
-        ObservableCollection<Item> informeOC = new();
+        ObservableCollection<ItemEdad> informeEdadOC = new();
+
+        ObservableCollection<ItemGenero> informeGeneroOC = new();
 
         public Window1()
         {
 
             InitializeComponent();
-            informeDataGrid.ItemsSource = informeOC;
+            informeEdadDataGrid.ItemsSource = informeEdadOC;
+            informeGeneroDataGrid.ItemsSource = informeGeneroOC;
 
 
             Data_alumno_comision_r search = new();
@@ -38,6 +41,7 @@ namespace Fines2Wpf.Windows.Informe.CantidadesPorComision
             search.calendario__semestre = 1;
 
             var data = ContainerApp.db.Sql("alumno_comision").Select(@"
+$comision-pfid, $planificacion-anio, $planificacion-semestre, $plan-orientacion, 
 CASE
     WHEN fecha_nacimiento IS NULL THEN '18?'
     WHEN TIMESTAMPDIFF(YEAR, $persona-fecha_nacimiento, CURDATE()) = 18 THEN '18'
@@ -57,12 +61,28 @@ CASE
 END AS edad, count(*) as cantidad
 ").
                 
-                Group("$planificacion-anio, $planificacion-semestre, $plan-orientacion, edad").
-                Where("$calendario-anio = @0 AND $calendario-semestre = @1").
+                Group("$comision-pfid, $planificacion-anio, $planificacion-semestre, $plan-orientacion, edad").
+                Where("$calendario-anio = @0 AND $calendario-semestre = @1 AND $comision-autorizada").
+                Size(0).
                 Parameters(ContainerApp.config.anio, ContainerApp.config.semestre).ColOfDict();
 
-            informeOC.Clear();
-            informeOC.AddRange(data);   
+
+
+
+            informeEdadOC.Clear();
+            informeEdadOC.AddRange(data);
+
+            data = ContainerApp.db.Sql("alumno_comision").Select(@"
+$comision-pfid, $planificacion-anio, $planificacion-semestre, $plan-orientacion, $persona-genero, COUNT(*) as cantidad
+").
+                Group("$comision-pfid, $planificacion-anio, $planificacion-semestre, $plan-orientacion, $persona-genero").
+                Where("$calendario-anio = @0 AND $calendario-semestre = @1 AND $comision-autorizada").
+                Size(0).
+
+                Parameters(ContainerApp.config.anio, ContainerApp.config.semestre).ColOfDict();
+
+            informeGeneroOC.Clear();
+            informeGeneroOC.AddRange(data);
         }
     }
 }

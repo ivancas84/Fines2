@@ -6,7 +6,21 @@
         xmlns:local="clr-namespace:Fines2Wpf.Windows.Informe.CantidadesPorComision"
         mc:Ignorable="d"
         Title="Window1" Height="450" Width="800">
-    <Grid>
-        <DataGrid Name="informeDataGrid" IsReadOnly="True"></DataGrid>
-    </Grid>
+    <ScrollViewer HorizontalScrollBarVisibility="Visible">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height = "Auto" />
+                <RowDefinition Height = "Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width = "*" />
+            </Grid.ColumnDefinitions>
+
+
+            <DataGrid Name="informeEdadDataGrid" IsReadOnly="True"></DataGrid>
+            <DataGrid Grid.Row="1" Name="informeGeneroDataGrid" IsReadOnly="True"></DataGrid>
+        </Grid>
+
+    </ScrollViewer>
 </Window>

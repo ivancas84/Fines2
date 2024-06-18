@@ -132,7 +132,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             if (idsComision.Count() > 0 )
             {
                 cantidadAlumnosActivosPorComision = (Dictionary<string, object?>)ContainerApp.db.Sql("alumno_comision").
-                    Select("COUNT($id) AS cantidad").
+                    Select("$comision, COUNT($id) AS cantidad").
                     Group("$comision").
                     Size(0).
                     Where(@"
@@ -143,7 +143,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                     DictOfDictByKeysValue("cantidad", "comision");
 
                 cantidadAlumnosPorComision = (Dictionary<string, object?>)ContainerApp.db.Sql("alumno_comision").
-                    Select("COUNT($id) AS cantidad").
+                    Select("$comision, COUNT($id) AS cantidad").
                     Group("$comision").
                     Size(0).
                     Where(@"

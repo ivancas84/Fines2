@@ -1077,7 +1077,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
                 #region Archivar calificaciones repetidas
                 idsDisposiciones = ContainerApp.db.Sql("calificacion").
-                    Select("COUNT(*) as cantidad").
+                    Select("$disposicion, COUNT(*) as cantidad").
                     Size(0).
                     Group("$disposicion").
                     Where(@"
@@ -1094,7 +1094,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 if (idsDisposiciones.Count() > 0)
                 {
                     idsCalificaciones = ContainerApp.db.Sql("calificacion").
-                        Select("MAX($id) AS id").
+                        Select("$disposicion, MAX($id) AS id").
                         Group("$disposicion").
                         Size(0).
                         Where("$disposicion IN ( @0 ) ").
