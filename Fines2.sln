@@ -11,21 +11,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelOrganize", "ModelOrgan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModelOrganizeMy", "ModelOrganizeMy\ModelOrganizeMy.csproj", "{4DA98BD8-14E2-4DBE-827F-FE3B467746E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fines2Model", "Fines2Model\Fines2Model.csproj", "{B9124AFF-9E1E-4F95-92CB-1D3FF9165B27}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utils", "Utils\Utils.csproj", "{D24117D3-0080-4CDE-8E1D-4DB285DC7189}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fines2Wpf", "Fines2Wpf\Fines2Wpf.csproj", "{93DB5E13-1437-4C36-A6E1-9084C05ACEA8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PedidosMigracion", "PedidosMigracion\PedidosMigracion.csproj", "{F96FF7FA-5972-4170-B1C6-47BEC6ED6152}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PedidosModel", "PedidosModel\PedidosModel.csproj", "{D3966F23-2B5D-4376-BD16-DB4836CB0380}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{7EFAD90A-4D1E-44D6-B3B7-87115014499E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fines2ModelBuilder", "Fines2ModelBuilder\Fines2ModelBuilder.csproj", "{5DE7C6B4-207A-465F-9734-0748F20C2068}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fines2ModelBuilder", "Fines2ModelBuilder\Fines2ModelBuilder.csproj", "{5DE7C6B4-207A-465F-9734-0748F20C2068}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fines2Model3", "Fines2Model3\Fines2Model3.csproj", "{F85C381B-8DD8-4777-A21C-EFAD802C8CEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fines2Model3", "Fines2Model3\Fines2Model3.csproj", "{F85C381B-8DD8-4777-A21C-EFAD802C8CEF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PedidosModelBuilder", "PedidosModelBuilder\PedidosModelBuilder.csproj", "{3F6B7A6C-D05F-4907-BE80-089159C52599}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PedidosModel2", "PedidosModel2\PedidosModel2.csproj", "{B7C16F25-B6E0-47B6-98FC-136B5AA44CF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,10 +49,6 @@ Global
 		{4DA98BD8-14E2-4DBE-827F-FE3B467746E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DA98BD8-14E2-4DBE-827F-FE3B467746E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4DA98BD8-14E2-4DBE-827F-FE3B467746E6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B9124AFF-9E1E-4F95-92CB-1D3FF9165B27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B9124AFF-9E1E-4F95-92CB-1D3FF9165B27}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B9124AFF-9E1E-4F95-92CB-1D3FF9165B27}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B9124AFF-9E1E-4F95-92CB-1D3FF9165B27}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D24117D3-0080-4CDE-8E1D-4DB285DC7189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D24117D3-0080-4CDE-8E1D-4DB285DC7189}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D24117D3-0080-4CDE-8E1D-4DB285DC7189}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -65,10 +61,6 @@ Global
 		{F96FF7FA-5972-4170-B1C6-47BEC6ED6152}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F96FF7FA-5972-4170-B1C6-47BEC6ED6152}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F96FF7FA-5972-4170-B1C6-47BEC6ED6152}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D3966F23-2B5D-4376-BD16-DB4836CB0380}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D3966F23-2B5D-4376-BD16-DB4836CB0380}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D3966F23-2B5D-4376-BD16-DB4836CB0380}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D3966F23-2B5D-4376-BD16-DB4836CB0380}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7EFAD90A-4D1E-44D6-B3B7-87115014499E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7EFAD90A-4D1E-44D6-B3B7-87115014499E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7EFAD90A-4D1E-44D6-B3B7-87115014499E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -81,6 +73,14 @@ Global
 		{F85C381B-8DD8-4777-A21C-EFAD802C8CEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F85C381B-8DD8-4777-A21C-EFAD802C8CEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F85C381B-8DD8-4777-A21C-EFAD802C8CEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F6B7A6C-D05F-4907-BE80-089159C52599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F6B7A6C-D05F-4907-BE80-089159C52599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F6B7A6C-D05F-4907-BE80-089159C52599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F6B7A6C-D05F-4907-BE80-089159C52599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7C16F25-B6E0-47B6-98FC-136B5AA44CF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7C16F25-B6E0-47B6-98FC-136B5AA44CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7C16F25-B6E0-47B6-98FC-136B5AA44CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7C16F25-B6E0-47B6-98FC-136B5AA44CF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

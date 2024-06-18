@@ -62,7 +62,7 @@ namespace Fines2Wpf
                 fkId = true,
                 connectionString = ConfigurationManager.AppSettings.Get("connectionStringPedidos")!,
             };
-            dbPedidos = new DbMy(configPedidos, new Pedidos.Schema(), new MemoryCache(new MemoryCacheOptions()));
+            dbPedidos = new DbMy(configPedidos, new PedidosModel2.Schema(), new MemoryCache(new MemoryCacheOptions()));
 
             // URL of the login page and the login endpoint
             

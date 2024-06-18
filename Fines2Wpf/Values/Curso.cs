@@ -41,7 +41,7 @@ namespace Fines2Wpf.Values
             if (idCurso.IsNullOrEmpty()) 
                 return "";
 
-            var dd = cursoDAO.TomaActivaDeCursoQuery(idCurso!).DictCache();
+            var dd = cursoDAO.TomaActivaDeCursoQuery(idCurso!).Cache().Dict();
             var s = ToString();
             if (!dd.IsNullOrEmptyOrDbNull())
             {
@@ -81,7 +81,7 @@ namespace Fines2Wpf.Values
             if (idCurso.IsNullOrEmpty())
                 return null;
             
-            var data = cursoDAO.TomaActivaDeCursoQuery(idCurso!).DictCache();
+            var data = cursoDAO.TomaActivaDeCursoQuery(idCurso!).Cache().Dict();
             return ContainerApp.db.Values("toma").Set(data!);
         }
 

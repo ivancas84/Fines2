@@ -109,7 +109,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.Sql("comision").Search(comisionSearch).Size(0).ColOfDictCache();
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.Sql("comision").Search(comisionSearch).Size(0).Cache().ColOfDict();
             IEnumerable<object> idsSede = list.ColOfVal<object>("sede");
             IEnumerable<object> idsComision = list.ColOfVal<object>("id");
 
@@ -118,7 +118,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                 referentesData = (Dictionary<string, List<Dictionary<string, object?>>>)ContainerApp.db.Sql("designacion").
                 Where("$cargo-descripcion IN ('Colaborador', 'Referente') AND $sede IN( @0 ) AND $hasta IS NULL").
                 Parameters(idsSede).
-                ColOfDictCache().
+                Cache().ColOfDict().
                 DictOfListByKeys("sede");
             }
 
@@ -153,7 +153,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                     ColOfDict().
                     DictOfDictByKeysValue("cantidad", "comision");
 
-                horariosComision = (Dictionary<string, List<Dictionary<string, object?>>>)comisionDAO.HorariosQuery(idsComision).ColOfDictCache().DictOfListByKeys("curso-comision");
+                horariosComision = (Dictionary<string, List<Dictionary<string, object?>>>)comisionDAO.HorariosQuery(idsComision).Cache().ColOfDict().DictOfListByKeys("curso-comision");
 
             }
 

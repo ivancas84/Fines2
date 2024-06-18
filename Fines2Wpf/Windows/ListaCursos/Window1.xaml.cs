@@ -10,6 +10,7 @@ using Fines2Model3.Data;
 
 using System.Linq;
 using CommunityToolkit.WinUI.Notifications;
+using Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones;
 
 namespace Fines2Wpf.Windows.ListaCursos
 {
@@ -100,7 +101,7 @@ namespace Fines2Wpf.Windows.ListaCursos
 
                         //en caso de que el campo editado sea unico, se consultan sus valores
                         if (ContainerApp.db.Field(entityName, fieldName).IsUnique())
-                            row = ContainerApp.db.Sql(entityName).GetByFieldValue(fieldName, value);
+                            row = ContainerApp.db.Sql(entityName).Equal(fieldName, value!).Cache().Dict();
                         else
                             row = v.RowByUniqueWithoutIdIfExists();
 

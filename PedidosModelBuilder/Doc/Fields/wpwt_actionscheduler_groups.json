@@ -1,0 +1,41 @@
+{
+  "group_id": {
+    "checks": {
+      "type": "ulong",
+      "required": true
+    },
+    "resets": {},
+    "name": "group_id",
+    "alias": null,
+    "entityName": "wpwt_actionscheduler_groups",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "ulong",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "slug": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "slug",
+    "alias": null,
+    "entityName": "wpwt_actionscheduler_groups",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 255
+  }
+}

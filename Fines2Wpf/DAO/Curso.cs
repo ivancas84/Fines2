@@ -20,7 +20,7 @@ namespace Fines2Wpf.DAO
                     AND $calendario-semestre = @1 
                     AND $comision-autorizada = true 
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre).ColOfDictCache();
+                .Parameters(calendarioAnio, calendarioSemestre).Cache().ColOfDict();
 
         }
 
@@ -34,7 +34,7 @@ namespace Fines2Wpf.DAO
                     $calendario-anio = @0 
                     AND $calendario-semestre = @1 
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre).ColOfDictCache();
+                .Parameters(calendarioAnio, calendarioSemestre).Cache().ColOfDict();
         }
 
         public EntitySql TomaActivaDeCursoQuery(object idCurso)

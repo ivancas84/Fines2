@@ -20,7 +20,7 @@ namespace Fines2Wpf.DAO
                     AND $calendario-semestre = @1
                     AND $estado = 'Aprobada'
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre).ColOfDictCache().ColOfVal<object>("curso");
+                .Parameters(calendarioAnio, calendarioSemestre).Cache().ColOfDict().ColOfVal<object>("curso");
 
         }
 
@@ -33,7 +33,7 @@ namespace Fines2Wpf.DAO
                     $calendario-anio = @0 
                     AND $calendario-semestre = @1 
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre).ColOfDictCache();
+                .Parameters(calendarioAnio, calendarioSemestre).Cache().ColOfDict();
 
         }
 

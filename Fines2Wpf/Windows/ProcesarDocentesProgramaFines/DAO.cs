@@ -16,7 +16,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     AND $calendario-semestre = @1 
                     AND $pfid IS NOT NULL
                 ")
-                .Parameters("2024", "1").ColOfDictCache().ColOfVal<string>("pfid");
+                .Parameters("2024", "1").Cache().ColOfDict().ColOfVal<string>("pfid");
 
         }
 
@@ -31,7 +31,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     AND $calendario-anio = @2
                     AND $calendario-semestre = @3
                 ")
-                .Parameters(pfidComision, asignaturaCodigo, "2024", "1").DictCache();
+                .Parameters(pfidComision, asignaturaCodigo, "2024", "1").Cache().Dict();
 
 
             if (d.IsNullOrEmptyOrDbNull()) return null;
@@ -47,14 +47,14 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     AND $estado = 'Aprobada'
                     AND ($estado_contralor = 'Pasar' OR $estado_contralor = 'Pendiente')
                 ")
-                .Parameters(idCurso).DictCache();
+                .Parameters(idCurso).Cache().Dict();
 
         }
 
 
         public IDictionary<string, object>? RowByEntityFieldValue(string entityName, string fieldName, object value)
         {
-            return ContainerApp.db.Sql(entityName).Where("$" + fieldName + " = @0").Parameters(value).DictCache();
+            return ContainerApp.db.Sql(entityName).Where("$" + fieldName + " = @0").Parameters(value).Cache().Dict();
         }
 
         public IDictionary<string, object>? RowByEntityUnique(string entityName, IDictionary<string, object> source)
@@ -64,7 +64,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
             if (source.ContainsKey(ContainerApp.config.id) && !source[ContainerApp.config.id].IsNullOrEmpty())
                 q.Where("($" + ContainerApp.config.id + " != @0)").Parameters(source[ContainerApp.config.id]);
 
-            return q.DictCache();
+            return q.Cache().Dict();
         }
     }
 }

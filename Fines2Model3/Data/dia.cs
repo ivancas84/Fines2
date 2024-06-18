@@ -62,7 +62,7 @@ namespace Fines2Model3.Data
                     if (_numero == null)
                         return "Debe completar valor.";
                     if (!db.IsNullOrEmpty() && !_numero.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("dia").Where("$numero = @0").Parameters(_numero).DictCache();
+                        var row = db.Sql("dia").Where("$numero = @0").Parameters(_numero).Cache().Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -72,7 +72,7 @@ namespace Fines2Model3.Data
                     if (_dia == null)
                         return "Debe completar valor.";
                     if (!db.IsNullOrEmpty() && !_dia.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("dia").Where("$dia = @0").Parameters(_dia).DictCache();
+                        var row = db.Sql("dia").Where("$dia = @0").Parameters(_dia).Cache().Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

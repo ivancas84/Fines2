@@ -27,7 +27,7 @@ namespace Fines2Wpf.Pedidos.Windows.GenerarTareasCalificacionesSemestre
         {
             Data_toma_r search = (Data_toma_r)searchGroupBox.DataContext;
             tomaOC.Clear();
-            var data = tomaDAO.TomasAprobadasSemestreQuery(search.calendario__anio!, search.calendario__semestre!).ColOfDictCache();
+            var data = tomaDAO.TomasAprobadasSemestreQuery(search.calendario__anio!, search.calendario__semestre!).Cache().ColOfDict();
             foreach (var item in data)
             {
                 //item.Obj<Data_disposicion_r>();

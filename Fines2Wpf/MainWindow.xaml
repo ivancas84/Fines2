@@ -58,6 +58,8 @@
                 <MenuItem Header="Indice Herramientas" Click="IndiceHerramientasMenuItem_Click"/>
 
                 <MenuItem Header="Informe Coordinación Distrital" Click="informeCoordinacionDistrital_Click"/>
+                <MenuItem Header="Cantidades por Comision" Click="CantidadesPorComision_Click"/>
+
             </MenuItem>
             <MenuItem Header="_Administracion especial">
                 <MenuItem Header="Procesar docentes ProgramaFines" Click="ProcesarDocentesProgramaFines_Click"/>

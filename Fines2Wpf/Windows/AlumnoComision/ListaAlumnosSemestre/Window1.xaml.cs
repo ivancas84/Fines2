@@ -106,7 +106,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         public void LoadAsignaciones()
         {
             asignacionOC.Clear();
-            var data = ContainerApp.db.Sql("alumno_comision").Search(search).Size(0).ColOfDictCache();
+            var data = ContainerApp.db.Sql("alumno_comision").Search(search).Size(0).Cache().ColOfDict();
             if(data.IsNullOrEmptyOrDbNull())
                return;
             
@@ -243,7 +243,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         public ObservableCollection<Data_sede> Sedes()
         {
             ObservableCollection<Data_sede> r = new ObservableCollection<Data_sede>();
-            var data = ContainerApp.db.Sql("sede").Size(0).Parameters().ColOfDictCache();
+            var data = ContainerApp.db.Sql("sede").Size(0).Parameters().Cache().ColOfDict();
             r.Clear();
             r.AddRange(data);
             return r;

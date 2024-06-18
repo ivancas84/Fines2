@@ -32,5 +32,25 @@ namespace Fines2Model3.DAO
                 )
                .Parameters(anio, semestre);
         }
+
+
+        public static EntitySql AsignacionesActivasDeComisionesAutorizadasDelPeriodoSinGeneroSql(this Db db, object anio, object semestre)
+        {
+            var subSql = db.Sql("alumno_comision")
+                .Fields("$alumno")
+                .Size(0)
+                .Where(@"
+                    $calendario-anio = @0
+                    AND $calendario-semestre = @1 
+                    AND $comision-autorizada = true
+                    AND $estado = 'Activo'
+                    AND $persona-genero IS NULL
+                ");
+
+            return db.Sql("alumno").
+                Join("INNER JOIN (" + subSql + ") AS sub ON (sub.alumno = alumno.id)").
+                Parameters(anio, semestre);
+        }
+
     }
 }

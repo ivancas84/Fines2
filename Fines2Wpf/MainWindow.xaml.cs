@@ -261,6 +261,12 @@ namespace Fines2Wpf
             Windows.Alumno.TransferirAlumno.Window1 window1 = new();
             window1.Show();
         }
+
+        private void CantidadesPorComision_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.Informe.CantidadesPorComision.Window1 window1 = new();
+            window1.Show();
+        }
     }
 }
 

@@ -111,7 +111,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             resolucionInscripcionComboBox.SelectedValuePath = "id";
             resolucionInscripcionComboBox.DisplayMemberPath = "numero";
             resolucionInscripcionComboBox.ItemsSource = resolucionOC;
-            var data = ContainerApp.db.Sql("resolucion").Order("$numero ASC").ColOfDictCache();
+            var data = ContainerApp.db.Sql("resolucion").Order("$numero ASC").Cache().ColOfDict();
             resolucionOC.Clear();
             resolucionOC.AddRange(data);
             #endregion
@@ -120,7 +120,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             planComboBox.SelectedValuePath = "id";
             planComboBox.DisplayMemberPath = "Label";
             planComboBox.ItemsSource = planOC;
-            var dataPlan = ContainerApp.db.Sql("plan").Order("$orientacion ASC").ColOfDictCache();
+            var dataPlan = ContainerApp.db.Sql("plan").Order("$orientacion ASC").Cache().ColOfDict();
 
             planOC.Clear();
             foreach (var item in dataPlan)
@@ -221,7 +221,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             var data = ContainerApp.db.Sql("alumno_comision").
                 Where("$alumno = @0").
                 Order("$calendario-anio DESC, $calendario-semestre DESC").
-                Parameters(a.id!).ColOfDictCache();
+                Parameters(a.id!).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -248,7 +248,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (a.plan.IsNullOrEmpty())
                 return;
             
-            var data = calificacionDAO.CalificacionesDeAlumnoPlanArchivoQuery(a.id!, a.plan!, false).ColOfDictCache();
+            var data = calificacionDAO.CalificacionesDeAlumnoPlanArchivoQuery(a.id!, a.plan!, false).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -287,7 +287,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (a.IsNullOrEmptyOrDbNull() || a.id.IsNullOrEmptyOrDbNull())
                 return;
 
-            var data = calificacionDAO.CalificacionesArchivadasDeAlumnoQuery(a.id!).ColOfDictCache();
+            var data = calificacionDAO.CalificacionesArchivadasDeAlumnoQuery(a.id!).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -311,7 +311,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             var data = ContainerApp.db.Sql("disposicion").
                 Where("$planificacion-plan = @0").
-                Parameters(a.plan!).ColOfDictCache();
+                Parameters(a.plan!).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -327,7 +327,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             var data = ContainerApp.db.Sql("detalle_persona").
                 Where("$persona = @0").
-                Parameters(p.id!).ColOfDictCache();
+                Parameters(p.id!).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -413,7 +413,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (string.IsNullOrEmpty(this.personaComboBox.Text) || this.personaComboBox.Text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object>> list = DAO.Persona.SearchLikeQuery(this.personaComboBox.Text).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object>> list = DAO.Persona.SearchLikeQuery(this.personaComboBox.Text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
 
             foreach (var item in list)
             {
@@ -506,7 +506,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (string.IsNullOrEmpty(asignacion.SearchComision) || asignacion.SearchComision.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(asignacion.SearchComision).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(asignacion.SearchComision).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
             foreach(var item in list)
             {
                 var val = ContainerApp.db.Values("comision").Set(item);
@@ -770,7 +770,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (string.IsNullOrEmpty(calificacion.SearchCurso) || calificacion.SearchCurso.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = cursoDAO.BusquedaAproximadaQuery(calificacion.SearchCurso).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = cursoDAO.BusquedaAproximadaQuery(calificacion.SearchCurso).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
             foreach (var item in list)
             {
                 var val = (Values.Curso)ContainerApp.db.Values("curso").Set(item);

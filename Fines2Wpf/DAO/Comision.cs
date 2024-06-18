@@ -41,7 +41,7 @@ namespace Fines2Wpf.DAO
                 q.Parameters(sede!);
             }
 
-            return q.ColOfDictCache();
+            return q.Cache().ColOfDict();
         }
 
 
@@ -54,7 +54,7 @@ namespace Fines2Wpf.DAO
                 .Where(@"
                     $id IN ( @0 ) 
                 ")
-                .Parameters(ids).ColOfDictCache();
+                .Parameters(ids).Cache().ColOfDict();
             
         }
 
@@ -67,7 +67,7 @@ namespace Fines2Wpf.DAO
                     AND $calendario-semestre = @1 
                     AND $comision_siguiente IS NOT NULL
                 ")
-                .Parameters(anio, semestre).ColOfDictCache();
+                .Parameters(anio, semestre).Cache().ColOfDict();
 
         }
 
@@ -81,14 +81,14 @@ namespace Fines2Wpf.DAO
                     AND $calendario-semestre = @1
                     AND $autorizada = true
                 ")
-                .Parameters(anio, semestre).ColOfDictCache().ColOfVal<object>(ContainerApp.db.config.id);
+                .Parameters(anio, semestre).Cache().ColOfDict().ColOfVal<object>(ContainerApp.db.config.id);
 
         }
 
         public IEnumerable<Dictionary<string, object>> ComisionesAutorizadasPorSemestre(object anio, object semestre)
         {
             IEnumerable<object> ids = IdsComisionesAutorizadasPorCalendario(anio, semestre);
-            return ContainerApp.db.Sql("comision").CacheByIds(ids.ToArray());
+            return ContainerApp.db.Sql("comision").Cache().Ids(ids.ToArray());
         }
 
         public EntitySql ComisionesAutorizadasPorSemestreQuery(object anio, object semestre)

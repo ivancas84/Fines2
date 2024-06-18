@@ -19,7 +19,7 @@ namespace Fines2Wpf.DAO
             var data = ContainerApp.db.Sql("planificacion").
                 Where(@"
                     $anio = @0 AND $semestre = @1 AND $plan = @2
-                ").Parameters(anio_, semestre_, plan__id).DictCache();
+                ").Parameters(anio_, semestre_, plan__id).Cache().Dict();
 
             if (data.IsNullOrEmptyOrDbNull())
                 throw new Exception("No existe planificacion siguiente");

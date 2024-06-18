@@ -28,7 +28,7 @@ namespace Fines2Wpf.Windows.AlumnoComision
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object>> alumnos = dataDAO.AlumnosActivosDeComisionesAutorizadasPorSemestreSinGenero("2023", "2");
+            IEnumerable<Dictionary<string, object>> alumnos = dataDAO.AlumnosActivosDeComisionesAutorizadasPorSemestreSinGenero(ContainerApp.config.anio, ContainerApp.config.semestre);
 
             foreach (var alumno in alumnos)
             {

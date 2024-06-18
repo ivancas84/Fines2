@@ -61,21 +61,21 @@ namespace Fines2Wpf.Windows.ListaTomas
             tomasAprobadasOC.Clear();
             tomasAprobadasOC.AddRange(
                 DAO.Toma2.TomasAprobadasSinModificarDePeriodoSql(search.calendario__anio, search.calendario__semestre).
-                ColOfDictCache().
+                Cache().ColOfDict().
                 ColOfObj<TomaPosesionPdf.ConstanciaData>()
             );
 
             tomasRenunciadasOC.Clear();
             tomasRenunciadasOC.AddRange(
                 DAO.Toma2.TomasRenunciaBajaSinModificarDePeriodoSql(search.calendario__anio, search.calendario__semestre).
-                ColOfDictCache().
+                Cache().ColOfDict().
                 ColOfObj<TomaPosesionPdf.ConstanciaData>()
             );
 
             tomasParticularesOC.Clear();
             tomasParticularesOC.AddRange(
                 DAO.Toma2.TomasParticularesDePeriodoSql(search.calendario__anio, search.calendario__semestre).
-                ColOfDictCache().
+                Cache().ColOfDict().
                 ColOfObj<TomaPosesionPdf.ConstanciaData>()
             );
 
@@ -87,7 +87,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                 .Where(@"
                     $id IN ( @0 ) 
                 ")
-                .Parameters(idTomas).ColOfDictCache();
+                .Parameters(idTomas).Cache().ColOfDict();
     
                  tomasContralorOC.Clear();
 
@@ -304,7 +304,7 @@ namespace Fines2Wpf.Windows.ListaTomas
 
         private void PasarTodoButton_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<object> id_tomas_aprobadas = DAO.Toma2.TomasPasarDePeriodoSql(calendarioAnioText.Text, calendarioSemestreText.Text).ColOfDictCache().ColOfVal<object>("id");
+            IEnumerable<object> id_tomas_aprobadas = DAO.Toma2.TomasPasarDePeriodoSql(calendarioAnioText.Text, calendarioSemestreText.Text).Cache().ColOfDict().ColOfVal<object>("id");
 
             ContainerApp.db.Persist().UpdateValueIds("toma", "estado_contralor", "Pasar", id_tomas_aprobadas.ToArray()).Exec().RemoveCacheDetail();
             

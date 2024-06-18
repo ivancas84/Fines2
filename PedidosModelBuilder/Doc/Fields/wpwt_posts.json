@@ -1,0 +1,458 @@
+{
+  "ID": {
+    "checks": {
+      "type": "ulong",
+      "required": true
+    },
+    "resets": {},
+    "name": "ID",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "ulong",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "post_author": {
+    "checks": {
+      "type": "ulong",
+      "required": true
+    },
+    "resets": {},
+    "name": "post_author",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "ulong",
+    "notNull": true,
+    "defaultValue": "0",
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "post_date": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "post_date",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": "'0000-00-00 00:00:00'",
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "post_date_gmt": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "post_date_gmt",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": "'0000-00-00 00:00:00'",
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "post_content": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "post_content",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 4294967295
+  },
+  "post_title": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "post_title",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 65535
+  },
+  "post_excerpt": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "post_excerpt",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 65535
+  },
+  "post_status": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "post_status",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "publish",
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "comment_status": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "comment_status",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "open",
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "ping_status": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "ping_status",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "open",
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "post_password": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "post_password",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "",
+    "defaultValueClassData": true,
+    "maxLength": 255
+  },
+  "post_name": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "post_name",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "",
+    "defaultValueClassData": true,
+    "maxLength": 200
+  },
+  "to_ping": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "to_ping",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 65535
+  },
+  "pinged": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "pinged",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 65535
+  },
+  "post_modified": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "post_modified",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": "'0000-00-00 00:00:00'",
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "post_modified_gmt": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "post_modified_gmt",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": "'0000-00-00 00:00:00'",
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "post_content_filtered": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "post_content_filtered",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 4294967295
+  },
+  "post_parent": {
+    "checks": {
+      "type": "ulong",
+      "required": true
+    },
+    "resets": {},
+    "name": "post_parent",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "ulong",
+    "notNull": true,
+    "defaultValue": "0",
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "guid": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "guid",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "",
+    "defaultValueClassData": true,
+    "maxLength": 255
+  },
+  "menu_order": {
+    "checks": {
+      "type": "int",
+      "required": true
+    },
+    "resets": {},
+    "name": "menu_order",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": true,
+    "defaultValue": "0",
+    "defaultValueClassData": true,
+    "maxLength": 11
+  },
+  "post_type": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "post_type",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "post",
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "post_mime_type": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "post_mime_type",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "",
+    "defaultValueClassData": true,
+    "maxLength": 100
+  },
+  "comment_count": {
+    "checks": {
+      "type": "long",
+      "required": true
+    },
+    "resets": {},
+    "name": "comment_count",
+    "alias": null,
+    "entityName": "wpwt_posts",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": true,
+    "defaultValue": "0",
+    "defaultValueClassData": true,
+    "maxLength": 20
+  }
+}

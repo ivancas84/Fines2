@@ -10,7 +10,7 @@ namespace Fines2Wpf.DAO
         public static IEnumerable<Dictionary<string, object>> AlumnosPorIds(IEnumerable<object> ids)
         {
             if (ids.Count() == 0) return Enumerable.Empty<Dictionary<string, object>>();
-            return ContainerApp.db.Sql("alumno").CacheByIds(ids.ToArray());
+            return ContainerApp.db.Sql("alumno").Cache().Ids(ids.ToArray());
         }
 
         public static EntitySql SearchLikeQuery(string search)

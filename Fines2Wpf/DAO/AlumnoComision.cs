@@ -29,7 +29,7 @@ namespace Fines2Wpf.DAO
 
             return ContainerApp.db.Sql("alumno_comision")
                 .Where("$persona-numero_documento IN (@0)")
-                .Parameters(dnis).ColOfDictCache();
+                .Parameters(dnis).Cache().ColOfDict();
 
         }
 
@@ -40,7 +40,7 @@ namespace Fines2Wpf.DAO
         /// <returns></returns>
         public IEnumerable<object> IdAlumnosParaTransferirDeComision(string comision, object anio, object semestre)
         {
-            var alumnoComision_ = AsignacionesActivasPorComisionesQuery(new List<object>() { comision }).ColOfDictCache();
+            var alumnoComision_ = AsignacionesActivasPorComisionesQuery(new List<object>() { comision }).Cache().ColOfDict();
             var idAlumnos = alumnoComision_.ColOfVal<object>("alumno").Distinct().ToList();
             var idPlan = alumnoComision_.ElementAt(0)["planificacion-plan"];
             return ContainerApp.db.Sql("calificacion")
@@ -53,7 +53,7 @@ namespace Fines2Wpf.DAO
                     AND ($nota_final >= 7 OR $crec >= 4)  
                  ")
                 .Having("SUM($disposicion) > 3")
-                .Parameters(idAlumnos, idPlan).ColOfDictCache().ColOfVal<object>("id");
+                .Parameters(idAlumnos, idPlan).Cache().ColOfDict().ColOfVal<object>("id");
 
 
 
@@ -70,7 +70,7 @@ namespace Fines2Wpf.DAO
                     AND $calendario-semestre = @1 
                     AND $comision-autorizada = true
                 ")
-                .Parameters(anio, semestre).ColOfDictCache().ColOfVal<object>("alumno");
+                .Parameters(anio, semestre).Cache().ColOfDict().ColOfVal<object>("alumno");
 
         }
 
@@ -86,7 +86,7 @@ namespace Fines2Wpf.DAO
                     AND $comision-autorizada = true
                     AND $estado = 'Activo'
                 ")
-                .Parameters(anio, semestre).ColOfDictCache().ColOfVal<object>("alumno");
+                .Parameters(anio, semestre).Cache().ColOfDict().ColOfVal<object>("alumno");
 
         }
 
@@ -102,7 +102,7 @@ namespace Fines2Wpf.DAO
                     AND $estado = 'Activo'
                     AND $persona-genero IS NULL
                 ")
-                .Parameters(anio, semestre).ColOfDictCache().ColOfVal<object>("alumno");
+                .Parameters(anio, semestre).Cache().ColOfDict().ColOfVal<object>("alumno");
         }
 
 
@@ -114,7 +114,7 @@ namespace Fines2Wpf.DAO
                 .Where(@"
                     $comision IN (@0) 
                 ")
-                .Parameters(idsComisiones).ColOfDictCache();
+                .Parameters(idsComisiones).Cache().ColOfDict();
         }
 
         public EntitySql AsignacionesActivasPorComisionesQuery(IEnumerable<object> idsComisiones)
@@ -136,7 +136,7 @@ namespace Fines2Wpf.DAO
                 .Size(0)
                 .Where(@"
                     $comision IN (@0)
-                ").ColOfDictCache().ColOfVal<object>("alumno");
+                ").Cache().ColOfDict().ColOfVal<object>("alumno");
         }
 
         
@@ -175,14 +175,14 @@ namespace Fines2Wpf.DAO
             return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where("$calendario-anio = @0 AND $calendario-semestre = @1 AND $comision-autorizada = true")
-                .Parameters(anio, semestre).ColOfDictCache();
+                .Parameters(anio, semestre).Cache().ColOfDict();
 
         }
 
         public IEnumerable<Dictionary<string, object>> AlumnosDeComisionesAutorizadasPorSemestre(object anio, object semestre)
         {
             IEnumerable<object> ids = IdsAlumnosDeComisionesAutorizadasPorSemestre(anio, semestre);
-            return ContainerApp.db.Sql("alumno").CacheByIds(ids.ToArray());
+            return ContainerApp.db.Sql("alumno").Cache().Ids(ids.ToArray());
         }
 
         public IEnumerable<Dictionary<string, object>> AlumnosActivosDeComisionesAutorizadasPorSemestre(object anio, object semestre)

@@ -80,7 +80,7 @@
                 <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
                 <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
-                <DataGridTemplateColumn Header="Fecha Nac">
+                <DataGridTemplateColumn Header="Fecha Nac" ClipboardContentBinding="{Binding persona__fecha_nacimiento, StringFormat={}{0:dd/MM/yyyy}}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding persona__fecha_nacimiento, StringFormat={}{0:dd/MM/yyyy}}" />

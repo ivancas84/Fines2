@@ -1,0 +1,119 @@
+{
+  "username": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "username",
+    "alias": null,
+    "entityName": "wpwt_loginizer_logs",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "",
+    "defaultValueClassData": true,
+    "maxLength": 255
+  },
+  "time": {
+    "checks": {
+      "type": "int",
+      "required": true
+    },
+    "resets": {},
+    "name": "time",
+    "alias": null,
+    "entityName": "wpwt_loginizer_logs",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": true,
+    "defaultValue": "0",
+    "defaultValueClassData": true,
+    "maxLength": 10
+  },
+  "count": {
+    "checks": {
+      "type": "int",
+      "required": true
+    },
+    "resets": {},
+    "name": "count",
+    "alias": null,
+    "entityName": "wpwt_loginizer_logs",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": true,
+    "defaultValue": "0",
+    "defaultValueClassData": true,
+    "maxLength": 10
+  },
+  "lockout": {
+    "checks": {
+      "type": "int",
+      "required": true
+    },
+    "resets": {},
+    "name": "lockout",
+    "alias": null,
+    "entityName": "wpwt_loginizer_logs",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": true,
+    "defaultValue": "0",
+    "defaultValueClassData": true,
+    "maxLength": 10
+  },
+  "ip": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "ip",
+    "alias": null,
+    "entityName": "wpwt_loginizer_logs",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "",
+    "defaultValueClassData": true,
+    "maxLength": 255
+  },
+  "url": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "url",
+    "alias": null,
+    "entityName": "wpwt_loginizer_logs",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": "",
+    "defaultValueClassData": true,
+    "maxLength": 255
+  }
+}

@@ -79,7 +79,7 @@ namespace Fines2Wpf.Windows.Alumno.TransferirAlumno
 
             var textBox = (TextBox)origenComboBox.Template.FindName("PART_EditableTextBox", origenComboBox);
 
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
 
             origenOC.Clear(); //al vaciar, si existe elemento seleccionado, se borra el texto por eso
             foreach (var item in list)
@@ -121,7 +121,7 @@ namespace Fines2Wpf.Windows.Alumno.TransferirAlumno
 
             var textBox = (TextBox)destinoComboBox.Template.FindName("PART_EditableTextBox", destinoComboBox);
 
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
 
             destinoOC.Clear(); //al vaciar, si existe elemento seleccionado, se borra el texto por eso
             foreach (var item in list)

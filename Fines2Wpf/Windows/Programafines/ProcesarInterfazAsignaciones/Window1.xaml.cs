@@ -161,14 +161,14 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 
             if (!formItem.comision.IsNullOrEmptyOrDbNull())
             {
-                var com = ContainerApp.db.Sql("comision").GetByFieldValue("pfid", formItem.comision!);
+                var com = ContainerApp.db.Sql("comision").Equal("pfid", formItem.comision!).Cache().Dict();
 
                 if (!com.IsNullOrEmptyOrDbNull())
                 {
                     pfidsComisiones.Add(formItem.comision!, com!["id"]!);
 
                     asignacionesDb = (Dictionary<string, AsignacionDbItem>)ContainerApp.db.AsignacionesDeComisionesSql(com["id"]!).
-                        ColOfDictCache().
+                        Cache().ColOfDict().
                         ColOfObj<AsignacionDbItem>().
                         DictOfObjByPropertyNames("persona__numero_documento");
                 }
@@ -184,11 +184,11 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             {
                 pfidsComisiones = (Dictionary<string, object?>)ContainerApp.db.
                     ComisionesAutorizadasDePeriodoSql(DateTime.Now.Year, 1).
-                    ColOfDictCache().
+                    Cache().ColOfDict().
                     DictOfDictByKeysValue("id", "pfid");
 
                 asignacionesDb = (Dictionary<string, AsignacionDbItem>)ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
-                    ColOfDictCache().
+                    Cache().ColOfDict().
                     ColOfObj<AsignacionDbItem>().
                     DictOfObjByPropertyNames("persona__numero_documento");
             }
