@@ -172,6 +172,12 @@ WHERE " + id + " = @" + count + @";
             return (ids.Count() > 0) ? UpdateIds(_entityName, row, ids) : this;
         }
 
+        public EntityPersist UpdateValue(EntityValues values, string fieldName, object? newValue)
+        {
+            return UpdateValueIds(values.entityName, fieldName, newValue, values.Get("id"));
+        }
+
+
         /// <summary>
         /// Actualizar un unico campo
         /// </summary>
@@ -234,12 +240,6 @@ WHERE " + id + " = @" + count + @";
 
             List<object> ids = new() { source[idKey]! };
             return UpdateValueIds(_entityName, key, value, ids);
-        }
-
-        /// <summary>Insercion de value</summary>
-        public EntityPersist Insert(string _entityName, EntityValues val)
-        {
-            return Insert(_entityName, val.Values());
         }
 
         /// <summary>Insercion de objeto</summary>

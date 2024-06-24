@@ -84,6 +84,9 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                             fieldsToCompare = new List<string> { "apellidos", "nombres", "numero_documento" }
                         };
                         var dataDifferent = personaVal.Compare(cp);
+
+                      
+
                         if (!dataDifferent.IsNullOrEmpty())
                         {
                             statusData.Add(new StatusData()
@@ -91,7 +94,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                                 row = j,
                                 status = "error",
                                 detail = "Los valores de persona existente son diferentes no se realizara ningún registro",
-                                data = "Nuevo: " + personaVal.ToStringFields("nombres","apellidos","numero_documento") + ". Existente: " + personaExistenteVal!.ToStringFields("nombres", "apellidos", "numero_documento")
+                                data = "Nuevo: " + personaVal.ToStringFields(dataDifferent.Keys.ToArray()) + ". Existente: " + personaExistenteVal!.ToStringFields(dataDifferent.Keys.ToArray())
                             });
                             continue;
                         }
@@ -112,6 +115,29 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                         };
                       
                         dataDifferent = personaVal.Compare(cp);
+
+                        foreach (var (key, value) in dataDifferent)
+                        {
+                            switch (key)
+                            {
+                                case "telefono":
+                                    var t = personaExistenteVal.GetOrNull("telefono");
+                                    if (t.IsNullOrEmptyOrDbNull() || t.ToString().Equals("0"))
+                                    {
+                                        persist.UpdateValue(personaExistenteVal, "telefono", personaVal.GetOrNull("telefono"));
+                                        dataDifferent.Remove("telefono");
+                                        statusData.Add(new StatusData()
+                                        {
+                                            row = j,
+                                            status = "info",
+                                            detail = "Se actualizará el valor de telefono",
+                                            data = "Nuevo: " + personaVal.GetOrNull("telefono") + ". Existente: " + personaExistenteVal!.GetOrNull("telefono")
+                                        });
+                                    }
+                                    break;
+                            }
+                        }
+
                         if (!dataDifferent.IsNullOrEmpty())
                         {
                             statusData.Add(new StatusData()
@@ -155,11 +181,12 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                         alumnoVal.Set("id", alumnoExistente!.Get("id"));
                         if (alumnoExistente!.Get("plan").IsNullOrEmptyOrDbNull())
                         {
+                            persist.UpdateValue(alumnoExistente, "plan", comision.plan__id);
                             statusData.Add(new()
                             {
                                 row = j,
                                 status = "update",
-                                detail = "Se actualizo el plan del alumno que estaba vacío.",
+                                detail = "Se actualizará el plan del alumno que estaba vacío.",
                                 data = personaVal.ToString()
                             });
                         }

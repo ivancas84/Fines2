@@ -161,7 +161,9 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 
             if (!formItem.comision.IsNullOrEmptyOrDbNull())
             {
-                var com = ContainerApp.db.Sql("comision").Equal("pfid", formItem.comision!).Cache().Dict();
+                var com = ContainerApp.db.Sql("comision").
+                    Where("$pfid = @0 AND $calendario-anio = @1 AND $calendario-semestre = @2").
+                    Parameters(formItem.comision!, ContainerApp.config.anio, ContainerApp.config.semestre).Cache().Dict();
 
                 if (!com.IsNullOrEmptyOrDbNull())
                 {

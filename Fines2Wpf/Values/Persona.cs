@@ -44,24 +44,24 @@ namespace Fines2Wpf.Values
                 return response;
             if (response.ContainsKey("nombres") && !response["nombres"].IsNullOrEmpty())
             {
-                IEnumerable<string> nombres = response["nombres"].ToString()!.Trim().ToUpper().RemoveMultipleSpaces().Split(" ");
+                IEnumerable<string> nombres = response["nombres"].ToString()!.Trim().RemoveMultipleSpaces().Normalize(NormalizationForm.FormD).RemoveDiacritics().Split(" ");
 
                 foreach (string nom in nombres)
                 {
                     int ll = (nom.Length >= 3) ? 3 : nom.Length;
-                    string n = nom.Substring(0, ll).ToUpper();
+                    string n = nom.Substring(0, ll).Normalize(NormalizationForm.FormD).RemoveDiacritics();
 
                     if (
                         (
                             values.ContainsKey("nombres")
                             && !values["nombres"].IsNullOrEmpty()
-                            && values["nombres"].ToString().ToUpper().Contains(n)
+                            && values["nombres"].ToString().Contains(n, StringComparison.OrdinalIgnoreCase)
                         )
                         ||
                         (
                             values.ContainsKey("apellidos")
                             && !values["apellidos"].IsNullOrEmpty()
-                            && values["apellidos"].ToString().ToUpper().Contains(n)
+                            && values["apellidos"].ToString().Contains(n, StringComparison.OrdinalIgnoreCase)
                         )
                     )
                     {
@@ -74,25 +74,36 @@ namespace Fines2Wpf.Values
 
             if (response.ContainsKey("apellidos") && !response["apellidos"].IsNullOrEmpty())
             {
-                IEnumerable<string> apellidos = response["apellidos"].ToString()!.Trim().ToUpper().RemoveMultipleSpaces().Split(" ");
+                IEnumerable<string> apellidos = response["apellidos"].ToString()!.Trim().RemoveMultipleSpaces().Normalize(NormalizationForm.FormD).RemoveDiacritics().Split(" ");
+
+                /// string source = "olá mundo";
+                /// string substring = "ola";
+                /// // Normalize and remove diacritics from both strings
+                /// string processedSource = RemoveDiacritics(source.Normalize(NormalizationForm.FormD));
+                /// string processedSubstring = RemoveDiacritics(substring.Normalize(NormalizationForm.FormD));
+                /// // Check if the processed source string contains the processed substring
+                /// bool contains = processedSource.Contains(processedSubstring, StringComparison.OrdinalIgnoreCase);
+                /// 
+                /// Console.WriteLine($"Does \"{source}\" contain \"{substring}\" (ignoring accents)? {contains}");</example>
+
 
                 foreach (string ape in apellidos)
                 {
                     int ll = (ape.Length >= 3) ? 3 : ape.Length;
 
-                    string a = ape.Substring(0, ll).ToUpper();
+                    string a = ape.Substring(0, ll);
 
                     if (
                         (
                             values.ContainsKey("nombres")
                             && !values["nombres"].IsNullOrEmpty()
-                            && values["nombres"].ToString().ToUpper().Contains(a)
+                            && values["nombres"].ToString().Normalize(NormalizationForm.FormD).RemoveDiacritics().Contains(a, StringComparison.OrdinalIgnoreCase)
                         )
                         ||
                         (
                             values.ContainsKey("apellidos")
                             && !values["apellidos"].IsNullOrEmpty()
-                            && values["apellidos"].ToString().ToUpper().Contains(a)
+                            && values["apellidos"].ToString().Normalize(NormalizationForm.FormD).RemoveDiacritics().Contains(a, StringComparison.OrdinalIgnoreCase)
                         )
                     )
                     {
