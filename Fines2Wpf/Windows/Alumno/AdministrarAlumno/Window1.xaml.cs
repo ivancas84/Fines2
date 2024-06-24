@@ -1098,7 +1098,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                         Group("$disposicion").
                         Size(0).
                         Where("$disposicion IN ( @0 ) ").
-                        Parameters(idsDisposiciones).
+                        Parameters(idsDisposiciones.ToList()).
                         Column<object>("id");
 
                     if (idsCalificaciones.Count() > 0)

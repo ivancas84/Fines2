@@ -168,7 +168,7 @@ WHERE " + id + " = @" + count + @";
         /// <returns></returns>
         public EntityPersist UpdateAll(string _entityName, Dictionary<string, object?> row)
         {
-            var ids = Db.Sql(_entityName).Fields(Db.config.id).Size(0).Column<object>();
+            object[] ids = Db.Sql(_entityName).Fields(Db.config.id).Size(0).Column<object>().ToArray();
             return (ids.Count() > 0) ? UpdateIds(_entityName, row, ids) : this;
         }
 

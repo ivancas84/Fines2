@@ -32,14 +32,14 @@ namespace SqlOrganize
             return query.Obj<T>();
         }
 
-        public static T[] Column<T>(this EntitySql esql, string columnName)
+        public static IEnumerable<T> Column<T>(this EntitySql esql, string columnName)
         {
             using Query query = esql.Query();
             using DbConnection connection = query.OpenConnection();
             return query.Column<T>(columnName);
         }
 
-        public static T[] Column<T>(this EntitySql esql, int columnNumber = 0)
+        public static IEnumerable<T> Column<T>(this EntitySql esql, int columnNumber = 0)
         {
             using Query query = esql.Query();
             using DbConnection connection = query.OpenConnection();
@@ -54,7 +54,7 @@ namespace SqlOrganize
             return query.Value<T>(columnName);
         }
 
-        public static T Value<T>(this EntitySql esql, int columnNumber = 0)
+        public static T? Value<T>(this EntitySql esql, int columnNumber = 0)
         {
             using Query query = esql.Query();
             using DbConnection connection = query.OpenConnection();

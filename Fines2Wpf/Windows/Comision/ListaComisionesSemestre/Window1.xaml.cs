@@ -218,7 +218,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             try { 
             var button = (e.OriginalSource as Button);
             var comision = (Data_comision)button.DataContext;
-            object[] ids = ContainerApp.db.AsignacionesDeComisionesSql(comision.id).Column<object>("id");
+            object[] ids = ContainerApp.db.AsignacionesDeComisionesSql(comision.id).Column<object>("id").ToArray();
             ContainerApp.db.Persist().DeleteIds("alumno_comision", ids).Exec().RemoveCache();
             ToastUtils.Show("Asignaciones eliminadas correctamente");
             } catch (Exception ex)
