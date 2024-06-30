@@ -21,6 +21,7 @@ FontFamily="{materialDesign:MaterialDesignFont}"
         <Grid.RowDefinitions>
             <RowDefinition Height = "Auto" />
             <RowDefinition Height = "Auto" />
+            <RowDefinition Height = "Auto" />
 
         </Grid.RowDefinitions>
 
@@ -28,26 +29,87 @@ FontFamily="{materialDesign:MaterialDesignFont}"
             <ColumnDefinition Width = "*" />
         </Grid.ColumnDefinitions>
 
+        
+        
+        
+        
+        <GroupBox
+            Name="formGroupBox">
 
+                <WrapPanel>
 
+                    <Label
+						Margin= "2">Número comisión:</Label>
+                    <TextBox 
+                        Text="{Binding comision, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                        Width="200"
+                        Margin = "2"/>
+                    <TextBlock                         
+                        Text="{Binding alumnosProcesados, ValidatesOnDataErrors=True, TargetNullValue=''}"></TextBlock>
+
+                    <Button
+						Content = "_Buscar..."
+						Click="BuscarButton_Click" />
+                </WrapPanel>
+
+            </GroupBox>
+
+        
+        
+        
+        
+        
+        
+        
         <GroupBox 
                 Name="asignacionPfGroupBox"
-                Grid.Row="0"
+                Grid.Row="1"
                 Margin="10">
             <GroupBox.Header>
                 <Label Foreground="White">Alumnos programafines</Label>
             </GroupBox.Header>
-            <DataGrid Name="asignacionPfDataGrid"></DataGrid>
+            <DataGrid 
+                Name="asignacionPfDataGrid"
+                IsReadOnly="True" 
+                AutoGenerateColumns="True">
+                    
+                </DataGrid>
         </GroupBox>
 
             <GroupBox 
-        Name="asignacionDbGroupBox"
-        Grid.Row="1"
-        Margin="10">
+                Name="asignacionDbGroupBox"
+                Grid.Row="2"
+                Margin="10">
                 <GroupBox.Header>
                     <Label Foreground="White">Asignaciones db que no existen en PF</Label>
                 </GroupBox.Header>
-                <DataGrid Name="asignacionDbDataGrid"></DataGrid>
+                <DataGrid 
+                    Name="asignacionDbDataGrid"
+                    IsReadOnly="True" 
+                    AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
+                        <DataGridTextColumn Header="Comision" Binding="{Binding comision__pfid}"></DataGridTextColumn>
+
+                        <DataGridTemplateColumn>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <WrapPanel>
+                                        <Button 
+                                            Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                                            Click="AgregarAsignacionPF_Click">Agregar a PF</Button>
+                                        <Button 
+                                    Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                                    Click="CambiarComisionPF_Click">Cambiar comision</Button>
+                                    </WrapPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
             </GroupBox>
         </Grid>
 

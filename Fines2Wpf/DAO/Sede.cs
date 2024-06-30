@@ -25,7 +25,7 @@ namespace Fines2Wpf.DAO
         public IEnumerable<object> IdsSedesActivasSemestre(object anio, object semestre)
         {
             var comisionDAO = new DAO.Comision();
-            var r = comisionDAO.ComisionesAutorizadasPorSemestreQuery(anio, semestre).ColOfDictCache();
+            var r = comisionDAO.ComisionesAutorizadasPorSemestreQuery(anio, semestre).Cache().ColOfDict();
             return r.ColOfVal<object>("sede");
         }
 

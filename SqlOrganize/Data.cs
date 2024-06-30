@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
+using Utils;
 
 namespace SqlOrganize
 {
@@ -8,9 +9,13 @@ namespace SqlOrganize
     /// </summary>
     public abstract class Data : INotifyPropertyChanged, IDataErrorInfo
     {
+        public string entityName;
 
         /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
         public bool _isUpdated = false;
+
+        /// <summary>Campos a ignorar para marcar isUpdated</summary>
+        public List<string> _isUpdatedIgnore = new() { nameof(IsUpdated), nameof(Msg), nameof(Error) };
 
         /// <summary>Flag opcional para indicar que debe ejecutarse la validacion</summary>
         public bool _Validate = false;
@@ -19,6 +24,18 @@ namespace SqlOrganize
         /// Si se construye una instancia de data con valores por defecto, puede ser necesario acceder a la base de datos para definirlos.
         /// </summary>
         public Db? db;
+
+
+        public Data Db(Db db)
+        {
+            this.db = db;
+            return this;
+        }
+
+        public EntityValues Values()
+        {
+            return db!.Values(entityName).Set(this);
+        }
 
         public string this[string columnName]
         {
@@ -32,7 +49,10 @@ namespace SqlOrganize
             }
         }
 
-        protected abstract string ValidateField(string columnName);
+        protected virtual string ValidateField(string columnName)
+        {
+            return "";
+        }
 
         /// <summary>
         /// Verificar error en propiedades
@@ -64,6 +84,8 @@ namespace SqlOrganize
 
         public string Msg { get; set; } = "";
 
+        
+        /// <summary>Cargar en false al finalizar la inicializacion</summary>
         public bool IsUpdated
         {
             get { return _isUpdated; }
@@ -72,7 +94,7 @@ namespace SqlOrganize
                 if(_isUpdated != value)
                 {
                     _isUpdated = value;
-                    NotifyPropertyChanged("IsUpdated");
+                    NotifyPropertyChanged(nameof(IsUpdated));
                 }
             }
         }
@@ -81,7 +103,7 @@ namespace SqlOrganize
 
         protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
         {
-            if(!propertyName.Equals(nameof(IsUpdated)))
+            if(!_isUpdatedIgnore.Contains(propertyName))
                 IsUpdated = true;
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

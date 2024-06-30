@@ -79,7 +79,7 @@ namespace Fines2Wpf.Windows.Alumno.TransferirAlumno
 
             var textBox = (TextBox)origenComboBox.Template.FindName("PART_EditableTextBox", origenComboBox);
 
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
 
             origenOC.Clear(); //al vaciar, si existe elemento seleccionado, se borra el texto por eso
             foreach (var item in list)
@@ -121,7 +121,7 @@ namespace Fines2Wpf.Windows.Alumno.TransferirAlumno
 
             var textBox = (TextBox)destinoComboBox.Template.FindName("PART_EditableTextBox", destinoComboBox);
 
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
 
             destinoOC.Clear(); //al vaciar, si existe elemento seleccionado, se borra el texto por eso
             foreach (var item in list)
@@ -160,7 +160,7 @@ namespace Fines2Wpf.Windows.Alumno.TransferirAlumno
                     throw new Exception("Debe seleccionar ambas personas");
 
                 var persist = ContainerApp.db.Persist();
-                List < Field > fieldsOmPersona = ContainerApp.db.Entity("persona").FieldOm();
+                List < Field > fieldsOmPersona = ContainerApp.db.Entity("persona").FieldsOm();
                 persist.TransferOm("persona",  personaDestinoObj.id!, personaOrigenObj.id!);
 
                 IDictionary<string, object?>? alumnoOrigenData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(personaOrigenObj.id!).Dict();

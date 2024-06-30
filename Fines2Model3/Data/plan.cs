@@ -14,15 +14,17 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_plan(Db db)
+        public Data_plan(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("plan").GetDefault("id");
+            EntityValues val = db!.Values("plan");
+            _id = (string?)val.GetDefault("id");
         }
 
         public string? Label { get; set; }

@@ -55,7 +55,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
             #region  consulta de curso
             {
-                var cursoData = ContainerApp.db.Sql("curso").CacheById(idCurso)!;
+                var cursoData = ContainerApp.db.Sql("curso").Cache().Id(idCurso)!;
                 curso = cursoData.Obj<Data_curso_r>();
                 Values.Curso val = (Values.Curso)ContainerApp.db.Values("curso").Values(cursoData!);
                 formData.curso__Label = curso.sede__numero + curso.comision__division + "/"+curso.planificacion__anio + curso.planificacion__semestre + " " + curso.asignatura__nombre + " " + curso.asignatura__codigo;
@@ -73,7 +73,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 idDisposicion = ContainerApp.db.Sql("disposicion").
                 Where("$asignatura = @0").
                 Where(" AND $planificacion = @1").
-                Parameters(curso.asignatura!, curso.comision__planificacion!).DictCache()!["id"]!;
+                Parameters(curso.asignatura!, curso.comision__planificacion!).Cache().Dict()!["id"]!;
             }
             #endregion
 
@@ -96,7 +96,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 asignacionData = ContainerApp.db.Sql("alumno_comision").
                 Where("$comision = @0").
                 Order("$estado ASC, $persona-apellidos ASC, $persona-nombres ASC").
-                Parameters(curso.comision!).ColOfDictCache();
+                Parameters(curso.comision!).Cache().ColOfDict();
                 idsAlumnos = asignacionData.ColOfVal<object>("alumno");
                 dnis = asignacionData.ColOfVal<string>("persona-numero_documento");
                 asignacionOC.Clear();
@@ -128,7 +128,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 Where(" AND $disposicion-planificacion = @1").
                 Where(" AND $alumno IN (@2)").
                 Where(" AND ($nota_final >= 7 OR $crec >= 4)").
-                Parameters(curso.asignatura!, curso.comision__planificacion!, idsAlumnos).ColOfDictCache();
+                Parameters(curso.asignatura!, curso.comision__planificacion!, idsAlumnos).Cache().ColOfDict();
                 calificacionExistenteOC.Clear();
                 foreach (Dictionary<string, object?> kvp in calificacionExistenteData)
                 {
@@ -166,13 +166,13 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
             IDictionary<string, Dictionary<string, object?>> personasExistentesPorDNI = ContainerApp.db.Sql("persona").
                 Where("$numero_documento IN (@0)").
                 Parameters(dnisCalificaciones).
-                ColOfDictCache().
+                Cache().ColOfDict().
                 DictOfDictByKeys("numero_documento");
 
             IDictionary<string, Dictionary<string, object?>>  alumnosExistentesPorDNI = ContainerApp.db.Sql("alumno").
                 Where("$persona-numero_documento IN (@0)").
                 Parameters(dnisCalificaciones).
-                ColOfDictCache().
+                Cache().ColOfDict().
                 DictOfDictByKeys("persona-numero_documento");
 
             IDictionary<string, Dictionary<string, object?>> asignacionesExistentesPorDNI = asignacionData.DictOfDictByKeys("persona-numero_documento");
@@ -264,8 +264,12 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                         {
                             Values.Persona personaV = (Values.Persona)ContainerApp.db.Values("persona", "persona").Set(calificacion!);
                             Dictionary<string, object?> pe = personasExistentesPorDNI[dni!];
-                            var l = new List<string> { "nombres", "apellidos", "numero_documento" };
-                            IDictionary<string, object?> compareResult = personaV.CompareFields(pe, l);
+                            CompareParams cp = new CompareParams()
+                            {
+                                val = ContainerApp.db.Values("persona").Set(pe),
+                                fieldsToCompare = new List<string> { "nombres", "apellidos", "numero_documento" }
+                            };
+                            IDictionary<string, object?> compareResult = personaV.Compare(cp);
                             if (!compareResult.IsNullOrEmpty())
                             {
                                 foreach (string key in compareResult.Keys)
@@ -288,7 +292,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                                 Where("$alumno = @0").
                                 Parameters(calificacion.alumno).
                                 Order("$calendario-anio DESC, $calendario-semestre DESC").
-                                ColOfDictCache();
+                                Cache().ColOfDict();
                             List<string> asignacionesExistentesLabel = new();
                             foreach (var item in asignacionesExistentes)
                             {

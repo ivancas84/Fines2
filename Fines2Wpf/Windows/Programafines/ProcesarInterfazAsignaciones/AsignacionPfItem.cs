@@ -17,7 +17,6 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
         public string dni { get; set; }
 
         public string comision { get; set; }
-
         public bool revisar { get; set; } = false; //debe hacerse una revision manual por inconsistencias
 
         protected override string ValidateField(string columnName)

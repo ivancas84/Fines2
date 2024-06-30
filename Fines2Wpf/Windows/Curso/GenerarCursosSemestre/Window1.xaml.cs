@@ -75,7 +75,7 @@ namespace Fines2Wpf.Windows.Curso.GenerarCursosSemestre
                 comisionesSinCursosOC.Add(comObj);
 
                 IDictionary<string, object?> asignaturasDeComision = ContainerApp.db.Sql("distribucion_horaria").
-                    Select("SUM($horas_catedra) AS suma_horas_catedra").
+                    Select("$disposicion-asignatura, SUM($horas_catedra) AS suma_horas_catedra").
                     Group("$disposicion-asignatura").
                     Where("$disposicion-planificacion = @0").
                     Parameters(comObj.planificacion).

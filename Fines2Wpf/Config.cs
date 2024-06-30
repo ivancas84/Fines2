@@ -34,7 +34,8 @@ namespace Fines2Wpf
         public string pfUser { get; set; }
         public string pfPassword { get; set; }
 
-
+        public short anio { get; set; } = 2024;
+        public short semestre { get; set; } = 1;
 
 
     }

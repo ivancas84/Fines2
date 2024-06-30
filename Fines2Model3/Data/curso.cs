@@ -14,16 +14,18 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_curso(Db db)
+        public Data_curso(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("curso").GetDefault("id");
-            _alta = (DateTime?)db!.Values("curso").GetDefault("alta");
+            EntityValues val = db!.Values("curso");
+            _id = (string?)val.GetDefault("id");
+            _alta = (DateTime?)val.GetDefault("alta");
         }
 
         public string? Label { get; set; }

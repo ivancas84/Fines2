@@ -70,20 +70,20 @@ namespace Utils
             return Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
         }
 
-        public static List<T> ColumnValues<T>(this DbDataReader reader, string columnName)
+        public static IEnumerable<T> ColumnValues<T>(this DbDataReader reader, string columnName)
         {
             var result = new List<T>();
             while (reader.Read())
                 result.Add((T)reader[columnName]);
-            return result;
+            return result.ToArray();
         }
 
-        public static List<T> ColumnValues<T>(this DbDataReader reader, int columnNumber)
+        public static T[] ColumnValues<T>(this DbDataReader reader, int columnNumber)
         {
             var result = new List<T>();
             while (reader.Read())
                 result.Add((T)reader.GetValue(columnNumber));
-            return result;
+            return result.ToArray();
         }
 
         public static bool IsNullOrEmptyOrDbNull(this object? value)

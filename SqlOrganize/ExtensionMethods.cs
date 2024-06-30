@@ -7,49 +7,6 @@ namespace SqlOrganize
 {
     public static class ExtensionMethods
     {
-
-        #region EntitySql + Cache
-        public static IDictionary<string, object?> Get(this EntitySql entitySql, object id)
-        {
-            return entitySql.CacheByIds(id).ElementAt(0);
-        }
-
-        public static IEnumerable<Dictionary<string, object?>> ColOfDictCache(this EntitySql esql)
-        {
-            return esql.Cache().ColOfDictCache();
-        }
-
-        public static IDictionary<string, object?>? DictCache(this EntitySql esql)
-        {
-            return esql.Cache().DictCache();
-        }
-
-        public static IEnumerable<Dictionary<string, object?>> CacheByIds(this EntitySql esql, params object[] ids)
-        {
-            return esql.Cache().CacheByIds(ids);
-        }
-
-        public static IDictionary<string, object?>? CacheById(this EntitySql esql, object id)
-        {
-            return esql.Cache().CacheById(id);
-        }
-
-        public static IDictionary<string, object>? _CacheById(this EntitySql esql, object id)
-        {
-            return esql.Cache()._CacheById(id);
-        }
-
-
-        public static List<IDictionary<string, object?>> _CacheByIds(this EntitySql esql, params object[] ids)
-        {
-            return esql.Cache()._CacheByIds(ids);
-        }
-        public static IDictionary<string, object?>? RowByFieldValue(this EntitySql entitySql, string fieldName, object value)
-        {
-            return entitySql.Where("$" + fieldName + " = @0").Parameters(value).DictCache();
-        }
-        #endregion
-
         #region EntitySql + Query
         /// <summary>Ejecucion rapida de EntitySql</summary>
         public static IEnumerable<Dictionary<string, object?>> ColOfDict(this EntitySql esql)
@@ -97,7 +54,7 @@ namespace SqlOrganize
             return query.Value<T>(columnName);
         }
 
-        public static T Value<T>(this EntitySql esql, int columnNumber = 0)
+        public static T? Value<T>(this EntitySql esql, int columnNumber = 0)
         {
             using Query query = esql.Query();
             using DbConnection connection = query.OpenConnection();
@@ -183,7 +140,7 @@ namespace SqlOrganize
         
         public static EntityPersist TransferOm(this EntityPersist persist, string entityName, object origenId, object destinoId)
         {
-            List<Field> fieldsOmPersona = persist.Db.Entity(entityName).FieldOm();
+            List<Field> fieldsOmPersona = persist.Db.Entity(entityName).FieldsOm();
             foreach (var field in fieldsOmPersona)
             {
                 IEnumerable<object> ids = persist.Db.Sql(field.entityName).Where(field.name + " = @0").Parameters(origenId).Column<object>("id");
@@ -195,15 +152,31 @@ namespace SqlOrganize
         #endregion
 
         #region EntityPersist + EntityValues
+        public static EntityPersist Insert(this EntityValues values)
+        {
+            return values.db.Persist().Insert(values);
+        }
+
+        public static EntityPersist Update(this EntityValues values)
+        {
+            return values.db.Persist().Update(values);
+        }
+
         public static EntityValues Insert(this EntityValues values, EntityPersist persist)
         {
             persist.Insert(values);
             return values;
         }
 
+        public static EntityValues Update(this EntityValues values, EntityPersist persist)
+        {
+            persist.Update(values);
+            return values;
+        }
+
         public static IDictionary<string, object?>? RowByFieldValue(this EntityValues entityValues, string fieldName)
         {
-            return entityValues.db.Sql(entityValues.entityName).RowByFieldValue(fieldName, entityValues.Get(fieldName));
+            return entityValues.db.Sql(entityValues.entityName).Equal(fieldName, entityValues.Get(fieldName)).Cache().Dict();
         }
 
         public static EntityPersist PersistId(this EntityValues v)
@@ -232,15 +205,14 @@ namespace SqlOrganize
             if (row.IsNullOrEmptyOrDbNull())
             {
                 v.Default().Reset();
-                p = v.db.Persist().Insert(v).Exec().RemoveCache();
+                return v.db.Persist().Insert(v);
             }
             else
             {
                 v.Reset();
-                p = v.db.Persist().Update(v).Exec().RemoveCache();
+                return v.db.Persist().Update(v);
             }
 
-            return p;
         }
 
         public static EntityValues Persist(this EntityValues v, EntityPersist persist)
@@ -321,6 +293,15 @@ namespace SqlOrganize
         }
         #endregion
 
+        #region EntityPersist + Data
+        public static EntityPersist Delete(this Data data)
+        {
+            data.Dict();
+            return data.db.Persist().DeleteIds(data["entityName"], data["id"]);
+        }
+
+        #endregion
+
         #region EntitySql + EntityValues
         public static IDictionary<string, object?>? RowByUniqueFieldOrValues(this EntityValues values, string fieldName)
         {
@@ -347,7 +328,7 @@ namespace SqlOrganize
             if (source.ContainsKey(entitySql.Db.config.id) && !source[entitySql.Db.config.id]!.IsNullOrEmptyOrDbNull())
                 entitySql.And("$" + entitySql.Db.config.id + " != @" + entitySql.parameters.Count()).Parameters(source[entitySql.Db.config.id]!);
 
-            return entitySql.DictCache();
+            return entitySql.Cache().Dict();
         }
 
         public static IDictionary<string, object?>? RowByUnique(this EntityValues ev)
@@ -363,7 +344,7 @@ namespace SqlOrganize
                 Where(key + " = @0").
                 Parameters(value).
                 Size(0).
-                ColOfDictCache();
+                Cache().ColOfDict();
         }
         #endregion
 

@@ -1,0 +1,59 @@
+{
+  "id": {
+    "checks": {
+      "type": "ulong",
+      "required": true
+    },
+    "resets": {},
+    "name": "id",
+    "alias": null,
+    "entityName": "wpwt_e_events",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "ulong",
+    "notNull": true,
+    "defaultValue": "max",
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "event_data": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "event_data",
+    "alias": null,
+    "entityName": "wpwt_e_events",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 65535
+  },
+  "created_at": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "created_at",
+    "alias": null,
+    "entityName": "wpwt_e_events",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": null
+  }
+}

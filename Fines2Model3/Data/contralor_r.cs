@@ -12,24 +12,26 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_contralor_r (Db db) : base(db)
+        public Data_contralor_r (Db db, bool init = true) : base(db, init)
         {
         }
 
-        public Data_contralor_r (Db db, params string[] fieldIds) : this(db)
+        public Data_contralor_r (Db db, bool init = true, params string[] fieldIds) : this(db, init)
         {
             Init(fieldIds);
         }
 
         protected void Init(params string[] fieldIds)
         {
+            EntityValues val;
             foreach(string fieldId in fieldIds)
             {
                 switch(fieldId)
                 {
                     case "planilla_docente":
-                        planilla_docente__id = (string?)db!.Values("planilla_docente").GetDefault("id");
-                        planilla_docente__insertado = (DateTime?)db!.Values("planilla_docente").GetDefault("insertado");
+                        val = db!.Values("planilla_docente");
+                        planilla_docente__id = (string?)val.GetDefault("id");
+                        planilla_docente__insertado = (DateTime?)val.GetDefault("insertado");
                     break;
                 }
             }

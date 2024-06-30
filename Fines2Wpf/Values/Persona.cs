@@ -18,8 +18,6 @@ namespace Fines2Wpf.Values
         public Persona(Db db, string entityName, string? fieldId = null) : base(db, entityName, fieldId)
         {
             fieldNames.Add("cuil_dni");
-            fieldNames.Add("cuil1");
-            fieldNames.Add("cuil2");
             //fieldNames = new List<string>(db.FieldNames(entityName));
 
 
@@ -39,39 +37,36 @@ namespace Fines2Wpf.Values
 
         }
 
-      
-
-        /// <summary>
-        /// Vuelve a comparar ciertos campos que necesitan verificacion adicional
-        /// </summary>
-        /// <param name="response"></param>
-        /// <returns></returns>
-        protected IDictionary<string, object?> Recompare(IDictionary<string, object?> response)
+        public override IDictionary<string, object?> Compare(CompareParams cp)
         {
+            var response = base.Compare(cp);
+            if (!response.Any())
+                return response;
             if (response.ContainsKey("nombres") && !response["nombres"].IsNullOrEmpty())
             {
-                IEnumerable<string> nombres = response["nombres"].ToString()!.Trim().ToUpper().RemoveMultipleSpaces().Split(" ");
+                IEnumerable<string> nombres = response["nombres"].ToString()!.Trim().RemoveMultipleSpaces().Normalize(NormalizationForm.FormD).RemoveDiacritics().Split(" ");
 
                 foreach (string nom in nombres)
                 {
                     int ll = (nom.Length >= 3) ? 3 : nom.Length;
-                    string n = nom.Substring(0, ll);
+                    string n = nom.Substring(0, ll).Normalize(NormalizationForm.FormD).RemoveDiacritics();
 
                     if (
                         (
                             values.ContainsKey("nombres")
                             && !values["nombres"].IsNullOrEmpty()
-                            && values["nombres"].ToString().ToUpper().Contains(n)
+                            && values["nombres"].ToString().Contains(n, StringComparison.OrdinalIgnoreCase)
                         )
                         ||
                         (
                             values.ContainsKey("apellidos")
                             && !values["apellidos"].IsNullOrEmpty()
-                            && values["apellidos"].ToString().ToUpper().Contains(n)
+                            && values["apellidos"].ToString().Contains(n, StringComparison.OrdinalIgnoreCase)
                         )
                     )
                     {
                         response.Remove("nombres");
+                        response.Remove("apellidos");
                         break;
                     }
                 }
@@ -79,7 +74,18 @@ namespace Fines2Wpf.Values
 
             if (response.ContainsKey("apellidos") && !response["apellidos"].IsNullOrEmpty())
             {
-                IEnumerable<string> apellidos = response["apellidos"].ToString()!.Trim().ToUpper().RemoveMultipleSpaces().Split(" ");
+                IEnumerable<string> apellidos = response["apellidos"].ToString()!.Trim().RemoveMultipleSpaces().Normalize(NormalizationForm.FormD).RemoveDiacritics().Split(" ");
+
+                /// string source = "olá mundo";
+                /// string substring = "ola";
+                /// // Normalize and remove diacritics from both strings
+                /// string processedSource = RemoveDiacritics(source.Normalize(NormalizationForm.FormD));
+                /// string processedSubstring = RemoveDiacritics(substring.Normalize(NormalizationForm.FormD));
+                /// // Check if the processed source string contains the processed substring
+                /// bool contains = processedSource.Contains(processedSubstring, StringComparison.OrdinalIgnoreCase);
+                /// 
+                /// Console.WriteLine($"Does \"{source}\" contain \"{substring}\" (ignoring accents)? {contains}");</example>
+
 
                 foreach (string ape in apellidos)
                 {
@@ -91,17 +97,18 @@ namespace Fines2Wpf.Values
                         (
                             values.ContainsKey("nombres")
                             && !values["nombres"].IsNullOrEmpty()
-                            && values["nombres"].ToString().ToUpper().Contains(a)
+                            && values["nombres"].ToString().Normalize(NormalizationForm.FormD).RemoveDiacritics().Contains(a, StringComparison.OrdinalIgnoreCase)
                         )
                         ||
                         (
                             values.ContainsKey("apellidos")
                             && !values["apellidos"].IsNullOrEmpty()
-                            && values["apellidos"].ToString().ToUpper().Contains(a)
+                            && values["apellidos"].ToString().Normalize(NormalizationForm.FormD).RemoveDiacritics().Contains(a, StringComparison.OrdinalIgnoreCase)
                         )
                     )
                     {
                         response.Remove("apellidos");
+                        response.Remove("nombres");
                         break;
                     }
                 }
@@ -125,20 +132,19 @@ namespace Fines2Wpf.Values
             return response;
         }
 
-        public override IDictionary<string, object?> Compare(IDictionary<string, object?> val, IEnumerable<string>? ignoreFields = null, bool ignoreNull = true, bool ignoreNonExistent = true)
+        public void Sset_telefono(object? value)
         {
-            var response = base.Compare(val, ignoreFields, ignoreNull, ignoreNonExistent);
-            return Recompare(response);
+            if (value == null)
+            {
+                values["telefono"] = null;
+                return;
+            }
+
+            values["telefono"] = value.ToString().CleanStringOfNonDigits();
         }
 
 
-        public override IDictionary<string, object?> CompareFields(IDictionary<string, object?> val, IEnumerable<string> fieldsToCompare, bool ignoreNull = true, bool ignoreNonExistent = true)
-        {
-            var response = base.CompareFields(val, fieldsToCompare, ignoreNull, ignoreNonExistent);
-            return Recompare(response);
-        }
-
-        public void Sset_cuil_dni(object? value)
+            public void Sset_cuil_dni(object? value)
         {
             if (value == null)
             {
@@ -166,6 +172,72 @@ namespace Fines2Wpf.Values
             }
 
         }
+
+        public void Reset_dia_nacimiento()
+        {
+            DateTime? fechaNacimiento = (DateTime?)GetOrNull("fecha_nacimiento");
+
+            if (!fechaNacimiento.IsNullOrEmptyOrDbNull() && GetOrNull("dia_nacimiento").IsNullOrEmptyOrDbNull())
+                Set("dia_nacimiento", ((DateTime)fechaNacimiento!).Day);
+        }
+
+        public void Reset_mes_nacimiento()
+        {
+            DateTime? fechaNacimiento = (DateTime?)GetOrNull("fecha_nacimiento");
+
+            if (!fechaNacimiento.IsNullOrEmptyOrDbNull() && GetOrNull("mes_nacimiento").IsNullOrEmptyOrDbNull())
+                Set("mes_nacimiento", ((DateTime)fechaNacimiento!).Month);
+        }
+
+        public void Reset_anio_nacimiento()
+        {
+            DateTime? fechaNacimiento = (DateTime?)GetOrNull("fecha_nacimiento");
+
+            if (!fechaNacimiento.IsNullOrEmptyOrDbNull() && GetOrNull("anio_nacimiento").IsNullOrEmptyOrDbNull())
+                Set("anio_nacimiento", ((DateTime)fechaNacimiento!).Year);
+        }
+
+        public void Reset_numero_documento()
+        {
+            string? numero_documento = (string?)GetOrNull("numero_documento");
+
+            if (!numero_documento.IsNullOrEmptyOrDbNull())
+                Set("numero_documento", ((string)numero_documento!).CleanStringOfNonDigits());
+        }
+
+        public void Reset_genero()
+        {
+            byte? sexo = (byte?)GetOrNull("sexo");
+
+            if (!sexo.IsNullOrEmptyOrDbNull() && GetOrNull("genero").IsNullOrEmptyOrDbNull())
+            {
+                if (sexo.Equals(1))
+                    Set("genero", "Masculino");
+                else if (sexo.Equals(2))
+                    Set("genero", "Femenino");
+                else
+                    Set("genero", "Otro");
+            }
+        }
+
+        public void Reset_sexo()
+        {
+            string? genero = (string?)GetOrNull("genero");
+
+            if (!genero.IsNullOrEmptyOrDbNull() && GetOrNull("sexo").IsNullOrEmptyOrDbNull())
+            {
+                if (((string)genero!).ToLower().Contains("mas"))
+                    Set("sexo", 1);
+
+                else if (((string)genero!).ToLower().Contains("fem"))
+                    Set("sexo", 2);
+
+                else
+                    Set("sexo", 3);
+            }
+        }
+
+
 
         public void Reset_cuil1()
         {

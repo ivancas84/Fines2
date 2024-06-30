@@ -12,36 +12,41 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_alumno_r (Db db) : base(db)
+        public Data_alumno_r (Db db, bool init = true) : base(db, init)
         {
         }
 
-        public Data_alumno_r (Db db, params string[] fieldIds) : this(db)
+        public Data_alumno_r (Db db, bool init = true, params string[] fieldIds) : this(db, init)
         {
             Init(fieldIds);
         }
 
         protected void Init(params string[] fieldIds)
         {
+            EntityValues val;
             foreach(string fieldId in fieldIds)
             {
                 switch(fieldId)
                 {
                     case "persona":
-                        persona__id = (string?)db!.Values("persona").GetDefault("id");
-                        persona__alta = (DateTime?)db!.Values("persona").GetDefault("alta");
-                        persona__telefono_verificado = (bool?)db!.Values("persona").GetDefault("telefono_verificado");
-                        persona__email_verificado = (bool?)db!.Values("persona").GetDefault("email_verificado");
-                        persona__info_verificada = (bool?)db!.Values("persona").GetDefault("info_verificada");
+                        val = db!.Values("persona");
+                        persona__id = (string?)val.GetDefault("id");
+                        persona__alta = (DateTime?)val.GetDefault("alta");
+                        persona__telefono_verificado = (bool?)val.GetDefault("telefono_verificado");
+                        persona__email_verificado = (bool?)val.GetDefault("email_verificado");
+                        persona__info_verificada = (bool?)val.GetDefault("info_verificada");
                     break;
                     case "domicilio":
-                        domicilio__id = (string?)db!.Values("domicilio").GetDefault("id");
+                        val = db!.Values("domicilio");
+                        domicilio__id = (string?)val.GetDefault("id");
                     break;
                     case "plan":
-                        plan__id = (string?)db!.Values("plan").GetDefault("id");
+                        val = db!.Values("plan");
+                        plan__id = (string?)val.GetDefault("id");
                     break;
                     case "resolucion_inscripcion":
-                        resolucion_inscripcion__id = (string?)db!.Values("resolucion").GetDefault("id");
+                        val = db!.Values("resolucion");
+                        resolucion_inscripcion__id = (string?)val.GetDefault("id");
                     break;
                 }
             }

@@ -84,7 +84,7 @@ namespace SqlOrganize
             return reader.ColOfObj<T>();
         }
 
-        public Dictionary<string, object?>? Dict()
+        public IDictionary<string, object?>? Dict()
         {
             using DbCommand command = NewCommand();
             Exec(connection!, command);
@@ -128,7 +128,7 @@ namespace SqlOrganize
 
         /// <summary>Value</summary>
         /// <remarks>La consulta debe retornar 1 o mas valores</remarks>
-        public T Value<T>(int columnNumber = 0)
+        public T? Value<T>(int columnNumber = 0)
         {
             using DbCommand command = NewCommand();
             Exec(connection!, command);
@@ -167,8 +167,11 @@ namespace SqlOrganize
         // Method to close the connection
         public void CloseConnection()
         {
-            if (connection.State == ConnectionState.Open)
-                connection.Close();
+            if (connection != null)
+            { 
+                if (connection.State == ConnectionState.Open)
+                    connection.Close();
+            }
         }
 
         public void BeginTransaction()
@@ -240,7 +243,7 @@ namespace SqlOrganize
             command.ExecuteNonQuery();
         }
 
-        public abstract List<string> GetTableNames();
+        public abstract string[] GetTableNames();
      
 
         #region metodos especiales que generan sql y devuelven directamente el valor
@@ -248,7 +251,7 @@ namespace SqlOrganize
         /// Cada motor debe tener su propia forma de definir Next Value!!! Derivar metodo a subclase
         /// </summary>
         /// <returns></returns>
-        public ulong GetNextValue(string entityName)
+        public object GetNextValue(string entityName)
         {
             var q = db.Query();
             q.connection = connection;
@@ -264,9 +267,9 @@ namespace SqlOrganize
         /// Cada motor debe tener su propia forma de definir Max Value!!! Derivar metodo a subclase
         /// </summary>
         /// <returns></returns>
-        public long GetMaxValue(string entityName, string fieldName)
+        public object GetMaxValue(string entityName, string fieldName)
         {
-            return db.Sql(entityName).Select("MAX($" + fieldName + ")").Value<long>();
+            return db.Sql(entityName).SelectMaxValue(fieldName).Value<object>();
         }
         #endregion
     }

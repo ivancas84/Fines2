@@ -14,21 +14,23 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_toma(Db db)
+        public Data_toma(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("toma").GetDefault("id");
-            _alta = (DateTime?)db!.Values("toma").GetDefault("alta");
-            _calificacion = (bool?)db!.Values("toma").GetDefault("calificacion");
-            _temas_tratados = (bool?)db!.Values("toma").GetDefault("temas_tratados");
-            _asistencia = (bool?)db!.Values("toma").GetDefault("asistencia");
-            _sin_planillas = (bool?)db!.Values("toma").GetDefault("sin_planillas");
-            _confirmada = (bool?)db!.Values("toma").GetDefault("confirmada");
+            EntityValues val = db!.Values("toma");
+            _id = (string?)val.GetDefault("id");
+            _alta = (DateTime?)val.GetDefault("alta");
+            _calificacion = (bool?)val.GetDefault("calificacion");
+            _temas_tratados = (bool?)val.GetDefault("temas_tratados");
+            _asistencia = (bool?)val.GetDefault("asistencia");
+            _sin_planillas = (bool?)val.GetDefault("sin_planillas");
+            _confirmada = (bool?)val.GetDefault("confirmada");
         }
 
         public string? Label { get; set; }

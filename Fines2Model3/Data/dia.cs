@@ -14,15 +14,17 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_dia(Db db)
+        public Data_dia(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("dia").GetDefault("id");
+            EntityValues val = db!.Values("dia");
+            _id = (string?)val.GetDefault("id");
         }
 
         public string? Label { get; set; }
@@ -59,8 +61,8 @@ namespace Fines2Model3.Data
                 case "numero":
                     if (_numero == null)
                         return "Debe completar valor.";
-                    if (!_numero.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("dia").Where("$numero = @0").Parameters(_numero).DictCache();
+                    if (!db.IsNullOrEmpty() && !_numero.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("dia").Where("$numero = @0").Parameters(_numero).Cache().Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -69,8 +71,8 @@ namespace Fines2Model3.Data
                 case "dia":
                     if (_dia == null)
                         return "Debe completar valor.";
-                    if (!_dia.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("dia").Where("$dia = @0").Parameters(_dia).DictCache();
+                    if (!db.IsNullOrEmpty() && !_dia.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("dia").Where("$dia = @0").Parameters(_dia).Cache().Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

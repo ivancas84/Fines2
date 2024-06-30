@@ -14,24 +14,26 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_alumno(Db db)
+        public Data_alumno(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("alumno").GetDefault("id");
-            _anio_ingreso = (string?)db!.Values("alumno").GetDefault("anio_ingreso");
-            _semestre_ingreso = (short?)db!.Values("alumno").GetDefault("semestre_ingreso");
-            _tiene_dni = (bool?)db!.Values("alumno").GetDefault("tiene_dni");
-            _tiene_constancia = (bool?)db!.Values("alumno").GetDefault("tiene_constancia");
-            _tiene_certificado = (bool?)db!.Values("alumno").GetDefault("tiene_certificado");
-            _previas_completas = (bool?)db!.Values("alumno").GetDefault("previas_completas");
-            _tiene_partida = (bool?)db!.Values("alumno").GetDefault("tiene_partida");
-            _creado = (DateTime?)db!.Values("alumno").GetDefault("creado");
-            _confirmado_direccion = (bool?)db!.Values("alumno").GetDefault("confirmado_direccion");
+            EntityValues val = db!.Values("alumno");
+            _id = (string?)val.GetDefault("id");
+            _anio_ingreso = (string?)val.GetDefault("anio_ingreso");
+            _semestre_ingreso = (short?)val.GetDefault("semestre_ingreso");
+            _tiene_dni = (bool?)val.GetDefault("tiene_dni");
+            _tiene_constancia = (bool?)val.GetDefault("tiene_constancia");
+            _tiene_certificado = (bool?)val.GetDefault("tiene_certificado");
+            _previas_completas = (bool?)val.GetDefault("previas_completas");
+            _tiene_partida = (bool?)val.GetDefault("tiene_partida");
+            _creado = (DateTime?)val.GetDefault("creado");
+            _confirmado_direccion = (bool?)val.GetDefault("confirmado_direccion");
         }
 
         public string? Label { get; set; }
@@ -218,8 +220,8 @@ namespace Fines2Model3.Data
                 case "persona":
                     if (_persona == null)
                         return "Debe completar valor.";
-                    if (!_persona.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("alumno").Where("$persona = @0").Parameters(_persona).DictCache();
+                    if (!db.IsNullOrEmpty() && !_persona.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("alumno").Where("$persona = @0").Parameters(_persona).Cache().Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -262,8 +264,8 @@ namespace Fines2Model3.Data
                     return "";
 
                 case "libro_folio":
-                    if (!_libro_folio.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("alumno").Where("$libro_folio = @0").Parameters(_libro_folio).DictCache();
+                    if (!db.IsNullOrEmpty() && !_libro_folio.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("alumno").Where("$libro_folio = @0").Parameters(_libro_folio).Cache().Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

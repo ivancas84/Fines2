@@ -1,0 +1,37 @@
+{
+  "claim_id": {
+    "checks": {
+      "type": "ulong",
+      "required": true
+    },
+    "resets": {},
+    "name": "claim_id",
+    "alias": null,
+    "entityName": "wpwt_actionscheduler_claims",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "ulong",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "date_created_gmt": {
+    "checks": {
+      "type": "DateTime"
+    },
+    "resets": {},
+    "name": "date_created_gmt",
+    "alias": null,
+    "entityName": "wpwt_actionscheduler_claims",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": false,
+    "defaultValue": "'0000-00-00 00:00:00'",
+    "defaultValueClassData": true,
+    "maxLength": null
+  }
+}

@@ -22,8 +22,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.VerificarMateriasCruzadas
             InitializeComponent();
 
             var idsAlumnos = asignacionDAO.IdsAlumnosDeComisionesAutorizadasPorSemestre("2023", "2");
-            var idsAlumnosMateriasCruzadas = calificacionDAO.IdsAlumnosConCalificacionesAprobadasCruzadasNoArchivadasQuery(idsAlumnos).ColOfDictCache().ColOfVal<object>("cantidad_planes");
-            var calificaciones = calificacionDAO.CalificacionesAprobadasNoArchivadasDeAlumnosQuery(idsAlumnosMateriasCruzadas).ColOfDictCache();
+            var idsAlumnosMateriasCruzadas = calificacionDAO.IdsAlumnosConCalificacionesAprobadasCruzadasNoArchivadasQuery(idsAlumnos).Cache().ColOfDict().ColOfVal<object>("cantidad_planes");
+            var calificaciones = calificacionDAO.CalificacionesAprobadasNoArchivadasDeAlumnosQuery(idsAlumnosMateriasCruzadas).Cache().ColOfDict();
 
             calificacionesGrid.ItemsSource = calificaciones.ColOfObj<Data_calificacion_r>();
 

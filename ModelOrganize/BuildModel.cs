@@ -177,13 +177,13 @@ namespace ModelOrganize
                 tableAlias.Add(table.Alias);
                 table.Columns = GetColumns(table.Name);
 
-                List<string> fieldAlias = new List<string>(Config.reservedAlias);
+                List<string> fieldsAliases = new List<string>(Config.reservedAlias);
                 foreach (Column col in table.Columns)
                 {
                     if (col.IS_FOREIGN_KEY == 1 && !Config.reservedEntities.Contains(col.REFERENCED_TABLE_NAME!)) {
                         string idSource = ((Config.idSource == "field_name") ? col.COLUMN_NAME : col.REFERENCED_TABLE_NAME)!;
-                        col.Alias = GetAlias(idSource, fieldAlias, 3);
-                        fieldAlias.Add(col.Alias);
+                        col.Alias = GetAlias(idSource, fieldsAliases, 3);
+                        fieldsAliases.Add(col.Alias);
                     }
                     table.ColumnNames.Add(col.COLUMN_NAME);
 
@@ -422,7 +422,7 @@ namespace ModelOrganize
             return aliasAux;
         }
 
-        protected abstract List<string> GetTableNames();
+        protected abstract string[] GetTableNames();
 
         protected abstract IEnumerable<Column> GetColumns(string tableName);
 
@@ -541,20 +541,22 @@ namespace ModelOrganize
                 sw.WriteLine("        public Data_" + entityName + "(Db db)");
                 sw.WriteLine("        {");
                 sw.WriteLine("            this.db = db;");
-                sw.WriteLine("            Init();");
                 sw.WriteLine("        }");
                 sw.WriteLine("");
-                sw.WriteLine("        protected void Init()");
+                sw.WriteLine("        public Data_" + entityName + " Default()");
                 sw.WriteLine("        {");
+                sw.WriteLine("            EntityValues val = db!.Values(\"" + entityName + "\");");
+
 
                 foreach (var (fieldName, field) in fields[entityName])
                 {
                     if (field.defaultValue != null && field.defaultValueClassData)
                     {
-                        string df = "(" + field.type + "?)db!.Values(\"" + entityName + "\").GetDefault(\"" + fieldName + "\")";
+                        string df = "(" + field.type + "?)val.GetDefault(\"" + fieldName + "\")";
                         sw.WriteLine("            _" + fieldName + " = " + df + ";");
                     }
                 }
+                sw.WriteLine("            return this;");
 
                 sw.WriteLine("        }");
 
@@ -603,8 +605,8 @@ namespace ModelOrganize
                     }
                     if (entity.unique.Contains(field.name))
                     {
-                        sw.WriteLine("                    if (!_" + fieldName + ".IsNullOrEmptyOrDbNull()) {");
-                        sw.WriteLine("                        var row = db.Sql(\"" + entityName + "\").Where(\"$" + fieldName + " = @0\").Parameters(_" + fieldName + ").DictCache();");
+                        sw.WriteLine("                    if (!db.IsNullOrEmpty() && !_" + fieldName + ".IsNullOrEmptyOrDbNull()) {");
+                        sw.WriteLine("                        var row = db.Sql(\"" + entityName + "\").Where(\"$" + fieldName + " = @0\").Parameters(_" + fieldName + ").Cache().Dict();");
                         sw.WriteLine("                        if (!row.IsNullOrEmpty() && !_" + Config.id + ".ToString().Equals(row![\"" + Config.id + "\"]!.ToString()))");
                         sw.WriteLine("                            return \"Valor existente.\";");
                         sw.WriteLine("                    }");
@@ -651,16 +653,11 @@ namespace ModelOrganize
                 sw.WriteLine("        {");
                 sw.WriteLine("        }");
                 sw.WriteLine("");
-                sw.WriteLine("        public Data_" + entityName + "_r (Db db, params string[] fieldIds) : this(db)");
-                sw.WriteLine("        {");
-                sw.WriteLine("            Init(fieldIds);");
-                sw.WriteLine("        }");
-
-                sw.WriteLine("");
 
                 #region Generar valores por defecto (por el momento no generamos valores por defecto para las relaciones, puede dar lugar a confusion)
-                sw.WriteLine("        protected void Init(params string[] fieldIds)");
+                sw.WriteLine("        public Data_" + entityName + "_r DefaultRel(params string[] fieldIds)");
                 sw.WriteLine("        {");
+                sw.WriteLine("            EntityValues val;");
                 sw.WriteLine("            foreach(string fieldId in fieldIds)");
                 sw.WriteLine("            {");
                 sw.WriteLine("                switch(fieldId)");
@@ -669,11 +666,12 @@ namespace ModelOrganize
                 foreach (var (fieldId, relation) in entities[entityName].relations)
                 {
                     sw.WriteLine("                    case \"" + fieldId + "\":");
+                    sw.WriteLine("                        val = db!.Values(\"" + relation.refEntityName + "\");");
                     foreach (var (fieldName, field) in fields[relation.refEntityName])
                         if (field.defaultValue != null && field.defaultValueClassData)
                         {
                     
-                            string df = "(" + field.type + "?)db!.Values(\"" + relation.refEntityName + "\").GetDefault(\"" + fieldName + "\")";
+                            string df = "(" + field.type + "?)val.GetDefault(\"" + fieldName + "\")";
                             sw.WriteLine("                        " + fieldId + "__" + fieldName + " = " + df + ";");
                         }
                     sw.WriteLine("                    break;");
@@ -681,6 +679,8 @@ namespace ModelOrganize
                 }
                 sw.WriteLine("                }");
                 sw.WriteLine("            }");
+                sw.WriteLine("");
+                sw.WriteLine("            return this;");
                 sw.WriteLine("        }");
                 #endregion
                 foreach (var (fieldId, relation) in entities[entityName].relations)

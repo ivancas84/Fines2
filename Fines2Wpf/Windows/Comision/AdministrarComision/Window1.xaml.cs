@@ -76,7 +76,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
 
             var data = ContainerApp.db.Sql("modalidad").
                 Order("$nombre").
-                ColOfDictCache();
+                Cache().ColOfDict();
 
             modalidadOC.Clear();
             modalidadOC.AddRange(data);
@@ -89,7 +89,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
 
             data = ContainerApp.db.Sql("planificacion").
                 Order("$plan-distribucion_horaria DESC, $anio ASC, $semestre ASC").
-                ColOfDictCache();
+                Cache().ColOfDict();
 
             planificacionOC.Clear();
             foreach (var item in data)
@@ -107,7 +107,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
 
             data = ContainerApp.db.Sql("calendario").
                 Order("$anio DESC, $semestre DESC, $inicio DESC, $fin DESC, $descripcion ASC").
-                ColOfDictCache();
+                Cache().ColOfDict();
 
             calendarioOC.Clear();
             foreach (var item in data)
@@ -129,7 +129,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             }
             else
             {
-                var comision = ContainerApp.db.Sql("comision").Get(idComision!).Obj<Data_comision_r>();
+                var comision = ContainerApp.db.Sql("comision").Cache().Id(idComision!).Obj<Data_comision_r>();
                 comisionGroupBox.DataContext = comision;
                 sedeOC.Clear();
                 var sedeInicial = new Data_sede_r();
@@ -140,7 +140,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
                 comisionOC.Clear();
                 if (!comision.comision_siguiente.IsNullOrEmptyOrDbNull())
                 {
-                    var comisionSiguienteInicial = ContainerApp.db.Sql("comision").Get(comision.comision_siguiente!).Obj<Data_comision_r>();
+                    var comisionSiguienteInicial = ContainerApp.db.Sql("comision").Cache().Id(comision.comision_siguiente!).Obj<Data_comision_r>();
                     comisionSiguienteInicial.Label = comisionSiguienteInicial.sede__numero + comisionSiguienteInicial.division + "/" + comisionSiguienteInicial.planificacion__anio + comisionSiguienteInicial.planificacion__semestre + " " + comisionSiguienteInicial.calendario__anio + "-" + comisionSiguienteInicial.calendario__semestre;
                     comisionOC.Add(comisionSiguienteInicial);
                 }
@@ -156,7 +156,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
         {
             var comision = (Data_comision)comisionGroupBox.DataContext;
             cursoOC.Clear();
-            cursoOC.AddRange(cursoDAO.CursosDeComisionQuery(comision.id!).ColOfDictCache().ColOfObj<Data_curso_r>());
+            cursoOC.AddRange(cursoDAO.CursosDeComisionQuery(comision.id!).Cache().ColOfDict().ColOfObj<Data_curso_r>());
 
         }
 
@@ -248,7 +248,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             if (string.IsNullOrEmpty(text) || text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = sedeDAO.BusquedaAproximadaQuery(text).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = sedeDAO.BusquedaAproximadaQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
 
             foreach (var item in list)
             {
@@ -312,7 +312,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             if (string.IsNullOrEmpty(text) || text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(text).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
 
             foreach (var item in list)
             {

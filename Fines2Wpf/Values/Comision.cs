@@ -104,7 +104,7 @@ namespace Fines2Wpf.Values
                 persist.DeleteIds("curso", idsCursos.ToArray());
 
             IEnumerable<Dictionary<string, object?>> distribucionesHorariasData = ContainerApp.db.Sql("distribucion_horaria").
-                Select("SUM($horas_catedra) AS suma_horas_catedra").
+                Select("$disposicion-asignatura, SUM($horas_catedra) AS suma_horas_catedra").
                 Group("$disposicion-asignatura").
                 Where("$disposicion-planificacion IN ( @0 )").
                 Parameters(Get("planificacion")).ColOfDict();

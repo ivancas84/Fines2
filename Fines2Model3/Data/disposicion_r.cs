@@ -12,29 +12,33 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_disposicion_r (Db db) : base(db)
+        public Data_disposicion_r (Db db, bool init = true) : base(db, init)
         {
         }
 
-        public Data_disposicion_r (Db db, params string[] fieldIds) : this(db)
+        public Data_disposicion_r (Db db, bool init = true, params string[] fieldIds) : this(db, init)
         {
             Init(fieldIds);
         }
 
         protected void Init(params string[] fieldIds)
         {
+            EntityValues val;
             foreach(string fieldId in fieldIds)
             {
                 switch(fieldId)
                 {
                     case "asignatura":
-                        asignatura__id = (string?)db!.Values("asignatura").GetDefault("id");
+                        val = db!.Values("asignatura");
+                        asignatura__id = (string?)val.GetDefault("id");
                     break;
                     case "planificacion":
-                        planificacion__id = (string?)db!.Values("planificacion").GetDefault("id");
+                        val = db!.Values("planificacion");
+                        planificacion__id = (string?)val.GetDefault("id");
                     break;
                     case "plan":
-                        plan__id = (string?)db!.Values("plan").GetDefault("id");
+                        val = db!.Values("plan");
+                        plan__id = (string?)val.GetDefault("id");
                     break;
                 }
             }

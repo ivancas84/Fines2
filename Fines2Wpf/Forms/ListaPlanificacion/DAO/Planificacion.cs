@@ -15,7 +15,7 @@ namespace Fines2Wpf.Forms.ListaPlanificacion.DAO
 
         public IEnumerable<Dictionary<string, object>> All()
         {
-            return ContainerApp.db.Sql("planificacion").ColOfDictCache();
+            return ContainerApp.db.Sql("planificacion").Cache().ColOfDict();
         }
 
         public void UpdateValueRel(string key, object value, Dictionary<string, object> source)

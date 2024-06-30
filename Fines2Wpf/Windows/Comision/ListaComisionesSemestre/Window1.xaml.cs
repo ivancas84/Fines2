@@ -11,6 +11,8 @@ using Fines2Model3.Data;
 using System.ComponentModel;
 using System.Windows.Threading;
 using SqlOrganize;
+using Fines2Wpf.DAO;
+using WpfUtils;
 
 namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 {
@@ -40,8 +42,8 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             #endregion
 
             comisionGrid.CellEditEnding += ComisionGrid_CellEditEnding!;
-            comisionSearch.calendario__anio  = Convert.ToInt16(DateTime.Now.Year);
-            comisionSearch.calendario__semestre  = DateTime.Now.ToSemester();
+            comisionSearch.calendario__anio  = ContainerApp.config.anio;
+            comisionSearch.calendario__semestre  = ContainerApp.config.semestre;
             comisionSearch.autorizada  = true;
 
             DataContext = comisionSearch;
@@ -107,7 +109,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.Sql("comision").Search(comisionSearch).Size(0).ColOfDictCache();
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.Sql("comision").Search(comisionSearch).Size(0).Cache().ColOfDict();
             IEnumerable<object> idsSede = list.ColOfVal<object>("sede");
             IEnumerable<object> idsComision = list.ColOfVal<object>("id");
 
@@ -116,7 +118,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                 referentesData = (Dictionary<string, List<Dictionary<string, object?>>>)ContainerApp.db.Sql("designacion").
                 Where("$cargo-descripcion IN ('Colaborador', 'Referente') AND $sede IN( @0 ) AND $hasta IS NULL").
                 Parameters(idsSede).
-                ColOfDictCache().
+                Cache().ColOfDict().
                 DictOfListByKeys("sede");
             }
 
@@ -130,7 +132,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             if (idsComision.Count() > 0 )
             {
                 cantidadAlumnosActivosPorComision = (Dictionary<string, object?>)ContainerApp.db.Sql("alumno_comision").
-                    Select("COUNT($id) AS cantidad").
+                    Select("$comision, COUNT($id) AS cantidad").
                     Group("$comision").
                     Size(0).
                     Where(@"
@@ -141,7 +143,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                     DictOfDictByKeysValue("cantidad", "comision");
 
                 cantidadAlumnosPorComision = (Dictionary<string, object?>)ContainerApp.db.Sql("alumno_comision").
-                    Select("COUNT($id) AS cantidad").
+                    Select("$comision, COUNT($id) AS cantidad").
                     Group("$comision").
                     Size(0).
                     Where(@"
@@ -151,7 +153,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                     ColOfDict().
                     DictOfDictByKeysValue("cantidad", "comision");
 
-                horariosComision = (Dictionary<string, List<Dictionary<string, object?>>>)comisionDAO.HorariosQuery(idsComision).ColOfDictCache().DictOfListByKeys("curso-comision");
+                horariosComision = (Dictionary<string, List<Dictionary<string, object?>>>)comisionDAO.HorariosQuery(idsComision).Cache().ColOfDict().DictOfListByKeys("curso-comision");
 
             }
 
@@ -202,6 +204,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             }
         }
 
+        #region eventos alumnos
         private void CargarAlumnos_Click(object sender, RoutedEventArgs e)
         {
             var button = (e.OriginalSource as Button);
@@ -210,11 +213,28 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             win.Show();
         }
 
+        private void EliminarAlumnos_Click(object sender, RoutedEventArgs e)
+        {
+            try { 
+            var button = (e.OriginalSource as Button);
+            var comision = (Data_comision)button.DataContext;
+            object[] ids = ContainerApp.db.AsignacionesDeComisionesSql(comision.id).Column<object>("id").ToArray();
+            ContainerApp.db.Persist().DeleteIds("alumno_comision", ids).Exec().RemoveCache();
+            ToastUtils.Show("Asignaciones eliminadas correctamente");
+            } catch (Exception ex)
+            {
+                ToastUtils.ShowExceptionMessageWithFileNameAndLineNumber(ex);
+            }
+        }
+        #endregion
+
         void OnNumeroClick(object sender, RoutedEventArgs e)
         {
             var data = ((Hyperlink)e.OriginalSource).DataContext as Data_comision;
             AdministrarComision.Window1 win = new(data!.id!);
             win.Show();
         }
+
+        
     }
 }

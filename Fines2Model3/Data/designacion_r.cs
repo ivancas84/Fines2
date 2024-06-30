@@ -12,46 +12,54 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_designacion_r (Db db) : base(db)
+        public Data_designacion_r (Db db, bool init = true) : base(db, init)
         {
         }
 
-        public Data_designacion_r (Db db, params string[] fieldIds) : this(db)
+        public Data_designacion_r (Db db, bool init = true, params string[] fieldIds) : this(db, init)
         {
             Init(fieldIds);
         }
 
         protected void Init(params string[] fieldIds)
         {
+            EntityValues val;
             foreach(string fieldId in fieldIds)
             {
                 switch(fieldId)
                 {
                     case "cargo":
-                        cargo__id = (string?)db!.Values("cargo").GetDefault("id");
+                        val = db!.Values("cargo");
+                        cargo__id = (string?)val.GetDefault("id");
                     break;
                     case "sede":
-                        sede__id = (string?)db!.Values("sede").GetDefault("id");
-                        sede__alta = (DateTime?)db!.Values("sede").GetDefault("alta");
+                        val = db!.Values("sede");
+                        sede__id = (string?)val.GetDefault("id");
+                        sede__alta = (DateTime?)val.GetDefault("alta");
                     break;
                     case "domicilio":
-                        domicilio__id = (string?)db!.Values("domicilio").GetDefault("id");
+                        val = db!.Values("domicilio");
+                        domicilio__id = (string?)val.GetDefault("id");
                     break;
                     case "centro_educativo":
-                        centro_educativo__id = (string?)db!.Values("centro_educativo").GetDefault("id");
+                        val = db!.Values("centro_educativo");
+                        centro_educativo__id = (string?)val.GetDefault("id");
                     break;
                     case "domicilio_cen":
-                        domicilio_cen__id = (string?)db!.Values("domicilio").GetDefault("id");
+                        val = db!.Values("domicilio");
+                        domicilio_cen__id = (string?)val.GetDefault("id");
                     break;
                     case "persona":
-                        persona__id = (string?)db!.Values("persona").GetDefault("id");
-                        persona__alta = (DateTime?)db!.Values("persona").GetDefault("alta");
-                        persona__telefono_verificado = (bool?)db!.Values("persona").GetDefault("telefono_verificado");
-                        persona__email_verificado = (bool?)db!.Values("persona").GetDefault("email_verificado");
-                        persona__info_verificada = (bool?)db!.Values("persona").GetDefault("info_verificada");
+                        val = db!.Values("persona");
+                        persona__id = (string?)val.GetDefault("id");
+                        persona__alta = (DateTime?)val.GetDefault("alta");
+                        persona__telefono_verificado = (bool?)val.GetDefault("telefono_verificado");
+                        persona__email_verificado = (bool?)val.GetDefault("email_verificado");
+                        persona__info_verificada = (bool?)val.GetDefault("info_verificada");
                     break;
                     case "domicilio_per":
-                        domicilio_per__id = (string?)db!.Values("domicilio").GetDefault("id");
+                        val = db!.Values("domicilio");
+                        domicilio_per__id = (string?)val.GetDefault("id");
                     break;
                 }
             }

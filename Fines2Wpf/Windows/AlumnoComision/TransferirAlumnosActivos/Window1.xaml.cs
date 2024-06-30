@@ -39,7 +39,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.TransferirAlumnosActivos
                     AND $estado = 'Activo'
                 ")
                 .Parameters(calendarioAnioTextBox.Text, calendarioSemestreTextBox.Text)
-                .ColOfDictCache()
+                .Cache().ColOfDict()
                 .DictOfListByKeys("comision-comision_siguiente");
            
             asignacionOC.Clear();

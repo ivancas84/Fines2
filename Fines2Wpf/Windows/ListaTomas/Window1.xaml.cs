@@ -61,48 +61,56 @@ namespace Fines2Wpf.Windows.ListaTomas
             tomasAprobadasOC.Clear();
             tomasAprobadasOC.AddRange(
                 DAO.Toma2.TomasAprobadasSinModificarDePeriodoSql(search.calendario__anio, search.calendario__semestre).
-                ColOfDictCache().
+                Cache().ColOfDict().
                 ColOfObj<TomaPosesionPdf.ConstanciaData>()
             );
 
             tomasRenunciadasOC.Clear();
             tomasRenunciadasOC.AddRange(
                 DAO.Toma2.TomasRenunciaBajaSinModificarDePeriodoSql(search.calendario__anio, search.calendario__semestre).
-                ColOfDictCache().
+                Cache().ColOfDict().
                 ColOfObj<TomaPosesionPdf.ConstanciaData>()
             );
 
             tomasParticularesOC.Clear();
             tomasParticularesOC.AddRange(
                 DAO.Toma2.TomasParticularesDePeriodoSql(search.calendario__anio, search.calendario__semestre).
-                ColOfDictCache().
+                Cache().ColOfDict().
                 ColOfObj<TomaPosesionPdf.ConstanciaData>()
             );
 
-            var tomasContralorData = DAO.Toma2.TomasPasarSinPlanillaDocenteDePeriodoSql(search.calendario__anio, search.calendario__semestre).
-                ColOfDictCache();
 
-            tomasContralorOC.Clear();
-                
-            foreach (var item in tomasContralorData)
+            IEnumerable<object> idTomas = DAO.Toma2.IdTomasPasarSinPlanillaDocenteDePeriodo(search.calendario__anio, search.calendario__semestre);
+            if (idTomas.Any())
             {
-                var tomaObj = item.Obj<TomaContralor>();
+                var tomasContralorData = ContainerApp.db.Sql("toma").Size(0)
+                .Where(@"
+                    $id IN ( @0 ) 
+                ")
+                .Parameters(idTomas).Cache().ColOfDict();
+    
+                 tomasContralorOC.Clear();
 
-                tomaObj.docente__cuil = tomaObj.docente__cuil;
+                foreach (var item in tomasContralorData)
+                {
+                    var tomaObj = item.Obj<TomaContralor>();
 
-                tomaObj.dia_desde = ((DateTime)tomaObj.fecha_toma!).ToString("dd");
-                tomaObj.mes_desde = ((DateTime)tomaObj.fecha_toma!).ToString("MM");
-                tomaObj.anio_desde = ((DateTime)tomaObj.fecha_toma!).ToString("yyyy");
+                    tomaObj.docente__cuil = tomaObj.docente__cuil;
 
-                tomaObj.docente__Label = tomaObj.docente__apellidos!.ToUpper() + " " + tomaObj.docente__nombres!.ToTitleCase();
-                tomasContralorOC.Add(tomaObj);
-                tomaObj.plan__Label = tomaObj.plan__orientacion!.Acronym();
+                    tomaObj.dia_desde = ((DateTime)tomaObj.fecha_toma!).ToString("dd");
+                    tomaObj.mes_desde = ((DateTime)tomaObj.fecha_toma!).ToString("MM");
+                    tomaObj.anio_desde = ((DateTime)tomaObj.fecha_toma!).ToString("yyyy");
 
-                if (tomaObj.comision__turno.IsNullOrEmpty())
-                    tomaObj.planificacion__Label = "V";
-                else
-                    tomaObj.planificacion__Label = tomaObj.comision__turno!.Acronym();
+                    tomaObj.docente__Label = tomaObj.docente__apellidos!.ToUpper() + " " + tomaObj.docente__nombres!.ToTitleCase();
+                    tomasContralorOC.Add(tomaObj);
+                    tomaObj.plan__Label = tomaObj.plan__orientacion!.Acronym();
 
+                    if (tomaObj.comision__turno.IsNullOrEmpty())
+                        tomaObj.planificacion__Label = "V";
+                    else
+                        tomaObj.planificacion__Label = tomaObj.comision__turno!.Acronym();
+
+                }
             }
 
 
@@ -296,7 +304,7 @@ namespace Fines2Wpf.Windows.ListaTomas
 
         private void PasarTodoButton_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<object> id_tomas_aprobadas = DAO.Toma2.TomasPasarDePeriodoSql(calendarioAnioText.Text, calendarioSemestreText.Text).ColOfDictCache().ColOfVal<object>("id");
+            IEnumerable<object> id_tomas_aprobadas = DAO.Toma2.TomasPasarDePeriodoSql(calendarioAnioText.Text, calendarioSemestreText.Text).Cache().ColOfDict().ColOfVal<object>("id");
 
             ContainerApp.db.Persist().UpdateValueIds("toma", "estado_contralor", "Pasar", id_tomas_aprobadas.ToArray()).Exec().RemoveCacheDetail();
             
@@ -306,8 +314,8 @@ namespace Fines2Wpf.Windows.ListaTomas
 
     internal class Search
     {
-        public string calendario__anio { get; set; } = DateTime.Now.Year.ToString();
-        public int calendario__semestre { get; set; } = DateTime.Now.ToSemester();
+        public string calendario__anio { get; set; } = "2024";
+        public int calendario__semestre { get; set; } = 1;
     }
 
 

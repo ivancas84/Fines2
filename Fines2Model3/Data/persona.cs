@@ -14,19 +14,21 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_persona(Db db)
+        public Data_persona(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("persona").GetDefault("id");
-            _alta = (DateTime?)db!.Values("persona").GetDefault("alta");
-            _telefono_verificado = (bool?)db!.Values("persona").GetDefault("telefono_verificado");
-            _email_verificado = (bool?)db!.Values("persona").GetDefault("email_verificado");
-            _info_verificada = (bool?)db!.Values("persona").GetDefault("info_verificada");
+            EntityValues val = db!.Values("persona");
+            _id = (string?)val.GetDefault("id");
+            _alta = (DateTime?)val.GetDefault("alta");
+            _telefono_verificado = (bool?)val.GetDefault("telefono_verificado");
+            _email_verificado = (bool?)val.GetDefault("email_verificado");
+            _info_verificada = (bool?)val.GetDefault("info_verificada");
         }
 
         public string? Label { get; set; }
@@ -230,16 +232,16 @@ namespace Fines2Model3.Data
                 case "numero_documento":
                     if (_numero_documento == null)
                         return "Debe completar valor.";
-                    if (!_numero_documento.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("persona").Where("$numero_documento = @0").Parameters(_numero_documento).DictCache();
+                    if (!db.IsNullOrEmpty() && !_numero_documento.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("persona").Where("$numero_documento = @0").Parameters(_numero_documento).Cache().Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
 
                 case "cuil":
-                    if (!_cuil.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("persona").Where("$cuil = @0").Parameters(_cuil).DictCache();
+                    if (!db.IsNullOrEmpty() && !_cuil.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("persona").Where("$cuil = @0").Parameters(_cuil).Cache().Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -258,8 +260,8 @@ namespace Fines2Model3.Data
                     return "";
 
                 case "email_abc":
-                    if (!_email_abc.IsNullOrEmptyOrDbNull()) {
-                        var row = db.Sql("persona").Where("$email_abc = @0").Parameters(_email_abc).DictCache();
+                    if (!db.IsNullOrEmpty() && !_email_abc.IsNullOrEmptyOrDbNull()) {
+                        var row = db.Sql("persona").Where("$email_abc = @0").Parameters(_email_abc).Cache().Dict();
                         if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

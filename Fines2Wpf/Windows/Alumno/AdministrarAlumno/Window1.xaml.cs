@@ -1,6 +1,8 @@
 ﻿
 using CommunityToolkit.WinUI.Notifications;
+using Fines2Model3.DAO;
 using Fines2Model3.Data;
+using Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre;
 using Microsoft.Win32;
 using MimeTypes;
 using SqlOrganize;
@@ -11,7 +13,9 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -30,6 +34,11 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
     /// </summary>
     public partial class Window1 : Window
     {
+        #region pf connection
+        HttpClientHandler handler;
+        HttpClient client;
+        #endregion
+
         private DAO.Comision comisionDAO = new(); //objeto de acceso a datos de comision
         private DAO.Curso cursoDAO = new(); //objeto de acceso a datos de curso
         private DAO.Calificacion calificacionDAO = new(); //objeto de acceso a datos de calificacion
@@ -79,6 +88,15 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             personaGroupBox.DataContext = new Data_persona(ContainerApp.db);
             #endregion
 
+            #region sexoComboBox
+            sexoComboBox.SelectedValuePath = "Key";
+            sexoComboBox.DisplayMemberPath = "Value";
+            sexoComboBox.Items.Add(new KeyValuePair<byte?, string>(null, "(No seleccionado)")); //quitar esta linea si no permite valor null
+            sexoComboBox.Items.Add(new KeyValuePair<byte, string>(1, "Masculino"));
+            sexoComboBox.Items.Add(new KeyValuePair<byte, string>(2, "Femenino"));
+            sexoComboBox.Items.Add(new KeyValuePair<byte, string>(3, "Otro"));
+            #endregion
+
             #region documentacion_inscripcion
             documentacionInscripcionComboBox.SelectedValuePath = "Key";
             documentacionInscripcionComboBox.DisplayMemberPath = "Value";
@@ -93,7 +111,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             resolucionInscripcionComboBox.SelectedValuePath = "id";
             resolucionInscripcionComboBox.DisplayMemberPath = "numero";
             resolucionInscripcionComboBox.ItemsSource = resolucionOC;
-            var data = ContainerApp.db.Sql("resolucion").Order("$numero ASC").ColOfDictCache();
+            var data = ContainerApp.db.Sql("resolucion").Order("$numero ASC").Cache().ColOfDict();
             resolucionOC.Clear();
             resolucionOC.AddRange(data);
             #endregion
@@ -102,7 +120,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             planComboBox.SelectedValuePath = "id";
             planComboBox.DisplayMemberPath = "Label";
             planComboBox.ItemsSource = planOC;
-            var dataPlan = ContainerApp.db.Sql("plan").Order("$orientacion ASC").ColOfDictCache();
+            var dataPlan = ContainerApp.db.Sql("plan").Order("$orientacion ASC").Cache().ColOfDict();
 
             planOC.Clear();
             foreach (var item in dataPlan)
@@ -143,7 +161,20 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             #region detallePersonaGroupBox
             detallePersonaDataGrid.ItemsSource = detallePersonaOC;
             #endregion
+
+            Closing += Window_Closing;
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Dispose HttpClient and HttpClientHandler
+            if (!client.IsNullOrEmpty())
+                client.Dispose();
+
+            if (!handler.IsNullOrEmpty())
+                handler.Dispose();
+        }
+
 
         private void SetPersonaGroupBox(Data_persona? persona = null)
         {
@@ -190,7 +221,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             var data = ContainerApp.db.Sql("alumno_comision").
                 Where("$alumno = @0").
                 Order("$calendario-anio DESC, $calendario-semestre DESC").
-                Parameters(a.id!).ColOfDictCache();
+                Parameters(a.id!).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -217,7 +248,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (a.plan.IsNullOrEmpty())
                 return;
             
-            var data = calificacionDAO.CalificacionesDeAlumnoPlanArchivoQuery(a.id!, a.plan!, false).ColOfDictCache();
+            var data = calificacionDAO.CalificacionesDeAlumnoPlanArchivoQuery(a.id!, a.plan!, false).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -256,7 +287,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (a.IsNullOrEmptyOrDbNull() || a.id.IsNullOrEmptyOrDbNull())
                 return;
 
-            var data = calificacionDAO.CalificacionesArchivadasDeAlumnoQuery(a.id!).ColOfDictCache();
+            var data = calificacionDAO.CalificacionesArchivadasDeAlumnoQuery(a.id!).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -280,7 +311,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             var data = ContainerApp.db.Sql("disposicion").
                 Where("$planificacion-plan = @0").
-                Parameters(a.plan!).ColOfDictCache();
+                Parameters(a.plan!).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -296,7 +327,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             var data = ContainerApp.db.Sql("detalle_persona").
                 Where("$persona = @0").
-                Parameters(p.id!).ColOfDictCache();
+                Parameters(p.id!).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -312,31 +343,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             SetAlumnoGroupBox();
         }
 
-        private void GuardarPersonaButton_Click(object sender, RoutedEventArgs e)
-        {
-            var persona = (Data_persona)personaGroupBox.DataContext;
-            if (persona.Error.IsNullOrEmpty())
-            {
-                var per = (Data_persona)personaGroupBox.DataContext;
-                
-                try
-                {
-                    ContainerApp.db.Persist().Persist("persona", per).Exec().RemoveCache();
-                    var alu = (Data_alumno)alumnoGroupBox.DataContext;
-                    MessageBox.Show("Registro de persona realizado");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Verificar formulario: " + persona.Error);
-            }
-            return;
-
-        }
+ 
 
         private void GuardarAlumnoButton_Click(object sender, RoutedEventArgs e)
         {
@@ -406,7 +413,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (string.IsNullOrEmpty(this.personaComboBox.Text) || this.personaComboBox.Text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object>> list = DAO.Persona.SearchLikeQuery(this.personaComboBox.Text).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object>> list = DAO.Persona.SearchLikeQuery(this.personaComboBox.Text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
 
             foreach (var item in list)
             {
@@ -499,7 +506,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (string.IsNullOrEmpty(asignacion.SearchComision) || asignacion.SearchComision.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(asignacion.SearchComision).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(asignacion.SearchComision).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
             foreach(var item in list)
             {
                 var val = ContainerApp.db.Values("comision").Set(item);
@@ -573,10 +580,41 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             }
         }
 
+        private async void AgregarAsignacionPF_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (e.OriginalSource as Button);
+            var a = (Asignacion)button!.DataContext;
+            try
+            {
+                var persona = (Data_persona)personaGroupBox.DataContext;
+                var values = ContainerApp.db.Values("persona").Set(persona);
+
+                using (handler = ProgramaFines.NewHandler())
+                {
+                    using (client = new HttpClient(handler))
+                    {
+                        await ProgramaFines.PF_Login(client);
+
+                        Dictionary<string, string> dataForm = new();
+
+                        await ProgramaFines.PF_InscribirEstudianteValues(client, asignacion.comision__pfid!, values);
+
+                        new ToastContentBuilder()
+                                        .AddText("Inscripción PF")
+                                        .AddText("Inscripción PF realizado correctamente")
+                                    .Show();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
         #endregion asignacionGroupBox
 
 
-        #region calificacionGroupBox
+        #region calificacionArchivadaGroupBox
         private bool CalificacionArchivadaCV_Filter(object obj)
         {
             var o = obj as Data_calificacion_r;
@@ -652,7 +690,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
 
 
-        #region CalificacionGroupBox
+        #region DisposicionGroupBox
         private void DisposicionComboBox_GotFocus(object sender, RoutedEventArgs e)
         {
             var cb = (ComboBox)sender;
@@ -732,7 +770,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (string.IsNullOrEmpty(calificacion.SearchCurso) || calificacion.SearchCurso.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = cursoDAO.BusquedaAproximadaQuery(calificacion.SearchCurso).ColOfDictCache(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = cursoDAO.BusquedaAproximadaQuery(calificacion.SearchCurso).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
             foreach (var item in list)
             {
                 var val = (Values.Curso)ContainerApp.db.Values("curso").Set(item);
@@ -845,7 +883,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     dp.descripcion = dp.descripcion.IsNullOrEmptyOrDbNull() ? dp.archivo__name : dp.descripcion;
                     dp.persona = alu.persona;
 
-                    EntityValues archivoVal = ContainerApp.db.Values("file", "archivo").Set(dp);
+                    EntityValues archivoVal = ContainerApp.db.Values("file", "archivo").Set(dp).Default();
                     
                     ContainerApp.db.Persist().Persist(archivoVal)
                         .Persist("detalle_persona", dp)
@@ -865,7 +903,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
         private void AgregarArchivo_Click(object sender, RoutedEventArgs e)
         {
-            var a = new DetallePersona(ContainerApp.db);
+            var a = new DetallePersona(ContainerApp.db, true, "archivo");
             var alumno = (Data_alumno)alumnoGroupBox.DataContext;
             a.persona = alumno.id;
             detallePersonaOC.Add(a);
@@ -906,181 +944,21 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void GenerarButton_Click(object sender, RoutedEventArgs e)
         {
+        
+            
             List<EntityPersist> persists = new();
 
             try
             {
                 Data_alumno alumnoObj = (Data_alumno)alumnoGroupBox.DataContext;
-                if (alumnoObj.plan.IsNullOrEmptyOrDbNull() || alumnoObj.anio_ingreso.IsNullOrEmptyOrDbNull() || alumnoObj.semestre_ingreso.IsNullOrEmptyOrDbNull())
-                    throw new Exception("Para generar las calificaciones, deben estar definidos los datos de ingreso: Plan, año y semestre.");
-
-                if (!alumnoObj.anio_ingreso.Equals("1") && alumnoObj.semestre_ingreso != 1)
-                {
-                    (string anio, string semestre) tramoAnterior = (ContainerApp.db.Values("planificacion").
-                    Sset("anio", alumnoObj.anio_ingreso!).
-                    Sset("semestre", alumnoObj.semestre_ingreso!) as Values.Planificacion)!.
-                    AnioSemestreAnterior();
-
-                    #region Archivar calificaciones aprobadas del mismo plan pero con año y semestre inferior
-                    IEnumerable<object> idsCalificaciones_ = ContainerApp.db.Sql("calificacion").
-                        Size(0).
-                        Where(@"
-                        $planificacion_dis-plan = @0
-                        AND $planificacion_dis-anio <= @1 AND $planificacion_dis-semestre <= @2 
-                        AND $alumno = @3
-                        AND $archivado = false  
-                        AND ($nota_final >= 7 OR $crec >= 4)").
-                        Parameters(alumnoObj.plan!, tramoAnterior.anio!, tramoAnterior.semestre!, alumnoObj.id!).
-                        Column<object>("id");
-
-                    if (idsCalificaciones_.Count() > 0)
-                        ContainerApp.db.Persist().
-                            UpdateValueIds("calificacion", "archivado", true, idsCalificaciones_.ToArray()).
-                            AddTo(persists);
-                    #endregion
-                }
-
-
-                #region Eliminar calificaciones desaprobadas
-                IEnumerable<object> idsCalificaciones = ContainerApp.db.Sql("calificacion").
-                    Size(0).
-                    Where(@"
-                        $alumno = @1
-                        AND (
-                            ($nota_final < 7 AND $crec < 4)
-                            OR ($nota_final < 7 AND $crec IS NULL)
-                            OR ($nota_final IS NULL AND $crec < 4)
-                            OR ($nota_final IS NULL AND $crec IS NULL)
-                        )
-                    ").
-                    Parameters(alumnoObj.plan!, alumnoObj.id!).
-                    Column<object>("id");
-                
-                if (idsCalificaciones.Count() > 0)
-                    ContainerApp.db.Persist().
-                        DeleteIds("calificacion", idsCalificaciones.ToArray()).
-                        AddTo(persists);
-                #endregion
-
-                #region Archivar calificaciones aprobadas de otro plan
-                idsCalificaciones = ContainerApp.db.Sql("calificacion").
-                    Size(0).
-                    Where(@"
-                        $planificacion_dis-plan != @0 AND $alumno = @1
-                        AND $archivado = false 
-                        AND ($nota_final >= 7 OR $crec >= 4)").
-                    Parameters(alumnoObj.plan!, alumnoObj.id!).
-                    Column<object>("id");
-
-                if (idsCalificaciones.Count() > 0)
-                    ContainerApp.db.Persist().
-                        UpdateValueIds("calificacion", "archivado", true, idsCalificaciones.ToArray()).
-                        AddTo(persists);
-                #endregion
-
-                #region Desarchivar calificaciones aprobadas del mismo plan
-                idsCalificaciones = ContainerApp.db.Sql("calificacion").
-                    Size(0).
-                    Where(@"
-                        $planificacion_dis-plan = @0 
-                        AND $planificacion_dis-anio >= @1 
-                        AND $planificacion_dis-semestre >= @2 
-                        AND $archivado = true  
-                        AND ($nota_final >= 7 OR $crec >= 4)
-                        AND $alumno = @3").
-                    Parameters(alumnoObj.plan!, alumnoObj.anio_ingreso!, alumnoObj.semestre_ingreso!, alumnoObj.id!).
-                    Column<object>("id");
-
-                if (idsCalificaciones.Count() > 0)
-                    ContainerApp.db.Persist().
-                        UpdateValueIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
-                        AddTo(persists);
-                #endregion
-
-                #region Consultar disposiciones del mismo plan
-                IEnumerable<object> idsDisposicionesAprobadas = ContainerApp.db.Sql("calificacion").
-                    Size(0).
-                    Where(@"
-                        $planificacion_dis-plan = @0 
-                        AND $planificacion_dis-anio >= @1 
-                        AND $planificacion_dis-semestre >= @2 
-                        AND ($nota_final >= 7 OR $crec >= 4)
-                        AND $alumno = @3").
-                    Parameters(alumnoObj.plan!, alumnoObj.anio_ingreso!, alumnoObj.semestre_ingreso!, alumnoObj.id!).
-                    Column<object>("disposicion");
-                #endregion
-
-                #region consultar disposiciones segun el plan, anio y semestre de ingreso
-                IEnumerable<object> idsDisposiciones = ContainerApp.db.Sql("disposicion").
-                    Size(0).
-                    Where(@"
-                        $planificacion-plan = @0 
-                        AND $planificacion-anio >= @1 
-                        AND $planificacion-semestre >= @2").
-                    Parameters(alumnoObj.plan!, alumnoObj.anio_ingreso!, alumnoObj.semestre_ingreso!).
-                    Column<object>("id");
-                #endregion
-
-
-                #region Insertar calificaciones de disposiciones faltantes
-                foreach (var id in idsDisposiciones)
-                {
-                    if (!idsDisposicionesAprobadas.Contains(id))
-                    {
-                        Data_calificacion calificacionObj = new(ContainerApp.db);
-                        calificacionObj.disposicion = (string)id;
-                        calificacionObj.alumno = alumnoObj.id;
-                        calificacionObj.archivado = false;
-                        ContainerApp.db.Persist().
-                            Insert("calificacion", calificacionObj).
-                            AddTo(persists);
-                    }
-                }
-
-                #region Archivar calificaciones repetidas
-                idsDisposiciones = ContainerApp.db.Sql("calificacion").
-                    Select("COUNT(*) as cantidad").
-                    Size(0).
-                    Group("$disposicion").
-                    Where(@"
-                        $planificacion_dis-plan = @0 
-                        AND $planificacion_dis-anio >= @1 
-                        AND $planificacion_dis-semestre >= @2 
-                        AND $archivado = false  
-                        AND ($nota_final >= 7 OR $crec >= 4)
-                        AND $alumno = @3").
-                    Having("cantidad > 1").
-                    Parameters(alumnoObj.plan!, alumnoObj.anio_ingreso!, alumnoObj.semestre_ingreso!, alumnoObj.id!).
-                    Column<object>("disposicion");
-
-                if (idsDisposiciones.Count() > 0)
-                {
-                    idsCalificaciones = ContainerApp.db.Sql("calificacion").
-                        Select("MAX($id) AS id").
-                        Group("$disposicion").
-                        Size(0).
-                        Where("$disposicion IN ( @0 ) ").
-                        Parameters(idsDisposiciones).
-                        Column<object>("id");
-
-                    if (idsCalificaciones.Count() > 0)
-                        ContainerApp.db.Persist().UpdateValueIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
-                            AddTo(persists);
-                }
-                #endregion
-
-                persists.Transaction().RemoveCache();
+                (ContainerApp.db.Values("alumno").
+                    Set(alumnoObj) as Values.Alumno)!.GenerarCalificaciones();
                 LoadCalificaciones(alumnoObj);
                 LoadCalificacionesArchivadas(alumnoObj);
-                #endregion
             }
             catch (Exception ex)
             {
-                new ToastContentBuilder()
-                   .AddText("Administración de Alumno")
-                   .AddText("ERROR: " + ex.Message)
-                   .Show();
-                return;
+                ToastUtils.ShowExceptionMessageWithFileNameAndLineNumber(ex);
             }
         }
 
@@ -1140,6 +1018,91 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     .Show();
         }
 
+        #region eventos persona
+        private void GuardarPersonaButton_Click(object sender, RoutedEventArgs e)
+        {
+            var persona = (Data_persona)personaGroupBox.DataContext;
+            if (persona.Error.IsNullOrEmpty())
+            {
+                var per = (Data_persona)personaGroupBox.DataContext;
+
+                try
+                {
+                    ContainerApp.db.Persist().Persist("persona", per).Exec().RemoveCache();
+                    var alu = (Data_alumno)alumnoGroupBox.DataContext;
+                    MessageBox.Show("Registro de persona realizado");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Verificar formulario: " + persona.Error);
+            }
+            return;
+
+        }
+
+
+        private async void GuardarPfButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+
+                var persona = (Data_persona)personaGroupBox.DataContext;
+
+                using (handler = ProgramaFines.NewHandler())
+                {
+                    using (client = new HttpClient(handler))
+                    {
+                        await ProgramaFines.PF_Login(client);
+
+                        //Obtener datos del alumno del formulario de modificacion pf
+                        IDictionary<string, string> dataForm = await ProgramaFines.PF_InfoAlumnoFormularioModificacion(client, persona.numero_documento);
+
+                        if (!dataForm.ContainsKey("nombre"))
+                            throw new Exception("No se pueden obtener datos del PF, debe revisarse desde el PF");
+
+                        dataForm["nombre"] = persona.nombres!;
+                        dataForm["apellido"] = persona.apellidos!;
+                        dataForm["cuil1"] = persona.cuil1?.ToString() ?? "0";
+                        dataForm["cuil2"] = persona.cuil2?.ToString() ?? "0";
+                        dataForm["direccion"] = persona.descripcion_domicilio ?? "";
+                        dataForm["departamento"] = persona.departamento ?? "";
+                        dataForm["localidad"] = persona.localidad ?? "";
+                        dataForm["partido"] = persona.partido ?? "";
+                        dataForm["nacionalidad"] = persona.nacionalidad ?? "";
+                        dataForm["email"] = persona.email ?? "";
+                        dataForm["cod_area"] = persona.codigo_area ?? "";
+                        dataForm["nro_telefono"] = persona.telefono ?? "";
+                        if (!persona.fecha_nacimiento.IsNullOrEmpty())
+                        {
+                            dataForm["dia_nac"] = ((DateTime)persona.fecha_nacimiento!).Day.ToString();
+                            dataForm["mes_nac"] = ((DateTime)persona.fecha_nacimiento!).Month.ToString();
+                            dataForm["ano_nac"] = ((DateTime)persona.fecha_nacimiento!).Year.ToString(); ;
+                        }
+                        dataForm["sexo"] = persona.sexo?.ToString() ?? "1";
+
+                        await ProgramaFines.PF_ActualizarFormularioAlumno(client, dataForm);
+
+                        new ToastContentBuilder()
+                                        .AddText("Registro PF")
+                                        .AddText("Registro PF realizado correctamente")
+                                    .Show();
+                    }
+                }
+            } catch (Exception ex)
+            {
+                ToastUtils.ShowExceptionMessageWithFileNameAndLineNumber(ex, "Error al actualizar PF");
+            }
+        }
+
+
+        #endregion
+
+        
     }
 
     public class EstadoData
@@ -1155,7 +1118,9 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         }
     }
 
+  
 
-   
+
+
 
 }

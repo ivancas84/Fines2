@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Security.Cryptography;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Diagnostics;
@@ -100,21 +101,20 @@ namespace Utils
         public static string SubstringBetween(this string value, string a, string b)
         {
             int posA = value.IndexOf(a);
-            int posB = value.LastIndexOf(b);
+            
             if (posA == -1)
             {
                 return "";
             }
+
+            string _value = value.Substring(posA + a.Length);
+            int posB = _value.IndexOf(b);
             if (posB == -1)
             {
                 return "";
             }
-            int adjustedPosA = posA + a.Length;
-            if (adjustedPosA >= posB)
-            {
-                return "";
-            }
-            return value.Substring(adjustedPosA, posB - adjustedPosA);
+            
+            return _value.Substring(0, posB);
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace Utils
             return true;
         }
 
-        public static bool similarTo(this string name1, string name2, int len = 4)
+        public static bool SimilarTo(this string name1, string name2, int len = 4)
         {
             string[] n1 = name1.Trim().RemoveMultipleSpaces().ToUpper().Split(" ");
             string[] n2 = name2.Trim().RemoveMultipleSpaces().ToUpper().Split(" ");
@@ -280,27 +280,23 @@ namespace Utils
             return false;
         }
 
-        
         /// <summary>Encode data to base64</summary>
         public static string EncodeToBase64(string data)
         {
-            byte[] encData_byte = new byte[data.Length];
-            encData_byte = System.Text.Encoding.UTF8.GetBytes(data);
-            string encodedData = Convert.ToBase64String(encData_byte);
-            return encodedData;
+            byte[] encData_byte = Encoding.UTF8.GetBytes(data);
+            return Convert.ToBase64String(encData_byte);
         }
 
         /// <summary>Decode data from base64</summary>
         public static string DecodeFrom64(string encodedData)
         {
-            System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
-            System.Text.Decoder utf8Decode = encoder.GetDecoder();
+            UTF8Encoding encoder = new UTF8Encoding();
+            Decoder utf8Decode = encoder.GetDecoder();
             byte[] todecode_byte = Convert.FromBase64String(encodedData);
             int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
             char[] decoded_char = new char[charCount];
             utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
-            string result = new String(decoded_char);
-            return result;
+            return new String(decoded_char);
         }
 
         public static string ToOrdinalSpanish(this string numberString)
@@ -355,6 +351,49 @@ namespace Utils
             html = html.Replace("\r\n", "<br>");
 
             return html;
+        }
+
+        public static string GenerateHash(string input)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    builder.Append(bytes[i].ToString("x2"));
+                }
+                return builder.ToString();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <example>
+        /// string source = "olá mundo";
+        /// string substring = "ola";
+        /// // Normalize and remove diacritics from both strings
+        /// string processedSource = RemoveDiacritics(source.Normalize(NormalizationForm.FormD));
+        /// string processedSubstring = RemoveDiacritics(substring.Normalize(NormalizationForm.FormD));
+        /// // Check if the processed source string contains the processed substring
+        /// bool contains = processedSource.Contains(processedSubstring, StringComparison.OrdinalIgnoreCase);
+        /// 
+        /// Console.WriteLine($"Does \"{source}\" contain \"{substring}\" (ignoring accents)? {contains}");</example>
+        public static string RemoveDiacritics(this string text)
+        {
+            var stringBuilder = new StringBuilder();
+
+            foreach (var c in text)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
 
     }

@@ -14,16 +14,18 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_sede(Db db)
+        public Data_sede(Db db, bool init = true)
         {
             this.db = db;
-            Init();
+            if(init)
+                Init();
         }
 
         protected void Init()
         {
-            _id = (string?)db!.Values("sede").GetDefault("id");
-            _alta = (DateTime?)db!.Values("sede").GetDefault("alta");
+            EntityValues val = db!.Values("sede");
+            _id = (string?)val.GetDefault("id");
+            _alta = (DateTime?)val.GetDefault("alta");
         }
 
         public string? Label { get; set; }

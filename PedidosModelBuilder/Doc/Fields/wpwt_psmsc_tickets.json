@@ -1,0 +1,612 @@
+{
+  "id": {
+    "checks": {
+      "type": "long",
+      "required": true
+    },
+    "resets": {},
+    "name": "id",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": true,
+    "defaultValue": "max",
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "is_active": {
+    "checks": {
+      "type": "bool"
+    },
+    "resets": {},
+    "name": "is_active",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "bool",
+    "notNull": false,
+    "defaultValue": true,
+    "defaultValueClassData": true,
+    "maxLength": 1
+  },
+  "customer": {
+    "checks": {
+      "type": "long",
+      "required": true
+    },
+    "resets": {},
+    "name": "customer",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "subject": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "subject",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 65535
+  },
+  "status": {
+    "checks": {
+      "type": "int",
+      "required": true
+    },
+    "resets": {},
+    "name": "status",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 11
+  },
+  "priority": {
+    "checks": {
+      "type": "int",
+      "required": true
+    },
+    "resets": {},
+    "name": "priority",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 11
+  },
+  "category": {
+    "checks": {
+      "type": "int",
+      "required": true
+    },
+    "resets": {},
+    "name": "category",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 11
+  },
+  "assigned_agent": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "assigned_agent",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 65535
+  },
+  "date_created": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "date_created",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "date_updated": {
+    "checks": {
+      "type": "DateTime",
+      "required": true
+    },
+    "resets": {},
+    "name": "date_updated",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "agent_created": {
+    "checks": {
+      "type": "int"
+    },
+    "resets": {},
+    "name": "agent_created",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "int",
+    "type": "int",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 11
+  },
+  "ip_address": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "ip_address",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 50
+  },
+  "source": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "source",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 50
+  },
+  "browser": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "browser",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 50
+  },
+  "os": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "os",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 50
+  },
+  "add_recipients": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "add_recipients",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 65535
+  },
+  "prev_assignee": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "prev_assignee",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "text",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 65535
+  },
+  "date_closed": {
+    "checks": {
+      "type": "DateTime"
+    },
+    "resets": {},
+    "name": "date_closed",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "user_type": {
+    "checks": {
+      "type": "string",
+      "required": true
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true
+    },
+    "name": "user_type",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 100
+  },
+  "last_reply_on": {
+    "checks": {
+      "type": "DateTime"
+    },
+    "resets": {},
+    "name": "last_reply_on",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "datetime",
+    "type": "DateTime",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": null
+  },
+  "last_reply_by": {
+    "checks": {
+      "type": "long",
+      "required": true
+    },
+    "resets": {},
+    "name": "last_reply_by",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "bigint",
+    "type": "long",
+    "notNull": true,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 20
+  },
+  "auth_code": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "auth_code",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": "random(8)",
+    "defaultValueClassData": true,
+    "maxLength": 50
+  },
+  "cust_24": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "cust_24",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinytext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 255
+  },
+  "cust_25": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "cust_25",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinytext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 255
+  },
+  "cust_26": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "cust_26",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinytext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 255
+  },
+  "cust_27": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "cust_27",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinytext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 255
+  },
+  "cust_28": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "cust_28",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinytext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 255
+  },
+  "tags": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "tags",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinytext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 255
+  },
+  "live_agents": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "live_agents",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "tinytext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 255
+  },
+  "last_reply_source": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "last_reply_source",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "varchar",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 50
+  },
+  "misc": {
+    "checks": {
+      "type": "string"
+    },
+    "resets": {
+      "trim": " ",
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
+    },
+    "name": "misc",
+    "alias": null,
+    "entityName": "wpwt_psmsc_tickets",
+    "refEntityName": null,
+    "refFieldName": null,
+    "dataType": "longtext",
+    "type": "string",
+    "notNull": false,
+    "defaultValue": null,
+    "defaultValueClassData": true,
+    "maxLength": 4294967295
+  }
+}

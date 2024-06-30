@@ -12,83 +12,100 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_toma_r (Db db) : base(db)
+        public Data_toma_r (Db db, bool init = true) : base(db, init)
         {
         }
 
-        public Data_toma_r (Db db, params string[] fieldIds) : this(db)
+        public Data_toma_r (Db db, bool init = true, params string[] fieldIds) : this(db, init)
         {
             Init(fieldIds);
         }
 
         protected void Init(params string[] fieldIds)
         {
+            EntityValues val;
             foreach(string fieldId in fieldIds)
             {
                 switch(fieldId)
                 {
                     case "curso":
-                        curso__id = (string?)db!.Values("curso").GetDefault("id");
-                        curso__alta = (DateTime?)db!.Values("curso").GetDefault("alta");
+                        val = db!.Values("curso");
+                        curso__id = (string?)val.GetDefault("id");
+                        curso__alta = (DateTime?)val.GetDefault("alta");
                     break;
                     case "comision":
-                        comision__id = (string?)db!.Values("comision").GetDefault("id");
-                        comision__alta = (DateTime?)db!.Values("comision").GetDefault("alta");
+                        val = db!.Values("comision");
+                        comision__id = (string?)val.GetDefault("id");
+                        comision__alta = (DateTime?)val.GetDefault("alta");
                     break;
                     case "sede":
-                        sede__id = (string?)db!.Values("sede").GetDefault("id");
-                        sede__alta = (DateTime?)db!.Values("sede").GetDefault("alta");
+                        val = db!.Values("sede");
+                        sede__id = (string?)val.GetDefault("id");
+                        sede__alta = (DateTime?)val.GetDefault("alta");
                     break;
                     case "domicilio":
-                        domicilio__id = (string?)db!.Values("domicilio").GetDefault("id");
+                        val = db!.Values("domicilio");
+                        domicilio__id = (string?)val.GetDefault("id");
                     break;
                     case "centro_educativo":
-                        centro_educativo__id = (string?)db!.Values("centro_educativo").GetDefault("id");
+                        val = db!.Values("centro_educativo");
+                        centro_educativo__id = (string?)val.GetDefault("id");
                     break;
                     case "domicilio_cen":
-                        domicilio_cen__id = (string?)db!.Values("domicilio").GetDefault("id");
+                        val = db!.Values("domicilio");
+                        domicilio_cen__id = (string?)val.GetDefault("id");
                     break;
                     case "modalidad":
-                        modalidad__id = (string?)db!.Values("modalidad").GetDefault("id");
+                        val = db!.Values("modalidad");
+                        modalidad__id = (string?)val.GetDefault("id");
                     break;
                     case "planificacion":
-                        planificacion__id = (string?)db!.Values("planificacion").GetDefault("id");
+                        val = db!.Values("planificacion");
+                        planificacion__id = (string?)val.GetDefault("id");
                     break;
                     case "plan":
-                        plan__id = (string?)db!.Values("plan").GetDefault("id");
+                        val = db!.Values("plan");
+                        plan__id = (string?)val.GetDefault("id");
                     break;
                     case "calendario":
-                        calendario__id = (string?)db!.Values("calendario").GetDefault("id");
-                        calendario__anio = (short?)db!.Values("calendario").GetDefault("anio");
-                        calendario__semestre = (short?)db!.Values("calendario").GetDefault("semestre");
-                        calendario__insertado = (DateTime?)db!.Values("calendario").GetDefault("insertado");
+                        val = db!.Values("calendario");
+                        calendario__id = (string?)val.GetDefault("id");
+                        calendario__anio = (short?)val.GetDefault("anio");
+                        calendario__semestre = (short?)val.GetDefault("semestre");
+                        calendario__insertado = (DateTime?)val.GetDefault("insertado");
                     break;
                     case "asignatura":
-                        asignatura__id = (string?)db!.Values("asignatura").GetDefault("id");
+                        val = db!.Values("asignatura");
+                        asignatura__id = (string?)val.GetDefault("id");
                     break;
                     case "docente":
-                        docente__id = (string?)db!.Values("persona").GetDefault("id");
-                        docente__alta = (DateTime?)db!.Values("persona").GetDefault("alta");
-                        docente__telefono_verificado = (bool?)db!.Values("persona").GetDefault("telefono_verificado");
-                        docente__email_verificado = (bool?)db!.Values("persona").GetDefault("email_verificado");
-                        docente__info_verificada = (bool?)db!.Values("persona").GetDefault("info_verificada");
+                        val = db!.Values("persona");
+                        docente__id = (string?)val.GetDefault("id");
+                        docente__alta = (DateTime?)val.GetDefault("alta");
+                        docente__telefono_verificado = (bool?)val.GetDefault("telefono_verificado");
+                        docente__email_verificado = (bool?)val.GetDefault("email_verificado");
+                        docente__info_verificada = (bool?)val.GetDefault("info_verificada");
                     break;
                     case "domicilio_doc":
-                        domicilio_doc__id = (string?)db!.Values("domicilio").GetDefault("id");
+                        val = db!.Values("domicilio");
+                        domicilio_doc__id = (string?)val.GetDefault("id");
                     break;
                     case "reemplazo":
-                        reemplazo__id = (string?)db!.Values("persona").GetDefault("id");
-                        reemplazo__alta = (DateTime?)db!.Values("persona").GetDefault("alta");
-                        reemplazo__telefono_verificado = (bool?)db!.Values("persona").GetDefault("telefono_verificado");
-                        reemplazo__email_verificado = (bool?)db!.Values("persona").GetDefault("email_verificado");
-                        reemplazo__info_verificada = (bool?)db!.Values("persona").GetDefault("info_verificada");
+                        val = db!.Values("persona");
+                        reemplazo__id = (string?)val.GetDefault("id");
+                        reemplazo__alta = (DateTime?)val.GetDefault("alta");
+                        reemplazo__telefono_verificado = (bool?)val.GetDefault("telefono_verificado");
+                        reemplazo__email_verificado = (bool?)val.GetDefault("email_verificado");
+                        reemplazo__info_verificada = (bool?)val.GetDefault("info_verificada");
                     break;
                     case "domicilio_ree":
-                        domicilio_ree__id = (string?)db!.Values("domicilio").GetDefault("id");
+                        val = db!.Values("domicilio");
+                        domicilio_ree__id = (string?)val.GetDefault("id");
                     break;
                     case "planilla_docente":
-                        planilla_docente__id = (string?)db!.Values("planilla_docente").GetDefault("id");
-                        planilla_docente__insertado = (DateTime?)db!.Values("planilla_docente").GetDefault("insertado");
+                        val = db!.Values("planilla_docente");
+                        planilla_docente__id = (string?)val.GetDefault("id");
+                        planilla_docente__insertado = (DateTime?)val.GetDefault("insertado");
                     break;
                 }
             }

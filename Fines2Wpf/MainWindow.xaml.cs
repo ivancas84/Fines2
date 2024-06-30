@@ -244,6 +244,10 @@ namespace Fines2Wpf
                     window = new Windows.Programafines.ProcesarInterfazAsignaciones.Window1();
                     break;
 
+                case "cargar_conjunto_asignaciones":
+                    window = new Windows.AlumnoComision.CargarNuevosAlumnos.Window1();
+                    break;
+
                 default:
                     window = new Window();
                     break;
@@ -255,6 +259,12 @@ namespace Fines2Wpf
         private void TransferirAlumno_Click(object sender, RoutedEventArgs e)
         {
             Windows.Alumno.TransferirAlumno.Window1 window1 = new();
+            window1.Show();
+        }
+
+        private void CantidadesPorComision_Click(object sender, RoutedEventArgs e)
+        {
+            Windows.Informe.CantidadesPorComision.Window1 window1 = new();
             window1.Show();
         }
     }

@@ -84,6 +84,8 @@
                         <RowDefinition Height = "Auto" />
                         <RowDefinition Height = "Auto" />
                         <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
+                        <RowDefinition Height = "Auto" />
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
@@ -108,29 +110,37 @@
                              Margin = "5,10"></TextBox>
 
                     <Label Grid.Column="4"
-                           Margin = "5,10">_DNI:</Label>
-                    <TextBox Grid.Column="5"
-                             Text="{Binding numero_documento, ValidatesOnDataErrors=True}"
-                             Margin = "5,10"></TextBox>
-
-
-                    <Label Grid.Row="1" 
                            Margin = "5,10">_CUIL:</Label>
-                    <TextBox Grid.Row="1"
-                             Grid.Column="1"
-                             Text="{Binding cuil, ValidatesOnDataErrors=True}"
-                             Margin = "5,10"></TextBox>
+                    
+                    <StackPanel Orientation="Horizontal" 
+                        Grid.Column="5"
+                        Margin = "5,10">
+                        <TextBox
+                            Text="{Binding cuil1, ValidatesOnDataErrors=True}"
+                            MinWidth="50"
+                        ></TextBox>
+                        <TextBlock Text="-"></TextBlock>
+
+                        <TextBox
+                            Text="{Binding numero_documento, ValidatesOnDataErrors=True}"
+                            MinWidth="150"
+                        />
+                        <TextBlock Text="-"></TextBlock>
+
+                        <TextBox
+                            MinWidth="50"
+                            Text="{Binding cuil2, ValidatesOnDataErrors=True}"
+                        />
+                    </StackPanel>
 
                     <Label Grid.Row="1"
                            Grid.Column="2"
-                           Margin = "5,10">_Genero:</Label>
+                           Margin = "5,10">_Sexo:</Label>
                     <ComboBox Grid.Row="1"
                              Grid.Column="3"
-                             Text="{Binding genero, ValidatesOnDataErrors=True}"
+                             Name="sexoComboBox"
+                             SelectedValue="{Binding sexo, ValidatesOnDataErrors=True}"
                              Margin = "5,10">
-                        <ComboBoxItem Content="Masculino"  />
-                        <ComboBoxItem Content="Femenino" />
-                        <ComboBoxItem Content="Otro" />
                     </ComboBox>
                     
                     <Label Grid.Row="1"
@@ -141,13 +151,32 @@
                              SelectedDate="{Binding fecha_nacimiento, ValidatesOnDataErrors=True}"
                              Margin = "5,10"></DatePicker>
 
-                    <Label Grid.Row="2" 
+                    <Label Grid.Row="1" 
                            Margin = "5,10">_Telefono:</Label>
-                    <TextBox Grid.Row="2"
-                             Grid.Column="1"
-                             Text="{Binding telefono, ValidatesOnDataErrors=True}"
-                             Margin = "5,10"></TextBox>
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Margin = "5,10"
+                        
+                        Grid.Row="1"
+                        Grid.Column="1">
+                        <TextBox 
+                            Text="{Binding codigo_area, ValidatesOnDataErrors=True}"
+                            MinWidth="50"/>
+                        <TextBlock Text="-"/>
+                        <TextBox 
+                            MinWidth="100"
+                            Text="{Binding telefono, ValidatesOnDataErrors=True}"/>
+                    </StackPanel>
 
+                    <Label Grid.Row="2"
+                       Grid.Column="0"
+                       Margin = "5,10">_Email ABC:</Label>
+                    <TextBox Grid.Row="2"
+                         Grid.Column="1"
+                         Text="{Binding email_abc, ValidatesOnDataErrors=True}"
+                         Margin = "5,10"></TextBox>
+
+                    
                     <Label Grid.Row="2"
                            Grid.Column="2"
                            Margin = "5,10">_Email:</Label>
@@ -167,13 +196,59 @@
                              Margin = "5,10"></TextBox>
 
 
-                    <StackPanel Grid.Row = "3" Grid.ColumnSpan = "4">
+                    <Label Grid.Row="3"
+       Grid.Column="0"
+       Margin = "5,10">_Descripción Domicilio:</Label>
+                    <TextBox Grid.Row="3"
+         Grid.Column="1"
+         Text="{Binding descripcion_domicilio, ValidatesOnDataErrors=True}"
+         Margin = "5,10"></TextBox>
+                    <Label Grid.Row="3"
+Grid.Column="2"
+Margin = "5,10">_Departamento:</Label>
+                    <TextBox Grid.Row="3"
+  Grid.Column="3"
+  Text="{Binding departamento, ValidatesOnDataErrors=True}"
+  Margin = "5,10"></TextBox>
+
+                    <Label Grid.Row="4"
+Grid.Column="0"
+Margin = "5,10">_Localidad:</Label>
+                    <TextBox Grid.Row="4"
+  Grid.Column="1"
+  Text="{Binding localidad, ValidatesOnDataErrors=True}"
+  Margin = "5,10"></TextBox>
+
+                    <Label Grid.Row="4"
+Grid.Column="2"
+Margin = "5,10">_Partido:</Label>
+                    <TextBox Grid.Row="4"
+  Grid.Column="3"
+  Text="{Binding partido, ValidatesOnDataErrors=True}"
+  Margin = "5,10"></TextBox>
+
+                    <Label Grid.Row="4"
+Grid.Column="4"
+Margin = "5,10">_Nacionalidad:</Label>
+                    <TextBox Grid.Row="4"
+  Grid.Column="5"
+  Text="{Binding nacionalidad, ValidatesOnDataErrors=True}"
+  Margin = "5,10"></TextBox>
+
+                    <StackPanel 
+                        Orientation="Horizontal"
+                        Grid.Row = "5" 
+                        Grid.ColumnSpan = "4">
                         <Button 
                             Style="{DynamicResource MaterialDesignRaisedAccentButton}"
                             Content = "_Guardar..." 
                             Click="GuardarPersonaButton_Click"
                             Margin = "20"/>
-
+                        <Button 
+                        Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                        Content = "_Guardar en PF..." 
+                        Click="GuardarPfButton_Click"
+                        Margin = "20"/>     
                     </StackPanel>
                     
                 </Grid>
@@ -525,6 +600,9 @@
                                 ItemsSource="{Binding Source={StaticResource estados}}">
                             </DataGridComboBoxColumn>
 
+                            <DataGridTextColumn Header="pfid" IsReadOnly="True" Binding="{Binding pfid}"></DataGridTextColumn>
+
+
                             <DataGridTemplateColumn>
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -533,6 +611,9 @@
                                                     Click="GuardarAsignacion_Click">Guardar</Button>
                                             <Button Style="{DynamicResource MaterialDesignRaisedAccentButton}"
                                                     Click="EliminarAsignacion_Click">Eliminar</Button>
+                                            <Button 
+                                                Style="{DynamicResource MaterialDesignRaisedAccentButton}"
+                                                Click="AgregarAsignacionPF_Click">Agregar a PF</Button>
                                         </WrapPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -667,7 +748,7 @@
             <GroupBox Name="detallePersonaGroupBox" 
                       Grid.Row="5"
                       Panel.ZIndex="1"
-                      Header="Asignaciones"
+                      Header="Legajo"
                       Margin="16"
 	                  materialDesign:ElevationAssist.Elevation="Dp3">
                 <StackPanel>
