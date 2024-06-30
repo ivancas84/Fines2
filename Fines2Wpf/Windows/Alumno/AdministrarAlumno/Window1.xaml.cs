@@ -614,7 +614,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         #endregion asignacionGroupBox
 
 
-        #region calificacionGroupBox
+        #region calificacionArchivadaGroupBox
         private bool CalificacionArchivadaCV_Filter(object obj)
         {
             var o = obj as Data_calificacion_r;
@@ -690,7 +690,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
 
 
-        #region CalificacionGroupBox
+        #region DisposicionGroupBox
         private void DisposicionComboBox_GotFocus(object sender, RoutedEventArgs e)
         {
             var cb = (ComboBox)sender;
@@ -944,181 +944,21 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void GenerarButton_Click(object sender, RoutedEventArgs e)
         {
+        
+            
             List<EntityPersist> persists = new();
 
             try
             {
                 Data_alumno alumnoObj = (Data_alumno)alumnoGroupBox.DataContext;
-                if (alumnoObj.plan.IsNullOrEmptyOrDbNull() || alumnoObj.anio_ingreso.IsNullOrEmptyOrDbNull() || alumnoObj.semestre_ingreso.IsNullOrEmptyOrDbNull())
-                    throw new Exception("Para generar las calificaciones, deben estar definidos los datos de ingreso: Plan, año y semestre.");
-
-                if (!alumnoObj.anio_ingreso.Equals("1") && alumnoObj.semestre_ingreso != 1)
-                {
-                    (string anio, string semestre) tramoAnterior = (ContainerApp.db.Values("planificacion").
-                    Sset("anio", alumnoObj.anio_ingreso!).
-                    Sset("semestre", alumnoObj.semestre_ingreso!) as Values.Planificacion)!.
-                    AnioSemestreAnterior();
-
-                    #region Archivar calificaciones aprobadas del mismo plan pero con año y semestre inferior
-                    IEnumerable<object> idsCalificaciones_ = ContainerApp.db.Sql("calificacion").
-                        Size(0).
-                        Where(@"
-                        $planificacion_dis-plan = @0
-                        AND $planificacion_dis-anio <= @1 AND $planificacion_dis-semestre <= @2 
-                        AND $alumno = @3
-                        AND $archivado = false  
-                        AND ($nota_final >= 7 OR $crec >= 4)").
-                        Parameters(alumnoObj.plan!, tramoAnterior.anio!, tramoAnterior.semestre!, alumnoObj.id!).
-                        Column<object>("id");
-
-                    if (idsCalificaciones_.Count() > 0)
-                        ContainerApp.db.Persist().
-                            UpdateValueIds("calificacion", "archivado", true, idsCalificaciones_.ToArray()).
-                            AddTo(persists);
-                    #endregion
-                }
-
-
-                #region Eliminar calificaciones desaprobadas
-                IEnumerable<object> idsCalificaciones = ContainerApp.db.Sql("calificacion").
-                    Size(0).
-                    Where(@"
-                        $alumno = @1
-                        AND (
-                            ($nota_final < 7 AND $crec < 4)
-                            OR ($nota_final < 7 AND $crec IS NULL)
-                            OR ($nota_final IS NULL AND $crec < 4)
-                            OR ($nota_final IS NULL AND $crec IS NULL)
-                        )
-                    ").
-                    Parameters(alumnoObj.plan!, alumnoObj.id!).
-                    Column<object>("id");
-                
-                if (idsCalificaciones.Count() > 0)
-                    ContainerApp.db.Persist().
-                        DeleteIds("calificacion", idsCalificaciones.ToArray()).
-                        AddTo(persists);
-                #endregion
-
-                #region Archivar calificaciones aprobadas de otro plan
-                idsCalificaciones = ContainerApp.db.Sql("calificacion").
-                    Size(0).
-                    Where(@"
-                        $planificacion_dis-plan != @0 AND $alumno = @1
-                        AND $archivado = false 
-                        AND ($nota_final >= 7 OR $crec >= 4)").
-                    Parameters(alumnoObj.plan!, alumnoObj.id!).
-                    Column<object>("id");
-
-                if (idsCalificaciones.Count() > 0)
-                    ContainerApp.db.Persist().
-                        UpdateValueIds("calificacion", "archivado", true, idsCalificaciones.ToArray()).
-                        AddTo(persists);
-                #endregion
-
-                #region Desarchivar calificaciones aprobadas del mismo plan
-                idsCalificaciones = ContainerApp.db.Sql("calificacion").
-                    Size(0).
-                    Where(@"
-                        $planificacion_dis-plan = @0 
-                        AND $planificacion_dis-anio >= @1 
-                        AND $planificacion_dis-semestre >= @2 
-                        AND $archivado = true  
-                        AND ($nota_final >= 7 OR $crec >= 4)
-                        AND $alumno = @3").
-                    Parameters(alumnoObj.plan!, alumnoObj.anio_ingreso!, alumnoObj.semestre_ingreso!, alumnoObj.id!).
-                    Column<object>("id");
-
-                if (idsCalificaciones.Count() > 0)
-                    ContainerApp.db.Persist().
-                        UpdateValueIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
-                        AddTo(persists);
-                #endregion
-
-                #region Consultar disposiciones del mismo plan
-                IEnumerable<object> idsDisposicionesAprobadas = ContainerApp.db.Sql("calificacion").
-                    Size(0).
-                    Where(@"
-                        $planificacion_dis-plan = @0 
-                        AND $planificacion_dis-anio >= @1 
-                        AND $planificacion_dis-semestre >= @2 
-                        AND ($nota_final >= 7 OR $crec >= 4)
-                        AND $alumno = @3").
-                    Parameters(alumnoObj.plan!, alumnoObj.anio_ingreso!, alumnoObj.semestre_ingreso!, alumnoObj.id!).
-                    Column<object>("disposicion");
-                #endregion
-
-                #region consultar disposiciones segun el plan, anio y semestre de ingreso
-                IEnumerable<object> idsDisposiciones = ContainerApp.db.Sql("disposicion").
-                    Size(0).
-                    Where(@"
-                        $planificacion-plan = @0 
-                        AND $planificacion-anio >= @1 
-                        AND $planificacion-semestre >= @2").
-                    Parameters(alumnoObj.plan!, alumnoObj.anio_ingreso!, alumnoObj.semestre_ingreso!).
-                    Column<object>("id");
-                #endregion
-
-
-                #region Insertar calificaciones de disposiciones faltantes
-                foreach (var id in idsDisposiciones)
-                {
-                    if (!idsDisposicionesAprobadas.Contains(id))
-                    {
-                        Data_calificacion calificacionObj = new(ContainerApp.db);
-                        calificacionObj.disposicion = (string)id;
-                        calificacionObj.alumno = alumnoObj.id;
-                        calificacionObj.archivado = false;
-                        ContainerApp.db.Persist().
-                            Insert("calificacion", calificacionObj).
-                            AddTo(persists);
-                    }
-                }
-
-                #region Archivar calificaciones repetidas
-                idsDisposiciones = ContainerApp.db.Sql("calificacion").
-                    Select("$disposicion, COUNT(*) as cantidad").
-                    Size(0).
-                    Group("$disposicion").
-                    Where(@"
-                        $planificacion_dis-plan = @0 
-                        AND $planificacion_dis-anio >= @1 
-                        AND $planificacion_dis-semestre >= @2 
-                        AND $archivado = false  
-                        AND ($nota_final >= 7 OR $crec >= 4)
-                        AND $alumno = @3").
-                    Having("cantidad > 1").
-                    Parameters(alumnoObj.plan!, alumnoObj.anio_ingreso!, alumnoObj.semestre_ingreso!, alumnoObj.id!).
-                    Column<object>("disposicion");
-
-                if (idsDisposiciones.Count() > 0)
-                {
-                    idsCalificaciones = ContainerApp.db.Sql("calificacion").
-                        Select("$disposicion, MAX($id) AS id").
-                        Group("$disposicion").
-                        Size(0).
-                        Where("$disposicion IN ( @0 ) ").
-                        Parameters(idsDisposiciones.ToList()).
-                        Column<object>("id");
-
-                    if (idsCalificaciones.Count() > 0)
-                        ContainerApp.db.Persist().UpdateValueIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
-                            AddTo(persists);
-                }
-                #endregion
-
-                persists.Transaction().RemoveCache();
+                (ContainerApp.db.Values("alumno").
+                    Set(alumnoObj) as Values.Alumno)!.GenerarCalificaciones();
                 LoadCalificaciones(alumnoObj);
                 LoadCalificacionesArchivadas(alumnoObj);
-                #endregion
             }
             catch (Exception ex)
             {
-                new ToastContentBuilder()
-                   .AddText("Administración de Alumno")
-                   .AddText("ERROR: " + ex.Message)
-                   .Show();
-                return;
+                ToastUtils.ShowExceptionMessageWithFileNameAndLineNumber(ex);
             }
         }
 
