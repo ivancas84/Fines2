@@ -82,6 +82,7 @@ namespace Fines2Wpf.Values
                 if (!idsDisposicionesAprobadas.Contains(id))
                 {
                     Data_calificacion calificacionObj = new(ContainerApp.db);
+                    calificacionObj.Default();
                     calificacionObj.disposicion = (string)id;
                     calificacionObj.alumno = (string)Get("id");
                     calificacionObj.archivado = false;
