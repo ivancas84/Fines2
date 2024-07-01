@@ -75,15 +75,15 @@ namespace Utils
             var result = new List<T>();
             while (reader.Read())
                 result.Add((T)reader[columnName]);
-            return result.ToArray();
+            return result;
         }
 
-        public static T[] ColumnValues<T>(this DbDataReader reader, int columnNumber)
+        public static IEnumerable<T> ColumnValues<T>(this DbDataReader reader, int columnNumber)
         {
             var result = new List<T>();
             while (reader.Read())
                 result.Add((T)reader.GetValue(columnNumber));
-            return result.ToArray();
+            return result;
         }
 
         public static bool IsNullOrEmptyOrDbNull(this object? value)
@@ -95,9 +95,5 @@ namespace Utils
         {
             return (value == System.DBNull.Value);
         }
-
-        
     }
-
-
 }

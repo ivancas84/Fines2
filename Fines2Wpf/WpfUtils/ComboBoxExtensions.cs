@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using System.Windows.Input;
 using Utils;
-using System.Collections.Generic;
 
 namespace WpfUtils
 {
