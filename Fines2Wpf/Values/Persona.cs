@@ -328,5 +328,25 @@ namespace Fines2Wpf.Values
 
             values["cuil2"] = (success && cuil1 >= 0 && cuil1 <= 9) ? cuil1 : null;
         }
+
+        /// <summary>
+        /// Verifica el valor del source (this) con otro values para determinar si debe actualizar. 
+        /// Si debe actualizar completa
+        /// </summary>
+        public bool CompareToUpdate(string fieldName, Persona personaVal, string? pfContains = null)
+        {
+            if (GetOrNull(fieldName).IsNullOrEmptyOrDbNull() 
+                || (!pfContains.IsNullOrEmptyOrDbNull() 
+                && Get(fieldName).ToString()!.Contains(pfContains!)))
+                return false;
+
+            if (personaVal.GetOrNull(fieldName).IsNullOrEmptyOrDbNull())
+            {
+                return true;
+            }
+
+            return false;
+
+        }
     }
 }

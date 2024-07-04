@@ -69,25 +69,6 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             return false; 
 
         }
-
-        private bool CheckToUpdateDb(string fieldName, Values.Persona personaPfVal, Values.Persona personaDbVal, IDictionary<string, string> dataForm, IDictionary<string, object?> updatePersonaDb, string? pfContains = null)
-        {
-            if (personaPfVal.GetOrNull(fieldName).IsNullOrEmptyOrDbNull() || (!pfContains.IsNullOrEmptyOrDbNull() && personaPfVal.Get(fieldName).ToString()!.Contains(pfContains!)))
-                return true;
-
-            if (personaDbVal.GetOrNull(fieldName).IsNullOrEmptyOrDbNull())
-            {
-                updatePersonaDb[fieldName] = personaPfVal.GetOrNull(fieldName);
-                return true;
-            }
-
-            return false;
-
-        }
-
-
-
-        
     
         private AsignacionPfItem? ObtenerAsignacionPfDeInfoAlumno(string infoAlumno)
         {
@@ -285,14 +266,17 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                     {
                                         //por el momento no imprimimos el telefono y el codigo de area si es diferente, porque lo quise actualizar del pf y me tiraba error
                                         case "descripcion_domicilio":
-                                            CheckToUpdateDb(key, personaPfVal, personaDbVal, dataForm, updatePersonaDb, "40");
+                                            if(personaPfVal.CompareToUpdate(key, personaDbVal, "40"))
+                                                updatePersonaDb[key] = personaPfVal.GetOrNull(key);
                                             break;
 
                                         //por el momento no imprimimos el telefono y el codigo de area si es diferente, porque lo quise actualizar del pf y me tiraba error
                                         case "telefono":
                                         case "codigo_area":
-                                            CheckToUpdateDb(key, personaPfVal, personaDbVal, dataForm, updatePersonaDb, "0");
+                                            if (personaPfVal.CompareToUpdate(key, personaDbVal, "0"))
+                                                updatePersonaDb[key] = personaPfVal.GetOrNull(key);
                                             break;
+
 
                                         default:
                                             check = CheckToUpdateBoth(key, personaPfVal, personaDbVal, dataForm, updatePersonaDb);

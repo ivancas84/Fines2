@@ -715,9 +715,14 @@ namespace SqlOrganize
             }
         }
 
-        public bool IsNullOrEmpty(string fieldName)
+        public bool IsNullOrEmpty(params string[] fieldNames)
         {
-            return GetOrNull(fieldName).IsNullOrEmptyOrDbNull();
+            foreach(string fieldName in fieldNames)
+                if (GetOrNull(fieldName).IsNullOrEmptyOrDbNull())
+                    return true;
+
+            return false;
+
         }
 
 

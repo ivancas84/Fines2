@@ -38,9 +38,6 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
             comision = data.Obj<Data_comision_r>();
         }
 
-        
-
-
         private void ProcesarButton_Click(object sender, RoutedEventArgs e)
         {
             IEnumerable<string> _headers = headersTextBox.Text.Split(",").Select(s => s.Trim());
@@ -65,8 +62,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
 
                     #region Procesar persona
 
-                    Values.Persona personaVal = (Values.Persona)ContainerApp.db.Values("persona", "persona");
-                    personaVal.Sset(personaData).Reset();
+                    Values.Persona personaVal = (Values.Persona)ContainerApp.db.Values("persona", "persona").
+                        Sset(personaData).Reset();
 
 
                     IDictionary<string, object?>? personaExistenteData = ContainerApp.db.Sql("persona").
@@ -84,8 +81,6 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                             fieldsToCompare = new List<string> { "apellidos", "nombres", "numero_documento" }
                         };
                         var dataDifferent = personaVal.Compare(cp);
-
-                      
 
                         if (!dataDifferent.IsNullOrEmpty())
                         {

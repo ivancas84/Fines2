@@ -18,11 +18,7 @@ namespace Fines2Wpf.Values
         {
             List<EntityPersist> persists = new();
 
-            if (IsNullOrEmpty("id")
-                || IsNullOrEmpty("plan") 
-                || IsNullOrEmpty("anio_ingreso") 
-                || IsNullOrEmpty("semestre_ingreso") 
-                )
+            if (IsNullOrEmpty("id", "plan", "anio_ingreso", "semestre_ingreso"))
                     throw new Exception("No se encuentran definidos los datos principales del alumno para generar las calificaciones.");
 
             #region Eliminar calificaciones desaprobadas
