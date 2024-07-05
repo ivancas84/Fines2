@@ -15,4 +15,8 @@
 		<ProjectReference Include="..\SqlOrganizeMy\SqlOrganizeMy.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Item\" />
+	</ItemGroup>
+
 </Project>

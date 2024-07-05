@@ -106,20 +106,31 @@
 
                 </StackPanel>
                 </GroupBox>
-                <GroupBox Header="Tomas de Posesion">
-                <StackPanel>
-                    <TextBlock>
-                     <Hyperlink NavigateUri="newwindow://lista_tomas_posesion" RequestNavigate="Hyperlink_RequestNavigate">Procesar asignaciones programa fines</Hyperlink>
-                    </TextBlock>
-                    <ListBox>
-                        <ListBoxItem>Muestra 4 listas con datos de las tomas de posesión</ListBoxItem>
-                        <ListBoxItem>Lista 1) Tomas Aprobadas</ListBoxItem>
-                        <ListBoxItem>Lista 2) Tomas Renunciadas</ListBoxItem>
-                        <ListBoxItem>Lista 3) Tomas Modificadas</ListBoxItem>
-                        <ListBoxItem>Lista 4) Tomas Contralor: Actualmente no tienen asignadas planillas docente</ListBoxItem>
-                    </ListBox>
+                    <GroupBox Header="Tomas de Posesion">
+                        <StackPanel>
+                            <TextBlock>
+                             <Hyperlink NavigateUri="newwindow://lista_tomas_posesion" RequestNavigate="Hyperlink_RequestNavigate">Procesar asignaciones programa fines</Hyperlink>
+                            </TextBlock>
+                            <ListBox>
+                                <ListBoxItem>Muestra 4 listas con datos de las tomas de posesión</ListBoxItem>
+                                <ListBoxItem>Lista 1) Tomas Aprobadas</ListBoxItem>
+                                <ListBoxItem>Lista 2) Tomas Renunciadas</ListBoxItem>
+                                <ListBoxItem>Lista 3) Tomas Modificadas</ListBoxItem>
+                                <ListBoxItem>Lista 4) Tomas Contralor: Actualmente no tienen asignadas planillas docente</ListBoxItem>
+                            </ListBox>
                         </StackPanel>
+                    </GroupBox>
 
+                    <GroupBox Header="Tomas de Posesion">
+                        <StackPanel>
+                            <TextBlock>
+                                <Hyperlink NavigateUri="newwindow://procesar_registro_alumnos" RequestNavigate="Hyperlink_RequestNavigate">Procesar asignaciones programa fines</Hyperlink>
+                            </TextBlock>
+                            <ListBox>
+                                <ListBoxItem>Se comparan los datos del registro de alumnos con la base de datos y se actualiza la informacion</ListBoxItem>
+                                <ListBoxItem>Se definen nuevos campos para visualizar los enlaces a la documentación provista por los alumnos</ListBoxItem>
+                            </ListBox>
+                        </StackPanel>
                     </GroupBox>
                 </StackPanel>
             </ScrollViewer>

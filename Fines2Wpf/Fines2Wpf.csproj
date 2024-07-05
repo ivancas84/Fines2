@@ -37,8 +37,6 @@
 
   <ItemGroup>
     <Folder Include="Pedidos\DAO\" />
-    <Folder Include="Windows\AlumnoComision\NewFolder\" />
-    <Folder Include="Windows\Programafines\ProcesarListadoGeneral\" />
   </ItemGroup>
 
 </Project>

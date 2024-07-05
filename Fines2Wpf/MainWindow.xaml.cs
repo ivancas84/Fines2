@@ -244,8 +244,8 @@ namespace Fines2Wpf
                     window = new Windows.Programafines.ProcesarInterfazAsignaciones.Window1();
                     break;
 
-                case "cargar_conjunto_asignaciones":
-                    window = new Windows.AlumnoComision.CargarNuevosAlumnos.Window1();
+                case "procesar_registro_alumnos":
+                    window = new Windows.AlumnoComision.ProcesarRegistroAlumnos.Window1();
                     break;
 
                 default:

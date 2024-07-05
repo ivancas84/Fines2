@@ -1,21 +1,9 @@
-﻿using CommunityToolkit.WinUI.Notifications;
-using Fines2Model3.Data;
+﻿using Fines2Model3.Data;
 using Fines2Wpf.DAO;
-using Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Utils;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ProcesarRegistroAlumnos
@@ -34,14 +22,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarRegistroAlumnos
             InitializeComponent();
         }
 
-        private async void BuscarButton_Click(object sender, RoutedEventArgs e)
-        {
-            asignacionRegistroOC.Clear();
-
-            var datosIniciales = ConsultarDatosIniciales();
-
-            
-        }
+ 
 
         private (IDictionary<string, object?> pfidsComisiones, IDictionary<string, Data_alumno_comision_r> asignacionesDb) ConsultarDatosIniciales()
         {
@@ -56,6 +37,18 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarRegistroAlumnos
                 DictOfObjByPropertyNames("persona__numero_documento");
 
             return (pfidsComisiones, asignacionesDb);
+
+        }
+
+        private void ProcesarButton_Click(object sender, RoutedEventArgs e)
+        {
+            asignacionRegistroOC.Clear();
+
+            var datosIniciales = ConsultarDatosIniciales();
+        }
+
+        private void GuardarButton_Click(object sender, RoutedEventArgs e)
+        {
 
         }
     }
