@@ -1,13 +1,6 @@
-﻿using SqlOrganize;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fines2Model3.DAO
+﻿namespace SqlOrganize.Sql.Fines2Model3
 {
-    public static class Disposicion
+    public static class DisposicionDAO
     {
 
         /// <summary> Todas las calificaciones del alumno para un determinado plan </summary>

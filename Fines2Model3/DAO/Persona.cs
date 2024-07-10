@@ -1,13 +1,6 @@
-﻿using SqlOrganize;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fines2Model3.DAO
+﻿namespace SqlOrganize.Sql.Fines2Model3
 {
-    public static class Persona
+    public static class PersonaDAO
     {
         public static EntitySql PersonaSearchLikeQuery(this Db db, string search)
         {

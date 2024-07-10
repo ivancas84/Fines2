@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.WinUI.Notifications;
-using Fines2Model3.Data;
 using QRCoder;
 using QuestPDF.Fluent;
 using System;
@@ -10,10 +9,12 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using Utils;
 using SqlOrganize;
 using System.Text;
 using WpfUtils;
+using SqlOrganize.Sql;
+using SqlOrganize.ValueTypesUtils;
+using SqlOrganize.Sql.Fines2Model3;
 
 namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
 {
@@ -64,7 +65,7 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
                 Cache().Dict().
                 Obj<Data_alumno_comision_r>();
 
-                if (asignacionActiva.IsNullOrEmptyOrDbNull())
+                if (asignacionActiva.IsNoE())
                     throw new Exception("No existe asignación activa! Verificar las comisiones del alumno!");
 
                 if (!alumno.estado_inscripcion.Equals("Correcto"))
@@ -77,7 +78,7 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
 
                 alumno.orientacion_constancia = asignacionActiva.plan__orientacion;
                 
-                if (!observacionesTextBox.Text.IsNullOrEmptyOrDbNull())
+                if (!observacionesTextBox.Text.IsNoE())
                     alumno.observaciones_constancia = observacionesTextBox.Text;
 
                 if ((bool)urlComboBox.SelectedValue)
@@ -176,7 +177,7 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
             threads_body.Append(alumno.orientacion_constancia);
             threads_body.Append(" resolución ");
             threads_body.Append(alumno.resolucion_constancia);
-            if (!alumno.observaciones_constancia.IsNullOrEmptyOrDbNull())
+            if (!alumno.observaciones_constancia.IsNoE())
             {
                 threads_body.Append(" - "); // Add line break
                 threads_body.Append(alumno.observaciones_constancia); // Add line break

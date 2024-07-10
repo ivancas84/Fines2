@@ -1,27 +1,23 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace Fines2Model3.Data
+namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_plan : SqlOrganize.Data
+    public class Data_plan : SqlOrganize.Sql.Data
     {
 
         public Data_plan ()
         {
         }
 
-        public Data_plan(Db db, bool init = true)
+        public Data_plan(Db db)
         {
             this.db = db;
-            if(init)
-                Init();
         }
 
-        protected void Init()
+        public override void Default()
         {
             EntityValues val = db!.Values("plan");
             _id = (string?)val.GetDefault("id");

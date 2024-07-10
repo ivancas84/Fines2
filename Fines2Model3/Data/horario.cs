@@ -1,27 +1,23 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace Fines2Model3.Data
+namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_horario : SqlOrganize.Data
+    public class Data_horario : SqlOrganize.Sql.Data
     {
 
         public Data_horario ()
         {
         }
 
-        public Data_horario(Db db, bool init = true)
+        public Data_horario(Db db)
         {
             this.db = db;
-            if(init)
-                Init();
         }
 
-        protected void Init()
+        public override void Default()
         {
             EntityValues val = db!.Values("horario");
             _id = (string?)val.GetDefault("id");

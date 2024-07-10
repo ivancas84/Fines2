@@ -1,27 +1,19 @@
 #nullable enable
-using SqlOrganize;
-using System;
-using System.ComponentModel;
-using System.Collections.Generic;
-using Utils;
-
-namespace Fines2Model3.Data
+namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_alumno : SqlOrganize.Data
+    public class Data_alumno : SqlOrganize.Sql.Data
     {
 
         public Data_alumno ()
         {
         }
 
-        public Data_alumno(Db db, bool init = true)
+        public Data_alumno(Db db)
         {
             this.db = db;
-            if(init)
-                Init();
         }
 
-        protected void Init()
+        public override void Default()
         {
             EntityValues val = db!.Values("alumno");
             _id = (string?)val.GetDefault("id");
@@ -220,9 +212,9 @@ namespace Fines2Model3.Data
                 case "persona":
                     if (_persona == null)
                         return "Debe completar valor.";
-                    if (!db.IsNullOrEmpty() && !_persona.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNoE() && !_persona.IsNoE()) {
                         var row = db.Sql("alumno").Where("$persona = @0").Parameters(_persona).Cache().Dict();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
@@ -264,9 +256,9 @@ namespace Fines2Model3.Data
                     return "";
 
                 case "libro_folio":
-                    if (!db.IsNullOrEmpty() && !_libro_folio.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNoE() && !_libro_folio.IsNoE()) {
                         var row = db.Sql("alumno").Where("$libro_folio = @0").Parameters(_libro_folio).Cache().Dict();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";

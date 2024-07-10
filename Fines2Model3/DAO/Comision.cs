@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fines2Model3.DAO
+namespace SqlOrganize.Sql.Fines2Model3
 {
-    public static class Comision
+    public static class ComisionDAO
     {
 
         public static EntitySql ComisionesAutorizadasDePeriodoSql(this Db db, object anio, object semestre)

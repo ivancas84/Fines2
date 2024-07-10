@@ -1,27 +1,23 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace Fines2Model3.Data
+namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_asignacion_planilla_docente : SqlOrganize.Data
+    public class Data_asignacion_planilla_docente : SqlOrganize.Sql.Data
     {
 
         public Data_asignacion_planilla_docente ()
         {
         }
 
-        public Data_asignacion_planilla_docente(Db db, bool init = true)
+        public Data_asignacion_planilla_docente(Db db)
         {
             this.db = db;
-            if(init)
-                Init();
         }
 
-        protected void Init()
+        public override void Default()
         {
             EntityValues val = db!.Values("asignacion_planilla_docente");
             _id = (string?)val.GetDefault("id");

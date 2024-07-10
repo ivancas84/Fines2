@@ -1,27 +1,23 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace Fines2Model3.Data
+namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_persona : SqlOrganize.Data
+    public class Data_persona : SqlOrganize.Sql.Data
     {
 
         public Data_persona ()
         {
         }
 
-        public Data_persona(Db db, bool init = true)
+        public Data_persona(Db db)
         {
             this.db = db;
-            if(init)
-                Init();
         }
 
-        protected void Init()
+        public override void Default()
         {
             EntityValues val = db!.Values("persona");
             _id = (string?)val.GetDefault("id");
@@ -232,17 +228,17 @@ namespace Fines2Model3.Data
                 case "numero_documento":
                     if (_numero_documento == null)
                         return "Debe completar valor.";
-                    if (!db.IsNullOrEmpty() && !_numero_documento.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNoE() && !_numero_documento.IsNoE()) {
                         var row = db.Sql("persona").Where("$numero_documento = @0").Parameters(_numero_documento).Cache().Dict();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
 
                 case "cuil":
-                    if (!db.IsNullOrEmpty() && !_cuil.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNoE() && !_cuil.IsNoE()) {
                         var row = db.Sql("persona").Where("$cuil = @0").Parameters(_cuil).Cache().Dict();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
@@ -260,9 +256,9 @@ namespace Fines2Model3.Data
                     return "";
 
                 case "email_abc":
-                    if (!db.IsNullOrEmpty() && !_email_abc.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNoE() && !_email_abc.IsNoE()) {
                         var row = db.Sql("persona").Where("$email_abc = @0").Parameters(_email_abc).Cache().Dict();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";

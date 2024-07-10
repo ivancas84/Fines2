@@ -1,4 +1,4 @@
-﻿using Fines2Model3.Data;
+﻿using SqlOrganize.Sql.Fines2Model3;
 using System.Collections.ObjectModel;
 
 namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno

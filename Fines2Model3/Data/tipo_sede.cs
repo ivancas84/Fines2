@@ -1,27 +1,23 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace Fines2Model3.Data
+namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_tipo_sede : SqlOrganize.Data
+    public class Data_tipo_sede : SqlOrganize.Sql.Data
     {
 
         public Data_tipo_sede ()
         {
         }
 
-        public Data_tipo_sede(Db db, bool init = true)
+        public Data_tipo_sede(Db db)
         {
             this.db = db;
-            if(init)
-                Init();
         }
 
-        protected void Init()
+        public override void Default()
         {
             EntityValues val = db!.Values("tipo_sede");
             _id = (string?)val.GetDefault("id");
@@ -55,9 +51,9 @@ namespace Fines2Model3.Data
                 case "descripcion":
                     if (_descripcion == null)
                         return "Debe completar valor.";
-                    if (!db.IsNullOrEmpty() && !_descripcion.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNoE() && !_descripcion.IsNoE()) {
                         var row = db.Sql("tipo_sede").Where("$descripcion = @0").Parameters(_descripcion).Cache().Dict();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";

@@ -1,27 +1,23 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace Fines2Model3.Data
+namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_disposicion_pendiente : SqlOrganize.Data
+    public class Data_disposicion_pendiente : SqlOrganize.Sql.Data
     {
 
         public Data_disposicion_pendiente ()
         {
         }
 
-        public Data_disposicion_pendiente(Db db, bool init = true)
+        public Data_disposicion_pendiente(Db db)
         {
             this.db = db;
-            if(init)
-                Init();
         }
 
-        protected void Init()
+        public override void Default()
         {
             EntityValues val = db!.Values("disposicion_pendiente");
             _id = (string?)val.GetDefault("id");

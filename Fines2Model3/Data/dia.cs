@@ -1,27 +1,23 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace Fines2Model3.Data
+namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_dia : SqlOrganize.Data
+    public class Data_dia : SqlOrganize.Sql.Data
     {
 
         public Data_dia ()
         {
         }
 
-        public Data_dia(Db db, bool init = true)
+        public Data_dia(Db db)
         {
             this.db = db;
-            if(init)
-                Init();
         }
 
-        protected void Init()
+        public override void Default()
         {
             EntityValues val = db!.Values("dia");
             _id = (string?)val.GetDefault("id");
@@ -61,9 +57,9 @@ namespace Fines2Model3.Data
                 case "numero":
                     if (_numero == null)
                         return "Debe completar valor.";
-                    if (!db.IsNullOrEmpty() && !_numero.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNoE() && !_numero.IsNoE()) {
                         var row = db.Sql("dia").Where("$numero = @0").Parameters(_numero).Cache().Dict();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";
@@ -71,9 +67,9 @@ namespace Fines2Model3.Data
                 case "dia":
                     if (_dia == null)
                         return "Debe completar valor.";
-                    if (!db.IsNullOrEmpty() && !_dia.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNoE() && !_dia.IsNoE()) {
                         var row = db.Sql("dia").Where("$dia = @0").Parameters(_dia).Cache().Dict();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";

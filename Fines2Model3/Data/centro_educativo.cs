@@ -1,27 +1,23 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace Fines2Model3.Data
+namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_centro_educativo : SqlOrganize.Data
+    public class Data_centro_educativo : SqlOrganize.Sql.Data
     {
 
         public Data_centro_educativo ()
         {
         }
 
-        public Data_centro_educativo(Db db, bool init = true)
+        public Data_centro_educativo(Db db)
         {
             this.db = db;
-            if(init)
-                Init();
         }
 
-        protected void Init()
+        public override void Default()
         {
             EntityValues val = db!.Values("centro_educativo");
             _id = (string?)val.GetDefault("id");
@@ -76,9 +72,9 @@ namespace Fines2Model3.Data
                     return "";
 
                 case "cue":
-                    if (!db.IsNullOrEmpty() && !_cue.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNoE() && !_cue.IsNoE()) {
                         var row = db.Sql("centro_educativo").Where("$cue = @0").Parameters(_cue).Cache().Dict();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";

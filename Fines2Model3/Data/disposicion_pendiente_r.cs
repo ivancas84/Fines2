@@ -1,9 +1,8 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using Newtonsoft.Json;
 
-namespace Fines2Model3.Data
+namespace SqlOrganize.Sql.Fines2Model3
 {
     public class Data_disposicion_pendiente_r : Data_disposicion_pendiente
     {
@@ -12,16 +11,11 @@ namespace Fines2Model3.Data
         {
         }
 
-        public Data_disposicion_pendiente_r (Db db, bool init = true) : base(db, init)
+        public Data_disposicion_pendiente_r (Db db) : base(db)
         {
         }
 
-        public Data_disposicion_pendiente_r (Db db, bool init = true, params string[] fieldIds) : this(db, init)
-        {
-            Init(fieldIds);
-        }
-
-        protected void Init(params string[] fieldIds)
+        public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;
             foreach(string fieldId in fieldIds)

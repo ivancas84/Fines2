@@ -153,7 +153,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                     asignacionesDb = (Dictionary<string, AsignacionDbItem>)ContainerApp.db.AsignacionesDeComisionesSql(com["id"]!).
                         Cache().ColOfDict().
                         ColOfObj<AsignacionDbItem>().
-                        DictOfObjByPropertyNames("persona__numero_documento");
+                        DictOfDataByPropertyNames("persona__numero_documento");
                 }
                 else
                 {
@@ -173,7 +173,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                 asignacionesDb = (Dictionary<string, AsignacionDbItem>)ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
                     Cache().ColOfDict().
                     ColOfObj<AsignacionDbItem>().
-                    DictOfObjByPropertyNames("persona__numero_documento");
+                    DictOfDataByPropertyNames("persona__numero_documento");
             }
 
             return (pfidsComisiones, asignacionesDb);

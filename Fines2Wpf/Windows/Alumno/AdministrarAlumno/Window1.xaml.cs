@@ -1,11 +1,12 @@
 ﻿
 using CommunityToolkit.WinUI.Notifications;
 using Fines2Model3.DAO;
-using Fines2Model3.Data;
-using Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre;
 using Microsoft.Win32;
 using MimeTypes;
 using SqlOrganize;
+using SqlOrganize.Sql;
+using SqlOrganize.ValueTypesUtils;
+using SqlOrganize.Sql.Fines2Model3;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,14 +16,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Utils;
 using WpfUtils;
 
 namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
@@ -168,17 +167,17 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // Dispose HttpClient and HttpClientHandler
-            if (!client.IsNullOrEmpty())
+            if (!client.IsNoE())
                 client.Dispose();
 
-            if (!handler.IsNullOrEmpty())
+            if (!handler.IsNoE())
                 handler.Dispose();
         }
 
 
         private void SetPersonaGroupBox(Data_persona? persona = null)
         {
-            if (persona.IsNullOrEmpty())
+            if (persona.IsNoE())
             {
                 persona = new Data_persona(ContainerApp.db);
             }
@@ -189,16 +188,16 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         }
         private void SetAlumnoGroupBox(Alumno? alumno = null)
         {
-            if (alumno.IsNullOrEmpty())
+            if (alumno.IsNoE())
             {
                 alumno = new Alumno(ContainerApp.db);
                 var per = (Data_persona)personaGroupBox.DataContext;
                 alumno.persona = per.id;
             }
-            var value = (Values.Alumno)ContainerApp.db.Values("alumno").Set(alumno!);
-            alumno!.color_anio_ingreso = alumno.anio_ingreso.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
-            alumno!.color_semestre_ingreso = alumno.semestre_ingreso.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
-            alumno!.color_plan = alumno.plan.IsNullOrEmptyOrDbNull() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
+            var value = (AlumnoValues)ContainerApp.db.Values("alumno").Set(alumno!);
+            alumno!.color_anio_ingreso = alumno.anio_ingreso.IsNoE() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
+            alumno!.color_semestre_ingreso = alumno.semestre_ingreso.IsNoE() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
+            alumno!.color_plan = alumno.plan.IsNoE() ? ContainerApp.config.colorRed : ContainerApp.config.colorGreen;
             alumno!.color_estado_inscripcion = value.ColorEstadoInscripcion(alumno.estado_inscripcion);
             alumno!.color_confirmado_direccion = alumno.confirmado_direccion ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
             alumno!.color_tiene_certificado = alumno.tiene_certificado ?? false ? ContainerApp.config.colorGreen : ContainerApp.config.colorRed;
@@ -216,7 +215,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         private void LoadAsignaciones(Alumno a)
         {
             asignacionOC.Clear();
-            if (a.IsNullOrEmptyOrDbNull() || a.id.IsNullOrEmptyOrDbNull())
+            if (a.IsNoE() || a.id.IsNoE())
                 return;
             var data = ContainerApp.db.Sql("alumno_comision").
                 Where("$alumno = @0").
@@ -243,9 +242,9 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             calificacionOC.Clear();
 
-            if (a.IsNullOrEmptyOrDbNull() || a.id.IsNullOrEmptyOrDbNull())
+            if (a.IsNoE() || a.id.IsNoE())
                 return;
-            if (a.plan.IsNullOrEmpty())
+            if (a.plan.IsNoE())
                 return;
             
             var data = calificacionDAO.CalificacionesDeAlumnoPlanArchivoQuery(a.id!, a.plan!, false).Cache().ColOfDict();
@@ -259,7 +258,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 disposicion.Label = val.ToString();
                 calificacion.Disposiciones.Add(disposicion);
 
-                var valc = (Values.Curso)ContainerApp.db.Values("curso", "curso").Set(item);
+                var valc = (CursoValues)ContainerApp.db.Values("curso", "curso").Set(item);
                 var curso = val.Values().Obj<Data_curso_r>();
                 curso.Label = valc.ToStringDocente();
                 calificacion.curso__Label = curso.Label;
@@ -269,8 +268,8 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 calificacion.color_nota_final = ContainerApp.config.colorRed;
                 calificacion.color_crec = ContainerApp.config.colorRed;
 
-                if ((!calificacion.nota_final.IsNullOrEmptyOrDbNull() && calificacion.nota_final >= 7)
-                   || (!calificacion.crec.IsNullOrEmptyOrDbNull() && calificacion.crec >= 4))
+                if ((!calificacion.nota_final.IsNoE() && calificacion.nota_final >= 7)
+                   || (!calificacion.crec.IsNoE() && calificacion.crec >= 4))
                 {
                     calificacion.color_nota_final = ContainerApp.config.colorGreen;
                     calificacion.color_crec = ContainerApp.config.colorGreen;
@@ -284,7 +283,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             calificacionArchivadaOC.Clear();
 
-            if (a.IsNullOrEmptyOrDbNull() || a.id.IsNullOrEmptyOrDbNull())
+            if (a.IsNoE() || a.id.IsNoE())
                 return;
 
             var data = calificacionDAO.CalificacionesArchivadasDeAlumnoQuery(a.id!).Cache().ColOfDict();
@@ -295,7 +294,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
                 calificacion.disposicion__Label = ContainerApp.db.Values("disposicion", "disposicion").Set(item).ToString();
 
-                var valc = (Values.Curso)ContainerApp.db.Values("curso", "curso").Set(item);
+                var valc = (CursoValues)ContainerApp.db.Values("curso", "curso").Set(item);
                 calificacion.curso__Label = valc.ToStringDocente();
 
                 calificacionArchivadaOC.Add(calificacion);
@@ -306,7 +305,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             disposicionOC.Clear();
 
-            if(a.IsNullOrEmptyOrDbNull() || a.id.IsNullOrEmptyOrDbNull() || a.plan.IsNullOrEmptyOrDbNull())
+            if(a.IsNoE() || a.id.IsNoE() || a.plan.IsNoE())
                 return;
 
             var data = ContainerApp.db.Sql("disposicion").
@@ -369,7 +368,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void PersonaComboBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (this.personaComboBox.Text.IsNullOrEmpty())
+            if (this.personaComboBox.Text.IsNoE())
                 personaComboBox.IsDropDownOpen = true;
             if (this.personaComboBox.SelectedIndex > -1)
             {
@@ -410,14 +409,14 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             personaOC.Clear();
 
-            if (string.IsNullOrEmpty(this.personaComboBox.Text) || this.personaComboBox.Text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
+            if (this.personaComboBox.Text.IsNoE() || this.personaComboBox.Text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
             IEnumerable<Dictionary<string, object>> list = DAO.Persona.SearchLikeQuery(this.personaComboBox.Text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
 
             foreach (var item in list)
             {
-                var v = (Values.Persona)ContainerApp.db.Values("persona").Set(item!);
+                var v = (PersonaValues)ContainerApp.db.Values("persona").Set(item!);
                 var o = item.Obj<Data_persona>();
                 o.Label = v.ToString();
                 personaOC.Add(o);
@@ -461,7 +460,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             var cb = (ComboBox)sender;
 
-            if (cb!.Text.IsNullOrEmpty())
+            if (cb!.Text.IsNoE())
                 cb.IsDropDownOpen = true;
 
             if (cb.SelectedIndex > -1)
@@ -503,7 +502,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             asignacion.Comisiones.Clear();
 
-            if (string.IsNullOrEmpty(asignacion.SearchComision) || asignacion.SearchComision.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
+            if (asignacion.SearchComision.IsNoE() || asignacion.SearchComision.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
             IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(asignacion.SearchComision).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
@@ -569,7 +568,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             var a = (Asignacion)button!.DataContext;
             try
             {
-                if (!a.id.IsNullOrEmpty())
+                if (!a.id.IsNoE())
                     ContainerApp.db.Persist().DeleteIds("alumno_comision", a.id!).Exec().RemoveCache();
                 asignacionOC.Remove(a);
 
@@ -618,8 +617,8 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         private bool CalificacionArchivadaCV_Filter(object obj)
         {
             var o = obj as Data_calificacion_r;
-            return calificacionArchivadaFilterTextBox.Text.IsNullOrEmpty()
-                || (!o.asignatura_dis__nombre.IsNullOrEmptyOrDbNull() && o.asignatura_dis__nombre.ToString().ToLower().Contains(calificacionArchivadaFilterTextBox.Text.ToLower()));
+            return calificacionArchivadaFilterTextBox.Text.IsNoE()
+                || (!o.asignatura_dis__nombre.IsNoE() && o.asignatura_dis__nombre.ToString().ToLower().Contains(calificacionArchivadaFilterTextBox.Text.ToLower()));
 
         }
 
@@ -655,8 +654,8 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         private bool CalificacionCV_Filter(object obj)
         {
             var o = obj as Data_calificacion_r;
-            return calificacionFilterTextBox.Text.IsNullOrEmpty()
-                || (!o.asignatura_dis__nombre.IsNullOrEmptyOrDbNull() && o.asignatura_dis__nombre.ToString().ToLower().Contains(calificacionFilterTextBox.Text.ToLower()));
+            return calificacionFilterTextBox.Text.IsNoE()
+                || (!o.asignatura_dis__nombre.IsNoE() && o.asignatura_dis__nombre.ToString().ToLower().Contains(calificacionFilterTextBox.Text.ToLower()));
 
         }
 
@@ -726,7 +725,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             var cb = (ComboBox)sender;
 
-            if (cb!.Text.IsNullOrEmpty())
+            if (cb!.Text.IsNoE())
                 cb.IsDropDownOpen = true;
 
             if (cb.SelectedIndex > -1)
@@ -767,13 +766,13 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             calificacion.Cursos.Clear();
 
-            if (string.IsNullOrEmpty(calificacion.SearchCurso) || calificacion.SearchCurso.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
+            if (calificacion.SearchCurso.IsNoE() || calificacion.SearchCurso.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
             IEnumerable<Dictionary<string, object?>> list = cursoDAO.BusquedaAproximadaQuery(calificacion.SearchCurso).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
             foreach (var item in list)
             {
-                var val = (Values.Curso)ContainerApp.db.Values("curso").Set(item);
+                var val = (CursoValues)ContainerApp.db.Values("curso").Set(item);
                 var obj = val.Values().Obj<Data_curso_r>();
                 obj.Label = val.ToStringDocente();
                 calificacion.Cursos.Add(obj);
@@ -825,7 +824,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 }
             }
 
-            if (key.IsNullOrEmpty())
+            if (key.IsNoE())
                 return;
 
             ContainerApp.db.DataGridCellEditEndingEventArgs_CellEditEnding<Data_alumno_comision_r>(e, "calificacion", key, value);
@@ -864,9 +863,9 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             {
                 string year = DateTime.Now.Year.ToString();
                 string month = DateTime.Now.Month.ToString();
-                
-                WebRequestUtils.CreateDirectoryIfNotExists(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword, ContainerApp.config.upload, year);
-                WebRequestUtils.CreateDirectoryIfNotExists(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword, ContainerApp.config.upload + year + "/", month);
+
+                SqlOrganize.WebRequestUtils.Utils.CreateDirectoryIfNotExists(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword, ContainerApp.config.upload, year);
+                SqlOrganize.WebRequestUtils.Utils.CreateDirectoryIfNotExists(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword, ContainerApp.config.upload + year + "/", month);
 
                 string dir = year + "/" + month;
                 FileInfo fileInfo = new(openFileDlg.FileName);
@@ -875,12 +874,12 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 
                 try
                 {
-                    WebRequestUtils.UploadFile(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword, ContainerApp.config.upload + dir + "/" + fileName, openFileDlg.FileName);
+                    SqlOrganize.WebRequestUtils.Utils.UploadFile(ContainerApp.config.ftpUserName, ContainerApp.config.ftpUserPassword, ContainerApp.config.upload + dir + "/" + fileName, openFileDlg.FileName);
                     dp.archivo__name = openFileDlg.SafeFileName;
                     dp.archivo__content = dir + "/" + fileName;
                     dp.archivo__type = MimeTypeMap.GetMimeType(fileInfo.Extension);
                     dp.archivo__size = Convert.ToUInt32(fileInfo.Length);
-                    dp.descripcion = dp.descripcion.IsNullOrEmptyOrDbNull() ? dp.archivo__name : dp.descripcion;
+                    dp.descripcion = dp.descripcion.IsNoE() ? dp.archivo__name : dp.descripcion;
                     dp.persona = alu.persona;
 
                     EntityValues archivoVal = ContainerApp.db.Values("file", "archivo").Set(dp).Default();
@@ -903,7 +902,8 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
         private void AgregarArchivo_Click(object sender, RoutedEventArgs e)
         {
-            var a = new DetallePersona(ContainerApp.db, true, "archivo");
+            var a = new DetallePersona(ContainerApp.db).DefaultData();
+            a.DefaultRel("archivo");
             var alumno = (Data_alumno)alumnoGroupBox.DataContext;
             a.persona = alumno.id;
             detallePersonaOC.Add(a);
@@ -919,7 +919,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             var data = (DetallePersona)button.DataContext;
             try
             {
-                if (!data.id.IsNullOrEmpty())
+                if (!data.id.IsNoE())
                     ContainerApp.db.Persist().
                         DeleteIds("detalle_persona", data.id!).
                         Exec().
@@ -952,7 +952,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             {
                 Data_alumno alumnoObj = (Data_alumno)alumnoGroupBox.DataContext;
                 (ContainerApp.db.Values("alumno").
-                    Set(alumnoObj) as Values.Alumno)!.GenerarCalificaciones();
+                    Set(alumnoObj) as AlumnoValues)!.GenerarCalificaciones();
                 LoadCalificaciones(alumnoObj);
                 LoadCalificacionesArchivadas(alumnoObj);
             }
@@ -1022,7 +1022,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         private void GuardarPersonaButton_Click(object sender, RoutedEventArgs e)
         {
             var persona = (Data_persona)personaGroupBox.DataContext;
-            if (persona.Error.IsNullOrEmpty())
+            if (persona.Error.IsNoE())
             {
                 var per = (Data_persona)personaGroupBox.DataContext;
 
@@ -1077,7 +1077,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                         dataForm["email"] = persona.email ?? "";
                         dataForm["cod_area"] = persona.codigo_area ?? "";
                         dataForm["nro_telefono"] = persona.telefono ?? "";
-                        if (!persona.fecha_nacimiento.IsNullOrEmpty())
+                        if (!persona.fecha_nacimiento.IsNoE())
                         {
                             dataForm["dia_nac"] = ((DateTime)persona.fecha_nacimiento!).Day.ToString();
                             dataForm["mes_nac"] = ((DateTime)persona.fecha_nacimiento!).Month.ToString();

@@ -1,27 +1,23 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace Fines2Model3.Data
+namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_comision_relacionada : SqlOrganize.Data
+    public class Data_comision_relacionada : SqlOrganize.Sql.Data
     {
 
         public Data_comision_relacionada ()
         {
         }
 
-        public Data_comision_relacionada(Db db, bool init = true)
+        public Data_comision_relacionada(Db db)
         {
             this.db = db;
-            if(init)
-                Init();
         }
 
-        protected void Init()
+        public override void Default()
         {
             EntityValues val = db!.Values("comision_relacionada");
             _id = (string?)val.GetDefault("id");
