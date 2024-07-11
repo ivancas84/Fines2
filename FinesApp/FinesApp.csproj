@@ -19,7 +19,6 @@
     <ProjectReference Include="..\Fines2Model3\Fines2Model3.csproj" />
     <ProjectReference Include="..\FinesApp.Core\FinesApp.Core.csproj" />
     <ProjectReference Include="..\SqlOrganizeMy\SqlOrganizeMy.csproj" />
-    <ProjectReference Include="..\Utils\Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>
