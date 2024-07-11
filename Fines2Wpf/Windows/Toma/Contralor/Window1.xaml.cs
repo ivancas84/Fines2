@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
-using Utils;
 using SqlOrganize;
+using SqlOrganize.ValueTypesUtils;
 
 
 namespace Fines2Wpf.Windows.Toma.Contralor
@@ -30,7 +30,7 @@ namespace Fines2Wpf.Windows.Toma.Contralor
                 tomasOC.Add(tomaObj);
                 tomaObj.plan__Label = tomaObj.plan__orientacion!.Acronym();
 
-                if (tomaObj.comision__turno.IsNullOrEmpty())
+                if (tomaObj.comision__turno.IsNoE())
                     tomaObj.planificacion__Label = "V";
                 else
                     tomaObj.planificacion__Label = tomaObj.comision__turno!.Acronym();

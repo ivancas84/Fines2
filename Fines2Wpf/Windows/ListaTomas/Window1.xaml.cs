@@ -1,12 +1,11 @@
 ﻿using CommunityToolkit.WinUI.Notifications;
-using Fines2Model3.Data;
 using Fines2Wpf.Windows.EnviarEmailToma;
 using QRCoder;
 using SqlOrganize;
+using SqlOrganize.Sql;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,10 +13,10 @@ using System.Windows.Data;
 using QuestPDF.Fluent;
 using System.Linq;
 using WpfUtils;
-using Utils;
-
-
 using System.Windows.Media;
+using SqlOrganize.CollectionUtils;
+using SqlOrganize.ValueTypesUtils;
+using SqlOrganize.Sql.Fines2Model3;
 
 namespace Fines2Wpf.Windows.ListaTomas
 {
@@ -105,7 +104,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                     tomasContralorOC.Add(tomaObj);
                     tomaObj.plan__Label = tomaObj.plan__orientacion!.Acronym();
 
-                    if (tomaObj.comision__turno.IsNullOrEmpty())
+                    if (tomaObj.comision__turno.IsNoE())
                         tomaObj.planificacion__Label = "V";
                     else
                         tomaObj.planificacion__Label = tomaObj.comision__turno!.Acronym();
@@ -148,7 +147,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                     }
                 }
 
-                if (key.IsNullOrEmpty())
+                if (key.IsNoE())
                     return;
 
                 var reload = ContainerApp.db.DataGridCellEditEndingEventArgs_CellEditEnding<Data_toma_r>(e, "toma", key, value);
@@ -213,7 +212,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                     DataGridRow row = DataGridRow.GetRowContainingElement(cell);
                     (row.Item as Data_toma_r).CopyValues<Data_toma_r>(v.Get().Obj<Data_toma_r>(),sourceNotNull:true);
 
-                    if(!fieldId.IsNullOrEmpty())
+                    if(!fieldId.IsNoE())
                         LoadData(); //debe recargarse para visualizar los cambios realizados en otras iteraciones
                 }
             }
@@ -223,7 +222,7 @@ namespace Fines2Wpf.Windows.ListaTomas
         {
             var button = (e.OriginalSource as Button);
             var toma = (Data_toma_r)button.DataContext;
-            if (toma.docente__email_abc.IsNullOrEmpty())
+            if (toma.docente__email_abc.IsNoE())
             {
                 new ToastContentBuilder()
                 .AddText("Email abc no definido")

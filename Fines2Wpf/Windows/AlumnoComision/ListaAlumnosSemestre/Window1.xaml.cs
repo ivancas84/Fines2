@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-using Utils;
-using Fines2Model3.Data;
 using System.Windows.Controls;
 using SqlOrganize;
 using WpfUtils;
@@ -11,7 +9,10 @@ using System.Windows.Data;
 using System.Windows.Threading;
 using System;
 using System.Windows.Media;
-using Fines2Wpf.Forms.ListaReferentesSemestre;
+using SqlOrganize.Sql.Fines2Model3;
+using SqlOrganize.Sql;
+using SqlOrganize.DateTimeUtils;
+using SqlOrganize.CollectionUtils;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 {
@@ -63,13 +64,13 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         private bool AsignacionCV_Filter(object obj)
         {
             var o = obj as Asignacion;
-            return filterTextBox.Text.IsNullOrEmpty()
-                || (!o.persona__nombres.IsNullOrEmptyOrDbNull() && o.persona__nombres.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
-                || (!o.persona__apellidos.IsNullOrEmptyOrDbNull() && o.persona__apellidos.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
-                || (!o.comision__Label.IsNullOrEmptyOrDbNull() && o.comision__Label.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
-                || (!o.persona__telefono.IsNullOrEmptyOrDbNull() && o.persona__telefono.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
-                || (!o.persona__numero_documento.IsNullOrEmptyOrDbNull() && o.persona__numero_documento.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
-                || (!o.sede__nombre.IsNullOrEmptyOrDbNull() && o.sede__nombre.ToString().ToLower().Contains(filterTextBox.Text.ToLower()));
+            return filterTextBox.Text.IsNoE()
+                || (!o.persona__nombres.IsNoE() && o.persona__nombres.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
+                || (!o.persona__apellidos.IsNoE() && o.persona__apellidos.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
+                || (!o.comision__Label.IsNoE() && o.comision__Label.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
+                || (!o.persona__telefono.IsNoE() && o.persona__telefono.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
+                || (!o.persona__numero_documento.IsNoE() && o.persona__numero_documento.ToString().ToLower().Contains(filterTextBox.Text.ToLower()))
+                || (!o.sede__nombre.IsNoE() && o.sede__nombre.ToString().ToLower().Contains(filterTextBox.Text.ToLower()));
 
         }
 
@@ -107,7 +108,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         {
             asignacionOC.Clear();
             var data = ContainerApp.db.Sql("alumno_comision").Search(search).Size(0).Cache().ColOfDict();
-            if(data.IsNullOrEmptyOrDbNull())
+            if(data.IsNoE())
                return;
             
             List<object> alumnosYplanes = new();
@@ -115,7 +116,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 
             foreach (var d in data)
             {
-                var va = (Values.Alumno)ContainerApp.db.Values("alumno","alumno").Set(d);
+                var va = (AlumnoValues)ContainerApp.db.Values("alumno","alumno").Set(d);
                 var o = d.Obj<Asignacion>();
                 o.tramo_ingreso = va.TramoIngreso();
                 o.comision__Label = ContainerApp.db.Values("comision", "comision").Set(d).ToString();
@@ -141,10 +142,10 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
                 if (dataCalificacionesDict.ContainsKey(key + "~" + "3" + "~" + "2"))
                     d.cantidad_aprobadas32 = (long)dataCalificacionesDict[key + "~" + "3" + "~" + "2"];
 
-                var va = (Values.Alumno)ContainerApp.db.Values("alumno", "alumno");
+                var va = (AlumnoValues)ContainerApp.db.Values("alumno", "alumno");
 
                 short ai = 1;
-                if (!d.alumno__anio_ingreso.IsNullOrEmptyOrDbNull())
+                if (!d.alumno__anio_ingreso.IsNoE())
                     ai = short.Parse(d.alumno__anio_ingreso!);
                 short pa = short.Parse(d.planificacion__anio!);
                 short pe = short.Parse(d.planificacion__semestre!);

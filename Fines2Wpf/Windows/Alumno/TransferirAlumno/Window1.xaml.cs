@@ -1,22 +1,13 @@
-﻿using Fines2Model3.Data;
-using Fines2Model3.DAO;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Utils;
 using SqlOrganize;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
 using WpfUtils;
 
 namespace Fines2Wpf.Windows.Alumno.TransferirAlumno
@@ -156,7 +147,7 @@ namespace Fines2Wpf.Windows.Alumno.TransferirAlumno
                 var personaOrigenObj = (Data_persona)origenComboBox.SelectedItem;
                 var personaDestinoObj = (Data_persona)destinoComboBox.SelectedItem;
 
-                if (personaOrigenObj.IsNullOrEmptyOrDbNull() || personaDestinoObj.IsNullOrEmptyOrDbNull())
+                if (personaOrigenObj.IsNoE() || personaDestinoObj.IsNoE())
                     throw new Exception("Debe seleccionar ambas personas");
 
                 var persist = ContainerApp.db.Persist();
@@ -166,9 +157,9 @@ namespace Fines2Wpf.Windows.Alumno.TransferirAlumno
                 IDictionary<string, object?>? alumnoOrigenData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(personaOrigenObj.id!).Dict();
                 IDictionary<string, object?>? alumnoDestinoData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(personaDestinoObj.id!).Dict();
 
-                if (!alumnoOrigenData.IsNullOrEmptyOrDbNull())
+                if (!alumnoOrigenData.IsNoE())
                 {
-                    if (alumnoDestinoData.IsNullOrEmptyOrDbNull())
+                    if (alumnoDestinoData.IsNoE())
                     { 
                         persist.UpdateValueIds("alumno", "persona", personaOrigenObj.id!, personaDestinoObj.id!);
                     }

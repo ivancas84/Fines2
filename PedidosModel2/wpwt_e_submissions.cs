@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_e_submissions : SqlOrganize.Data
+    public class Data_wpwt_e_submissions : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_e_submissions ()
@@ -19,14 +17,13 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_e_submissions Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_e_submissions");
             _id = (ulong?)val.GetDefault("id");
             _actions_count = (int?)val.GetDefault("actions_count");
             _actions_succeeded_count = (int?)val.GetDefault("actions_succeeded_count");
             _is_read = (bool?)val.GetDefault("is_read");
-            return this;
         }
 
         public string? Label { get; set; }
@@ -180,9 +177,9 @@ namespace PedidosModel2.Data
                 case "hash_id":
                     if (_hash_id == null)
                         return "Debe completar valor.";
-                    if (!db.IsNullOrEmpty() && !_hash_id.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNoE() && !_hash_id.IsNoE()) {
                         var row = db.Sql("wpwt_e_submissions").Where("$hash_id = @0").Parameters(_hash_id).Cache().Dict();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";

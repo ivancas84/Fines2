@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using Utils;
-using SqlOrganize;
+﻿using SqlOrganize;
+using SqlOrganize.Sql.Fines2Model3;
+using System;
 
 namespace Fines2Wpf.DAO
 {
@@ -9,7 +8,7 @@ namespace Fines2Wpf.DAO
     {
         public string PlanificacionSiguiente(string anio, string semestre, string plan__id)
         {
-            Values.Planificacion planificacionValues = (Values.Planificacion)ContainerApp.db.Values("planificacion").
+            PlanificacionValues planificacionValues = (PlanificacionValues)ContainerApp.db.Values("planificacion").
                 Set("anio", anio).
                 Set("semestre", semestre).
                 Set("plan", plan__id);
@@ -21,7 +20,7 @@ namespace Fines2Wpf.DAO
                     $anio = @0 AND $semestre = @1 AND $plan = @2
                 ").Parameters(anio_, semestre_, plan__id).Cache().Dict();
 
-            if (data.IsNullOrEmptyOrDbNull())
+            if (data.IsNoE())
                 throw new Exception("No existe planificacion siguiente");
             
             return (string)data!["id"]!;

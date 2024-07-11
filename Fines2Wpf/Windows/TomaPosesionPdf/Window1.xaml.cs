@@ -1,24 +1,14 @@
 ﻿using QRCoder;
 using QuestPDF.Fluent;
+using SqlOrganize;
+using SqlOrganize.DateTimeUtils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Fines2Wpf.Windows.TomaPosesionPdf;
-using Utils;
-using Fines2Wpf.Windows.ListaTomas;
-using Fines2Model3.Data;
 
 namespace Fines2Wpf.Windows.TomaPosesionPdf
 {

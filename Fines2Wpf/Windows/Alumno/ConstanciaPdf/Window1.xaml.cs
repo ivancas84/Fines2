@@ -6,7 +6,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
-using Utils;
 using System.Windows.Threading;
 using SqlOrganize;
 

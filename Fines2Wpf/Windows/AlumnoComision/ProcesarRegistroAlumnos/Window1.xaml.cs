@@ -1,11 +1,11 @@
-﻿using Fines2Model3.Data;
-using Fines2Wpf.DAO;
+﻿using Fines2Wpf.DAO;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-using Utils;
 using SqlOrganize;
+using SqlOrganize.Sql.Fines2Model3;
+using SqlOrganize.CollectionUtils;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ProcesarRegistroAlumnos
 {
@@ -35,7 +35,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarRegistroAlumnos
             IDictionary<string, Data_alumno_comision_r> asignacionesDb = ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
                 Cache().ColOfDict().
                 ColOfObj<Data_alumno_comision_r>().
-                DictOfDataByPropertyNames("persona__numero_documento");
+                DictOfObjByPropertyNames("persona__numero_documento");
 
             return (pfidsComisiones, asignacionesDb);
 

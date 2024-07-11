@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_actionscheduler_claims : SqlOrganize.Data
+    public class Data_wpwt_actionscheduler_claims : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_actionscheduler_claims ()
@@ -19,11 +17,10 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_actionscheduler_claims Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_actionscheduler_claims");
             _date_created_gmt = (DateTime?)val.GetDefault("date_created_gmt");
-            return this;
         }
 
         public string? Label { get; set; }

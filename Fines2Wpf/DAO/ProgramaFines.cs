@@ -1,6 +1,7 @@
 ﻿using Fines2Wpf;
 using HtmlAgilityPack;
 using SqlOrganize;
+using SqlOrganize.Sql;
 using System;
 using System.Collections.Generic;
 using System.Net;

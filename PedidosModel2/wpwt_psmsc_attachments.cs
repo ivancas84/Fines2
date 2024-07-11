@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_psmsc_attachments : SqlOrganize.Data
+    public class Data_wpwt_psmsc_attachments : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_psmsc_attachments ()
@@ -19,7 +17,7 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_psmsc_attachments Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_psmsc_attachments");
             _id = (long?)val.GetDefault("id");
@@ -29,7 +27,6 @@ namespace PedidosModel2.Data
             _source_id = (long?)val.GetDefault("source_id");
             _ticket_id = (long?)val.GetDefault("ticket_id");
             _customer_id = (long?)val.GetDefault("customer_id");
-            return this;
         }
 
         public string? Label { get; set; }

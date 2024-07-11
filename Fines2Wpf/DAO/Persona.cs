@@ -1,4 +1,5 @@
 ﻿using SqlOrganize;
+using SqlOrganize.Sql;
 
 
 namespace Fines2Wpf.DAO

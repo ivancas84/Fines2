@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_psmsc_agents : SqlOrganize.Data
+    public class Data_wpwt_psmsc_agents : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_psmsc_agents ()
@@ -19,7 +17,7 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_psmsc_agents Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_psmsc_agents");
             _id = (long?)val.GetDefault("id");
@@ -28,7 +26,6 @@ namespace PedidosModel2.Data
             _role = (int?)val.GetDefault("role");
             _is_agentgroup = (int?)val.GetDefault("is_agentgroup");
             _is_active = (int?)val.GetDefault("is_active");
-            return this;
         }
 
         public string? Label { get; set; }

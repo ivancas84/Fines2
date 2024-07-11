@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using SqlOrganize;
-using Utils;
+using SqlOrganize.CollectionUtils;
 
 namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
 {
@@ -34,7 +34,7 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
                 ")
                 .Parameters(pfidComision, asignaturaCodigo, "2024", "1").Cache().Dict();
 
-            if (d.IsNullOrEmptyOrDbNull()) return null;
+            if (d.IsNoE()) return null;
             return d["id"];
 
         }
@@ -49,7 +49,7 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
                 ")
                 .Parameters(dni).Cache().Dict();
 
-            if (d.IsNullOrEmptyOrDbNull()) return null;
+            if (d.IsNoE()) return null;
             return d["id"];
 
         }

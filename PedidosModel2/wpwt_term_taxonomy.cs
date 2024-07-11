@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_term_taxonomy : SqlOrganize.Data
+    public class Data_wpwt_term_taxonomy : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_term_taxonomy ()
@@ -19,14 +17,13 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_term_taxonomy Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_term_taxonomy");
             _term_id = (ulong?)val.GetDefault("term_id");
             _taxonomy = (string?)val.GetDefault("taxonomy");
             _parent = (ulong?)val.GetDefault("parent");
             _count = (long?)val.GetDefault("count");
-            return this;
         }
 
         public string? Label { get; set; }

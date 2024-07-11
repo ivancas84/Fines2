@@ -1,12 +1,5 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using SqlOrganize;
-using System;
+﻿using SqlOrganize.Sql;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Utils;
 
 namespace Fines2Wpf.Forms.ListaPlanificacion.DAO
 {

@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 {
-    internal class AsignacionPfItem : SqlOrganize.Data
+    internal class AsignacionPfItem : SqlOrganize.Sql.Data
     {
         public string nombre { get; set; }
 

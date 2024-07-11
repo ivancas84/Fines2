@@ -5,11 +5,12 @@ using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Windows;
 using SqlOrganize;
-using Utils;
 using CommunityToolkit.WinUI.Notifications;
-using Fines2Model3.Data;
 using System.Windows.Controls;
 using WpfUtils;
+using SqlOrganize.Sql.Fines2Model3;
+using SqlOrganize.Sql;
+using SqlOrganize.CollectionUtils;
 
 
 namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
@@ -40,19 +41,19 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             // Dispose HttpClient and HttpClientHandler
-            if (!client.IsNullOrEmpty())
+            if (!client.IsNoE())
                 client.Dispose();
 
-            if (!handler.IsNullOrEmpty())
+            if (!handler.IsNoE())
                 handler.Dispose();
         }
 
-        private bool CheckToUpdateBoth(string fieldName, Values.Persona personaPfVal, Values.Persona personaDbVal, IDictionary<string, string> dataForm, IDictionary<string, object?> updatePersonaDb, string? pfContains = null)
+        private bool CheckToUpdateBoth(string fieldName, PersonaValues personaPfVal, PersonaValues personaDbVal, IDictionary<string, string> dataForm, IDictionary<string, object?> updatePersonaDb, string? pfContains = null)
         {
 
-            if (personaPfVal.GetOrNull(fieldName).IsNullOrEmptyOrDbNull() || (!pfContains.IsNullOrEmptyOrDbNull() && personaPfVal.Get(fieldName).ToString()!.Contains(pfContains!)))
+            if (personaPfVal.IsNullOrEmpty(fieldName) || (!pfContains.IsNoE() && personaPfVal.Get(fieldName).ToString()!.Contains(pfContains!)))
             {
-                if (!personaDbVal.GetOrNull(fieldName).IsNullOrEmptyOrDbNull())
+                if (!personaDbVal.GetOrNull(fieldName).IsNoE())
                 {
                     personaPfVal.Set("update_pf", true);
                     dataForm[fieldName] = personaDbVal.Get(fieldName).ToString()!;
@@ -60,7 +61,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                 return true;
             }
             
-            if (personaDbVal.GetOrNull(fieldName).IsNullOrEmptyOrDbNull())
+            if (personaDbVal.IsNullOrEmpty(fieldName))
             { 
                 updatePersonaDb[fieldName] = personaPfVal.GetOrNull(fieldName);
                 return true;
@@ -140,20 +141,20 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             var formItem = (FormItem)formGroupBox.DataContext;
 
 
-            if (!formItem.comision.IsNullOrEmptyOrDbNull())
+            if (!formItem.comision.IsNoE())
             {
                 var com = ContainerApp.db.Sql("comision").
                     Where("$pfid = @0 AND $calendario-anio = @1 AND $calendario-semestre = @2").
                     Parameters(formItem.comision!, ContainerApp.config.anio, ContainerApp.config.semestre).Cache().Dict();
 
-                if (!com.IsNullOrEmptyOrDbNull())
+                if (!com.IsNoE())
                 {
                     pfidsComisiones.Add(formItem.comision!, com!["id"]!);
 
                     asignacionesDb = (Dictionary<string, AsignacionDbItem>)ContainerApp.db.AsignacionesDeComisionesSql(com["id"]!).
                         Cache().ColOfDict().
                         ColOfObj<AsignacionDbItem>().
-                        DictOfDataByPropertyNames("persona__numero_documento");
+                        DictOfObjByPropertyNames("persona__numero_documento");
                 }
                 else
                 {
@@ -168,12 +169,12 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                 pfidsComisiones = (Dictionary<string, object?>)ContainerApp.db.
                     ComisionesAutorizadasDePeriodoSql(DateTime.Now.Year, 1).
                     Cache().ColOfDict().
-                    DictOfDictByKeysValue("id", "pfid");
+                    DictOfObjByPropertyNames("id", "pfid");
 
                 asignacionesDb = (Dictionary<string, AsignacionDbItem>)ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
                     Cache().ColOfDict().
                     ColOfObj<AsignacionDbItem>().
-                    DictOfDataByPropertyNames("persona__numero_documento");
+                    DictOfObjByPropertyNames("persona__numero_documento");
             }
 
             return (pfidsComisiones, asignacionesDb);
@@ -220,7 +221,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                 continue;
                             }
 
-                            Values.Persona personaPfVal = (Values.Persona)ContainerApp.db.Values("persona").
+                            PersonaValues personaPfVal = (PersonaValues)ContainerApp.db.Values("persona").
                                     Sset("nombres", dataForm["nombre"]).
                                     Sset("apellidos", dataForm["apellido"]).
                                     Sset("cuil1", dataForm["cuil1"]).
@@ -239,7 +240,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                     Set("update_pf", false);
 
                             //si esta correctamente seteada la fecha nacimiento, significa que la fecha es correcta
-                            if (personaPfVal.GetOrNull("fecha_nacimiento").IsNullOrEmptyOrDbNull())
+                            if (personaPfVal.GetOrNull("fecha_nacimiento").IsNoE())
                             {
                                 personaPfVal.Sset("dia_nacimiento", dataForm["dia_nac"]).
                                     Sset("mes_nacimiento", dataForm["mes_nac"]).
@@ -252,7 +253,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                 asignacionDb.existeEnPf = true;
 
                                 #region Comparar datos de persona pf con persona db
-                                var personaDbVal = (Values.Persona)ContainerApp.db.Values("persona", "persona").Set(asignacionDb);
+                                var personaDbVal = (PersonaValues)ContainerApp.db.Values("persona", "persona").Set(asignacionDb);
 
                                 CompareParams cp = new() { val = personaPfVal, ignoreNull = false };
                                 var comp = personaDbVal.Compare(cp);
@@ -296,7 +297,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                     await ProgramaFines.PF_ActualizarFormularioAlumno(client, dataForm);
                                 }
 
-                                if (!updatePersonaDb.IsNullOrEmpty())
+                                if (!updatePersonaDb.IsNoE())
                                 {
                                     updatePersonaDb["id"] = personaDbVal.Get("id");
                                     persist.Update("persona", updatePersonaDb);
@@ -308,7 +309,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                 {
                                     asignacionPf.revisar = true;
                                 }
-                                else if (asignacionDb.pfid.IsNullOrEmptyOrDbNull() || !asignacionDb.pfid.ToString().Equals(asignacionPf.pfid))
+                                else if (asignacionDb.pfid.IsNoE() || !asignacionDb.pfid.ToString().Equals(asignacionPf.pfid))
                                 {
                                     ContainerApp.db.Persist().UpdateValueIds("alumno_comision", "pfid", asignacionPf.pfid, asignacionDb.id!).Exec().RemoveCache();
                                 }
@@ -332,7 +333,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 
                             try
                             {
-                                if (!persist.sql.IsNullOrEmptyOrDbNull())
+                                if (!persist.sql.IsNoE())
                                     persist.Transaction().RemoveCache();
                             }
                             catch (Exception ex)
@@ -341,7 +342,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                 asignacionPf.revisar = true;
                             }
 
-                            if (asignacionPf.revisar || !asignacionPf.Msg.IsNullOrEmptyOrDbNull())
+                            if (asignacionPf.revisar || !asignacionPf.Msg.IsNoE())
                                 asignacionPfOC.Add(asignacionPf);
 
                         }

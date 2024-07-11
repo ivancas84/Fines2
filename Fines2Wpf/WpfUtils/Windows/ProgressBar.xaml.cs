@@ -1,5 +1,5 @@
-﻿using System.Windows;
-using Utils;
+﻿using SqlOrganize;
+using System.Windows;
 
 namespace WpfUtils.Windows
 {
@@ -10,7 +10,7 @@ namespace WpfUtils.Windows
     {
         public ProgressBar(string? title = null)
         {
-            if(!title.IsNullOrEmptyOrDbNull())
+            if(!title.IsNoE())
                 this.Title = title;
 
             InitializeComponent();

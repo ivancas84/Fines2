@@ -1,10 +1,9 @@
-﻿using Fines2Model3.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-using Utils;
 using SqlOrganize;
+using SqlOrganize.Sql.Fines2Model3;
 
 namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosProgramaFines
 {
@@ -62,12 +61,12 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosProgramaFines
             apf.apellido = acObj.persona__apellidos;
             apf.nombre = acObj.persona__nombres;
 
-            if (acObj.persona__genero.IsNullOrEmptyOrDbNull() || acObj.persona__genero!.ToLower().Contains("f"))
+            if (acObj.persona__genero.IsNoE() || acObj.persona__genero!.ToLower().Contains("f"))
                 apf.sexo = "2"; //Femenino
             else
                 apf.sexo = "1"; //Masculino
 
-            if (!acObj.persona__fecha_nacimiento.IsNullOrEmptyOrDbNull())
+            if (!acObj.persona__fecha_nacimiento.IsNoE())
             {
                 var fechaNacimiento = (DateTime)acObj.persona__fecha_nacimiento!;
                 apf.dia_nac = fechaNacimiento.Day.ToString();
@@ -75,7 +74,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosProgramaFines
                 apf.ano_nac = fechaNacimiento.Year.ToString();
             }
 
-            if (!acObj.persona__cuil.IsNullOrEmptyOrDbNull() && acObj.persona__cuil.Length == 11)
+            if (!acObj.persona__cuil.IsNoE() && acObj.persona__cuil.Length == 11)
             {
                 apf.cuil1 = acObj.persona__cuil.Substring(0, 2);
                 apf.cuil2 = acObj.persona__cuil.Substring(10, 1);

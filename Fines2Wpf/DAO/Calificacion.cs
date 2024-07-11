@@ -1,11 +1,5 @@
-﻿using Org.BouncyCastle.Crypto;
-using SqlOrganize;
-using System;
+﻿using SqlOrganize.Sql;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utils;
 
 namespace Fines2Wpf.DAO
 {

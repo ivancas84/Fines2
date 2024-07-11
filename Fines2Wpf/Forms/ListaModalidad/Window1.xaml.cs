@@ -1,21 +1,15 @@
 ﻿using MySqlX.XDevAPI.Relational;
 using SqlOrganize;
+using SqlOrganize.CollectionUtils;
+using SqlOrganize.Sql;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Utils;
 
 namespace Fines2Wpf.Forms.ListaModalidad
 {
@@ -82,14 +76,14 @@ namespace Fines2Wpf.Forms.ListaModalidad
                         else
                             row = dao.RowByEntityUnique(entityName, v.Values());
 
-                        if (!row.IsNullOrEmpty())
+                        if (!row.IsNoE())
                         {
                             v = ContainerApp.db.Values(entityName).Set(row!);
                             v.fieldId = fieldId;
                         }
                         else
                         {
-                            if (v.Get("_Id").IsNullOrEmpty() && v.Check())
+                            if (v.Get("_Id").IsNoE() && v.Check())
                             {
                                 v.Default().Reset();
                                 EntityPersist p = ContainerApp.db.Persist().Insert(v).Exec();

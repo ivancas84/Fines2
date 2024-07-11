@@ -429,7 +429,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             {
                 var pgb = (Data_persona)personaGroupBox.DataContext;
                 var pcb = (Data_persona)personaComboBox.SelectedItem;
-                if (pgb != null && pgb.id!.ToString().Equals(pcb.id))
+                if (pgb.IsNoE() && !pgb.IsNoE() && pgb.id!.ToString().Equals(pcb.id))
                     return;
 
                 var a = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(pcb.id!).Obj<Alumno>();

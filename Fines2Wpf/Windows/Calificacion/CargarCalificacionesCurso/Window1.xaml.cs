@@ -1,15 +1,15 @@
-﻿using Fines2Model3.Data;
-using SqlOrganize;
+﻿using SqlOrganize;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using Utils;
 using CommunityToolkit.WinUI.Notifications;
 using System;
-using Microsoft.Extensions.Primitives;
-using Google.Protobuf.WellKnownTypes;
+using SqlOrganize.Sql.Fines2Model3;
+using SqlOrganize.Sql;
+using SqlOrganize.CollectionUtils;
+using SqlOrganize.ValueTypesUtils;
 
 namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 {
@@ -57,7 +57,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
             {
                 var cursoData = ContainerApp.db.Sql("curso").Cache().Id(idCurso)!;
                 curso = cursoData.Obj<Data_curso_r>();
-                Values.Curso val = (Values.Curso)ContainerApp.db.Values("curso").Values(cursoData!);
+                CursoValues val = (CursoValues)ContainerApp.db.Values("curso").Values(cursoData!);
                 formData.curso__Label = curso.sede__numero + curso.comision__division + "/"+curso.planificacion__anio + curso.planificacion__semestre + " " + curso.asignatura__nombre + " " + curso.asignatura__codigo;
             }
             #endregion
@@ -202,7 +202,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                     calificacion.procesar = false;
                 }
 
-                if (dni.IsNullOrEmpty())
+                if (dni.IsNoE())
                 {
                     calificacion.observaciones = "No se encuentra definido el DNI. ";
                     calificacion.procesar = false;
@@ -262,7 +262,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                         }
                         else
                         {
-                            Values.Persona personaV = (Values.Persona)ContainerApp.db.Values("persona", "persona").Set(calificacion!);
+                            PersonaValues personaV = (PersonaValues)ContainerApp.db.Values("persona", "persona").Set(calificacion!);
                             Dictionary<string, object?> pe = personasExistentesPorDNI[dni!];
                             CompareParams cp = new CompareParams()
                             {
@@ -270,7 +270,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                                 fieldsToCompare = new List<string> { "nombres", "apellidos", "numero_documento" }
                             };
                             IDictionary<string, object?> compareResult = personaV.Compare(cp);
-                            if (!compareResult.IsNullOrEmpty())
+                            if (!compareResult.IsNoE())
                             {
                                 foreach (string key in compareResult.Keys)
                                 {
@@ -337,7 +337,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
             calificacionData.Clear();
             for (var j = 0; j < datos.Count(); j++)
             {
-                if (datos.ElementAt(j).IsNullOrEmpty())
+                if (datos.ElementAt(j).IsNoE())
                     continue;
 
                 var values = datos.ElementAt(j).Split("\t");
@@ -345,7 +345,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 EntityValues calificacion = ContainerApp.db.Values("calificacion");
                 for (var i = 0; i < encabezados.Count(); i++)
                 {
-                    if (values.ElementAt(i).IsNullOrEmpty()) continue;
+                    if (values.ElementAt(i).IsNoE()) continue;
                     if (encabezados.ElementAt(i) == "persona-numero_documento")
                     {
                         var value = ((string?)values.ElementAt(i)).CleanStringOfNonDigits();

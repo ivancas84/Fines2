@@ -10,6 +10,7 @@ namespace SqlOrganize.Sql.Fines2Model3
     public static class ComisionDAO
     {
 
+
         public static EntitySql ComisionesAutorizadasDePeriodoSql(this Db db, object anio, object semestre)
         {
             return db.Sql("comision")

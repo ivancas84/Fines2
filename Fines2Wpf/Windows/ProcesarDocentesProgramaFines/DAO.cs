@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using SqlOrganize;
-using Utils;
+﻿using SqlOrganize;
+using SqlOrganize.CollectionUtils;
+using System.Collections.Generic;
 
 namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
 {
@@ -34,7 +34,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                 .Parameters(pfidComision, asignaturaCodigo, "2024", "1").Cache().Dict();
 
 
-            if (d.IsNullOrEmptyOrDbNull()) return null;
+            if (d.IsNoE()) return null;
             return d["id"];
         }
 
@@ -61,7 +61,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
         {
             var q = ContainerApp.db.Sql(entityName).Unique(source);
 
-            if (source.ContainsKey(ContainerApp.config.id) && !source[ContainerApp.config.id].IsNullOrEmpty())
+            if (source.ContainsKey(ContainerApp.config.id) && !source[ContainerApp.config.id].IsNoE())
                 q.Where("($" + ContainerApp.config.id + " != @0)").Parameters(source[ContainerApp.config.id]);
 
             return q.Cache().Dict();

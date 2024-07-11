@@ -1,16 +1,14 @@
 ﻿using SqlOrganize;
+using SqlOrganize.CollectionUtils;
+using SqlOrganize.DateTimeUtils;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Utils;
-using Fines2Model3.Data;
-
-using System.Linq;
-using CommunityToolkit.WinUI.Notifications;
-using Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones;
 
 namespace Fines2Wpf.Windows.ListaCursos
 {
@@ -89,7 +87,7 @@ namespace Fines2Wpf.Windows.ListaCursos
                     {
                         continueWhile = (fieldId == null) ? false : true;
                         EntityValues v = ContainerApp.db.Values(entityName, fieldId).Set(source);
-                        if (!v.GetOrNull(fieldName).IsNullOrEmpty() && v.Get(fieldName).Equals(value))
+                        if (!v.GetOrNull(fieldName).IsNoE() && v.Get(fieldName).Equals(value))
                         {
                             if (reload)
                                 LoadData(); //debe recargarse para visualizar los cambios realizados en otras iteraciones.
@@ -105,7 +103,7 @@ namespace Fines2Wpf.Windows.ListaCursos
                         else
                             row = v.RowByUniqueWithoutIdIfExists();
 
-                        if (!row.IsNullOrEmpty())
+                        if (!row.IsNoE())
                         {
                             v = ContainerApp.db.Values(entityName).Set(row!);
                             v.fieldId = fieldId;
@@ -118,7 +116,7 @@ namespace Fines2Wpf.Windows.ListaCursos
                                 break;
                             }
 
-                            if (v.Get(ContainerApp.config.id).IsNullOrEmpty())
+                            if (v.Get(ContainerApp.config.id).IsNoE())
                             {
                                 v.Default().Reset();
                                 var p = ContainerApp.db.Persist().Insert(v).Exec().RemoveCache();

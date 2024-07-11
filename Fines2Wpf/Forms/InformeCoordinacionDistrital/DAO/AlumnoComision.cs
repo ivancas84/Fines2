@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Utils;
 using SqlOrganize;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
 
 namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
 {
@@ -20,9 +21,9 @@ namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
                 Order("$sede-numero ASC, $comision-division ASC, $persona-apellidos ASC, $persona-nombres ASC").
                 Parameters(modalidad, anioCalendario, semestreCalendario);
 
-            if (!comisionSiguienteNull.IsNullOrEmpty() && comisionSiguienteNull == true)
+            if (!comisionSiguienteNull.IsNoE() && comisionSiguienteNull == true)
                 q.Where("AND $comision-comision_siguiente IS NULL");
-            else if (!comisionSiguienteNull.IsNullOrEmpty() && !comisionSiguienteNull == false)
+            else if (!comisionSiguienteNull.IsNoE() && !comisionSiguienteNull == false)
                 q.Where("AND $comision-comision_siguiente IS NOT NULL");
 
             return q.ColOfDict();
@@ -35,7 +36,7 @@ namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
 
             foreach (Dictionary<string, object> alu_com in alumno_comision_)
             {
-                var v = (Values.AlumnoComision)ContainerApp.db.Values("alumno_comision").Set(alu_com);
+                var v = (AlumnoComisionValues)ContainerApp.db.Values("alumno_comision").Set(alu_com);
                 alu_com["persona-genero"] = alu_com["persona-genero"].ToString().ToUpper();
                 alu_com["tiene_dni"] = (bool)alu_com["alumno-tiene_dni"] ? "SÍ" : "NO";
                 alu_com["tiene_cuil"] = (bool)alu_com["alumno-tiene_dni"] ? "SÍ" : "NO";

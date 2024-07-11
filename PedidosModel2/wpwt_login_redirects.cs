@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_login_redirects : SqlOrganize.Data
+    public class Data_wpwt_login_redirects : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_login_redirects ()
@@ -19,12 +17,11 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_login_redirects Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_login_redirects");
             _id = (long?)val.GetDefault("id");
             _rul_order = (int?)val.GetDefault("rul_order");
-            return this;
         }
 
         public string? Label { get; set; }

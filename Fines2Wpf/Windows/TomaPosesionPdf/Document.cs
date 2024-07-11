@@ -3,16 +3,9 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
-using Org.BouncyCastle.Crypto.Modes.Gcm;
-using QRCoder;
 using QuestPDF.Fluent;
-using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using Utils;
+using SqlOrganize;
 
 namespace Fines2Wpf.Windows.TomaPosesionPdf
 {
@@ -134,7 +127,7 @@ namespace Fines2Wpf.Windows.TomaPosesionPdf
                
                 table.Cell().Row(2).Column(3).Element(BlockHeader).Text("Fecha de Nacimiento:").Bold();
 
-                if(Model.docente__fecha_nacimiento.IsNullOrEmptyOrDbNull())
+                if(Model.docente__fecha_nacimiento.IsNoE())
                     table.Cell().Row(2).Column(4).Element(BlockContent).Text("");
                 else
                     table.Cell().Row(2).Column(4).Element(BlockContent).Text(((DateTime)Model.docente__fecha_nacimiento!).ToString("dd/MM/yyyy"));

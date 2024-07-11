@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Fines2Wpf.Windows.Informe.CantidadesPorComision
 {
-    internal class ItemGenero : SqlOrganize.Data
+    internal class ItemGenero : SqlOrganize.Sql.Data
     {
         protected string? _pfid = null;
 

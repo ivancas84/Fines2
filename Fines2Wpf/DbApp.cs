@@ -1,13 +1,12 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using SqlOrganize;
-using SqlOrganizeMy;
-using Fines2Wpf.Values;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
 
 namespace Fines2Wpf
 {
     internal class DbApp : DbMy
     {
-        public DbApp(Config config, Schema sch, MemoryCache cache) : base(config, sch, cache)
+        public DbApp(SqlOrganize.Sql.Fines2Model3.Config config, SqlOrganize.Sql.Fines2Model3.Schema sch, MemoryCache cache) : base(config, sch, cache)
         {
         }
 
@@ -17,37 +16,37 @@ namespace Fines2Wpf
             switch (entityName)
             {
                 case "alumno":
-                    return new Alumno(this, entityName, fieldId);
+                    return new AlumnoValues(this, entityName, fieldId);
 
                 case "alumno_comision":
-                    return new AlumnoComision(this, entityName, fieldId);
+                    return new AlumnoComisionValues(this, entityName, fieldId);
 
                 case "calendario":
-                    return new Calendario(this, entityName, fieldId);
+                    return new CalendarioValues(this, entityName, fieldId);
 
                 case "designacion":
-                    return new Designacion(this, entityName, fieldId);
+                    return new DesignacionValues(this, entityName, fieldId);
 
                 case "domicilio":
-                    return new Domicilio(this, entityName, fieldId);
+                    return new DomicilioValues(this, entityName, fieldId);
 
                 case "comision":
-                    return new Comision(this, entityName, fieldId);
+                    return new ComisionValues(this, entityName, fieldId);
 
                 case "persona":
-                    return new Persona(this, entityName, fieldId);
+                    return new PersonaValues(this, entityName, fieldId);
 
                 case "plan":
-                    return new Plan(this, entityName, fieldId);
+                    return new PlanValues(this, entityName, fieldId);
 
                 case "planificacion":
-                    return new Planificacion(this, entityName, fieldId);
+                    return new PlanificacionValues(this, entityName, fieldId);
 
                 case "disposicion":
-                    return new Disposicion(this, entityName, fieldId);
+                    return new DisposicionValues(this, entityName, fieldId);
 
                 case "curso":
-                    return new Curso(this, entityName, fieldId);
+                    return new CursoValues(this, entityName, fieldId);
             }
 
             return new EntityValues(this, entityName, fieldId);

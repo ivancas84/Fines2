@@ -1,11 +1,7 @@
-﻿using Fines2Wpf.Values;
-using SqlOrganize;
-using System;
+﻿using SqlOrganize.CollectionUtils;
+using SqlOrganize.Sql;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utils;
 
 namespace Fines2Wpf.DAO
 {
@@ -206,7 +202,7 @@ namespace Fines2Wpf.DAO
         /// <param name="idComision">numero de comision a la que actualmente pertenece el alumno</param>
         /// <param name="idAlumno">numero de alumno</param>
         /// <returns></returns>
-        public IEnumerable<Dictionary<string, object>> AsignacionesDelAlumnoEnOtrasComisionesAutorizadasDelSemestre(object anio, object semestre, object idComision, object idAlumno)
+        public IEnumerable<Dictionary<string, object?>> AsignacionesDelAlumnoEnOtrasComisionesAutorizadasDelSemestre(object anio, object semestre, object idComision, object idAlumno)
         {
             var r = ContainerApp.db.Sql("alumno_comision")
                 .Size(0)

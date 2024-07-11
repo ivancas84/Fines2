@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 {
-    internal class FormItem : SqlOrganize.Data
+    internal class FormItem : SqlOrganize.Sql.Data
     {
         public string? comision {  get; set; }
 

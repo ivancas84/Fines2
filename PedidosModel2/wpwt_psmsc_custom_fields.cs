@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_psmsc_custom_fields : SqlOrganize.Data
+    public class Data_wpwt_psmsc_custom_fields : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_psmsc_custom_fields ()
@@ -19,7 +17,7 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_psmsc_custom_fields Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_psmsc_custom_fields");
             _id = (int?)val.GetDefault("id");
@@ -29,7 +27,6 @@ namespace PedidosModel2.Data
             _allow_my_profile = (int?)val.GetDefault("allow_my_profile");
             _tl_width = (int?)val.GetDefault("tl_width");
             _load_order = (int?)val.GetDefault("load_order");
-            return this;
         }
 
         public string? Label { get; set; }

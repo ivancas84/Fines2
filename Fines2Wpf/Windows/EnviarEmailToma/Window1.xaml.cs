@@ -1,8 +1,8 @@
-﻿using Fines2Model3.Data;
+﻿using SqlOrganize;
+using SqlOrganize.Sql.Fines2Model3;
 using System;
 using System.Collections.Generic;
 using System.Windows;
-using Utils;
 
 namespace Fines2Wpf.Windows.EnviarEmailToma
 {
@@ -22,7 +22,7 @@ namespace Fines2Wpf.Windows.EnviarEmailToma
                 List<string> comisiones = new() { "10086" };
                 Data_toma_r toma = item.Obj<Data_toma_r>();
                 if (comisiones.Contains(toma.comision__pfid) && toma.docente__numero_documento.Equals("24869647")) {
-                    if (toma.docente__email_abc.IsNullOrEmpty())
+                    if (toma.docente__email_abc.IsNoE())
                     {
                         info.Text += $@"El email de la docente no esta definido en: {toma.comision__pfid} {toma.asignatura__nombre}
 ";

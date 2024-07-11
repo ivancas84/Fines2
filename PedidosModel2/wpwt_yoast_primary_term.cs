@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_yoast_primary_term : SqlOrganize.Data
+    public class Data_wpwt_yoast_primary_term : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_yoast_primary_term ()
@@ -19,13 +17,12 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_yoast_primary_term Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_yoast_primary_term");
             _id = (uint?)val.GetDefault("id");
             _updated_at = (DateTime?)val.GetDefault("updated_at");
             _blog_id = (long?)val.GetDefault("blog_id");
-            return this;
         }
 
         public string? Label { get; set; }

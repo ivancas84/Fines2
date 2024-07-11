@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using SqlOrganize;
+using SqlOrganize.Sql;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using Utils;
 
 namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
 {
@@ -37,7 +37,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
 
                 #region insertar o actualizar docente (se insertan o actualizan todos)
                 var d = docente.Dict();
-                if (!d["anio_nacimiento"].IsNullOrEmpty() && !d["mes_nacimiento"].IsNullOrEmpty() && !d["dia_nacimiento"].IsNullOrEmpty())
+                if (!d["anio_nacimiento"].IsNoE() && !d["mes_nacimiento"].IsNoE() && !d["dia_nacimiento"].IsNoE())
                     d["fecha_nacimiento"] = new DateTime((int)d["anio_nacimiento"], (int)d["mes_nacimiento"], (int)d["dia_nacimiento"]);
                 EntityValues vPersona = ContainerApp.db.Values("persona").Set(d).Reset();
                 var row = dao.RowByEntityUnique("persona", vPersona.Values());
@@ -51,7 +51,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     vPersonaAux.SetNotNull(valuesToUpdate);
                     vPersona = vPersonaAux;
                     vPersona.Reset();
-                    if (!valuesToUpdate.IsNullOrEmpty())
+                    if (!valuesToUpdate.IsNoE())
                     {
                         try {
                             var p = ContainerApp.db.Persist().Update(vPersona).Exec().RemoveCache();
@@ -74,7 +74,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     if (pfidComisiones.ToList().Contains(cargo["comision"]))
                     {
                         object idCurso = dao.IdCurso(cargo["comision"], cargo["codigo"]);
-                        if (idCurso.IsNullOrEmpty())
+                        if (idCurso.IsNoE())
                         {
                             logs.Add("No existe curso " + cargo["comision"] + " " + cargo["codigo"]);
                             continue;

@@ -1,13 +1,6 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using SqlOrganize;
-using System;
+﻿using SqlOrganize;
+using SqlOrganize.CollectionUtils;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Utils;
-
 namespace Fines2Wpf.Forms.ListaReferentesSemestre.DAO
 {
     class Comision
@@ -24,7 +17,7 @@ namespace Fines2Wpf.Forms.ListaReferentesSemestre.DAO
                 ")
                 .Parameters(search.calendario__anio, search.calendario__semestre);
             var count = 2;
-            if (!search.autorizada.IsNullOrEmpty())
+            if (!search.autorizada.IsNoE())
             {
                 q.Where("AND $autorizada = @" + count + " ");
                 q.Parameters(search.autorizada!);

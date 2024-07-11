@@ -1,9 +1,9 @@
-﻿using Fines2Model3.Data;
-using SqlOrganize;
+﻿using SqlOrganize;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
 using System;
 using System.Collections.ObjectModel;
 using System.Windows;
-using Utils;
 
 namespace Fines2Wpf.Pedidos.Windows.GenerarTareasCalificacionesSemestre
 {

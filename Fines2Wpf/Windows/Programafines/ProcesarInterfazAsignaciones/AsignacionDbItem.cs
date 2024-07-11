@@ -1,9 +1,5 @@
-﻿using Fines2Model3.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using SqlOrganize.Sql.Fines2Model3;
 
 namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 {

@@ -1,6 +1,6 @@
-﻿using System.Net;
+﻿using SqlOrganize.Sql.Fines2Model3;
+using System.Net;
 using System.Net.Mail;
-using Fines2Model3.Data;
 
 namespace Fines2Wpf.Windows.EnviarEmailToma
 {

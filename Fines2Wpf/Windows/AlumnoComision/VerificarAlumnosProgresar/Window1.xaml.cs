@@ -1,21 +1,9 @@
-﻿using Fines2Model3.Data;
-using SqlOrganize;
-using System;
+﻿using SqlOrganize;
+using SqlOrganize.Sql.Fines2Model3;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Utils;
-
 namespace Fines2Wpf.Windows.AlumnoComision.VerificarAlumnosProgresar
 {
     /// <summary>
@@ -41,7 +29,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.VerificarAlumnosProgresar
 
             for (var j = 0; j < _data.Length; j++)
             {
-                if (_data[j].IsNullOrEmpty() || _data[j].Length < 8)
+                if (_data[j].IsNoE() || _data[j].Length < 8)
                     continue;
 
                 dnis.Add(_data[j].Substring(2,8));

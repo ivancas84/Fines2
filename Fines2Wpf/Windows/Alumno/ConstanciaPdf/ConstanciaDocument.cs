@@ -3,16 +3,9 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
-using Org.BouncyCastle.Crypto.Modes.Gcm;
-using QRCoder;
 using QuestPDF.Fluent;
-using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using Utils;
+using SqlOrganize.ValueTypesUtils;
 
 namespace Fines2Wpf.Windows.Alumno.ConstanciaPdf
 {

@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.WinUI.Notifications;
-using Fines2Model3.Data;
-using Org.BouncyCastle.Asn1.Ocsp;
 using SqlOrganize;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
+using SqlOrganize.ValueTypesUtils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,7 +10,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using Utils;
 
 namespace Fines2Wpf.Windows.Comision.AdministrarComision
 {
@@ -124,7 +124,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             cursosDataGrid.ItemsSource = cursoOC;
             cursoOC.Clear();
 
-            if (idComision.IsNullOrEmptyOrDbNull()) { 
+            if (idComision.IsNoE()) { 
                 comisionGroupBox.DataContext = new Data_comision(ContainerApp.db);
             }
             else
@@ -138,7 +138,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
                 sedeOC.Add(sedeInicial);
 
                 comisionOC.Clear();
-                if (!comision.comision_siguiente.IsNullOrEmptyOrDbNull())
+                if (!comision.comision_siguiente.IsNoE())
                 {
                     var comisionSiguienteInicial = ContainerApp.db.Sql("comision").Cache().Id(comision.comision_siguiente!).Obj<Data_comision_r>();
                     comisionSiguienteInicial.Label = comisionSiguienteInicial.sede__numero + comisionSiguienteInicial.division + "/" + comisionSiguienteInicial.planificacion__anio + comisionSiguienteInicial.planificacion__semestre + " " + comisionSiguienteInicial.calendario__anio + "-" + comisionSiguienteInicial.calendario__semestre;
@@ -193,7 +193,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
         /// <remarks>https://github.com/Pericial/GAP/issues/54#issuecomment-1790534457</remarks>
         private bool ComboBox_TextChangedCompare(ComboBox cb, string? label)
         {
-            if (cb.Text.IsNullOrEmpty())
+            if (cb.Text.IsNoE())
                 cb.IsDropDownOpen = true;
             if (cb.SelectedIndex > -1)
             {
@@ -245,7 +245,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             sedeOC.Clear();
             string text = sedeComboBox.Text;
 
-            if (string.IsNullOrEmpty(text) || text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
+            if (text.IsNoE() || text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
             IEnumerable<Dictionary<string, object?>> list = sedeDAO.BusquedaAproximadaQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
@@ -309,7 +309,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             comisionOC.Clear();
             string text = comisionSiguienteComboBox.Text;
 
-            if (string.IsNullOrEmpty(text) || text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
+            if (text.IsNoE() || text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
             IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
@@ -340,7 +340,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
         {
             try
             {
-                (ContainerApp.db.Values("comision").Set((Data_comision)comisionGroupBox.DataContext) as Values.Comision)!.GenerarCursos();
+                (ContainerApp.db.Values("comision").Set((Data_comision)comisionGroupBox.DataContext) as ComisionValues)!.GenerarCursos();
                 LoadCursos();
             }catch(Exception ex) {
                 new ToastContentBuilder()

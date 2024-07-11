@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using System.Windows;
-using Fines2Wpf.DAO;
 using SqlOrganize;
-using Utils;
+using SqlOrganize.CollectionUtils;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
+
 
 namespace Fines2Wpf.Windows.AlumnoComision.ActualizarPlanAlumnos
 {
@@ -21,7 +23,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ActualizarPlanAlumnos
             foreach (var comision in comisiones)
             {
                 var idAlumnos = DAO.AlumnoComision2.AsignacionesDeComisionSinPlanQuery(comision["id"]!, comision["planificacion-plan"]!).Cache().ColOfDict().ColOfVal<object>("alumno");
-                if (idAlumnos.IsNullOrEmpty()) continue;
+                if (idAlumnos.IsNoE()) continue;
                 persist_ = true;
                 persist.UpdateValueIds("alumno", "plan", comision["planificacion-plan"], idAlumnos.ToArray());
             }

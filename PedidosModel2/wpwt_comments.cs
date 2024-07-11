@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_comments : SqlOrganize.Data
+    public class Data_wpwt_comments : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_comments ()
@@ -19,7 +17,7 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_comments Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_comments");
             _comment_post_ID = (ulong?)val.GetDefault("comment_post_ID");
@@ -34,7 +32,6 @@ namespace PedidosModel2.Data
             _comment_type = (string?)val.GetDefault("comment_type");
             _comment_parent = (ulong?)val.GetDefault("comment_parent");
             _user_id = (ulong?)val.GetDefault("user_id");
-            return this;
         }
 
         public string? Label { get; set; }

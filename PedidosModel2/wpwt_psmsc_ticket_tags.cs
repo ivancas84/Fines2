@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_psmsc_ticket_tags : SqlOrganize.Data
+    public class Data_wpwt_psmsc_ticket_tags : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_psmsc_ticket_tags ()
@@ -19,11 +17,10 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_psmsc_ticket_tags Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_psmsc_ticket_tags");
             _id = (int?)val.GetDefault("id");
-            return this;
         }
 
         public string? Label { get; set; }

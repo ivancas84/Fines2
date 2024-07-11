@@ -1,11 +1,8 @@
 ﻿using SqlOrganize;
-using System;
+using SqlOrganize.CollectionUtils;
+using SqlOrganize.Sql;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.RightsManagement;
-using System.Text;
-using System.Threading.Tasks;
-using Utils;
 
 namespace Fines2Wpf.DAO
 {
@@ -29,13 +26,13 @@ namespace Fines2Wpf.DAO
                 ")
                 .Parameters(calendarioAnio, calendarioSemestre);
             var count = 2;
-            if (!autorizada.IsNullOrEmpty())
+            if (!autorizada.IsNoE())
             {
                 q.Where("AND $autorizada = @" + count + " ");
                 q.Parameters(autorizada!);
                 count++;
             }
-            if (!sede.IsNullOrEmpty())
+            if (!sede.IsNoE())
             {
                 q.Where("AND sede = @" + count + " ");
                 q.Parameters(sede!);

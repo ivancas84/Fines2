@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
-using Utils;
-using Fines2Model3.Data;
+using SqlOrganize.Sql.Fines2Model3;
+using SqlOrganize.Sql;
 
 namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
 {
@@ -34,7 +34,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
         private void CargarNuevosAlumnos_Loaded(object sender, RoutedEventArgs e)
         {
             var data = ContainerApp.db.Sql("comision").Cache().Id(IdComision!);
-            labelTextBox.Text = ((Values.Comision)ContainerApp.db.Values("comision").Values(data)).ToString();
+            labelTextBox.Text = ((ComisionValues)ContainerApp.db.Values("comision").Values(data)).ToString();
             comision = data.Obj<Data_comision_r>();
         }
 
@@ -48,21 +48,21 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                 try
                 {
                     #region Inicializar datos de persona
-                    if (_data[j].IsNullOrEmpty())
+                    if (_data[j].IsNoE())
                     continue;
                 var values = _data[j].Split("\t");
 
                 var personaData = new Dictionary<string, object?>();
                 for (var i = 0; i < _headers.Count(); i++)
                 {
-                    if (values.ElementAt(i).IsNullOrEmpty()) continue;
+                    if (values.ElementAt(i).IsNoE()) continue;
                     personaData.Add(_headers.ElementAt(i), values.ElementAt(i));
                 }
                     #endregion
 
                     #region Procesar persona
 
-                    Values.Persona personaVal = (Values.Persona)ContainerApp.db.Values("persona", "persona").
+                    PersonaValues personaVal = (PersonaValues)ContainerApp.db.Values("persona", "persona").
                         Sset(personaData).Reset();
 
 
@@ -70,9 +70,9 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                         Unique(personaVal).
                         Cache().Dict();
 
-                    if (!personaExistenteData.IsNullOrEmpty()) //existen datos de persona en la base
+                    if (!personaExistenteData.IsNoE()) //existen datos de persona en la base
                     {
-                        Values.Persona personaExistenteVal = (Values.Persona)ContainerApp.db.Values("persona").Values(personaExistenteData);
+                        PersonaValues personaExistenteVal = (PersonaValues)ContainerApp.db.Values("persona").Values(personaExistenteData);
 
                         CompareParams cp = new()
                         {
@@ -82,7 +82,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                         };
                         var dataDifferent = personaVal.Compare(cp);
 
-                        if (!dataDifferent.IsNullOrEmpty())
+                        if (!dataDifferent.IsNoE())
                         {
                             statusData.Add(new StatusData()
                             {
@@ -117,7 +117,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                             {
                                 case "telefono":
                                     var t = personaExistenteVal.GetOrNull("telefono");
-                                    if (t.IsNullOrEmptyOrDbNull() || t.ToString().Equals("0"))
+                                    if (t.IsNoE() || t.ToString().Equals("0"))
                                     {
                                         persist.UpdateValue(personaExistenteVal, "telefono", personaVal.GetOrNull("telefono"));
                                         dataDifferent.Remove("telefono");
@@ -133,7 +133,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                             }
                         }
 
-                        if (!dataDifferent.IsNullOrEmpty())
+                        if (!dataDifferent.IsNoE())
                         {
                             statusData.Add(new StatusData()
                             {
@@ -162,7 +162,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                     var alumnoVal = ContainerApp.db.Values("alumno").Set("persona", personaVal.Get("id"));
                     var alumnoExistenteData = ContainerApp.db.Sql("alumno").Unique(alumnoVal).Cache().Dict();
 
-                    if (!alumnoExistenteData.IsNullOrEmpty()) //existen datos de alumno en la base
+                    if (!alumnoExistenteData.IsNoE()) //existen datos de alumno en la base
                     {
                         var alumnoExistente = ContainerApp.db.Values("alumno").Values(alumnoExistenteData!);
 
@@ -174,7 +174,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                             data = personaVal.ToString()
                         });
                         alumnoVal.Set("id", alumnoExistente!.Get("id"));
-                        if (alumnoExistente!.Get("plan").IsNullOrEmptyOrDbNull())
+                        if (alumnoExistente!.Get("plan").IsNoE())
                         {
                             persist.UpdateValue(alumnoExistente, "plan", comision.plan__id);
                             statusData.Add(new()
@@ -216,7 +216,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                         Set("alumno", alumnoVal.Get("id"));
 
                     var asignacionExistenteData = ContainerApp.db.Sql("alumno_comision").Unique(asignacion).Cache().Dict();
-                    if (!asignacionExistenteData.IsNullOrEmpty()) //existen datos de alumno en la base
+                    if (!asignacionExistenteData.IsNoE()) //existen datos de alumno en la base
                     {
                         statusData.Add(new()
                         {
@@ -245,7 +245,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                     foreach(var a in otrasAsignacionesDelSemestre)
                     {
                         var comD = ContainerApp.db.Sql("comision").Cache().Id(a["comision"]);
-                        var comV = (Values.Comision)ContainerApp.db.Values("comision").Values(comD!);
+                        var comV = (ComisionValues)ContainerApp.db.Values("comision").Values(comD!);
 
                         statusData.Add(new StatusData()
                         {
@@ -262,7 +262,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                     foreach (var a in otrasAsignaciones)
                     {
                         IDictionary<string, object?> comD = ContainerApp.db.Sql("comision").Cache().Id(a["comision-id"]);
-                        Values.Comision comV = (Values.Comision)ContainerApp.db.Values("comision").Values(comD!);
+                        ComisionValues comV = (ComisionValues)ContainerApp.db.Values("comision").Values(comD!);
 
                         statusData.Add(new StatusData()
                         {

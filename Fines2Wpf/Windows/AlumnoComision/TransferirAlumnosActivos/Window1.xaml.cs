@@ -1,10 +1,12 @@
-﻿using Fines2Model3.Data;
-using SqlOrganize;
+﻿using SqlOrganize;
+using SqlOrganize.CollectionUtils;
+using SqlOrganize.DateTimeUtils;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-using Utils;
 
 namespace Fines2Wpf.Windows.AlumnoComision.TransferirAlumnosActivos
 {

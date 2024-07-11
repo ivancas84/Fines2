@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_options : SqlOrganize.Data
+    public class Data_wpwt_options : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_options ()
@@ -19,12 +17,11 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_options Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_options");
             _option_name = (string?)val.GetDefault("option_name");
             _autoload = (string?)val.GetDefault("autoload");
-            return this;
         }
 
         public string? Label { get; set; }
@@ -73,9 +70,9 @@ namespace PedidosModel2.Data
                 case "option_name":
                     if (_option_name == null)
                         return "Debe completar valor.";
-                    if (!db.IsNullOrEmpty() && !_option_name.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNoE() && !_option_name.IsNoE()) {
                         var row = db.Sql("wpwt_options").Where("$option_name = @0").Parameters(_option_name).Cache().Dict();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";

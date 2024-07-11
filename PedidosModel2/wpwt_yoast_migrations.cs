@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_yoast_migrations : SqlOrganize.Data
+    public class Data_wpwt_yoast_migrations : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_yoast_migrations ()
@@ -19,11 +17,10 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_yoast_migrations Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_yoast_migrations");
             _id = (uint?)val.GetDefault("id");
-            return this;
         }
 
         public string? Label { get; set; }
@@ -52,9 +49,9 @@ namespace PedidosModel2.Data
                     return "";
 
                 case "version":
-                    if (!db.IsNullOrEmpty() && !_version.IsNullOrEmptyOrDbNull()) {
+                    if (!db.IsNoE() && !_version.IsNoE()) {
                         var row = db.Sql("wpwt_yoast_migrations").Where("$version = @0").Parameters(_version).Cache().Dict();
-                        if (!row.IsNullOrEmpty() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";

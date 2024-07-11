@@ -1,13 +1,13 @@
 ﻿#nullable enable
 using CommunityToolkit.WinUI.Notifications;
 using SqlOrganize;
+using SqlOrganize.CollectionUtils;
+using SqlOrganize.Sql;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Utils;
 
 namespace WpfUtils
 {
@@ -68,8 +68,8 @@ namespace WpfUtils
 
             EntityValues v = db.Values(entityName, fieldId).Set(source);
             var fieldValue = v.GetOrNull(fieldName);
-            if(fieldValue.IsNullOrEmptyOrDbNull()) {
-                if (value.IsNullOrEmptyOrDbNull())
+            if(fieldValue.IsNoE()) {
+                if (value.IsNoE())
                     return (reload) ? v.Check() : false;
             }
             else
@@ -80,9 +80,9 @@ namespace WpfUtils
 
             v.Sset(fieldName, value);
             IDictionary<string, object?>? rowDb = v.RowByUniqueFieldOrValues(fieldName);
-            if (!rowDb.IsNullOrEmpty()) //con el nuevo valor ingresados se obtuvo un nuevo campo unico, no se realiza persistencia y se cambian los valores para reflejar el nuevo valor consultado
+            if (!rowDb.IsNoE()) //con el nuevo valor ingresados se obtuvo un nuevo campo unico, no se realiza persistencia y se cambian los valores para reflejar el nuevo valor consultado
             {
-                if (fieldId.IsNullOrEmpty() && exceptionIfMainEntityExists)
+                if (fieldId.IsNoE() && exceptionIfMainEntityExists)
                     throw new Exception("Los datos ingresados en la edición de la celda ya pertenecen a otra fila. No se cumple la restricción de unicidad");
 
                 v.Values(rowDb!);
@@ -161,7 +161,7 @@ namespace WpfUtils
         {
             try
             {
-                if (!data.GetPropertyValue("id").IsNullOrEmpty())
+                if (!data.GetPropertyValue("id").IsNoE())
                     db.Persist().DeleteIds(entityName, data.GetPropertyValue("id")!).Exec().RemoveCache();
                 oc.Remove(data);
             }

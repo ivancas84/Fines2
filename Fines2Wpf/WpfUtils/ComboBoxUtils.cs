@@ -1,7 +1,7 @@
-﻿using System;
+﻿using SqlOrganize;
+using System;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using Utils;
 
 namespace WpfUtils
 {
@@ -11,7 +11,7 @@ namespace WpfUtils
         ///<summary>Método General Autocomplete v2.3 - TextChangedCompare</summary>
         public static bool TextChangedCompare(ComboBox cb, string? label)
         {
-            if (cb.Text.IsNullOrEmpty())
+            if (cb.Text.IsNoE())
                 cb.IsDropDownOpen = true;
             if (cb.SelectedIndex > -1)
             {

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-using Utils;
-using Fines2Model3.Data;
 using SqlOrganize;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
 
 namespace Fines2Wpf.Windows.AlumnoComision
 {
@@ -50,7 +50,7 @@ namespace Fines2Wpf.Windows.AlumnoComision
                         genero = "Femenino";
                     }
 
-                    if (!genero.IsNullOrEmpty())
+                    if (!genero.IsNoE())
                     {
                         p.UpdateValueIds("persona", "genero", genero, a.persona__id).Exec().RemoveCache();
                         genero = null;

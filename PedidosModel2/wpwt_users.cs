@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_users : SqlOrganize.Data
+    public class Data_wpwt_users : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_users ()
@@ -19,7 +17,7 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_users Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_users");
             _user_login = (string?)val.GetDefault("user_login");
@@ -31,7 +29,6 @@ namespace PedidosModel2.Data
             _user_activation_key = (string?)val.GetDefault("user_activation_key");
             _user_status = (int?)val.GetDefault("user_status");
             _display_name = (string?)val.GetDefault("display_name");
-            return this;
         }
 
         public string? Label { get; set; }

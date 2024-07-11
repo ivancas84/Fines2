@@ -2,6 +2,7 @@
 {
     public static class AsignacionDAO
     {
+
         public static EntitySql AsignacionesDeComisionesSql(this Db db, params object[] id_comisiones)
         {
             return db.Sql("alumno_comision")

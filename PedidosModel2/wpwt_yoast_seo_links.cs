@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_yoast_seo_links : SqlOrganize.Data
+    public class Data_wpwt_yoast_seo_links : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_yoast_seo_links ()
@@ -19,11 +17,10 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_yoast_seo_links Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_yoast_seo_links");
             _id = (ulong?)val.GetDefault("id");
-            return this;
         }
 
         public string? Label { get; set; }

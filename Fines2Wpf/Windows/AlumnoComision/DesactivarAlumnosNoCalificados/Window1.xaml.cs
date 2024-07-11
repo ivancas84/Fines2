@@ -1,21 +1,10 @@
-﻿using Fines2Model3.Data;
-using Org.BouncyCastle.Crypto;
-using SqlOrganize;
+﻿using SqlOrganize;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Utils;
 
 namespace Fines2Wpf.Windows.AlumnoComision.DesactivarAlumnosNoCalificados
 {
@@ -49,7 +38,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.DesactivarAlumnosNoCalificados
             {
                 Data_alumno_comision_r alumnoComisionObj = alumnoComision.Obj<Data_alumno_comision_r>();
                 var qu = calificacionDAO.CantidadCalificacionesAprobadaNoArchivadasDeAlumnoPorTramoQuery(alumnoComisionObj.alumno, alumnoComisionObj.planificacion__anio, alumnoComisionObj.planificacion__semestre).Cache().Dict();
-                var q = (!qu.IsNullOrEmptyOrDbNull()) ? (Int64)qu["cantidad"]! : 0;
+                var q = (!qu.IsNoE()) ? (Int64)qu["cantidad"]! : 0;
 
                 if (alumnoComisionObj.estado.Equals("Activo") && q < 3)
                 {

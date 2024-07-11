@@ -4,16 +4,10 @@ using System.Collections.Immutable;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
-using Org.BouncyCastle.Crypto.Modes.Gcm;
-using QRCoder;
 using QuestPDF.Fluent;
-using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using Utils;
+using SqlOrganize;
+using SqlOrganize.ValueTypesUtils;
 
 namespace Fines2Wpf.Windows.Alumno.ConstanciaAsignaturasPdf
 {
@@ -92,7 +86,7 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAsignaturasPdf
                     text.Span(" resolución ").Style(contentStyle);
                     text.Span($" {Model.resolucion_constancia} ").Underline().SemiBold().Style(contentStyle);
                 });
-                if(!Model.observaciones_constancia.IsNullOrEmptyOrDbNull())
+                if(!Model.observaciones_constancia.IsNoE())
                 column.Item().AlignLeft().PaddingLeft(20).PaddingRight(20).Text(text =>
                 {
                     text.Justify();

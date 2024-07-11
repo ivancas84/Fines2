@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_yoast_indexable : SqlOrganize.Data
+    public class Data_wpwt_yoast_indexable : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_yoast_indexable ()
@@ -19,7 +17,7 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_yoast_indexable Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_yoast_indexable");
             _id = (uint?)val.GetDefault("id");
@@ -34,7 +32,6 @@ namespace PedidosModel2.Data
             _blog_id = (long?)val.GetDefault("blog_id");
             _has_ancestors = (bool?)val.GetDefault("has_ancestors");
             _version = (int?)val.GetDefault("version");
-            return this;
         }
 
         public string? Label { get; set; }

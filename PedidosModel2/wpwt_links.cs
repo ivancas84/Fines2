@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_links : SqlOrganize.Data
+    public class Data_wpwt_links : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_links ()
@@ -19,7 +17,7 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_links Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_links");
             _link_url = (string?)val.GetDefault("link_url");
@@ -33,7 +31,6 @@ namespace PedidosModel2.Data
             _link_updated = (DateTime?)val.GetDefault("link_updated");
             _link_rel = (string?)val.GetDefault("link_rel");
             _link_rss = (string?)val.GetDefault("link_rss");
-            return this;
         }
 
         public string? Label { get; set; }

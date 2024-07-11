@@ -1,15 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using SqlOrganize;
-using SqlOrganizeMy;
-using System;
-using System.Collections.Generic;
+using SqlOrganize.Sql;
 using System.Configuration;
-using System.Linq;
 using System.Net.Http;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Utils;
 
 namespace Fines2Wpf
 {
@@ -17,7 +9,7 @@ namespace Fines2Wpf
     {
         public static Db db;
 
-        public static Config config = new Config
+        public static SqlOrganize.Sql.Fines2Model3.Config config = new SqlOrganize.Sql.Fines2Model3.Config
         {
             id = "id",
             fkId = true,
@@ -53,16 +45,16 @@ namespace Fines2Wpf
 
             MemoryCache cache = new MemoryCache(new MemoryCacheOptions());
 
-            Schema model = new Fines2Model3.Schema();
+            SqlOrganize.Sql.Fines2Model3.Schema model = new SqlOrganize.Sql.Fines2Model3.Schema();
             db = new DbApp(config, model, cache);
 
-            SqlOrganize.Config configPedidos = new()
+            SqlOrganize.Sql.Config configPedidos = new()
             {
                 id = "id",
                 fkId = true,
                 connectionString = ConfigurationManager.AppSettings.Get("connectionStringPedidos")!,
             };
-            dbPedidos = new DbMy(configPedidos, new PedidosModel2.Schema(), new MemoryCache(new MemoryCacheOptions()));
+            dbPedidos = new DbMy(configPedidos, new SqlOrganize.Sql.PedidosModel2.Schema(), new MemoryCache(new MemoryCacheOptions()));
 
             // URL of the login page and the login endpoint
             

@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using SqlOrganize;
+using SqlOrganize.Sql;
 using System;
 using System.Collections.Generic;
 using System.Linq;

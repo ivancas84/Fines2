@@ -6,13 +6,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using Utils;
-using Fines2Model3.Data;
 using System.ComponentModel;
 using System.Windows.Threading;
 using SqlOrganize;
-using Fines2Wpf.DAO;
 using WpfUtils;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
+using SqlOrganize.CollectionUtils;
 
 namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 {
@@ -62,13 +62,13 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
         {
             var o = obj as Data_comision_r;
             string tramo = o.planificacion__anio + "/" + o.planificacion__semestre;
-            return comisionFilterTextBox.Text.IsNullOrEmpty()
+            return comisionFilterTextBox.Text.IsNoE()
                 || (tramo.ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
-                || (!o.pfid.IsNullOrEmptyOrDbNull() && o.pfid!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
-                || (!o.plan__orientacion.IsNullOrEmptyOrDbNull() && o.plan__orientacion!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
-                || (!o.Label.IsNullOrEmptyOrDbNull() && o.Label!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
-                || (!o.sede__nombre.IsNullOrEmptyOrDbNull() && o.sede__nombre!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
-                || (!o.sede__numero.IsNullOrEmptyOrDbNull() && o.sede__numero!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()));
+                || (!o.pfid.IsNoE() && o.pfid!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
+                || (!o.plan__orientacion.IsNoE() && o.plan__orientacion!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
+                || (!o.Label.IsNoE() && o.Label!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
+                || (!o.sede__nombre.IsNoE() && o.sede__nombre!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()))
+                || (!o.sede__numero.IsNoE() && o.sede__numero!.ToString().ToLower().Contains(comisionFilterTextBox.Text.ToLower()));
 
         }
 
@@ -160,7 +160,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             comisionOC.Clear();
             foreach (IDictionary<string, object> item in list)
             {
-                var comision = (Values.Comision)ContainerApp.db.Values("comision").Values(item);
+                var comision = (ComisionValues)ContainerApp.db.Values("comision").Values(item);
                 var o = item.Obj<Comision>();
                 o.Label = comision.Numero();
                 o.domicilio__Label = comision.ValuesRel("domicilio")?.ToString() ?? "";

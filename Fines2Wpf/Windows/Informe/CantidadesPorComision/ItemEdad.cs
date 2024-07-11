@@ -1,13 +1,6 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Fines2Wpf.Windows.Informe.CantidadesPorComision
+﻿namespace Fines2Wpf.Windows.Informe.CantidadesPorComision
 {
-    internal class ItemEdad : SqlOrganize.Data
+    internal class ItemEdad : SqlOrganize.Sql.Data
     {
         protected string? _pfid = null;
 

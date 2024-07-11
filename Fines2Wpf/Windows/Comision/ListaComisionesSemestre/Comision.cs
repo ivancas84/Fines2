@@ -1,6 +1,6 @@
-﻿using Fines2Model3.Data;
+﻿using SqlOrganize;
+using SqlOrganize.Sql.Fines2Model3;
 using System.Collections.Generic;
-using Utils;
 
 namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 {
@@ -52,7 +52,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             get { return _referentes; }
             set { 
                 _referentes = value;
-                referentesJoin = (!value.IsNullOrEmptyOrDbNull()) ? string.Join(",",  value) : "";
+                referentesJoin = (!value.IsNoE()) ? string.Join(",",  value) : "";
                 NotifyPropertyChanged(); }
         }
 

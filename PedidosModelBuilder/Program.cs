@@ -1,6 +1,4 @@
-﻿
-using ModelOrganize;
-using ModelOrganizeMy;
+﻿using SqlOrganize.Model;
 using System.Configuration;
 
 var c = new Config()

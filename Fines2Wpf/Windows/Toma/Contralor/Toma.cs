@@ -1,10 +1,6 @@
-﻿using Fines2Model3.Data;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Utils;
+﻿
+using SqlOrganize;
+using SqlOrganize.Sql.Fines2Model3;
 
 namespace Fines2Wpf.Windows.Toma.Contralor
 {
@@ -77,7 +73,7 @@ namespace Fines2Wpf.Windows.Toma.Contralor
                 _docente__cuil = value;
                 _prefijo_cuil = null;
                 _sufijo_cuil = null;
-                if (!value.IsNullOrEmptyOrDbNull())
+                if (!value.IsNoE())
                 {
                     _prefijo_cuil = _docente__cuil.Substring(0, 2);
                     if(_docente__cuil.Length > 10) 

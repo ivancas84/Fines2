@@ -1,8 +1,8 @@
-﻿using Fines2Model3.Data;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
-using Utils;
 using SqlOrganize;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
 
 namespace Fines2Wpf.Windows.AlumnoComision.VerificarAlumnosDuplicados
 {

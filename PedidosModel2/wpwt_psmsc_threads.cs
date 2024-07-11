@@ -1,13 +1,11 @@
 #nullable enable
-using SqlOrganize;
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using Utils;
 
-namespace PedidosModel2.Data
+namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class Data_wpwt_psmsc_threads : SqlOrganize.Data
+    public class Data_wpwt_psmsc_threads : SqlOrganize.Sql.Data
     {
 
         public Data_wpwt_psmsc_threads ()
@@ -19,12 +17,11 @@ namespace PedidosModel2.Data
             this.db = db;
         }
 
-        public Data_wpwt_psmsc_threads Default()
+        public override void Default()
         {
             EntityValues val = db!.Values("wpwt_psmsc_threads");
             _id = (long?)val.GetDefault("id");
             _is_active = (int?)val.GetDefault("is_active");
-            return this;
         }
 
         public string? Label { get; set; }
