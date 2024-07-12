@@ -323,7 +323,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary>
         /// Verifica el valor del source (this) con otro values para determinar si debe actualizar. 
-        /// Si debe actualizar completa
         /// </summary>
         public bool CompareToUpdate(string fieldName, PersonaValues personaVal, string? pfContains = null)
         {

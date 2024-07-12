@@ -425,20 +425,7 @@ namespace SqlOrganize.CollectionUtils
         /// <param name="propertyName">Name of the property.</param>
         /// <param name="value">The value.</param>
         /// <remarks>https://csharp-extension.com/en/method/1002738/object-setpropertyvalue</remarks>
-        public static T SetPropertyValue<T>(this T @this, string propertyName, object? value)
-        {
-            Type type = @this.GetType();
-            PropertyInfo property = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-            property.SetValue(@this, value, null);
-            return @this;
-        }
-
-        public static object? GetPropertyValue<T>(this T @this, string propertyName)
-        {
-            Type type = @this.GetType();
-            PropertyInfo property = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-            return property.GetValue(@this);
-        }
+        
 
         /// <summary>
         /// Clonar objeto 

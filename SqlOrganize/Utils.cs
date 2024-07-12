@@ -183,5 +183,21 @@ namespace SqlOrganize
         {
             return (value == System.DBNull.Value);
         }
+
+        public static T SetPropertyValue<T>(this T @this, string propertyName, object? value)
+        {
+            Type type = @this.GetType();
+            propertyName = propertyName.Replace("-", "__");
+            PropertyInfo property = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+            property.SetValue(@this, value, null);
+            return @this;
+        }
+
+        public static object? GetPropertyValue<T>(this T @this, string propertyName)
+        {
+            Type type = @this.GetType();
+            PropertyInfo property = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+            return property.GetValue(@this);
+        }
     }
 }

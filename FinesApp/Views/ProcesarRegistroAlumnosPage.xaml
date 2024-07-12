@@ -81,6 +81,7 @@
                             Name="dataTextBox"
 							TextWrapping="Wrap"
 							AcceptsReturn="True"
+                            AcceptsTab="True"
 							VerticalScrollBarVisibility="Visible"
 							Margin = "2"/>
 

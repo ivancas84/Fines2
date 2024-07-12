@@ -6,6 +6,8 @@ using SqlOrganize;
 using System.Windows;
 using SqlOrganize.Sql.Fines2Model3;
 using SqlOrganize.CollectionUtils;
+using System.Net.WebSockets;
+using SqlOrganize.Sql;
 
 
 namespace FinesApp.Views;
@@ -21,26 +23,16 @@ public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
         DataContext = this;
     }
 
-    private (IDictionary<string, object?> pfidsComisiones, IDictionary<string, Data_alumno_comision_r> asignacionesDb) ConsultarDatosIniciales()
-    {
-        IDictionary<string, object?> pfidsComisiones = ContainerApp.db.
-            ComisionesAutorizadasDePeriodoSql(DateTime.Now.Year, 1).
-            Cache().ColOfDict().
-            DictOfDictByKeysValue("id", "pfid");
-
-        IDictionary<string, Data_alumno_comision_r> asignacionesDb = ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
-            Cache().ColOfDict().
-            ColOfObj<Data_alumno_comision_r>().
-            DictOfObjByPropertyNames("persona__numero_documento");
-
-            return (pfidsComisiones, asignacionesDb);
-    }
+    
 
     private void ProcesarButton_Click(object sender, RoutedEventArgs e)
     {
         asignacionRegistroOC.Clear();
 
-        var datosIniciales = ConsultarDatosIniciales();
+        IDictionary<string, Data_alumno_comision_r> asignacionesDb = ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
+            Cache().ColOfDict().
+            ColOfObj<Data_alumno_comision_r>().
+            DictOfObjByPropertyNames("persona__numero_documento");
 
         IEnumerable<string> _headers = headersTextBox.Text.Split(", ").Select(s => s.Trim());
 
@@ -58,8 +50,32 @@ public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
             for (var i = 0; i < _headers.Count(); i++)
                 asignacionForm.SetPropertyValue(_headers.ElementAt(i), values.ElementAt(i));
 
-            if (datosIniciales.asignacionesDb.ContainsKey(asignacionForm.persona__numero_documento))
+            if (asignacionesDb.ContainsKey(asignacionForm.persona__numero_documento))
             {
+                var asignacionDb = asignacionesDb[asignacionForm.persona__numero_documento];
+                var personaDbVal = (PersonaValues)ContainerApp.db.Values("persona", "persona").Set(asignacionDb);
+                var personaFormVal = (PersonaValues)ContainerApp.db.Values("persona", "persona").Set(asignacionForm);
+
+                CompareParams cp = new() { val = personaFormVal, ignoreNull = false };
+                var comp = personaDbVal.Compare(cp);
+
+                Dictionary<string, object?> updatePersonaDb = new(); //datos a actualizar de la base local
+                Dictionary<string, object?> verificarPersonaDb = new(); //datos a verificar de la base local
+
+                foreach (string key in comp.Keys)
+                {
+                    if (key.Equals("nombres") || key.Equals("apellidos") || key.Equals("numero_documento"))
+                    {
+                        verificarPersonaDb[key] = personaFormVal.Get(key);
+                    }
+                    else
+                    {
+                        updatePersonaDb[key] = personaFormVal.Get(key);
+                    }
+
+                    asignacionForm.Msg = "Verificar: " + verificarPersonaDb.ToString() + " - Actualizar: " + updatePersonaDb.ToString(); 
+                }
+
 
             }
 
