@@ -30,7 +30,6 @@ namespace Fines2Wpf.Windows.Informe.CantidadesPorComision
             search.calendario__semestre = 1;
 
             var data = ContainerApp.db.Sql("alumno_comision").Select(@"
-$comision-pfid, $planificacion-anio, $planificacion-semestre, $plan-orientacion, 
 CASE
     WHEN fecha_nacimiento IS NULL THEN '18?'
     WHEN TIMESTAMPDIFF(YEAR, $persona-fecha_nacimiento, CURDATE()) = 18 THEN '18'
@@ -61,8 +60,7 @@ END AS edad, count(*) as cantidad
             informeEdadOC.Clear();
             informeEdadOC.AddRange(data);
 
-            data = ContainerApp.db.Sql("alumno_comision").Select(@"
-$comision-pfid, $planificacion-anio, $planificacion-semestre, $plan-orientacion, $persona-genero, COUNT(*) as cantidad
+            data = ContainerApp.db.Sql("alumno_comision").Select(@"COUNT(*) as cantidad
 ").
                 Group("$comision-pfid, $planificacion-anio, $planificacion-semestre, $plan-orientacion, $persona-genero").
                 Where("$calendario-anio = @0 AND $calendario-semestre = @1 AND $comision-autorizada").

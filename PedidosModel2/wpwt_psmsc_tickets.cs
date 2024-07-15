@@ -22,6 +22,14 @@ namespace SqlOrganize.Sql.PedidosModel2
             EntityValues val = db!.Values("wpwt_psmsc_tickets");
             _id = (long?)val.GetDefault("id");
             _is_active = (bool?)val.GetDefault("is_active");
+            _customer = (long?)val.GetDefault("customer");
+            _status = (long?)val.GetDefault("status");
+            _priority = (long?)val.GetDefault("priority");
+            _category = (long?)val.GetDefault("category");
+            _date_created = (DateTime?)val.GetDefault("date_created");
+            _date_updated = (DateTime?)val.GetDefault("date_updated");
+            _user_type = (string?)val.GetDefault("user_type");
+            _last_reply_by = (long?)val.GetDefault("last_reply_by");
             _auth_code = (string?)val.GetDefault("auth_code");
         }
 
@@ -51,20 +59,20 @@ namespace SqlOrganize.Sql.PedidosModel2
             get { return _subject; }
             set { _subject = value; NotifyPropertyChanged(nameof(subject)); }
         }
-        protected int? _status = null;
-        public int? status
+        protected long? _status = null;
+        public long? status
         {
             get { return _status; }
             set { _status = value; NotifyPropertyChanged(nameof(status)); }
         }
-        protected int? _priority = null;
-        public int? priority
+        protected long? _priority = null;
+        public long? priority
         {
             get { return _priority; }
             set { _priority = value; NotifyPropertyChanged(nameof(priority)); }
         }
-        protected int? _category = null;
-        public int? category
+        protected long? _category = null;
+        public long? category
         {
             get { return _category; }
             set { _category = value; NotifyPropertyChanged(nameof(category)); }
@@ -290,8 +298,6 @@ namespace SqlOrganize.Sql.PedidosModel2
                     return "";
 
                 case "user_type":
-                    if (_user_type == null)
-                        return "Debe completar valor.";
                     return "";
 
                 case "last_reply_on":

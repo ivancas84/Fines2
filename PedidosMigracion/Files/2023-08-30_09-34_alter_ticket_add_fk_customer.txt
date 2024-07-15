@@ -1,2 +1,6 @@
-﻿ ALTER TABLE wpwt_psmsc_tickets
+﻿ update wpwt_psmsc_tickets set date_closed = null where date_closed = '0000-00-00 00:00:00';
+  update wpwt_psmsc_tickets set last_reply_on = null where last_reply_on = '0000-00-00 00:00:00';
+
+
+ ALTER TABLE wpwt_psmsc_tickets
  ADD FOREIGN KEY (customer) REFERENCES wpwt_psmsc_customers (id);  

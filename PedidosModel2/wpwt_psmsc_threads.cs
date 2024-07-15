@@ -22,6 +22,10 @@ namespace SqlOrganize.Sql.PedidosModel2
             EntityValues val = db!.Values("wpwt_psmsc_threads");
             _id = (long?)val.GetDefault("id");
             _is_active = (int?)val.GetDefault("is_active");
+            _customer = (long?)val.GetDefault("customer");
+            _type = (string?)val.GetDefault("type");
+            _date_created = (DateTime?)val.GetDefault("date_created");
+            _date_updated = (DateTime?)val.GetDefault("date_updated");
         }
 
         public string? Label { get; set; }

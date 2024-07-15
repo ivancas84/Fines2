@@ -596,7 +596,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
                         Dictionary<string, string> dataForm = new();
 
-                        await ProgramaFines.PF_InscribirEstudianteValues(client, asignacion.comision__pfid!, values);
+                        await ProgramaFines.PF_InscribirEstudianteValues(client, a.comision__pfid!, values);
 
                         new ToastContentBuilder()
                                         .AddText("Inscripción PF")

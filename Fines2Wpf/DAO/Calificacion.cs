@@ -24,7 +24,7 @@ namespace Fines2Wpf.DAO
         public EntitySql IdsAlumnosConCalificacionesAprobadasCruzadasNoArchivadasQuery(IEnumerable<object> ids)
         {
             return CalificacionesAprobadasNoArchivadasDeAlumnosQuery(ids).
-                Select("$alumno, COUNT(DISTINCT $plan_pla-id) as cantidad_planes").
+                Select("COUNT(DISTINCT $plan_pla-id) as cantidad_planes").
                 Group("$alumno").
                 Having("cantidad_planes > 1");
         }

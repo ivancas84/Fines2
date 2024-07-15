@@ -124,7 +124,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
                 alumnosYplanes.Add(o.alumno!.ToString() +o.planificacion__plan!.ToString());
                 asignacionOCAux.Add(o);
             }
-            var dataCalificacionesDict = calificacionDAO.CantidadCalificacionesAprobadasAgrupadasPorPlanificacionSinArchivarPorAlumnosYPlanesQuery(alumnosYplanes).ColOfDict().DictOfDictByKeysValue("cantidad", "alumno", "planificacion_dis-anio", "planificacion_dis-semestre");
+            var dataCalificacionesDict_ = calificacionDAO.CantidadCalificacionesAprobadasAgrupadasPorPlanificacionSinArchivarPorAlumnosYPlanesQuery(alumnosYplanes).ColOfDict();
+            var dataCalificacionesDict = dataCalificacionesDict_.DictOfDictByKeysValue("cantidad", "alumno", "planificacion_dis-anio", "planificacion_dis-semestre");
                 
             foreach (var d in asignacionOCAux)
             {

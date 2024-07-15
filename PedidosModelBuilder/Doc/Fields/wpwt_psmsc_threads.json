@@ -24,10 +24,10 @@
     },
     "resets": {},
     "name": "ticket",
-    "alias": null,
+    "alias": "tic",
     "entityName": "wpwt_psmsc_threads",
-    "refEntityName": null,
-    "refFieldName": null,
+    "refEntityName": "wpwt_psmsc_tickets",
+    "refFieldName": "id",
     "dataType": "bigint",
     "type": "long",
     "notNull": true,
@@ -66,7 +66,7 @@
     "dataType": "bigint",
     "type": "long",
     "notNull": false,
-    "defaultValue": null,
+    "defaultValue": "450",
     "defaultValueClassData": true,
     "maxLength": 20
   },
@@ -87,7 +87,7 @@
     "dataType": "varchar",
     "type": "string",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": "report",
     "defaultValueClassData": true,
     "maxLength": 50
   },
@@ -248,7 +248,7 @@
     "dataType": "datetime",
     "type": "DateTime",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": "current_timestamp()",
     "defaultValueClassData": true,
     "maxLength": null
   },
@@ -266,7 +266,7 @@
     "dataType": "datetime",
     "type": "DateTime",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": "current_timestamp()",
     "defaultValueClassData": true,
     "maxLength": null
   }

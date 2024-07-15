@@ -40,7 +40,7 @@ namespace Fines2Wpf.DAO
             var idAlumnos = alumnoComision_.ColOfVal<object>("alumno").Distinct().ToList();
             var idPlan = alumnoComision_.ElementAt(0)["planificacion-plan"];
             return ContainerApp.db.Sql("calificacion")
-                .Select("$alumno, $SUM($disposicion) AS cantidad")
+                .Select("$SUM($disposicion) AS cantidad")
                 .Group("$alumno")
                 .Size(0)
                 .Where(@"
@@ -141,7 +141,7 @@ namespace Fines2Wpf.DAO
         public EntitySql IdsAlumnosActivosDuplicadosPorSemestreDeComisionesAutorizadasQuery(object anio, object semestre)
         {
             return ContainerApp.db.Sql("alumno_comision")
-               .Select("$alumno, COUNT($id) AS cantidad")
+               .Select("COUNT($id) AS cantidad")
                .Group("$alumno")
                .Size(0)
                .Where(@"

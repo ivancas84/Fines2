@@ -290,7 +290,7 @@ namespace SqlOrganize.Sql
             return sql;
         }
 
-        protected string Traduce(string _sql, bool fieldAs = false )
+        protected string Traduce(string _sql, bool fieldAs = false, string sqlToCheck = "")
         {
             string sql = "";
             int field_start = -1;
@@ -306,7 +306,9 @@ namespace SqlOrganize.Sql
                 if (field_start != -1)
                 {
                     if ((_sql[i] != ' ') && (_sql[i] != ')') && (_sql[i] != ',')) continue;
-                    sql += Traduce_(_sql, field_start, i - field_start - 1, fieldAs);
+                    string sqlField = Traduce_(_sql, field_start, i - field_start - 1, fieldAs);
+                    if (!fieldAs || (fieldAs && !sqlToCheck.Contains(sqlField)))
+                        sql += sqlField;
                     field_start = -1;
                 }
 
@@ -455,11 +457,11 @@ namespace SqlOrganize.Sql
 
             string f = TraduceFields(this.fields);
 
-            f += Concat(Traduce(this.select), @",
+            f += Concat(Traduce(this.select, false, f), @",
 ", "", !f.IsNoE());
 
-            /*f += Concat(Traduce(this.group, true), @",
-", "", !f.IsNullOrEmpty());*/
+            f += Concat(Traduce(this.group, true, f), @",
+", "", !f.IsNoE());
 
             return f + @"
 ";

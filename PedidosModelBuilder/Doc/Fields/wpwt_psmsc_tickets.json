@@ -41,14 +41,14 @@
     },
     "resets": {},
     "name": "customer",
-    "alias": null,
+    "alias": "cus",
     "entityName": "wpwt_psmsc_tickets",
-    "refEntityName": null,
-    "refFieldName": null,
+    "refEntityName": "wpwt_psmsc_customers",
+    "refFieldName": "id",
     "dataType": "bigint",
     "type": "long",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": "450",
     "defaultValueClassData": true,
     "maxLength": 20
   },
@@ -75,57 +75,57 @@
   },
   "status": {
     "checks": {
-      "type": "int",
+      "type": "long",
       "required": true
     },
     "resets": {},
     "name": "status",
-    "alias": null,
+    "alias": "sta",
     "entityName": "wpwt_psmsc_tickets",
-    "refEntityName": null,
-    "refFieldName": null,
-    "dataType": "int",
-    "type": "int",
+    "refEntityName": "wpwt_psmsc_statuses",
+    "refFieldName": "id",
+    "dataType": "bigint",
+    "type": "long",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": "1",
     "defaultValueClassData": true,
-    "maxLength": 11
+    "maxLength": 20
   },
   "priority": {
     "checks": {
-      "type": "int",
+      "type": "long",
       "required": true
     },
     "resets": {},
     "name": "priority",
-    "alias": null,
+    "alias": "pri",
     "entityName": "wpwt_psmsc_tickets",
-    "refEntityName": null,
-    "refFieldName": null,
-    "dataType": "int",
-    "type": "int",
+    "refEntityName": "wpwt_psmsc_priorities",
+    "refFieldName": "id",
+    "dataType": "bigint",
+    "type": "long",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": "1",
     "defaultValueClassData": true,
-    "maxLength": 11
+    "maxLength": 20
   },
   "category": {
     "checks": {
-      "type": "int",
+      "type": "long",
       "required": true
     },
     "resets": {},
     "name": "category",
-    "alias": null,
+    "alias": "cat",
     "entityName": "wpwt_psmsc_tickets",
-    "refEntityName": null,
-    "refFieldName": null,
-    "dataType": "int",
-    "type": "int",
+    "refEntityName": "wpwt_psmsc_categories",
+    "refFieldName": "id",
+    "dataType": "bigint",
+    "type": "long",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": "1",
     "defaultValueClassData": true,
-    "maxLength": 11
+    "maxLength": 20
   },
   "assigned_agent": {
     "checks": {
@@ -161,7 +161,7 @@
     "dataType": "datetime",
     "type": "DateTime",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": "current_timestamp()",
     "defaultValueClassData": true,
     "maxLength": null
   },
@@ -179,7 +179,7 @@
     "dataType": "datetime",
     "type": "DateTime",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": "current_timestamp()",
     "defaultValueClassData": true,
     "maxLength": null
   },
@@ -345,12 +345,12 @@
   },
   "user_type": {
     "checks": {
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     "resets": {
       "trim": " ",
-      "removeMultipleSpaces": true
+      "removeMultipleSpaces": true,
+      "nullIfEmpty": true
     },
     "name": "user_type",
     "alias": null,
@@ -359,8 +359,8 @@
     "refFieldName": null,
     "dataType": "varchar",
     "type": "string",
-    "notNull": true,
-    "defaultValue": null,
+    "notNull": false,
+    "defaultValue": "registered",
     "defaultValueClassData": true,
     "maxLength": 100
   },
@@ -395,7 +395,7 @@
     "dataType": "bigint",
     "type": "long",
     "notNull": true,
-    "defaultValue": null,
+    "defaultValue": "450",
     "defaultValueClassData": true,
     "maxLength": 20
   },

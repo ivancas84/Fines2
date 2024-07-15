@@ -85,7 +85,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             /*#region Archivar calificaciones repetidas
             idsDisposiciones = ContainerApp.db.Sql("calificacion").
-                Select("$disposicion, COUNT(*) as cantidad").
+                Select("COUNT(*) as cantidad").
                 Size(0).
                 Group("$disposicion").
                 Where(@"
@@ -102,7 +102,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (idsDisposiciones.Count() > 0)
             {
                 idsCalificaciones = ContainerApp.db.Sql("calificacion").
-                    Select("$disposicion, MAX($id) AS id").
+                    Select("MAX($id) AS id").
                     Group("$disposicion").
                     Size(0).
                     Where("$disposicion IN ( @0 ) ").
