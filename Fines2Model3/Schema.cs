@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace SqlOrganize.Sql.Fines2Model3
 {
     public class Schema : Sql.Schema

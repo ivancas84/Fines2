@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_bit_fm_logs : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_bit_fm_logs";
+
         public Data_wpwt_bit_fm_logs ()
         {
         }

@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_resolucion : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "resolucion";
+
         public Data_resolucion ()
         {
         }

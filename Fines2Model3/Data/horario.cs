@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_horario : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "horario";
+
         public Data_horario ()
         {
         }

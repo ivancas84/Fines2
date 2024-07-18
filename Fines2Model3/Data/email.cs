@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_email : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "email";
+
         public Data_email ()
         {
         }

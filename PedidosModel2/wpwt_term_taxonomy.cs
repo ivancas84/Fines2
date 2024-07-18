@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_term_taxonomy : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_term_taxonomy";
+
         public Data_wpwt_term_taxonomy ()
         {
         }

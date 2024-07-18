@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_calendario : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "calendario";
+
         public Data_calendario ()
         {
         }

@@ -12,11 +12,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             var s = "";
 
-            EntityValues? v = ValuesTree("sede");
+            EntityValues? v = ValuesRel("sede");
             s += (!v.IsNullOrEmpty()) ? (v.GetOrNull("numero")?.ToString() ?? "?") : "?";
             s += GetOrNull("division")?.ToString() ?? "?";
             s += "/";
-            v = ValuesTree("planificacion");
+            v = ValuesRel("planificacion");
             if (!v.IsNullOrEmpty())
             {
                 s += v.GetOrNull("anio")?.ToString() ?? "?"; ;
@@ -37,14 +37,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             s += " ";
             s += CalendarioAnioSemestre();
             s += " ";
-            s += ValuesTree("sede")?.GetOrNull("nombre")?.ToString() ?? "?";
+            s += ValuesRel("sede")?.GetOrNull("nombre")?.ToString() ?? "?";
             return s;
         }
 
         public string CalendarioAnioSemestre()
         {
             string s = "";
-            var v = ValuesTree("calendario");
+            var v = ValuesRel("calendario");
             if (!v.IsNullOrEmpty())
             {
                 s += v.GetOrNull("anio")?.ToString() ?? "?";

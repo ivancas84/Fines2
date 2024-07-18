@@ -13,7 +13,7 @@
             s += "-";
             s += GetOrNull("semestre")?.ToString() ?? "?";
             s += "";
-            EntityValues? planVal = ValuesTree("plan");
+            EntityValues? planVal = ValuesRel("plan");
             if (!planVal.IsNullOrEmpty())
             {
                 s += planVal.GetOrNull("distribucion_horaria")?.ToString() ?? "?";

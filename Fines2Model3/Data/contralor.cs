@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_contralor : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "contralor";
+
         public Data_contralor ()
         {
         }

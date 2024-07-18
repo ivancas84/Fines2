@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_detalle_persona : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "detalle_persona";
+
         public Data_detalle_persona ()
         {
         }

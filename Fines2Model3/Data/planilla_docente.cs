@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_planilla_docente : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "planilla_docente";
+
         public Data_planilla_docente ()
         {
         }

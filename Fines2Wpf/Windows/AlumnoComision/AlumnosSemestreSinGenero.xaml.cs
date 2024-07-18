@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Windows;
 using SqlOrganize;
+using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql;
 using SqlOrganize.Sql.Fines2Model3;
 

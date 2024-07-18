@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_yoast_indexable_hierarchy : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_yoast_indexable_hierarchy";
+
         public Data_wpwt_yoast_indexable_hierarchy ()
         {
         }

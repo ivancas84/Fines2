@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_frmt_form_entry : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_frmt_form_entry";
+
         public Data_wpwt_frmt_form_entry ()
         {
         }

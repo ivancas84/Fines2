@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_yoast_migrations : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_yoast_migrations";
+
         public Data_wpwt_yoast_migrations ()
         {
         }

@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_login_redirects : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_login_redirects";
+
         public Data_wpwt_login_redirects ()
         {
         }

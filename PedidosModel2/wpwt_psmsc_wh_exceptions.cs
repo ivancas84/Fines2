@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_psmsc_wh_exceptions : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_psmsc_wh_exceptions";
+
         public Data_wpwt_psmsc_wh_exceptions ()
         {
         }

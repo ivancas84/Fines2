@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_loginizer_logs : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_loginizer_logs";
+
         public Data_wpwt_loginizer_logs ()
         {
         }

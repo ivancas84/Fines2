@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_dia : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "dia";
+
         public Data_dia ()
         {
         }

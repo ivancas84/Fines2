@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_yoast_primary_term : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_yoast_primary_term";
+
         public Data_wpwt_yoast_primary_term ()
         {
         }

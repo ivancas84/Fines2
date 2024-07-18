@@ -23,6 +23,7 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Threading;
 using WpfUtils;
+using SqlOrganize.CollectionUtils;
 
 namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 {

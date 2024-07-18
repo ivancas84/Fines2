@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_users : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_users";
+
         public Data_wpwt_users ()
         {
         }

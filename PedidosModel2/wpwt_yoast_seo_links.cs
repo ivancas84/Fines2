@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_yoast_seo_links : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_yoast_seo_links";
+
         public Data_wpwt_yoast_seo_links ()
         {
         }

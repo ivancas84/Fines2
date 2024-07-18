@@ -187,7 +187,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                         }
                         else if (!alumnoExistente!.Get("plan")!.ToString()!.ToLower().Equals(comision.planificacion__plan.ToString().ToLower()))
                         {
-                            var alumnoPlan = alumnoExistente.ValuesTree("plan");
+                            var alumnoPlan = alumnoExistente.ValuesRel("plan");
                             statusData.Add(new()
                             {
                                 row = j,

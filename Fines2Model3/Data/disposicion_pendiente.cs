@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_disposicion_pendiente : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "disposicion_pendiente";
+
         public Data_disposicion_pendiente ()
         {
         }

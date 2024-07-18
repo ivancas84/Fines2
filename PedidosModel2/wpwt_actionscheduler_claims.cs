@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_actionscheduler_claims : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_actionscheduler_claims";
+
         public Data_wpwt_actionscheduler_claims ()
         {
         }

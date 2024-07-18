@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_tipo_sede : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "tipo_sede";
+
         public Data_tipo_sede ()
         {
         }

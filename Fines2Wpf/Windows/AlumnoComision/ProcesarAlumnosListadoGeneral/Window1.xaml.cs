@@ -188,7 +188,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                                 row = j,
                                 status = "warning alumno",
                                 detail = "El plan del alumno es diferente del plan de la comision.",
-                                data = "Nuevo: " + comisiones[pfid].plan__orientacion + " " + comisiones[pfid].plan__resolucion + ". Existente: " + alumnoExistente.ValuesTree("plan")?.ToString()
+                                data = "Nuevo: " + comisiones[pfid].plan__orientacion + " " + comisiones[pfid].plan__resolucion + ". Existente: " + alumnoExistente.ValuesRel("plan")?.ToString()
                             });
                         }
                     }

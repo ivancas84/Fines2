@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_modalidad : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "modalidad";
+
         public Data_modalidad ()
         {
         }

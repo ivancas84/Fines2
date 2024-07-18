@@ -10,7 +10,7 @@
         {
             var s = "";
 
-            EntityValues? v = ValuesTree("persona");
+            EntityValues? v = ValuesRel("persona");
             if(v != null)
             {
                 s += v.GetOrNull("nombres")?.ToString() ?? "?";

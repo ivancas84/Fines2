@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_cargo : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "cargo";
+
         public Data_cargo ()
         {
         }

@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_file : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "file";
+
         public Data_file ()
         {
         }

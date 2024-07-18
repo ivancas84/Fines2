@@ -1,8 +1,14 @@
 #nullable enable
+using System;
+using System.ComponentModel;
+using System.Collections.Generic;
+
 namespace SqlOrganize.Sql.Fines2Model3
 {
     public class Data_alumno : SqlOrganize.Sql.Data
     {
+
+        public override string entityName => "alumno";
 
         public Data_alumno ()
         {

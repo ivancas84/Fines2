@@ -8,6 +8,8 @@ namespace SqlOrganize.Sql.PedidosModel2
     public class Data_wpwt_psmsc_custom_fields : SqlOrganize.Sql.Data
     {
 
+        public override string entityName => "wpwt_psmsc_custom_fields";
+
         public Data_wpwt_psmsc_custom_fields ()
         {
         }
