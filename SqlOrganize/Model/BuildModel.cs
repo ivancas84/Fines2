@@ -533,6 +533,8 @@ namespace SqlOrganize.Model
                 sw.WriteLine("    public class Data_" + entityName + " : SqlOrganize.Sql.Data");
                 sw.WriteLine("    {");
                 sw.WriteLine("");
+                sw.WriteLine("        public override string entityName => \"" + entityName + "\";");
+                sw.WriteLine("");
                 sw.WriteLine("        public Data_" + entityName + " ()");
                 sw.WriteLine("        {");
                 sw.WriteLine("        }");

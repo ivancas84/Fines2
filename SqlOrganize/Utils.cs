@@ -11,7 +11,7 @@ namespace SqlOrganize
         /// <summary>Metodo para verificar si un object es null o empty</summary>
         /// <remarks>Abarca mas tipos que IsNullOrEmpty</br>
         /// Se llama IsNoE para diferenciar de IsNullOrEmpty</remarks>
-        public static bool IsNoE(this object value)
+        public static bool IsNoE(this object? value)
         {
             if (value == null || value == DBNull.Value)
                 return true;
@@ -29,15 +29,13 @@ namespace SqlOrganize
 
             // Special case for collections to check for empty collection
             if (value is ICollection collection)
-            {
                 return collection.Count == 0;
-            }
 
             // Handle value types and their default values
             return false;
         }
 
-        public static T Obj<T>(this IDictionary<string, object?> source) where T : class, new()
+        public static T? Obj<T>(this IDictionary<string, object?> source) where T : class, new()
         {
             var serialized = JsonConvert.SerializeObject(source);
             return JsonConvert.DeserializeObject<T>(serialized);
@@ -82,20 +80,6 @@ namespace SqlOrganize
             return results;
         }
 
-        public static void AddRange<T>(this ObservableCollection<T> oc, IEnumerable<T> items)
-        {
-            foreach (var item in items)
-                oc.Add(item);
-        }
-
-        public static void AddRange<T>(this ObservableCollection<T> oc, IEnumerable<Dictionary<string, object?>> items) where T : class, new()
-        {
-            foreach (var item in items)
-            {
-                T o = item.Obj<T>();
-                oc.Add(o);
-            }
-        }
 
 
 
@@ -184,6 +168,7 @@ namespace SqlOrganize
             return (value == System.DBNull.Value);
         }
 
+        /// <summary>A T extension method that sets property value.</summary>
         public static T SetPropertyValue<T>(this T @this, string propertyName, object? value)
         {
             Type type = @this.GetType();

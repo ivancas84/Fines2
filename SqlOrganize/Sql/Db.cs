@@ -14,7 +14,7 @@ namespace SqlOrganize.Sql
     /// </remarks>
     public abstract class Db
     {
-        public Config config { get; }
+        public virtual Config config { get; }
 
         //public Dictionary<string, Dictionary<string, EntityTree>> tree { get; set; } = new();
 
@@ -132,6 +132,14 @@ namespace SqlOrganize.Sql
         public virtual EntityValues Values(string entityName, string? fieldId = null)
         {
             return new(this, entityName, fieldId);
+        }
+
+        /// <summary> Crear instancia de Data a partir un diccionario de valores</summary>
+        public virtual T Data<T>(IDictionary<string, object?> item) where T : Data, new()
+        {
+            T obj = item.Obj<T>()!;
+            obj.SetDb(this);
+            return obj;
         }
 
         /// <summary>

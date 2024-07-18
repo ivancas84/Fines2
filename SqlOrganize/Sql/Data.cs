@@ -8,7 +8,9 @@ namespace SqlOrganize.Sql
     /// </summary>
     public abstract class Data : INotifyPropertyChanged, IDataErrorInfo
     {
-        public string entityName;
+        public abstract string entityName { get; }
+
+        private EntityValues? values;
 
         /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
         public bool _isUpdated = false;
@@ -24,16 +26,23 @@ namespace SqlOrganize.Sql
         /// </summary>
         public Db? db;
 
-
-        public Data Db(Db db)
+        public void SetDb(Db db)
         {
             this.db = db;
-            return this;
         }
 
-        public EntityValues Values()
+        /// <summary>Obtener instancia de values asociada</summary>
+        public EntityValues GetValues()
         {
-            return db!.Values(entityName).Set(this);
+            if(values == null)
+                values = db!.Values(entityName).Values(this);
+            return values;
+        }
+
+        /// <summary>Obtener instancia de values asociadas y realizar un cast</summary>
+        public T GetValues<T>() where T : EntityValues
+        {
+            return (T)GetValues();
         }
 
         public string this[string columnName]

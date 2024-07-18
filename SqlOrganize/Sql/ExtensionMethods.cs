@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json.Linq;
 using SqlOrganize.Sql.Exceptions;
 using System.Data.Common;
 
@@ -241,13 +242,12 @@ namespace SqlOrganize.Sql
                 persist.RemoveCacheDetail();
         }
 
-        public static EntityPersist RemoveCacheQueries(this EntityPersist persist)
+        public static IMemoryCache RemoveCacheQueries(this IMemoryCache cache)
         {
-
             List<string> queries;
             object _queries;
 
-            bool res = persist.Db.cache!.TryGetValue("queries", out _queries);
+            bool res = cache!.TryGetValue("queries", out _queries);
             if (res)
             {
                 if (_queries is JArray)
@@ -256,9 +256,15 @@ namespace SqlOrganize.Sql
                     queries = (List<string>)_queries;
 
                 foreach (string q in (queries as List<string>)!)
-                    persist.Db.cache.Remove(q);
+                    cache.Remove(q);
             }
 
+            return cache;
+        }
+
+        public static EntityPersist RemoveCacheQueries(this EntityPersist persist)
+        {
+            persist.Db.cache!.RemoveCacheQueries();
             return persist;
         }
 
@@ -267,8 +273,7 @@ namespace SqlOrganize.Sql
         /// </summary>
         public static EntityPersist RemoveCache(this EntityPersist persist)
         {
-            persist.RemoveCacheQueries();
-            return persist.RemoveCacheDetail();
+            return persist.RemoveCacheQueries().RemoveCacheDetail();
         }
 
         public static EntityPersist RemoveCacheDetail(this EntityPersist persist)

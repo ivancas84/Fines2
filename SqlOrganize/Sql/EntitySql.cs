@@ -44,11 +44,31 @@ namespace SqlOrganize.Sql
 
         public string join { get; set; } = "";
 
+        private List<string> fieldNamesRel;
+
         public EntitySql(Db db, string entityName)
         {
             Db = db;
             this.entityName = entityName;
         }
+
+        /// <summary> Forma rapida de devolver la cantidad de parametros para facilitar la definicion de sql </summary>
+        public int Count()
+        {
+            return parameters.Count();
+        }
+
+        public bool ContainsFieldName(string fieldName)
+        {
+            return GetFieldNamesRel().Contains(fieldName);
+        }
+
+        public List<string> GetFieldNamesRel() {
+            if(fieldNamesRel == null)
+                fieldNamesRel = Db.FieldNamesRel(entityName);
+            return fieldNamesRel;
+        }
+
 
         public EntitySql And(string w)
         {
@@ -376,6 +396,12 @@ namespace SqlOrganize.Sql
         }
 
         /// <summary>Codigo adicional que se anexa a join</summary>
+        /// <example>
+        /// var subesql = db.Sql("movimiento_nota").
+        ///     Select("$nota, MAX($fecha_inicio) AS fecha_inicio").
+        ///     Group("$nota");
+        /// esql.Join(@"INNER JOIN(" + subesql.Sql() + @") sub ON(sub.nota = $nota AND sub.fecha_inicio = $fecha_inicio)");
+        /// </example>
         public EntitySql Join(string j)
         {
             join += j;
@@ -388,7 +414,7 @@ namespace SqlOrganize.Sql
         {
             string sql = "";
             if (!Db.Entity(entityName).tree.IsNoE())
-                sql += SqlJoinFk(Db.Entity(entityName).tree!, "");
+                sql += SqlJoinFk(Db.Entity(entityName).tree!, "", entityName, true);
 
             if (!join.IsNoE())
                 sql += Traduce(join) + @"
@@ -396,7 +422,7 @@ namespace SqlOrganize.Sql
             return sql;
         }
 
-        protected string SqlJoinFk(Dictionary<string, EntityTree> tree, string table_id)
+        protected string SqlJoinFk(Dictionary<string, EntityTree> tree, string table_id, string entityName, bool checkInner)
         {
             if (table_id.IsNoE())
                 table_id = Db.Entity(entityName).alias;
@@ -405,10 +431,21 @@ namespace SqlOrganize.Sql
             string schema_name;
             foreach (var (field_id, entity_tree) in tree) {
                 schema_name = Db.Entity(entity_tree.refEntityName).schemaName;
-                sql += "LEFT OUTER JOIN " + schema_name + " AS " + field_id + " ON (" + table_id + "." + entity_tree.fieldName + " = " + field_id + "." + entity_tree.refFieldName + @")
+                Field field = Db.Field(entityName, entity_tree.fieldName);
+                string join = "";
+                if (field.IsRequired() && checkInner)
+                    join = "INNER";
+                else
+                {
+                    join = "LEFT OUTER";
+                    checkInner = false;
+                }
+
+                //string join = Db.Field(entityName, entity_tree.fieldName).IsRequired() ? "INNER" : "LEFT OUTER";
+                sql += join + " JOIN " + schema_name + " AS " + field_id + " ON (" + table_id + "." + entity_tree.fieldName + " = " + field_id + "." + entity_tree.refFieldName + @")
 ";
 
-                if (!entity_tree.children.IsNoE()) sql += SqlJoinFk(entity_tree.children, field_id);
+                if (!entity_tree.children.IsNoE()) sql += SqlJoinFk(entity_tree.children, field_id, entity_tree.refEntityName, checkInner);
             }
             return sql;
         }

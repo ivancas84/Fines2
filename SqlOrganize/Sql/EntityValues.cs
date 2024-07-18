@@ -42,7 +42,7 @@ namespace SqlOrganize.Sql
             return values;
         }
 
-        public EntityValues Values(IDictionary<string, object?> row)
+        public virtual EntityValues Values(IDictionary<string, object?> row)
         {
             values = row;
             return this;
@@ -51,7 +51,7 @@ namespace SqlOrganize.Sql
         public EntityValues Values(Data obj)
         {
             values = obj.Dict() ?? new Dictionary<string, object?>();
-            return this;
+            return Values(obj.Dict());
         }
      
         /// <summary>Existe valor de field</summary>
@@ -66,13 +66,13 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public EntityValues Set(Data o)
+        public virtual EntityValues Set(Data o)
         {
             var d = o.Dict();
             return Set(d);
         }
 
-        public EntityValues Sset(IDictionary<string, object?> row)
+        public virtual EntityValues Sset(IDictionary<string, object?> row)
         {
             foreach (var fieldName in fieldNames)
                 if (row.ContainsKey(Pf() + fieldName))
@@ -82,7 +82,7 @@ namespace SqlOrganize.Sql
         }
 
 
-        public EntityValues Set(IDictionary<string, object?> row)
+        public virtual EntityValues Set(IDictionary<string, object?> row)
         {
             foreach (var fieldName in fieldNames)
                 if (row.ContainsKey(Pf() + fieldName))
@@ -91,7 +91,7 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public EntityValues Set(string fieldName, object? value)
+        public virtual EntityValues Set(string fieldName, object? value)
         {
             string fn = fieldName;
             if (!Pf().IsNoE() && fieldName.Contains(Pf()))
@@ -106,7 +106,7 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public object Get(string fieldName)
+        public virtual object Get(string fieldName)
         {
             return values[fieldName]!;
         }
@@ -159,7 +159,7 @@ namespace SqlOrganize.Sql
 
 
         /// <summary>Seteo "lento", con verificacion y convercion de tipo de datos</summary>
-        public EntityValues Sset(string _fieldName, object? value)
+        public virtual EntityValues Sset(string _fieldName, object? value)
         {
             string fieldName = _fieldName;
             if (!Pf().IsNoE() && _fieldName.Contains(Pf()))
@@ -268,7 +268,7 @@ namespace SqlOrganize.Sql
 
         /// <summary>Resetear valores definidos</summary>
         /// <returns></returns>
-        public EntityValues Reset()
+        public virtual EntityValues Reset()
         {
             List<string> fieldNames = new List<string>(this.fieldNames);
             fieldNames.Remove(db.config.id); //id debe dejarse para el final porque puede depender de otros valores
@@ -285,16 +285,8 @@ namespace SqlOrganize.Sql
 
         /// <summary>Reasigna fieldName</summary>
         /// <remarks>fieldName debe estar definido obligatoriamente</remarks>
-        public EntityValues Reset(string fieldName)
+        public virtual EntityValues Reset(string fieldName)
         {
-            var method = "Reset_" + fieldName;
-            Type thisType = this.GetType();
-            MethodInfo m = thisType.GetMethod(method);
-            if (!m.IsNoE())
-            {
-                m!.Invoke(this, new object[] { });
-                return this;
-            }
             Field field = db.Field(entityName, fieldName);
 
             foreach (var (resetKey, resetValue) in field.resets)
@@ -428,11 +420,6 @@ namespace SqlOrganize.Sql
         public bool Check(string fieldName)
         {
             logging.ClearByKey(fieldName);
-            var method = "Check_" + fieldName;
-            Type thisType = this.GetType();
-            MethodInfo? m = thisType.GetMethod(method);
-            if (!m.IsNoE())
-                return (bool)m!.Invoke(this, null);
 
             Field field = db.Field(entityName, fieldName);
             Validation v = new(Get(fieldName));
@@ -468,18 +455,7 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public EntityValues? ValuesTree(string fieldId)
-        {
-            EntityTree tree = db.Entity(entityName).tree[fieldId];
-            object? val = GetOrNull(tree.fieldName);
-            if (!val.IsNoE())
-            {
-                var data = db.Sql(tree.refEntityName).Cache()._Id(val);
-                return (!data.IsNoE()) ? db.Values(tree.refEntityName).Set(data) : null;
-            }
-            return null;
-        }
-
+        /// <summary>Crear instancia de EntityValues obteniendo del cache o consulta los valores de la relacion</summary>
         public EntityValues? ValuesRel(string fieldId)
         {
             EntityRelation rel = db.Entity(entityName).relations[fieldId];
@@ -499,6 +475,12 @@ namespace SqlOrganize.Sql
                     return values!.ValuesRel(fieldId);
             }
             return null;
+        }
+
+        /// <summary>Crear instancia de EntityValues obteniendo del cache o consulta los valores de la relacion y realizar cast</summary>        
+        public T? ValuesRel<T>(string fieldId) where T : EntityValues
+        {
+            return (T?)ValuesRel(fieldId);
         }
 
 

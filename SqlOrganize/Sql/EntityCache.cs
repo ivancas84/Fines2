@@ -20,7 +20,7 @@ namespace SqlOrganize.Sql
         }
 
         /// <summary>Metodo de busqueda rapida en cache</summary>
-        /// <remarks>Solo analiza el atributo fields (devuelve relaciones)</remarks>
+        /// <remarks>Solo analiza el atributo fields. A diferencia de _Ids(), SI devuelve relaciones!!!</remarks>
         public IEnumerable<Dictionary<string, object?>> Ids(params object[] ids)
         {
             if (Sql.fields.IsNoE())
@@ -53,10 +53,7 @@ namespace SqlOrganize.Sql
 
         /// <summary>Obtener campos de una entidad (sin relaciones)<br/>
         /// Si no encuentra valores en el Cache, realiza una consulta a la base de datos y lo almacena en Db.Cache.</summary>
-        /// <param name="entityName"></param>
-        /// <param name="ids"></param>
-        /// <remarks>IMPORTANTE! No devuelve relaciones!!!</remarks>
-        /// <returns></returns>
+        /// <remarks>A diferencia de Ids(), NO devuelve relaciones!!!</remarks>
         public List<IDictionary<string, object?>> _Ids(params object[] ids)
         {
             ids.Distinct();

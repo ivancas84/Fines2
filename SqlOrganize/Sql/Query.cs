@@ -262,13 +262,23 @@ namespace SqlOrganize.Sql
             return q.Value<ulong>();
         }
 
-        /// <summary>
-        /// Cada motor debe tener su propia forma de definir Max Value!!! Derivar metodo a subclase
-        /// </summary>
-        /// <returns></returns>
+        /// <summary>Cada motor debe tener su propia forma de definir Max Value!!! Derivar metodo a subclase</summary>
+        /// <remarks>Connection must be opened!</remarks>
         public object GetMaxValue(string entityName, string fieldName)
         {
             return db.Sql(entityName).SelectMaxValue(fieldName).Value<object>();
+        }
+
+        /// <summary>Conncection must be opened!</summary>
+        public IEnumerable<Dictionary<string, object?>> LastServerChanges(string lastChecked)
+        {
+            var q = db.Query();
+            q.connection = connection;
+            q.sql = @"SELECT DISTINCT TableName, RecordId 
+                    FROM AuditLog 
+                    WHERE ChangeDateTime > '" + lastChecked + "';";
+            return q.ColOfDict();
+
         }
         #endregion
     }

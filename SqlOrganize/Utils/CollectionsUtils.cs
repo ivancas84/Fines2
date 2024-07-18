@@ -1,11 +1,26 @@
 ﻿using Newtonsoft.Json;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Reflection;
 
 namespace SqlOrganize.CollectionUtils
 {
     public static class CollectionUtils
     {
+        public static void AddRange<T>(this ObservableCollection<T> oc, IEnumerable<T> items)
+        {
+            foreach (var item in items)
+                oc.Add(item);
+        }
+
+        public static void AddRange<T>(this ObservableCollection<T> oc, IEnumerable<Dictionary<string, object?>> items) where T : class, new()
+        {
+            foreach (var item in items)
+            {
+                T o = item.Obj<T>();
+                oc.Add(o);
+            }
+        }
 
         /// <summary>
         /// Copiar valores de IDictionary
@@ -321,7 +336,7 @@ namespace SqlOrganize.CollectionUtils
                 response[key] = obj;
             }
 
-            return response;
+            return (IDictionary<string, T>)response;
         }
 
         public static IDictionary<string, Dictionary<string, object?>> DictOfDictByKeys(this IEnumerable<Dictionary<string, object?>> source, params string[] keys)
@@ -417,15 +432,6 @@ namespace SqlOrganize.CollectionUtils
             return dictionaryString.TrimEnd(',', ' ') + "}";
         }
 
-        /// <summary>
-        ///     A T extension method that sets property value.
-        /// </summary>
-        /// <typeparam name="T">Generic type parameter.</typeparam>
-        /// <param name="this">The @this to act on.</param>
-        /// <param name="propertyName">Name of the property.</param>
-        /// <param name="value">The value.</param>
-        /// <remarks>https://csharp-extension.com/en/method/1002738/object-setpropertyvalue</remarks>
-        
 
         /// <summary>
         /// Clonar objeto 
