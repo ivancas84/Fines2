@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
 using SqlOrganize.Sql.Exceptions;
+using System.Collections.ObjectModel;
 using System.Data.Common;
+using System.Net;
 
 namespace SqlOrganize.Sql
 {
@@ -359,6 +361,28 @@ namespace SqlOrganize.Sql
         {
             data.Default();
             return data;
+        }
+        #endregion
+
+        #region Data + EntityValues
+        public static void ClearAndAddDataToOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : Data, new()
+        {
+            oc.Clear();
+            db.AddDataToOC(source, oc);
+        }
+
+        public static void AddDataToOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : Data, new()
+        {
+            foreach (var item in source)
+            {
+                T _obj = new T(); //crear objeto vacio para obtener el entityName
+                T obj = db.Values(_obj.entityName).
+                    Values(item).
+                    GetData<T>();
+                obj.IsUpdated = false;
+                oc.Add(obj);
+            }
+
         }
         #endregion
 

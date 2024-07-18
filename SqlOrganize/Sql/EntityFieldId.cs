@@ -2,7 +2,8 @@
 {
     public class EntityFieldId
     {
-        public Db db { get; }
+        public Db db;
+
         public string entityName { get; }
 
         public string? fieldId { get; set; }

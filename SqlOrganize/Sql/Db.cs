@@ -134,6 +134,15 @@ namespace SqlOrganize.Sql
             return new(this, entityName, fieldId);
         }
 
+        /// <summary> Crear instancia de Data vacia</summary>
+        public virtual T Data<T>() where T : Data, new()
+        {
+            T obj = new T();
+            obj.SetDb(this);
+            return obj;
+        }
+
+
         /// <summary> Crear instancia de Data a partir un diccionario de valores</summary>
         public virtual T Data<T>(IDictionary<string, object?> item) where T : Data, new()
         {

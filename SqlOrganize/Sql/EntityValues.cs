@@ -707,6 +707,11 @@ namespace SqlOrganize.Sql
             return false;
         }
 
+        public virtual T GetData<T>() where T : Data, new()
+        {
+            return db.Data<T>(Values());
+        }
+
 
         /// <summary>
         /// Comparar valores con los indicados en parametro

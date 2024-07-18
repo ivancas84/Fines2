@@ -90,7 +90,7 @@ namespace SqlOrganize.Sql
 
         public EntitySql Where(string w)
         {
-            where += w;
+            where += " " + w;
             return this;
         }
 
