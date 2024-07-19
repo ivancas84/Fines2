@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Newtonsoft.Json;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace SqlOrganize.Sql
@@ -24,9 +25,17 @@ namespace SqlOrganize.Sql
         /// <summary>
         /// Si se construye una instancia de data con valores por defecto, puede ser necesario acceder a la base de datos para definirlos.
         /// </summary>
-        public Db? db;
+        public Db? _db;
 
-        public void SetDb(Db db)
+        [JsonIgnore]
+        public virtual Db? db
+        {
+            get { return _db; }
+            set { _db = value; }
+        }
+
+
+        public virtual void SetDb(Db db)
         {
             this.db = db;
         }

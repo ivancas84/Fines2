@@ -375,14 +375,21 @@ namespace SqlOrganize.Sql
         {
             foreach (var item in source)
             {
-                T _obj = new T(); //crear objeto vacio para obtener el entityName
-                T obj = db.Values(_obj.entityName).
-                    Values(item).
-                    GetData<T>();
-                obj.IsUpdated = false;
+                T obj = db.GetData<T>(item);
                 oc.Add(obj);
             }
+        }
 
+        /// <summary>Obtiene una clase Data a partir de una instancia de Values</summary>
+        /// <remarks>Incorpora codigo adicional redefinido en las clases values</remarks>
+        public static T GetData<T>(this Db db, IDictionary<string, object?> item) where T : Data, new()
+        {
+            T _obj = new T(); //crear objeto vacio para obtener el entityName
+            T obj = db.Values(_obj.entityName).
+                Values(item).
+                GetData<T>();
+            obj.IsUpdated = false;
+            return obj;
         }
         #endregion
 
