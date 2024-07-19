@@ -9,12 +9,9 @@ namespace SqlOrganize.Sql
     /// </summary>
     public abstract class Data : INotifyPropertyChanged, IDataErrorInfo
     {
-        public abstract string entityName { get; }
+        public virtual string entityName { get; }
 
         private EntityValues? values;
-
-        /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
-        public bool _isUpdated = false;
 
         /// <summary>Campos a ignorar para marcar isUpdated</summary>
         public List<string> _isUpdatedIgnore = new() { nameof(IsUpdated), nameof(Msg), nameof(Error) };
@@ -106,8 +103,10 @@ namespace SqlOrganize.Sql
 
         public string Msg { get; set; } = "";
 
-        
-        /// <summary>Cargar en false al finalizar la inicializacion</summary>
+        /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
+        /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
+        public bool _isUpdated = false;
+
         public bool IsUpdated
         {
             get { return _isUpdated; }
@@ -116,6 +115,23 @@ namespace SqlOrganize.Sql
                 if(_isUpdated != value)
                 {
                     _isUpdated = value;
+                    NotifyPropertyChanged(nameof(IsUpdated));
+                }
+            }
+        }
+
+        /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
+        /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
+        public bool _isError = false;
+
+        public bool IsError
+        {
+            get { return _isError; }
+            set
+            {
+                if (_isError != value)
+                {
+                    _isError = value;
                     NotifyPropertyChanged(nameof(IsUpdated));
                 }
             }
