@@ -128,7 +128,7 @@
 
 							<Button
 							
-								Content = "_Guardar..."
+								Content = "_Eliminar..."
 								Click="EliminarButton_Click"
 								Margin = "20"/>
 
