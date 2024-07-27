@@ -22,6 +22,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                 case "calendario":
                     return new CalendarioValues(this, entityName, fieldId);
 
+                case "calificacion":
+                    return new CalificacionValues(this, entityName, fieldId);
+
                 case "designacion":
                     return new DesignacionValues(this, entityName, fieldId);
 

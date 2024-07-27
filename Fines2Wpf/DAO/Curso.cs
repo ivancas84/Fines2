@@ -39,17 +39,6 @@ namespace Fines2Wpf.DAO
                 Parameters(idCurso);
         }
 
-        public EntitySql BusquedaAproximadaQuery(string search)
-        {
-            return ContainerApp.db.Sql("curso")
-               .Fields()
-               .Size(0)
-               .Where(@"
-                    CONCAT($sede-numero, $comision-division, '/', $planificacion-anio, $planificacion-semestre, ' ', $calendario-anio, '-', $calendario-semestre) LIKE @0
-                ")
-               .Order("$sede-numero ASC, $comision-division ASC, $planificacion-anio ASC, $planificacion-semestre ASC")
-               .Parameters("%" + search + "%");
-        }
 
         public EntitySql CursosDeComisionQuery(object idComision)
         {

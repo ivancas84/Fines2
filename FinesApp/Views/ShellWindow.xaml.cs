@@ -75,6 +75,12 @@ public partial class ShellWindow : MetroWindow, IShellWindow, INotifyPropertyCha
     private void OnMenuViewsProcesarRegistroAlumnos(object sender, RoutedEventArgs e)
         => _navigationService.NavigateTo(typeof(ProcesarRegistroAlumnosPage), null, true);
 
+    private void OnMenuViewsPF_ProcesarCalificaciones(object sender, RoutedEventArgs e)
+        => _navigationService.NavigateTo(typeof(PF_ProcesarCalificacionesPage), null, true);
+
+    private void OnMenuViewsProcesarPlanillaCalificaciones(object sender, RoutedEventArgs e)
+        => _navigationService.NavigateTo(typeof(ProcesarPlanillaCalificacionesPage), null, true);
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     private void Set<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)

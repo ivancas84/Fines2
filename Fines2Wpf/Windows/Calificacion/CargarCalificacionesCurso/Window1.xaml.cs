@@ -64,7 +64,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
             #region consulta de docente
             {
-                Data_toma_r toma = tomaDAO.TomaAprobadaDeCursoQuery(idCurso).Dict()!.Obj<Data_toma_r>();
+                Data_toma_r toma = ContainerApp.db.TomaAprobadaDeCursoQuery(idCurso).Dict()!.Obj<Data_toma_r>();
                 formData.docente__Label = toma.docente__apellidos!.ToUpper() + " " + toma.docente__nombres!.ToTitleCase() + " " + toma.docente__numero_documento + " " + toma.docente__telefono;
             }
             #endregion

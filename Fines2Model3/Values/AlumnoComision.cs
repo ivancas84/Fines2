@@ -1,4 +1,5 @@
 ﻿using SqlOrganize.DateTimeUtils;
+using SqlOrganize.ValueTypesUtils;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -20,6 +21,79 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (estado.ToLower() == "activo" && alta?.ToYearSemester() != DateTime.Now.ToYearSemester())
                 return "CONTINÚA TRAYECTORIA";
             return estado;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="comision"></param>
+        /// <param name="personaVal"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public EntityPersist PersistProcesarComisionPersona(object comision, PersonaValues personaVal)
+        {
+            Data_comision_r comisionObj = db.Sql("comision").Cache().Id(comision)!.Obj<Data_comision_r>()!;
+
+            var asignacionData = db.AsignacionComisionDniSql(comision, personaVal.Get("numero_documento")).Cache().Dict();
+
+            EntityPersist persist = db.Persist();
+
+            if (!asignacionData.IsNoE()) //existe asignacion > comparar datos principales de persona
+            {
+                Values(asignacionData!);
+
+                CompareParams compare = new()
+                {
+                    fieldsToCompare = new List<string> { "nombres", "apellidos" },
+                    val = db.Values("persona", "persona").Set(asignacionData!),
+                };
+
+                var response = personaVal.Compare(compare);
+
+                if (!response.IsNoE())
+                    throw new Exception(" Comparacion de persona diferente: " + compare.val.ToStringFields("nombres", "apellidos"));
+
+            }
+            else //asignacion inexistente > agregar
+            {
+                var personaData = db.PersonaDniSql(personaVal.Get("numero_documento")).Cache().Dict();
+
+                if (personaData.IsNoE())
+                {
+                    logging.AddLog("persona", "Persona insertada", "insert", Logging.Level.Warning);
+                    personaVal.Default().Reset().Insert(persist);
+                } else
+                {
+                    personaVal.Set("id", personaData!["id"]);
+                } 
+
+                var alumnoData = db.AlumnoPersonaSql(personaVal.Get("id")).Cache().Dict();
+                var alumnoVal = db.Values("alumno");
+                if (alumnoData.IsNoE())
+                {
+                    logging.AddLog("alumno", "Alumno insertado", "insert", Logging.Level.Warning);
+                    alumnoVal.Set("persona", personaVal.Get("id")).
+                        Set("plan", comisionObj.planificacion__plan).
+                        Default().Insert(persist);
+                }
+                else
+                {
+                    logging.AddLog("alumno", "Alumno existente", null, Logging.Level.Warning);
+                    alumnoVal.Set(alumnoData!);
+                }
+
+                if (!alumnoVal.Get("plan").Equals(comisionObj.planificacion__plan))
+                    logging.AddLog("alumno", "Plan alumno distinto de comision", null, Logging.Level.Warning);
+
+                logging.AddLog("alumno", "Asignacion insertada", "insert", Logging.Level.Warning);
+
+                Set("alumno", alumnoVal.Get("id")).
+                Set("comision", comision).
+                Default().Reset().Insert(persist);
+            }
+
+            return persist;
         }
     }
 }

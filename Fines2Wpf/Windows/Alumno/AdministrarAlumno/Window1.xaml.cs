@@ -770,7 +770,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (calificacion.SearchCurso.IsNoE() || calificacion.SearchCurso.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = cursoDAO.BusquedaAproximadaQuery(calificacion.SearchCurso).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.BusquedaAproximadaCurso(calificacion.SearchCurso).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
             foreach (var item in list)
             {
                 var val = (CursoValues)ContainerApp.db.Values("curso").Set(item);

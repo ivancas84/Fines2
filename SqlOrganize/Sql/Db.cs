@@ -134,6 +134,11 @@ namespace SqlOrganize.Sql
             return new(this, entityName, fieldId);
         }
 
+        public T Values<T>(string entityName, string? fieldId = null) where T : EntityValues
+        {
+            return (T)Values(entityName, fieldId);
+        }
+
         /// <summary> Crear instancia de Data vacia</summary>
         public virtual T Data<T>() where T : Data, new()
         {

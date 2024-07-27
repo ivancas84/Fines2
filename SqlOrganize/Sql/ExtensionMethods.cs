@@ -310,6 +310,12 @@ namespace SqlOrganize.Sql
         #endregion
 
         #region EntitySql + EntityValues
+        public static EntityValues ValuesFromId(this Db db, string entityName, object id)
+        {
+            var data = db.Sql(entityName).Cache().Id(id) ?? throw new Exception("Curso inexistente");
+            return db.Values(entityName).Values(data);
+
+        }
         public static IDictionary<string, object?>? RowByUniqueFieldOrValues(this EntityValues values, string fieldName)
         {
             try
@@ -375,21 +381,19 @@ namespace SqlOrganize.Sql
         {
             foreach (var item in source)
             {
-                T obj = db.GetData<T>(item);
+                T obj = db.ToData<T>(item);
                 oc.Add(obj);
             }
         }
 
         /// <summary>Obtiene una clase Data a partir de una instancia de Values</summary>
         /// <remarks>Incorpora codigo adicional redefinido en las clases values</remarks>
-        public static T GetData<T>(this Db db, IDictionary<string, object?> item) where T : Data, new()
+        public static T ToData<T>(this Db db, IDictionary<string, object?> item) where T : Data, new()
         {
             T _obj = new T(); //crear objeto vacio para obtener el entityName
-            T obj = db.Values(_obj.entityName).
+            return db.Values(_obj.entityName).
                 Values(item).
                 GetData<T>();
-            obj.IsUpdated = false;
-            return obj;
         }
         #endregion
 

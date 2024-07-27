@@ -341,7 +341,7 @@ namespace SqlOrganize.CollectionUtils
 
         public static IDictionary<string, Dictionary<string, object?>> DictOfDictByKeys(this IEnumerable<Dictionary<string, object?>> source, params string[] keys)
         {
-            Dictionary<object, Dictionary<string, object?>> response = new();
+            Dictionary<string, Dictionary<string, object?>> response = new();
             foreach (Dictionary<string, object?> row in source) {
                 List<string> val = new();
                 foreach (var k in keys)
@@ -351,7 +351,7 @@ namespace SqlOrganize.CollectionUtils
                 response[key] = row;
             }
 
-            return (IDictionary<string, Dictionary<string, object?>>)response;
+            return response;
         }
 
         public static IDictionary<string, object?> DictOfDictByKeysValue(this IEnumerable<Dictionary<string, object?>> source, string keyValue, params string[] keys)

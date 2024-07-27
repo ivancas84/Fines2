@@ -102,6 +102,10 @@ public partial class App : Application
 
         services.AddTransient<ProcesarRegistroAlumnosPage>();
 
+        services.AddTransient<PF_ProcesarCalificacionesPage>();
+
+        services.AddTransient<ProcesarPlanillaCalificacionesPage>();
+
         // Configuration
         services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
     }

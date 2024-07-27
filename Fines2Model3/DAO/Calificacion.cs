@@ -1,4 +1,6 @@
-﻿namespace SqlOrganize.Sql.Fines2Model3
+﻿using SqlOrganize.CollectionUtils;
+
+namespace SqlOrganize.Sql.Fines2Model3
 {
     public static class CalificacionDAO
     {
@@ -65,6 +67,50 @@
                         AND $alumno = @1
                         AND ($nota_final >= 7 OR $crec >= 4)").
                     Parameters(plan!, alumno!);
+        }
+
+        public static EntitySql CalificacionDisposicionAlumnosSql(this Db db, object disposicion, params object[] alumnos)
+        {
+            return db.Sql("calificacion").
+                    Size(0).
+                    Where("$disposicion = @0 AND $alumno IN (@1)").
+                    Parameters(disposicion!, alumnos!);
+        }
+
+
+        public static EntitySql CalificacionAprobadaCursoSql(this Db db, object curso)
+        {
+            CursoValues cursoVal = (CursoValues)db.ValuesFromId("curso", curso);
+
+            string subSql = "SELECT DISTINCT alumno FROM alumno_comision WHERE comision = @0";
+
+            return db.Sql("calificacion").
+                    Size(0).
+                    Where("$alumno IN (" + subSql + ") AND $disposicion = @1 AND (nota_final >= 7 OR crec >= 4)").
+                    Parameters(cursoVal.Get("comision")!, cursoVal.GetDisposicion()!);
+        }
+
+        public static EntitySql CalificacionDesaprobadaCursoAlumnosActivosSql(this Db db, object curso)
+        {
+            CursoValues cursoVal = (CursoValues)db.ValuesFromId("curso", curso);
+
+            string subSql = "SELECT DISTINCT alumno FROM alumno_comision WHERE estado = 'Activo' AND comision = @0";
+
+            return db.Sql("calificacion").
+                    Size(0).
+                    Where(@"$alumno IN (" + subSql + ") AND $disposicion = @1 AND nota_final < 7 AND crec < 4").
+                    Parameters(cursoVal.Get("comision")!, cursoVal.GetDisposicion()!);
+        }
+
+        public static EntitySql CalificacionesCursoSql(this Db db, object curso)
+        {
+            var cursoData = db.Sql("curso").Cache().Id(curso);
+
+            var alumnos = db.AsignacionesDeComisionesSql(cursoData["comision"]).Cache().ColOfDict().ColOfVal<object>("alumno");
+
+            var disposicion = ((CursoValues)db.Values("curso").Values(cursoData)).GetDisposicion();
+
+            return db.CalificacionDisposicionAlumnosSql(disposicion, alumnos.ToArray());
         }
     }
 }

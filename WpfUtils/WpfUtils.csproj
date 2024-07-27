@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fines2Model3\Fines2Model3.csproj" />
     <ProjectReference Include="..\SqlOrganize\SqlOrganize.csproj" />
   </ItemGroup>
 

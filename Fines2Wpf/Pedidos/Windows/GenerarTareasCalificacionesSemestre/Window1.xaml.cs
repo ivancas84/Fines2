@@ -32,7 +32,7 @@ namespace Fines2Wpf.Pedidos.Windows.GenerarTareasCalificacionesSemestre
             {
                 //item.Obj<Data_disposicion_r>();
                 Data_toma_r obj = item.Obj<Data_toma_r>();
-                obj.curso__Label = obj.sede__numero + obj.comision__division + "/" + obj.planificacion__anio + obj.planificacion__semestre + " " + obj.sede__nombre;
+                obj.curso__Label = obj.comision__pfid + " "+ obj.sede__numero + obj.comision__division + "/" + obj.planificacion__anio + obj.planificacion__semestre + " " + obj.sede__nombre;
                 tomaOC.Add(obj);
             }
 
@@ -44,7 +44,7 @@ namespace Fines2Wpf.Pedidos.Windows.GenerarTareasCalificacionesSemestre
 
             foreach (var t in tomaOC)
             {
-                string cursoLabel =  t.sede__numero + t.comision__division + "/" + t.planificacion__anio + t.planificacion__semestre + " " + t.calendario__anio + "-" + t.calendario__semestre + " " + t.asignatura__nombre + " " + t.asignatura__codigo;
+                string cursoLabel = t.comision__pfid + " " + t.sede__numero + t.comision__division + "/" + t.planificacion__anio + t.planificacion__semestre + " " + t.calendario__anio + "-" + t.calendario__semestre + " " + t.asignatura__nombre + " " + t.asignatura__codigo;
                 EntityValues ticketsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_tickets").Default().
                    Set("subject", " " + cursoLabel + ": " + t.docente__apellidos!.ToUpper() + ", " + t.docente__nombres).
                    Set("status", 1).

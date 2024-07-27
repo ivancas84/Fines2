@@ -13,5 +13,12 @@
                 Order("$nombres ASC, $apellidos ASC").
                 Parameters("%" + search + "%");
         }
+
+        public static EntitySql PersonaDniSql(this Db db, object dni)
+        {
+            return db.Sql("persona").
+                Where("$numero_documento = @0").
+                Parameters(dni);
+        }
     }
 }

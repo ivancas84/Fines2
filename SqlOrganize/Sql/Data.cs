@@ -21,15 +21,9 @@ namespace SqlOrganize.Sql
 
         /// <summary>
         /// Si se construye una instancia de data con valores por defecto, puede ser necesario acceder a la base de datos para definirlos.
+        /// Db no debe definirse como propiedad para evitar errores en la serializacion/deserializacion
         /// </summary>
-        public Db? _db;
-
-        [JsonIgnore]
-        public virtual Db? db
-        {
-            get { return _db; }
-            set { _db = value; }
-        }
+        public Db? db;
 
 
         public virtual void SetDb(Db db)

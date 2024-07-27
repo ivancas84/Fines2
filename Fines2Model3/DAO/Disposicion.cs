@@ -1,4 +1,6 @@
-﻿namespace SqlOrganize.Sql.Fines2Model3
+﻿using System.Numerics;
+
+namespace SqlOrganize.Sql.Fines2Model3
 {
     public static class DisposicionDAO
     {
@@ -14,5 +16,15 @@
                         AND $planificacion-semestre >= @2").
                 Parameters(plan!, anio!, semestre!);
         }
+
+        public static EntitySql DisposicionPlanificacionAsignaturaSql(this Db db, object planificacion, object asignatura)
+        {
+            return db.Sql("disposicion").
+                Size(0).
+                Where(@"$planificacion = @0 AND $asignatura = @1"
+            ).
+                Parameters(planificacion!, asignatura!);
+        }
+
     }
 }

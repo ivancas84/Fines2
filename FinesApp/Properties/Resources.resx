@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
+    <data name="ShellMenuItemViewsProcesarPlanillaCalificacionesPageHeader" xml:space="preserve">
+		    <value>ProcesarPlanillaCalificaciones</value>
+    </data>
+    <data name="ProcesarPlanillaCalificacionesPageTitle" xml:space="preserve">
+		    <value>ProcesarPlanillaCalificaciones</value>
+    </data>
+    <data name="ShellMenuItemViewsPF_ProcesarCalificacionesPageHeader" xml:space="preserve">
+		    <value>PF_ProcesarCalificaciones</value>
+    </data>
+    <data name="PF_ProcesarCalificacionesPageTitle" xml:space="preserve">
+		    <value>PF_ProcesarCalificaciones</value>
+    </data>
     <data name="ShellMenuItemViewsProcesarRegistroAlumnosPageHeader" xml:space="preserve">
 		    <value>ProcesarRegistroAlumnos</value>
     </data>

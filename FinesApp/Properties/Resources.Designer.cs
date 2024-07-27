@@ -147,5 +147,49 @@ namespace FinesApp.Properties {
                 return ResourceManager.GetString("ShellMenuItemViewsProcesarRegistroAlumnosPageHeader", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to PF_ProcesarCalificaciones.
+        /// </summary>
+        public static string PF_ProcesarCalificacionesPageTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("PF_ProcesarCalificacionesPageTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MenuItemViewsPF_ProcesarCalificacionesPageHeader.
+        /// </summary>
+        public static string ShellMenuItemViewsPF_ProcesarCalificacionesPageHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("ShellMenuItemViewsPF_ProcesarCalificacionesPageHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ProcesarPlanillaCalificaciones.
+        /// </summary>
+        public static string ProcesarPlanillaCalificacionesPageTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("ProcesarPlanillaCalificacionesPageTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MenuItemViewsProcesarPlanillaCalificacionesPageHeader.
+        /// </summary>
+        public static string ShellMenuItemViewsProcesarPlanillaCalificacionesPageHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("ShellMenuItemViewsProcesarPlanillaCalificacionesPageHeader", resourceCulture);
+            }
+        }
     }
 }

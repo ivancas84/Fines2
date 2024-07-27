@@ -5,6 +5,7 @@ using SqlOrganize.Sql;
 using SqlOrganize;
 using static System.Net.Mime.MediaTypeNames;
 using System.Windows.Controls;
+using System.Collections.ObjectModel;
 
 namespace WpfUtils.ComboBox
 {
@@ -42,8 +43,18 @@ namespace WpfUtils.ComboBox
             timer.Start();
         }
 
+        /// <summary>
+        /// Comportamiento general para inicializar un autocomplete Item en el constructor
+        /// </summary>
+        public static void InitializeAutocompleteItemConstructor<T>(this System.Windows.Controls.ComboBox comboBox, ObservableCollection<T> oc, string valuePath = "id", string memberPath = "Label")
+        {
+            comboBox.ItemsSource = oc;
+            comboBox.DisplayMemberPath = memberPath;
+            comboBox.SelectedValuePath = valuePath;
+        }
+
         /// <summary>Inicializacion de autocomplete combobox</summary>
-        public static string? InitializeAutocompleteItem<T>(this System.Windows.Controls.ComboBox comboBox, DispatcherTimer typingTimer, string propertyName) where T : Data
+        public static string? InitializeAutocompleteItem<T>(this System.Windows.Controls.ComboBox comboBox, DispatcherTimer typingTimer, string propertyName = "Label") where T : Data
         {
             typingTimer.Stop();
             string? text = comboBox.Text;

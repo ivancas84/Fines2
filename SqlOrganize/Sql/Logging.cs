@@ -65,6 +65,15 @@ namespace SqlOrganize.Sql
             });
         }
 
+        public void AddLogging(Logging logging)
+        {
+            foreach(var (key, value) in logging.logs)
+            {
+                foreach(var info in value)
+                    AddLog(key, info.msg, info.type, info.level);
+            }
+        }
+
         public void AddErrorLog(string key, string msg, string type = null)
         {
             AddLog(key, msg, type, Level.Error);
@@ -85,6 +94,11 @@ namespace SqlOrganize.Sql
             }
 
             return level;
+        }
+
+        public bool HasLogs()
+        {
+            return !logs.IsNoE();
         }
 
         public bool HasErrors()

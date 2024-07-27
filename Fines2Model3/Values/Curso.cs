@@ -1,10 +1,28 @@
-﻿namespace SqlOrganize.Sql.Fines2Model3
+﻿using System.Collections.Generic;
+
+namespace SqlOrganize.Sql.Fines2Model3
 {
     public class CursoValues : EntityValues
     {
         public CursoValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
         {
         }
+
+        public virtual object Get(string fieldName)
+        {
+            if (fieldName.Equals("disposicion"))
+                return GetDisposicion();
+
+            return values[fieldName]!;
+        }
+
+        public string GetDisposicion()
+        {
+            var id = db.DisposicionPlanificacionAsignaturaSql(Get("comision-planificacion"), Get("asignatura")).Cache().Dict()?["id"] ?? throw new Exception("Disposicion inexistente");
+            return (string)id;
+        }
+
+
         public override string ToString()
         {
             var s = "";
@@ -20,7 +38,12 @@
             s += (v?.GetOrNull("semestre")?.ToString() ?? "?") ?? "?";
             s += " ";
             v = ValuesRel("asignatura");
+            s += (v?.GetOrNull("nombre")?.ToString() ?? "?") ?? "?";
+            s += " ";
             s += (v?.GetOrNull("codigo")?.ToString() ?? "?") ?? "?";
+            s += " ";
+            v = ValuesRel("comision");
+            s += (v?.GetOrNull("pfid")?.ToString() ?? "?") ?? "?";
             return s.Trim();
         }
 
@@ -77,6 +100,16 @@
                 Parameters(idCurso).Cache().Dict();
 
             return db.Values("toma").Set(data!);
+        }
+
+        public override T GetData<T>()
+        {
+            var obj = base.GetData<T>();
+            
+            if (obj is Data_curso_r ob)
+                ob.Label = ToString();
+            
+            return obj;
         }
 
     }

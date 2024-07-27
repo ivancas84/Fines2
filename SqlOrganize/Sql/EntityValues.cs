@@ -106,6 +106,11 @@ namespace SqlOrganize.Sql
             return this;
         }
 
+        public string GetStr(string fieldName, string nullStr = "")
+        {
+            return GetOrNull(fieldName)?.ToString() ?? nullStr;
+        }
+
         public virtual object Get(string fieldName)
         {
             return values[fieldName]!;
@@ -455,6 +460,13 @@ namespace SqlOrganize.Sql
             return this;
         }
 
+        /// <summary>Crear instancia de EntityValues de una relacion a partir de los valores definidos en la instancia</summary>
+        public EntityValues Values(string fieldId)
+        {
+            EntityRelation rel = db.Entity(entityName).relations[fieldId];
+            return db.Values(rel.refEntityName, fieldId).Set(Values());
+        }
+
         /// <summary>Crear instancia de EntityValues obteniendo del cache o consulta los valores de la relacion</summary>
         public EntityValues? ValuesRel(string fieldId)
         {
@@ -709,7 +721,11 @@ namespace SqlOrganize.Sql
 
         public virtual T GetData<T>() where T : Data, new()
         {
-            return db.Data<T>(Values());
+            var obj = db.Data<T>(Values());
+            if (Logging.HasLogs())
+                obj.Msg += Logging.ToString();
+
+            return obj;
         }
 
 
