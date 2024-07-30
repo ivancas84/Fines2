@@ -58,17 +58,23 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
 
     private void GuardarButton_Click(object sender, RoutedEventArgs e)
     {
-        if (!persists.Any())
+        try
         {
-            ToastExtensions.Show("No existen registros para guardar");
-            return;
+            if (!persists.Any())
+            {
+                ToastExtensions.Show("No existen registros para guardar");
+                return;
+            }
+
+            persists.Transaction().RemoveCache();
+
+            ContainerApp.db.ConsultarCalificacionesAprobadasAsignacionesDesaprobadas(cursoComboBox.SelectedValue, calificacionAprobadaOC, asignacionDesaprobadaOC);
+
+            ToastExtensions.Show("Registro realizado exitosamente");
+        } catch (Exception ex)
+        {
+            ToastExtensions.ShowExceptionMessageWithFileNameAndLineNumber(ex);
         }
-
-        persists.Transaction().RemoveCache();
-
-        ContainerApp.db.ConsultarCalificacionesAprobadasAsignacionesDesaprobadas(cursoComboBox.SelectedValue, calificacionAprobadaOC, asignacionDesaprobadaOC);
-
-        ToastExtensions.Show("Registro realizado exitosamente");
     }
 
     private void EliminarButton_Click(object sender, RoutedEventArgs e)
@@ -129,7 +135,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
                 if (dnisProcesados.Contains((string)calificacionVal.Get("persona-numero_documento")))
                     throw new Exception("El DNI ya se encuentra procesado");
 
-                calificacionVal.PersistProcesarCurso(cursoSeleccionado.id).AddTo(persists);
+                calificacionVal.PersistProcesarCurso(cursoSeleccionado.id).AddToIfNotNoE(persists);
 
                 Data_calificacion_r calificacionObj = calificacionVal.GetData<Data_calificacion_r>();
 

@@ -104,6 +104,14 @@ namespace SqlOrganize.Sql
             return persist;
         }
 
+        public static EntityPersist AddToIfNotNoE(this EntityPersist persist, List<EntityPersist> persists)
+        {
+            if(!persist.sql.IsNoE())
+               persists.Add(persist);
+            return persist;
+        }
+
+
         public static EntityPersist Transaction(this EntityPersist persist)
         {
             return persist.Exec();

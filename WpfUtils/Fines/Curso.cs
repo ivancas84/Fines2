@@ -11,14 +11,14 @@ namespace WpfUtils.Fines.Curso
     {
         public static void SetCursoTimerTick(this DbApp db, System.Windows.Controls.ComboBox cursoComboBox, DispatcherTimer cursoTypingTimer, ObservableCollection<Data_curso_r> cursoOC)
         {
-                string? text = cursoComboBox.InitializeAutocompleteItem<Data_curso_r>(cursoTypingTimer);
-                if (text == null)
-                    return;
+            string? text = cursoComboBox.InitializeAutocompleteItem<Data_curso_r>(cursoTypingTimer);
+            if (text == null)
+                return;
 
-                IEnumerable<Dictionary<string, object?>> list = db.BusquedaAproximadaCurso(text).Size(20).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = db.BusquedaAproximadaCurso(text).Size(30).ColOfDict(); //busqueda de valores a mostrar en funcion del texto
 
-                db.ClearAndAddDataToOC(list, cursoOC);
-                cursoComboBox.FinalizeAutocomplete(text);
+            db.ClearAndAddDataToOC(list, cursoOC);
+            cursoComboBox.FinalizeAutocomplete(text);
         }
 
         public static void ConsultarCalificacionesAprobadasAsignacionesDesaprobadas(this Db db, object curso, ObservableCollection<Data_calificacion_r> calificacionAprobadaOC, ObservableCollection<Data_alumno_comision_r> asignacionDesaprobadaOC)
