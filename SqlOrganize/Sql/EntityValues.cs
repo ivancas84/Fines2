@@ -241,14 +241,12 @@ namespace SqlOrganize.Sql
                 default:
                     return value;
             }
-
-
         }
 
         /// <summary>Seteo "lento", con verificacion y convercion de tipo de datos</summary>
         public virtual EntityValues Sset(string _fieldName, object? value)
         {
-            string fieldName = CleanFieldName(_fieldName);
+            string fieldName = CleanPf(_fieldName);
 
             if (fieldName.Contains("-"))
             {

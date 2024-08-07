@@ -1,10 +1,5 @@
 ﻿using CommunityToolkit.WinUI.Notifications;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WpfUtils
 {
@@ -41,6 +36,26 @@ namespace WpfUtils
             new ToastContentBuilder()
                 .AddText(title)
                 .AddText(message)
+            .Show();
+        }
+
+        public static void ToastException(this Exception ex, string? title = "")
+        {
+            new ToastContentBuilder()
+                .AddText(title)
+                .AddText("ERROR: " + ex.Message)
+            .Show();
+        }
+
+        public static void ToastExceptionDetail(this Exception ex, string? title = "")
+        {
+            var st = new StackTrace(ex, true); // Get the top stack frame
+            var frame = st.GetFrame(0); // Get the line number from the stack frame
+            var lineNumber = frame.GetFileLineNumber();
+            string fileName = frame.GetFileName();
+            new ToastContentBuilder()
+                .AddText(title)
+                .AddText("ERROR " + fileName + "-" + lineNumber.ToString() + ": " + ex.Message)
             .Show();
         }
     }

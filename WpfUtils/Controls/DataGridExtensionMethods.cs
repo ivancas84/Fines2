@@ -7,10 +7,10 @@ using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace WpfUtils
+namespace WpfUtils.Controls
 {
     //Comportamiento general para DataGrid
-    public static class DataGridUtils
+    public static class DataGridExtensionMethods
     {
 
         /// <summary>Obtener key and value, en el procesamiento de columnas</summary>

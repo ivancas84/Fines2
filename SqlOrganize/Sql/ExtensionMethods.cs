@@ -104,14 +104,6 @@ namespace SqlOrganize.Sql
             return persist;
         }
 
-        public static EntityPersist AddToIfNotNoE(this EntityPersist persist, List<EntityPersist> persists)
-        {
-            if(!persist.sql.IsNoE())
-               persists.Add(persist);
-            return persist;
-        }
-
-
         public static EntityPersist Transaction(this EntityPersist persist)
         {
             return persist.Exec();
@@ -320,10 +312,11 @@ namespace SqlOrganize.Sql
         #region EntitySql + EntityValues
         public static EntityValues ValuesFromId(this Db db, string entityName, object id)
         {
-            var data = db.Sql(entityName).Cache().Id(id) ?? throw new Exception("Curso inexistente");
+            var data = db.Sql(entityName).Cache().Id(id) ?? throw new Exception(entityName + "inexistente");
             return db.Values(entityName).Values(data);
 
         }
+
         public static IDictionary<string, object?>? RowByUniqueFieldOrValues(this EntityValues values, string fieldName)
         {
             try

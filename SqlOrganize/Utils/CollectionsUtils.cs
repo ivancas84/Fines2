@@ -7,19 +7,22 @@ namespace SqlOrganize.CollectionUtils
 {
     public static class CollectionUtils
     {
+
         public static void AddRange<T>(this ObservableCollection<T> oc, IEnumerable<T> items)
         {
             foreach (var item in items)
                 oc.Add(item);
         }
 
-        public static void AddRange<T>(this ObservableCollection<T> oc, IEnumerable<Dictionary<string, object?>> items) where T : class, new()
+        public static void AddRangeToOC<T>(this IEnumerable<T> data, ObservableCollection<T> oc)
         {
-            foreach (var item in items)
-            {
-                T o = item.Obj<T>();
-                oc.Add(o);
-            }
+            oc.AddRange(data);
+        }
+
+        public static void ClearAndAddRangeToOC<T>(this IEnumerable<T> data, ObservableCollection<T> oc)
+        {
+            oc.Clear();
+            oc.AddRange(data);
         }
 
         /// <summary>
@@ -99,9 +102,6 @@ namespace SqlOrganize.CollectionUtils
         /// <param name="targetNull">La copia se realiza solamente si el campo del target es null</param>
         /// <param name="sourceNotNull">La copia se realiza solamente si el campo del surce es not null</param>
         /// <param name="compareNotNull">Se realiza comparacion de valores no nulos, si son distintos, dispara excepcion</param>
-
-
-
         public static void CopyValues<T, W>(this T target, W source, bool targetNull = true, bool sourceNotNull = false, bool compareNotNull = false)
         {
             Type t = typeof(W);
@@ -151,8 +151,6 @@ namespace SqlOrganize.CollectionUtils
             } );
         }
 
-        
-
         private static bool IsNumericType(Type type)
         {
             return type == typeof(byte) ||
@@ -167,35 +165,6 @@ namespace SqlOrganize.CollectionUtils
                    type == typeof(double) ||
                    type == typeof(decimal);
         }
-
-        /*public static bool IsNullOrEmpty(this IList? List)
-        {
-            return List == null || List.Count < 1;
-        }
-
-        public static bool IsNullOrEmpty(this IDictionary? Dictionary)
-        {
-            return (Dictionary == null || Dictionary.Count < 1);
-        }
-
-        public static bool IsNullOrEmpty(this object? o)
-        {
-            if (o is null)
-            {
-                return true;
-            }
-
-            if (o is IDictionary)
-            {
-                return ((IDictionary)o).IsNullOrEmpty();
-            }
-            if (o is IList) return ((IList)o).IsNullOrEmpty();
-            if (o is string)
-            {
-                return String.IsNullOrEmpty((string)o);
-            }
-            return false;
-        }*/
 
         public static bool IsList(this object o)
         {
@@ -259,11 +228,6 @@ namespace SqlOrganize.CollectionUtils
             return response;
         }
 
-        
-       
-       
-
-        
         public static IEnumerable<Dictionary<string, object?>> ColOfDict(this IEnumerable<object> source)
         {
             List<Dictionary<string, object?>> response = new();
@@ -273,7 +237,6 @@ namespace SqlOrganize.CollectionUtils
 
             return response!;
         }
-
 
         public static void MergeByKeys(this IEnumerable<Dictionary<string, object>> source, IEnumerable<Dictionary<string, object?>> source2, string key1, string? key2 = null, string prefix = "")
         {
@@ -336,7 +299,7 @@ namespace SqlOrganize.CollectionUtils
                 response[key] = obj;
             }
 
-            return (IDictionary<string, T>)response;
+            return response;
         }
 
         public static IDictionary<string, Dictionary<string, object?>> DictOfDictByKeys(this IEnumerable<Dictionary<string, object?>> source, params string[] keys)
@@ -370,9 +333,6 @@ namespace SqlOrganize.CollectionUtils
             return response;
         }
 
-
-       
-
         public static IDictionary<string, object?> AddPrefixToKeysOfDict(this IDictionary<string, object?> source, string prefix)
         {
             Dictionary<string, object?> response = new();
@@ -404,10 +364,6 @@ namespace SqlOrganize.CollectionUtils
             return response;
         }
 
-        
-
-  
-
         /// <summary>
         /// https://www.dotnetperls.com/sort-strings-length
         /// </summary>
@@ -432,10 +388,7 @@ namespace SqlOrganize.CollectionUtils
             return dictionaryString.TrimEnd(',', ' ') + "}";
         }
 
-
-        /// <summary>
-        /// Clonar objeto 
-        /// </summary>
+        /// <summary>Clonar objeto </summary>
         /// <remarks>https://www.wwt.com/article/how-to-clone-objects-in-dotnet-core</remarks>
         public static T? Clone<T>(this T self)
         {
