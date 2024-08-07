@@ -164,11 +164,11 @@ namespace SqlOrganize.Sql
         /// <returns>Elementos de la relación</returns>
         /// <remarks>Asegurar existencia de caracter de separación.<br/>
         /// Se puede controlar por ej.: if (key.Contains("__")) </remarks>
-        public (string fieldId, string fieldName, string refEntityName) KeyDeconstruction(string entityName, string key) {
-            int i = key.IndexOf("__");
+        public (string fieldId, string fieldName, string refEntityName) KeyDeconstruction(string entityName, string key, string separator = "__") {
+            int i = key.IndexOf(separator);
             string fieldId = key.Substring(0, i);
             string refEntityName = Entity(entityName!).relations[fieldId].refEntityName;
-            string fieldName = key.Substring(i + 2); //se suman 2 porque es la longitud de "__" (el string de separacion)
+            string fieldName = key.Substring(i + separator.Length); //se suman 2 porque es la longitud de "__" (el string de separacion)
             return (fieldId, fieldName, refEntityName);
         }
 

@@ -11,9 +11,30 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             fieldNames.Add("cuil_dni");
             //fieldNames = new List<string>(db.FieldNames(entityName));
-
-
         }
+
+
+        public override object? ValueField(string fieldName, object? value)
+        {
+            switch (fieldName)
+            {
+                case "cuil1":
+                    return Value_cuil1(value);
+                case "cuil2":
+                    return Value_cuil2(value);
+                case "fecha_nacimiento":
+                    return Value_fecha_nacimiento(value);
+                case "genero":
+                    return Value_genero(value);
+                default:
+                    return base.ValueField(fieldName, value);
+
+            }
+        }
+
+
+
+
 
         public override string ToString()
         {
@@ -124,45 +145,28 @@ namespace SqlOrganize.Sql.Fines2Model3
             return response;
         }
 
-        public void Sset_telefono(object? value)
+        public string? Value_telefono(object? value)
         {
             if (value == null)
-            {
-                values["telefono"] = null;
-                return;
-            }
+                return null;
 
-            values["telefono"] = value.ToString().CleanStringOfNonDigits();
+            return value.ToString().CleanStringOfNonDigits();
         }
 
+        public static (string? dni, string? cuil) CuilDni(object? value) {
 
-            public void Sset_cuil_dni(object? value)
-        {
             if (value == null)
-            {
-                values["cuil"] = null;
-                values["numero_documento"] = null;
-                return;
-            }
+                return (null, null);
 
             string numbers = value!.ToString()!.CleanStringOfNonDigits()!;
 
-            if (numbers.Length == 11)
-            {
-                values["cuil"] = numbers;
-                values["numero_documento"] = numbers.Substring(2, 8);
-            }
+            if (numbers.Length == 11) //longitud de cuil
+                return (numbers.Substring(2, 8), numbers);
 
-            else if (numbers.Length == 8 || numbers.Length == 7)
-            {
-                values["numero_documento"] = numbers;
-            }
+            if (numbers.Length == 8 || numbers.Length == 7) //longitud de dni
+                return (numbers, null);
 
-            else
-            {
-                throw new Exception("Error al definir CUIL o DNI");
-            }
-
+            throw new Exception("Error al definir CUIL o DNI");
         }
 
         public void Reset_dia_nacimiento()
@@ -252,73 +256,61 @@ namespace SqlOrganize.Sql.Fines2Model3
             
         }
 
-        public void Sset_fecha_nacimiento(object? value)
+        public DateTime? Value_fecha_nacimiento(object? value)
         {
             if (value.IsNoE())
-                values["fecha_nacimiento"] = null;
+                return null;
         
-            else if (value is DateTime)
-                values["fecha_nacimiento"] = (DateTime)value;
-            else
-                try
-                {
-                    values["fecha_nacimiento"] = DateTime.Parse(value.ToString()!);
-                } 
-                catch(Exception)
-                {
-                    values["fecha_nacimiento"] = null;
-                }
+            if (value is DateTime)
+                return (DateTime)value;
+            
+            try
+            {
+                return DateTime.Parse(value.ToString()!);
+            } 
+            catch(Exception)
+            {
+                return null;
+            }
         }
 
-        public void Sset_genero(object? value)
+        public string? Value_genero(object? value)
         {
-            values["genero"] = null;
+            if (value.IsNoE())
+                return null;
 
             if (((string)value!)!.Contains("B"))
-            {
-                values["genero"] = "No binario";
-                return;
-            }
+                return "No binario";
 
             if(((string)value!)!.Contains("F"))
-            {
-                values["genero"] = "Femenino";
-                return;
-            }
+                return "Femenino";
 
             if (((string)value!)!.Contains("M"))
-            {
-                values["genero"] = "Masculino";
-                return;
-            }
+                return "Masculino";
+
+            return null;
         }
 
-        public void Sset_cuil1(object? value)
+        public int? Value_cuil1(object? value)
         {
 
             if (value.IsNoE())
-            { 
-                values["cuil1"] = null;
-                return;
+                return null;
 
-            }
             bool success = int.TryParse(value!.ToString(), out int cuil1);
 
-            values["cuil1"] = (success && cuil1 >= 20 && cuil1 <= 30) ? cuil1 : null;
+            return (success && cuil1 >= 20 && cuil1 <= 30) ? cuil1 : null;
         }
 
-        public void Sset_cuil2(object? value)
+        public int? Value_cuil2(object? value)
         {
 
             if (value.IsNoE())
-            {
-                values["cuil2"] = null;
-                return;
-            }
+                return null;
 
             bool success = int.TryParse(value!.ToString(), out int cuil1);
 
-            values["cuil2"] = (success && cuil1 >= 0 && cuil1 <= 9) ? cuil1 : null;
+            return (success && cuil1 >= 0 && cuil1 <= 9) ? cuil1 : null;
         }
 
         /// <summary>

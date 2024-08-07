@@ -162,113 +162,105 @@ namespace SqlOrganize.Sql
 
         }
 
-
-        /// <summary>Seteo "lento", con verificacion y convercion de tipo de datos</summary>
-        public virtual EntityValues Sset(string _fieldName, object? value)
+        public virtual object? ValueField(string fieldName, object? value)
         {
-            string fieldName = _fieldName;
-            if (!Pf().IsNoE() && _fieldName.Contains(Pf()))
-                fieldName = _fieldName.Replace(Pf(), "");
-
-            var method = "Sset_" + fieldName;
-            Type thisType = this.GetType();
-            MethodInfo? m = thisType.GetMethod(method);
-            if (!m.IsNoE())
-            {
-                m!.Invoke(this, new object?[] { value });
-                return this;
-            }
-
             Field field = db.Field(entityName, fieldName);
             if (value == null)
-            {
-                values[fieldName] = null;
-                return this;
-            }
+                return null;
 
             switch (field.type)
             {
                 case "string":
-                    try { 
-                        values[fieldName] = (string)value;
-                    } catch (Exception e)
+                    try
                     {
-                        values[fieldName] = value.ToString();
+                        return (string)value;
                     }
-                    break;
+                    catch (Exception e)
+                    {
+                        return value.ToString();
+                    }
 
                 case "decimal":
                     if (value is decimal)
-                        values[fieldName] = value;
+                        return value;
                     else
                     {
-                        var v = value.ToString().Replace('.',',')!;
-                        values[fieldName] =  (v == "") ? null : decimal.Parse(v);
+                        var v = value.ToString().Replace('.', ',')!;
+                        return (v == "") ? null : decimal.Parse(v);
                     }
-
-                    break;
 
                 case "int":
                 case "Int32":
                     if (value is Int32)
-                        values[fieldName] = (Int32)value;
+                        return (Int32)value;
                     else
                     {
                         var v = value.ToString()!;
-                        values[fieldName] = (v == "") ? null : Int32.Parse(v);
+                        return (v == "") ? null : Int32.Parse(v);
                     }
-                    break;
 
                 case "short":
                     if (value is short)
-                        values[fieldName] = value;
+                        return value;
                     else
                     {
                         var v = value.ToString()!;
-                        values[fieldName] = (v == "") ? null : short.Parse(v);
+                        return (v == "") ? null : short.Parse(v);
                     }
-                    break;
 
                 case "ushort":
                     if (value is ushort)
-                        values[fieldName] = value;
+                        return value;
                     else
                     {
                         var v = value.ToString()!;
-                        values[fieldName] = (v == "") ? null : ushort.Parse(v);
+                        return (v == "") ? null : ushort.Parse(v);
                     }
-                    break;
 
                 case "byte":
                     if (value is byte)
-                        values[fieldName] = value;
+                        return value;
                     else
                     {
                         var v = value.ToString()!;
-                        values[fieldName] = (v == "") ? null : byte.Parse(v);
+                        return (v == "") ? null : byte.Parse(v);
                     }
-                    break;
 
                 case "bool":
                     if (value is bool)
-                        values[fieldName] = (bool)value;
+                        return (bool)value;
                     else
-                        values[fieldName] = (value as string)!.ToBool();
-                    break;
+                        return (value as string)!.ToBool();
 
                 case "DateTime":
                     if (value is DateTime)
-                        values[fieldName] = (DateTime)value;
+                        return (DateTime)value;
                     else
-                        values[fieldName] = DateTime.Parse(value.ToString()!);
-                    break;
+                        return DateTime.Parse(value.ToString()!);
 
                 default:
-                    values[fieldName] = value;
-                    break;
+                    return value;
             }
 
-            return this;
+
+        }
+
+        /// <summary>Seteo "lento", con verificacion y convercion de tipo de datos</summary>
+        public virtual EntityValues Sset(string _fieldName, object? value)
+        {
+            string fieldName = CleanFieldName(_fieldName);
+
+            if (fieldName.Contains("-"))
+            {
+                var (fid, fn, ren) = db.KeyDeconstruction(entityName, fieldName, "-");
+                values[fieldName] = db.Values(ren).ValueField(fn, value); 
+            }
+            else
+            {
+
+                values[fieldName] = ValueField(fieldName, value);
+            }
+             return this;
         }
 
         /// <summary>Resetear valores definidos</summary>

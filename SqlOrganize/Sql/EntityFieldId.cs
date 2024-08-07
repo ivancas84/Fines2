@@ -25,6 +25,13 @@
             return (!fieldId.IsNoE()) ? fieldId! : db.Entity(entityName).alias;
         }
 
+        public string CleanFieldName(string fieldName)
+        {
+            if (!Pf().IsNoE() && fieldName.Contains(Pf()))
+                return fieldName.Replace(Pf(), "");
+            return fieldName;
+        }
+
        
 
     }

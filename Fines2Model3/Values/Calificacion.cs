@@ -1,5 +1,6 @@
 ﻿using SqlOrganize.DateTimeUtils;
 using SqlOrganize.ValueTypesUtils;
+using System.ComponentModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SqlOrganize.Sql.Fines2Model3
@@ -19,8 +20,8 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             Set("persona-nombres", values[0]);
 
-            if (values.Count() != 2)
-                throw new Exception("Cantidad de valores distinto a 2, no será procesado.");
+            if (values.Count() != 5)
+                throw new Exception("Cantidad de valores distinto a 5, no será procesado.");
 
             bool asignarCrec = false;
             try
@@ -52,7 +53,10 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
 
             Set("persona-apellidos", values[1]);
-            Set("persona-numero_documento", values[2]);
+            var cuilDni = PersonaValues.CuilDni(values[2]);
+
+            Sset("persona-numero_documento", cuilDni.dni);
+            Sset("persona-cuil", cuilDni.cuil);
 
             if (GetStr("persona-numero_documento").Length < 7 || GetStr("persona-numero_documento").Length > 8)
                 throw new Exception("Longitud de DNI incorrecta.");
