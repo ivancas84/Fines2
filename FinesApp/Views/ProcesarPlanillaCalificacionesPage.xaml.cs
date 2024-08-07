@@ -8,7 +8,7 @@ using SqlOrganize.CollectionUtils;
 using System.Windows;
 using WpfUtils;
 using WpfUtils.Fines.Curso;
-using WpfUtils.ComboBox;
+using WpfUtils.Controls;
 using System.Windows.Input;
 
 namespace FinesApp.Views;
@@ -32,7 +32,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
     {
         InitializeComponent();
         calificacionDataGrid.ItemsSource = calificacionProcesadaOC;
-        cursoComboBox.InitializeAutocompleteItemConstructor(cursoOC);
+        cursoComboBox.InitializeAutoCompleteItemConstructor(cursoOC);
         cursoTypingTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromMilliseconds(300)
@@ -135,7 +135,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
                 if (dnisProcesados.Contains((string)calificacionVal.Get("persona-numero_documento")))
                     throw new Exception("El DNI ya se encuentra procesado");
 
-                calificacionVal.PersistProcesarCurso(cursoSeleccionado.id).AddToIfNotNoE(persists);
+                calificacionVal.PersistProcesarCurso(cursoSeleccionado.id).AddToIfSql(persists);
 
                 Data_calificacion_r calificacionObj = calificacionVal.GetData<Data_calificacion_r>();
 

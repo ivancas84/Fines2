@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿ using Microsoft.Extensions.Caching.Memory;
 using System.Configuration;
 using System.Net.Http;
 using SqlOrganize.Sql;

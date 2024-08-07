@@ -15,23 +15,19 @@ namespace WpfUtils.Controls
     {
         public static void InitBooleanSiNoConstructor(this System.Windows.Controls.ComboBox comboBox)
         {
-            #region pendienteComboBox
             comboBox.SelectedValuePath = "Key";
             comboBox.DisplayMemberPath = "Value";
             comboBox.Items.Add(new KeyValuePair<bool, string>(true, "Sí"));
             comboBox.Items.Add(new KeyValuePair<bool, string>(false, "No"));
-            #endregion
         }
 
         public static void InitBooleanNullSiNoConstructor(this System.Windows.Controls.ComboBox comboBox)
         {
-            #region pendienteComboBox
             comboBox.SelectedValuePath = "Key";
             comboBox.DisplayMemberPath = "Value";
             comboBox.Items.Add(new KeyValuePair<bool?, string>(null, "(Todos)"));
             comboBox.Items.Add(new KeyValuePair<bool, string>(true, "Sí"));
             comboBox.Items.Add(new KeyValuePair<bool, string>(false, "No"));
-            #endregion
         }
 
         public static void SetKeyUp(this DispatcherTimer timer, KeyEventArgs e)

@@ -10,7 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using WpfUtils;
-using WpfUtils.ComboBox;
+using WpfUtils.Controls;
 using WpfUtils.Fines.Curso;
 
 namespace FinesApp.Views;
@@ -34,7 +34,7 @@ public partial class PF_ProcesarCalificacionesPage : Page, INotifyPropertyChange
     {
         InitializeComponent();
         calificacionDataGrid.ItemsSource = calificacionProcesadaOC;
-        cursoComboBox.InitializeAutocompleteItemConstructor(cursoOC);
+        cursoComboBox.InitializeAutoCompleteItemConstructor(cursoOC);
         cursoTypingTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromMilliseconds(300)
