@@ -59,8 +59,8 @@
                             <!--TODO: Review the MenuItem headers in Resources.resx file for all of your views and place '_' before the letter that you want to use for menu keyboard usage-->
                             <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsMainPageHeader}" Click="OnMenuViewsMain" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
                             <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsProcesarRegistroAlumnosPageHeader}" Click="OnMenuViewsProcesarRegistroAlumnos" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
-                            <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsPF_ProcesarCalificacionesPageHeader}" Click="OnMenuViewsPF_ProcesarCalificaciones" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
                             <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsProcesarPlanillaCalificacionesPageHeader}" Click="OnMenuViewsProcesarPlanillaCalificaciones" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
+                            <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsTransferirAlumnoPageHeader}" Click="OnMenuViewsTransferirAlumno" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
                         </MenuItem>
                     </Menu>
                     <Frame
