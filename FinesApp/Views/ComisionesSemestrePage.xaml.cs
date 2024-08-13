@@ -47,43 +47,17 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     {
         try
         {
-            if (tbAnio.Text.IsNoE() || tbSemestre.Text.IsNoE())
-                throw new Exception("Verificar año o semestre seleccionado");
+            if (tbAnio.Text.IsNoE() || tbSemestre.Text.IsNoE() || cbxCalendario.SelectedIndex < 0)
+                throw new Exception("Verificar formulario");
 
+            IEnumerable<EntityPersist> persists = ContainerApp.db.Values<ComisionValues>().GenerarComisionesSemestreSiguiente(short.Parse(tbAnio.Text), short.Parse(tbSemestre.Text), cbxCalendario.SelectedValue);
 
-            List<EntityPersist> persists = ComisionValues.GenerarComisionesSemestreSiguiente(short.Parse(tbAnio.Text), short.Parse(tbSemestre.Text));
+            persists.Transaction().RemoveCache();
         
         } catch (Exception ex)
         {
-            ex.ToastException()
+            ex.ToastException();
         }
-
-
-
-        EntityPersist persist = ContainerApp.db.Persist();
-        foreach (Dictionary<string, object?> com in comisionesAutorizadasSemestreAnterior)
-        {
-            Data_comision_r comObj = com.Obj<Data_comision_r>();
-
-            
-            string idPlanificacionSiguiente = planificacionDAO.PlanificacionSiguiente(comObj.planificacion__anio!, comObj.planificacion__semestre!, comObj.plan__id!);
-
-            EntityValues comisionVal = ContainerApp.db.Values("comision").
-                Set(comObj).
-                SetDefault("id").
-                Set("planificacion", idPlanificacionSiguiente).
-                Set("apertura", false).
-                Set("configuracion", "Histórica").
-                Set("calendario", idNuevoCalendarioTextBox.Text).
-                SetDefault("alta").
-                Reset();
-
-            persist.Insert(comisionVal);
-            persist.UpdateValueIds("comision", "comision_siguiente", comisionVal.Get("id"), comObj.id);
-        }
-
-        persist.Transaction().RemoveCache();
-
     }
 
     private void tbAnio_LostFocus(object sender, RoutedEventArgs e)

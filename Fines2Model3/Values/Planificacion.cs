@@ -34,10 +34,10 @@
             return (anio, semestre);
         }
 
-        public static (string anio, string semestre) AnioSemestreSiguiente(string anio, string semestre)
+        public static (string anio, string semestre) AnioSemestreSiguiente(object anio, object semestre)
         {
 
-            if (semestre.Equals("2"))
+            if (semestre.ToString().Equals("2"))
             {
                 semestre = "1";
                 short anio_ = Convert.ToInt16(anio);
@@ -50,7 +50,7 @@
                 semestre = "2";
             }
 
-            return (anio, semestre);
+            return (anio.ToString(), semestre.ToString());
         }
 
     }

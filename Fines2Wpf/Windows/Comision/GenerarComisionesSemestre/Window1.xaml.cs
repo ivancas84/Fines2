@@ -15,7 +15,6 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
     public partial class Window1 : Window
     {
 
-        DAO.Planificacion planificacionDAO = new ();
         public Window1()
         {
             InitializeComponent();
@@ -57,7 +56,7 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
             {
                 Data_comision_r comObj = com.Obj<Data_comision_r>();
 
-                string idPlanificacionSiguiente = planificacionDAO.PlanificacionSiguiente(comObj.planificacion__anio!, comObj.planificacion__semestre!, comObj.plan__id!);
+                string idPlanificacionSiguiente = ContainerApp.db.PlanificacionSiguienteSql(comObj.planificacion__anio!, comObj.planificacion__semestre!, comObj.plan__id!).Value<string>();
 
                 EntityValues comisionVal = ContainerApp.db.Values("comision").
                     Set(comObj).

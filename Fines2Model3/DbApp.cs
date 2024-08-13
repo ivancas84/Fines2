@@ -8,6 +8,47 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
         }
 
+        /// <summary>Referencia y cast rapido para una determinada subclase de EntityValues</summary>
+        public T Values<T>(string? fieldId = null) where T : EntityValues
+        {
+            if (typeof(T) == typeof(AlumnoValues))
+                return (T)Values("alumno", fieldId);
+
+            if (typeof(T) == typeof(AlumnoComisionValues))
+                return (T)Values("alumno_comision", fieldId);
+
+            if (typeof(T) == typeof(AlumnoComisionValues))
+                return (T)Values("calendario", fieldId);
+
+            if (typeof(T) == typeof(CalificacionValues))
+                return (T)Values("calificacion", fieldId);
+
+            if (typeof(T) == typeof(DesignacionValues))
+                return (T)Values("designacion", fieldId);
+
+            if (typeof(T) == typeof(DomicilioValues))
+                return (T)Values("domicilio", fieldId);
+
+            if (typeof(T) == typeof(ComisionValues))
+                return (T)Values("comision", fieldId);
+
+            if (typeof(T) == typeof(PersonaValues))
+                return (T)Values("persona", fieldId);
+
+            if (typeof(T) == typeof(PlanValues))
+                return (T)Values("plan", fieldId);
+
+            if (typeof(T) == typeof(PlanificacionValues))
+                return (T)Values("planificacion", fieldId);
+
+            if (typeof(T) == typeof(DisposicionValues))
+                return (T)Values("disposicion", fieldId);
+
+            if (typeof(T) == typeof(CursoValues))
+                return (T)Values("curso", fieldId);
+            
+            throw new InvalidOperationException($"Unsupported type: {typeof(T).Name}");
+        }
 
         public override EntityValues Values(string entityName, string? fieldId = null)
         {

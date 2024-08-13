@@ -134,45 +134,51 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public IEnumerable<EntityPersist> GenerarComisionesSemestreSiguiente(short anioCalendario, short semestreCalendario, object idCalendario)
         {
-            (short anio, short semestre) anioSemestre = CalendarioValues.AnioSemestreSiguiente(anioCalendario, semestreCalendario);
-
             IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestre = db.Sql("comision").
                Where(@" 
                         $calendario-anio = @0 
-                        AND $calendario-semestre=@1
-                        AND ($planificacion-anio != '3' AND $planificacion-semestre != '2')
+                        AND $calendario-semestre= @1
+                        AND $comision_siguiente IS NULL
+                        AND $autorizada is true
+                        AND (($planificacion-anio = '3' AND $planificacion-semestre = '1')
+                        OR ($planificacion-anio = '2' AND $planificacion-semestre = '2')
+                        OR ($planificacion-anio = '2' AND $planificacion-semestre = '1')
+                        OR ($planificacion-anio = '1' AND $planificacion-semestre = '2')
+                        OR ($planificacion-anio = '1' AND $planificacion-semestre = '1'))
                     ").
                Size(0).
+               Parameters(anioCalendario, semestreCalendario).
                ColOfDict();
 
             List<EntityPersist> persists = new();
-            foreach (Dictionary<string, object?> com in comisionesAutorizadasSemestre)
+            for(var i = 0; i < comisionesAutorizadasSemestre.Count(); i++)
             {
-                Data_comision_r comObj = db.ToData<Data_comision_r>(com);
+                object actualId = comisionesAutorizadasSemestre.ElementAt(i)["id"]!;
 
-                string? idPlanificacion = db.PlanificacionSiguienteSql(comObj.planificacion__anio!, comObj.planificacion__semestre!, comObj.plan__id!).Value<string>("id");
-
-                EntityValues comisionVal = comObj.GetValues<ComisionValues>();
+                ComisionValues comValues = (ComisionValues)db.Values("comision").SetValues(comisionesAutorizadasSemestre.ElementAt(i)).
                     SetDefault("id").
                     SetDefault("alta").
-                    Set("planificacion", idPlanificacion).
                     Set("apertura", false).
                     Set("configuracion", "Histórica").
                     Set("calendario", idCalendario).
                     Reset();
 
-                if (idPlanificacion.IsNoE())
+                string? idPlanificacion = db.PlanificacionSiguienteSql(comValues.Get("planificacion-anio")!, comValues.Get("planificacion-semestre")!, comValues.Get("plan-id")!).Value<string>("id");
+                
+                comValues.Set("planificacion", idPlanificacion);
+                if (!comValues.Check())
                 {
+                    logging.AddErrorLog(i.ToString(), comValues.Logging.ToString(), "generar_comisiones_siguientes");
                     continue;
                 }
 
-                comisionVal.
+                comValues.
                     Insert().
-                    UpdateValueIds("comision", "comision_siguiente", comisionVal.Get("id"), comObj.id!).
+                    UpdateValueIds("comision", "comision_siguiente", comValues.Get("id"), actualId!).
                     AddTo(persists);
             }
 
-            persist.Transaction().RemoveCache();
+            return persists;
         }
     }
 }
