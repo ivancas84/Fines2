@@ -79,8 +79,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
                 Order("$nombre").
                 Cache().ColOfDict();
 
-            modalidadOC.Clear();
-            modalidadOC.AddRange(data);
+            ContainerApp.db.ClearAndAddDataToOC(data, modalidadOC);
             #endregion
 
             #region planificacionComboBox

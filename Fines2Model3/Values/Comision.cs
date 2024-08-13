@@ -8,16 +8,32 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
         }
 
+        public override T GetData<T>()
+        {
+
+            string label = ToString();
+
+            var obj = db.Data<T>(Values());
+            if (obj is Data_comision p)
+                p.Label = label;
+            if (Logging.HasLogs())
+                obj.Msg += Logging.ToString();
+
+            return obj;
+        }
+
+
+
         public string Numero()
         {
             var s = "";
 
-            EntityValues? v = ValuesRel("sede");
-            s += (!v.IsNullOrEmpty()) ? (v.GetOrNull("numero")?.ToString() ?? "?") : "?";
+            EntityValues? v = GetValuesCache("sede");
+            s += (!v.IsNoE()) ? (v.GetOrNull("numero")?.ToString() ?? "?") : "?";
             s += GetOrNull("division")?.ToString() ?? "?";
             s += "/";
-            v = ValuesRel("planificacion");
-            if (!v.IsNullOrEmpty())
+            v = GetValuesCache("planificacion");
+            if (!v.IsNoE())
             {
                 s += v.GetOrNull("anio")?.ToString() ?? "?"; ;
                 s += v.GetOrNull("semestre")?.ToString() ?? "?"; ;
@@ -37,14 +53,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             s += " ";
             s += CalendarioAnioSemestre();
             s += " ";
-            s += ValuesRel("sede")?.GetOrNull("nombre")?.ToString() ?? "?";
+            s += GetValuesCache("sede")?.GetOrNull("nombre")?.ToString() ?? "?";
             return s;
         }
 
         public string CalendarioAnioSemestre()
         {
             string s = "";
-            var v = ValuesRel("calendario");
+            var v = GetValuesCache("calendario");
             if (!v.IsNullOrEmpty())
             {
                 s += v.GetOrNull("anio")?.ToString() ?? "?";
@@ -114,6 +130,49 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
 
             persist.Exec().RemoveCache();
+        }
+
+        public IEnumerable<EntityPersist> GenerarComisionesSemestreSiguiente(short anioCalendario, short semestreCalendario, object idCalendario)
+        {
+            (short anio, short semestre) anioSemestre = CalendarioValues.AnioSemestreSiguiente(anioCalendario, semestreCalendario);
+
+            IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestre = db.Sql("comision").
+               Where(@" 
+                        $calendario-anio = @0 
+                        AND $calendario-semestre=@1
+                        AND ($planificacion-anio != '3' AND $planificacion-semestre != '2')
+                    ").
+               Size(0).
+               ColOfDict();
+
+            List<EntityPersist> persists = new();
+            foreach (Dictionary<string, object?> com in comisionesAutorizadasSemestre)
+            {
+                Data_comision_r comObj = db.ToData<Data_comision_r>(com);
+
+                string? idPlanificacion = db.PlanificacionSiguienteSql(comObj.planificacion__anio!, comObj.planificacion__semestre!, comObj.plan__id!).Value<string>("id");
+
+                EntityValues comisionVal = comObj.GetValues<ComisionValues>();
+                    SetDefault("id").
+                    SetDefault("alta").
+                    Set("planificacion", idPlanificacion).
+                    Set("apertura", false).
+                    Set("configuracion", "Histórica").
+                    Set("calendario", idCalendario).
+                    Reset();
+
+                if (idPlanificacion.IsNoE())
+                {
+                    continue;
+                }
+
+                comisionVal.
+                    Insert().
+                    UpdateValueIds("comision", "comision_siguiente", comisionVal.Get("id"), comObj.id!).
+                    AddTo(persists);
+            }
+
+            persist.Transaction().RemoveCache();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Fines2Model3.Item;
+using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -27,22 +28,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             var s = "";
 
-            EntityValues? v = ValuesRel("sede");
+            EntityValues? v = GetValuesCache("sede");
             s += (v?.GetOrNull("numero")?.ToString() ?? "?") ?? "?";
 
-            v = ValuesRel("comision");
+            v = GetValuesCache("comision");
             s += (v?.GetOrNull("division")?.ToString() ?? "?") ?? "?";
             s += "/";
-            v = ValuesRel("planificacion");
+            v = GetValuesCache("planificacion");
             s += (v?.GetOrNull("anio")?.ToString() ?? "?") ?? "?";
             s += (v?.GetOrNull("semestre")?.ToString() ?? "?") ?? "?";
             s += " ";
-            v = ValuesRel("asignatura");
+            v = GetValuesCache("asignatura");
             s += (v?.GetOrNull("nombre")?.ToString() ?? "?") ?? "?";
             s += " ";
             s += (v?.GetOrNull("codigo")?.ToString() ?? "?") ?? "?";
             s += " ";
-            v = ValuesRel("comision");
+            v = GetValuesCache("comision");
             s += (v?.GetOrNull("pfid")?.ToString() ?? "?") ?? "?";
             return s.Trim();
         }
@@ -62,7 +63,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             {
                 s += " ";
                 var val = db.Values("toma").Set(dd!);
-                s += val?.ValuesRel("docente")?.ToString() ?? "?";
+                s += val?.GetValuesCache("docente")?.ToString() ?? "?";
 
             }
             return s;
@@ -72,7 +73,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             var s = ToString();
             s += " ";
-            s += ValuesRel("sede")?.GetOrNull("nombre") ?? "?";
+            s += GetValuesCache("sede")?.GetOrNull("nombre") ?? "?";
             return s;
         }
 
@@ -80,11 +81,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             var s = ToString();
             s += " ";
-            s += ValuesRel("asignatura")?.GetOrNull("nombre") ?? "?";
+            s += GetValuesCache("asignatura")?.GetOrNull("nombre") ?? "?";
             s += " ";
-            s += ValuesRel("sede")?.GetOrNull("nombre") ?? "?";
+            s += GetValuesCache("sede")?.GetOrNull("nombre") ?? "?";
             s += " ";
-            s += ValuesTomaActiva()?.ValuesRel("docente")?.ToString() ?? "?";
+            s += ValuesTomaActiva()?.GetValuesCache("docente")?.ToString() ?? "?";
             return s;
         }
 
@@ -105,12 +106,15 @@ namespace SqlOrganize.Sql.Fines2Model3
         public override T GetData<T>()
         {
             var obj = base.GetData<T>();
-            
-            if (obj is Data_curso_r ob)
-                ob.Label = ToString();
+
+            if (obj is Data_curso_r c)
+                c.Label = ToString();
             
             return obj;
         }
+
+
+
 
     }
 }

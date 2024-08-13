@@ -10,14 +10,14 @@
         {
             var s = "";
 
-            EntityValues? v = ValuesRel("persona");
+            EntityValues? v = GetValuesCache("persona");
             if(v != null)
             {
-                s += v.GetOrNull("nombres")?.ToString() ?? "?";
+                s += v.GetStr("nombres", "?");
                 s += " ";
-                s += v.GetOrNull("apellidos")?.ToString() ?? "?";
+                s += v.GetStr("apellidos", "?");
                 s += " ";
-                s += v.GetOrNull("telefono")?.ToString() ?? "?";
+                s += v.GetStr("telefono", "?");
             } else
             {
                 s = "?";

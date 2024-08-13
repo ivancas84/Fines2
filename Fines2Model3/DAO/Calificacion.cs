@@ -108,9 +108,58 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             var alumnos = db.AsignacionesDeComisionesSql(cursoData["comision"]).Cache().ColOfDict().ColOfVal<object>("alumno");
 
-            var disposicion = ((CursoValues)db.Values("curso").Values(cursoData)).GetDisposicion();
+            var disposicion = ((CursoValues)db.Values("curso").SetValues(cursoData)).GetDisposicion();
 
             return db.CalificacionDisposicionAlumnosSql(disposicion, alumnos.ToArray());
+        }
+
+
+        public static EntitySql CantidadCalificacionesAprobadasPorAlumnoDePlaniticacion(this Db db, List<object> alumnosYplanes)
+        {
+            return db.Sql("calificacion")
+                .Select("COUNT($id) as cantidad")
+                .Group("$alumno, $planificacion_dis-anio, $planificacion_dis-semestre")
+                .Size(0)
+                .Where(@"
+                    CONCAT($alumno, $planificacion_dis-plan) IN (@0)
+                    AND ($nota_final >= 7 OR $crec >= 4) 
+                ")
+                .Order("$alumno ASC, $planificacion_dis-anio ASC, $planificacion_dis-semestre ASC")
+                .Parameters(alumnosYplanes);
+        }
+
+
+        /// <summary> Calificaciones aprobadas de alumno para una determinada planificacion </summary>
+        /// <remarks> Recordar que una planificacion es la combinacion entre anio, semestre y plan</remarks>
+        public static EntitySql CalificacionesAprobadasPorAlumnoDePlanificacionSql(this Db db, object idPlanificacion, params object[] idAlumnos)
+        {
+            return db.Sql("calificacion")
+                .Size(0)
+                .Where(@"
+                    $alumno IN (@0)
+                    AND $planificacion_dis-id = @1
+                    AND ($nota_final >= 7 OR $crec >= 4) 
+                ")
+                .Order("$alumno ASC, $planificacion_dis-anio ASC, $planificacion_dis-semestre ASC")
+                .Parameters(idAlumnos.ToList(), idPlanificacion);
+        }
+
+
+        /// <summary> Cantidad de calificaciones de alumno para una determinada planificacion </summary>
+        /// <remarks> Recordar que una planificacion es la combinacion entre anio, semestre y plan</remarks>
+        public static EntitySql CantidadCalificacionesAprobadasPorAlumnoDePlanificacionSql(this Db db, object idPlanificacion, params object[] idAlumnos)
+        {
+            return db.Sql("calificacion")
+                .Select("COUNT($id) as cantidad")
+                .Group("$alumno")
+                .Size(0)
+                .Where(@"
+                    $alumno IN (@0)
+                    AND $planificacion_dis-id = @1
+                    AND ($nota_final >= 7 OR $crec >= 4) 
+                ")
+                .Order("$alumno ASC, $planificacion_dis-anio ASC, $planificacion_dis-semestre ASC")
+                .Parameters(idAlumnos.ToList(), idPlanificacion);
         }
     }
 }

@@ -57,7 +57,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
             {
                 var cursoData = ContainerApp.db.Sql("curso").Cache().Id(idCurso)!;
                 curso = cursoData.Obj<Data_curso_r>();
-                CursoValues val = (CursoValues)ContainerApp.db.Values("curso").Values(cursoData!);
+                CursoValues val = (CursoValues)ContainerApp.db.Values("curso").SetValues(cursoData!);
                 formData.curso__Label = curso.sede__numero + curso.comision__division + "/"+curso.planificacion__anio + curso.planificacion__semestre + " " + curso.asignatura__nombre + " " + curso.asignatura__codigo;
             }
             #endregion

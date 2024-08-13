@@ -331,5 +331,19 @@ namespace SqlOrganize.Sql.Fines2Model3
             return false;
 
         }
+
+
+        public override T GetData<T>()
+        {
+            var obj = db.Data<T>(Values());
+            if(obj is Data_persona p)
+            {
+                p.Label = p.nombres + " " + p.apellidos + " " + p.numero_documento;
+            }
+            if (Logging.HasLogs())
+                obj.Msg += Logging.ToString();
+
+            return obj;
+        }
     }
 }

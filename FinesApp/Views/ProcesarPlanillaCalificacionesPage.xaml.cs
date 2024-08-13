@@ -32,7 +32,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
     {
         InitializeComponent();
         calificacionDataGrid.ItemsSource = calificacionProcesadaOC;
-        cursoComboBox.InitializeAutoCompleteItemConstructor(cursoOC);
+        cursoComboBox.InitComboBoxConstructor(cursoOC);
         cursoTypingTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromMilliseconds(300)

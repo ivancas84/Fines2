@@ -86,7 +86,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
 
                     if (!personaExistenteData.IsNoE()) //existen datos de persona en la base
                     {
-                        PersonaValues personaExistenteVal = (PersonaValues)ContainerApp.db.Values("persona").Values(personaExistenteData);
+                        PersonaValues personaExistenteVal = (PersonaValues)ContainerApp.db.Values("persona").SetValues(personaExistenteData);
 
                         CompareParams cp = new()
                         {
@@ -157,7 +157,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
 
                     if (!alumnoExistenteData.IsNoE()) //existen datos de alumno en la base
                     {
-                        var alumnoExistente = ContainerApp.db.Values("alumno").Values(alumnoExistenteData!);
+                        var alumnoExistente = ContainerApp.db.Values("alumno").SetValues(alumnoExistenteData!);
 
                         statusData.Add(new()
                         {
@@ -188,7 +188,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                                 row = j,
                                 status = "warning alumno",
                                 detail = "El plan del alumno es diferente del plan de la comision.",
-                                data = "Nuevo: " + comisiones[pfid].plan__orientacion + " " + comisiones[pfid].plan__resolucion + ". Existente: " + alumnoExistente.ValuesRel("plan")?.ToString()
+                                data = "Nuevo: " + comisiones[pfid].plan__orientacion + " " + comisiones[pfid].plan__resolucion + ". Existente: " + alumnoExistente.GetValuesCache("plan")?.ToString()
                             });
                         }
                     }
@@ -253,7 +253,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                     foreach (var a in otrasAsignacionesDelSemestre)
                     {
                         var comD = ContainerApp.db.Sql("comision").Cache().Id(a["comision"]);
-                        var comV = (ComisionValues)ContainerApp.db.Values("comision").Values(comD!);
+                        var comV = (ComisionValues)ContainerApp.db.Values("comision").SetValues(comD!);
 
                         statusData.Add(new StatusData()
                         {
@@ -271,7 +271,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                     foreach (var a in otrasAsignaciones)
                     {
                         IDictionary<string, object?> comD = ContainerApp.db.Sql("comision").Cache().Id(a["comision-id"]);
-                        ComisionValues comV = (ComisionValues)ContainerApp.db.Values("comision").Values(comD!);
+                        ComisionValues comV = (ComisionValues)ContainerApp.db.Values("comision").SetValues(comD!);
 
                         statusData.Add(new StatusData()
                         {

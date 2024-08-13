@@ -31,7 +31,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     $comision IN ( @0 )
                 "
             )
-               .Parameters(id_comisiones);
+               .Parameters(id_comisiones.ToList());
         }
 
         public static EntitySql AsignacionesDeComisionesAutorizadasDelPeriodoSql(this Db db, object anio, object semestre)

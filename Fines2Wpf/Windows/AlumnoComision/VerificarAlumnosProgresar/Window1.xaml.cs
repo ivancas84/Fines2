@@ -1,5 +1,6 @@
 ﻿using SqlOrganize;
 using SqlOrganize.CollectionUtils;
+using SqlOrganize.Sql;
 using SqlOrganize.Sql.Fines2Model3;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -39,8 +40,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.VerificarAlumnosProgresar
             IEnumerable<Dictionary<string, object?>> asignacionesData = DAO.AlumnoComision2.TodasLasAsignacionesAsignacionesDelSemestrePorDNIQuery("2024", "1", dnis).
                 Cache().ColOfDict();
 
-            asignacionesOC.Clear();
-            asignacionesOC.AddRange(asignacionesData);
+            ContainerApp.db.ClearAndAddDataToOC(asignacionesData, asignacionesOC);
         }
 
 

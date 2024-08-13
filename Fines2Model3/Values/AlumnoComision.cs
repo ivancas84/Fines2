@@ -41,7 +41,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             if (!asignacionData.IsNoE()) //existe asignacion > comparar datos principales de persona
             {
-                Values(asignacionData!);
+                SetValues(asignacionData!);
 
                 CompareParams compare = new()
                 {

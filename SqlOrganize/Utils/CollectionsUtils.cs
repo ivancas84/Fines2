@@ -139,7 +139,7 @@ namespace SqlOrganize.CollectionUtils
             }
         }
 
-        public static void Merge(this IDictionary<string, object> dictionary1, IDictionary<string, object> dictionary2, string prefix = "")
+        public static void Merge(this IDictionary<string, object?> dictionary1, IDictionary<string, object?> dictionary2, string prefix = "")
         {
             dictionary2.ToList().ForEach(pair => dictionary1[prefix + pair.Key] = pair.Value);
         }
@@ -238,7 +238,7 @@ namespace SqlOrganize.CollectionUtils
             return response!;
         }
 
-        public static void MergeByKeys(this IEnumerable<Dictionary<string, object>> source, IEnumerable<Dictionary<string, object?>> source2, string key1, string? key2 = null, string prefix = "")
+        public static void MergeByKeys(this IEnumerable<Dictionary<string, object?>> source, IEnumerable<Dictionary<string, object?>> source2, string key1, string? key2 = null, string prefix = "")
         {
             key2 = key2 ?? key1;
 
@@ -247,22 +247,25 @@ namespace SqlOrganize.CollectionUtils
             foreach (var item in source)
             {
                 if (s.ContainsKey(item[key1].ToString()))
+                {
                     item.Merge(s[item[key1].ToString()], prefix);
+                    continue;
+                }
             }
         }
 
-        public static void MergeByKeysFirst(this IEnumerable<Dictionary<string, object>> source, IEnumerable<Dictionary<string, object>> source2, string key1, string? key2 = null)
+        public static void MergeByKeysLast(this IEnumerable<Dictionary<string, object?>> source, IEnumerable<Dictionary<string, object?>> source2, string key1, string? key2 = null, string prefix = "")
         {
             key2 = key2 ?? key1;
 
             var s = source2.DictOfDictByKeys(key2);
 
-            foreach (var item in source)
+            foreach (var item in source.Reverse())
             {
                 if (s.ContainsKey(item[key1]!.ToString()!))
                 {
-                    item.Merge(s[item[key1]!.ToString()!]);
-                    break;
+                    item.Merge(s[item[key1]!.ToString()!], prefix);
+                    continue;
                 }
             }
         }

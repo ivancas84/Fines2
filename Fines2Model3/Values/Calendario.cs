@@ -17,11 +17,8 @@
             return s.Trim();
         }
 
-        public (short anio, short semestre) AnioSemestreAnterior()
-        {
-            short anio = (short)Get("anio");
-            short semestre = (short)Get("semestre");
-
+        public static  (short anio, short semestre)  AnioSemestreAnterior(short anio, short semestre)
+        { 
             if(semestre == 1)
             {
                 semestre = 2;
@@ -34,11 +31,9 @@
             return (anio, semestre);
         }
 
-        public (short anio, short semestre) AnioSemestreSiguiente()
-        {
-            short anio = (short)Get("anio");
-            short semestre = (short)Get("semestre");
 
+        public static  (short anio, short semestre) AnioSemestreSiguiente(short anio, short semestre)
+        {
             if (semestre == 2)
             {
                 semestre = 1;
@@ -50,6 +45,20 @@
             }
 
             return (anio, semestre);
+        }
+
+        public override T GetData<T>()
+        {
+
+            string label = ToString();
+
+            var obj = db.Data<T>(Values());
+            if (obj is Data_calendario p)
+                p.Label = label;
+            if (Logging.HasLogs())
+                obj.Msg += Logging.ToString();
+
+            return obj;
         }
 
     }

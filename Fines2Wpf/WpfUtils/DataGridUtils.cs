@@ -85,7 +85,7 @@ namespace WpfUtils
                 if (fieldId.IsNoE() && exceptionIfMainEntityExists)
                     throw new Exception("Los datos ingresados en la edición de la celda ya pertenecen a otra fila. No se cumple la restricción de unicidad");
 
-                v.Values(rowDb!);
+                v.SetValues(rowDb!);
                 T data = v.Get().Obj<T>();
                 (row.Item as T).CopyValues<T>(data, sourceNotNull: true);
             }

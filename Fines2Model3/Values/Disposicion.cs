@@ -10,7 +10,7 @@
         {
             var s = "";
 
-            EntityValues? v = ValuesRel("asignatura");
+            EntityValues? v = GetValuesCache("asignatura");
             if(v != null)
             {
                 s += v.GetOrNull("nombre")?.ToString() ?? "?";
@@ -19,7 +19,7 @@
                 s += " ";
             }
 
-            v = ValuesRel("planificacion");
+            v = GetValuesCache("planificacion");
             if (v != null)
             {
                 s += v.GetOrNull("anio")?.ToString() ?? "?";

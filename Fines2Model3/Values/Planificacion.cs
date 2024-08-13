@@ -7,25 +7,18 @@
         }
         public override string ToString()
         {
-            var s = "";
+            var s = GetStr("?", "-", "anio", "semestre");
 
-            s += GetOrNull("anio")?.ToString() ?? "?";
-            s += "-";
-            s += GetOrNull("semestre")?.ToString() ?? "?";
-            s += "";
-            EntityValues? planVal = ValuesRel("plan");
+            EntityValues? planVal = GetValuesCache("plan");
             if (!planVal.IsNullOrEmpty())
             {
-                s += planVal.GetOrNull("distribucion_horaria")?.ToString() ?? "?";
+                s += planVal.GetStr("distribucion_horaria", "?");
             }
             return s.Trim();
         }
 
-        public (string anio, string semestre) AnioSemestreAnterior()
+        public static (string anio, string semestre) AnioSemestreAnterior(string anio, string semestre)
         {
-            string anio = (string)Get("anio");
-            string semestre = (string)Get("semestre");
-
             if(semestre.Equals("1"))
             {
                 semestre = "2";
@@ -41,10 +34,8 @@
             return (anio, semestre);
         }
 
-        public (string anio, string semestre) AnioSemestreSiguiente()
+        public static (string anio, string semestre) AnioSemestreSiguiente(string anio, string semestre)
         {
-            string anio = (string)Get("anio");
-            string semestre = (string)Get("semestre");
 
             if (semestre.Equals("2"))
             {

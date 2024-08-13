@@ -32,13 +32,13 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
         DataContext = this;
 
         #region Autocomplete v3 - origen
-        origenComboBox.InitializeAutoCompleteItemConstructor(origenOC);
+        origenComboBox.InitComboBoxConstructor(origenOC);
         origenTypingTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
         origenTypingTimer.Tick += OrigenTimer_Tick;
         #endregion
 
         #region Autocomplete v3 - destino
-        destinoComboBox.InitializeAutoCompleteItemConstructor(destinoOC);
+        destinoComboBox.InitComboBoxConstructor(destinoOC);
         destinoTypingTimer = new DispatcherTimer{ Interval = TimeSpan.FromMilliseconds(300) };
         destinoTypingTimer.Tick += DestinoTimer_Tick;
         #endregion
@@ -53,9 +53,7 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
             if (text == null)
                 return;
 
-            var textBox = (TextBox)origenComboBox.Template.FindName("PART_EditableTextBox", origenComboBox);
-
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).ColOfDict(); //busqueda de valores a mostrar en funcion del texto
 
             ContainerApp.db.ClearAndAddDataToOC(list, origenOC);
 
@@ -84,7 +82,7 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
 
             var textBox = (TextBox)destinoComboBox.Template.FindName("PART_EditableTextBox", destinoComboBox);
 
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).ColOfDict(); //busqueda de valores a mostrar en funcion del texto
 
             ContainerApp.db.ClearAndAddDataToOC(list, destinoOC);
 
@@ -113,9 +111,11 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
             if (personaOrigenObj.IsNoE() || personaDestinoObj.IsNoE())
                 throw new Exception("Debe seleccionar ambas personas");
 
-            var persist = ContainerApp.db.Persist();
+
+            List<EntityPersist> persists = new();
+
             List<Field> fieldsOmPersona = ContainerApp.db.Entity("persona").FieldsOm();
-            persist.TransferOm("persona", personaDestinoObj.id!, personaOrigenObj.id!);
+            ContainerApp.db.Persist().TransferOm("persona", personaOrigenObj.id!, personaDestinoObj.id!).AddToIfSql(persists);
 
             IDictionary<string, object?>? alumnoOrigenData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(personaOrigenObj.id!).Dict();
             IDictionary<string, object?>? alumnoDestinoData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(personaDestinoObj.id!).Dict();
@@ -124,17 +124,18 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
             {
                 if (alumnoDestinoData.IsNoE())
                 {
-                    persist.UpdateValueIds("alumno", "persona", personaOrigenObj.id!, personaDestinoObj.id!);
+                    ContainerApp.db.Persist().UpdateValueIds("alumno", "persona", personaOrigenObj.id!, personaDestinoObj.id!).AddToIfSql(persists);
                 }
                 else
                 {
-                    persist.TransferOm("alumno", alumnoOrigenData["id"]!, alumnoDestinoData["id"]!);
-                    persist.DeleteIds("alumno", alumnoOrigenData["id"]!);
+                    ContainerApp.db.Persist().TransferOm("alumno", alumnoOrigenData["id"]!, alumnoDestinoData["id"]!).AddToIfSql(persists);
+                    ContainerApp.db.Persist().DeleteIds("alumno", alumnoOrigenData["id"]!).AddToIfSql(persists);
 
                 }
             }
-            persist.DeleteIds("persona", personaOrigenObj.id!);
-            persist.Transaction().RemoveCache();
+            ContainerApp.db.Persist().DeleteIds("persona", personaOrigenObj.id!).AddToIfSql(persists);
+            persists.Transaction().RemoveCache();
+            ToastExtensions.Show("Transferencia realizada");
         }
         catch (Exception ex)
         {

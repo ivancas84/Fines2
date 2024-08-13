@@ -35,7 +35,7 @@ namespace SqlOrganize.Sql
         public EntityValues GetValues()
         {
             if(values == null)
-                values = db!.Values(entityName).Values(this);
+                values = db!.Values(entityName).SetValues(this);
             return values;
         }
 
@@ -111,6 +111,19 @@ namespace SqlOrganize.Sql
                     _isUpdated = value;
                     NotifyPropertyChanged(nameof(IsUpdated));
                 }
+            }
+        }
+
+        /// <summary>Indice dentro de una coleccíón</summary>
+        /// <remarks>Facilita la impresion del número de fila, por ejemplo/remarks>
+        public int? _Index = null;
+
+        public int? Index
+        {
+            get { return _Index; }
+            set
+            {
+                _Index = value; //por el momento no ejecuta NotifyPropertyChanged
             }
         }
 

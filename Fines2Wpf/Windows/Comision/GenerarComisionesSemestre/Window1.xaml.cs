@@ -31,15 +31,9 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
         {
 
             Data_comision_r comisionObj = ((Data_comision_r)formGroupBox.DataContext).Clone()!;
-
-
-            CalendarioValues calendarioVal = (CalendarioValues)ContainerApp.db.Values("calendario").
-                Set("anio", comisionObj.calendario__anio).Set("semestre", comisionObj.calendario__semestre);
-
-            (short anio, short semestre) anioSemestre = calendarioVal.AnioSemestreAnterior();
+            (short anio, short semestre) anioSemestre = CalendarioValues.AnioSemestreAnterior((short)comisionObj.calendario__anio, (short)comisionObj.calendario__semestre);
             comisionObj.calendario__anio = anioSemestre.anio;
             comisionObj.calendario__semestre = anioSemestre.semestre;
-
 
             #region Consultar comisiones del semestre anterior
             IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestreAnterior = ContainerApp.db.Sql("comision").

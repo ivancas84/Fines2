@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-    <data name="ShellMenuItemViewsTransferirAlumnoPageHeader" xml:space="preserve">
-		    <value>TransferirAlumno</value>
+    <data name="ShellMenuItemViewsComisionesSemestrePageHeader" xml:space="preserve">
+		    <value>ComisionesSemestre</value>
     </data>
-    <data name="TransferirAlumnoPageTitle" xml:space="preserve">
-		    <value>TransferirAlumno</value>
+    <data name="ComisionesSemestrePageTitle" xml:space="preserve">
+		    <value>ComisionesSemestre</value>
+    </data>
+    <data name="ShellMenuItemViewsTomasSemestrePageHeader" xml:space="preserve">
+		    <value>TomasSemestre</value>
+    </data>
+    <data name="TomasSemestrePageTitle" xml:space="preserve">
+		    <value>TomasSemestre</value>
     </data>
 
   <!-- 
@@ -124,35 +130,47 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ShellMenuItemViewsInformeComisionPageHeader" xml:space="preserve">
+    <value>Informe Comision</value>
+  </data>
+  <data name="InformeComisionPageTitle" xml:space="preserve">
+    <value>Informe Comision</value>
+  </data>
+  <data name="ShellMenuItemViewsTransferirAlumnoPageHeader" xml:space="preserve">
+    <value>Transferir Alumno</value>
+  </data>
+  <data name="TransferirAlumnoPageTitle" xml:space="preserve">
+    <value>Transferir Alumno</value>
+  </data>
   <data name="ShellMenuItemViewsProcesarPlanillaCalificacionesPageHeader" xml:space="preserve">
-    <value>ProcesarPlanillaCalificaciones</value>
+    <value>Procesar Planilla Calificaciones</value>
   </data>
   <data name="ProcesarPlanillaCalificacionesPageTitle" xml:space="preserve">
-    <value>ProcesarPlanillaCalificaciones</value>
+    <value>Procesar Planilla Calificaciones</value>
   </data>
   <data name="ShellMenuItemViewsProcesarRegistroAlumnosPageHeader" xml:space="preserve">
-    <value>ProcesarRegistroAlumnos</value>
+    <value>Procesar Registro Alumnos</value>
   </data>
   <data name="ProcesarRegistroAlumnosPageTitle" xml:space="preserve">
     <value>ProcesarRegistroAlumnos</value>
   </data>
   <data name="ShellMenuItemViewsMainPageHeader" xml:space="preserve">
-    <value>Main</value>
+    <value>Inicio</value>
   </data>
   <data name="MainPageTitle" xml:space="preserve">
-    <value>Main</value>
+    <value>Bienvenidos!</value>
   </data>
   <data name="ShellGoBackButton" xml:space="preserve">
-    <value>Go back</value>
+    <value>Volver</value>
   </data>
   <data name="ShellMenuFileHeader" xml:space="preserve">
-    <value>_File</value>
+    <value>_Archivo</value>
   </data>
   <data name="ShellMenuViewsHeader" xml:space="preserve">
-    <value>_Views</value>
+    <value>_Administración</value>
   </data>
   <data name="ShellMenuItemFileExitHeader" xml:space="preserve">
-    <value>_Exit</value>
+    <value>_Salir</value>
   </data>
   <data name="AppDisplayName" xml:space="preserve">
     <value>FinesApp</value>

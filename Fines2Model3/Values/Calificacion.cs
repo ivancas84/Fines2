@@ -126,7 +126,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             Set("disposicion", disposicion);
 
-            PersonaValues personaVal = (PersonaValues)Values("persona");
+            PersonaValues personaVal = (PersonaValues)GetValues("persona");
             AlumnoComisionValues asignacionValues = (AlumnoComisionValues)db.Values("alumno_comision");
             EntityPersist persist = asignacionValues.
                 PersistProcesarComisionPersona(cursoObj.comision!, personaVal);
@@ -162,7 +162,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     persist.UpdateValueIds("calificacion", "nota_final", Get("nota_final"), calificacionData["id"]);
                 } else
                 {
-                    Values(calificacionData!);
+                    SetValues(calificacionData!);
                     logging.AddLog("calificacion", "Ya existe calificacion aprobada con " + notaFinalExistent, null, Logging.Level.Warning);
                 }
             }
@@ -187,5 +187,13 @@ namespace SqlOrganize.Sql.Fines2Model3
             return calificacionError;
         }
 
+
+        public static string GetNotaAprobada(decimal? nota_final, decimal? crec)
+        {
+            if (nota_final.IsNoE() || nota_final < 7)
+                return (crec.IsNoE() || crec < 4) ? "" : Convert.ToInt16(crec).ToString() + "c";
+
+            return Convert.ToInt16(nota_final)!.ToString()!;
+        }
     }
 }

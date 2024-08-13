@@ -112,8 +112,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             resolucionInscripcionComboBox.DisplayMemberPath = "numero";
             resolucionInscripcionComboBox.ItemsSource = resolucionOC;
             var data = ContainerApp.db.Sql("resolucion").Order("$numero ASC").Cache().ColOfDict();
-            resolucionOC.Clear();
-            resolucionOC.AddRange(data);
+            ContainerApp.db.ClearAndAddDataToOC(data, resolucionOC);
             #endregion
 
             #region plan

@@ -42,16 +42,16 @@ namespace SqlOrganize.Sql
             return values;
         }
 
-        public virtual EntityValues Values(IDictionary<string, object?> row)
+        public virtual EntityValues SetValues(IDictionary<string, object?> row)
         {
             values = row;
             return this;
         }
 
-        public EntityValues Values(Data obj)
+        public EntityValues SetValues(Data obj)
         {
             values = obj.Dict() ?? new Dictionary<string, object?>();
-            return Values(obj.Dict());
+            return SetValues(obj.Dict());
         }
      
         /// <summary>Existe valor de field</summary>
@@ -104,6 +104,16 @@ namespace SqlOrganize.Sql
         {
             values.Remove(fieldName);
             return this;
+        }
+
+        public string GetStr(string nullStr = "", string separator = " ", params string[] fieldNames)
+        {
+            string ret = "";
+            foreach(var field in fieldNames)
+            {
+                ret += GetStr(field, nullStr) + separator;
+            }
+            return ret;
         }
 
         public string GetStr(string fieldName, string nullStr = "")
@@ -451,14 +461,14 @@ namespace SqlOrganize.Sql
         }
 
         /// <summary>Crear instancia de EntityValues de una relacion a partir de los valores definidos en la instancia</summary>
-        public EntityValues Values(string fieldId)
+        public EntityValues GetValues(string fieldId)
         {
             EntityRelation rel = db.Entity(entityName).relations[fieldId];
             return db.Values(rel.refEntityName, fieldId).Set(Values());
         }
 
         /// <summary>Crear instancia de EntityValues obteniendo del cache o consulta los valores de la relacion</summary>
-        public EntityValues? ValuesRel(string fieldId)
+        public EntityValues? GetValuesCache(string fieldId)
         {
             EntityRelation rel = db.Entity(entityName).relations[fieldId];
             if(rel.parentId == null)
@@ -472,17 +482,17 @@ namespace SqlOrganize.Sql
             } 
             else
             {
-                EntityValues? values = ValuesRel(rel.parentId);                
+                EntityValues? values = GetValuesCache(rel.parentId);                
                 if (!values.IsNoE())
-                    return values!.ValuesRel(fieldId);
+                    return values!.GetValuesCache(fieldId);
             }
             return null;
         }
 
         /// <summary>Crear instancia de EntityValues obteniendo del cache o consulta los valores de la relacion y realizar cast</summary>        
-        public T? ValuesRel<T>(string fieldId) where T : EntityValues
+        public T? GetValuesCache<T>(string fieldId) where T : EntityValues
         {
-            return (T?)ValuesRel(fieldId);
+            return (T?)GetValuesCache(fieldId);
         }
 
 

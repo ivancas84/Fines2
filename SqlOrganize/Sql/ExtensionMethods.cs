@@ -321,7 +321,7 @@ namespace SqlOrganize.Sql
         public static EntityValues ValuesFromId(this Db db, string entityName, object id)
         {
             var data = db.Sql(entityName).Cache().Id(id) ?? throw new Exception(entityName + "inexistente");
-            return db.Values(entityName).Values(data);
+            return db.Values(entityName).SetValues(data);
 
         }
 
@@ -380,6 +380,19 @@ namespace SqlOrganize.Sql
         #endregion
 
         #region Data + EntityValues
+        public static IEnumerable<T> ColOfData<T>(this Db db, IEnumerable<Dictionary<string, object?>> rows) where T : Data, new()
+        {
+            var results = new List<T>();
+
+            foreach (var item in rows)
+            {
+                T obj = db.ToData<T>(item);
+                results.Add(obj);
+            }
+            return results;
+        }
+
+
         public static void ClearAndAddDataToOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : Data, new()
         {
             oc.Clear();
@@ -388,9 +401,9 @@ namespace SqlOrganize.Sql
 
         public static void AddDataToOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : Data, new()
         {
-            foreach (var item in source)
-            {
-                T obj = db.ToData<T>(item);
+            for(var i = 0; i < source.Count(); i++) {
+                T obj = db.ToData<T>(source.ElementAt(i));
+                obj.Index = i;
                 oc.Add(obj);
             }
         }
@@ -401,7 +414,7 @@ namespace SqlOrganize.Sql
         {
             T _obj = new T(); //crear objeto vacio para obtener el entityName
             return db.Values(_obj.entityName).
-                Values(item).
+                SetValues(item).
                 GetData<T>();
         }
         #endregion

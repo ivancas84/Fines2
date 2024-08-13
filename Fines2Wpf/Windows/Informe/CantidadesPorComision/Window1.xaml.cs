@@ -49,17 +49,14 @@ CASE
     WHEN TIMESTAMPDIFF(YEAR, $persona-fecha_nacimiento, CURDATE()) >= 55 THEN '55+' 
 END AS edad, count(*) as cantidad
 ").
-                
+
                 Group("$comision-pfid, $planificacion-anio, $planificacion-semestre, $plan-orientacion, edad").
                 Where("$calendario-anio = @0 AND $calendario-semestre = @1 AND $comision-autorizada").
                 Size(0).
                 Parameters(ContainerApp.config.anio, ContainerApp.config.semestre).ColOfDict();
 
 
-
-
-            informeEdadOC.Clear();
-            informeEdadOC.AddRange(data);
+            ContainerApp.db.ClearAndAddDataToOC(data, informeEdadOC);
 
             data = ContainerApp.db.Sql("alumno_comision").Select(@"COUNT(*) as cantidad
 ").
@@ -69,8 +66,7 @@ END AS edad, count(*) as cantidad
 
                 Parameters(ContainerApp.config.anio, ContainerApp.config.semestre).ColOfDict();
 
-            informeGeneroOC.Clear();
-            informeGeneroOC.AddRange(data);
+            ContainerApp.db.ClearAndAddDataToOC(data, informeGeneroOC);
         }
     }
 }

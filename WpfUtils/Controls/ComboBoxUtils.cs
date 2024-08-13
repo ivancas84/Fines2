@@ -54,7 +54,7 @@ namespace WpfUtils.Controls
             timer.Start();
         }
 
-        public static void InitializeAutoCompleteItemConstructor<T>(this System.Windows.Controls.ComboBox comboBox, ObservableCollection<T> oc, string displayMemberPath = "Label", string selectedValuePath = "id") where T : Data
+        public static void InitComboBoxConstructor<T>(this System.Windows.Controls.ComboBox comboBox, ObservableCollection<T> oc, string displayMemberPath = "Label", string selectedValuePath = "id") where T : Data
         {
             comboBox.ItemsSource = oc;
             comboBox.SelectedValuePath = selectedValuePath;

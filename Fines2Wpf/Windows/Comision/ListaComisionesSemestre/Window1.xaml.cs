@@ -160,10 +160,10 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             comisionOC.Clear();
             foreach (IDictionary<string, object> item in list)
             {
-                var comision = (ComisionValues)ContainerApp.db.Values("comision").Values(item);
+                var comision = (ComisionValues)ContainerApp.db.Values("comision").SetValues(item);
                 var o = item.Obj<Comision>();
                 o.Label = comision.Numero();
-                o.domicilio__Label = comision.ValuesRel("domicilio")?.ToString() ?? "";
+                o.domicilio__Label = comision.GetValuesCache("domicilio")?.ToString() ?? "";
 
                 List<string> referentes = new();
                 if (referentesData.ContainsKey(o.sede!))

@@ -70,7 +70,16 @@ namespace FinesApp.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Main.
+        ///   Busca una cadena traducida similar a Informe Comision.
+        /// </summary>
+        public static string InformeComisionPageTitle {
+            get {
+                return ResourceManager.GetString("InformeComisionPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Bienvenidos!.
         /// </summary>
         public static string MainPageTitle {
             get {
@@ -79,7 +88,7 @@ namespace FinesApp.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a ProcesarPlanillaCalificaciones.
+        ///   Busca una cadena traducida similar a Procesar Planilla Calificaciones.
         /// </summary>
         public static string ProcesarPlanillaCalificacionesPageTitle {
             get {
@@ -97,7 +106,7 @@ namespace FinesApp.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Go back.
+        ///   Busca una cadena traducida similar a Volver.
         /// </summary>
         public static string ShellGoBackButton {
             get {
@@ -106,7 +115,7 @@ namespace FinesApp.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a _File.
+        ///   Busca una cadena traducida similar a _Archivo.
         /// </summary>
         public static string ShellMenuFileHeader {
             get {
@@ -115,7 +124,7 @@ namespace FinesApp.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a _Exit.
+        ///   Busca una cadena traducida similar a _Salir.
         /// </summary>
         public static string ShellMenuItemFileExitHeader {
             get {
@@ -124,7 +133,16 @@ namespace FinesApp.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a Main.
+        ///   Busca una cadena traducida similar a Informe Comision.
+        /// </summary>
+        public static string ShellMenuItemViewsInformeComisionPageHeader {
+            get {
+                return ResourceManager.GetString("ShellMenuItemViewsInformeComisionPageHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a Inicio.
         /// </summary>
         public static string ShellMenuItemViewsMainPageHeader {
             get {
@@ -133,7 +151,7 @@ namespace FinesApp.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a ProcesarPlanillaCalificaciones.
+        ///   Busca una cadena traducida similar a Procesar Planilla Calificaciones.
         /// </summary>
         public static string ShellMenuItemViewsProcesarPlanillaCalificacionesPageHeader {
             get {
@@ -142,7 +160,7 @@ namespace FinesApp.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a ProcesarRegistroAlumnos.
+        ///   Busca una cadena traducida similar a Procesar Registro Alumnos.
         /// </summary>
         public static string ShellMenuItemViewsProcesarRegistroAlumnosPageHeader {
             get {
@@ -151,33 +169,73 @@ namespace FinesApp.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a _Views.
+        ///   Busca una cadena traducida similar a Transferir Alumno.
+        /// </summary>
+        public static string ShellMenuItemViewsTransferirAlumnoPageHeader {
+            get {
+                return ResourceManager.GetString("ShellMenuItemViewsTransferirAlumnoPageHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a _Administración.
         /// </summary>
         public static string ShellMenuViewsHeader {
             get {
                 return ResourceManager.GetString("ShellMenuViewsHeader", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to TransferirAlumno.
+        ///   Busca una cadena traducida similar a Transferir Alumno.
         /// </summary>
-        public static string TransferirAlumnoPageTitle
-        {
-            get
-            {
+        public static string TransferirAlumnoPageTitle {
+            get {
                 return ResourceManager.GetString("TransferirAlumnoPageTitle", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to MenuItemViewsTransferirAlumnoPageHeader.
+        ///   Looks up a localized string similar to TomasSemestre.
         /// </summary>
-        public static string ShellMenuItemViewsTransferirAlumnoPageHeader
+        public static string TomasSemestrePageTitle
         {
             get
             {
-                return ResourceManager.GetString("ShellMenuItemViewsTransferirAlumnoPageHeader", resourceCulture);
+                return ResourceManager.GetString("TomasSemestrePageTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MenuItemViewsTomasSemestrePageHeader.
+        /// </summary>
+        public static string ShellMenuItemViewsTomasSemestrePageHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("ShellMenuItemViewsTomasSemestrePageHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ComisionesSemestre.
+        /// </summary>
+        public static string ComisionesSemestrePageTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("ComisionesSemestrePageTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MenuItemViewsComisionesSemestrePageHeader.
+        /// </summary>
+        public static string ShellMenuItemViewsComisionesSemestrePageHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("ShellMenuItemViewsComisionesSemestrePageHeader", resourceCulture);
             }
         }
     }
