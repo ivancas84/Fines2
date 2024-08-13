@@ -11,6 +11,7 @@ namespace SqlOrganize.Sql
     /// Una implementación de Db para un determinado motor de base de datos, sera el ConcreteFactory (Ej DbMy extends Db).<br/>
     /// Una implementación de Db para una determinada App sera el ConcreteCreator (Ej DbApp extends DbMy).<br/>
     /// En una determinada App existira una clase Container que sera el director (Builder) y utilizara clases estaticas de Db (Singleton).
+    /// Todos los elementos necesarios para conectarse, obtener y definir datos de una base, deben pertenecer a Db.
     /// </remarks>
     public abstract class Db
     {

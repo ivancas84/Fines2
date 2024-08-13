@@ -6,12 +6,13 @@ namespace SqlOrganize
 {
     public class UsuarioDominio
     {
-        public Guid Guid;
-        public string DisplayName = "";
-        public string Username = "";
-        public bool IsLoggedIn = false;
-        public byte[]? ProfilePhoto;
-        public string? EmailAddress;
+        public Guid Guid { get; set; }
+        public string DisplayName { get; set; } = "";
+        public string Username { get; set; } = "";
+        public bool IsLoggedIn { get; set; } = false;
+        public byte[]? ProfilePhoto { get; set; }
+        public string? EmailAddress { get; set; }
+
 
         public UsuarioDominio(string Domain)
         {
