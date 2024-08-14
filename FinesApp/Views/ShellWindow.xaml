@@ -65,6 +65,7 @@
                             <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsTransferirAlumnoPageHeader}" Click="OnMenuViewsTransferirAlumno" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
                             <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsTomasSemestrePageHeader}" Click="OnMenuViewsTomasSemestre" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
                             <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsComisionesSemestrePageHeader}" Click="OnMenuViewsComisionesSemestre" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
+                            <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsCursosSemestrePageHeader}" Click="OnMenuViewsCursosSemestre" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
                         </MenuItem>
                         
                     </Menu>

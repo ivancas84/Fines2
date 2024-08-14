@@ -53,8 +53,30 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
             IEnumerable<EntityPersist> persists = ContainerApp.db.Values<ComisionValues>().GenerarComisionesSemestreSiguiente(short.Parse(tbAnio.Text), short.Parse(tbSemestre.Text), cbxCalendario.SelectedValue);
 
             persists.Transaction().RemoveCache();
-        
+            ToastExtensions.Show("Comisiones agregadas");
         } catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
+
+    private void btnGenerarCursosComisiones_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            List<EntityPersist> persists = new();
+
+            foreach(var comObj in comisionOC)
+            {
+                ComisionValues comVal = (ComisionValues)comObj.GetValues();
+                comVal.GenerarCursos().AddTo(persists);
+            }
+
+            persists.Transaction().RemoveCache();
+            ToastExtensions.Show("Se han generado los cursos");
+
+        }
+        catch (Exception ex)
         {
             ex.ToastException();
         }

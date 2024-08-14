@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
+    <data name="ShellMenuItemViewsCursosSemestrePageHeader" xml:space="preserve">
+		    <value>CursosSemestre</value>
+    </data>
+    <data name="CursosSemestrePageTitle" xml:space="preserve">
+		    <value>CursosSemestre</value>
+    </data>
     <data name="ShellMenuItemViewsComisionesSemestrePageHeader" xml:space="preserve">
 		    <value>ComisionesSemestre</value>
     </data>

@@ -28,7 +28,19 @@ namespace SqlOrganize.Sql.Fines2Model3
                .Parameters("%" + search + "%");
         }
 
-        
-    
+        public static EntitySql CursosAutorizadosPeriodoSql(this Db db, object calendarioAnio, object calendarioSemestre, object? sede = null, bool? autorizada = null)
+        {
+            return db.Sql("curso")
+                .Fields()
+                .Size(0)
+                .Where(@"
+                    $calendario-anio = @0 
+                    AND $calendario-semestre = @1 
+                    AND $comision-autorizada = true 
+                ")
+                .Parameters(calendarioAnio, calendarioSemestre);
+
+        }
+
     }
 }

@@ -417,6 +417,11 @@ namespace SqlOrganize.Sql
                 SetValues(item).
                 GetData<T>();
         }
+
+        public static T ToValues<T>(this Db db, Data data, string? fieldId = null) where T : EntityValues
+        {
+            return (T)db.Values(data.entityName, fieldId).SetValues(data);
+        }
         #endregion
 
 

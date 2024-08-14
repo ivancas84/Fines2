@@ -97,7 +97,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             return dias + " " + hora_inicio + " " + hora_fin;
         }
 
-        public void GenerarCursos()
+        public EntityPersist GenerarCursos()
         {
             EntityPersist persist = db.Persist();
             if (GetOrNull("id").IsNoE() || GetOrNull("planificacion").IsNoE())
@@ -129,7 +129,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 persist.Insert(cursoVal);
             }
 
-            persist.Exec().RemoveCache();
+            return persist;
         }
 
         public IEnumerable<EntityPersist> GenerarComisionesSemestreSiguiente(short anioCalendario, short semestreCalendario, object idCalendario)

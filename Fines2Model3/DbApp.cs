@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using System.Globalization;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -6,6 +7,11 @@ namespace SqlOrganize.Sql.Fines2Model3
     {
         public DbApp(Config config, Schema sch, MemoryCache cache) : base(config, sch, cache)
         {
+        }
+
+        public T Values<T>(Data data, string fieldId) where T : EntityValues
+        {
+            return (T)Values(data.entityName, fieldId);
         }
 
         /// <summary>Referencia y cast rapido para una determinada subclase de EntityValues</summary>
