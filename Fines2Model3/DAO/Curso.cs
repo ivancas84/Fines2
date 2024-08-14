@@ -42,5 +42,18 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         }
 
+        public static EntitySql CursoDeComisionPfidCodigoAsignaturaCalendarioSql(this Db db, object pfid, object codigo, object idCalendario)
+        {
+            return db.Sql("curso")
+                .Fields()
+                .Size(0)
+                .Where(@"
+                    $calendario-id = @0 
+                    AND $comision-pfid = @1
+                    AND $asignatura-codigo = @2
+                ")
+                .Parameters(idCalendario, pfid, codigo);
+        }
+
     }
 }

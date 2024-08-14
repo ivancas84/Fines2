@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Text;
+using Mysqlx.Crud;
 using SqlOrganize.ValueTypesUtils;
 
 namespace SqlOrganize.Sql.Fines2Model3
@@ -344,6 +345,42 @@ namespace SqlOrganize.Sql.Fines2Model3
                 obj.Msg += Logging.ToString();
 
             return obj;
+        }
+
+        public EntityPersist PersistCompare()
+        {            
+            var personaExistenteData = db.PersonaDniSql(Get("numero_documento")).Dict();
+            if (personaExistenteData.IsNoE())
+            {
+                if (!Default().Reset().Check())
+                    throw new Exception("Error al insertar");
+
+                logging.AddLog("persona", "Persona insertada", "insert", Logging.Level.Info);
+
+                return this.Insert();
+            } else
+            {
+                var personaExistenteVal = db.Values("persona").Set(personaExistenteData!);
+
+                CompareParams compare = new()
+                {
+                    fieldsToCompare = new List<string> { "nombres", "apellidos" },
+                    val = personaExistenteVal
+                };
+
+                var response = Compare(compare);
+
+                if (!response.IsNoE())
+                    throw new Exception("Comparacion de persona diferente: " + compare.val.ToStringFields("nombres", "apellidos"));
+
+                Set("id", personaExistenteVal.Get("id")!);
+                if (!Reset().Check())
+                    throw new Exception("Error al actualizar");
+
+                logging.AddLog("persona", "Persona actualizada", "update", Logging.Level.Info);
+
+                return this.Update();
+            }
         }
     }
 }

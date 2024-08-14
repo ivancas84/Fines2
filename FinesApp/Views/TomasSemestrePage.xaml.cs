@@ -5,12 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using WpfUtils;
-using SqlOrganize;
-using Org.BouncyCastle.Utilities;
 using System.Collections.ObjectModel;
 using WpfUtils.Controls;
-using FinesApp.Views.TomasSemestre;
-using Newtonsoft.Json;
 
 namespace FinesApp.Views;
 
@@ -37,17 +33,9 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             if (cbxCalendario2.SelectedIndex < 0)
                 throw new Exception("Verificar formulario");
 
-            var docentes = JsonConvert.DeserializeObject<List<DocentePF>>(tbxDocentesPF.Text)!;
-
-            IEnumerable<string> pfidComisiones = ContainerApp.db.Sql("comision")
-                .Size(0)
-                .Where("$calendario = @0 AND $pfid IS NOT NULL")
-                .Parameters(cbxCalendario2.SelectedValue).Column<string>("pfid");
-
-            Data_calendario calObj = (Data_calendario)cbxCalendario2.SelectedItem;
-            CalendarioValues calVal = ContainerApp.db.ToValues<CalendarioValues>(calObj);
-            
-
+            CalendarioValues calVal = (CalendarioValues)((Data_calendario)cbxCalendario2.SelectedItem).GetValues();
+            calVal.PersistTomasPf(tbxDocentesPF.Text).Transaction().RemoveCache();
+            tbxResultadoPF.Text = calVal.Logging.ToString();
         }
         catch (Exception ex)
         {

@@ -454,7 +454,7 @@ namespace SqlOrganize.Sql
         {
             foreach (var fieldName in fieldNames)
                 if (row.ContainsKey(Pf() + fieldName))
-                    if (row[Pf() + fieldName] != null && !row[Pf() + fieldName].IsDbNull())
+                    if (!row[Pf() + fieldName].IsNoE())
                         Set(fieldName, row[Pf() + fieldName]);
 
             return this;

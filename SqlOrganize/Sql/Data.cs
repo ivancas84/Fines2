@@ -32,6 +32,7 @@ namespace SqlOrganize.Sql
         }
 
         /// <summary>Obtener instancia de values asociada</summary>
+        /// <remarks>Debe estar definida la instancia de Db</remarks>
         public EntityValues GetValues()
         {
             if(values == null)

@@ -197,9 +197,9 @@ namespace SqlOrganize.ValueTypesUtils
         /// <param name="s"></param>
         /// <returns></returns>
         /// <remarks>https://stackoverflow.com/questions/19167669/keep-only-numeric-value-from-a-string</remarks>
-        public static string? CleanStringOfNonDigits(this string? s)
+        public static string CleanStringOfNonDigits(this string? s)
         {
-            if (string.IsNullOrEmpty(s)) return null;
+            if (s.IsNoE()) return "";
             StringBuilder sb = new StringBuilder(s);
             int j = 0, i = 0;
             while (i < sb.Length)
