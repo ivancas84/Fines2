@@ -211,16 +211,20 @@ namespace SqlOrganize.Sql
         {
             var row = v.RowByUnique();
 
-            EntityPersist p;
-
             if (row.IsNoE())
             {
                 v.Default().Reset();
+                if (!v.Check())
+                    throw new Exception("Error al insertar");
+
                 return v.db.Persist().Insert(v);
             }
             else
             {
                 v.Reset();
+                if (!v.Check())
+                    throw new Exception("Error al actualizar");
+
                 return v.db.Persist().Update(v);
             }
 

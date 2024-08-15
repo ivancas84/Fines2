@@ -27,6 +27,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return Value_fecha_nacimiento(value);
                 case "genero":
                     return Value_genero(value);
+                case "numero_documento":
+                    return Value_numero_documento(value);
+                case "cuil":
+                    return Value_cuil(value);
                 default:
                     return base.ValueField(fieldName, value);
 
@@ -153,6 +157,25 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return value.ToString().CleanStringOfNonDigits();
         }
+
+        public string? Value_numero_documento(object? value)
+        {
+            (string? dni, string? cuil) = CuilDni(value);
+            if (dni == null)
+                return null;
+
+            return dni;
+        }
+
+        public string? Value_cuil(object? value)
+        {
+            (string? dni, string? cuil) = CuilDni(value);
+            if (cuil == null)
+                return null;
+
+            return cuil;
+        }
+
 
         public static (string? dni, string? cuil) CuilDni(object? value) {
 

@@ -450,6 +450,16 @@ namespace SqlOrganize.Sql
             return !v.HasErrors();
         }
 
+        public EntityValues SsetNotNull(IDictionary<string, object?> row)
+        {
+            foreach (var fieldName in fieldNames)
+                if (row.ContainsKey(Pf() + fieldName))
+                    if (!row[Pf() + fieldName].IsNoE())
+                        Sset(fieldName, row[Pf() + fieldName]);
+
+            return this;
+        }
+
         public EntityValues SetNotNull(IDictionary<string, object?> row)
         {
             foreach (var fieldName in fieldNames)

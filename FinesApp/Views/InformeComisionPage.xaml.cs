@@ -5,6 +5,7 @@ using SqlOrganize;
 using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql;
 using SqlOrganize.Sql.Fines2Model3;
+using SqlOrganize.ValueTypesUtils;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
@@ -39,7 +40,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
         DataContext = this;
 
         #region Autocomplete v3 - comision
-        comisionComboBox.InitComboBoxConstructor(comisionOC);
+        cbxComision.InitComboBoxConstructor(comisionOC);
         comisionTypingTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
         comisionTypingTimer.Tick += ComisionTimerTick;
         #endregion
@@ -54,7 +55,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     {
         try
         {
-            (string? text, TextBox? textBox, int? textBoxPos) = comisionComboBox.SetTimerTickInitializeItem<Data_comision_r>(comisionTypingTimer);
+            (string? text, TextBox? textBox, int? textBoxPos) = cbxComision.SetTimerTickInitializeItem<Data_comision_r>(comisionTypingTimer);
             if (text == null)
                 return;
 
@@ -62,7 +63,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
             ContainerApp.db.ClearAndAddDataToOC(list, comisionOC);
 
-            comisionComboBox.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
+            cbxComision.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
         }
         catch (Exception ex)
         {
@@ -70,12 +71,12 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
         }
     }
 
-    private void ComisionComboBox_KeyUp(object sender, KeyEventArgs e)
+    private void CbxComision_KeyUp(object sender, KeyEventArgs e)
     {
         comisionTypingTimer.SetKeyUp(e);
     }
 
-    private void ComisionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void CbxComision_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         var cb = (ComboBox)sender;
 
@@ -189,5 +190,80 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     }
 
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    #endregion
+
+
+    #region tab registro alumnos
+    private ObservableCollection<Data_alumno_comision> ocAsignacionRegistrar;
+    private void btnProcesarAlumnos_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            ComisionValues comVal = (ComisionValues)((Data_comision)cbxComision.SelectedItem).GetValues();
+            
+            List<EntityPersist> persists = new();
+
+            string[] headers = { "persona-apellidos", "persona-nombres", "persona-numero_documento", "persona-descripcion_domicilio", "persona-localidad", "persona-fecha_nacimiento", "persona-telefono", "persona-email"};
+
+            var _data = tbxAlumnos.Text.Split("\r\n");
+            if (_data.IsNoE())
+                throw new Exception("Datos vacios");
+
+            for (var j = 0; j < _data.Length; j++)
+            {
+                try
+                {
+                    IDictionary<string, object?> dict = (IDictionary<string, object?>)_data[j].DictFromText(headers);
+
+                    var personaValues = (PersonaValues)ContainerApp.db.Values<PersonaValues>("persona").SsetNotNull(dict);
+                    personaValues.PersistCompare().AddTo(persists);
+
+                    var alumnoVal = ContainerApp.db.Values<AlumnoValues>();
+                        throw new Exception("No existe curso");
+
+                    var tomaExistente = db.TomaAprobadaDeCursoQuery(idCurso).Dict();
+                    if (tomaExistente.IsNoE())
+                    {
+                        var tomaVal = db.Values("toma").
+                        Set("curso", idCurso).
+                        Set("docente", personaValues.Get("id")!).
+                        Set("fecha_toma", Get("inicio")!).
+                        Set("estado", "Aprobada").
+                        Set("estado_contralor", "Pasar").
+                        Set("tipo_movimiento", "AI").Default().Reset();
+                        if (!tomaVal.Check())
+                            throw new Exception(tomaVal.Logging.ToString());
+
+                        tomaVal.Insert().AddTo(persists);
+                    }
+                    else
+                    {
+                        if (!tomaExistente["docente"]!.Equals(personaValues.Get("id")))
+                            throw new Exception("Existe una toma asignada a un docente diferente");
+                        else
+                            throw new Exception("Ya existe la toma");
+                    }
+
+                    logging.AddLog(j.ToString(), "proceso finalizado", "persist_tomas_pf", Logging.Level.Info);
+
+                }
+                catch (Exception ex)
+                {
+                    logging.AddLog(j.ToString(), ex.Message, "persist_tomas_pf", Logging.Level.Error);
+                    continue;
+                }
+
+
+            }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
+
+    private void btnGuardarAlumnos_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
     #endregion
 }

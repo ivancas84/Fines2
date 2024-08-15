@@ -8,6 +8,20 @@ namespace SqlOrganize.CollectionUtils
     public static class CollectionUtils
     {
 
+        public static IDictionary<string, string> DictFromText(this string text, params string[] headers)
+        {
+            string[] values = text.Split("\t");
+
+            if (values.Count() < headers.Count())
+                throw new Exception("La cantidad de datos no es suficiente");
+
+            Dictionary<string, string> dict = new();
+            for (var k = 0; k < headers.Length; k++)
+                dict[headers[k]] = values[k];
+
+            return dict;
+        }
+
         public static void AddRange<T>(this ObservableCollection<T> oc, IEnumerable<T> items)
         {
             foreach (var item in items)
