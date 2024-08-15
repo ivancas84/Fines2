@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using SqlOrganize.Sql.Exceptions;
 using SqlOrganize.ValueTypesUtils;
 
 namespace SqlOrganize.Sql
@@ -322,20 +323,20 @@ VALUES (";
         /// <remarks>Dependiendo del contexto se puede evitar el codigo adicional generado por el comportamiento general</remarks>
         public EntityPersist Persist(EntityValues v)
         {
+
             v.Reset();
-            var esql = Db.Sql(v.entityName!).Unique(v.Values());
-            IEnumerable<Dictionary<string, object?>> rows = esql.ColOfDict();
+            IDictionary<string, object?>? row = null;
+            try {
+                row = v.SqlUnique().DictOne();
+            } catch(UniqueException) { }
 
-            if (rows.Count() > 1)
-                throw new Exception("La consulta por campos unicos retorno mas de un resultado");
-
-            if (rows.Count() == 1)
+            if (!row.IsNoE())
             {
                 //Se controla la existencia de id diferente? No! Se reasigna el id, dejo el codigo comentado
                 //if (v.values.ContainsKey(Db.config.id) && v.Get(Db.config.id).ToString() != rows.ElementAt(0)[Db.config.id].ToString())
                 //    throw new Exception("Los id son diferentes");
 
-                v.Set(Db.config.id, rows.ElementAt(0)[Db.config.id]);
+                v.Set(Db.config.id, row![Db.config.id]);
                 if (!v.Check())
                     throw new Exception("Los campos a actualizar poseen errores: " + v.Logging.ToString());
 
@@ -384,6 +385,32 @@ VALUES (";
             return Query(Db.Query());
         }
 
+
+        public EntityPersist AddTo(List<EntityPersist> persists)
+        {
+            persists.Add(this);
+            return this;
+        }
+
+        public EntityPersist AddToIfSql(List<EntityPersist> persists)
+        {
+            if (!this.Sql().IsNoE())
+                persists.Add(this);
+
+            return this;
+        }
+
+        public EntityPersist TransferOm(string entityName, object origenId, object destinoId)
+        {
+            List<Field> fieldsOmPersona = Db.Entity(entityName).FieldsOm();
+            foreach (var field in fieldsOmPersona)
+            {
+                object[] ids = Db.Sql(field.entityName).Where(field.name + " = @0").Parameters(origenId).Column<object>("id").ToArray();
+                if (ids.Any())
+                    UpdateValueIds(field.entityName, field.name, destinoId!, ids);
+            }
+            return this;
+        }
     }
 
 }

@@ -133,12 +133,15 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
                             case 1:
                                 itemObj.asignatura1 = CalificacionValues.GetNotaAprobada(calificacionObj.nota_final, calificacionObj.crec);  
                             break;
+
                             case 2:
                                 itemObj.asignatura2 = CalificacionValues.GetNotaAprobada(calificacionObj.nota_final, calificacionObj.crec);
                                 break;
+
                             case 3:
                                 itemObj.asignatura3 = CalificacionValues.GetNotaAprobada(calificacionObj.nota_final, calificacionObj.crec);
                                 break;
+
                             case 4:
                                 itemObj.asignatura4 = CalificacionValues.GetNotaAprobada(calificacionObj.nota_final, calificacionObj.crec);
                                 break;
@@ -175,6 +178,79 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     }
 
 
+
+    #region tab registro alumnos
+    private ObservableCollection<Data_alumno_comision> ocAsignacionRegistrar;
+    private void btnProcesarAlumnos_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            ComisionValues comVal = (ComisionValues)((Data_comision)cbxComision.SelectedItem).GetValues();
+
+            List<EntityPersist> persists = new();
+
+            string[] headers = { "persona-apellidos", "persona-nombres", "persona-numero_documento", "persona-descripcion_domicilio", "persona-localidad", "persona-fecha_nacimiento", "persona-telefono", "persona-email" };
+
+            var _data = tbxAlumnos.Text.Split("\r\n");
+            if (_data.IsNoE())
+                throw new Exception("Datos vacios");
+            
+            for (var j = 0; j < _data.Length; j++)
+            {
+                IDictionary<string, object?> dict = (IDictionary<string, object?>)_data[j].DictFromText(headers);
+                
+                var personaValues = (PersonaValues)ContainerApp.db.Values<PersonaValues>("persona").SsetNotNull(dict);
+                personaValues.PersistCompare().AddTo(persists);
+            }
+            /*
+        {
+
+
+                
+
+                var alumnoVal = ContainerApp.db.Values<AlumnoValues>();
+                    throw new Exception("No existe curso");
+
+                var tomaExistente = db.TomaAprobadaDeCursoQuery(idCurso).Dict();
+                if (tomaExistente.IsNoE())
+                {
+                    var tomaVal = db.Values("toma").
+                    Set("curso", idCurso).
+                    Set("docente", personaValues.Get("id")!).
+                    Set("fecha_toma", Get("inicio")!).
+                    Set("estado", "Aprobada").
+                    Set("estado_contralor", "Pasar").
+                    Set("tipo_movimiento", "AI").Default().Reset();
+                    if (!tomaVal.Check())
+                        throw new Exception(tomaVal.Logging.ToString());
+
+                    tomaVal.Insert().AddTo(persists);
+                }
+                else
+                {
+                    if (!tomaExistente["docente"]!.Equals(personaValues.Get("id")))
+                        throw new Exception("Existe una toma asignada a un docente diferente");
+                    else
+                        throw new Exception("Ya existe la toma");
+                }
+
+                logging.AddLog(j.ToString(), "proceso finalizado", "persist_tomas_pf", Logging.Level.Info);
+                ¨*/
+
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
+
+    private void btnGuardarAlumnos_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
+    #endregion
+
+
     #region INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -192,78 +268,4 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     #endregion
 
-
-    #region tab registro alumnos
-    private ObservableCollection<Data_alumno_comision> ocAsignacionRegistrar;
-    private void btnProcesarAlumnos_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            ComisionValues comVal = (ComisionValues)((Data_comision)cbxComision.SelectedItem).GetValues();
-            
-            List<EntityPersist> persists = new();
-
-            string[] headers = { "persona-apellidos", "persona-nombres", "persona-numero_documento", "persona-descripcion_domicilio", "persona-localidad", "persona-fecha_nacimiento", "persona-telefono", "persona-email"};
-
-            var _data = tbxAlumnos.Text.Split("\r\n");
-            if (_data.IsNoE())
-                throw new Exception("Datos vacios");
-
-            for (var j = 0; j < _data.Length; j++)
-            {
-                try
-                {
-                    IDictionary<string, object?> dict = (IDictionary<string, object?>)_data[j].DictFromText(headers);
-
-                    var personaValues = (PersonaValues)ContainerApp.db.Values<PersonaValues>("persona").SsetNotNull(dict);
-                    personaValues.PersistCompare().AddTo(persists);
-
-                    var alumnoVal = ContainerApp.db.Values<AlumnoValues>();
-                        throw new Exception("No existe curso");
-
-                    var tomaExistente = db.TomaAprobadaDeCursoQuery(idCurso).Dict();
-                    if (tomaExistente.IsNoE())
-                    {
-                        var tomaVal = db.Values("toma").
-                        Set("curso", idCurso).
-                        Set("docente", personaValues.Get("id")!).
-                        Set("fecha_toma", Get("inicio")!).
-                        Set("estado", "Aprobada").
-                        Set("estado_contralor", "Pasar").
-                        Set("tipo_movimiento", "AI").Default().Reset();
-                        if (!tomaVal.Check())
-                            throw new Exception(tomaVal.Logging.ToString());
-
-                        tomaVal.Insert().AddTo(persists);
-                    }
-                    else
-                    {
-                        if (!tomaExistente["docente"]!.Equals(personaValues.Get("id")))
-                            throw new Exception("Existe una toma asignada a un docente diferente");
-                        else
-                            throw new Exception("Ya existe la toma");
-                    }
-
-                    logging.AddLog(j.ToString(), "proceso finalizado", "persist_tomas_pf", Logging.Level.Info);
-
-                }
-                catch (Exception ex)
-                {
-                    logging.AddLog(j.ToString(), ex.Message, "persist_tomas_pf", Logging.Level.Error);
-                    continue;
-                }
-
-
-            }
-        catch (Exception ex)
-        {
-            ex.ToastException();
-        }
-    }
-
-    private void btnGuardarAlumnos_Click(object sender, RoutedEventArgs e)
-    {
-
-    }
-    #endregion
 }

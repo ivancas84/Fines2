@@ -155,5 +155,10 @@ namespace SqlOrganize.Sql
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public EntityPersist Delete()
+        {
+            return db.Persist().DeleteIds(entityName, this.GetPropertyValue("id"));
+        }
+
     }
 }

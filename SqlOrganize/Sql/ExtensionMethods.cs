@@ -34,6 +34,14 @@ namespace SqlOrganize.Sql
             return query.Obj<T>();
         }
 
+        public static T? Data<T>(this EntitySql esql) where T : Data, new()
+        {
+            var data = esql.Dict();
+            if (data.IsNoE())
+                return null;
+            return esql.Db.ToData<T>(data!);
+        }
+
         public static IEnumerable<T> Column<T>(this EntitySql esql, string columnName)
         {
             using Query query = esql.Query();
@@ -63,12 +71,12 @@ namespace SqlOrganize.Sql
             return query.Value<T>(columnNumber);
         }
 
-        public static IDictionary<string, object?>? RowByUnique(this EntitySql entitySql, IDictionary<string, object?> source)
+        public static IDictionary<string, object?>? DictOne(this EntitySql entitySql)
         {
-            IEnumerable<Dictionary<string, object?>> rows = entitySql.Unique(source).ColOfDict();
+            IEnumerable<Dictionary<string, object?>> rows = entitySql.ColOfDict();
 
             if (rows.Count() > 1)
-                throw new Exception("La consulta por campos unicos retorno mas de un resultado");
+                throw new Exception("La consulta de uno retorno mas de un resultado");
 
             if (rows.Count() == 1)
                 return rows.ElementAt(0);
@@ -95,20 +103,6 @@ namespace SqlOrganize.Sql
                 query.RollbackTransaction();
                 throw;
             }
-            return persist;
-        }
-
-        public static EntityPersist AddTo(this EntityPersist persist, List<EntityPersist> persists)
-        {
-            persists.Add(persist);
-            return persist;
-        }
-
-        public static EntityPersist AddToIfSql(this EntityPersist persist, List<EntityPersist> persists)
-        {
-            if (!persist.Sql().IsNoE())
-                persists.Add(persist);
-
             return persist;
         }
 
@@ -147,99 +141,6 @@ namespace SqlOrganize.Sql
         public static IEnumerable<EntityPersist> Transaction(this IEnumerable<EntityPersist> persists)
         {
             return persists.Exec();
-        }
-        
-        public static EntityPersist TransferOm(this EntityPersist persist, string entityName, object origenId, object destinoId)
-        {
-            List<Field> fieldsOmPersona = persist.Db.Entity(entityName).FieldsOm();
-            foreach (var field in fieldsOmPersona)
-            {
-                object[] ids = persist.Db.Sql(field.entityName).Where(field.name + " = @0").Parameters(origenId).Column<object>("id").ToArray();
-                if(ids.Any())
-                    persist.UpdateValueIds(field.entityName, field.name, destinoId!, ids);
-            }
-            return persist;
-        }
-        #endregion
-
-        #region EntityPersist + EntityValues
-        public static EntityPersist Insert(this EntityValues values)
-        {
-            return values.db.Persist().Insert(values);
-        }
-
-        public static EntityPersist Update(this EntityValues values)
-        {
-            return values.db.Persist().Update(values);
-        }
-
-        public static EntityValues Insert(this EntityValues values, EntityPersist persist)
-        {
-            persist.Insert(values);
-            return values;
-        }
-
-        public static EntityValues Update(this EntityValues values, EntityPersist persist)
-        {
-            persist.Update(values);
-            return values;
-        }
-
-        public static IDictionary<string, object?>? RowByFieldValue(this EntityValues entityValues, string fieldName)
-        {
-            return entityValues.db.Sql(entityValues.entityName).Equal(fieldName, entityValues.Get(fieldName)).Cache().Dict();
-        }
-
-        public static EntityPersist PersistId(this EntityValues v)
-        {
-            EntityPersist p;
-            if (v.Get(v.db.config.id).IsNoE())
-            {
-                v.Default().Reset();
-                p = v.db.Persist().Insert(v).Exec().RemoveCache();
-            }
-            else
-            {
-                v.Reset();
-                p = v.db.Persist().Update(v).Exec().RemoveCache();
-            }
-
-            return p;
-        }
-
-        public static EntityPersist Persist(this EntityValues v)
-        {
-            var row = v.RowByUnique();
-
-            if (row.IsNoE())
-            {
-                v.Default().Reset();
-                if (!v.Check())
-                    throw new Exception("Error al insertar");
-
-                return v.db.Persist().Insert(v);
-            }
-            else
-            {
-                v.Reset();
-                if (!v.Check())
-                    throw new Exception("Error al actualizar");
-
-                return v.db.Persist().Update(v);
-            }
-
-        }
-
-        public static EntityValues Persist(this EntityValues v, EntityPersist persist)
-        {
-            persist.Persist(v);
-            return v;
-        }
-
-        public static EntityValues PersistCondition(this EntityValues v, EntityPersist persist, object? condition)
-        {
-            persist.PersistCondition(v, condition);
-            return v;
         }
         #endregion
 
@@ -312,65 +213,17 @@ namespace SqlOrganize.Sql
         }
         #endregion
 
-        #region EntityPersist + Data
-        public static EntityPersist Delete(this Data data)
-        {
-            data.Dict();
-            return data.db.Persist().DeleteIds(data["entityName"], data["id"]);
-        }
-
-        #endregion
-
         #region EntitySql + EntityValues
-        public static EntityValues ValuesFromId(this Db db, string entityName, object id)
-        {
-            var data = db.Sql(entityName).Cache().Id(id) ?? throw new Exception(entityName + "inexistente");
-            return db.Values(entityName).SetValues(data);
-
-        }
-
-        public static IDictionary<string, object?>? RowByUniqueFieldOrValues(this EntityValues values, string fieldName)
+        public static IDictionary<string, object?>? DictUniqueFieldOrValues(this EntityValues values, string fieldName)
         {
             try
             {
-                if (values.db.Field(values.entityName, fieldName).IsUnique())
-                    return values.RowByFieldValue(fieldName);
-                else
-                    return values.RowByUniqueWithoutIdIfExists();
+                return values.SqlUniqueFieldsOrValues(fieldName).Dict();
             }
             catch (UniqueException ex)
             {
                 return null;
             }
-        }
-        public static IDictionary<string, object?>? RowByUniqueWithoutIdIfExists(this EntityValues values)
-        {
-            return values.db.Sql(values.entityName).RowByUniqueWithoutIdIfExists(values.Values());
-        }
-        public static IDictionary<string, object?>? RowByUniqueWithoutIdIfExists(this EntitySql entitySql, IDictionary<string, object?> source)
-        {
-            entitySql.Unique(source);
-
-            if (source.ContainsKey(entitySql.Db.config.id) && !source[entitySql.Db.config.id]!.IsNoE())
-                entitySql.And("$" + entitySql.Db.config.id + " != @" + entitySql.parameters.Count()).Parameters(source[entitySql.Db.config.id]!);
-
-            return entitySql.Cache().Dict();
-        }
-
-        public static IDictionary<string, object?>? RowByUnique(this EntityValues ev)
-        {
-            return ev.db.Sql(ev.entityName).RowByUnique(ev.Values());
-        }
-        #endregion
-
-        #region EntitySql
-        public static IEnumerable<Dictionary<string, object?>> SearchKeyValue(this EntitySql entitySql, string key, object value)
-        {
-            return entitySql.
-                Where(key + " = @0").
-                Parameters(value).
-                Size(0).
-                Cache().ColOfDict();
         }
         #endregion
 

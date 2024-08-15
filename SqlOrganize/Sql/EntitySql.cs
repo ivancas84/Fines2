@@ -224,6 +224,16 @@ namespace SqlOrganize.Sql
             return "";
         }
 
+        public EntitySql UniqueWithoutIdIfExists(IDictionary<string, object?> source)
+        {
+            Unique(source);
+
+            if (source.ContainsKey(Db.config.id) && !source[Db.config.id]!.IsNoE())
+                And("$" + Db.config.id + " != @" + parameters.Count()).Parameters(source[Db.config.id]!);
+
+            return this;
+        }
+
         public EntitySql Fields()
         {
             fields += string.Join(", ", Db.FieldNamesRel(entityName));

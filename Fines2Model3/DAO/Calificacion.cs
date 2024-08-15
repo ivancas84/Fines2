@@ -80,7 +80,8 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public static EntitySql CalificacionAprobadaCursoSql(this Db db, object curso)
         {
-            CursoValues cursoVal = (CursoValues)db.ValuesFromId("curso", curso);
+            var data = db.Sql("curso").Cache().Id(curso) ?? throw new Exception("curso inexistente");
+            CursoValues cursoVal = (CursoValues)db.Values("curso").SetValues(data);
 
             string subSql = "SELECT DISTINCT alumno FROM alumno_comision WHERE comision = @0";
 
@@ -92,7 +93,8 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public static EntitySql CalificacionDesaprobadaCursoAlumnosActivosSql(this Db db, object curso)
         {
-            CursoValues cursoVal = (CursoValues)db.ValuesFromId("curso", curso);
+            var data = db.Sql("curso").Cache().Id(curso) ?? throw new Exception("curso inexistente");
+            CursoValues cursoVal = (CursoValues)db.Values("curso").SetValues(data);
 
             string subSql = "SELECT DISTINCT alumno FROM alumno_comision WHERE estado = 'Activo' AND comision = @0";
 

@@ -101,7 +101,8 @@ namespace Fines2Wpf.Windows.ListaCursos
                         if (ContainerApp.db.Field(entityName, fieldName).IsUnique())
                             row = ContainerApp.db.Sql(entityName).Equal(fieldName, value!).Cache().Dict();
                         else
-                            row = v.RowByUniqueWithoutIdIfExists();
+                            row = v.SqlUniqueWithoutIdIfExists().Cache().Dict();
+
 
                         if (!row.IsNoE())
                         {

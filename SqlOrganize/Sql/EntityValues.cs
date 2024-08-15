@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using SqlOrganize.ValueTypesUtils;
 using SqlOrganize.DateTimeUtils;
+using SqlOrganize.Sql.Exceptions;
 
 
 namespace SqlOrganize.Sql
@@ -24,7 +25,7 @@ namespace SqlOrganize.Sql
     public class EntityValues : EntityFieldId
     {
         /// <summary>Se mantiene una lista independiente de fieldNames por si se necesitan definir fieldNames adicionales a los de la db para procesamiento o comparacion</summary>
-        protected List<string> fieldNames; 
+        protected List<string> fieldNames;
 
         protected Logging logging = new Logging();
 
@@ -53,13 +54,13 @@ namespace SqlOrganize.Sql
             values = obj.Dict() ?? new Dictionary<string, object?>();
             return SetValues(obj.Dict());
         }
-     
+
         /// <summary>Existe valor de field</summary>
         public bool ContainsKey(string fieldId)
         {
             return values.ContainsKey(fieldId);
         }
-        
+
         public EntityValues Clear()
         {
             values.Clear();
@@ -109,7 +110,7 @@ namespace SqlOrganize.Sql
         public string GetStr(string nullStr = "", string separator = " ", params string[] fieldNames)
         {
             string ret = "";
-            foreach(var field in fieldNames)
+            foreach (var field in fieldNames)
             {
                 ret += GetStr(field, nullStr) + separator;
             }
@@ -261,14 +262,14 @@ namespace SqlOrganize.Sql
             if (fieldName.Contains("-"))
             {
                 var (fid, fn, ren) = db.KeyDeconstruction(entityName, fieldName, "-");
-                values[fieldName] = db.Values(ren).ValueField(fn, value); 
+                values[fieldName] = db.Values(ren).ValueField(fn, value);
             }
             else
             {
 
                 values[fieldName] = ValueField(fieldName, value);
             }
-             return this;
+            return this;
         }
 
         /// <summary>Resetear valores definidos</summary>
@@ -321,7 +322,7 @@ namespace SqlOrganize.Sql
 
                     case "setdefault":
                         values[fieldName] = GetDefault(fieldName);
-                    break;
+                        break;
 
                     case "cleandigits":
                         if (!values[fieldName].IsNoE())
@@ -481,7 +482,7 @@ namespace SqlOrganize.Sql
         public EntityValues? GetValuesCache(string fieldId)
         {
             EntityRelation rel = db.Entity(entityName).relations[fieldId];
-            if(rel.parentId == null)
+            if (rel.parentId == null)
             {
                 object? val = GetOrNull(rel.fieldName);
                 if (!val.IsNoE())
@@ -489,10 +490,10 @@ namespace SqlOrganize.Sql
                     var data = db.Sql(rel.refEntityName).Cache()._Id(val!);
                     return db.Values(rel.refEntityName).Set(data!);
                 }
-            } 
+            }
             else
             {
-                EntityValues? values = GetValuesCache(rel.parentId);                
+                EntityValues? values = GetValuesCache(rel.parentId);
                 if (!values.IsNoE())
                     return values!.GetValuesCache(fieldId);
             }
@@ -524,7 +525,8 @@ namespace SqlOrganize.Sql
                 fieldNames.Remove(field);
 
             var label = "";
-            foreach (string fieldName in fieldNames) { 
+            foreach (string fieldName in fieldNames)
+            {
                 label += GetOrNull(fieldName)?.ToString() ?? " ";
                 label += ", ";
             }
@@ -538,7 +540,7 @@ namespace SqlOrganize.Sql
 
             var label = "";
             foreach (string fieldName in fieldNames)
-            { 
+            {
                 label += GetOrNull(fieldName)?.ToString() ?? " ";
                 label += ", ";
             }
@@ -669,7 +671,7 @@ namespace SqlOrganize.Sql
                 case "short":
                     //el tipo YEAR de mysql es mapeado a short
                     if (field.defaultValue.ToString()!.ToLower().Contains("current_year"))
-                         return Convert.ToInt16(DateTime.Now.Year);
+                        return Convert.ToInt16(DateTime.Now.Year);
 
                     if (field.defaultValue.ToString()!.ToLower().Contains("current_semester"))
                         return DateTime.Now.ToSemester();
@@ -687,7 +689,7 @@ namespace SqlOrganize.Sql
                         var guidString = Regex.Replace(field.defaultValue.ToString()!, @"[^a-zA-Z0-9-]", string.Empty);
                         return Guid.Parse(guidString);
                     }
-                        
+
 
                 default:
                     return field.defaultValue;
@@ -720,7 +722,7 @@ namespace SqlOrganize.Sql
 
         public bool IsNullOrEmpty(params string[] fieldNames)
         {
-            foreach(string fieldName in fieldNames)
+            foreach (string fieldName in fieldNames)
             {
                 if (IsNullOrEmpty(fieldName))
                     return true;
@@ -768,7 +770,7 @@ namespace SqlOrganize.Sql
                 foreach (var fieldName in fieldNames)
                 {
                     if (!cp.fieldsToCompare.Contains(fieldName))
-                    { 
+                    {
                         dict1_.Remove(fieldName);
                         dict2_.Remove(fieldName);
                     }
@@ -819,6 +821,131 @@ namespace SqlOrganize.Sql
             return response;
         }
 
+        public EntityPersist Insert()
+        {
+            return db.Persist().Insert(this);
+        }
+
+        public EntityPersist Update()
+        {
+            return db.Persist().Update(this);
+        }
+
+        public EntityValues Insert(EntityPersist persist)
+        {
+            persist.Insert(this);
+            return this;
+        }
+
+        public EntityValues Update(EntityPersist persist)
+        {
+            persist.Update(this);
+            return this;
+        }
+
+        public EntityPersist PersistId()
+        {
+            if (Get(db.config.id).IsNoE())
+            {
+                Default().Reset();
+                if (!Check())
+                    throw new Exception("Error al insertar " + logging.ToString());
+                return Insert();
+            }
+            else
+            {
+                Reset();
+                if (!Check())
+                    throw new Exception("Error al actualizar " + logging.ToString());
+                return Update();
+            }
+        }
+
+        public EntityPersist Persist()
+        {
+            return db.Persist().Persist(this);
+
+        }
+
+        public EntityValues Persist(EntityPersist persist)
+        {
+            persist.Persist(this);
+            return this;
+        }
+
+        public EntityPersist PersistCondition(object? condition)
+        {
+            return db.Persist().PersistCondition(this, condition);
+
+        }
+
+        public EntityValues PersistCondition(EntityPersist persist, object? condition)
+        {
+            persist.PersistCondition(this, condition);
+            return this;
+        }
+
+        public EntityPersist PersistCompare(CompareParams compare)
+        {
+            Reset();
+
+            IDictionary<string, object?> row = null;
+            try
+            {
+                row = SqlUnique().DictOne();
+            } catch(UniqueException) { }
+            
+            if (!row.IsNoE()) //actualizar
+            {
+                //Se controla la existencia de id diferente? No! Se reasigna el id, dejo el codigo comentado
+                //if (v.values.ContainsKey(Db.config.id) && v.Get(Db.config.id).ToString() != rows.ElementAt(0)[Db.config.id].ToString())
+                //    throw new Exception("Los id son diferentes");
+
+                compare.val = db.Values("persona").Set(row);
+                var response = Compare(compare);
+
+                if (!response.IsNoE())
+                    throw new Exception("Comparacion diferente: " + compare.val.ToStringFields(response.Keys.ToArray()));
+
+                Set(db.config.id, row[db.config.id]);
+                if (!Check())
+                    throw new Exception("Los campos a actualizar poseen errores: " + Logging.ToString());
+
+                return this.Update();
+
+            }
+            else
+            {
+                if (!Default().Reset().Check())
+                    throw new Exception("Los campos a insertar poseen errores: " + Logging.ToString());
+
+                return this.Insert();
+            }
+        }
+
+        public EntitySql SqlField(string fieldName)
+        {
+            return db.Sql(entityName).Equal(fieldName, Get(fieldName));
+        }
+
+        public EntitySql SqlUniqueWithoutIdIfExists()
+        {
+            return db.Sql(entityName).UniqueWithoutIdIfExists(Values());
+        }
+
+        public EntitySql SqlUnique()
+        {
+            return db.Sql(entityName).Unique(Values());
+        }
+
+        public EntitySql SqlUniqueFieldsOrValues(string fieldName)
+        {
+            if (this.db.Field(entityName, fieldName).IsUnique())
+                return SqlField(fieldName);
+            else
+                return SqlUniqueWithoutIdIfExists();
+        }
+    
     }
 
 

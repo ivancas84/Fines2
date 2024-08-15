@@ -18,7 +18,7 @@ namespace SqlOrganize
         {
             using (PrincipalContext context = new PrincipalContext(ContextType.Domain, Domain))
             {
-                Username = WindowsIdentity.GetCurrent().Name;
+                Username = WindowsIdentity.GetCurrent().Name.Replace("DO\\","");
                 UserPrincipal userPrincipal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, Username);
                 if (userPrincipal == null)
                     return;

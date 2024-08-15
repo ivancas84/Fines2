@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
 using SqlOrganize.CollectionUtils;
+using SqlOrganize.Sql.Exceptions;
 
 namespace SqlOrganize.Sql
 {
@@ -328,7 +329,6 @@ namespace SqlOrganize.Sql
             }
             return result!;
         }
-        
     }
 
     /// <summary>Organizacion de Campos de la entidad para armar relaciones</summary>
@@ -394,6 +394,7 @@ namespace SqlOrganize.Sql
                 OrganizeRelations(index);
         }
 
+        
         protected void OrganizeOrder(Dictionary<string, EntityTree> tree)
         {
             foreach (var (fieldId, et) in tree)
