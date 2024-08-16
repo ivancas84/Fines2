@@ -77,7 +77,7 @@ namespace WpfUtils.Controls
             }
 
             v.Sset(fieldName, value);
-            IDictionary<string, object?>? rowDb = v.RowByUniqueFieldOrValues(fieldName);
+            IDictionary<string, object?>? rowDb = v.SqlUniqueFieldsOrValues(fieldName).Dict() ?? null;
             if (!rowDb.IsNoE()) //con el nuevo valor ingresados se obtuvo un nuevo campo unico, no se realiza persistencia y se cambian los valores para reflejar el nuevo valor consultado
             {
                 if (fieldId.IsNoE() && exceptionIfMainEntityExists)

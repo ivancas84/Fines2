@@ -185,13 +185,13 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     {
         try
         {
-            ComisionValues comVal = (ComisionValues)((Data_comision)cbxComision.SelectedItem).GetValues();
+            Data_comision_r comObj = (Data_comision_r)cbxComision.SelectedItem;
 
             List<EntityPersist> persists = new();
 
             string[] headers = { "persona-apellidos", "persona-nombres", "persona-numero_documento", "persona-descripcion_domicilio", "persona-localidad", "persona-fecha_nacimiento", "persona-telefono", "persona-email" };
 
-            var _data = tbxAlumnos.Text.Split("\r\n");
+            string[] _data = tbxAlumnos.Text.Split("\r\n");
             if (_data.IsNoE())
                 throw new Exception("Datos vacios");
             
@@ -199,8 +199,25 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             {
                 IDictionary<string, object?> dict = (IDictionary<string, object?>)_data[j].DictFromText(headers);
                 
-                var personaValues = (PersonaValues)ContainerApp.db.Values<PersonaValues>("persona").SsetNotNull(dict);
-                personaValues.PersistCompare().AddTo(persists);
+                var personaValues = ContainerApp.db.Values("persona").SsetNotNull(dict);
+                CompareParams compare = new CompareParams
+                {
+                    fieldsToCompare = ["nombres", "apellidos", "numero_documento"],
+                };
+                personaValues.PersistCompare(compare).AddTo(persists);
+
+
+                ContainerApp.db.Values("alumno").
+                    Sset("persona", personaValues.Get("id")!).
+                    Sset("anio_ingreso", comObj.planificacion__anio!).
+                    Sset("semestre_ingreso", comObj.planificacion__semestre!).
+                    Sset("plan", comObj.plan__id).InsertIfNotExists()?.AddTo(persists);
+
+
+                ContainerApp.db.Values("alumno_comision").
+                    Sset("alumno", alumnoVal.Get("id")).
+                    Sset("comision", comObj.id).InsertIfNotExists()?.AddTo(persists);
+
             }
             /*
         {

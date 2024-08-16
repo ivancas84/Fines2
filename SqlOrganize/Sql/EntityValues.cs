@@ -923,6 +923,29 @@ namespace SqlOrganize.Sql
             }
         }
 
+        public EntityPersist? InsertIfNotExists()
+        {
+            Reset();
+
+            IDictionary<string, object?> row = null;
+            try
+            {
+                row = SqlUnique().DictOne();
+            }
+            catch (UniqueException) { }
+
+            if (row.IsNoE()) //actualizar
+            {
+                if (!Default().Reset().Check())
+                    throw new Exception("Los campos a insertar poseen errores: " + Logging.ToString());
+
+                return Insert();
+            }
+
+            Sset("id", row!["id"]);
+            return null;
+        }
+
         public EntitySql SqlField(string fieldName)
         {
             return db.Sql(entityName).Equal(fieldName, Get(fieldName));

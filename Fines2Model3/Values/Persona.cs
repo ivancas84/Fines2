@@ -370,7 +370,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             return obj;
         }
 
-        public EntityPersist PersistCompare()
+        /*public EntityPersist PersistCompare()
         {            
             var personaExistenteData = db.PersonaDniSql(Get("numero_documento")).Dict();
             if (personaExistenteData.IsNoE())
@@ -403,7 +403,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 logging.AddLog("persona", "Persona actualizada", "update", Logging.Level.Info);
 
                 return this.Update();
-            }
+            }*/
         }
     }
 }
