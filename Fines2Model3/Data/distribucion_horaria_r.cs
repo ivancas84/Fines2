@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_distribucion_horaria_r : Data_distribucion_horaria
     {
 
-        public Data_distribucion_horaria_r () : base()
-        {
-        }
-
-        public Data_distribucion_horaria_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

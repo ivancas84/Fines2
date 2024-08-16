@@ -5,14 +5,6 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 {
     internal class Alumno : Data_alumno
     {
-        public Alumno() : base()
-        {
-        }
-
-        public Alumno(Db db) : base(db)
-        {
-        }
-
         public string? _color_estado_inscripcion { set; get; } = null;
 
         public string? color_estado_inscripcion

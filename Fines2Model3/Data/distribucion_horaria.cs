@@ -10,22 +10,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "distribucion_horaria";
 
-        public Data_distribucion_horaria ()
-        {
-        }
-
-        public Data_distribucion_horaria(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("distribucion_horaria");
             _id = (string?)val.GetDefault("id");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

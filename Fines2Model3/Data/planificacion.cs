@@ -10,22 +10,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "planificacion";
 
-        public Data_planificacion ()
-        {
-        }
-
-        public Data_planificacion(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("planificacion");
             _id = (string?)val.GetDefault("id");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

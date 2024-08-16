@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_curso_r : Data_curso
     {
 
-        public Data_curso_r () : base()
-        {
-        }
-
-        public Data_curso_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

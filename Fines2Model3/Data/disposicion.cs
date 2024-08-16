@@ -10,22 +10,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "disposicion";
 
-        public Data_disposicion ()
-        {
-        }
-
-        public Data_disposicion(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("disposicion");
             _id = (string?)val.GetDefault("id");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

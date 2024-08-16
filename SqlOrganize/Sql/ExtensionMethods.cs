@@ -265,6 +265,7 @@ namespace SqlOrganize.Sql
             }
         }
 
+
         /// <summary>Obtiene una clase Data a partir de una instancia de Values</summary>
         /// <remarks>Incorpora codigo adicional redefinido en las clases values</remarks>
         public static T ToData<T>(this Db db, IDictionary<string, object?> item) where T : Data, new()

@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_telefono_r : Data_telefono
     {
 
-        public Data_telefono_r () : base()
-        {
-        }
-
-        public Data_telefono_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

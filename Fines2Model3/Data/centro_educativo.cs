@@ -10,22 +10,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "centro_educativo";
 
-        public Data_centro_educativo ()
-        {
-        }
-
-        public Data_centro_educativo(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("centro_educativo");
             _id = (string?)val.GetDefault("id");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

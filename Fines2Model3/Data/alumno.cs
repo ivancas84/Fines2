@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "alumno";
 
-        public Data_alumno ()
-        {
-        }
-
-        public Data_alumno(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("alumno");
@@ -34,7 +25,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _confirmado_direccion = (bool?)val.GetDefault("confirmado_direccion");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

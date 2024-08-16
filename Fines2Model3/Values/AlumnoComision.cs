@@ -9,6 +9,20 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
         }
 
+        public override string ToString()
+        {
+            var s = "";
+            s += GetStr("estado", "?");
+            s += " ";
+            s += GetValuesCache("comision")?.ToString() ?? "?";
+            s += " ";
+            s += GetValuesCache("persona")?.ToString() ?? "?";
+            return s;
+        }
+
+       
+
+
         public string EstadoIngreso()
         {
             string estado = GetOrNull("estado")?.ToString().ToLower() ?? "?";
@@ -95,5 +109,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return persist;
         }
+
+        
     }
 }

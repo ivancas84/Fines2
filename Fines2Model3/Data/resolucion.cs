@@ -10,22 +10,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "resolucion";
 
-        public Data_resolucion ()
-        {
-        }
-
-        public Data_resolucion(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("resolucion");
             _id = (string?)val.GetDefault("id");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

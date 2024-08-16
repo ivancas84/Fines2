@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "persona";
 
-        public Data_persona ()
-        {
-        }
-
-        public Data_persona(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("persona");
@@ -29,7 +20,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _info_verificada = (bool?)val.GetDefault("info_verificada");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

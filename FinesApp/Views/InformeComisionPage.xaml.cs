@@ -48,6 +48,10 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
         cursoDataGrid.ItemsSource = cursoOC;
         asignacionDataGrid.ItemsSource = asignacionOC;
 
+        #region tab registro alumnos
+        dgdInfoPersist.ItemsSource = ocInfoPersist;
+        #endregion
+
     }
 
     #region Autocomplete v3 - organismo
@@ -180,80 +184,15 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
 
     #region tab registro alumnos
-    private ObservableCollection<Data_alumno_comision> ocAsignacionRegistrar;
+    private IEnumerable<EntityPersist> persists;
+    private ObservableCollection<InfoData> ocInfoPersist = new();
+
     private void btnProcesarAlumnos_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            Data_comision_r comObj = (Data_comision_r)cbxComision.SelectedItem;
-
-            List<EntityPersist> persists = new();
-
-            string[] headers = { "persona-apellidos", "persona-nombres", "persona-numero_documento", "persona-descripcion_domicilio", "persona-localidad", "persona-fecha_nacimiento", "persona-telefono", "persona-email" };
-
-            string[] _data = tbxAlumnos.Text.Split("\r\n");
-            if (_data.IsNoE())
-                throw new Exception("Datos vacios");
-            
-            for (var j = 0; j < _data.Length; j++)
-            {
-                IDictionary<string, object?> dict = (IDictionary<string, object?>)_data[j].DictFromText(headers);
-                
-                var personaValues = ContainerApp.db.Values("persona").SsetNotNull(dict);
-                CompareParams compare = new CompareParams
-                {
-                    fieldsToCompare = ["nombres", "apellidos", "numero_documento"],
-                };
-                personaValues.PersistCompare(compare).AddTo(persists);
-
-
-                ContainerApp.db.Values("alumno").
-                    Sset("persona", personaValues.Get("id")!).
-                    Sset("anio_ingreso", comObj.planificacion__anio!).
-                    Sset("semestre_ingreso", comObj.planificacion__semestre!).
-                    Sset("plan", comObj.plan__id).InsertIfNotExists()?.AddTo(persists);
-
-
-                ContainerApp.db.Values("alumno_comision").
-                    Sset("alumno", alumnoVal.Get("id")).
-                    Sset("comision", comObj.id).InsertIfNotExists()?.AddTo(persists);
-
-            }
-            /*
-        {
-
-
-                
-
-                var alumnoVal = ContainerApp.db.Values<AlumnoValues>();
-                    throw new Exception("No existe curso");
-
-                var tomaExistente = db.TomaAprobadaDeCursoQuery(idCurso).Dict();
-                if (tomaExistente.IsNoE())
-                {
-                    var tomaVal = db.Values("toma").
-                    Set("curso", idCurso).
-                    Set("docente", personaValues.Get("id")!).
-                    Set("fecha_toma", Get("inicio")!).
-                    Set("estado", "Aprobada").
-                    Set("estado_contralor", "Pasar").
-                    Set("tipo_movimiento", "AI").Default().Reset();
-                    if (!tomaVal.Check())
-                        throw new Exception(tomaVal.Logging.ToString());
-
-                    tomaVal.Insert().AddTo(persists);
-                }
-                else
-                {
-                    if (!tomaExistente["docente"]!.Equals(personaValues.Get("id")))
-                        throw new Exception("Existe una toma asignada a un docente diferente");
-                    else
-                        throw new Exception("Ya existe la toma");
-                }
-
-                logging.AddLog(j.ToString(), "proceso finalizado", "persist_tomas_pf", Logging.Level.Info);
-                ¨*/
-
+            (persists, var oc) = ContainerApp.db.PersistAsignacionesComisionText(cbxComision.SelectedValue, tbxAlumnos.Text);
+            ocInfoPersist.ClearAndAddRange(oc);
         }
         catch (Exception ex)
         {
@@ -263,7 +202,18 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
     private void btnGuardarAlumnos_Click(object sender, RoutedEventArgs e)
     {
+        try
+        {
+            if (!persists.Any())
+                throw new Exception("No existen datos a persistir");
 
+            persists.Transaction().RemoveCache();
+            ToastExtensions.Show("Se han registrado las asignaciones");
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
     }
     #endregion
 

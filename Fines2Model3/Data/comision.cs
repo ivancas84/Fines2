@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "comision";
 
-        public Data_comision ()
-        {
-        }
-
-        public Data_comision(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("comision");
@@ -26,7 +17,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _alta = (DateTime?)val.GetDefault("alta");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

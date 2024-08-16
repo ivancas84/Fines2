@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_calificacion_r : Data_calificacion
     {
 
-        public Data_calificacion_r () : base()
-        {
-        }
-
-        public Data_calificacion_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

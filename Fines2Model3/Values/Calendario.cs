@@ -98,7 +98,11 @@ namespace SqlOrganize.Sql.Fines2Model3
 
                     (string? dni, string? cuil) = PersonaValues.CuilDni(dict["persona-numero_documento"]);
                     var personaValues = ((PersonaValues)db.Values("persona", "persona").SetNotNull(dict).Set("numero_documento", dni));
-                    personaValues.PersistCompare().AddTo(persists);
+                    CompareParams compare = new CompareParams
+                    {
+                        fieldsToCompare = ["nombres", "apellidos", "numero_documento"],
+                    };
+                    personaValues.PersistCompare(compare).AddTo(persists);
                     if (personaValues.Logging.HasLogs())
                         logging.AddLog(j.ToString(), personaValues.Logging.ToString(), "persist_tomas_pf", Logging.Level.Info);
 

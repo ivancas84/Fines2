@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_toma_r : Data_toma
     {
 
-        public Data_toma_r () : base()
-        {
-        }
-
-        public Data_toma_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

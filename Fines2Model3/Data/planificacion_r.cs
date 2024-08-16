@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_planificacion_r : Data_planificacion
     {
 
-        public Data_planificacion_r () : base()
-        {
-        }
-
-        public Data_planificacion_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

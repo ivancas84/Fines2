@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "asignacion_planilla_docente";
 
-        public Data_asignacion_planilla_docente ()
-        {
-        }
-
-        public Data_asignacion_planilla_docente(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("asignacion_planilla_docente");
@@ -27,7 +18,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _reclamo = (bool?)val.GetDefault("reclamo");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

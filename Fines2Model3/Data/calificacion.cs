@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "calificacion";
 
-        public Data_calificacion ()
-        {
-        }
-
-        public Data_calificacion(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("calificacion");
@@ -26,7 +17,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _archivado = (bool?)val.GetDefault("archivado");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

@@ -8,14 +8,14 @@ namespace SqlOrganize.CollectionUtils
     public static class CollectionUtils
     {
 
-        public static IDictionary<string, string> DictFromText(this string text, params string[] headers)
+        public static IDictionary<string, object?> DictFromText(this string text, params string[] headers)
         {
             string[] values = text.Split("\t");
 
             if (values.Count() < headers.Count())
                 throw new Exception("La cantidad de datos no es suficiente");
 
-            Dictionary<string, string> dict = new();
+            Dictionary<string, object?> dict = new();
             for (var k = 0; k < headers.Length; k++)
                 dict[headers[k]] = values[k];
 
@@ -28,6 +28,13 @@ namespace SqlOrganize.CollectionUtils
                 oc.Add(item);
         }
 
+        public static void ClearAndAddRange<T>(this ObservableCollection<T> oc, IEnumerable<T> items)
+        {
+            oc.Clear();
+            foreach (var item in items)
+                oc.Add(item);
+        }
+
         public static void AddRangeToOC<T>(this IEnumerable<T> data, ObservableCollection<T> oc)
         {
             oc.AddRange(data);
@@ -35,8 +42,7 @@ namespace SqlOrganize.CollectionUtils
 
         public static void ClearAndAddRangeToOC<T>(this IEnumerable<T> data, ObservableCollection<T> oc)
         {
-            oc.Clear();
-            oc.AddRange(data);
+            oc.ClearAndAddRange(data);
         }
 
         /// <summary>

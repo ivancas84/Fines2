@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_disposicion_pendiente_r : Data_disposicion_pendiente
     {
 
-        public Data_disposicion_pendiente_r () : base()
-        {
-        }
-
-        public Data_disposicion_pendiente_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

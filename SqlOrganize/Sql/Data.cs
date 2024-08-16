@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -35,7 +36,7 @@ namespace SqlOrganize.Sql
         /// <remarks>Debe estar definida la instancia de Db</remarks>
         public EntityValues GetValues()
         {
-            if(values == null)
+            if (values == null)
                 values = db!.Values(entityName).SetValues(this);
             return values;
         }
@@ -98,6 +99,24 @@ namespace SqlOrganize.Sql
 
         public string Msg { get; set; } = "";
 
+
+        /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
+        /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
+        public string _Label = "";
+
+        public string Label
+        {
+            get { return _Label; }
+            set
+            {
+                if (_Label != value)
+                {
+                    _Label = value;
+                    NotifyPropertyChanged(nameof(Label));
+                }
+            }
+        }
+
         /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
         /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
         public bool _isUpdated = false;
@@ -107,7 +126,7 @@ namespace SqlOrganize.Sql
             get { return _isUpdated; }
             set
             {
-                if(_isUpdated != value)
+                if (_isUpdated != value)
                 {
                     _isUpdated = value;
                     NotifyPropertyChanged(nameof(IsUpdated));
@@ -149,7 +168,7 @@ namespace SqlOrganize.Sql
 
         protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
         {
-            if(!_isUpdatedIgnore.Contains(propertyName))
+            if (!_isUpdatedIgnore.Contains(propertyName))
                 IsUpdated = true;
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -160,5 +179,35 @@ namespace SqlOrganize.Sql
             return db.Persist().DeleteIds(entityName, this.GetPropertyValue("id"));
         }
 
+        public T AddToOC<T>(ObservableCollection<T> oc) where T : Data
+        {
+            oc.Add((T)this);
+            return (T)this;
+        }
+
+
     }
+
+
+    public class InfoData : Data
+    {
+        /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
+        /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
+        public string _Info = "";
+
+        public string Info
+        {
+            get { return _Info; }
+            set
+            {
+                if (_Info != value)
+                {
+                    _Info = value;
+                    NotifyPropertyChanged(nameof(Info));
+                }
+            }
+        }
+
+    }
+
 }

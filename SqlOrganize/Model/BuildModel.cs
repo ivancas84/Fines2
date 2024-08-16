@@ -535,15 +535,6 @@ namespace SqlOrganize.Model
                 sw.WriteLine("");
                 sw.WriteLine("        public override string entityName => \"" + entityName + "\";");
                 sw.WriteLine("");
-                sw.WriteLine("        public Data_" + entityName + " ()");
-                sw.WriteLine("        {");
-                sw.WriteLine("        }");
-                sw.WriteLine("");
-                sw.WriteLine("        public Data_" + entityName + "(Db db)");
-                sw.WriteLine("        {");
-                sw.WriteLine("            this.db = db;");
-                sw.WriteLine("        }");
-                sw.WriteLine("");
                 sw.WriteLine("        public override void Default()");
                 sw.WriteLine("        {");
                 sw.WriteLine("            EntityValues val = db!.Values(\"" + entityName + "\");");
@@ -561,7 +552,6 @@ namespace SqlOrganize.Model
 
                 sw.WriteLine("");
 
-                sw.WriteLine("        public string? Label { get; set; }");
                 sw.WriteLine("");
 
                 Dictionary<string, Field> _fields = new(fields[entityName]);
@@ -641,15 +631,6 @@ namespace SqlOrganize.Model
                 sw.WriteLine("{");
                 sw.WriteLine("    public class Data_" + entityName + "_r" + " : Data_" + entityName);
                 sw.WriteLine("    {");
-
-                sw.WriteLine("");
-                sw.WriteLine("        public Data_" + entityName + "_r () : base()");
-                sw.WriteLine("        {");
-                sw.WriteLine("        }");
-                sw.WriteLine("");
-                sw.WriteLine("        public Data_" + entityName + "_r (Db db) : base(db)");
-                sw.WriteLine("        {");
-                sw.WriteLine("        }");
                 sw.WriteLine("");
 
                 #region Generar valores por defecto (por el momento no generamos valores por defecto para las relaciones, puede dar lugar a confusion)

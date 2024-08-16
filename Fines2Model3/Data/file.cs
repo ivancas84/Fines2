@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "file";
 
-        public Data_file ()
-        {
-        }
-
-        public Data_file(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("file");
@@ -26,7 +17,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _created = (DateTime?)val.GetDefault("created");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

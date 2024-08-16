@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "curso";
 
-        public Data_curso ()
-        {
-        }
-
-        public Data_curso(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("curso");
@@ -26,7 +17,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _alta = (DateTime?)val.GetDefault("alta");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

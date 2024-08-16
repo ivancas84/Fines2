@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "calendario";
 
-        public Data_calendario ()
-        {
-        }
-
-        public Data_calendario(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("calendario");
@@ -28,7 +19,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _insertado = (DateTime?)val.GetDefault("insertado");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

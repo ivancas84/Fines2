@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "toma";
 
-        public Data_toma ()
-        {
-        }
-
-        public Data_toma(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("toma");
@@ -31,7 +22,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _confirmada = (bool?)val.GetDefault("confirmada");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

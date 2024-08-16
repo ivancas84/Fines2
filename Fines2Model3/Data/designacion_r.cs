@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_designacion_r : Data_designacion
     {
 
-        public Data_designacion_r () : base()
-        {
-        }
-
-        public Data_designacion_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

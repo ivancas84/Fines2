@@ -38,9 +38,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
 
-
-
-
         public override string ToString()
         {
             TextInfo myTI = new CultureInfo("es-AR", false).TextInfo;
@@ -220,9 +217,15 @@ namespace SqlOrganize.Sql.Fines2Model3
         public void Reset_numero_documento()
         {
             string? numero_documento = (string?)GetOrNull("numero_documento");
-
-            if (!numero_documento.IsNoE())
+            
+            if (numero_documento.IsNoE()) { //en el caso de que numero_documento este vacio, se intenta agregar desde cuil
+                (string? cuil, string? dni) = PersonaValues.CuilDni(GetOrNull("cuil"));
+                Set("numero_documento", dni);
+            } else
+            {
                 Set("numero_documento", ((string)numero_documento!).CleanStringOfNonDigits());
+
+            }
         }
 
         public void Reset_genero()
@@ -403,7 +406,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 logging.AddLog("persona", "Persona actualizada", "update", Logging.Level.Info);
 
                 return this.Update();
-            }*/
-        }
+            }
+        }*/
     }
 }

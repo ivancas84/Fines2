@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "contralor";
 
-        public Data_contralor ()
-        {
-        }
-
-        public Data_contralor(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("contralor");
@@ -26,7 +17,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _insertado = (DateTime?)val.GetDefault("insertado");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

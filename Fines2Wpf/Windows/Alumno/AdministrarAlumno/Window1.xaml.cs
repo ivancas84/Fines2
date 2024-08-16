@@ -85,7 +85,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             personaComboBox.ItemsSource = personaOC;
             personaComboBox.DisplayMemberPath = "Label";
             personaComboBox.SelectedValuePath = "id";
-            personaGroupBox.DataContext = new Data_persona(ContainerApp.db);
+            personaGroupBox.DataContext = ContainerApp.db.Data<Data_persona>();
             #endregion
 
             #region sexoComboBox
@@ -179,7 +179,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             if (persona.IsNoE())
             {
-                persona = new Data_persona(ContainerApp.db);
+                persona = new Data_persona();
             }
 
             personaGroupBox.DataContext = persona;
@@ -190,7 +190,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         {
             if (alumno.IsNoE())
             {
-                alumno = new Alumno(ContainerApp.db);
+                alumno = ContainerApp.db.Data<Alumno>();
                 var per = (Data_persona)personaGroupBox.DataContext;
                 alumno.persona = per.id;
             }
@@ -540,7 +540,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
         private void AgregarAsignacion_Click(object sender, RoutedEventArgs e)
         {
-            var a = new Asignacion(ContainerApp.db);
+            var a = ContainerApp.db.Data<Asignacion>();
             var alumno = (Data_alumno)alumnoGroupBox.DataContext;
             a.alumno = alumno.id;
             asignacionOC.Add(a);
@@ -902,7 +902,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
         private void AgregarArchivo_Click(object sender, RoutedEventArgs e)
         {
-            var a = new DetallePersona(ContainerApp.db).DefaultData();
+            var a = ContainerApp.db.Data<DetallePersona>().DefaultData();
             a.DefaultRel("archivo");
             var alumno = (Data_alumno)alumnoGroupBox.DataContext;
             a.persona = alumno.id;

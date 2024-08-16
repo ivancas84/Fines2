@@ -178,6 +178,16 @@ namespace SqlOrganize.Sql
             return response.ElementAt(0);
         }
 
+        /// <summary>Efectua una consulta a la base de datos, la almacena en cache.<br/>
+        /// Dependiendo del tipo de consulta almacena la fila de resultado en cache.</summary>
+        /// <remarks>Cuando se esta seguro de que se desea consultar una sola fila. Utilizar este metodo para evitar que se tenga que procesar un tamaño grande de resultado</remarks>
+        public T? Data<T>() where T : Data, new()
+        {
+
+            IDictionary<string, object?>? dict = Dict();
+            return (dict.IsNoE()) ? null : Db.ToData<T>(dict!);
+        }
+
         /// <summary>Organiza los elementos a consultar y efectua la consulta a la base de datos.</summary>
         protected IEnumerable<Dictionary<string, object?>> BuildColOfDict(List<string> fields, params object[] ids)
         {

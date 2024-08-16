@@ -6,14 +6,6 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 {
     class Calificacion : Data_calificacion_r
     {
-        public Calificacion() : base()
-        {
-        }
-
-        public Calificacion(Db db) : base(db)
-        {
-        }
-
         protected bool _procesar = true;
         public bool procesar
         {

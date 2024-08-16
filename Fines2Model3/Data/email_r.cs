@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_email_r : Data_email
     {
 
-        public Data_email_r () : base()
-        {
-        }
-
-        public Data_email_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

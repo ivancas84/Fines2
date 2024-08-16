@@ -1,4 +1,5 @@
 ﻿using SqlOrganize.CollectionUtils;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -7,21 +8,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         public ComisionValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
         {
         }
-
-        public override T GetData<T>()
-        {
-
-            string label = ToString();
-
-            var obj = db.Data<T>(Values());
-            if (obj is Data_comision p)
-                p.Label = label;
-            if (Logging.HasLogs())
-                obj.Msg += Logging.ToString();
-
-            return obj;
-        }
-
 
 
         public string Numero()
@@ -180,5 +166,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return persists;
         }
+
+        
     }
 }

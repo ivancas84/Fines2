@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_centro_educativo_r : Data_centro_educativo
     {
 
-        public Data_centro_educativo_r () : base()
-        {
-        }
-
-        public Data_centro_educativo_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

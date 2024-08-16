@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "designacion";
 
-        public Data_designacion ()
-        {
-        }
-
-        public Data_designacion(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("designacion");
@@ -26,7 +17,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _alta = (DateTime?)val.GetDefault("alta");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

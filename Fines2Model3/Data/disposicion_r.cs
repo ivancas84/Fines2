@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_disposicion_r : Data_disposicion
     {
 
-        public Data_disposicion_r () : base()
-        {
-        }
-
-        public Data_disposicion_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

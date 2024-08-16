@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_comision_relacionada_r : Data_comision_relacionada
     {
 
-        public Data_comision_relacionada_r () : base()
-        {
-        }
-
-        public Data_comision_relacionada_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

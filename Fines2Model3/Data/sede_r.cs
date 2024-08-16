@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_sede_r : Data_sede
     {
 
-        public Data_sede_r () : base()
-        {
-        }
-
-        public Data_sede_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

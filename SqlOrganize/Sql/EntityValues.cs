@@ -4,6 +4,8 @@ using System.Text.RegularExpressions;
 using SqlOrganize.ValueTypesUtils;
 using SqlOrganize.DateTimeUtils;
 using SqlOrganize.Sql.Exceptions;
+using System;
+using SqlOrganize.CollectionUtils;
 
 
 namespace SqlOrganize.Sql
@@ -45,7 +47,7 @@ namespace SqlOrganize.Sql
 
         public virtual EntityValues SetValues(IDictionary<string, object?> row)
         {
-            values = row;
+            values.Merge(row);
             return this;
         }
 
@@ -734,6 +736,7 @@ namespace SqlOrganize.Sql
         public virtual T GetData<T>() where T : Data, new()
         {
             var obj = db.Data<T>(Values());
+            obj.Label = ToString();
             if (Logging.HasLogs())
                 obj.Msg += Logging.ToString();
 
@@ -911,6 +914,7 @@ namespace SqlOrganize.Sql
                 if (!Check())
                     throw new Exception("Los campos a actualizar poseen errores: " + Logging.ToString());
 
+                logging.AddLog(entityName, "registro actualizado", "persist", Logging.Level.Success);
                 return this.Update();
 
             }
@@ -919,6 +923,7 @@ namespace SqlOrganize.Sql
                 if (!Default().Reset().Check())
                     throw new Exception("Los campos a insertar poseen errores: " + Logging.ToString());
 
+                logging.AddLog(entityName, "registro insertado", "persist", Logging.Level.Success);
                 return this.Insert();
             }
         }
@@ -939,9 +944,11 @@ namespace SqlOrganize.Sql
                 if (!Default().Reset().Check())
                     throw new Exception("Los campos a insertar poseen errores: " + Logging.ToString());
 
+                logging.AddLog(entityName, "registro insertado", "persist", Logging.Level.Success);
                 return Insert();
             }
 
+            logging.AddLog(entityName, "registro existente", "persist", Logging.Level.Info);
             Sset("id", row!["id"]);
             return null;
         }
@@ -968,7 +975,28 @@ namespace SqlOrganize.Sql
             else
                 return SqlUniqueWithoutIdIfExists();
         }
-    
+
+        public EntityValues ReloadValues()
+        {
+            if (!IsNullOrEmpty("id"))
+            {
+                var data = db.Sql(entityName).Equal("id", Get("id")!).Dict();
+                return (data.IsNoE()) ? this : SetValues(data!);
+            }
+            return this;
+        }
+
+        public EntityValues ReloadSet()
+        {
+            if (!IsNullOrEmpty("id"))
+            {
+                var data = db.Sql(entityName).Equal("id", Get("id")!).Dict();
+                return (data.IsNoE()) ? this : Set(data);
+
+            }
+            return this;
+        }
+
     }
 
 

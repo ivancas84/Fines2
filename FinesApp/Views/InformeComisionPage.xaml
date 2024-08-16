@@ -147,21 +147,43 @@
 
                             <StackPanel>
                                 <TextBox
-											Name="tbxAlumnos"
-											Grid.Column="1"
-											Height="200"
-											AcceptsReturn="True"/>
+									Name="tbxAlumnos"
+									Grid.Column="1"
+									Height="200"
+									AcceptsReturn="True"
+                                    AcceptsTab="True" />
                                 <WrapPanel>
                                     <Button
-											Content = "_Procesar Docentes..."
-											Click="btnProcesarAlumnos_Click" />
+										Content = "_Procesar Docentes..."
+										Click="btnProcesarAlumnos_Click" />
                                     <Button
-								        Content = "_Procesar Docentes..."
+								        Content = "_Guardar Docentes..."
 								        Click="btnGuardarAlumnos_Click" />
                                 </WrapPanel>
                             </StackPanel>
 
 
+                        </GroupBox>
+
+                        <GroupBox
+                            Name="gbxAsignacionPersist"
+				            Grid.Row="1"
+							Margin="10">
+
+                            <GroupBox.Header>
+                                <Label Foreground="White">Alumnos registrados</Label>
+                            </GroupBox.Header>
+
+                            <DataGrid 
+                                AutoGenerateColumns="False"
+                                Name="dgdInfoPersist"
+                                IsReadOnly="True">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Info" Binding="{Binding Info}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Detalle" Binding="{Binding Msg}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+
+                            </DataGrid>
                         </GroupBox>
 
                     </Grid>

@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "alumno_comision";
 
-        public Data_alumno_comision ()
-        {
-        }
-
-        public Data_alumno_comision(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("alumno_comision");
@@ -27,7 +18,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _estado = (string?)val.GetDefault("estado");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

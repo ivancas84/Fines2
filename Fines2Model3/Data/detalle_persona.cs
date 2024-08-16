@@ -10,15 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public override string entityName => "detalle_persona";
 
-        public Data_detalle_persona ()
-        {
-        }
-
-        public Data_detalle_persona(Db db)
-        {
-            this.db = db;
-        }
-
         public override void Default()
         {
             EntityValues val = db!.Values("detalle_persona");
@@ -27,7 +18,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             _fecha = (DateTime?)val.GetDefault("fecha");
         }
 
-        public string? Label { get; set; }
 
         protected string? _id = null;
         public string? id

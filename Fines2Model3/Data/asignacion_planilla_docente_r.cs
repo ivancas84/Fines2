@@ -7,14 +7,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public class Data_asignacion_planilla_docente_r : Data_asignacion_planilla_docente
     {
 
-        public Data_asignacion_planilla_docente_r () : base()
-        {
-        }
-
-        public Data_asignacion_planilla_docente_r (Db db) : base(db)
-        {
-        }
-
         public void DefaultRel(params string[] fieldIds)
         {
             EntityValues val;

@@ -125,7 +125,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             cursoOC.Clear();
 
             if (idComision.IsNoE()) { 
-                comisionGroupBox.DataContext = new Data_comision(ContainerApp.db);
+                comisionGroupBox.DataContext = ContainerApp.db.Data<Data_comision>();
             }
             else
             {
