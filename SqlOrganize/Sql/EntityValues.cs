@@ -733,10 +733,18 @@ namespace SqlOrganize.Sql
             return false;
         }
 
+	//ToString puede demorar, se lo mantiene en un metodo aparte
+	public virtual T GetDataLabel<T>() where T : Data, new()
+        {
+            var obj = GetData<T>();
+            obj.Label = ToString();
+            return obj;
+        }
+
+
         public virtual T GetData<T>() where T : Data, new()
         {
             var obj = db.Data<T>(Values());
-            obj.Label = ToString();
             if (Logging.HasLogs())
                 obj.Msg += Logging.ToString();
 
@@ -888,44 +896,15 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public EntityPersist PersistCompare(CompareParams compare)
+        public EntityValues PersistCompare(EntityPersist persist, CompareParams compare)
         {
-            Reset();
+            persist.PersistCompare(this, compare);
+            return this;
+        }
 
-            IDictionary<string, object?> row = null;
-            try
-            {
-                row = SqlUnique().DictOne();
-            } catch(UniqueException) { }
-            
-            if (!row.IsNoE()) //actualizar
-            {
-                //Se controla la existencia de id diferente? No! Se reasigna el id, dejo el codigo comentado
-                //if (v.values.ContainsKey(Db.config.id) && v.Get(Db.config.id).ToString() != rows.ElementAt(0)[Db.config.id].ToString())
-                //    throw new Exception("Los id son diferentes");
-
-                compare.val = db.Values("persona").Set(row);
-                var response = Compare(compare);
-
-                if (!response.IsNoE())
-                    throw new Exception("Comparacion diferente: " + compare.val.ToStringFields(response.Keys.ToArray()));
-
-                Set(db.config.id, row[db.config.id]);
-                if (!Check())
-                    throw new Exception("Los campos a actualizar poseen errores: " + Logging.ToString());
-
-                logging.AddLog(entityName, "registro actualizado", "persist", Logging.Level.Success);
-                return this.Update();
-
-            }
-            else
-            {
-                if (!Default().Reset().Check())
-                    throw new Exception("Los campos a insertar poseen errores: " + Logging.ToString());
-
-                logging.AddLog(entityName, "registro insertado", "persist", Logging.Level.Success);
-                return this.Insert();
-            }
+        public EntityPersist? PersistCompare(CompareParams compare)
+        {
+            return db.Persist().PersistCompare(this, compare);
         }
 
         public EntityValues InsertIfNotExists(EntityPersist persist)
@@ -934,7 +913,7 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public EntityPersist? InsertIfNotExists()
+        public EntityPersist InsertIfNotExists()
         {
             return db.Persist().InsertIfNotExists(this);
         }

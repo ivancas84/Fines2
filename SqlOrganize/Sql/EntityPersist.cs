@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using Newtonsoft.Json.Linq;
 using SqlOrganize.Sql.Exceptions;
 using SqlOrganize.ValueTypesUtils;
 
@@ -15,6 +16,8 @@ namespace SqlOrganize.Sql
 
         /// <summary>transaccion opcional</summary>
         protected DbTransaction transaction;
+
+        public Logging logging = new Logging();
 
         public Db Db { get; }
 
@@ -120,6 +123,8 @@ WHERE " + id + " = @" + count + @";
             count++;
             parameters.Add(row[Db.config.id]!);
             detail.Add((_entityName!, row[Db.config.id]!, "update"));
+            logging.AddLog(_entityName, "registro actualizado", "update", Logging.Level.Info);
+
             return this;
         }
 
@@ -153,6 +158,8 @@ WHERE " + id + " = @" + count + @";
                 foreach (var id in ids)
                     detail.Add((_entityName!, id, "update"));
             }
+
+            logging.AddLog(_entityName, "registro actualizado", "update", Logging.Level.Info);
 
             return this;
         }
@@ -248,7 +255,7 @@ WHERE " + id + " = @" + count + @";
             return Insert(_entityName, dict);
         }
 
-        public EntityPersist? InsertIfNotExists(EntityValues values)
+        public EntityPersist InsertIfNotExists(EntityValues values)
         {
             values.Reset();
 
@@ -264,13 +271,12 @@ WHERE " + id + " = @" + count + @";
                 if (!values.Default().Reset().Check())
                     throw new Exception("Los campos a insertar poseen errores: " + values.Logging.ToString());
 
-                values.Logging.AddLog(values.entityName, "registro insertado", "persist", Logging.Level.Success);
-                return values.Insert();
+                return Insert(values);
             }
 
-            values.Logging.AddLog(values.entityName, "registro existente", "persist", Logging.Level.Info);
+            logging.AddLog(values.entityName, "Registro existente", "insert_if_not_exists", Logging.Level.Info);
             values.Sset("id", row!["id"]);
-            return null;
+            return this;
         }
 
 
@@ -311,6 +317,8 @@ VALUES (";
             sql += @");
 ";
             detail.Add((_entityName!, row[Db.config.id]!, "insert"));
+
+            logging.AddLog(_entityName, "registro insertado", "insert", Logging.Level.Info);
 
             return this;
         }
@@ -425,6 +433,45 @@ VALUES (";
                 persists.Add(this);
 
             return this;
+        }
+
+        public EntityPersist PersistCompare(EntityValues values, CompareParams compare)
+        {
+            values.Reset();
+
+            IDictionary<string, object?> row = null;
+            try
+            {
+                row = values.SqlUnique().DictOne();
+            }
+            catch (UniqueException) { }
+
+            if (!row.IsNoE()) //actualizar
+            {
+                //Se controla la existencia de id diferente? No! Se reasigna el id, dejo el codigo comentado
+                //if (v.values.ContainsKey(Db.config.id) && v.Get(Db.config.id).ToString() != rows.ElementAt(0)[Db.config.id].ToString())
+                //    throw new Exception("Los id son diferentes");
+
+                compare.val = Db.Values(values.entityName).Set(row);
+                var response = values.Compare(compare);
+
+                if (!response.IsNoE())
+                    throw new Exception("Comparacion diferente: " + compare.val.ToStringFields(response.Keys.ToArray()));
+
+                values.Set(Db.config.id, row[Db.config.id]);
+                if (!values.Check())
+                    throw new Exception("Los campos a actualizar poseen errores: " + values.Logging.ToString());
+
+                return Update(values);
+
+            }
+            else
+            {
+                if (!values.Default().Reset().Check())
+                    throw new Exception("Los campos a insertar poseen errores: " + values.Logging.ToString());
+
+                return Insert(values);
+            }
         }
 
         public EntityPersist TransferOm(string entityName, object origenId, object destinoId)

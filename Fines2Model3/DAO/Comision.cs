@@ -79,6 +79,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             {
                 try
                 {
+                    EntityPersist persist = db.Persist()
+                        ;
                     IDictionary<string, object?> dict = _data[j].DictFromText(headers!);
 
                     var personaValues = db.Values("persona","persona").SsetNotNull(dict);
@@ -86,27 +88,26 @@ namespace SqlOrganize.Sql.Fines2Model3
                     {
                         fieldsToCompare = ["nombres", "apellidos", "numero_documento"],
                     };
-                    personaValues.PersistCompare(compare).AddTo(persists);
+                    personaValues.PersistCompare(persist, compare);
 
                     var alumnoVal = db.Values("alumno").
                         Sset("persona", personaValues.Get("id")!).
                         Sset("anio_ingreso", comObj.planificacion__anio!).
                         Sset("semestre_ingreso", comObj.planificacion__semestre!).
                         Sset("plan", comObj.plan__id);
-                    alumnoVal.InsertIfNotExists()?.AddTo(persists);
+                    alumnoVal.InsertIfNotExists(persist);
 
                     var asignacionVal = db.Values("alumno_comision").
                         Sset("alumno", alumnoVal.Get("id")).
                         Sset("comision", comObj.id);
-                    asignacionVal.InsertIfNotExists()?.AddTo(persists);
+                    asignacionVal.InsertIfNotExists(persist);
 
                     var otrasAsignaciones = db.Sql("alumno_comision").Where("$alumno = @0 AND $comision != @1").
                         Parameters(alumnoVal.Get("id"), comObj.id).Cache().ColOfDict();
-                    foreach(var oa in otrasAsignaciones)
-                        asignacionVal.Logging.AddLog("alumno_comision", "Asignacion existente " + db.Values("alumno_comision").SetValues(oa).ToString(), "persist", Logging.Level.Warning);
-                    
-                    asignacionVal.Logging.AddLogging(personaValues.Logging);
-                    asignacionVal.Logging.AddLogging(alumnoVal.Logging);
+                    foreach (var oa in otrasAsignaciones)
+                        persist.logging.AddLog("alumno_comision", "Asignacion existente " + db.Values("alumno_comision").SetValues(oa).ToString(), "persist", Logging.Level.Warning);
+
+                    persist.AddTo(persists);
 
                     InfoData info = new();
                     info.Info = _data[j];
