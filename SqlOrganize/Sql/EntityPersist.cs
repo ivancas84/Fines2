@@ -248,6 +248,33 @@ WHERE " + id + " = @" + count + @";
             return Insert(_entityName, dict);
         }
 
+        public EntityPersist? InsertIfNotExists(EntityValues values)
+        {
+            values.Reset();
+
+            IDictionary<string, object?> row = null;
+            try
+            {
+                row = values.SqlUnique().DictOne();
+            }
+            catch (UniqueException) { }
+
+            if (row.IsNoE()) //actualizar
+            {
+                if (!values.Default().Reset().Check())
+                    throw new Exception("Los campos a insertar poseen errores: " + values.Logging.ToString());
+
+                values.Logging.AddLog(values.entityName, "registro insertado", "persist", Logging.Level.Success);
+                return values.Insert();
+            }
+
+            values.Logging.AddLog(values.entityName, "registro existente", "persist", Logging.Level.Info);
+            values.Sset("id", row!["id"]);
+            return null;
+        }
+
+
+
         /// <summary>Insercion de EntityValues</summary>
         /// <remarks>Define id si no existe</remarks>
         public EntityPersist Insert(EntityValues v)

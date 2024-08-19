@@ -928,29 +928,15 @@ namespace SqlOrganize.Sql
             }
         }
 
+        public EntityValues InsertIfNotExists(EntityPersist persist)
+        {
+            persist.InsertIfNotExists(this);
+            return this;
+        }
+
         public EntityPersist? InsertIfNotExists()
         {
-            Reset();
-
-            IDictionary<string, object?> row = null;
-            try
-            {
-                row = SqlUnique().DictOne();
-            }
-            catch (UniqueException) { }
-
-            if (row.IsNoE()) //actualizar
-            {
-                if (!Default().Reset().Check())
-                    throw new Exception("Los campos a insertar poseen errores: " + Logging.ToString());
-
-                logging.AddLog(entityName, "registro insertado", "persist", Logging.Level.Success);
-                return Insert();
-            }
-
-            logging.AddLog(entityName, "registro existente", "persist", Logging.Level.Info);
-            Sset("id", row!["id"]);
-            return null;
+            return db.Persist().InsertIfNotExists(this);
         }
 
         public EntitySql SqlField(string fieldName)

@@ -104,7 +104,12 @@
 					Grid.Row="2"
 					Margin="10">
                             <GroupBox.Header>
-                                <Label Foreground="White">Asignaciones</Label>
+                                <WrapPanel>
+                                    <Label Foreground="White">Asignaciones</Label>
+                                    <Button Click="btnCambiarEstado_Click">Cambiar Estado</Button>
+                                    <Button Click="btnTransferirAlumnos_Click">Transferir Alumnos</Button>
+
+                                </WrapPanel>
                             </GroupBox.Header>
                             <DataGrid Name="asignacionDataGrid" AutoGenerateColumns="false" IsReadOnly="true">
                                 <DataGrid.Columns>
@@ -117,6 +122,7 @@
                                     <DataGridTextColumn Header="3" Binding="{Binding asignatura3}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="4" Binding="{Binding asignatura4}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Cantidad" Binding="{Binding cantidad_aprobadas}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
 
                                 </DataGrid.Columns>
                             </DataGrid>

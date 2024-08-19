@@ -25,14 +25,14 @@ namespace FinesApp.Views;
 public partial class InformeComisionPage : Page, INotifyPropertyChanged
 {
 
-    #region Autocomplete v3 - organismo
+    #region Autocomplete v3 - comision
     private ObservableCollection<Data_comision_r> comisionOC = new(); //datos consultados de la base de datos
     private DispatcherTimer comisionTypingTimer; //timer para buscar
     #endregion
 
     private ObservableCollection<CursoConTomaItem> cursoOC = new(); //datos consultados de la base de datos
 
-    private ObservableCollection<Data_alumno_comision_r> asignacionOC = new(); //datos consultados de la base de datos
+    private ObservableCollection<AsignacionConAsignaturasItem> asignacionOC = new(); //datos consultados de la base de datos
 
     public InformeComisionPage()
     {
@@ -235,4 +235,65 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     #endregion
 
+    private void btnCambiarEstado_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+
+            if (!asignacionOC.Any())
+                throw new Exception("La lista de alumnos esta vacía");
+
+            EntityPersist persist = ContainerApp.db.Persist();
+
+            foreach (AsignacionConAsignaturasItem asiObj in asignacionOC)
+            {
+                string estado = (asiObj.cantidad_aprobadas < 3) ? "No activo" : "Activo"; 
+                persist.UpdateValueIds("alumno_comision", "estado", estado, asiObj.id);
+            }
+
+            persist.Transaction().RemoveCache();
+            Buscar((Data_comision)cbxComision.SelectedItem);
+            ToastExtensions.Show("Se ha cambiado el estado de los alumnos");
+        } catch (Exception ex) { 
+            ex.ToastException();
+        }
+    }
+
+    private void btnTransferirAlumnos_Click(object sender, RoutedEventArgs e)
+    {
+        try { 
+            if (!asignacionOC.Any())
+                throw new Exception("La lista de alumnos esta vacía");
+
+            var comObj = (Data_comision)cbxComision.SelectedItem;
+
+            if (comObj.IsNoE())
+                throw new Exception("No se encuentra seleccionada ninguna comision");
+
+
+            if(comObj.comision_siguiente.IsNoE())
+                throw new Exception("No se encuentra definida la comision siguiente");
+
+            EntityPersist persist = ContainerApp.db.Persist();
+
+            foreach (AsignacionConAsignaturasItem asiObj in asignacionOC)
+            {
+                if (asiObj.estado.Equals("Activo"))
+                    continue;
+
+                ContainerApp.db.Values("alumno_comision").
+                    Set("comision", comObj.comision_siguiente).
+                    Set("alumno", asiObj.alumno).
+                    Set("estado", "Activo").InsertIfNotExists(persist);
+            }
+
+            persist.Transaction().RemoveCache();
+
+            Buscar(comObj);
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
 }
