@@ -8,7 +8,7 @@ namespace SqlOrganize.Sql
     /// <summary>
     /// Comportamiento general para las clases de datos
     /// </summary>
-    public abstract class Data : INotifyPropertyChanged, IDataErrorInfo
+    public class Data : INotifyPropertyChanged, IDataErrorInfo
     {
         public virtual string entityName { get; }
 
@@ -25,7 +25,6 @@ namespace SqlOrganize.Sql
         /// Db no debe definirse como propiedad para evitar errores en la serializacion/deserializacion
         /// </summary>
         public Db? db;
-
 
         public virtual void SetDb(Db db)
         {
