@@ -26,7 +26,6 @@ namespace SqlOrganize.Sql
             return query.Dict();
         }
 
-
         public static T? Obj<T>(this EntitySql esql) where T : class, new()
         {
             using Query query = esql.Query();
@@ -41,7 +40,7 @@ namespace SqlOrganize.Sql
                 return null;
             return esql.Db.ToData<T>(data!);
         }
-
+        
         public static IEnumerable<T> Column<T>(this EntitySql esql, string columnName)
         {
             using Query query = esql.Query();
@@ -90,6 +89,9 @@ namespace SqlOrganize.Sql
         /// <summary>Ejecución persistencia</summary>
         public static EntityPersist Exec(this EntityPersist persist)
         {
+            if (persist.Sql().IsNoE())
+                return persist;
+
             var query = persist.Query();
             using DbConnection connection = query.OpenConnection();
             query.BeginTransaction();
@@ -124,6 +126,8 @@ namespace SqlOrganize.Sql
             {
                 foreach (EntityPersist persist in persists)
                 {
+                    if (persist.Sql().IsNoE())
+                        continue;
                     persist.Query(query).ExecTransaction();
                 }
 

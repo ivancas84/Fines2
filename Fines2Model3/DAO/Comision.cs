@@ -58,12 +58,10 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary>Persistencia de asignaciones</summary>
         /// <returns>persists y asignaciones persistidas</returns>
-        public static (IEnumerable<EntityPersist> persists, ObservableCollection<InfoData> ocInfo) PersistAsignacionesComisionText(this Db db, object idComision, string text, params string[]? headers)
+        public static IEnumerable<EntityPersist> PersistAsignacionesComisionText(this Db db, object idComision, string text, params string[]? headers)
         {            
             if (headers.IsNoE())
                 headers = ["persona-apellidos", "persona-nombres", "persona-numero_documento", "persona-genero", "persona-fecha_nacimiento", "persona-telefono", "persona-email"];
-
-            ObservableCollection<InfoData> ocInfo = new();
 
             Data_comision_r? comObj = db.Sql("comision").Equal("id", idComision).Cache().Data<Data_comision_r>() ?? throw new Exception("comision inexistente");
 
@@ -74,13 +72,12 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (_data.IsNoE())
                 throw new Exception("Datos vacios");
 
-            ocInfo.Clear();
             for (var j = 0; j < _data.Length; j++)
             {
+                EntityPersist persist = db.Persist();
+
                 try
                 {
-                    EntityPersist persist = db.Persist()
-                        ;
                     IDictionary<string, object?> dict = _data[j].DictFromText(headers!);
 
                     var personaValues = db.Values("persona","persona").SsetNotNull(dict);
@@ -94,37 +91,27 @@ namespace SqlOrganize.Sql.Fines2Model3
                         Sset("persona", personaValues.Get("id")!).
                         Sset("anio_ingreso", comObj.planificacion__anio!).
                         Sset("semestre_ingreso", comObj.planificacion__semestre!).
-                        Sset("plan", comObj.plan__id);
-                    alumnoVal.InsertIfNotExists(persist);
+                        Sset("plan", comObj.plan__id).InsertIfNotExists(persist);
 
-                    var asignacionVal = db.Values("alumno_comision").
+                    db.Values("alumno_comision").
                         Sset("alumno", alumnoVal.Get("id")).
-                        Sset("comision", comObj.id);
-                    asignacionVal.InsertIfNotExists(persist);
+                        Sset("comision", comObj.id).InsertIfNotExists(persist);
 
                     var otrasAsignaciones = db.Sql("alumno_comision").Where("$alumno = @0 AND $comision != @1").
                         Parameters(alumnoVal.Get("id"), comObj.id).Cache().ColOfDict();
                     foreach (var oa in otrasAsignaciones)
-                        persist.logging.AddLog("alumno_comision", "Asignacion existente " + db.Values("alumno_comision").SetValues(oa).ToString(), "persist", Logging.Level.Warning);
+                        persist.logging.AddLog("alumno_comision", "Asignacion existente " + db.Values("alumno_comision").SetValues(oa).ToString(), "PersistAsignacionesComisionText", Logging.Level.Warning);
 
                     persist.AddTo(persists);
-
-                    InfoData info = new();
-                    info.Info = _data[j];
-                    info.Msg = asignacionVal.Logging.ToString();
-                    ocInfo.Add(info);
                 }
                 catch (Exception ex)
                 {
-                    InfoData info = new();
-                    info.Info = _data[j];
-                    info.Msg = ex.Message;
-                    ocInfo.Add(info);
+                    persist.logging.AddLog("alumno_comision", "Asignacion existente " + ex.Message, "PersistAsignacionesComisionText", Logging.Level.Error);
                 }
 
             }
 
-            return (persists, ocInfo);
+            return persists;
         }
 
     }

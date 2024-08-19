@@ -259,12 +259,7 @@ WHERE " + id + " = @" + count + @";
         {
             values.Reset();
 
-            IDictionary<string, object?> row = null;
-            try
-            {
-                row = values.SqlUnique().DictOne();
-            }
-            catch (UniqueException) { }
+            IDictionary<string, object?>? row = values.SqlUnique().DictOne() ?? null;
 
             if (row.IsNoE()) //actualizar
             {
