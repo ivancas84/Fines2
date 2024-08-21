@@ -167,7 +167,7 @@ namespace Fines2Wpf.Windows.ListaTomas
         /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
         private void AgregarToma_Click(object sender, RoutedEventArgs e)
         {
-            var data = new TomaPosesionPdf.ConstanciaData(ContainerApp.db);
+            var data = ContainerApp.db.Data<TomaPosesionPdf.ConstanciaData>();
             //var someDataRelated = (Data_related)someGroupBox.DataContext; 
             //data.data_related = someDataRelated.id;
             tomasAprobadasOC.Add(data);

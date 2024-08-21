@@ -96,8 +96,20 @@ namespace SqlOrganize.Sql
             }
         }
 
-        public string Msg { get; set; } = "";
+        public string _Msg = "";
 
+        public string Msg
+        {
+            get { return _Msg; }
+            set
+            {
+                if (_Msg != value)
+                {
+                    _Msg = value;
+                    NotifyPropertyChanged(nameof(Msg));
+                }
+            }
+        }
 
         /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
         /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
@@ -184,28 +196,6 @@ namespace SqlOrganize.Sql
             return (T)this;
         }
 
-
-    }
-
-
-    public class InfoData : Data
-    {
-        /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
-        /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
-        public string _Info = "";
-
-        public string Info
-        {
-            get { return _Info; }
-            set
-            {
-                if (_Info != value)
-                {
-                    _Info = value;
-                    NotifyPropertyChanged(nameof(Info));
-                }
-            }
-        }
 
     }
 

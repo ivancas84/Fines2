@@ -280,6 +280,7 @@ namespace SqlOrganize.Sql
                 GetData<T>();
         }
 
+
         public static EntityValues ToValues(this Db db, Data data, string? fieldId = null)
         {
             return db.Values(data.entityName, fieldId).SetValues(data);

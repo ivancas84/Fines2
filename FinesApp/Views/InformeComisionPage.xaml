@@ -123,6 +123,7 @@
                                     <DataGridTextColumn Header="4" Binding="{Binding asignatura4}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Cantidad" Binding="{Binding cantidad_aprobadas}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Msg" Binding="{Binding Msg}"></DataGridTextColumn>
 
                                 </DataGrid.Columns>
                             </DataGrid>

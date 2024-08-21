@@ -733,18 +733,11 @@ namespace SqlOrganize.Sql
             return false;
         }
 
-	//ToString puede demorar, se lo mantiene en un metodo aparte
-	public virtual T GetDataLabel<T>() where T : Data, new()
-        {
-            var obj = GetData<T>();
-            obj.Label = ToString();
-            return obj;
-        }
-
 
         public virtual T GetData<T>() where T : Data, new()
         {
             var obj = db.Data<T>(Values());
+            obj.Label = ToString();
             if (Logging.HasLogs())
                 obj.Msg += Logging.ToString();
 

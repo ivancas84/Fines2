@@ -1,14 +1,14 @@
 ﻿
 
 using MySql.Data.MySqlClient;
+using SqlOrganize;
 using System.Configuration;
-using Utils;
 
 List<string> files = Directory.GetFiles(ConfigurationManager.AppSettings.Get("path")).ToList();
 string path = ConfigurationManager.AppSettings.Get("path");
 string pathLast = path + ConfigurationManager.AppSettings.Get("last");
 
-if (!ConfigurationManager.AppSettings.Get("last").IsNullOrEmpty())
+if (!ConfigurationManager.AppSettings.Get("last").IsNoE())
     files.RemoveAll(x => String.Compare(x.Substring(0, path.Count() + 16), pathLast, comparisonType: StringComparison.OrdinalIgnoreCase) <= 0);
 
 foreach (string file in files)
@@ -17,11 +17,11 @@ foreach (string file in files)
     using StreamReader r = new StreamReader(file);
     string text = r.ReadToEnd();
     var sqls = text.Split(';').Select(x => x.Trim()).ToList();
-    sqls.RemoveAll(x => x.IsNullOrEmpty());
+    sqls.RemoveAll(x => x.IsNoE());
 
     foreach (string sql in sqls)
     {
-        if (sql.IsNullOrEmpty()) continue;
+        if (sql.IsNoE()) continue;
         Console.WriteLine(sql);
         using MySqlConnection connection = new MySqlConnection(ConfigurationManager.AppSettings.Get("connectionString"));
         {

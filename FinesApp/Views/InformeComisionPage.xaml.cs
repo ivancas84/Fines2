@@ -49,7 +49,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
         asignacionDataGrid.ItemsSource = asignacionOC;
 
         #region tab registro alumnos
-        dgdInfoPersist.ItemsSource = ocInfoPersist;
+        dgdInfoPersist.ItemsSource = ocDataPersist;
         #endregion
 
     }
@@ -185,14 +185,19 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
     #region tab registro alumnos
     private IEnumerable<EntityPersist> persists;
-    private ObservableCollection<InfoData> ocInfoPersist = new();
+    private ObservableCollection<Data> ocDataPersist = new();
 
     private void btnProcesarAlumnos_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            (persists, var oc) = ContainerApp.db.PersistAsignacionesComisionText(cbxComision.SelectedValue, tbxAlumnos.Text);
-            ocInfoPersist.ClearAndAddRange(oc);
+            persists = ContainerApp.db.PersistAsignacionesComisionText(cbxComision.SelectedValue, tbxAlumnos.Text);
+            foreach(var p in persists)
+            {
+                var resultObj = ContainerApp.db.Data<Data>();
+                resultObj.Label = p.logging.ToString();
+                ocDataPersist.Add(resultObj);
+            }
         }
         catch (Exception ex)
         {
@@ -274,22 +279,44 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             if(comObj.comision_siguiente.IsNoE())
                 throw new Exception("No se encuentra definida la comision siguiente");
 
+            var idAlumnosExistentes = ContainerApp.db.AsignacionesDeComisionesSql(comObj.comision_siguiente).Cache().ColOfDict().DictOfDictByKeysValue("id","alumno");
+
+
             EntityPersist persist = ContainerApp.db.Persist();
 
             foreach (AsignacionConAsignaturasItem asiObj in asignacionOC)
             {
-                if (asiObj.estado.Equals("Activo"))
+                asiObj.Msg = "";
+                if (!asiObj.estado.Equals("Activo"))
+                {
+                    if (idAlumnosExistentes.ContainsKey(asiObj.alumno)) { 
+                        persist.DeleteIds("alumno_comision", idAlumnosExistentes[asiObj.alumno]);
+                        asiObj.Msg = "Eliminado de la comision siguiente";
+                    }
+
                     continue;
+
+
+                }
+
+                if (idAlumnosExistentes.ContainsKey(asiObj.alumno))
+                {
+                    asiObj.Msg = "Ya existe en la comision siguiente";
+                    continue;
+                }
+
+                
 
                 ContainerApp.db.Values("alumno_comision").
                     Set("comision", comObj.comision_siguiente).
                     Set("alumno", asiObj.alumno).
                     Set("estado", "Activo").InsertIfNotExists(persist);
+
+                asiObj.Msg = "Alumno transferido";
             }
 
             persist.Transaction().RemoveCache();
 
-            Buscar(comObj);
         }
         catch (Exception ex)
         {
