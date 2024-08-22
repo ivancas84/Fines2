@@ -40,7 +40,7 @@ namespace SqlOrganize.Sql
                 return null;
             return esql.Db.ToData<T>(data!);
         }
-        
+
         public static IEnumerable<T> Column<T>(this EntitySql esql, string columnName)
         {
             using Query query = esql.Query();
@@ -279,7 +279,6 @@ namespace SqlOrganize.Sql
                 SetValues(item).
                 GetData<T>();
         }
-
 
         public static EntityValues ToValues(this Db db, Data data, string? fieldId = null)
         {
