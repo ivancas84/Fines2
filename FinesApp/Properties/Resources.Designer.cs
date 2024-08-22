@@ -260,5 +260,27 @@ namespace FinesApp.Properties {
                 return ResourceManager.GetString("ShellMenuItemViewsCursosSemestrePageHeader", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to SedesSemestre.
+        /// </summary>
+        public static string SedesSemestrePageTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("SedesSemestrePageTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MenuItemViewsSedesSemestrePageHeader.
+        /// </summary>
+        public static string ShellMenuItemViewsSedesSemestrePageHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("ShellMenuItemViewsSedesSemestrePageHeader", resourceCulture);
+            }
+        }
     }
 }

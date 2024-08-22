@@ -43,27 +43,38 @@
 								<Label Foreground="White">Formulario de Búsqueda</Label>
 							</GroupBox.Header>
 
-							<WrapPanel>
-								<Label>Año</Label>
-								<TextBox
-									Name="tbCalendarioAnio"
-									Margin = "2"/>
-								<Label>Semestre</Label>
-								<TextBox
-									Name="tbCalendarioSemestre"
-									Margin = "2"/>
-							</WrapPanel>
-						</GroupBox>
+                            <WrapPanel>
+                            <Label
+								FontWeight="Bold"
+								Margin = "3, 3, 3, 0">_Calendario:</Label>
+                            <ComboBox
+								Name="cbxCalendario"
+								SelectionChanged="cbxCalendario_SelectionChanged"
+								Margin = "3, 0, 3, 3"/>
+                            </WrapPanel>
+                        </GroupBox>
 
 
 						<GroupBox
-							Name="tomaGroupBox"
+							Name="gbxToma"
 							Grid.Row="2"
 							Margin="10">
 							<GroupBox.Header>
 								<Label Foreground="White">Tomas Aprobadas</Label>
 							</GroupBox.Header>
-							<DataGrid Name="tomaAprobadaDataGrid"></DataGrid>
+							<DataGrid 
+                                
+                                Name="dgdToma">
+
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="HS" Binding="{Binding curso__horas_catedra}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Horario" Binding="{Binding curso__descripcion_horario}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Comisión" Binding="{Binding comision__pfid}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Número" Binding="{Binding sede__numero}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
+
+                                </DataGrid.Columns>
+                            </DataGrid>
 						</GroupBox>
 					</Grid>
 

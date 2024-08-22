@@ -47,6 +47,9 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (typeof(T) == typeof(PlanificacionValues))
                 return (T)Values("planificacion", fieldId);
 
+            if (typeof(T) == typeof(SedeValues))
+                return (T)Values("sede", fieldId);
+
             if (typeof(T) == typeof(DisposicionValues))
                 return (T)Values("disposicion", fieldId);
 
@@ -89,6 +92,10 @@ namespace SqlOrganize.Sql.Fines2Model3
 
                 case "planificacion":
                     return new PlanificacionValues(this, entityName, fieldId);
+
+                case "sede":
+                    return new SedeValues(this, entityName, fieldId);
+
 
                 case "disposicion":
                     return new DisposicionValues(this, entityName, fieldId);

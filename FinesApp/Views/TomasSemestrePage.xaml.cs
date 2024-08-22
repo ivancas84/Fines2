@@ -12,19 +12,34 @@ namespace FinesApp.Views;
 
 public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 {
+
+    private ObservableCollection<Data_calendario> ocCalendario = new();
+    private ObservableCollection<Data_toma_r> ocToma = new();
+
     public TomasSemestrePage()
     {
         InitializeComponent();
+
         DataContext = this;
 
+        dgdToma.ItemsSource = ocToma;
+
+        cbxCalendario.InitComboBoxConstructor(ocCalendario);
         cbxCalendario2.InitComboBoxConstructor(ocCalendario);
         var data = ContainerApp.db.Sql("calendario").Cache().ColOfDict();
         ContainerApp.db.ClearAndAddDataToOC(data, ocCalendario);
+    }
 
+    private void cbxCalendario_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (cbxCalendario.SelectedIndex < 0)
+            return;
+
+        var tomaData = ContainerApp.db.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().ColOfDict();
+        ContainerApp.db.ClearAndAddDataToOC(tomaData, ocToma);
     }
 
     #region Pestaña Procesar Docentes PF
-    private ObservableCollection<Data_calendario> ocCalendario = new();
 
     private void btnProcesarDocentesPF_Click(object sender, RoutedEventArgs e)
     {
@@ -43,6 +58,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         }
     }
     #endregion
+
     #region INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -59,4 +75,6 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     #endregion
+
+    
 }
