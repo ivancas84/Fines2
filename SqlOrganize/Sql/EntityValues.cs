@@ -6,6 +6,7 @@ using SqlOrganize.DateTimeUtils;
 using SqlOrganize.Sql.Exceptions;
 using System;
 using SqlOrganize.CollectionUtils;
+using System.Reflection.Emit;
 
 
 namespace SqlOrganize.Sql
@@ -730,6 +731,7 @@ namespace SqlOrganize.Sql
 
         public EntityValues ResetLabels()
         {
+            Set("Label", ToString());
 
             foreach (var (fieldId, rel) in this.db.Entity(entityName).relations)
             {

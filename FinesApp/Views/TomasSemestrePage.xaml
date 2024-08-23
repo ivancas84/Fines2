@@ -13,20 +13,17 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
       
-	
+		<ScrollViewer
+			HorizontalScrollBarVisibility="Visible"
+			Grid.Row="1"
+			Margin="{StaticResource MediumLeftRightMargin}"
+			Background="{DynamicResource MahApps.Brushes.Gray10}">
 
-
-				<ScrollViewer
+			<TabControl>
+				<TabItem 
+					Header="Tomas Semestre">
 					
-					HorizontalScrollBarVisibility="Visible"
-					Grid.Row="1"
-					Margin="{StaticResource MediumLeftRightMargin}"
-					Background="{DynamicResource MahApps.Brushes.Gray10}">
-
-					<TabControl>
-						<TabItem 
-							Header="Tomas Semestre">
-					<Grid>
+                    <Grid>
 						<Grid.RowDefinitions>
 							<RowDefinition Height = "Auto" />
 							<RowDefinition Height = "Auto" />
@@ -81,21 +78,21 @@
 						</GroupBox>
 					</Grid>
 
-						</TabItem>
+				</TabItem>
 
-						<TabItem Header="Procesar Docentes PF">
+				<TabItem Header="Procesar Docentes PF">
 
-							<Grid>
-								<Grid.RowDefinitions>
-									<RowDefinition Height = "Auto" />
-									<RowDefinition Height = "Auto" />
-								</Grid.RowDefinitions>
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height = "Auto" />
+							<RowDefinition Height = "Auto" />
+						</Grid.RowDefinitions>
 
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width = "*" />
-								</Grid.ColumnDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width = "*" />
+						</Grid.ColumnDefinitions>
 
-								<GroupBox
+						<GroupBox
 									Name="gbxFormProcesarDocentesPF"
 									Margin="10">
 									<GroupBox.Header>
@@ -126,7 +123,7 @@
                             </StackPanel>
 
 
-								</GroupBox>
+						</GroupBox>
 
                         <GroupBox
                             Grid.Row="1"
@@ -146,11 +143,53 @@
 
                     </Grid>
 
+				</TabItem>
+                
+                <TabItem Header="Tomas PDF">
+                    
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                        </Grid.RowDefinitions>
 
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width = "*" />
+                        </Grid.ColumnDefinitions>
 
-						</TabItem>
-					</TabControl>
-				</ScrollViewer>
+                        <GroupBox
+							Margin="10">
+                            <GroupBox.Header>
+                                <Label Foreground="White">Generar Tomas PDF</Label>
+                            </GroupBox.Header>
 
-			</Grid>
+                            <WrapPanel>
+                                <Button
+									Content = "Generar Tomas PDF"
+									Click="btnGenerarTomasPDF_Click" />
+                            </WrapPanel>
+                        </GroupBox>
+
+                        <GroupBox
+							Grid.Row="1"
+							Name="gbxResultadoGenerarTomasPDF"
+							Margin="10">
+                            <GroupBox.Header>
+                                <Label Foreground="White">Resultado</Label>
+                            </GroupBox.Header>
+
+                            <DataGrid 
+								Name="dgdResultadoGenerarTomasPDF"
+								IsReadOnly="True">		
+
+                            </DataGrid>
+
+                        </GroupBox>
+
+                    </Grid>
+                
+                </TabItem>
+			</TabControl>
+		</ScrollViewer>
+	</Grid>
 </Page>

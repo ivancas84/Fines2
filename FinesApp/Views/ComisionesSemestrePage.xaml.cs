@@ -16,7 +16,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 {
     private ObservableCollection<Data_comision_r> comisionOC = new();
     private ObservableCollection<Data_calendario> calendarioOC = new();
-
+    IEnumerable<EntityPersist> persists;
 
     public ComisionesSemestrePage()
     {
@@ -25,6 +25,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         dgComision.ItemsSource = comisionOC;
 
         cbxCalendario.InitComboBoxConstructor(calendarioOC);
+        cbxCalendarioInformeGlobalPF.InitComboBoxConstructor(calendarioOC);
     }
 
     private void LoadCalendario()
@@ -92,6 +93,51 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         LoadCalendario();
     }
 
+    #region Pestaña Procesar Informe Global PF
+    ObservableCollection<Data> ocResultadoInformeGlobal = new();
+
+    private void btnProcesarInformeGlobalPF_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (cbxCalendarioInformeGlobalPF.SelectedIndex < 0)
+                throw new Exception("Verificar formulario");
+
+            var calendarioObj = (Data_calendario)cbxCalendarioInformeGlobalPF.SelectedItem;
+            persists = ContainerApp.db.PersistTomasPf(calendarioObj, tbxInformeGlobalPF.Text);
+            ocResultadoInformeGlobal.Clear();
+            for (var i = 0; i < persists.Count(); i++)
+            {
+                Data obj = new();
+                obj.Index = i;
+                obj.Label = persists.ElementAt(i).logging.ToString();
+                ocResultadoInformeGlobal.Add(obj);
+
+            }
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
+
+    private void btnGuardarInformeGlobalPF_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (!persists.IsNoE())
+                throw new Exception("No hay nada para persistir");
+
+            persists.Transaction().RemoveCache();
+            ToastExtensions.Show("Registro realizado");
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
+
+    #endregion
 
     #region InotifyPropertyChanged
 
@@ -110,4 +156,6 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     #endregion
+
+    
 }

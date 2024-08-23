@@ -31,6 +31,7 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
         private void ProcesarDocentes()
         {
             var pfidComisiones = dao.PfidComisiones();
+
             Dictionary<string, object> dict = new Dictionary<string, object>();
 
             bool procesar_docente = false;

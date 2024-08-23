@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using WpfUtils;
 using System.Collections.ObjectModel;
 using WpfUtils.Controls;
+using SqlOrganize;
 
 namespace FinesApp.Views;
 
@@ -67,6 +68,22 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             ex.ToastException();
         }
     }
+
+    private void btnGuardarDocentesPF_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (!persists.IsNoE())
+                throw new Exception("No hay nada para persistir");
+
+            persists.Transaction().RemoveCache();
+            ToastExtensions.Show("Se han registrado las tomas");
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
     #endregion
 
     #region INotifyPropertyChanged
@@ -87,20 +104,5 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
     #endregion
 
-    private void btnGuardarDocentesPF_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            if (!persists.Any())
-                throw new Exception("No hay nada para persistir");
-
-            persists.Transaction().RemoveCache();
-            ToastExtensions.Show("Se han registrado las tomas");
-        } catch(Exception ex) {
-            ex.ToastException();
-        }
-
-
-
-    }
+    
 }

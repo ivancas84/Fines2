@@ -1,4 +1,6 @@
-﻿namespace SqlOrganize.Sql.Fines2Model3
+﻿using System.Net;
+
+namespace SqlOrganize.Sql.Fines2Model3
 {
     public static class PersonaDAO
     {
@@ -14,11 +16,16 @@
                 Parameters("%" + search + "%");
         }
 
-        public static EntitySql PersonaDniSql(this Db db, object dni)
+        public static EntitySql PersonaDniSql(this Db db, object cuilDni)
         {
+            (string cuil, string dni) = PersonaValues.CuilDni(cuilDni);
+
             return db.Sql("persona").
                 Where("$numero_documento = @0").
                 Parameters(dni);
         }
+
+
+        
     }
 }

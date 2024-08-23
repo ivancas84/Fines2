@@ -13,105 +13,174 @@
             <RowDefinition Height="48" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock
-            Style="{StaticResource PageTitleStyle}"
-            Margin="{StaticResource MediumLeftMargin}"
-            Text="{x:Static properties:Resources.ComisionesSemestrePageTitle}" />
+        
+        
 		<ScrollViewer
 			HorizontalScrollBarVisibility="Visible"
 			Grid.Row="1"
 			Margin="{StaticResource MediumLeftRightMargin}"
 			Background="{DynamicResource MahApps.Brushes.Gray10}">
 
-			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height = "Auto" />
-					<RowDefinition Height = "Auto" />
-				</Grid.RowDefinitions>
+            <TabControl>
 
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width = "*" />
-				</Grid.ColumnDefinitions>
+                <TabItem 
+					Header="Comisiones Semestre">
 
-				<GroupBox
-					Name="searchGroupBox"
-					Margin="10">
-					<GroupBox.Header>
-						<Label Foreground="White">Selección de año, semestre</Label>
-					</GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                        </Grid.RowDefinitions>
 
-					<StackPanel>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width = "*" />
+                        </Grid.ColumnDefinitions>
 
+                        <GroupBox
+						Name="searchGroupBox"
+						Margin="10">
+                            <GroupBox.Header>
+                                <Label Foreground="White">Selección de año, semestre</Label>
+                            </GroupBox.Header>
 
-						<WrapPanel Orientation="Horizontal">
-
-							<Label
-								Margin= "2">Año:</Label>
-
-							<TextBox
-								MinWidth="200"
-								Name = "tbAnio"
-								LostFocus="tbAnio_LostFocus"/>
-
-							<Label
-								Margin = "2">Semestre:</Label>
-
-							<TextBox
-								MinWidth="200"
-								Name = "tbSemestre" 
-								LostFocus="tbSemestre_LostFocus"/>
-							<Button
-								Content = "_Buscar..."
-								Click="BuscarButton_Click" />
-						</WrapPanel>
-
-						<WrapPanel Margin="0,25,0,0">
-						<Label
-							Margin= "2">Calendario:</Label>
-
-						<ComboBox
-							Width="200"
-							Name = "cbxCalendario" />
-
-						<Button
-							Content = "_Generar Comisiones Siguientes..."
-							Click="btnGenerarComisionesSiguientes_Click" />
-						</WrapPanel>
-
-						<Button
-							Content = "_Generar Cursos..."
-							Click="btnGenerarCursosComisiones_Click" />
-					</StackPanel>
-				</GroupBox>
-
-				<GroupBox
-					Name="comisionGroupBox"
-					Grid.Row="1"
-					Margin="10">
-					<GroupBox.Header>
-						<Label Foreground="White">Comisiones</Label>
-					</GroupBox.Header>
-					<DataGrid Name="dgComision" AutoGenerateColumns="false" IsReadOnly="true">
-						<DataGrid.Columns>
-							<DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Domicilio" Binding="{Binding domicilio__Label}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Año" Binding="{Binding planificacion__anio}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Semestre" Binding="{Binding planificacion__semestre}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Plan Id" Binding="{Binding plan__id}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Distribución horaria" Binding="{Binding plan__distribucion_horaria}"></DataGridTextColumn>
-
-                            <DataGridTextColumn Header="Semestre" Binding="{Binding planificacion__semestre}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Horario" Binding="{Binding horario}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Pfid" Binding="{Binding pfid}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Autorizada" Binding="{Binding autorizada}"/>
-							<DataGridTextColumn Header="Apertura" Binding="{Binding apertura}"/>
-						</DataGrid.Columns>
-					</DataGrid>
-					
-				</GroupBox>
-			</Grid>
+                            <StackPanel>
 
 
-		</ScrollViewer>
+                                <WrapPanel Orientation="Horizontal">
+
+                                    <Label
+									Margin= "2">Año:</Label>
+
+                                    <TextBox
+									MinWidth="200"
+									Name = "tbAnio"
+									LostFocus="tbAnio_LostFocus"/>
+
+                                    <Label
+									Margin = "2">Semestre:</Label>
+
+                                    <TextBox
+									MinWidth="200"
+									Name = "tbSemestre" 
+									LostFocus="tbSemestre_LostFocus"/>
+                                    <Button
+									Content = "_Buscar..."
+									Click="BuscarButton_Click" />
+                                </WrapPanel>
+
+                                <WrapPanel Margin="0,25,0,0">
+                                    <Label
+								Margin= "2">Calendario:</Label>
+
+                                    <ComboBox
+								Width="200"
+								Name = "cbxCalendario" />
+
+                                    <Button
+								Content = "_Generar Comisiones Siguientes..."
+								Click="btnGenerarComisionesSiguientes_Click" />
+                                </WrapPanel>
+
+                                <Button
+								Content = "_Generar Cursos..."
+								Click="btnGenerarCursosComisiones_Click" />
+                            </StackPanel>
+                        </GroupBox>
+
+                        <GroupBox
+						Name="comisionGroupBox"
+						Grid.Row="1"
+						Margin="10">
+                            <GroupBox.Header>
+                                <Label Foreground="White">Comisiones</Label>
+                            </GroupBox.Header>
+                            <DataGrid Name="dgComision" AutoGenerateColumns="false" IsReadOnly="true">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Domicilio" Binding="{Binding domicilio__Label}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Año" Binding="{Binding planificacion__anio}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Semestre" Binding="{Binding planificacion__semestre}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Plan Id" Binding="{Binding plan__id}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Distribución horaria" Binding="{Binding plan__distribucion_horaria}"></DataGridTextColumn>
+
+                                    <DataGridTextColumn Header="Semestre" Binding="{Binding planificacion__semestre}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Horario" Binding="{Binding horario}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Pfid" Binding="{Binding pfid}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Autorizada" Binding="{Binding autorizada}"/>
+                                    <DataGridTextColumn Header="Apertura" Binding="{Binding apertura}"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                        </GroupBox>
+                    </Grid>
+
+                </TabItem>
+                <TabItem ="Procesar Informe Global PF">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width = "*" />
+                        </Grid.ColumnDefinitions>
+
+                        <GroupBox
+						    Name="gbxFormProcesarInformeGlobalPF"
+						    Margin="10">
+                            <GroupBox.Header>
+                                <Label Foreground="White">Formulario para procesar Informe Global</Label>
+                            </GroupBox.Header>
+
+                            <StackPanel>
+                                <WrapPanel>
+                                    <Label>Calendario</Label>
+                                    <ComboBox
+									    Name = "cbxCalendarioInformeGlobalPF" />
+
+                                </WrapPanel>
+                                <TextBox
+								    Name="tbxInformeGlobalPF"
+								    Grid.Column="1"
+								    Height="200"
+								    AcceptsReturn="True"
+                                    AcceptsTab="True"/>
+                                    <WrapPanel>
+                                        <Button
+									    Content = "Procesar..."
+									    Click="btnProcesarInformeGlobalPF_Click" />
+                                        <Button
+									    Content = "Guardar..."
+									    Click="btnGuardarInformeGlobalPF_Click" />
+                                </WrapPanel>
+                            </StackPanel>
+
+
+                        </GroupBox>
+
+                        <GroupBox
+                            Grid.Row="1"
+				            Name="gbxResultadoInformeGlobalPF"
+				            Margin="10">
+                            <GroupBox.Header>
+                                <Label Foreground="White">Resultado</Label>
+                            </GroupBox.Header>
+
+                            <DataGrid 
+                                Name="dgdResultadoInformeGlobalPF"
+                                IsReadOnly="True">          
+
+                            </DataGrid>
+
+                        </GroupBox>
+
+                    </Grid>
+                </TabItem>
+                
+            </TabControl>
+
+
+        </ScrollViewer>
     </Grid>
 </Page>
