@@ -15,6 +15,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
     private ObservableCollection<Data_calendario> ocCalendario = new();
     private ObservableCollection<Data_toma_r> ocToma = new();
+    IEnumerable<EntityPersist> persists;
 
     public TomasSemestrePage()
     {
@@ -23,7 +24,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         DataContext = this;
 
         dgdToma.ItemsSource = ocToma;
-
+        dgdResultadoProcesamiento.ItemsSource = ocData;
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
         cbxCalendario2.InitComboBoxConstructor(ocCalendario);
         var data = ContainerApp.db.Sql("calendario").Cache().ColOfDict();
@@ -40,6 +41,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     }
 
     #region Pestaña Procesar Docentes PF
+    ObservableCollection<Data> ocData = new();
 
     private void btnProcesarDocentesPF_Click(object sender, RoutedEventArgs e)
     {
@@ -48,9 +50,17 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             if (cbxCalendario2.SelectedIndex < 0)
                 throw new Exception("Verificar formulario");
 
-            CalendarioValues calVal = (CalendarioValues)((Data_calendario)cbxCalendario2.SelectedItem).GetValues();
-            calVal.PersistTomasPf(tbxDocentesPF.Text).Transaction().RemoveCache();
-            tbxResultadoPF.Text = calVal.Logging.ToString();
+            var calendarioObj = (Data_calendario)cbxCalendario2.SelectedItem;
+            persists = ContainerApp.db.PersistTomasPf(calendarioObj, tbxDocentesPF.Text);
+            ocData.Clear();
+            for(var i = 0; i < persists.Count(); i++)
+            {
+                Data obj = new();
+                obj.Index = i;
+                obj.Label = persists.ElementAt(i).logging.ToString();
+                ocData.Add(obj);
+
+            }
         }
         catch (Exception ex)
         {
@@ -74,7 +84,23 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     }
 
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
     #endregion
 
-    
+    private void btnGuardarDocentesPF_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (!persists.Any())
+                throw new Exception("No hay nada para persistir");
+
+            persists.Transaction().RemoveCache();
+            ToastExtensions.Show("Se han registrado las tomas");
+        } catch(Exception ex) {
+            ex.ToastException();
+        }
+
+
+
+    }
 }

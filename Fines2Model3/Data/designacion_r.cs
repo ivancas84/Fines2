@@ -50,8 +50,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                 }
             }
         }
+        protected string? _cargo__Label = null;
 
-        public string? cargo__Label { get; set; }
+        [JsonProperty("cargo-Label")]
+        public string? cargo__Label
+        {
+            get { return _cargo__Label; }
+            set { _cargo__Label = value; NotifyPropertyChanged(nameof(cargo__Label)); }
+        }
 
         protected string? _cargo__id = null;
 
@@ -69,8 +75,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _cargo__descripcion; }
             set { _cargo__descripcion = value; NotifyPropertyChanged(nameof(cargo__descripcion)); }
         }
+        protected string? _sede__Label = null;
 
-        public string? sede__Label { get; set; }
+        [JsonProperty("sede-Label")]
+        public string? sede__Label
+        {
+            get { return _sede__Label; }
+            set { _sede__Label = value; NotifyPropertyChanged(nameof(sede__Label)); }
+        }
 
         protected string? _sede__id = null;
 
@@ -168,8 +180,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _sede__pfid_organizacion; }
             set { _sede__pfid_organizacion = value; NotifyPropertyChanged(nameof(sede__pfid_organizacion)); }
         }
+        protected string? _domicilio__Label = null;
 
-        public string? domicilio__Label { get; set; }
+        [JsonProperty("domicilio-Label")]
+        public string? domicilio__Label
+        {
+            get { return _domicilio__Label; }
+            set { _domicilio__Label = value; NotifyPropertyChanged(nameof(domicilio__Label)); }
+        }
 
         protected string? _domicilio__id = null;
 
@@ -235,8 +253,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _domicilio__localidad; }
             set { _domicilio__localidad = value; NotifyPropertyChanged(nameof(domicilio__localidad)); }
         }
+        protected string? _centro_educativo__Label = null;
 
-        public string? centro_educativo__Label { get; set; }
+        [JsonProperty("centro_educativo-Label")]
+        public string? centro_educativo__Label
+        {
+            get { return _centro_educativo__Label; }
+            set { _centro_educativo__Label = value; NotifyPropertyChanged(nameof(centro_educativo__Label)); }
+        }
 
         protected string? _centro_educativo__id = null;
 
@@ -278,8 +302,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _centro_educativo__observaciones; }
             set { _centro_educativo__observaciones = value; NotifyPropertyChanged(nameof(centro_educativo__observaciones)); }
         }
+        protected string? _domicilio_cen__Label = null;
 
-        public string? domicilio_cen__Label { get; set; }
+        [JsonProperty("domicilio_cen-Label")]
+        public string? domicilio_cen__Label
+        {
+            get { return _domicilio_cen__Label; }
+            set { _domicilio_cen__Label = value; NotifyPropertyChanged(nameof(domicilio_cen__Label)); }
+        }
 
         protected string? _domicilio_cen__id = null;
 
@@ -345,8 +375,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _domicilio_cen__localidad; }
             set { _domicilio_cen__localidad = value; NotifyPropertyChanged(nameof(domicilio_cen__localidad)); }
         }
+        protected string? _persona__Label = null;
 
-        public string? persona__Label { get; set; }
+        [JsonProperty("persona-Label")]
+        public string? persona__Label
+        {
+            get { return _persona__Label; }
+            set { _persona__Label = value; NotifyPropertyChanged(nameof(persona__Label)); }
+        }
 
         protected string? _persona__id = null;
 
@@ -580,8 +616,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _persona__anio_nacimiento; }
             set { _persona__anio_nacimiento = value; NotifyPropertyChanged(nameof(persona__anio_nacimiento)); }
         }
+        protected string? _domicilio_per__Label = null;
 
-        public string? domicilio_per__Label { get; set; }
+        [JsonProperty("domicilio_per-Label")]
+        public string? domicilio_per__Label
+        {
+            get { return _domicilio_per__Label; }
+            set { _domicilio_per__Label = value; NotifyPropertyChanged(nameof(domicilio_per__Label)); }
+        }
 
         protected string? _domicilio_per__id = null;
 

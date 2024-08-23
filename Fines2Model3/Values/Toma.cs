@@ -9,22 +9,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
         }
 
-        public override T GetData<T>()
-        {
-            var obj = base.GetData<T>();
-
-
-            if (obj is Data_toma_r c)
-            {
-                EntityValues sedeVal = GetValuesCache("sede");
-                c.sede__Label = sedeVal.ToString();
-
-                EntityValues domicilioVal = GetValuesCache("domicilio");
-                c.domicilio__Label = domicilioVal.ToString(); 
-            }
-
-            return obj;
-        }
 
 
 

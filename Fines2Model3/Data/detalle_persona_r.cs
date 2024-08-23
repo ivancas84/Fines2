@@ -34,8 +34,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                 }
             }
         }
+        protected string? _archivo__Label = null;
 
-        public string? archivo__Label { get; set; }
+        [JsonProperty("archivo-Label")]
+        public string? archivo__Label
+        {
+            get { return _archivo__Label; }
+            set { _archivo__Label = value; NotifyPropertyChanged(nameof(archivo__Label)); }
+        }
 
         protected string? _archivo__id = null;
 
@@ -85,8 +91,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _archivo__created; }
             set { _archivo__created = value; NotifyPropertyChanged(nameof(archivo__created)); }
         }
+        protected string? _persona__Label = null;
 
-        public string? persona__Label { get; set; }
+        [JsonProperty("persona-Label")]
+        public string? persona__Label
+        {
+            get { return _persona__Label; }
+            set { _persona__Label = value; NotifyPropertyChanged(nameof(persona__Label)); }
+        }
 
         protected string? _persona__id = null;
 
@@ -320,8 +332,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _persona__anio_nacimiento; }
             set { _persona__anio_nacimiento = value; NotifyPropertyChanged(nameof(persona__anio_nacimiento)); }
         }
+        protected string? _domicilio__Label = null;
 
-        public string? domicilio__Label { get; set; }
+        [JsonProperty("domicilio-Label")]
+        public string? domicilio__Label
+        {
+            get { return _domicilio__Label; }
+            set { _domicilio__Label = value; NotifyPropertyChanged(nameof(domicilio__Label)); }
+        }
 
         protected string? _domicilio__id = null;
 

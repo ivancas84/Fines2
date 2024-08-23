@@ -29,22 +29,17 @@ namespace SqlOrganize.Sql.Fines2Model3
             var s = "";
 
             EntityValues? v = GetValuesCache("sede");
-            s += (v?.GetOrNull("numero")?.ToString() ?? "?") ?? "?";
-
             v = GetValuesCache("comision");
-            s += (v?.GetOrNull("division")?.ToString() ?? "?") ?? "?";
-            s += "/";
-            v = GetValuesCache("planificacion");
-            s += (v?.GetOrNull("anio")?.ToString() ?? "?") ?? "?";
-            s += (v?.GetOrNull("semestre")?.ToString() ?? "?") ?? "?";
+            s += (v?.GetOrNull("pfid")?.ToString() ?? "?") ?? "?";
+
             s += " ";
             v = GetValuesCache("asignatura");
             s += (v?.GetOrNull("nombre")?.ToString() ?? "?") ?? "?";
             s += " ";
             s += (v?.GetOrNull("codigo")?.ToString() ?? "?") ?? "?";
             s += " ";
-            v = GetValuesCache("comision");
-            s += (v?.GetOrNull("pfid")?.ToString() ?? "?") ?? "?";
+            v = GetValuesCache("planificacion");
+            s += (v?.ToString() ?? "?") ?? "?";
             return s.Trim();
         }
 

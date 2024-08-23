@@ -63,15 +63,18 @@
 								<Label Foreground="White">Tomas Aprobadas</Label>
 							</GroupBox.Header>
 							<DataGrid 
-                                
+								AutoGenerateColumns="False"
+                                IsReadOnly="False"
                                 Name="dgdToma">
-
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="HS" Binding="{Binding curso__horas_catedra}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Horario" Binding="{Binding curso__descripcion_horario}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Comisión" Binding="{Binding comision__pfid}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Número" Binding="{Binding sede__numero}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__Label}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="HS" Binding="{Binding curso__horas_catedra}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Planificacion" Binding="{Binding planificacion__Label}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Domicilio" Binding="{Binding domicilio__Label}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Docente" Binding="{Binding docente__Label}"></DataGridTextColumn>
 
                                 </DataGrid.Columns>
                             </DataGrid>
@@ -112,20 +115,36 @@
 											Height="200"
 											AcceptsReturn="True"
                                             AcceptsTab="True"/>
-										<TextBox
-												Name="tbxResultadoPF"
-												Grid.Column="1"
-												Height="200"
-												AcceptsReturn="True"/>			
-										<Button
-											Content = "_Procesar Docentes..."
-											Click="btnProcesarDocentesPF_Click" />
-									</StackPanel>
+									<WrapPanel>
+											<Button
+												Content = "_Procesar Docentes..."
+												Click="btnProcesarDocentesPF_Click" />
+											<Button
+												Content = "_Guardar Docentes..."
+												Click="btnGuardarDocentesPF_Click" />
+                                </WrapPanel>
+                            </StackPanel>
 
 
 								</GroupBox>
 
-							</Grid>
+                        <GroupBox
+                            Grid.Row="1"
+							Name="gbxResultadoProcesamiento"
+							Margin="10">
+                            <GroupBox.Header>
+                                <Label Foreground="White">Resultado Procesamiento</Label>
+                            </GroupBox.Header>
+
+                            <DataGrid 
+                                Name="dgdResultadoProcesamiento"
+                                IsReadOnly="True">
+                                
+                            </DataGrid>
+
+                        </GroupBox>
+
+                    </Grid>
 
 
 

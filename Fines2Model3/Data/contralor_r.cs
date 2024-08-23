@@ -22,8 +22,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                 }
             }
         }
+        protected string? _planilla_docente__Label = null;
 
-        public string? planilla_docente__Label { get; set; }
+        [JsonProperty("planilla_docente-Label")]
+        public string? planilla_docente__Label
+        {
+            get { return _planilla_docente__Label; }
+            set { _planilla_docente__Label = value; NotifyPropertyChanged(nameof(planilla_docente__Label)); }
+        }
 
         protected string? _planilla_docente__id = null;
 

@@ -69,6 +69,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                 case "alumno_comision":
                     return new AlumnoComisionValues(this, entityName, fieldId);
 
+                case "asignatura":
+                    return new AsignaturaValues(this, fieldId);
+
                 case "calendario":
                     return new CalendarioValues(this, entityName, fieldId);
 

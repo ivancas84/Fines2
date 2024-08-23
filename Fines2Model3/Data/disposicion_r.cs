@@ -29,8 +29,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                 }
             }
         }
+        protected string? _asignatura__Label = null;
 
-        public string? asignatura__Label { get; set; }
+        [JsonProperty("asignatura-Label")]
+        public string? asignatura__Label
+        {
+            get { return _asignatura__Label; }
+            set { _asignatura__Label = value; NotifyPropertyChanged(nameof(asignatura__Label)); }
+        }
 
         protected string? _asignatura__id = null;
 
@@ -80,8 +86,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _asignatura__perfil; }
             set { _asignatura__perfil = value; NotifyPropertyChanged(nameof(asignatura__perfil)); }
         }
+        protected string? _planificacion__Label = null;
 
-        public string? planificacion__Label { get; set; }
+        [JsonProperty("planificacion-Label")]
+        public string? planificacion__Label
+        {
+            get { return _planificacion__Label; }
+            set { _planificacion__Label = value; NotifyPropertyChanged(nameof(planificacion__Label)); }
+        }
 
         protected string? _planificacion__id = null;
 
@@ -123,8 +135,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _planificacion__pfid; }
             set { _planificacion__pfid = value; NotifyPropertyChanged(nameof(planificacion__pfid)); }
         }
+        protected string? _plan__Label = null;
 
-        public string? plan__Label { get; set; }
+        [JsonProperty("plan-Label")]
+        public string? plan__Label
+        {
+            get { return _plan__Label; }
+            set { _plan__Label = value; NotifyPropertyChanged(nameof(plan__Label)); }
+        }
 
         protected string? _plan__id = null;
 

@@ -84,7 +84,6 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-
         public virtual EntityValues Set(IDictionary<string, object?> row)
         {
             foreach (var fieldName in fieldNames)
@@ -116,7 +115,7 @@ namespace SqlOrganize.Sql
             {
                 ret += GetStr(field, nullStr) + separator;
             }
-            return ret;
+            return ret.RemoveLastString(separator);
         }
 
         public string GetStr(string fieldName, string nullStr = "")
@@ -395,9 +394,6 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-
-
-
         /// <summary>Definir valor por defecto del field si no esta definido</summary>
         public EntityValues Default(string fieldName)
         {
@@ -497,17 +493,10 @@ namespace SqlOrganize.Sql
             {
                 EntityValues? values = GetValuesCache(rel.parentId);
                 if (!values.IsNoE())
-                    return values!.GetValuesCache(fieldId);
+                    return values!.GetValuesCache(rel.fieldName);
             }
             return null;
         }
-
-        /// <summary>Crear instancia de EntityValues obteniendo del cache o consulta los valores de la relacion y realizar cast</summary>        
-        public T? GetValuesCache<T>(string fieldId) where T : EntityValues
-        {
-            return (T?)GetValuesCache(fieldId);
-        }
-
 
         /// <summary>Concatena strings indicados en el parametro</summary>
         public string ToStringFields(params string[] fields)
@@ -538,7 +527,7 @@ namespace SqlOrganize.Sql
 
         public override string ToString()
         {
-            List<string> fieldNames = ToStringKeys();
+            List<string> fieldNames = MainKeys();
 
             var label = "";
             foreach (string fieldName in fieldNames)
@@ -547,11 +536,14 @@ namespace SqlOrganize.Sql
                 label += ", ";
             }
 
+            label = label.RemoveLastChar(',').Trim();
+
             return label.RemoveMultipleSpaces().Trim();
         }
 
-        /// <summary>Retorna una lista de los fields de la entidad más adecuados para ser utilizados como Label</summary>
-        protected List<string> ToStringKeys()
+        /// <summary>Retorna una lista de los fields principales</summary>
+        /// <remarks>Utilizados principalmente para Label</remarks>
+        protected List<string> MainKeys()
         {
             var entity = db.Entity(entityName);
             List<string> fields = new();
@@ -581,6 +573,9 @@ namespace SqlOrganize.Sql
 
             if (fields.IsNoE())
                 fields = entity.fields;
+
+            if (fields.Count() > 1 && fields.Contains(db.config.id))
+                fields.Remove(db.config.id);
 
             return fields;
         }
@@ -733,17 +728,30 @@ namespace SqlOrganize.Sql
             return false;
         }
 
+        public EntityValues ResetLabels()
+        {
 
+            foreach (var (fieldId, rel) in this.db.Entity(entityName).relations)
+            {
+
+                var values = GetValuesCache(fieldId);
+                if (values != null)
+                    Set(fieldId + "-Label", values.ToString());
+                else
+                    Set(fieldId + "-Label", null);
+            }
+
+            return this;
+        }
         public virtual T GetData<T>() where T : Data, new()
         {
+            ResetLabels();
             var obj = db.Data<T>(Values());
-            obj.Label = ToString();
             if (Logging.HasLogs())
                 obj.Msg += Logging.ToString();
 
             return obj;
         }
-
 
         /// <summary>
         /// Comparar valores con los indicados en parametro

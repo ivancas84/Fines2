@@ -47,6 +47,15 @@ namespace SqlOrganize.ValueTypesUtils
             return s;
         }
 
+        public static string RemoveLastString(this string input, string toRemove)
+        {
+            int lastIndex = input.LastIndexOf(toRemove);
+            if (lastIndex != -1)
+                return input.Remove(lastIndex, toRemove.Length);
+
+            return input;
+        }
+
         public static string RemoveDigits(this string key)
         {
             return Regex.Replace(key, @"\d", "");

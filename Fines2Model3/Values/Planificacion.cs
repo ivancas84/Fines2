@@ -7,13 +7,12 @@
         }
         public override string ToString()
         {
-            var s = GetStr("?", "-", "anio", "semestre");
+            var s = GetStr("?", "/", "anio", "semestre");
 
             EntityValues? planVal = GetValuesCache("plan");
-            if (!planVal.IsNullOrEmpty())
-            {
-                s += planVal.GetStr("distribucion_horaria", "?");
-            }
+            if (!planVal.IsNoE())
+                s += " " + planVal!.ToString();
+            
             return s.Trim();
         }
 

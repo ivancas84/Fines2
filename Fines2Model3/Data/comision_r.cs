@@ -53,8 +53,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                 }
             }
         }
+        protected string? _sede__Label = null;
 
-        public string? sede__Label { get; set; }
+        [JsonProperty("sede-Label")]
+        public string? sede__Label
+        {
+            get { return _sede__Label; }
+            set { _sede__Label = value; NotifyPropertyChanged(nameof(sede__Label)); }
+        }
 
         protected string? _sede__id = null;
 
@@ -152,8 +158,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _sede__pfid_organizacion; }
             set { _sede__pfid_organizacion = value; NotifyPropertyChanged(nameof(sede__pfid_organizacion)); }
         }
+        protected string? _domicilio__Label = null;
 
-        public string? domicilio__Label { get; set; }
+        [JsonProperty("domicilio-Label")]
+        public string? domicilio__Label
+        {
+            get { return _domicilio__Label; }
+            set { _domicilio__Label = value; NotifyPropertyChanged(nameof(domicilio__Label)); }
+        }
 
         protected string? _domicilio__id = null;
 
@@ -219,8 +231,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _domicilio__localidad; }
             set { _domicilio__localidad = value; NotifyPropertyChanged(nameof(domicilio__localidad)); }
         }
+        protected string? _centro_educativo__Label = null;
 
-        public string? centro_educativo__Label { get; set; }
+        [JsonProperty("centro_educativo-Label")]
+        public string? centro_educativo__Label
+        {
+            get { return _centro_educativo__Label; }
+            set { _centro_educativo__Label = value; NotifyPropertyChanged(nameof(centro_educativo__Label)); }
+        }
 
         protected string? _centro_educativo__id = null;
 
@@ -262,8 +280,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _centro_educativo__observaciones; }
             set { _centro_educativo__observaciones = value; NotifyPropertyChanged(nameof(centro_educativo__observaciones)); }
         }
+        protected string? _domicilio_cen__Label = null;
 
-        public string? domicilio_cen__Label { get; set; }
+        [JsonProperty("domicilio_cen-Label")]
+        public string? domicilio_cen__Label
+        {
+            get { return _domicilio_cen__Label; }
+            set { _domicilio_cen__Label = value; NotifyPropertyChanged(nameof(domicilio_cen__Label)); }
+        }
 
         protected string? _domicilio_cen__id = null;
 
@@ -329,8 +353,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _domicilio_cen__localidad; }
             set { _domicilio_cen__localidad = value; NotifyPropertyChanged(nameof(domicilio_cen__localidad)); }
         }
+        protected string? _modalidad__Label = null;
 
-        public string? modalidad__Label { get; set; }
+        [JsonProperty("modalidad-Label")]
+        public string? modalidad__Label
+        {
+            get { return _modalidad__Label; }
+            set { _modalidad__Label = value; NotifyPropertyChanged(nameof(modalidad__Label)); }
+        }
 
         protected string? _modalidad__id = null;
 
@@ -356,8 +386,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _modalidad__pfid; }
             set { _modalidad__pfid = value; NotifyPropertyChanged(nameof(modalidad__pfid)); }
         }
+        protected string? _planificacion__Label = null;
 
-        public string? planificacion__Label { get; set; }
+        [JsonProperty("planificacion-Label")]
+        public string? planificacion__Label
+        {
+            get { return _planificacion__Label; }
+            set { _planificacion__Label = value; NotifyPropertyChanged(nameof(planificacion__Label)); }
+        }
 
         protected string? _planificacion__id = null;
 
@@ -399,8 +435,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _planificacion__pfid; }
             set { _planificacion__pfid = value; NotifyPropertyChanged(nameof(planificacion__pfid)); }
         }
+        protected string? _plan__Label = null;
 
-        public string? plan__Label { get; set; }
+        [JsonProperty("plan-Label")]
+        public string? plan__Label
+        {
+            get { return _plan__Label; }
+            set { _plan__Label = value; NotifyPropertyChanged(nameof(plan__Label)); }
+        }
 
         protected string? _plan__id = null;
 
@@ -442,8 +484,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _plan__pfid; }
             set { _plan__pfid = value; NotifyPropertyChanged(nameof(plan__pfid)); }
         }
+        protected string? _calendario__Label = null;
 
-        public string? calendario__Label { get; set; }
+        [JsonProperty("calendario-Label")]
+        public string? calendario__Label
+        {
+            get { return _calendario__Label; }
+            set { _calendario__Label = value; NotifyPropertyChanged(nameof(calendario__Label)); }
+        }
 
         protected string? _calendario__id = null;
 

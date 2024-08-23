@@ -37,8 +37,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                 }
             }
         }
+        protected string? _persona__Label = null;
 
-        public string? persona__Label { get; set; }
+        [JsonProperty("persona-Label")]
+        public string? persona__Label
+        {
+            get { return _persona__Label; }
+            set { _persona__Label = value; NotifyPropertyChanged(nameof(persona__Label)); }
+        }
 
         protected string? _persona__id = null;
 
@@ -272,8 +278,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _persona__anio_nacimiento; }
             set { _persona__anio_nacimiento = value; NotifyPropertyChanged(nameof(persona__anio_nacimiento)); }
         }
+        protected string? _domicilio__Label = null;
 
-        public string? domicilio__Label { get; set; }
+        [JsonProperty("domicilio-Label")]
+        public string? domicilio__Label
+        {
+            get { return _domicilio__Label; }
+            set { _domicilio__Label = value; NotifyPropertyChanged(nameof(domicilio__Label)); }
+        }
 
         protected string? _domicilio__id = null;
 
@@ -339,8 +351,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _domicilio__localidad; }
             set { _domicilio__localidad = value; NotifyPropertyChanged(nameof(domicilio__localidad)); }
         }
+        protected string? _plan__Label = null;
 
-        public string? plan__Label { get; set; }
+        [JsonProperty("plan-Label")]
+        public string? plan__Label
+        {
+            get { return _plan__Label; }
+            set { _plan__Label = value; NotifyPropertyChanged(nameof(plan__Label)); }
+        }
 
         protected string? _plan__id = null;
 
@@ -382,8 +400,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _plan__pfid; }
             set { _plan__pfid = value; NotifyPropertyChanged(nameof(plan__pfid)); }
         }
+        protected string? _resolucion_inscripcion__Label = null;
 
-        public string? resolucion_inscripcion__Label { get; set; }
+        [JsonProperty("resolucion_inscripcion-Label")]
+        public string? resolucion_inscripcion__Label
+        {
+            get { return _resolucion_inscripcion__Label; }
+            set { _resolucion_inscripcion__Label = value; NotifyPropertyChanged(nameof(resolucion_inscripcion__Label)); }
+        }
 
         protected string? _resolucion_inscripcion__id = null;
 

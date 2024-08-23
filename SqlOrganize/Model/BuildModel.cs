@@ -669,9 +669,14 @@ namespace SqlOrganize.Model
                     else
                         fs = relation.fieldName;
 
-
+                    sw.WriteLine("        protected string? _" + fieldId + "__Label = null;");
                     sw.WriteLine("");
-                    sw.WriteLine("        public string? " + fieldId + "__Label { get; set; }");
+                    sw.WriteLine("        [JsonProperty(\"" + fieldId + "-Label\")]");
+                    sw.WriteLine("        public string? " + fieldId + "__Label");
+                    sw.WriteLine("        {");
+                    sw.WriteLine("            get { return _" + fieldId + "__Label; }");
+                    sw.WriteLine("            set { _" + fieldId + "__Label = value; NotifyPropertyChanged(nameof(" + fieldId + "__Label)); }");
+                    sw.WriteLine("        }");
                     sw.WriteLine("");
                     foreach (var (fieldName, field) in fields[relation.refEntityName])
                     {

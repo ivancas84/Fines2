@@ -11,9 +11,9 @@ namespace SqlOrganize.Sql.Fines2Model3
         public override string ToString()
         {
             string s = "";
-            s += GetOrNull("orientacion")?.ToString()?.Acronym() ?? "?";
+            s += GetStr("orientacion", "?")?.Acronym();
             s += " ";
-            s += GetOrNull("distribucion_horaria")?.ToString() ?? "?";
+            s += GetStr("resolucion", "?");
             return s;
         }
     }
