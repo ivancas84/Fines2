@@ -37,6 +37,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         public short anio { get; set; } = 2024;
         public short semestre { get; set; } = 1;
 
-
+        public string urlValidarToma = "https://planfines2.com.ar/validar-toma/";
     }
 }

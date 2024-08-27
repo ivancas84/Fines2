@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Runtime.CompilerServices;
 
 namespace SqlOrganize.ValueTypesUtils
 {
@@ -397,6 +398,13 @@ namespace SqlOrganize.ValueTypesUtils
             }
 
             return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+        }
+
+
+        public static string ToStringKeyValuePair(this IDictionary<string, object?> dict)
+        {
+            List<string> list = dict.Select(kvp => kvp.Key + ":" + kvp.Value?.ToString() ?? "NULL").ToList();
+            return  string.Join(", ", list);
         }
 
     }

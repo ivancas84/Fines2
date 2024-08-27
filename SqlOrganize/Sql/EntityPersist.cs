@@ -106,7 +106,7 @@ DELETE " + e.alias + " FROM " + e.name + " " + e.alias + @"
             return this;
         }
 
-        abstract protected EntityPersist _Update(string _entityName, IDictionary<string, object?> row);
+        abstract protected IDictionary<string, object?> _Update(string _entityName, IDictionary<string, object?> row);
 
         public EntityPersist Update(EntityValues values)
         {
@@ -115,7 +115,7 @@ DELETE " + e.alias + " FROM " + e.name + " " + e.alias + @"
 
         public EntityPersist Update(string _entityName, IDictionary<string, object?> row)
         {
-            _Update(_entityName, row);
+            IDictionary<string, object?> _row = _Update(_entityName, row);
             string id = Db.Mapping(_entityName!).Map(Db.config.id);
             sql += @"
 WHERE " + id + " = @" + count + @";
@@ -123,14 +123,14 @@ WHERE " + id + " = @" + count + @";
             count++;
             parameters.Add(row[Db.config.id]!);
             detail.Add((_entityName!, row[Db.config.id]!, "update"));
-            logging.AddLog(_entityName, "registro actualizado", "update", Logging.Level.Info);
+            logging.AddLog(_entityName, "registro actualizado " + _row.ToStringKeyValuePair(), "update", Logging.Level.Info);
 
             return this;
         }
 
         public EntityPersist UpdateIds(string _entityName, Dictionary<string, object?> row, params object[] ids)
         {
-            _Update(_entityName, row);
+            IDictionary<string, object?> _row = _Update(_entityName, row);
 
             string idMap = Db.Mapping(_entityName!).Map(Db.config.id);
 
@@ -159,7 +159,7 @@ WHERE " + id + " = @" + count + @";
                     detail.Add((_entityName!, id, "update"));
             }
 
-            logging.AddLog(_entityName, "registro actualizado", "update", Logging.Level.Info);
+            logging.AddLog(_entityName, "registros actualizados " + _row.ToStringKeyValuePair(), "update", Logging.Level.Info);
 
             return this;
         }
@@ -269,7 +269,7 @@ WHERE " + id + " = @" + count + @";
                 return Insert(values);
             }
 
-            logging.AddLog(values.entityName, "Registro existente", "insert_if_not_exists", Logging.Level.Info);
+            logging.AddLog(values.entityName, "Registro existente " + values.ToString(), "insert_if_not_exists", Logging.Level.Info);
             values.Sset("id", row!["id"]);
             return this;
         }
@@ -291,7 +291,7 @@ WHERE " + id + " = @" + count + @";
         public EntityPersist Insert(string _entityName, IDictionary<string, object?> row)
         {
             List<string> fieldNames = Db.FieldNamesAdmin(_entityName!);
-            Dictionary<string, object> row_ = new();
+            Dictionary<string, object?> row_ = new();
             foreach (string key in row.Keys)
                 if (fieldNames.Contains(key))
                     row_.Add(key, row[key]!);
@@ -301,7 +301,7 @@ WHERE " + id + " = @" + count + @";
 VALUES (";
 
 
-            foreach (object value in row_.Values)
+            foreach (object? value in row_.Values)
             {
                 sql += "@" + count + ", ";
                 parameters.Add(value);
@@ -313,7 +313,7 @@ VALUES (";
 ";
             detail.Add((_entityName!, row[Db.config.id]!, "insert"));
 
-            logging.AddLog(_entityName, "registro insertado", "insert", Logging.Level.Info);
+            logging.AddLog(_entityName, "registro insertado " + row_.ToStringKeyValuePair(), "insert", Logging.Level.Info);
 
             return this;
         }
@@ -430,6 +430,8 @@ VALUES (";
             return this;
         }
 
+
+        /// <summary> Si la comparación es diferente, no actualiza! sino actualiza todo! </summary>
         public EntityPersist PersistCompare(EntityValues values, CompareParams compare)
         {
             values.Reset();

@@ -115,7 +115,7 @@
                     </Grid>
 
                 </TabItem>
-                <TabItem ="Procesar Informe Global PF">
+                <TabItem Header="Procesar Informe Global PF">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height = "Auto" />
@@ -169,7 +169,12 @@
 
                             <DataGrid 
                                 Name="dgdResultadoInformeGlobalPF"
-                                IsReadOnly="True">          
+                                IsReadOnly="True"
+                                AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Index" Binding="{Binding Index}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Label" Binding="{Binding Label}"></DataGridTextColumn>
+                                </DataGrid.Columns>
 
                             </DataGrid>
 

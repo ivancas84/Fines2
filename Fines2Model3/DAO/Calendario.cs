@@ -39,7 +39,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                         dict[headers[k]] = values[k];
 
                     if (!dict["CENS"]!.ToString()!.Equals("462"))
-                        throw new Exception("No corresponde al 462");
+                        throw new Exception("CENS " + dict["CENS"] + " - no corresponde al 462");
 
                     (string? dni, string? cuil) = PersonaValues.CuilDni(dict["persona-numero_documento"]);
                     CompareParams compare = new CompareParams
@@ -86,6 +86,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 catch (Exception ex)
                 {
                     persist.logging.AddLog("calendario", ex.Message, "persist_tomas_pf", Logging.Level.Error);
+                    persist.AddTo(persists);
                     continue;
                 }
 

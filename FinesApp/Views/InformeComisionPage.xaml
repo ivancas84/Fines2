@@ -59,6 +59,9 @@
 							KeyUp="CbxComision_KeyUp"
 							SelectionChanged="CbxComision_SelectionChanged"/>
 
+                                <WrapPanel>
+                                    <Button Click="btnGenerarCursos_Click">Generar Cursos</Button>
+                                </WrapPanel>
                             </StackPanel>
                         </GroupBox>
 

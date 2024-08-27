@@ -16,6 +16,8 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 {
     private ObservableCollection<Data_comision_r> comisionOC = new();
     private ObservableCollection<Data_calendario> calendarioOC = new();
+    private ObservableCollection<Data_calendario> calendarioPFOC = new();
+
     IEnumerable<EntityPersist> persists;
 
     public ComisionesSemestrePage()
@@ -23,9 +25,18 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         InitializeComponent();
         DataContext = this;
         dgComision.ItemsSource = comisionOC;
+        dgdResultadoInformeGlobalPF.ItemsSource = ocResultadoInformeGlobal;
 
         cbxCalendario.InitComboBoxConstructor(calendarioOC);
-        cbxCalendarioInformeGlobalPF.InitComboBoxConstructor(calendarioOC);
+        cbxCalendarioInformeGlobalPF.InitComboBoxConstructor(calendarioPFOC);
+
+        Loaded += ComisionesSemestrePage_Loaded;
+    }
+
+    private void ComisionesSemestrePage_Loaded(object sender, RoutedEventArgs e)
+    {
+        var data = ContainerApp.db.Sql("calendario").Cache().ColOfDict();
+        ContainerApp.db.ClearAndAddDataToOC(data, calendarioPFOC);
     }
 
     private void LoadCalendario()
@@ -104,7 +115,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
                 throw new Exception("Verificar formulario");
 
             var calendarioObj = (Data_calendario)cbxCalendarioInformeGlobalPF.SelectedItem;
-            persists = ContainerApp.db.PersistTomasPf(calendarioObj, tbxInformeGlobalPF.Text);
+            persists = ContainerApp.db.PersistComisionesPf(calendarioObj, tbxInformeGlobalPF.Text);
             ocResultadoInformeGlobal.Clear();
             for (var i = 0; i < persists.Count(); i++)
             {
@@ -125,7 +136,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     {
         try
         {
-            if (!persists.IsNoE())
+            if (persists.IsNoE())
                 throw new Exception("No hay nada para persistir");
 
             persists.Transaction().RemoveCache();

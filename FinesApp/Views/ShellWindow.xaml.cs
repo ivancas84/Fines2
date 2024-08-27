@@ -8,6 +8,7 @@ using FinesApp.Contracts.Services;
 using FinesApp.Contracts.Views;
 
 using MahApps.Metro.Controls;
+using QuestPDF.Infrastructure;
 
 namespace FinesApp.Views;
 
@@ -25,6 +26,7 @@ public partial class ShellWindow : MetroWindow, IShellWindow, INotifyPropertyCha
 
     public ShellWindow(INavigationService navigationService, IRightPaneService rightPaneService)
     {
+        QuestPDF.Settings.License = LicenseType.Community;
         _navigationService = navigationService;
         _navigationService.Navigated += OnNavigated;
         _rightPaneService = rightPaneService;

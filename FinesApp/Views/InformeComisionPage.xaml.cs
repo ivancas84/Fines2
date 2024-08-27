@@ -1,16 +1,11 @@
-﻿using CommunityToolkit.WinUI.Notifications;
-using Fines2Model3.Item;
-using Org.BouncyCastle.Asn1.Ocsp;
+﻿using Fines2Model3.Item;
 using SqlOrganize;
 using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql;
 using SqlOrganize.Sql.Fines2Model3;
-using SqlOrganize.ValueTypesUtils;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Net;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -317,6 +312,25 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
             persist.Transaction().RemoveCache();
 
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
+
+    private void btnGenerarCursos_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (cbxComision.SelectedIndex < 0)
+                throw new Exception("No existe comision seleccionada");
+
+            var comValues = ((Data_comision)cbxComision.SelectedItem).GetValues();
+
+            ContainerApp.db.GenerarCursos(comValues).Transaction().RemoveCache();
+            persists.Transaction().RemoveCache();
+            ToastExtensions.Show("Se han generado los cursos");
         }
         catch (Exception ex)
         {

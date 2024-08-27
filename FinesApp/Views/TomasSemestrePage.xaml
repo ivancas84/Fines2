@@ -19,46 +19,30 @@
 			Margin="{StaticResource MediumLeftRightMargin}"
 			Background="{DynamicResource MahApps.Brushes.Gray10}">
 
-			<TabControl>
+            <StackPanel>
+            <GroupBox
+				Name="searchGroupBox"
+				Margin="10">
+                <GroupBox.Header>
+                    <Label Foreground="White">Formulario de Búsqueda</Label>
+                </GroupBox.Header>
+
+                <WrapPanel>
+                    <Label
+					FontWeight="Bold"
+					Margin = "3, 3, 3, 0">_Calendario:</Label>
+                    <ComboBox
+					Name="cbxCalendario"
+					SelectionChanged="cbxCalendario_SelectionChanged"
+					Margin = "3, 0, 3, 3"/>
+                </WrapPanel>
+            </GroupBox>
+            
+            <TabControl>
 				<TabItem 
 					Header="Tomas Semestre">
 					
-                    <Grid>
-						<Grid.RowDefinitions>
-							<RowDefinition Height = "Auto" />
-							<RowDefinition Height = "Auto" />
-						</Grid.RowDefinitions>
-
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width = "*" />
-						</Grid.ColumnDefinitions>
-
-						<GroupBox
-							Name="searchGroupBox"
-							Margin="10">
-							<GroupBox.Header>
-								<Label Foreground="White">Formulario de Búsqueda</Label>
-							</GroupBox.Header>
-
-                            <WrapPanel>
-                            <Label
-								FontWeight="Bold"
-								Margin = "3, 3, 3, 0">_Calendario:</Label>
-                            <ComboBox
-								Name="cbxCalendario"
-								SelectionChanged="cbxCalendario_SelectionChanged"
-								Margin = "3, 0, 3, 3"/>
-                            </WrapPanel>
-                        </GroupBox>
-
-
-						<GroupBox
-							Name="gbxToma"
-							Grid.Row="2"
-							Margin="10">
-							<GroupBox.Header>
-								<Label Foreground="White">Tomas Aprobadas</Label>
-							</GroupBox.Header>
+                    
 							<DataGrid 
 								AutoGenerateColumns="False"
                                 IsReadOnly="False"
@@ -72,11 +56,21 @@
                                     <DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Domicilio" Binding="{Binding domicilio__Label}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Docente" Binding="{Binding docente__Label}"></DataGridTextColumn>
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <WrapPanel>
+                                                    <Button Click="EmailTomaButton_Click">Email Toma</Button>
+                                                    <Button Click="GenerarTomaButton_Click">Generar Toma</Button>
+                                                    <Button Click="EliminarTomaButton_Click">Eliminar Toma</Button>
 
-                                </DataGrid.Columns>
+                                                </WrapPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                            </DataGrid.Columns>
                             </DataGrid>
-						</GroupBox>
-					</Grid>
+					
 
 				</TabItem>
 
@@ -190,6 +184,7 @@
                 
                 </TabItem>
 			</TabControl>
+            </StackPanel>
 		</ScrollViewer>
 	</Grid>
 </Page>

@@ -44,15 +44,22 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public static EntitySql CursoDeComisionPfidCodigoAsignaturaCalendarioSql(this Db db, object pfid, object codigo, object idCalendario)
         {
+            List<object> codigos = new List<object>();
+            codigos.Add(codigo);
+            if (codigo.Equals("WPV"))
+                codigos.Add("ARTE2");
+            else if(codigo.Equals("ARTE2"))
+                codigos.Add("WPV");
+
             return db.Sql("curso")
                 .Fields()
                 .Size(0)
                 .Where(@"
                     $calendario-id = @0 
                     AND $comision-pfid = @1
-                    AND $asignatura-codigo = @2
+                    AND $asignatura-codigo IN ( @2 )
                 ")
-                .Parameters(idCalendario, pfid, codigo);
+                .Parameters(idCalendario, pfid, codigos);
         }
 
     }
