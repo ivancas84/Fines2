@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Fines2Model3.Item
+namespace SqlOrganize.Sql.Fines2Model3
 {
 
     /// <summary>

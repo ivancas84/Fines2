@@ -39,11 +39,9 @@
             </GroupBox>
             
             <TabControl>
-				<TabItem 
+                    <TabItem 
 					Header="Tomas Semestre">
-					
-                    
-							<DataGrid 
+                        <DataGrid 
 								AutoGenerateColumns="False"
                                 IsReadOnly="False"
                                 Name="dgdToma">

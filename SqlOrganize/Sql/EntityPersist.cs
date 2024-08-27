@@ -430,7 +430,6 @@ VALUES (";
             return this;
         }
 
-
         /// <summary> Si la comparación es diferente, no actualiza! sino actualiza todo! </summary>
         public EntityPersist PersistCompare(EntityValues values, CompareParams compare)
         {

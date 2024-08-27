@@ -39,7 +39,6 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         dgdResultadoProcesamiento.ItemsSource = ocData;
         dgdResultadoGenerarTomasPDF.ItemsSource = ocResultadoGenerarTomasPDF;
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        cbxCalendario2.InitComboBoxConstructor(ocCalendario);
         var data = ContainerApp.db.Sql("calendario").Cache().ColOfDict();
         ContainerApp.db.ClearAndAddDataToOC(data, ocCalendario);
     }
@@ -112,7 +111,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     }
     #endregion
 
-    #region Pestaña Procesar Docentes PF
+    #region Tab Procesar Docentes PF (XLSX)
     ObservableCollection<Data> ocData = new();
 
     private void btnProcesarDocentesPF_Click(object sender, RoutedEventArgs e)
@@ -120,10 +119,10 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
         try
         {
-            if (cbxCalendario2.SelectedIndex < 0)
+            if (cbxCalendario.SelectedIndex < 0)
                 throw new Exception("Verificar formulario");
 
-            var calendarioObj = (Data_calendario)cbxCalendario2.SelectedItem;
+            var calendarioObj = (Data_calendario)cbxCalendario.SelectedItem;
             persists = ContainerApp.db.PersistTomasPf(calendarioObj, tbxDocentesPF.Text);
             ocData.Clear();
             for (var i = 0; i < persists.Count(); i++)
@@ -151,6 +150,36 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             persists.Transaction().RemoveCache();
             persists = null;
             ToastExtensions.Show("Registro realizado");
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
+    #endregion
+
+    #region Tab Procesar Docentes PF (HTML)
+    ObservableCollection<Data> ocDataPfHtml = new();
+
+    private void btnProcesarDocentesPfHtml_Click(object sender, RoutedEventArgs e)
+    {
+
+        try
+        {
+            if (cbxCalendario.SelectedIndex < 0)
+                throw new Exception("Verificar formulario");
+
+            var calendarioObj = (Data_calendario)cbxCalendario.SelectedItem;
+            persists = ContainerApp.db.PersistTomasPf(calendarioObj, tbxDocentesPF.Text);
+            ocData.Clear();
+            for (var i = 0; i < persists.Count(); i++)
+            {
+                Data obj = new();
+                obj.Index = i;
+                obj.Label = persists.ElementAt(i).logging.ToString();
+                ocData.Add(obj);
+
+            }
         }
         catch (Exception ex)
         {
