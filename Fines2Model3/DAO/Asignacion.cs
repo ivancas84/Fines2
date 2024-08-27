@@ -47,6 +47,18 @@ namespace SqlOrganize.Sql.Fines2Model3
                .Parameters(anio, semestre);
         }
 
+        public static EntitySql AsignacionesDeComisionesAutorizadasDeCalendarioSql(this Db db, object idCalendario)
+        {
+            return db.Sql("alumno_comision")
+               .Size(0)
+               .Where(@"
+                    $calendario-id = @0 
+                    AND $comision-autorizada = true
+                "
+                )
+               .Parameters(idCalendario);
+        }
+
 
         public static EntitySql AsignacionesActivasDeComisionesAutorizadasDelPeriodoSinGeneroSql(this Db db, object anio, object semestre)
         {

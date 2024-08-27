@@ -115,7 +115,7 @@
                     </Grid>
 
                 </TabItem>
-                <TabItem ="Procesar Informe Global PF">
+                <TabItem Header="Procesar Informe Global PF">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height = "Auto" />

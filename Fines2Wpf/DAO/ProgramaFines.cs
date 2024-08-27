@@ -38,10 +38,30 @@ namespace Fines2Model3.DAO
                     throw new Exception("Login error:" + response.StatusCode.ToString());
         }
 
+        public static async Task<string>  PF_DefinirPeriodoAlumnos(HttpClient client)
+        {
+            string periodo = "3"; //TODO guardar en la base de datos y pasarlo como parametro
+
+            //ESTE PASO ES NECESARIO PORQUE QUEDA EN VARIABLE DE SESION!
+            var formData = new Dictionary<string, string>
+            {
+                { "mi_periodo", periodo }, //1 = Agosto - Diciembre 2023 / 2 = Marzo - Julio 2024 / 3 = Agosto-Diciembre 2024
+            };
+            var encodedFormData = new FormUrlEncodedContent(formData);
+
+            HttpResponseMessage response = await client.PostAsync("https://programafines.ar/inicial/index4.php?a=10&b=1", encodedFormData); //seleccion de periodo y visualizacion de comisiones
+            response.EnsureSuccessStatusCode(); // Ensure a successful response
+
+            return periodo;
+        }
+
         public static async Task<string[]> PF_InfoListaAlumnos(HttpClient client, string pfid)
         {
-            string protectedResourceUrl = $"https://www.programafines.ar/inicial/index4.php?a=12&&nom_comision={pfid}&mi_periodo=2"; //lista de alumnos de la comision
-            HttpResponseMessage response = await client.GetAsync(protectedResourceUrl);
+            string periodo = await PF_DefinirPeriodoAlumnos(client);
+
+            //ESTE PASO ES NECESARIO PORQUE QUEDA EN VARIABLE DE SESION!
+
+            HttpResponseMessage response = await client.GetAsync($"https://www.programafines.ar/inicial/index4.php?a=12&&nom_comision={pfid}&mi_periodo={periodo}");
             response.EnsureSuccessStatusCode(); // Ensure a successful response
 
             // Read the content of the response
@@ -51,6 +71,8 @@ namespace Fines2Model3.DAO
 
         public static async Task<IDictionary<string, string>> PF_InfoAlumnoFormularioModificacion(HttpClient client, string dni)
         {
+            string periodo = await PF_DefinirPeriodoAlumnos(client);
+
             var formDataSeleccionarDNI = new Dictionary<string, string>
             {
                 { "dni_cargar", dni },
