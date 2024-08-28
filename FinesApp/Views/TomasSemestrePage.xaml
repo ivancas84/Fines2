@@ -44,9 +44,11 @@
                         <DataGrid 
 								AutoGenerateColumns="False"
                                 IsReadOnly="False"
+                                CanUserAddRows="False"
                                 Name="dgdToma">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Horario" Binding="{Binding curso__descripcion_horario}"></DataGridTextColumn>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Id" Binding="{Binding id}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Horario" Binding="{Binding curso__descripcion_horario}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Comisión" Binding="{Binding comision__pfid}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__Label}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="HS" Binding="{Binding curso__horas_catedra}"></DataGridTextColumn>
@@ -92,12 +94,6 @@
 									</GroupBox.Header>
 
 									<StackPanel>
-										<WrapPanel>
-											<Label>Calendario</Label>
-											<ComboBox
-												Name = "cbxCalendario2" />
-									
-										</WrapPanel>
 										<TextBox
 											Name="tbxDocentesPF"
 											Grid.Column="1"
@@ -105,12 +101,15 @@
 											AcceptsReturn="True"
                                             AcceptsTab="True"/>
 									<WrapPanel>
-											<Button
-												Content = "_Procesar Docentes..."
-												Click="btnProcesarDocentesPF_Click" />
-											<Button
-												Content = "_Guardar Docentes..."
-												Click="btnGuardarDocentesPF_Click" />
+										<Button
+											Content = "_Procesar Docentes XSLX..."
+											Click="btnProcesarDocentesPF_Click" />
+                                        <Button
+											Content = "_Procesar Docentes HTML..."
+											Click="btnProcesarDocentesPfHtml_Click" />
+										<Button
+											Content = "_Guardar Docentes..."
+											Click="btnGuardarDocentesPF_Click" />
                                 </WrapPanel>
                             </StackPanel>
 

@@ -31,18 +31,14 @@ inputList.forEach((docente) => {
     r["telefono"] = (matches) ? matches[0] : null;
     r["email_abc"] = info_docente_split[3].split(":")[1].trim();
     r["cargos"] = [];
-    console.log(r);
 
 
-    /*
-    info_cargos posee  la siguiente estructura
-    ['Dirección: 39 #978  La Plata', '\t Teléfono Celular: 221 4550932', '     Email: gabzeballosrodriguez@abc.gob.ar']
-    https://stackoverflow.com/questions/21711768/split-string-in-javascript-and-detect-line-break
-    */
+
     var info_cargos = info_docente.nextElementSibling.nextElementSibling;
 
     while (info_cargos && info_cargos.textContent.includes("Comisión")) {
-        info_cargos_array = info_cargos.textContent.split("Comisión");
+        info_cargos_aux = info_cargos.textContent.replace("(Sociales)", "");
+        info_cargos_array = info_cargos_aux.split("Comisión");
         r["cargos"].push({
             "comision": info_cargos_array[1].trim().substring(0, info_cargos_array[1].indexOf(" -")).trim(),
             "codigo": info_cargos_array[0].substring(

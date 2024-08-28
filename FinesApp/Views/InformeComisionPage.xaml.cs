@@ -1,5 +1,4 @@
-﻿using Fines2Model3.Item;
-using SqlOrganize;
+﻿using SqlOrganize;
 using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql;
 using SqlOrganize.Sql.Fines2Model3;

@@ -45,8 +45,16 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
     private void cbxCalendario_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (cbxCalendario.SelectedIndex < 0)
+        LoadTomas();
+    }
+
+    private void LoadTomas()
+    {
+        if(cbxCalendario.SelectedIndex < 0)
+        {
+            ocToma.Clear();
             return;
+        }
 
         var tomaData = ContainerApp.db.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().ColOfDict();
         ContainerApp.db.ClearAndAddDataToOC(tomaData, ocToma);
@@ -94,19 +102,12 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         try
         {
             ContainerApp.db.Persist().DeleteIds("toma", toma.id!).Exec().RemoveCache();
-            //LoadData(); falta recargar
-            new ToastContentBuilder()
-                    .AddText(Title)
-                    .AddText("Toma eliminada")
-                    .Show();
+            LoadTomas();
+            ToastExtensions.Show("Toma eliminada");
         }
         catch (Exception ex)
         {
-            new ToastContentBuilder()
-                .AddText(Title)
-                .AddText("ERROR: " + ex.Message)
-                .Show();
-
+            ex.ToastException();
         }
     }
     #endregion
@@ -156,21 +157,16 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             ex.ToastException();
         }
     }
-    #endregion
-
-    #region Tab Procesar Docentes PF (HTML)
-    ObservableCollection<Data> ocDataPfHtml = new();
 
     private void btnProcesarDocentesPfHtml_Click(object sender, RoutedEventArgs e)
     {
-
         try
         {
             if (cbxCalendario.SelectedIndex < 0)
                 throw new Exception("Verificar formulario");
 
             var calendarioObj = (Data_calendario)cbxCalendario.SelectedItem;
-            persists = ContainerApp.db.PersistTomasPf(calendarioObj, tbxDocentesPF.Text);
+            persists = ContainerApp.db.PersistTomasPfHtml(calendarioObj, tbxDocentesPF.Text);
             ocData.Clear();
             for (var i = 0; i < persists.Count(); i++)
             {

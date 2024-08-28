@@ -75,7 +75,7 @@ namespace SqlOrganize.Sql
             IEnumerable<Dictionary<string, object?>> rows = entitySql.ColOfDict();
 
             if (rows.Count() > 1)
-                throw new Exception("La consulta de uno retorno mas de un resultado");
+                throw new Exception("La consulta de uno retorno mas de un resultado para " + entitySql.entityName);
 
             if (rows.Count() == 1)
                 return rows.ElementAt(0);

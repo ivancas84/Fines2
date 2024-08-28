@@ -1,14 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SqlOrganize.CollectionUtils;
 using SqlOrganize.ValueTypesUtils;
-using SqlOrganize;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -24,66 +16,80 @@ namespace SqlOrganize.Sql.Fines2Model3
             var pfidComisiones = db.ComisionesAutorizadasDeCalendarioSql(calendarioObj.id).Cache().ColOfDict().ColOfVal<string>("pfid");
             var docentes = JsonConvert.DeserializeObject<List<DocentePfItem>>(data)!;
             
-            foreach (DocentePfItem docente in docentes)
+            foreach (DocentePfItem docenteItem in docentes)
             {
                 EntityPersist persist = db.Persist();
 
-                #region insertar o actualizar docente (se insertan o actualizan todos)
-                var d = docente.Dict();
-                if (!d["anio_nacimiento"].IsNoE() && !d["mes_nacimiento"].IsNoE() && !d["dia_nacimiento"].IsNoE())
-                    d["fecha_nacimiento"] = new DateTime((int)d["anio_nacimiento"], (int)d["mes_nacimiento"], (int)d["dia_nacimiento"]);
-
-                (string? dni, string? cuil) = PersonaValues.CuilDni(d["persona-numero_documento"]);
-
-                EntityValues vPersona = db.Values("persona").SetNotNull(d).Set("numero_documento", dni).Reset();
-
-                CompareParams compare = new CompareParams
+                try
                 {
-                    fieldsToCompare = ["nombres", "apellidos", "numero_documento"],
-                };
-                var personaValues = db.Values("persona").Set(d).Reset().
-                   PersistCompare(persist, compare);
-                #endregion
+                    #region insertar o actualizar docente (se insertan o actualizan todos)
+                    var d = docenteItem.Dict();
+                    if (!d["anio_nacimiento"].IsNoE() && !d["mes_nacimiento"].IsNoE() && !d["dia_nacimiento"].IsNoE())
+                        d["fecha_nacimiento"] = new DateTime((int)d["anio_nacimiento"], (int)d["mes_nacimiento"], (int)d["dia_nacimiento"]);
 
-                #region insertar o actualizar cargo
-                foreach (var cargo in docente.cargos)
-                {
-                    if (pfidComisiones.Contains(cargo["comision"]))
+                    (string? dni, string? cuil) = PersonaValues.CuilDni(d["numero_documento"]);
+
+                    CompareParams compare = new CompareParams
                     {
-                        object idCurso = db.CursoDeComisionPfidCodigoAsignaturaCalendarioSql(cargo["comision"], cargo["codigo"], calendarioObj.id);
-                        if (idCurso.IsNoE())
-                        {
-                            persist.logging.AddLog("calendario", "No existe curso " + cargo["comision"] + " " + cargo["codigo"], "PersistTomasPfHtml");
+                        fieldsToCompare = ["nombres", "apellidos", "numero_documento"],
+                    };
+                    var personaVal = db.Values("persona").SetNotNull(d).Set("numero_documento", dni).Reset().
+                       PersistCompare(persist, compare);
+                    #endregion
+
+
+                    #region insertar o actualizar cargo
+                    bool existenCargos = false;
+
+                    foreach (var cargo in docenteItem.cargos)
+                    {
+
+
+                        if (!pfidComisiones.Contains(cargo["comision"]))
                             continue;
 
-                        }
+                        existenCargos = true;
 
-                        IDictionary<string, object> rowTomaActiva = dao.TomaActiva(idCurso);
+                        object idCurso = db.CursoDeComisionPfidCodigoAsignaturaCalendarioSql(cargo["comision"], cargo["codigo"], calendarioObj.id).Cache().Dict()?["id"]!;
+                        if (idCurso.IsNoE())
+                            throw new Exception("No existe curso " + cargo["comision"] + " " + cargo["codigo"]);
+
+
+                        IDictionary<string, object?> rowTomaActiva = db.TomaAprobadaDeCursoQuery(idCurso).Cache().Dict();
                         if (rowTomaActiva != null)
                         {
-                            if (!rowTomaActiva["docente"].Equals(vPersona.Get("id")))
-                                logs.Add("Existe una toma activa con otro docente en " + cargo["comision"] + " " + cargo["codigo"]);
+                            if (!rowTomaActiva["docente"]!.Equals(personaVal.Get("id")))
+                                throw new Exception("Existe una toma activa con otro docente en " + cargo["comision"] + " " + cargo["codigo"]);
                             else
-                                logs.Add("La toma ya se encuentra cargada " + cargo["comision"] + " " + cargo["codigo"]);
+                                persist.logging.AddLog("calendario", "La toma ya se encuentra cargada", "PersistTomasPfHtml");
+
                         }
                         else
                         {
-                            EntityValues vToma = ContainerApp.db.Values("toma").
+                            db.Values("toma").
                                 Set("curso", idCurso).
-                                Set("docente", vPersona.Get("id")).
+                                Set("docente", personaVal.Get("id")).
                                 Set("estado", "Aprobada").
                                 Set("estado_contralor", "Pendiente").
                                 Set("tipo_movimiento", "AI").
-                                Set("fecha_toma", new DateTime(2024, 03, 11));
-                            vToma.Default().Reset();
-                            var p = ContainerApp.db.Persist().Insert(vToma).Exec().RemoveCache();
+                                Set("fecha_toma", calendarioObj.inicio).
+                                Default().Reset().Insert(persist);
                         }
+
 
                     }
 
+                    if (existenCargos)
+                        persist.AddTo(persists);
+                    #endregion
 
                 }
-                #endregion
+                catch (Exception ex)
+                {
+                    persist.logging.AddLog("calendario", "ERROR " + ex.Message + " (" + docenteItem.Dict().ToStringKeyValuePair() + ")", "PersistTomasPfHtml");
+                    persist.AddTo(persists);
+                }
+
             }
             return persists;
         }

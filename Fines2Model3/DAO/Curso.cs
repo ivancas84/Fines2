@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Intrinsics.X86;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -44,12 +45,25 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public static EntitySql CursoDeComisionPfidCodigoAsignaturaCalendarioSql(this Db db, object pfid, object codigo, object idCalendario)
         {
-            List<object> codigos = new List<object>();
-            codigos.Add(codigo);
-            if (codigo.Equals("WPV"))
-                codigos.Add("ARTE2");
-            else if(codigo.Equals("ARTE2"))
-                codigos.Add("WPV");
+            List<object> codigos = [codigo];
+
+            switch (codigo)
+            {
+                case "WPV": case "ARTE1": case "ARTE2": case "ARTE3":
+                    codigos = ["WPV", "ARTE1", "ARTE2", "ARTE3"];
+                    break;
+
+                case "WIN": case "LA":
+                    codigos = ["WIN", "LA"];
+                    break;
+
+                case "WEA":
+                case "WE2":
+                case "WE3":
+                    codigos = ["WEA", "WE2", "WE3"];
+                    break;
+
+            }
 
             return db.Sql("curso")
                 .Fields()

@@ -10,7 +10,7 @@
                 .Where(@"
                     $calendario-id = @0 
                     AND $estado = 'Aprobada'
-                    AND $estado_contralor = 'Pasar'
+                    AND $estado_contralor != 'Modificar'
                 ")
                 .Parameters(idCalendario);
         }
@@ -23,7 +23,7 @@
                 .Where(@"
                     $curso IN ( @0 ) 
                     AND $estado = 'Aprobada'
-                    AND $estado_contralor = 'Pasar'
+                    AND $estado_contralor != 'Modificar'
                 ")
                 .Parameters(idCurso);
         }
@@ -36,7 +36,7 @@
                 .Where(@"
                     $curso-comision IN ( @0 ) 
                     AND $estado = 'Aprobada'
-                    AND $estado_contralor = 'Pasar'
+                    AND $estado_contralor != 'Modificar'
                 ")
                 .Parameters(idComisiones);
         }

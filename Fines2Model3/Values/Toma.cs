@@ -1,7 +1,4 @@
-﻿using Fines2Model3.Item;
-using System.Collections.Generic;
-
-namespace SqlOrganize.Sql.Fines2Model3
+﻿namespace SqlOrganize.Sql.Fines2Model3
 {
     public class TomaValues : EntityValues
     {
