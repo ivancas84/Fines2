@@ -36,6 +36,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         Loaded += ComisionesSemestrePage_Loaded;
     }
 
+    #region checkbox datagrid
     private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems != null)
@@ -46,6 +47,16 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
             foreach (ComisionConReferentesItem oldItem in e.OldItems)
                 oldItem.PropertyChanged -= Item_PropertyChanged;
     }
+
+    private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        ContainerApp.db.Persist().
+            UpdateValueIds("comision", e.PropertyName, sender.GetPropertyValue(e.PropertyName), sender.GetPropertyValue("id")).
+            Exec().
+            RemoveCache();
+    }
+    #endregion
+
     private void ComisionesSemestrePage_Loaded(object sender, RoutedEventArgs e)
     {
         var data = ContainerApp.db.Sql("calendario").Cache().ColOfDict();
@@ -82,14 +93,6 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         }
     }
 
-    private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ComisionConReferentesItem.apertura))
-        {
-            var item = (sender as ComisionConReferentesItem);
-            ContainerApp.db.Persist().UpdateValueIds("comision", "apertura", item.autorizada, item.id);
-        }
-    }
     private void btnGenerarComisionesSiguientes_Click(object sender, RoutedEventArgs e)
     {
         try

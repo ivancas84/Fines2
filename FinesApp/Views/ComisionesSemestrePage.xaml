@@ -106,15 +106,23 @@
                                     <DataGridTextColumn Header="Semestre" Binding="{Binding planificacion__semestre}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Horario" Binding="{Binding horario}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Pfid" Binding="{Binding pfid}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Autorizada" Binding="{Binding autorizada}"/>
-                                    <DataGridTextColumn Header="Apertura" Binding="{Binding apertura}"/>
-                                    <DataGridTemplateColumn Header="Is Checked">
+                                    <DataGridTemplateColumn Header="Autorizada">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding autorizada, 
+                                                    UpdateSourceTrigger=PropertyChanged, 
+                                                    Mode=TwoWay}" />        
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    
+                                    <DataGridTemplateColumn Header="Apertura">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <CheckBox IsChecked="{Binding apertura, 
-                                UpdateSourceTrigger=PropertyChanged, 
-                                Mode=TwoWay}" />
-                                            </DataTemplate>
+                                                    UpdateSourceTrigger=PropertyChanged, 
+                                                    Mode=TwoWay}" />            
+                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
                                     <DataGridTemplateColumn Header="Referentes">

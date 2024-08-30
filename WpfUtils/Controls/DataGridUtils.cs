@@ -3,14 +3,17 @@ using CommunityToolkit.WinUI.Notifications;
 using SqlOrganize;
 using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace WpfUtils.Controls
 {
     //Comportamiento general para DataGrid
-    public static class DataGridExtensionMethods
+    public static class DataGridUtils
     {
 
         /// <summary>Obtener key and value, en el procesamiento de columnas</summary>
@@ -113,6 +116,7 @@ namespace WpfUtils.Controls
             return reload;
         }
 
+        #region CheckBox Click version 1 (la version 2 no tiene metodos generales)
         ///<summary>Comportamiento general para persistir una celda checkbox (DataGridCheckBoxColumn) v2 (2024-02)</summary>
         public static bool DataGridCell_CheckBoxClick<T>(this Db db, DataGridCell cell, string entityName) where T : class, new()
         {
@@ -153,6 +157,7 @@ namespace WpfUtils.Controls
 
             return false;
         }
+        #endregion
 
         /// <summary>Codigo general para eliminar una fila en un datagrid v2</summary>        
         public static void DeleteRowFromDataGrid<T>(this Db db, string entityName, ObservableCollection<T> oc, T data, string title = "")

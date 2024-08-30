@@ -6,8 +6,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:properties="clr-namespace:FinesApp.Properties"
+    xmlns:local="clr-namespace:FinesApp.Views"
     mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800">
+    <Page.Resources>
+        <ObjectDataProvider x:Key="estadosContralor" ObjectType="{x:Type local:EstadoContralorData}" MethodName="EstadosContralor" />
+    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -52,7 +56,16 @@
                                 <DataGridTextColumn Header="Horario" Binding="{Binding curso__descripcion_horario}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="HS" Binding="{Binding curso__horas_catedra}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Planificacion" Binding="{Binding planificacion__Label}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="Comisión" Binding="{Binding estado_contralor}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Estado Contralor" Binding="{Binding estado_contralor}"></DataGridTextColumn>
+                                <DataGridComboBoxColumn Header="Estado"  
+                                    SelectedValueBinding="{Binding estado_contralor}" 
+                                    ItemsSource="{Binding Source={StaticResource estadosContralor}}">
+                                    <DataGridComboBoxColumn.EditingElementStyle>
+                                        <Style TargetType="{x:Type ComboBox}">
+                                            <EventSetter Event="SelectionChanged" Handler="cbxEstadoContralor_SelectionChanged" />
+                                        </Style>
+                                    </DataGridComboBoxColumn.EditingElementStyle>
+                                </DataGridComboBoxColumn>
                                 <DataGridTextColumn Header="Comisión" Binding="{Binding comision__pfid}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__Label}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Docente" Binding="{Binding docente__Label}"></DataGridTextColumn>

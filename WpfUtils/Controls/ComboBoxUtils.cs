@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.ComponentModel;
+using SqlOrganize.Sql.Fines2Model3;
 
 namespace WpfUtils.Controls
 {
@@ -117,6 +118,15 @@ namespace WpfUtils.Controls
             textBox.CaretIndex = textBoxPos;
         }
 
+
+        public static void ComboBoxUpdateSelectedValue(this Db db, object sender, string entityName, string fieldName)
+        {
+            var cb = (ComboBox)sender;
+            string actualValue = cb.DataContext.GetPropertyValue(fieldName).ToString();
+            if (cb.SelectedIndex < 0 && cb.SelectedValue.ToString().Equals(actualValue))
+                return;
+            db.Persist().UpdateValueIds(entityName, fieldName, cb.SelectedValue, cb.DataContext.GetPropertyValue("id")!).Exec().RemoveCache();
+        }
 
         #region filter con delay v1
         public static (ICollectionView cv, DispatcherTimer timer) FilterTextBox_InitializeConstructor<T>(this DataGrid dg, ObservableCollection<T> oc) where T : Data

@@ -15,6 +15,7 @@ using System.Globalization;
 using QuestPDF.Fluent;
 using System.Net.Mail;
 using System.Net;
+using System.Collections.Specialized;
 
 namespace FinesApp.Views;
 
@@ -32,13 +33,33 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
         DataContext = this;
 
+        ocToma.CollectionChanged += OcToma_CollectionChanged;
         dgdToma.ItemsSource = ocToma;
+
         dgdResultadoProcesamiento.ItemsSource = ocData;
         dgdResultadoGenerarTomasPDF.ItemsSource = ocResultadoGenerarTomasPDF;
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
         var data = ContainerApp.db.Sql("calendario").Cache().ColOfDict();
         ContainerApp.db.ClearAndAddDataToOC(data, ocCalendario);
     }
+
+    #region OcToma
+    private void OcToma_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+            foreach (Data_toma_r newItem in e.NewItems)
+                newItem.PropertyChanged += TomaItem_PropertyChanged;
+
+        if (e.OldItems != null)
+            foreach (Data_toma_r oldItem in e.OldItems)
+                oldItem.PropertyChanged -= TomaItem_PropertyChanged;
+    }
+
+    private void TomaItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        ContainerApp.db.Persist().UpdateValueIds("toma", e.PropertyName, sender.GetPropertyValue(e.PropertyName), sender.GetPropertyValue("id"));
+    }
+    #endregion
 
     private void cbxCalendario_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -495,5 +516,21 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
 
     }
 
+    private void cbxEstadoContralor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        ContainerApp.db.ComboBoxUpdateSelectedValue(sender, "toma", "estado_contralor");        
+    }
+}
 
+public class EstadoContralorData
+{
+    public ObservableCollection<string> EstadosContralor()
+    {
+        ObservableCollection<string> responseOC = new ObservableCollection<string>();
+        responseOC.Clear();
+        responseOC.Add("Pasar");
+        responseOC.Add("No Pasar");
+        responseOC.Add("Modificar");
+        return responseOC;
+    }
 }
