@@ -94,7 +94,7 @@
                             <GroupBox.Header>
                                 <Label Foreground="White">Comisiones</Label>
                             </GroupBox.Header>
-                            <DataGrid Name="dgComision" AutoGenerateColumns="false" IsReadOnly="true">
+                            <DataGrid Name="dgComision" AutoGenerateColumns="false" >
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Domicilio" Binding="{Binding domicilio__Label}"></DataGridTextColumn>
@@ -108,6 +108,22 @@
                                     <DataGridTextColumn Header="Pfid" Binding="{Binding pfid}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Autorizada" Binding="{Binding autorizada}"/>
                                     <DataGridTextColumn Header="Apertura" Binding="{Binding apertura}"/>
+                                    <DataGridTemplateColumn Header="Is Checked">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <CheckBox IsChecked="{Binding apertura, 
+                                UpdateSourceTrigger=PropertyChanged, 
+                                Mode=TwoWay}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Referentes">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ListBox ItemsSource="{Binding referentes}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
 

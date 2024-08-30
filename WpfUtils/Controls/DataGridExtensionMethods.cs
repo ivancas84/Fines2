@@ -186,7 +186,5 @@ namespace WpfUtils.Controls
             }
         }
 
-      
-
     }
 }

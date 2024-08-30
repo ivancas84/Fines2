@@ -9,12 +9,14 @@ using System.Collections.ObjectModel;
 using WpfUtils.Controls;
 using SqlOrganize;
 using WpfUtils;
+using SqlOrganize.CollectionUtils;
+using System.Collections.Specialized;
 
 namespace FinesApp.Views;
 
 public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 {
-    private ObservableCollection<Data_comision_r> comisionOC = new();
+    private ObservableCollection<ComisionConReferentesItem> comisionOC = new();
     private ObservableCollection<Data_calendario> calendarioOC = new();
     private ObservableCollection<Data_calendario> calendarioPFOC = new();
 
@@ -25,6 +27,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         InitializeComponent();
         DataContext = this;
         dgComision.ItemsSource = comisionOC;
+        comisionOC.CollectionChanged += Items_CollectionChanged;
         dgdResultadoInformeGlobalPF.ItemsSource = ocResultadoInformeGlobal;
 
         cbxCalendario.InitComboBoxConstructor(calendarioOC);
@@ -33,6 +36,16 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         Loaded += ComisionesSemestrePage_Loaded;
     }
 
+    private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (e.NewItems != null)
+            foreach (ComisionConReferentesItem newItem in e.NewItems)
+                newItem.PropertyChanged += Item_PropertyChanged;
+
+        if (e.OldItems != null)
+            foreach (ComisionConReferentesItem oldItem in e.OldItems)
+                oldItem.PropertyChanged -= Item_PropertyChanged;
+    }
     private void ComisionesSemestrePage_Loaded(object sender, RoutedEventArgs e)
     {
         var data = ContainerApp.db.Sql("calendario").Cache().ColOfDict();
@@ -50,11 +63,33 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 
     private void BuscarButton_Click(object sender, RoutedEventArgs e)
     {
-        var data = ContainerApp.db.ComisionesDePeriodoSql(tbAnio.Text, tbSemestre.Text).Cache().ColOfDict();
-        ContainerApp.db.ClearAndAddDataToOC(data, comisionOC);
+        var dataComisiones = ContainerApp.db.ComisionesDePeriodoSql(tbAnio.Text, tbSemestre.Text).Cache().ColOfDict();
+        var idSedes = dataComisiones.ColOfVal<object>("sede");
+        var dataReferentes = ContainerApp.db.ReferentesDeSedeQuery(idSedes).Cache().ColOfDict().DictOfListByKeys("sede");
+        ContainerApp.db.ClearAndAddDataToOC(dataComisiones, comisionOC);
+        comisionOC.Clear();
+        for (var i = 0; i < dataReferentes.Count(); i++)
+        {
+            ComisionConReferentesItem obj = ContainerApp.db.ToData<ComisionConReferentesItem>(dataComisiones.ElementAt(i));
+            //obj.PropertyChanged += Item_PropertyChanged;
 
+            if (dataReferentes.ContainsKey(obj.sede))
+                foreach (var dataReferente in dataReferentes[obj.sede])
+                    obj.referentes.Add(ContainerApp.db.ToData<Data_designacion>(dataReferente).Label);
+                
+            obj.Index = i;
+            comisionOC.Add(obj);
+        }
     }
 
+    private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ComisionConReferentesItem.apertura))
+        {
+            var item = (sender as ComisionConReferentesItem);
+            ContainerApp.db.Persist().UpdateValueIds("comision", "apertura", item.autorizada, item.id);
+        }
+    }
     private void btnGenerarComisionesSiguientes_Click(object sender, RoutedEventArgs e)
     {
         try

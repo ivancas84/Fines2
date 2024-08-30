@@ -47,16 +47,17 @@
                                 CanUserAddRows="False"
                                 Name="dgdToma">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Id" Binding="{Binding id}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Domicilio" Binding="{Binding domicilio__Label}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Horario" Binding="{Binding curso__descripcion_horario}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Comisión" Binding="{Binding comision__pfid}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__Label}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="HS" Binding="{Binding curso__horas_catedra}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Planificacion" Binding="{Binding planificacion__Label}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Domicilio" Binding="{Binding domicilio__Label}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Docente" Binding="{Binding docente__Label}"></DataGridTextColumn>
-                                    <DataGridTemplateColumn>
+                                <DataGridTextColumn Header="HS" Binding="{Binding curso__horas_catedra}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Planificacion" Binding="{Binding planificacion__Label}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Comisión" Binding="{Binding estado_contralor}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Comisión" Binding="{Binding comision__pfid}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__Label}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Docente" Binding="{Binding docente__Label}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Id" Binding="{Binding id}"></DataGridTextColumn>
+                                <DataGridTemplateColumn>
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <WrapPanel>

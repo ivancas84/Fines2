@@ -13,11 +13,8 @@ using QRCoder;
 using QuestPDF.Infrastructure;
 using System.Globalization;
 using QuestPDF.Fluent;
-using Microsoft.Extensions.Hosting;
 using System.Net.Mail;
 using System.Net;
-using CommunityToolkit.WinUI.Notifications;
-using static QRCoder.PayloadGenerator;
 
 namespace FinesApp.Views;
 
@@ -63,20 +60,17 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     #region Pestaña principal
     private void EmailTomaButton_Click(object sender, RoutedEventArgs e)
     {
-        var button = (e.OriginalSource as Button);
-        var toma = (Data_toma_r)button.DataContext;
-        if (toma.docente__email_abc.IsNoE())
+        try
         {
-            new ToastContentBuilder()
-            .AddText("Email abc no definido")
-            .Show();
-            return;
+            var button = (e.OriginalSource as Button);
+            var toma = (Data_toma_r)button.DataContext;
+
+            EmailToma email = new EmailToma(toma);
+            email.Send();
+            ToastExtensions.Show("Email de toma enviado");
+        } catch(Exception ex) {
+            ex.ToastException();        
         }
-        EmailToma email = new EmailToma(toma);
-        email.Send();
-        new ToastContentBuilder()
-        .AddText("Email de toma enviado")
-        .Show();
     }
 
     private void GenerarTomaButton_Click(object sender, RoutedEventArgs e)
@@ -450,6 +444,8 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             EnableSsl = true;
             Model = model;
             Attachment = $"{ContainerApp.config.downloadPath}{Model.comision__pfid}_{Model.asignatura__codigo}_{Model.docente__numero_documento}.pdf";
+            if (Model.docente__email_abc.IsNoE() && Model.docente__email.IsNoE())
+                throw new Exception("Emails no definidos");
             if (!Model.docente__email_abc.IsNoE())
                 To.Add(Model.docente__email_abc);
             if(!Model.docente__email.IsNoE())
