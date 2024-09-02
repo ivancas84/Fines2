@@ -57,7 +57,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
     private void TomaItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        ContainerApp.db.Persist().UpdateValueIds("toma", e.PropertyName, sender.GetPropertyValue(e.PropertyName), sender.GetPropertyValue("id"));
+       ContainerApp.db.Persist().UpdateKeyFromData("toma", e.PropertyName, (Data_toma_r)sender).Exec().RemoveCache();
     }
     #endregion
 
@@ -516,10 +516,6 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
 
     }
 
-    private void cbxEstadoContralor_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        ContainerApp.db.ComboBoxUpdateSelectedValue(sender, "toma", "estado_contralor");        
-    }
 }
 
 public class EstadoContralorData
@@ -529,7 +525,8 @@ public class EstadoContralorData
         ObservableCollection<string> responseOC = new ObservableCollection<string>();
         responseOC.Clear();
         responseOC.Add("Pasar");
-        responseOC.Add("No Pasar");
+        responseOC.Add("No pasar");
+        responseOC.Add("Pendiente");
         responseOC.Add("Modificar");
         return responseOC;
     }

@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using Newtonsoft.Json.Linq;
+using SqlOrganize.Model;
 using SqlOrganize.Sql.Exceptions;
 using SqlOrganize.ValueTypesUtils;
 
@@ -223,6 +224,27 @@ WHERE " + id + " = @" + count + @";
             return this;
         }
 
+
+        public EntityPersist UpdateKeyFromData<T>(string entityName, string key, T data) where T : Data
+        {
+            string separator = null;
+            string idKey = Db.config.id;
+            string _key = key;
+
+            if (key.Contains("__"))
+                separator = "__";
+
+            if (!separator.IsNoE())
+            {
+                int indexSeparator = key.IndexOf(separator!);
+                string fieldId = key.Substring(0, indexSeparator);
+                entityName = Db.Entity(entityName!).relations[fieldId].refEntityName;
+                idKey = fieldId + separator + Db.config.id;
+                _key = key.Substring(indexSeparator + separator!.Length); //se suma la cantidad de caracteres del separador
+            }
+
+            return UpdateValueIds(entityName, _key, data.GetPropertyValue(key), data.GetPropertyValue(idKey)!);
+        }
         /// <summary>
         /// Actualiza valor local o de relacion
         /// </summary>
@@ -231,20 +253,26 @@ WHERE " + id + " = @" + count + @";
         /// <param name="source">Fuente con todos los valores sin actualizar</param>
         /// <param name="_entityName">Opcional nombre de la entidad, si no existe toma el atributo</param>
         /// <returns>Mismo objeto</returns>
-        public EntityPersist UpdateValueRel(string _entityName, string key, object? value, IDictionary<string, object?> source)
+        public EntityPersist UpdateKeyValueFromSourceRel(string _entityName, string key, object? value, IDictionary<string, object?> source)
         {
-            string idKey = Db.config.id;
+            string separator = null;
             if (key.Contains("__"))
+                separator = "__";
+            else if (key.Contains("-"))
+                separator = "-";
+
+            string idKey = Db.config.id;
+
+            if(!separator.IsNoE())
             {
-                int indexSeparator = key.IndexOf("__");
+                int indexSeparator = key.IndexOf(separator!);
                 string fieldId = key.Substring(0, indexSeparator);
                 _entityName = Db.Entity(_entityName!).relations[fieldId].refEntityName;
-                idKey = fieldId + "__" + Db.config.id;
-                key = key.Substring(indexSeparator + "__".Length); //se suma la cantidad de caracteres del separador
+                idKey = fieldId + separator + Db.config.id;
+                key = key.Substring(indexSeparator + separator!.Length); //se suma la cantidad de caracteres del separador
             }
 
-            List<object> ids = new() { source[idKey]! };
-            return UpdateValueIds(_entityName, key, value, ids);
+            return UpdateValueIds(_entityName, key, value, source[idKey]!);
         }
 
         /// <summary>Insercion de objeto</summary>

@@ -36,9 +36,9 @@
 					FontWeight="Bold"
 					Margin = "3, 3, 3, 0">_Calendario:</Label>
                     <ComboBox
-					Name="cbxCalendario"
-					SelectionChanged="cbxCalendario_SelectionChanged"
-					Margin = "3, 0, 3, 3"/>
+					    Name="cbxCalendario"
+					    Margin = "3, 0, 3, 3"
+                        SelectionChanged="cbxCalendario_SelectionChanged"/>
                 </WrapPanel>
             </GroupBox>
             
@@ -56,20 +56,13 @@
                                 <DataGridTextColumn Header="Horario" Binding="{Binding curso__descripcion_horario}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="HS" Binding="{Binding curso__horas_catedra}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Planificacion" Binding="{Binding planificacion__Label}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="Estado Contralor" Binding="{Binding estado_contralor}"></DataGridTextColumn>
-                                <DataGridComboBoxColumn Header="Estado"  
+                                <DataGridComboBoxColumn Header="Estado Contralor"  
                                     SelectedValueBinding="{Binding estado_contralor}" 
                                     ItemsSource="{Binding Source={StaticResource estadosContralor}}">
-                                    <DataGridComboBoxColumn.EditingElementStyle>
-                                        <Style TargetType="{x:Type ComboBox}">
-                                            <EventSetter Event="SelectionChanged" Handler="cbxEstadoContralor_SelectionChanged" />
-                                        </Style>
-                                    </DataGridComboBoxColumn.EditingElementStyle>
                                 </DataGridComboBoxColumn>
                                 <DataGridTextColumn Header="Comisión" Binding="{Binding comision__pfid}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__Label}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Docente" Binding="{Binding docente__Label}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="Id" Binding="{Binding id}"></DataGridTextColumn>
                                 <DataGridTemplateColumn>
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
