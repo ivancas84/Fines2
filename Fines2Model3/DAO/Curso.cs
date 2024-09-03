@@ -43,6 +43,19 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         }
 
+        public static EntitySql CursosAutorizadosCalendarioSql(this Db db, object idCalendario)
+        {
+            return db.Sql("curso")
+                .Fields()
+                .Size(0)
+                .Where(@"
+                    $calendario-id = @0 
+                    AND $comision-autorizada = true 
+                ")
+                .Parameters(idCalendario);
+
+        }
+
         public static EntitySql CursoDeComisionPfidCodigoAsignaturaCalendarioSql(this Db db, object pfid, object codigo, object idCalendario)
         {
             List<object> codigos = [codigo];

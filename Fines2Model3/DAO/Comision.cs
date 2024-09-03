@@ -63,7 +63,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Where(@"
                     $calendario-anio = @0
                     AND $calendario-semestre = @1
-                ")
+                ").
+                Order("$pfid ASC")
                 .Parameters(anio, semestre);
 
         }

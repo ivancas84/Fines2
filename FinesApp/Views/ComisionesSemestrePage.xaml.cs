@@ -77,9 +77,8 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         var dataComisiones = ContainerApp.db.ComisionesDePeriodoSql(tbAnio.Text, tbSemestre.Text).Cache().ColOfDict();
         var idSedes = dataComisiones.ColOfVal<object>("sede");
         var dataReferentes = ContainerApp.db.ReferentesDeSedeQuery(idSedes).Cache().ColOfDict().DictOfListByKeys("sede");
-        ContainerApp.db.ClearAndAddDataToOC(dataComisiones, comisionOC);
         comisionOC.Clear();
-        for (var i = 0; i < dataReferentes.Count(); i++)
+        for (var i = 0; i < dataComisiones.Count(); i++)
         {
             ComisionConReferentesItem obj = ContainerApp.db.ToData<ComisionConReferentesItem>(dataComisiones.ElementAt(i));
             //obj.PropertyChanged += Item_PropertyChanged;

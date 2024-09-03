@@ -43,28 +43,18 @@
 					<StackPanel>
 
 
-						<WrapPanel Orientation="Horizontal">
+                        <WrapPanel>
+                            <Label
+							FontWeight="Bold"
+							Margin = "3, 3, 3, 0">_Calendario:</Label>
+                            <ComboBox
+										Name="cbxCalendario"
+										Margin = "3, 0, 3, 3"
+							SelectionChanged="cbxCalendario_SelectionChanged"/>
+                        </WrapPanel>
 
-							<Label
-								Margin= "2">Año:</Label>
 
-							<TextBox
-								MinWidth="200"
-								Name = "tbAnio"/>
-
-							<Label
-								Margin = "2">Semestre:</Label>
-
-							<TextBox
-								MinWidth="200"
-								Name = "tbSemestre"/>
-							<Button
-								Content = "_Buscar..."
-								Click="BuscarButton_Click" />
-						</WrapPanel>
-
-					
-					</StackPanel>
+                    </StackPanel>
 				</GroupBox>
 
 				<GroupBox

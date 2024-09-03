@@ -5,6 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using SqlOrganize.Sql;
+using WpfUtils.Controls;
+
 
 namespace FinesApp.Views;
 
@@ -12,21 +14,34 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
 {
 
     private ObservableCollection<Data_curso_r> cursoOC = new();
+    private ObservableCollection<Data_calendario> ocCalendario = new();
 
     public CursosSemestrePage()
     {
         InitializeComponent();
+        cbxCalendario.InitComboBoxConstructor(ocCalendario);
+        var data = ContainerApp.db.Sql("calendario").Cache().ColOfDict();
+        ContainerApp.db.ClearAndAddDataToOC(data, ocCalendario);
         DataContext = this;
         dgdCurso.ItemsSource = cursoOC;
 
     }
 
-    private void BuscarButton_Click(object sender, RoutedEventArgs e)
+    private void LoadCursos()
     {
-        var data = ContainerApp.db.CursosAutorizadosPeriodoSql(tbAnio.Text, tbSemestre.Text).Cache().ColOfDict();
+        if (cbxCalendario.SelectedIndex < 0)
+        {
+            cursoOC.Clear();
+            return;
+        }
+        var data = ContainerApp.db.CursosAutorizadosCalendarioSql(cbxCalendario.SelectedValue).Cache().ColOfDict();
         ContainerApp.db.ClearAndAddDataToOC(data, cursoOC);
     }
 
+    private void cbxCalendario_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        LoadCursos();
+    }
 
     #region INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
@@ -44,4 +59,5 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
 
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     #endregion
+
 }
