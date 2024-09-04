@@ -63,6 +63,8 @@
                                 <DataGridTextColumn Header="Comisión" Binding="{Binding comision__pfid}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__Label}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Docente" Binding="{Binding docente__Label}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Docente" Binding="{Binding docente__email_abc}"></DataGridTextColumn>
+
                                 <DataGridTemplateColumn>
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
