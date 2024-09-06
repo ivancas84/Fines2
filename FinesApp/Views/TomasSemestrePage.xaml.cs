@@ -16,6 +16,7 @@ using QuestPDF.Fluent;
 using System.Net.Mail;
 using System.Net;
 using System.Collections.Specialized;
+using SqlOrganize.ValueTypesUtils;
 
 namespace FinesApp.Views;
 
@@ -38,6 +39,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
         dgdResultadoProcesamiento.ItemsSource = ocData;
         dgdResultadoGenerarTomasPDF.ItemsSource = ocResultadoGenerarTomasPDF;
+        dgdResultadoGenerarContralor.ItemsSource = ocResultadoGenerarContralor;
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
         var data = ContainerApp.db.Sql("calendario").Cache().ColOfDict();
         ContainerApp.db.ClearAndAddDataToOC(data, ocCalendario);
@@ -127,7 +129,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     }
     #endregion
 
-    #region Tab Procesar Docentes PF (XLSX)
+    #region Tab Procesar Docentes PF (XLSX y HTML)
     ObservableCollection<Data> ocData = new();
 
     private void btnProcesarDocentesPF_Click(object sender, RoutedEventArgs e)
@@ -253,6 +255,39 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     }
     #endregion;
 
+    #region Tab Generar Contralor
+    private ObservableCollection<TomaContralorItem> ocResultadoGenerarContralor = new();
+
+    private void btnGenerarContralor_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (cbxCalendario.SelectedIndex < 0)
+                throw new Exception("No existe calendario seleccionado");
+            var idTomas = ContainerApp.db.IdTomasPasarSinPlanillaDocenteDeCalendario(cbxCalendario.SelectedValue);
+            var tomas = ContainerApp.db.Sql("toma").Where("$id IN (@0)").Parameters(idTomas).Cache().ColOfDict();
+
+            ocResultadoGenerarContralor.Clear();
+            foreach (var item in tomas)
+            {
+                TomaContralorItem tomaObj = item.Obj<TomaContralorItem>();
+                tomaObj.docente__Label = tomaObj.docente__apellidos!.ToUpper() + " " + tomaObj.docente__nombres!.ToTitleCase();
+                tomaObj.plan__Label = tomaObj.plan__orientacion!.Acronym();
+
+                if (tomaObj.comision__turno.IsNoE())
+                    tomaObj.planificacion__Label = "V";
+                else
+                    tomaObj.planificacion__Label = tomaObj.comision__turno!.Acronym();
+
+                ocResultadoGenerarContralor.Add(tomaObj);
+            }
+        } catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
+
+    #endregion
     internal class ConstanciaDocument : IDocument
     {
         public TomaQrItem Model;
@@ -516,6 +551,86 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
 
     }
 
+    internal class TomaContralorItem : Data_toma_r
+    {
+        public string cupof
+        {
+            get { return "S/N"; }
+        }
+
+        public string rev
+        {
+            get { return "P"; }
+        }
+
+        public string funcion
+        {
+            get { return "PF"; }
+        }
+
+        public string dia_desde
+        {
+            get { return "11"; }
+        }
+
+        public string mes_desde
+        {
+            get { return "03"; }
+        }
+
+        public string anio_desde
+        {
+            get { return "24"; }
+        }
+
+        public string dia_hasta
+        {
+            get { return "12"; }
+        }
+
+        public string mes_hasta
+        {
+            get { return "07"; }
+        }
+
+        public string anio_hasta
+        {
+            get { return "24"; }
+        }
+
+
+
+        protected string? _prefijo_cuil = null;
+        public string? prefijo_cuil
+        {
+            get { return _prefijo_cuil; }
+        }
+
+        protected string? _sufijo_cuil = null;
+        public string? sufijo_cuil
+        {
+            get { return _sufijo_cuil; }
+        }
+
+        public new string? docente__cuil
+        {
+            get { return _docente__cuil; }
+            set
+            {
+                _docente__cuil = value;
+                _prefijo_cuil = null;
+                _sufijo_cuil = null;
+                if (!value.IsNoE())
+                {
+                    _prefijo_cuil = _docente__cuil.Substring(0, 2);
+                    if (_docente__cuil.Length > 10)
+                        _sufijo_cuil = _docente__cuil.Substring(10, 1);
+                }
+
+                NotifyPropertyChanged();
+            }
+        }
+    }
 }
 
 public class EstadoContralorData

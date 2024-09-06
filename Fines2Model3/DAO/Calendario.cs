@@ -44,38 +44,47 @@ namespace SqlOrganize.Sql.Fines2Model3
                     foreach (var cargo in docenteItem.cargos)
                     {
 
-
                         if (!pfidComisiones.Contains(cargo["comision"]))
                             continue;
 
                         existenCargos = true;
 
-                        object idCurso = db.CursoDeComisionPfidCodigoAsignaturaCalendarioSql(cargo["comision"], cargo["codigo"], calendarioObj.id).Cache().Dict()?["id"]!;
-                        if (idCurso.IsNoE())
-                            throw new Exception("No existe curso " + cargo["comision"] + " " + cargo["codigo"]);
-
-
-                        IDictionary<string, object?> rowTomaActiva = db.TomaAprobadaDeCursoQuery(idCurso).Cache().Dict();
-                        if (rowTomaActiva != null)
+                        try
                         {
-                            if (!rowTomaActiva["docente"]!.Equals(personaVal.Get("id")))
-                                throw new Exception("Existe una toma activa con otro docente en " + cargo["comision"] + " " + cargo["codigo"]);
+
+
+                            object idCurso = db.CursoDeComisionPfidCodigoAsignaturaCalendarioSql(cargo["comision"], cargo["codigo"], calendarioObj.id).Cache().Dict()?["id"]!;
+                            if (idCurso.IsNoE())
+                                throw new Exception("No existe curso " + cargo["comision"] + " " + cargo["codigo"]);
+
+
+                            IDictionary<string, object?> rowTomaActiva = db.TomaAprobadaDeCursoQuery(idCurso).Cache().Dict();
+                            if (rowTomaActiva != null)
+                            {
+                                if (!rowTomaActiva["docente"]!.Equals(personaVal.Get("id")))
+                                    throw new Exception("Existe una toma activa con otro docente en " + cargo["comision"] + " " + cargo["codigo"]);
+                                else
+                                    persist.logging.AddLog("calendario", "La toma ya se encuentra cargada", "PersistTomasPfHtml");
+
+                            }
                             else
-                                persist.logging.AddLog("calendario", "La toma ya se encuentra cargada", "PersistTomasPfHtml");
+                            {
+                                db.Values("toma").
+                                    Set("curso", idCurso).
+                                    Set("docente", personaVal.Get("id")).
+                                    Set("estado", "Aprobada").
+                                    Set("estado_contralor", "Pendiente").
+                                    Set("tipo_movimiento", "AI").
+                                    Set("fecha_toma", calendarioObj.inicio).
+                                    Default().Reset().Insert(persist);
+                            }
 
+                            
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            db.Values("toma").
-                                Set("curso", idCurso).
-                                Set("docente", personaVal.Get("id")).
-                                Set("estado", "Aprobada").
-                                Set("estado_contralor", "Pendiente").
-                                Set("tipo_movimiento", "AI").
-                                Set("fecha_toma", calendarioObj.inicio).
-                                Default().Reset().Insert(persist);
+                            persist.logging.AddLog("calendario", "ERROR " + ex.Message + " (" + docenteItem.Dict().ToStringKeyValuePair() + ")", "PersistTomasPfHtml");
                         }
-
 
                     }
 
