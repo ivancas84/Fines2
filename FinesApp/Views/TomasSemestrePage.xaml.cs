@@ -265,12 +265,16 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             if (cbxCalendario.SelectedIndex < 0)
                 throw new Exception("No existe calendario seleccionado");
             var idTomas = ContainerApp.db.IdTomasPasarSinPlanillaDocenteDeCalendario(cbxCalendario.SelectedValue);
-            var tomas = ContainerApp.db.Sql("toma").Where("$id IN (@0)").Parameters(idTomas).Cache().ColOfDict();
+            var tomas = ContainerApp.db.Sql("toma").Where("$id IN (@0)").
+                Order("$docente-numero_documento ASC").
+                Size(0).
+                Parameters(idTomas).Cache().ColOfDict();
 
             ocResultadoGenerarContralor.Clear();
             foreach (var item in tomas)
             {
                 TomaContralorItem tomaObj = item.Obj<TomaContralorItem>();
+                tomaObj.docente__numero_documento = tomaObj.docente__numero_documento;
                 tomaObj.docente__Label = tomaObj.docente__apellidos!.ToUpper() + " " + tomaObj.docente__nombres!.ToTitleCase();
                 tomaObj.plan__Label = tomaObj.plan__orientacion!.Acronym();
 
@@ -278,6 +282,13 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
                     tomaObj.planificacion__Label = "V";
                 else
                     tomaObj.planificacion__Label = tomaObj.comision__turno!.Acronym();
+
+
+                if (tomaObj.docente__cuil1.IsNoE())
+                    tomaObj.docente__cuil1 = Convert.ToByte(tomaObj.docente__cuil.Substring(0, 2));
+
+                if (tomaObj.docente__cuil2.IsNoE())
+                    tomaObj.docente__cuil2 = Convert.ToByte(tomaObj.docente__cuil.Substring(10, 1));
 
                 ocResultadoGenerarContralor.Add(tomaObj);
             }
@@ -570,12 +581,12 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
 
         public string dia_desde
         {
-            get { return "11"; }
+            get { return "12"; }
         }
 
         public string mes_desde
         {
-            get { return "03"; }
+            get { return "08"; }
         }
 
         public string anio_desde
@@ -585,12 +596,12 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
 
         public string dia_hasta
         {
-            get { return "12"; }
+            get { return "13"; }
         }
 
         public string mes_hasta
         {
-            get { return "07"; }
+            get { return "12"; }
         }
 
         public string anio_hasta
@@ -600,36 +611,7 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
 
 
 
-        protected string? _prefijo_cuil = null;
-        public string? prefijo_cuil
-        {
-            get { return _prefijo_cuil; }
-        }
 
-        protected string? _sufijo_cuil = null;
-        public string? sufijo_cuil
-        {
-            get { return _sufijo_cuil; }
-        }
-
-        public new string? docente__cuil
-        {
-            get { return _docente__cuil; }
-            set
-            {
-                _docente__cuil = value;
-                _prefijo_cuil = null;
-                _sufijo_cuil = null;
-                if (!value.IsNoE())
-                {
-                    _prefijo_cuil = _docente__cuil.Substring(0, 2);
-                    if (_docente__cuil.Length > 10)
-                        _sufijo_cuil = _docente__cuil.Substring(10, 1);
-                }
-
-                NotifyPropertyChanged();
-            }
-        }
     }
 }
 

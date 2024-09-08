@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using SqlOrganize.Sql;
 using WpfUtils.Controls;
+using SqlOrganize.CollectionUtils;
 
 
 namespace FinesApp.Views;
@@ -13,7 +14,7 @@ namespace FinesApp.Views;
 public partial class CursosSemestrePage : Page, INotifyPropertyChanged
 {
 
-    private ObservableCollection<Data_curso_r> cursoOC = new();
+    private ObservableCollection<CursoConTomaItem> cursoOC = new();
     private ObservableCollection<Data_calendario> ocCalendario = new();
 
     public CursosSemestrePage()
@@ -35,7 +36,21 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
             return;
         }
         var data = ContainerApp.db.CursosAutorizadosCalendarioSql(cbxCalendario.SelectedValue).Cache().ColOfDict();
-        ContainerApp.db.ClearAndAddDataToOC(data, cursoOC);
+        var idCursos = data.ColOfVal<object>("id");
+        var dataToma = ContainerApp.db.TomaAprobadaDeCursoQuery(idCursos).Cache().ColOfDict().DictOfDictByKeys("curso");
+
+        cursoOC.Clear();
+        foreach(var cursoData in data)
+        {
+            CursoConTomaItem curso = ContainerApp.db.ToData<CursoConTomaItem>(cursoData);
+            if (dataToma.ContainsKey(curso.id))
+            {
+                Data_toma_r toma = ContainerApp.db.ToData<Data_toma_r>(dataToma[curso.id]);
+                curso.toma_docente__Label = toma.docente__Label;
+            }
+            cursoOC.Add(curso);
+        }
+
     }
 
     private void cbxCalendario_SelectionChanged(object sender, SelectionChangedEventArgs e)

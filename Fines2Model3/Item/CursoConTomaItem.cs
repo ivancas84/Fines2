@@ -21,6 +21,15 @@ namespace SqlOrganize.Sql.Fines2Model3
     /// </example>
     public class CursoConTomaItem : Data_curso_r
     {
+        protected string? _toma_docente__Label = null;
+
+        [JsonProperty("toma_docente-label")]
+        public string? toma_docente__Label
+        {
+            get { return _toma_docente__Label; }
+            set { _toma_docente__Label = value; NotifyPropertyChanged(nameof(toma_docente__Label)); }
+        }
+
         protected string? _toma_docente__nombres = null;
 
         [JsonProperty("toma_docente-nombres")]

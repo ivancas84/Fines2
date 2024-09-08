@@ -66,13 +66,16 @@
 					</GroupBox.Header>
 					<DataGrid Name="dgdCurso" AutoGenerateColumns="false" IsReadOnly="true">
 						<DataGrid.Columns>
-							<DataGridTextColumn Header="Pfid" Binding="{Binding comision__pfid}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="ID" Binding="{Binding id}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Pfid" Binding="{Binding comision__pfid}"></DataGridTextColumn>
 							<DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
 							<DataGridTextColumn Header="Domicilio" Binding="{Binding domicilio__Label}"></DataGridTextColumn>
 							<DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__Label}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Año" Binding="{Binding planificacion__Label}"></DataGridTextColumn>
+							<DataGridTextColumn Header="Año" Binding="{Binding planificacion_dis__Label}"></DataGridTextColumn>
 							<DataGridTextColumn Header="Horario" Binding="{Binding descripcion_horario}"></DataGridTextColumn>
-						</DataGrid.Columns>
+                            <DataGridTextColumn Header="Horario" Binding="{Binding toma_docente__Label}"></DataGridTextColumn>
+
+                        </DataGrid.Columns>
 					</DataGrid>
 
 				</GroupBox>

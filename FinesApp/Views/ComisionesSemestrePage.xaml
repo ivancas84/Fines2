@@ -96,11 +96,10 @@
                             </GroupBox.Header>
                             <DataGrid Name="dgComision" AutoGenerateColumns="false" >
                                 <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Sede" Binding="{Binding id}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Sede" Binding="{Binding sede__nombre}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Domicilio" Binding="{Binding domicilio__Label}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Semestre" Binding="{Binding planificacion__id}"></DataGridTextColumn>
-
-                                    <DataGridTextColumn Header="Semestre" Binding="{Binding planificacion__Label}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Planificación" Binding="{Binding planificacion__Label}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Horario" Binding="{Binding horario}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Pfid" Binding="{Binding pfid}"></DataGridTextColumn>
                                     <DataGridTemplateColumn Header="Autorizada">
