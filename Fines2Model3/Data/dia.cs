@@ -50,7 +50,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     if (_numero == null)
                         return "Debe completar valor.";
                     if (!db.IsNoE() && !_numero.IsNoE()) {
-                        var row = db.Sql("dia").Where("$numero = @0").Parameters(_numero).Cache().Dict();
+                        var row = db.Sql("dia").Equal("$numero", _numero).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -60,7 +60,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     if (_dia == null)
                         return "Debe completar valor.";
                     if (!db.IsNoE() && !_dia.IsNoE()) {
-                        var row = db.Sql("dia").Where("$dia = @0").Parameters(_dia).Cache().Dict();
+                        var row = db.Sql("dia").Equal("$dia", _dia).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

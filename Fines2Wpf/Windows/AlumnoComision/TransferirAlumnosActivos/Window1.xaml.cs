@@ -34,15 +34,15 @@ namespace Fines2Wpf.Windows.AlumnoComision.TransferirAlumnosActivos
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
-                    AND $comision-autorizada = true
-                    AND $comision-comision_siguiente IS NOT NULL
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1 
+                    AND $comision__autorizada = true
+                    AND $comision__comision_siguiente IS NOT NULL
                     AND $estado = 'Activo'
                 ")
-                .Parameters(calendarioAnioTextBox.Text, calendarioSemestreTextBox.Text)
+                .Param("@0", calendarioAnioTextBox.Text).Param("@1", calendarioSemestreTextBox.Text)
                 .Cache().ColOfDict()
-                .DictOfListByKeys("comision-comision_siguiente");
+                .DictOfListByKeys("comision__comision_siguiente");
            
             asignacionOC.Clear();
             foreach (var (idComisionSiguiente, acs) in alumnosComisiones)

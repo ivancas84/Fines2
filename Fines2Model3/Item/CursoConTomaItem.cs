@@ -23,7 +23,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     {
         protected string? _toma_docente__Label = null;
 
-        [JsonProperty("toma_docente-label")]
         public string? toma_docente__Label
         {
             get { return _toma_docente__Label; }
@@ -32,7 +31,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         protected string? _toma_docente__nombres = null;
 
-        [JsonProperty("toma_docente-nombres")]
         public string? toma_docente__nombres
         {
             get { return _toma_docente__nombres; }
@@ -40,7 +38,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _toma_docente__apellidos = null;
 
-        [JsonProperty("toma_docente-apellidos")]
         public string? toma_docente__apellidos
         {
             get { return _toma_docente__apellidos; }
@@ -48,7 +45,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected DateTime? _toma_docente__fecha_nacimiento = null;
 
-        [JsonProperty("toma_docente-fecha_nacimiento")]
         public DateTime? toma_docente__fecha_nacimiento
         {
             get { return _toma_docente__fecha_nacimiento; }
@@ -56,7 +52,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _toma_docente__numero_documento = null;
 
-        [JsonProperty("toma_docente-numero_documento")]
         public string? toma_docente__numero_documento
         {
             get { return _toma_docente__numero_documento; }
@@ -65,7 +60,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         protected string? _toma_docente__telefono = null;
 
-        [JsonProperty("toma_docente-telefono")]
         public string? toma_docente__telefono
         {
             get { return _toma_docente__telefono; }
@@ -73,7 +67,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _toma_docente__email = null;
 
-        [JsonProperty("toma_docente-email")]
         public string? toma_docente__email
         {
             get { return _toma_docente__email; }
@@ -81,7 +74,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _toma_docente__email_abc = null;
 
-        [JsonProperty("toma_docente-email_abc")]
         public string? toma_docente__email_abc
         {
             get { return _toma_docente__email_abc; }

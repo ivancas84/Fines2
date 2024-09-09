@@ -22,10 +22,10 @@ namespace Fines2Wpf.Windows.AlumnoComision.ActualizarPlanAlumnos
             var persist = ContainerApp.db.Persist();
             foreach (var comision in comisiones)
             {
-                var idAlumnos = DAO.AlumnoComision2.AsignacionesDeComisionSinPlanQuery(comision["id"]!, comision["planificacion-plan"]!).Cache().ColOfDict().ColOfVal<object>("alumno");
+                var idAlumnos = DAO.AlumnoComision2.AsignacionesDeComisionSinPlanQuery(comision["id"]!, comision["planificacion__plan"]!).Cache().ColOfDict().ColOfVal<object>("alumno");
                 if (idAlumnos.IsNoE()) continue;
                 persist_ = true;
-                persist.UpdateValueIds("alumno", "plan", comision["planificacion-plan"], idAlumnos.ToArray());
+                persist.UpdateValueIds("alumno", "plan", comision["planificacion__plan"], idAlumnos.ToArray());
             }
             if(persist_)
                    persist.Exec().RemoveCache();

@@ -51,7 +51,7 @@ namespace SqlOrganize
             {
                 try
                 {
-                    response[propInfo.Name.Replace("__", "-")] = propInfo.GetValue(source, null); //se reemplaza caracter - por __
+                    response[propInfo.Name] = propInfo.GetValue(source, null);
                 }
                 catch (TargetParameterCountException ex)
                 {
@@ -85,9 +85,6 @@ namespace SqlOrganize
 
         /*
         https://stackoverflow.com/questions/41040189/fastest-way-to-map-result-of-sqldatareader-to-object
-        
-        Los caracteres especiales de fieldName son reemplazados por "__"
-            Ej. persona-nombres > persona__nombres        
         */
         public static T? Obj<T>(this DbDataReader rd) where T : class, new()
         {
@@ -172,7 +169,7 @@ namespace SqlOrganize
         public static T SetPropertyValue<T>(this T @this, string propertyName, object? value)
         {
             Type type = @this.GetType();
-            propertyName = propertyName.Replace("-", "__");
+            propertyName = propertyName;
             PropertyInfo property = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
             property.SetValue(@this, value, null);
             return @this;

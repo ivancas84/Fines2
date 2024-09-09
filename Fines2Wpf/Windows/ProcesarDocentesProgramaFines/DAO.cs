@@ -16,7 +16,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     AND $calendario-semestre = @1 
                     AND $pfid IS NOT NULL
                 ")
-                .Parameters("2024", "1").Cache().ColOfDict().ColOfVal<string>("pfid");
+                .Param("@0", "2024").Param("@1", "1").Cache().ColOfDict().ColOfVal<string>("pfid");
 
         }
 
@@ -31,7 +31,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     AND $calendario-anio = @2
                     AND $calendario-semestre = @3
                 ")
-                .Parameters(pfidComision, asignaturaCodigo, "2024", "1").Cache().Dict();
+                .Param("@0", pfidComision).Param("@1", asignaturaCodigo).Param("@2", "2024").Param("@3", "1").Cache().Dict();
 
 
             if (d.IsNoE()) return null;
@@ -47,14 +47,14 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     AND $estado = 'Aprobada'
                     AND ($estado_contralor = 'Pasar' OR $estado_contralor = 'Pendiente')
                 ")
-                .Parameters(idCurso).Cache().Dict();
+                .Param("@0", idCurso).Cache().Dict();
 
         }
 
 
         public IDictionary<string, object>? RowByEntityFieldValue(string entityName, string fieldName, object value)
         {
-            return ContainerApp.db.Sql(entityName).Where("$" + fieldName + " = @0").Parameters(value).Cache().Dict();
+            return ContainerApp.db.Sql(entityName).Where("$" + fieldName + " = @0").Param("@0", value).Cache().Dict();
         }
 
         public IDictionary<string, object>? RowByEntityUnique(string entityName, IDictionary<string, object> source)
@@ -62,7 +62,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
             var q = ContainerApp.db.Sql(entityName).Unique(source);
 
             if (source.ContainsKey(ContainerApp.config.id) && !source[ContainerApp.config.id].IsNoE())
-                q.Where("($" + ContainerApp.config.id + " != @0)").Parameters(source[ContainerApp.config.id]);
+                q.Where("($" + ContainerApp.config.id + " != @0)").Param("@0", source[ContainerApp.config.id]);
 
             return q.Cache().Dict();
         }

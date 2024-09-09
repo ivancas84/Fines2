@@ -145,7 +145,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             {
                 var com = ContainerApp.db.Sql("comision").
                     Where("$pfid = @0 AND $calendario-anio = @1 AND $calendario-semestre = @2").
-                    Parameters(formItem.comision!, ContainerApp.config.anio, ContainerApp.config.semestre).Cache().Dict();
+                    Param("@0", formItem.comision!).Param("@1", ContainerApp.config.anio).Param("@2", ContainerApp.config.semestre).Cache().Dict();
 
                 if (!com.IsNoE())
                 {
@@ -255,7 +255,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                 #region Comparar datos de persona pf con persona db
                                 var personaDbVal = (PersonaValues)ContainerApp.db.Values("persona", "persona").Set(asignacionDb);
 
-                                CompareParams cp = new() { val = personaPfVal, ignoreNull = false };
+                                CompareParams cp = new() { Data = personaPfVal.Values(), IgnoreNull = false };
                                 var comp = personaDbVal.Compare(cp);
 
                                 Dictionary<string, object?> updatePersonaDb = new(); //datos a actualizar de la base local

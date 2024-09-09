@@ -116,8 +116,8 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
             Dictionary<string, List<Dictionary<string, object?>>> referentesData = new();
             if(idsSede.Count() > 0 ) { 
                 referentesData = (Dictionary<string, List<Dictionary<string, object?>>>)ContainerApp.db.Sql("designacion").
-                Where("$cargo-descripcion IN ('Colaborador', 'Referente') AND $sede IN( @0 ) AND $hasta IS NULL").
-                Parameters(idsSede).
+                Where("$cargo__descripcion IN ('Colaborador', 'Referente') AND $sede IN( @0 ) AND $hasta IS NULL").
+                Param("@0", idsSede).
                 Cache().ColOfDict().
                 DictOfListByKeys("sede");
             }
@@ -138,7 +138,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                     Where(@"
                         $comision IN ( @0 ) AND $estado = 'Activo'
                     ").
-                    Parameters(idsComision).
+                    Param("@0", idsComision).
                     ColOfDict().
                     DictOfDictByKeysValue("cantidad", "comision");
 
@@ -149,11 +149,11 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                     Where(@"
                         $comision IN ( @0 )
                     ").
-                    Parameters(idsComision).
+                    Param("@0", idsComision).
                     ColOfDict().
                     DictOfDictByKeysValue("cantidad", "comision");
 
-                horariosComision = (Dictionary<string, List<Dictionary<string, object?>>>)comisionDAO.HorariosQuery(idsComision).Cache().ColOfDict().DictOfListByKeys("curso-comision");
+                horariosComision = (Dictionary<string, List<Dictionary<string, object?>>>)comisionDAO.HorariosQuery(idsComision).Cache().ColOfDict().DictOfListByKeys("curso__comision");
 
             }
 

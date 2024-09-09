@@ -18,16 +18,16 @@ namespace SqlOrganize.Sql.Fines2Model3
                .Fields()
                .Size(0)
                .Where(@"
-                    $sede-nombre LIKE @0
+                    $sede__nombre LIKE @0
                     OR
-                    CONCAT($sede-numero, $division, '/', $planificacion-anio, $planificacion-semestre) LIKE @0
+                    CONCAT($sede__numero, $division, '/', $planificacion__anio, $planificacion__semestre) LIKE @0
                     OR
                     $pfid LIKE @0
                     OR
-                    CONCAT($calendario-anio, '-', $calendario-semestre) LIKE @0
+                    CONCAT($calendario__anio, '/', $calendario__semestre) LIKE @0
                 ")
-               .Order("$sede-numero ASC, $division ASC, $calendario-anio DESC, $calendario-semestre DESC")
-               .Parameters("%" + search + "%");
+               .Order("$sede__numero ASC, $division ASC, $calendario__anio DESC, $calendario__semestre DESC")
+               .Param("@0", "%" + search + "%");
 
         }
 
@@ -39,7 +39,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     $calendario = @0
                     AND $autorizada = true
                 ")
-                .Parameters(idCalendario);
+                .Param("@0", idCalendario);
 
         }
 
@@ -48,11 +48,11 @@ namespace SqlOrganize.Sql.Fines2Model3
             return db.Sql("comision")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0
-                    AND $calendario-semestre = @1
+                    $calendario__anio = @0
+                    AND $calendario__semestre = @1
                     AND $autorizada = true
                 ")
-                .Parameters(anio, semestre);
+                .Param("@0", anio).Param("@1", semestre);
 
         }
 
@@ -61,11 +61,11 @@ namespace SqlOrganize.Sql.Fines2Model3
             return db.Sql("comision")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0
-                    AND $calendario-semestre = @1
+                    $calendario__anio = @0
+                    AND $calendario__semestre = @1
                 ").
                 Order("$pfid ASC")
-                .Parameters(anio, semestre);
+                .Param("@0",anio).Param("@1", semestre);
 
         }
 
@@ -74,7 +74,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         public static IEnumerable<EntityPersist> PersistAsignacionesComisionText(this Db db, object idComision, string text, params string[]? headers)
         {            
             if (headers.IsNoE())
-                headers = ["persona-apellidos", "persona-nombres", "persona-numero_documento", "persona-genero", "persona-fecha_nacimiento", "persona-telefono", "persona-email"];
+                headers = ["persona__apellidos", "persona__nombres", "persona__numero_documento", "persona__genero", "persona__fecha_nacimiento", "persona__telefono", "persona__email"];
 
             Data_comision_r? comObj = db.Sql("comision").Equal("id", idComision).Cache().Data<Data_comision_r>() ?? throw new Exception("comision inexistente");
 
@@ -96,7 +96,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     var personaValues = db.Values("persona","persona").SsetNotNull(dict);
                     CompareParams compare = new CompareParams
                     {
-                        fieldsToCompare = ["nombres", "apellidos", "numero_documento"],
+                        FieldsToCompare = ["nombres", "apellidos", "numero_documento"],
                     };
                     personaValues.PersistCompare(persist, compare);
 
@@ -111,7 +111,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                         Sset("comision", comObj.id).InsertIfNotExists(persist);
 
                     var otrasAsignaciones = db.Sql("alumno_comision").Where("$alumno = @0 AND $comision != @1").
-                        Parameters(alumnoVal.Get("id"), comObj.id).Cache().ColOfDict();
+                        Param("@0", alumnoVal.Get("id")).Param("@1", comObj.id).Cache().ColOfDict();
                     foreach (var oa in otrasAsignaciones)
                         persist.logging.AddLog("alumno_comision", "Asignacion existente " + db.Values("alumno_comision").SetValues(oa).ToString(), "PersistAsignacionesComisionText", Logging.Level.Warning);
 
@@ -237,7 +237,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             IEnumerable<object> idsCursos = db.Sql("curso").
                 Where("$comision = @0").
-                Parameters(comisionVal.Get("id")).
+                Param("@0", comisionVal.Get("id")).
                 ColOfDict().
                 ColOfVal<object>("id");
 
@@ -246,15 +246,15 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             IEnumerable<Dictionary<string, object?>> distribucionesHorariasData = db.Sql("distribucion_horaria").
                 Select("SUM($horas_catedra) AS suma_horas_catedra").
-                Group("$disposicion-asignatura").
-                Where("$disposicion-planificacion IN ( @0 )").
-                Parameters(comisionVal.Get("planificacion")).ColOfDict();
+                Group("$disposicion__asignatura").
+                Where("$disposicion__planificacion IN ( @0 )").
+                Param("@0", comisionVal.Get("planificacion")).ColOfDict();
 
             foreach (Dictionary<string, object?> dh in distribucionesHorariasData)
             {
                 EntityValues cursoVal = db.Values("curso").
                     Set("comision", comisionVal.Get("id")).
-                    Set("asignatura", dh["disposicion-asignatura"]).
+                    Set("asignatura", dh["disposicion__asignatura"]).
                     Set("horas_catedra", dh["suma_horas_catedra"]).
                     Default().Reset();
 

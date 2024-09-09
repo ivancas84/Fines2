@@ -73,7 +73,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 idDisposicion = ContainerApp.db.Sql("disposicion").
                 Where("$asignatura = @0").
                 Where(" AND $planificacion = @1").
-                Parameters(curso.asignatura!, curso.comision__planificacion!).Cache().Dict()!["id"]!;
+                Param("@0", curso.asignatura!).Param("@1", curso.comision__planificacion!).Cache().Dict()!["id"]!;
             }
             #endregion
 
@@ -95,10 +95,10 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
             {
                 asignacionData = ContainerApp.db.Sql("alumno_comision").
                 Where("$comision = @0").
-                Order("$estado ASC, $persona-apellidos ASC, $persona-nombres ASC").
-                Parameters(curso.comision!).Cache().ColOfDict();
+                Order("$estado ASC, $persona__apellidos ASC, $persona__nombres ASC").
+                Param("@0", curso.comision!).Cache().ColOfDict();
                 idsAlumnos = asignacionData.ColOfVal<object>("alumno");
-                dnis = asignacionData.ColOfVal<string>("persona-numero_documento");
+                dnis = asignacionData.ColOfVal<string>("persona__numero_documento");
                 asignacionOC.Clear();
                 if (asignacionData.Count() > 0)
                 {
@@ -124,11 +124,11 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
         {
             {
                 calificacionExistenteData = ContainerApp.db.Sql("calificacion").
-                Where("$disposicion-asignatura = @0").
-                Where(" AND $disposicion-planificacion = @1").
+                Where("$disposicion__asignatura = @0").
+                Where(" AND $disposicion__planificacion = @1").
                 Where(" AND $alumno IN (@2)").
                 Where(" AND ($nota_final >= 7 OR $crec >= 4)").
-                Parameters(curso.asignatura!, curso.comision__planificacion!, idsAlumnos).Cache().ColOfDict();
+                Param("@0", curso.asignatura!).Param("@1", curso.comision__planificacion!).Param("@2", idsAlumnos).Cache().ColOfDict();
                 calificacionExistenteOC.Clear();
                 foreach (Dictionary<string, object?> kvp in calificacionExistenteData)
                 {
@@ -142,7 +142,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                     .AddText(calificacionExistenteData.Count() + " calificaciones")
                     .Show();
                 }
-                calificacionesExistentesPorDNI = calificacionExistenteData.DictOfDictByKeys("persona-numero_documento");
+                calificacionesExistentesPorDNI = calificacionExistenteData.DictOfDictByKeys("persona__numero_documento");
 
             }
         }
@@ -165,17 +165,17 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
             IDictionary<string, Dictionary<string, object?>> personasExistentesPorDNI = ContainerApp.db.Sql("persona").
                 Where("$numero_documento IN (@0)").
-                Parameters(dnisCalificaciones).
+                Param("@0", dnisCalificaciones).
                 Cache().ColOfDict().
                 DictOfDictByKeys("numero_documento");
 
             IDictionary<string, Dictionary<string, object?>>  alumnosExistentesPorDNI = ContainerApp.db.Sql("alumno").
-                Where("$persona-numero_documento IN (@0)").
-                Parameters(dnisCalificaciones).
+                Where("$persona__numero_documento IN (@0)").
+                Param("@0", dnisCalificaciones).
                 Cache().ColOfDict().
-                DictOfDictByKeys("persona-numero_documento");
+                DictOfDictByKeys("persona__numero_documento");
 
-            IDictionary<string, Dictionary<string, object?>> asignacionesExistentesPorDNI = asignacionData.DictOfDictByKeys("persona-numero_documento");
+            IDictionary<string, Dictionary<string, object?>> asignacionesExistentesPorDNI = asignacionData.DictOfDictByKeys("persona__numero_documento");
             #endregion
 
             foreach (Calificacion calificacion in calificacionOC)
@@ -266,8 +266,8 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                             Dictionary<string, object?> pe = personasExistentesPorDNI[dni!];
                             CompareParams cp = new CompareParams()
                             {
-                                val = ContainerApp.db.Values("persona").Set(pe),
-                                fieldsToCompare = new List<string> { "nombres", "apellidos", "numero_documento" }
+                                Data = pe,
+                                FieldsToCompare = new List<string> { "nombres", "apellidos", "numero_documento" }
                             };
                             IDictionary<string, object?> compareResult = personaV.Compare(cp);
                             if (!compareResult.IsNoE())
@@ -290,14 +290,14 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                         {
                             IEnumerable<Dictionary<string, object?>> asignacionesExistentes = ContainerApp.db.Sql("alumno_comision").
                                 Where("$alumno = @0").
-                                Parameters(calificacion.alumno).
-                                Order("$calendario-anio DESC, $calendario-semestre DESC").
+                                Param("@0", calificacion.alumno).
+                                Order("$calendario__anio DESC, $calendario__semestre DESC").
                                 Cache().ColOfDict();
                             List<string> asignacionesExistentesLabel = new();
                             foreach (var item in asignacionesExistentes)
                             {
                                 var asig = item.Obj<Data_alumno_comision_r>();
-                                asignacionesExistentesLabel.Add(asig.sede__numero! + asig.comision__division! + "/" + asig.planificacion__anio + asig.planificacion__semestre + " " + asig.calendario__anio + "-" +asig.calendario__semestre + " " + asig.estado?.Acronym() ?? "?");
+                                asignacionesExistentesLabel.Add(asig.sede__numero! + asig.comision__division! + "/" + asig.planificacion__anio + asig.planificacion__semestre + " " + asig.calendario__anio + "__" +asig.calendario__semestre + " " + asig.estado?.Acronym() ?? "?");
                             }
                             if (asignacionesExistentesLabel.Count() > 0)
                                 calificacion.observaciones += " Asignaciones: " + String.Join(", ", asignacionesExistentesLabel);
@@ -346,7 +346,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 for (var i = 0; i < encabezados.Count(); i++)
                 {
                     if (values.ElementAt(i).IsNoE()) continue;
-                    if (encabezados.ElementAt(i) == "persona-numero_documento")
+                    if (encabezados.ElementAt(i) == "persona__numero_documento")
                     {
                         var value = ((string?)values.ElementAt(i)).CleanStringOfNonDigits();
                         calificacion.Sset(encabezados.ElementAt(i), value);

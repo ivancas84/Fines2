@@ -221,7 +221,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     if (_numero_documento == null)
                         return "Debe completar valor.";
                     if (!db.IsNoE() && !_numero_documento.IsNoE()) {
-                        var row = db.Sql("persona").Where("$numero_documento = @0").Parameters(_numero_documento).Cache().Dict();
+                        var row = db.Sql("persona").Equal("$numero_documento", _numero_documento).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -229,7 +229,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
                 case "cuil":
                     if (!db.IsNoE() && !_cuil.IsNoE()) {
-                        var row = db.Sql("persona").Where("$cuil = @0").Parameters(_cuil).Cache().Dict();
+                        var row = db.Sql("persona").Equal("$cuil", _cuil).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -249,7 +249,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
                 case "email_abc":
                     if (!db.IsNoE() && !_email_abc.IsNoE()) {
-                        var row = db.Sql("persona").Where("$email_abc = @0").Parameters(_email_abc).Cache().Dict();
+                        var row = db.Sql("persona").Equal("$email_abc", _email_abc).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

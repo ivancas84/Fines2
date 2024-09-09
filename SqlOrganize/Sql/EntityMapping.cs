@@ -7,7 +7,7 @@ namespace SqlOrganize.Sql
     /// </summary>
     /// <example>
     /// Ejemplo de subclase
-    /// -class ComisionMapping extiende Mapping
+    /// * class ComisionMapping extiende Mapping
     ///   Metodo numero()
     ///     return " CONCAT("+this.pf()+"this.numero, "+this.pt()+".division) "
     /// </example>
@@ -24,7 +24,7 @@ namespace SqlOrganize.Sql
         /// Db.mapping("persona").map("nombre") //correcto se mapea sin fieldId       
         /// Db.mapping("persona", "persona").map("nombre") //correcto se mapea con fieldId
         /// Db.mapping("persona", "persona").map("fecha_nacimiento.str") //correcto utiliza funcion especial para aplicar cast a str
-        /// Db.mapping("alumno").map("persona-nombre") //error, la traduccion de fieldId se hace en otro nivel
+        /// Db.mapping("alumno").map("persona__nombre") //error, la traduccion de fieldId se hace en otro nivel
         /// </example>
         public string Map(string fieldName)
         {

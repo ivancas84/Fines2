@@ -27,7 +27,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
             this.IdComision = idComision;
             labelTextBox.IsReadOnly = true;
             Loaded += CargarNuevosAlumnos_Loaded;
-            headersTextBox.Text = "persona-nombres, persona-apellidos, persona-numero_documento, persona-fecha_nacimiento";
+            headersTextBox.Text = "persona__nombres, persona__apellidos, persona__numero_documento, persona__fecha_nacimiento";
             statusGrid.ItemsSource = statusData;
         }
 
@@ -76,9 +76,9 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
 
                         CompareParams cp = new()
                         {
-                            val = personaExistenteVal,
-                            ignoreNull = true,
-                            fieldsToCompare = new List<string> { "apellidos", "nombres", "numero_documento" }
+                            Data = personaExistenteVal.Values(),
+                            IgnoreNull = true,
+                            FieldsToCompare = new List<string> { "apellidos", "nombres", "numero_documento" }
                         };
                         var dataDifferent = personaVal.Compare(cp);
 
@@ -104,9 +104,9 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
 
                         cp = new()
                         {
-                            val = personaExistenteVal,
-                            ignoreNull = true,
-                            ignoreFields = new List<string> { "apellidos", "nombres", "numero_documento" }
+                            Data = personaExistenteVal.Values(),
+                            IgnoreNull = true,
+                            IgnoreFields = new List<string> { "apellidos", "nombres", "numero_documento" }
                         };
                       
                         dataDifferent = personaVal.Compare(cp);
@@ -261,7 +261,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.CargarNuevosAlumnos
                     var otrasAsignaciones = alumnoComisionDAO.AsignacionesDelAlumnoEnOtrasComisionesAutorizadas(comision.id!, alumnoVal.Get("id"));
                     foreach (var a in otrasAsignaciones)
                     {
-                        IDictionary<string, object?> comD = ContainerApp.db.Sql("comision").Cache().Id(a["comision-id"]);
+                        IDictionary<string, object?> comD = ContainerApp.db.Sql("comision").Cache().Id(a["comision__id"]);
                         ComisionValues comV = (ComisionValues)ContainerApp.db.Values("comision").SetValues(comD!);
 
                         statusData.Add(new StatusData()

@@ -125,7 +125,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
                 asignacionOCAux.Add(o);
             }
             var dataCalificacionesDict_ = calificacionDAO.CantidadCalificacionesAprobadasAgrupadasPorPlanificacionSinArchivarPorAlumnosYPlanesQuery(alumnosYplanes).ColOfDict();
-            var dataCalificacionesDict = dataCalificacionesDict_.DictOfDictByKeysValue("cantidad", "alumno", "planificacion_dis-anio", "planificacion_dis-semestre");
+            var dataCalificacionesDict = dataCalificacionesDict_.DictOfDictByKeysValue("cantidad", "alumno", "planificacion_dis__anio", "planificacion_dis__semestre");
                 
             foreach (var d in asignacionOCAux)
             {
@@ -179,7 +179,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         /// <summary>
         /// Edición de celdas (no boolean)
         /// </summary>
-        /// <remarks>DataGrid > CellEditEnding v1 (2023-11)</remarks>
+        /// <remarks>DataGrid > CellEditEnding v1 (2023__11)</remarks>
         private void AsignacionDataGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             string key = "";
@@ -215,7 +215,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
 
 
         /// <summary>Persistencia de celdas checkbox</summary>
-        /// <remarks>DataGrid > DataGridCheckBoxColumn v1 (2023-11)</remarks>
+        /// <remarks>DataGrid > DataGridCheckBoxColumn v1 (2023__11)</remarks>
         private void EntityGrid_CellCheckBoxClick(object sender, RoutedEventArgs e)
         {
             var cell = sender as DataGridCell;
@@ -245,7 +245,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         public ObservableCollection<Data_sede> Sedes()
         {
             ObservableCollection<Data_sede> r = new ObservableCollection<Data_sede>();
-            var data = ContainerApp.db.Sql("sede").Size(0).Parameters().Cache().ColOfDict();
+            var data = ContainerApp.db.Sql("sede").Size(0).Cache().ColOfDict();
             ContainerApp.db.ClearAndAddDataToOC(data, r);
             return r;
         }

@@ -19,7 +19,7 @@ namespace Fines2Wpf.Forms.ListaModalidad
 
         public IDictionary<string, object>? RowByEntityFieldValue(string entityName, string fieldName, object value)
         {
-            return ContainerApp.db.Sql(entityName).Where("$"+fieldName+" = @0").Parameters(value).Cache().Dict();
+            return ContainerApp.db.Sql(entityName).Where("$"+fieldName+" = @0").Param("@0", value).Cache().Dict();
         }
 
         public IDictionary<string, object>? RowByEntityUnique(string entityName, IDictionary<string, object> source)

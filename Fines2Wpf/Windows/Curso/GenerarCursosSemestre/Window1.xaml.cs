@@ -50,7 +50,7 @@ namespace Fines2Wpf.Windows.Curso.GenerarCursosSemestre
             IDictionary<string, List<Dictionary<string, object?>>> cursosDeComisionesAutorizadasSemestre = ContainerApp.db.Sql("curso").
                 Where("$comision IN (@0)").
                 Size(0).
-                Parameters(idComisionesAutorizadasSemestre).
+                Param("@0", idComisionesAutorizadasSemestre).
                 ColOfDict().DictOfListByKeys("comision");
             #endregion
 
@@ -69,11 +69,11 @@ namespace Fines2Wpf.Windows.Curso.GenerarCursosSemestre
 
                 IDictionary<string, object?> asignaturasDeComision = ContainerApp.db.Sql("distribucion_horaria").
                     Select("SUM($horas_catedra) AS suma_horas_catedra").
-                    Group("$disposicion-asignatura").
-                    Where("$disposicion-planificacion = @0").
-                    Parameters(comObj.planificacion).
+                    Group("$disposicion__asignatura").
+                    Where("$disposicion__planificacion = @0").
+                    Param("@0", comObj.planificacion).
                     ColOfDict().
-                    DictOfDictByKeysValue("suma_horas_catedra", "disposicion-asignatura");
+                    DictOfDictByKeysValue("suma_horas_catedra", "disposicion__asignatura");
 
                 foreach(var (asignatura, suma_horas_catedra) in asignaturasDeComision)
                 {

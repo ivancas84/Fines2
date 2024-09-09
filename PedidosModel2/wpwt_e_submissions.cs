@@ -180,7 +180,7 @@ namespace SqlOrganize.Sql.PedidosModel2
                     if (_hash_id == null)
                         return "Debe completar valor.";
                     if (!db.IsNoE() && !_hash_id.IsNoE()) {
-                        var row = db.Sql("wpwt_e_submissions").Where("$hash_id = @0").Parameters(_hash_id).Cache().Dict();
+                        var row = db.Sql("wpwt_e_submissions").Where("$hash_id = @0").Param("@0", _hash_id).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

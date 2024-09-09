@@ -154,8 +154,8 @@ namespace Fines2Wpf.Windows.Alumno.TransferirAlumno
                 List < Field > fieldsOmPersona = ContainerApp.db.Entity("persona").FieldsOm();
                 persist.TransferOm("persona",  personaDestinoObj.id!, personaOrigenObj.id!);
 
-                IDictionary<string, object?>? alumnoOrigenData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(personaOrigenObj.id!).Dict();
-                IDictionary<string, object?>? alumnoDestinoData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(personaDestinoObj.id!).Dict();
+                IDictionary<string, object?>? alumnoOrigenData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Param("@0", personaOrigenObj.id!).Dict();
+                IDictionary<string, object?>? alumnoDestinoData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Param("@0", personaDestinoObj.id!).Dict();
 
                 if (!alumnoOrigenData.IsNoE())
                 {

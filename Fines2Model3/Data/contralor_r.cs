@@ -24,7 +24,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _planilla_docente__Label = null;
 
-        [JsonProperty("planilla_docente-Label")]
         public string? planilla_docente__Label
         {
             get { return _planilla_docente__Label; }
@@ -33,7 +32,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         protected string? _planilla_docente__id = null;
 
-        [JsonProperty("planilla_docente-id")]
         public string? planilla_docente__id
         {
             get { return _planilla_docente__id; }
@@ -41,7 +39,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _planilla_docente__numero = null;
 
-        [JsonProperty("planilla_docente-numero")]
         public string? planilla_docente__numero
         {
             get { return _planilla_docente__numero; }
@@ -49,7 +46,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected DateTime? _planilla_docente__insertado = null;
 
-        [JsonProperty("planilla_docente-insertado")]
         public DateTime? planilla_docente__insertado
         {
             get { return _planilla_docente__insertado; }
@@ -57,7 +53,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected DateTime? _planilla_docente__fecha_contralor = null;
 
-        [JsonProperty("planilla_docente-fecha_contralor")]
         public DateTime? planilla_docente__fecha_contralor
         {
             get { return _planilla_docente__fecha_contralor; }
@@ -65,7 +60,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected DateTime? _planilla_docente__fecha_consejo = null;
 
-        [JsonProperty("planilla_docente-fecha_consejo")]
         public DateTime? planilla_docente__fecha_consejo
         {
             get { return _planilla_docente__fecha_consejo; }
@@ -73,7 +67,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _planilla_docente__observaciones = null;
 
-        [JsonProperty("planilla_docente-observaciones")]
         public string? planilla_docente__observaciones
         {
             get { return _planilla_docente__observaciones; }

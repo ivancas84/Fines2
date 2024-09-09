@@ -325,6 +325,15 @@ namespace SqlOrganize.CollectionUtils
             return response;
         }
 
+        public static IDictionary<T, Dictionary<string, object?>> DictOfDictByKey<T>(this IEnumerable<Dictionary<string, object?>> source, string key)
+        {
+            Dictionary<T, Dictionary<string, object?>> response = new();
+            foreach (Dictionary<string, object?> row in source)
+                response[(T)row[key]!] = row;
+
+            return response;
+        }
+
         public static IDictionary<string, Dictionary<string, object?>> DictOfDictByKeys(this IEnumerable<Dictionary<string, object?>> source, params string[] keys)
         {
             Dictionary<string, Dictionary<string, object?>> response = new();
@@ -336,6 +345,14 @@ namespace SqlOrganize.CollectionUtils
                 string key = String.Join("~", val.ToArray());
                 response[key] = row;
             }
+
+            return response;
+        }
+        public static IDictionary<T, K?> DictOfDictByKeyValue<T, K>(this IEnumerable<Dictionary<string, object?>> source, string key, string keyValue)
+        {
+            Dictionary<T, K?> response = new();
+            foreach (Dictionary<string, object?> row in source)
+                response[(T)row[key]!] = (K?)row[keyValue];
 
             return response;
         }
@@ -417,6 +434,11 @@ namespace SqlOrganize.CollectionUtils
         {
             var serialized = JsonConvert.SerializeObject(self);
             return JsonConvert.DeserializeObject<T>(serialized);
+        }
+
+        public static string ToStringKeys(this IDictionary<string, object?> param, params string[] keysToConcatenate)
+        {
+            return string.Join(", ", keysToConcatenate.Where(param.ContainsKey).Select(key => param[key]?.ToString() ?? ""));
         }
     }
 

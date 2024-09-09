@@ -86,7 +86,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                 .Where(@"
                     $id IN ( @0 ) 
                 ")
-                .Parameters(idTomas).Cache().ColOfDict();
+                .Param("@0", idTomas).Cache().ColOfDict();
     
                  tomasContralorOC.Clear();
 

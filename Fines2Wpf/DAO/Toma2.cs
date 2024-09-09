@@ -16,12 +16,12 @@ namespace Fines2Wpf.DAO
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1
                     AND $estado = 'Aprobada'
                     AND $estado_contralor = 'Pasar'
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre);
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre);
         }
         public static EntitySql TomasAprobadasSinModificarDePeriodoSql(object calendarioAnio, object calendarioSemestre)
         {
@@ -30,12 +30,12 @@ namespace Fines2Wpf.DAO
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1
                     AND $estado = 'Aprobada'
                     AND $estado_contralor != 'Modificar'
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre);
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre);
         }
 
         public static EntitySql TomasRenunciaBajaSinModificarDePeriodoSql(object calendarioAnio, object calendarioSemestre)
@@ -45,12 +45,12 @@ namespace Fines2Wpf.DAO
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1
                     AND ($estado = 'Renuncia' OR $estado = 'Baja')
                     AND $estado_contralor != 'Modificar'
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre);
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre);
         }
 
         public static EntitySql TomasPasarDePeriodoSql(object calendarioAnio, object calendarioSemestre)
@@ -59,12 +59,12 @@ namespace Fines2Wpf.DAO
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1
                     AND ($estado = 'Aprobada' OR $estado = 'Renuncia' OR $estado = 'Baja')
                     AND $estado_contralor = 'Pasar'
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre);
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre);
         }
 
         public static EntitySql TomasParticularesDePeriodoSql(object calendarioAnio, object calendarioSemestre)
@@ -73,8 +73,8 @@ namespace Fines2Wpf.DAO
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1
                     AND (
                         $estado_contralor = 'Modificar'
                         OR (
@@ -82,7 +82,7 @@ namespace Fines2Wpf.DAO
                         )
                     )
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre);
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre);
         }
 
 
@@ -94,10 +94,10 @@ namespace Fines2Wpf.DAO
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre).Cache().ColOfDict().ColOfVal<object>("toma");
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre).Cache().ColOfDict().ColOfVal<object>("toma");
 
 
             bool collectionsEqual = id_tomas.SequenceEqual(id_tomas_con_planilla_docente);
@@ -119,7 +119,7 @@ namespace Fines2Wpf.DAO
                     AND $estado = 'Aprobada'
                     AND $estado_contralor = 'Pasar'
                 ")
-                .Parameters(idCurso);
+                .Param("@0", idCurso);
         }
 
     }

@@ -24,8 +24,8 @@ namespace Fines2Wpf.DAO
 
 
             return ContainerApp.db.Sql("alumno_comision")
-                .Where("$persona-numero_documento IN (@0)")
-                .Parameters(dnis).Cache().ColOfDict();
+                .Where("$persona__numero_documento IN (@0)")
+                .Param("@0", dnis).Cache().ColOfDict();
 
         }
 
@@ -38,18 +38,18 @@ namespace Fines2Wpf.DAO
         {
             var alumnoComision_ = AsignacionesActivasPorComisionesQuery(new List<object>() { comision }).Cache().ColOfDict();
             var idAlumnos = alumnoComision_.ColOfVal<object>("alumno").Distinct().ToList();
-            var idPlan = alumnoComision_.ElementAt(0)["planificacion-plan"];
+            var idPlan = alumnoComision_.ElementAt(0)["planificacion__plan"];
             return ContainerApp.db.Sql("calificacion")
                 .Select("$SUM($disposicion) AS cantidad")
                 .Group("$alumno")
                 .Size(0)
                 .Where(@"
                     $alumno IN (@0)
-                    AND $plan-alu = @1
+                    AND $plan__alu = @1
                     AND ($nota_final >= 7 OR $crec >= 4)  
                  ")
                 .Having("SUM($disposicion) > 3")
-                .Parameters(idAlumnos, idPlan).Cache().ColOfDict().ColOfVal<object>("id");
+                .Param("@0", idAlumnos).Param("@0", idPlan).Cache().ColOfDict().ColOfVal<object>("id");
 
 
 
@@ -62,11 +62,11 @@ namespace Fines2Wpf.DAO
                 .Fields("$alumno")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0
-                    AND $calendario-semestre = @1 
-                    AND $comision-autorizada = true
+                    $calendario__anio = @0
+                    AND $calendario__semestre = @1 
+                    AND $comision__autorizada = true
                 ")
-                .Parameters(anio, semestre).Cache().ColOfDict().ColOfVal<object>("alumno");
+                .Param("@0", anio).Param("@0", semestre).Cache().ColOfDict().ColOfVal<object>("alumno");
 
         }
 
@@ -77,12 +77,12 @@ namespace Fines2Wpf.DAO
                 .Fields("$alumno")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0
-                    AND $calendario-semestre = @1 
-                    AND $comision-autorizada = true
+                    $calendario__anio = @0
+                    AND $calendario__semestre = @1 
+                    AND $comision__autorizada = true
                     AND $estado = 'Activo'
                 ")
-                .Parameters(anio, semestre).Cache().ColOfDict().ColOfVal<object>("alumno");
+                .Param("@0", anio).Param("@0", semestre).Cache().ColOfDict().ColOfVal<object>("alumno");
 
         }
 
@@ -92,13 +92,13 @@ namespace Fines2Wpf.DAO
                 .Fields("$alumno")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0
-                    AND $calendario-semestre = @1 
-                    AND $comision-autorizada = true
+                    $calendario__anio = @0
+                    AND $calendario__semestre = @1 
+                    AND $comision__autorizada = true
                     AND $estado = 'Activo'
-                    AND $persona-genero IS NULL
+                    AND $persona__genero IS NULL
                 ")
-                .Parameters(anio, semestre).Cache().ColOfDict().ColOfVal<object>("alumno");
+                .Param("@0", anio).Param("@0", semestre).Cache().ColOfDict().ColOfVal<object>("alumno");
         }
 
 
@@ -110,7 +110,7 @@ namespace Fines2Wpf.DAO
                 .Where(@"
                     $comision IN (@0) 
                 ")
-                .Parameters(idsComisiones).Cache().ColOfDict();
+                .Param("@0", idsComisiones).Cache().ColOfDict();
         }
 
         public EntitySql AsignacionesActivasPorComisionesQuery(IEnumerable<object> idsComisiones)
@@ -121,7 +121,7 @@ namespace Fines2Wpf.DAO
                 .Where(@"
                     $comision IN (@0) AND $estado = 'Activo'
                 ")
-                .Parameters(idsComisiones);
+                .Param("@0", idsComisiones);
         }
 
 
@@ -145,24 +145,24 @@ namespace Fines2Wpf.DAO
                .Group("$alumno")
                .Size(0)
                .Where(@"
-                    $calendario-anio = @0
-                    AND $calendario-semestre = @1
+                    $calendario__anio = @0
+                    AND $calendario__semestre = @1
                     AND $estado = 'Activo'
-                    AND $comision-autorizada = true
+                    AND $comision__autorizada = true
                 ")
                .Having("cantidad > 1")
-               .Parameters(anio, semestre);
+               .Param("@0", anio).Param("@0", semestre);
         }
 
         public EntitySql AsignacionesActivasDeComisionesAutorizadasPorSemestreQuery(object anio, object semestre)
         {
             return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
-                .Where(@"$calendario-anio = @0 
-                    AND $calendario-semestre = @1 
-                    AND $comision-autorizada = true 
+                .Where(@"$calendario__anio = @0 
+                    AND $calendario__semestre = @1 
+                    AND $comision__autorizada = true 
                     AND $estado = 'Activo'")
-                .Parameters(anio, semestre);
+                .Param("@0", anio).Param("@0", semestre);
 
         }
 
@@ -170,8 +170,8 @@ namespace Fines2Wpf.DAO
         {
             return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
-                .Where("$calendario-anio = @0 AND $calendario-semestre = @1 AND $comision-autorizada = true")
-                .Parameters(anio, semestre).Cache().ColOfDict();
+                .Where("$calendario__anio = @0 AND $calendario__semestre = @1 AND $comision__autorizada = true")
+                .Param("@0", anio).Param("@0", semestre).Cache().ColOfDict();
 
         }
 
@@ -207,13 +207,13 @@ namespace Fines2Wpf.DAO
             var r = ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0
-                    AND $calendario-semestre = @1 
-                    AND $comision-id != @2
+                    $calendario__anio = @0
+                    AND $calendario__semestre = @1 
+                    AND $comision__id != @2
                     AND $alumno = @3
-                    AND $comision-autorizada = true
+                    AND $comision__autorizada = true
                 ")
-                .Parameters(anio, semestre, idComision, idAlumno).ColOfDict();
+                .Param("@0", anio).Param("@1", semestre).Param("@2", idComision).Param("@3", idAlumno).ColOfDict();
             return r;
         }
 
@@ -230,11 +230,11 @@ namespace Fines2Wpf.DAO
             return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where(@"
-                    $comision-id != @0
+                    $comision__id != @0
                     AND $alumno = @1
-                    AND $comision-autorizada = true
+                    AND $comision__autorizada = true
                 ")
-                .Parameters(idComision, idAlumno).ColOfDict();
+                .Param("@0", idComision).Param("@0", idAlumno).ColOfDict();
 
         }
     }

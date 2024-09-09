@@ -16,7 +16,7 @@ namespace Fines2Wpf.DAO
                 Where("OR $email LIKE @0 ").
                 Where("OR $telefono LIKE @0 ").
                 Order("$nombres ASC, $apellidos ASC").
-                Parameters("%"+search+"%");
+                Param("@0", "%"+search+"%");
         }
     }
 }

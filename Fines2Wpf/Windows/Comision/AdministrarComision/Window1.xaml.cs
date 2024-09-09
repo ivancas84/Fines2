@@ -88,7 +88,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             planificacionComboBox.SelectedValuePath = "id";
 
             data = ContainerApp.db.Sql("planificacion").
-                Order("$plan-distribucion_horaria DESC, $anio ASC, $semestre ASC").
+                Order("$plan__distribucion_horaria DESC, $anio ASC, $semestre ASC").
                 Cache().ColOfDict();
 
             planificacionOC.Clear();
@@ -113,7 +113,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             foreach (var item in data)
             {
                 Data_calendario obj = item.Obj<Data_calendario>();
-                obj.Label = obj.anio.ToString() + "-" + obj.semestre.ToString() + " " + obj.descripcion;
+                obj.Label = obj.anio.ToString() + "__" + obj.semestre.ToString() + " " + obj.descripcion;
                 calendarioOC.Add(obj);
             }
             #endregion
@@ -141,7 +141,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
                 if (!comision.comision_siguiente.IsNoE())
                 {
                     var comisionSiguienteInicial = ContainerApp.db.Sql("comision").Cache().Id(comision.comision_siguiente!).Obj<Data_comision_r>();
-                    comisionSiguienteInicial.Label = comisionSiguienteInicial.sede__numero + comisionSiguienteInicial.division + "/" + comisionSiguienteInicial.planificacion__anio + comisionSiguienteInicial.planificacion__semestre + " " + comisionSiguienteInicial.calendario__anio + "-" + comisionSiguienteInicial.calendario__semestre;
+                    comisionSiguienteInicial.Label = comisionSiguienteInicial.sede__numero + comisionSiguienteInicial.division + "/" + comisionSiguienteInicial.planificacion__anio + comisionSiguienteInicial.planificacion__semestre + " " + comisionSiguienteInicial.calendario__anio + "__" + comisionSiguienteInicial.calendario__semestre;
                     comisionOC.Add(comisionSiguienteInicial);
                 }
 
@@ -279,7 +279,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
                 IEnumerable<string> divisiones = ContainerApp.db.Sql("comision").
                     Fields("$division").
                     Where("$sede = @0").
-                    Parameters(cb.SelectedValue).
+                    Param("@0", cb.SelectedValue).
                     Column<string>(0);
 
                 divisionesTextBox.Text = String.Join(", ", divisiones);

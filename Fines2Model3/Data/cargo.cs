@@ -44,7 +44,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     if (_descripcion == null)
                         return "Debe completar valor.";
                     if (!db.IsNoE() && !_descripcion.IsNoE()) {
-                        var row = db.Sql("cargo").Where("$descripcion = @0").Parameters(_descripcion).Cache().Dict();
+                        var row = db.Sql("cargo").Equal("$descripcion", _descripcion).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

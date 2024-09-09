@@ -117,8 +117,8 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
             List<Field> fieldsOmPersona = ContainerApp.db.Entity("persona").FieldsOm();
             ContainerApp.db.Persist().TransferOm("persona", personaOrigenObj.id!, personaDestinoObj.id!).AddToIfSql(persists);
 
-            IDictionary<string, object?>? alumnoOrigenData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(personaOrigenObj.id!).Dict();
-            IDictionary<string, object?>? alumnoDestinoData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(personaDestinoObj.id!).Dict();
+            IDictionary<string, object?>? alumnoOrigenData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Param("@0", personaOrigenObj.id!).Dict();
+            IDictionary<string, object?>? alumnoDestinoData = ContainerApp.db.Sql("alumno").Where("$persona = @0").Param("@0", personaDestinoObj.id!).Dict();
 
             if (!alumnoOrigenData.IsNoE())
             {

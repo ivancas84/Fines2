@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 using Newtonsoft.Json.Linq;
-using SqlOrganize.Model;
+using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql.Exceptions;
 using SqlOrganize.ValueTypesUtils;
 
@@ -22,9 +22,7 @@ namespace SqlOrganize.Sql
 
         public Db Db { get; }
 
-        public List<object?> parameters { get; set; } = new List<object?> { };
-
-        public int count = 0;
+        public Dictionary<string, object?> _parameters { get; set; } = new();
 
         /// <summary>
         /// El SQL se genera a medida que se invocan los distintos metodos de generacion.
@@ -51,12 +49,11 @@ namespace SqlOrganize.Sql
             Db = db;
         }
 
-        public EntityPersist Parameters(params object[] parameters)
+        public EntityPersist Param(string name, object? value)
         {
-            this.parameters.AddRange(parameters.ToList());
+            _parameters[name] = value;
             return this;
         }
-
         /// <summary>
         /// Se separa el método WhereIds para procesar la cantidad de parametros
         /// </summary>
@@ -67,7 +64,7 @@ namespace SqlOrganize.Sql
         {
             string idMap = Db.Mapping(entityName!).Map(Db.config.id);
 
-            if ((ids.Count() + count) > 2100) //SQL Server no admite mas de 2100 parametros, se define consulta alternativa para estos casos
+            if ((ids.Count() + _parameters.Count()) > 2100) //SQL Server no admite mas de 2100 parametros, se define consulta alternativa para estos casos
             {
                 List<object> ids_ = new();
                 var v = Db.Values(entityName!);
@@ -84,10 +81,9 @@ namespace SqlOrganize.Sql
             }
             else
             {
-                sql += @"WHERE " + idMap + " IN (@" + count + @");
+                sql += @"WHERE " + idMap + " IN (@map_" + idMap + @");
 ";
-                count++;
-                parameters.Add(ids.ToList());
+                Param("@map_" + idMap, ids);
 
                 foreach (var id in ids)
                     detail.Add((entityName!, id, "delete"));
@@ -119,10 +115,9 @@ DELETE " + e.alias + " FROM " + e.name + " " + e.alias + @"
             IDictionary<string, object?> _row = _Update(_entityName, row);
             string id = Db.Mapping(_entityName!).Map(Db.config.id);
             sql += @"
-WHERE " + id + " = @" + count + @";
+WHERE " + id + " = @update_" + id + @";
 ";
-            count++;
-            parameters.Add(row[Db.config.id]!);
+            Param("@update_" + id, row[Db.config.id]!);
             detail.Add((_entityName!, row[Db.config.id]!, "update"));
             logging.AddLog(_entityName, "registro actualizado " + _row.ToStringKeyValuePair(), "update", Logging.Level.Info);
 
@@ -135,7 +130,7 @@ WHERE " + id + " = @" + count + @";
 
             string idMap = Db.Mapping(_entityName!).Map(Db.config.id);
 
-            if ((ids.Count() + count) > 2100) //SQL Server no admite mas de 2100 parametros, se define consulta alternativa para estos casos
+            if ((ids.Count() + _parameters.Count()) > 2100) //SQL Server no admite mas de 2100 parametros, se define consulta alternativa para estos casos
             {
                 List<object> ids_ = new();
                 var v = Db.Values(_entityName!);
@@ -151,10 +146,9 @@ WHERE " + id + " = @" + count + @";
 ";
             } else
             {
-                sql += @"WHERE " + idMap + " IN (@" + count + @");
+                sql += @"WHERE " + idMap + " IN (@map_" + idMap + @");
 ";
-                count++;
-                parameters.Add(ids);
+                Param("@map_" + idMap, ids);
 
                 foreach (var id in ids)
                     detail.Add((_entityName!, id, "update"));
@@ -216,9 +210,13 @@ WHERE " + id + " = @" + count + @";
         }
 
 
-        public EntityPersist UpdateValueWhere(string _entityName, string key, object value, string where, params object[] parameters)
+        public EntityPersist UpdateValueWhere(string _entityName, string key, object value, string where, IDictionary<string, object>? parameters = null)
         {
-            object[] ids = Db.Sql(_entityName).Where(where).Parameters(parameters).Column<object>(Db.config.id).ToArray();
+            var q = Db.Sql(_entityName).Where(where);
+            if (!parameters.IsNoE())
+                q.Params(parameters!);
+            
+            object[] ids = q.Column<object>(Db.config.id).ToArray();
             if(ids.Any())
                 return UpdateValueIds(_entityName, key, value, ids);
             return this;
@@ -253,23 +251,16 @@ WHERE " + id + " = @" + count + @";
         /// <param name="source">Fuente con todos los valores sin actualizar</param>
         /// <param name="_entityName">Opcional nombre de la entidad, si no existe toma el atributo</param>
         /// <returns>Mismo objeto</returns>
-        public EntityPersist UpdateKeyValueFromSourceRel(string _entityName, string key, object? value, IDictionary<string, object?> source)
+        public EntityPersist UpdateValueRel(string _entityName, string key, object? value, IDictionary<string, object?> source)
         {
-            string separator = null;
-            if (key.Contains("__"))
-                separator = "__";
-            else if (key.Contains("-"))
-                separator = "-";
-
             string idKey = Db.config.id;
-
-            if(!separator.IsNoE())
+            if (key.Contains("__"))
             {
-                int indexSeparator = key.IndexOf(separator!);
+                int indexSeparator = key.IndexOf("__");
                 string fieldId = key.Substring(0, indexSeparator);
                 _entityName = Db.Entity(_entityName!).relations[fieldId].refEntityName;
-                idKey = fieldId + separator + Db.config.id;
-                key = key.Substring(indexSeparator + separator!.Length); //se suma la cantidad de caracteres del separador
+                idKey = fieldId + "__" + Db.config.id;
+                key = key.Substring(indexSeparator + "__".Length); //se suma la cantidad de caracteres del separador
             }
 
             return UpdateValueIds(_entityName, key, value, source[idKey]!);
@@ -328,12 +319,10 @@ WHERE " + id + " = @" + count + @";
             sql += "INSERT INTO " + sn + @" (" + String.Join(", ", row_.Keys) + @") 
 VALUES (";
 
-
-            foreach (object? value in row_.Values)
+            foreach (var (key, value) in row_)
             {
-                sql += "@" + count + ", ";
-                parameters.Add(value);
-                count++;
+                sql += "@" + key + ", ";
+                Param("@" + key, value);
             }
 
             sql = sql.RemoveLastChar(',');
@@ -398,7 +387,18 @@ VALUES (";
                 if (!v.Check())
                     throw new Exception("Los campos a actualizar poseen errores: " + v.Logging.ToString());
 
-                return Update(v.entityName, v.Values()!);
+                CompareParams cmp = new()
+                {
+                    IgnoreNonExistent = true,
+                    IgnoreNull = false,
+                    Data = row
+                };
+
+                if(!v.Compare(cmp).IsNoE())
+                    return Update(v.entityName, v.Values()!);
+
+                logging.AddLog(v.entityName, "registro identico " + row.ToStringKeyValuePair(), "persist", Logging.Level.Info);
+                return this;
             }
 
             if (!v.Values().ContainsKey(Db.config.id) || v.Values()[Db.config.id].IsNoE())
@@ -418,7 +418,7 @@ VALUES (";
             {
                 v.Default().Reset();
                 if (!v.Check())
-                    throw new Exception("INSERT ERROR - " + v.Logging.ToString());
+                    throw new Exception("INSERT ERROR: " + v.Logging.ToString());
 
                 return Insert(v);
             }
@@ -426,7 +426,7 @@ VALUES (";
             v.Reset();
 
             if (!v.Check())
-                throw new Exception("UPDATE ERROR - " + v.Logging.ToString());
+                throw new Exception("UPDATE ERROR: " + v.Logging.ToString());
 
             return Update(v);
         } 
@@ -434,7 +434,7 @@ VALUES (";
         public Query Query(Query q)
         {
             q.sql = Sql();
-            q.parameters = parameters;
+            q._parameters = _parameters;
             return q;
         }
 
@@ -476,11 +476,11 @@ VALUES (";
                 //if (v.values.ContainsKey(Db.config.id) && v.Get(Db.config.id).ToString() != rows.ElementAt(0)[Db.config.id].ToString())
                 //    throw new Exception("Los id son diferentes");
 
-                compare.val = Db.Values(values.entityName).Set(row);
+                compare.Data = row!;
                 var response = values.Compare(compare);
 
                 if (!response.IsNoE())
-                    throw new Exception("Comparacion diferente: " + compare.val.ToStringFields(response.Keys.ToArray()));
+                    throw new Exception("Comparacion diferente: " + compare.Data.ToStringKeys(response.Keys.ToArray()));
 
                 values.Set(Db.config.id, row[Db.config.id]);
                 if (!values.Check())
@@ -503,7 +503,7 @@ VALUES (";
             List<Field> fieldsOmPersona = Db.Entity(entityName).FieldsOm();
             foreach (var field in fieldsOmPersona)
             {
-                object[] ids = Db.Sql(field.entityName).Where(field.name + " = @0").Parameters(origenId).Column<object>("id").ToArray();
+                object[] ids = Db.Sql(field.entityName).Equal(field.name, origenId).Column<object>("id").ToArray();
                 if (ids.Any())
                     UpdateValueIds(field.entityName, field.name, destinoId!, ids);
             }

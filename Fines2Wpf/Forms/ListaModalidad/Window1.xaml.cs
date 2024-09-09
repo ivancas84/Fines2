@@ -101,7 +101,7 @@ namespace Fines2Wpf.Forms.ListaModalidad
                             parentId = ContainerApp.db.Entity(entityName).relations[fieldId].parentId;
                             if (parentId != null) { 
                                 var parentFieldName = ContainerApp.db.Entity(entityName).relations[parentId].fieldName;
-                                r[parentId + "-" + parentFieldName] = r[fieldId + "-" + fieldName];
+                                r[parentId + "__" + parentFieldName] = r[fieldId + "__" + fieldName];
                                 fieldId = parentId;
                                 fieldName = parentFieldName;
                             }

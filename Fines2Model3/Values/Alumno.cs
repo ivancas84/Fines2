@@ -89,9 +89,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Size(0).
                 Group("$disposicion").
                 Where(@"
-                        $planificacion_dis-plan = @0 
-                        AND $planificacion_dis-anio >= @1 
-                        AND $planificacion_dis-semestre >= @2 
+                        $planificacion_dis__plan = @0 
+                        AND $planificacion_dis__anio >= @1 
+                        AND $planificacion_dis__semestre >= @2 
                         AND $archivado = false  
                         AND ($nota_final >= 7 OR $crec >= 4)
                         AND $alumno = @3").

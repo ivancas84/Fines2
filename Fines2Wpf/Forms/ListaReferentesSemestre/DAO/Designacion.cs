@@ -16,8 +16,8 @@ namespace Fines2Wpf.Forms.ListaReferentesSemestre.DAO
         {
             IEnumerable<object> idSedes = comisionDAO.IdSedesSemestre(search);
             return ContainerApp.db.Sql("designacion").
-                Where("$sede-_Id IN (@0) AND $cargo = '1'").
-                Parameters(idSedes).Cache().ColOfDict();
+                Where("$sede___Id IN (@0) AND $cargo = '1'").
+                Param("@0", idSedes).Cache().ColOfDict();
         }
 
         public void UpdateValueRel(string key, object value, Dictionary<string, object> source)

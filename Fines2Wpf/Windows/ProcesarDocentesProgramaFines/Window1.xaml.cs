@@ -45,7 +45,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     EntityValues vPersonaAux = ContainerApp.db.Values("persona").Set(row);
                     CompareParams cp = new()
                     {
-                        val = vPersona
+                        Data = vPersona.Values()
                     };
                     IDictionary<string, object> valuesToUpdate = vPersonaAux.Compare(cp);
                     vPersonaAux.SetNotNull(valuesToUpdate);

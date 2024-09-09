@@ -268,7 +268,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             var tomas = ContainerApp.db.Sql("toma").Where("$id IN (@0)").
                 Order("$docente-numero_documento ASC").
                 Size(0).
-                Parameters(idTomas).Cache().ColOfDict();
+                Param("@0", idTomas).Cache().ColOfDict();
 
             ocResultadoGenerarContralor.Clear();
             foreach (var item in tomas)

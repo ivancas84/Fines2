@@ -11,7 +11,7 @@ namespace SqlOrganize.Sql
     /// Selección de datos de una entidad
     /// </summary>
     /// <remarks>
-    /// Los fields se traducen con los metodos de mapeo, deben indicarse con el prefijo. Ej "($ingreso = %p1) AND (MAX($persona-nombres) = %p1)"
+    /// Los fields se traducen con los metodos de mapeo, deben indicarse con el prefijo. Ej "($ingreso = %p1) AND (MAX($persona__nombres) = %p1)"
     /// </remarks>
     public abstract class EntitySql
     {
@@ -38,9 +38,7 @@ namespace SqlOrganize.Sql
 
         public string group { get; set; } = "";
 
-        public List<object> parameters = new List<object> { };
-
-        public Dictionary<string, object> parametersDict = new ();
+        public Dictionary<string, object?> _parameters = new();
 
         public string join { get; set; } = "";
 
@@ -50,12 +48,6 @@ namespace SqlOrganize.Sql
         {
             Db = db;
             this.entityName = entityName;
-        }
-
-        /// <summary> Forma rapida de devolver la cantidad de parametros para facilitar la definicion de sql </summary>
-        public int Count()
-        {
-            return parameters.Count();
         }
 
         public bool ContainsFieldName(string fieldName)
@@ -94,13 +86,28 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public EntitySql Equal(string fieldName, object param)
+        public EntitySql Param(string paramName, object? value)
         {
-            if (!fieldName.StartsWith("$"))
-                fieldName = "$" + fieldName;
-
-            Where(fieldName + " = @" + parameters.Count()).Parameters(param);
+            this._parameters[paramName] = value;
             return this;
+        }
+
+        public EntitySql Params(IDictionary<string, object> parameters)
+        {
+            _parameters!.Merge(parameters!);
+            return this;
+        }
+
+        /// <summary>Short form to define Where("fieldName = @fieldName).Param("@fieldName", value);
+        /// 
+        /// </summary>
+        /// <param name="fieldName"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public EntitySql Equal(string fieldName, object? value)
+        {
+            string fn = "@"+fieldName.Replace("$", "");
+            return Where(fieldName = " = " + fn).Param(fn, value);
         }
 
         public EntitySql Search(Data data)
@@ -117,15 +124,12 @@ namespace SqlOrganize.Sql
         /// <remarks>Filtra los campos que pertenecen a la entidad</remarks>
         public EntitySql Search(IDictionary<string, object?> param)
         {
-            var count = parameters.Count;
             foreach(var (key, value) in param)
                 if (Db.FieldNamesRel(entityName).Contains(key) && !value.IsNoE())
                 {
                     if (!where.IsNoE())
                         Where(" AND ");
-                    Where("$" + key + " = @" + count.ToString());
-                    Parameters(value!);
-                    count++;
+                    Equal(key, value);
                 }
             return this;
         }
@@ -151,15 +155,17 @@ namespace SqlOrganize.Sql
             {
                 foreach (var (key, value) in row)
                 {
-                    if ((key == fieldName) && (!value.IsNoE()))
+                    string k = key.Replace("$", "");
+
+                    if (k == fieldName)
                     {
                         if(value == null)
                         {
-                            whereUniqueList.Add("$" + key + " IS NULL");
+                            whereUniqueList.Add("$" + k + " IS NULL");
                             break;
                         }
-                        whereUniqueList.Add("$" + key + " = @" + parameters.Count);
-                        parameters.Add(value);
+                        whereUniqueList.Add("$" + k + " = @" + k);
+                        Param("@" + k, value);
                         break;
                     }
                 }
@@ -204,18 +210,22 @@ namespace SqlOrganize.Sql
                 existsUniqueMultiple = false;
 
                 foreach(var (key, value) in param)
-                    if (key == field)
+                {
+                    string k = key.Replace("$", "");
+                    if (k == field)
                     {
                         existsUniqueMultiple = true;
                         if (value == null)
                         {
-                            whereMultipleList.Add("$" + key + " IS NULL");
+                            whereMultipleList.Add("$" + k + " IS NULL");
                             break;
                         }
-                        whereMultipleList.Add("$" + key + " = @" + parameters.Count);
-                        parameters.Add(value);
+                        whereMultipleList.Add("$" + k + " = @" + k);
+                        Param("@" + k, value);
                         break;
                     }
+                }
+                
                 
             }
             if(existsUniqueMultiple && whereMultipleList.Count > 0)
@@ -229,7 +239,7 @@ namespace SqlOrganize.Sql
             Unique(source);
 
             if (source.ContainsKey(Db.config.id) && !source[Db.config.id]!.IsNoE())
-                And("$" + Db.config.id + " != @" + parameters.Count()).Parameters(source[Db.config.id]!);
+                And("$" + Db.config.id + " != @" + Db.config.id).Param(Db.config.id, source[Db.config.id]!);
 
             return this;
         }
@@ -258,18 +268,6 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public EntitySql Parameters(params object[] parameters)
-        {
-            this.parameters.AddRange(parameters.ToList());
-            return this;
-        }
-
-        public EntitySql Parameters(Dictionary<string, object> parameters)
-        {
-            this.parametersDict.Merge(parameters);
-            return this;
-        }
-
         protected string TraduceFields(string _sql)
         {
             if (_sql.IsNoE())
@@ -286,11 +284,11 @@ namespace SqlOrganize.Sql
                     fieldNamesToDelete.Add(fields[i]);
                     var en = entityName;
                     var fid = "";
-                    if (fields[i].Contains("-"))
+                    if (fields[i].Contains(Db.config.separator))
                     {
-                        List<string> ff = fields[i].Split("-").ToList();
+                        List<string> ff = fields[i].Split(Db.config.separator).ToList();
                         en = Db.Entity(entityName).relations[ff[0]].refEntityName;
-                        fid = ff[0] + "-";
+                        fid = ff[0] + Db.config.separator;
                     }
 
                     List<string> fns = (List<string>)Db.FieldNames(en).AddPrefixToEnum(fid);
@@ -307,9 +305,9 @@ namespace SqlOrganize.Sql
 
             foreach (var fieldName in fields)
             {
-                if (fieldName.Contains("-"))
+                if (fieldName.Contains(Db.config.separator))
                 {
-                    List<string> ff = fieldName.Split("-").ToList();
+                    List<string> ff = fieldName.Split(Db.config.separator).ToList();
                     sql += Db.Mapping(Db.Entity(entityName).relations[ff[0]].refEntityName, ff[0]).Map(ff[1]) + " AS '" + fieldName + "', ";
                 } else
                     sql += Db.Mapping(entityName).Map(fieldName) + " AS '" + fieldName + "', ";
@@ -358,9 +356,9 @@ namespace SqlOrganize.Sql
             var fieldName = _sql.Substring(fieldStart + 1, fieldEnd);
 
             string ff = "";
-            if (fieldName.Contains('-'))
+            if (fieldName.Contains(Db.config.separator))
             {
-                List<string> fff = fieldName.Split("-").ToList();
+                List<string> fff = fieldName.Split(Db.config.separator).ToList();
                 ff += Db.Mapping(Db.Entity(entityName).relations[fff[0]].refEntityName, fff[0]).Map(fff[1]);
             }
             else
@@ -539,7 +537,7 @@ namespace SqlOrganize.Sql
 
         public override string ToString()
         {
-            return Regex.Replace(entityName + where + having + fields + select + order + size + page + join + JsonConvert.SerializeObject(parameters), @"\s+", "");
+            return Regex.Replace(entityName + where + having + fields + select + order + size + page + join + JsonConvert.SerializeObject(_parameters), @"\s+", "");
         }
 
         public abstract EntitySql Clone();
@@ -550,8 +548,7 @@ namespace SqlOrganize.Sql
             eq.size = size;
             eq.where = where;
             eq.page = page;
-            eq.parameters = parameters;
-            eq.parametersDict = parametersDict;
+            eq._parameters = _parameters;
             eq.group = group;
             eq.having = having;
             eq.fields = fields;
@@ -565,29 +562,9 @@ namespace SqlOrganize.Sql
         public Query Query(Query q)
         {
             string sql = Sql();
-            var parameters = this.parameters.ToList();
-
-            #region Transformar parametersDict to parameters
-            if (parametersDict.Keys.Count > 0)
-            {
-                //debe recorrerse de forma ordenada por longitud, si un campo se llama "persona" y otro "persona_adicional"  y no se recorre ordenado descendiente, el resultado es erroneo.
-                var keys = parametersDict.Keys.SortByLength("DESC");
-
-                var j = parameters.Count;
-
-                foreach (string key in keys)
-                    while (sql.Contains("@" + key))
-                    {
-                        sql = sql.Replace("@" + key, "@" + j.ToString());
-                        parameters.Add(parametersDict[key]);
-                        j++;
-                    }
-            }
-
             q.sql = sql;
-            q.parameters = parameters;
+            q._parameters = _parameters;
             return q;
-            #endregion
         }
 
         /// <summary>Crear y asignar parametros a una instancia de Query</summary>

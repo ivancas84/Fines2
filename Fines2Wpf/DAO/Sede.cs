@@ -12,9 +12,9 @@ namespace Fines2Wpf.DAO
                 Size(30).
                 Where(@"
                     $nombre LIKE @0 
-                    OR $numero LIKE @1
+                    OR $numero LIKE @0
                 ")
-                .Parameters("%" + search + "%", "%" + search + "%")
+                .Param("@0", "%" + search + "%")
                 .Order("$numero ASC");
         }
 

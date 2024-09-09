@@ -12,11 +12,11 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
                 .Fields("pfid")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1 
                     AND $pfid IS NOT NULL
                 ")
-                .Parameters("2024", "1").Cache().ColOfDict().ColOfVal<string>("pfid");
+                .Param("@0", "2024").Param("@1", "1").Cache().ColOfDict().ColOfVal<string>("pfid");
 
         }
 
@@ -27,12 +27,12 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
                 .Fields("id")
                 .Size(0)
                 .Where(@"
-                    $comision-pfid = @0 
-                    AND ($asignatura-codigo = @1 OR $codigo = @1)
-                    AND $calendario-anio = @2
-                    AND $calendario-semestre = @3
+                    $comision__pfid = @0 
+                    AND ($asignatura__codigo = @1 OR $codigo = @1)
+                    AND $calendario__anio = @2
+                    AND $calendario__semestre = @3
                 ")
-                .Parameters(pfidComision, asignaturaCodigo, "2024", "1").Cache().Dict();
+                .Param("@0", pfidComision).Param("@1", asignaturaCodigo).Param("@2", "2024").Param("@3", "1").Cache().Dict();
 
             if (d.IsNoE()) return null;
             return d["id"];
@@ -47,7 +47,7 @@ namespace Fines2Wpf.Windows.ProcesarComisionesProgramaFines
                 .Where(@"
                     $numero_documento = @0 
                 ")
-                .Parameters(dni).Cache().Dict();
+                .Param("@0", dni).Cache().Dict();
 
             if (d.IsNoE()) return null;
             return d["id"];

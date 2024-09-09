@@ -12,7 +12,7 @@
                     AND $cargo = '1'
                     AND $hasta IS NULL
                 ")
-                .Parameters(idSedes);
+                .Param("@0", idSedes);
         }
     }
 }

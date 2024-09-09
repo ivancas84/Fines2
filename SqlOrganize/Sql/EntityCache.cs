@@ -5,6 +5,10 @@ using SqlOrganize.Sql.Exceptions;
 
 namespace SqlOrganize.Sql
 {
+
+    /// <summary> Almacenamiento de datos en Cache </summary>
+    /// <remarks> Dependiendo de la implementación de Cache, puede utilizar formato json. <br/>
+    /// Se recomienda utilizar algún método de transformación basado en json como "Obj"</remarks>
     public class EntityCache
     {
         Db Db;
@@ -88,8 +92,8 @@ namespace SqlOrganize.Sql
             #region acceso a la base de datos (faltan datos en cache)
             IEnumerable<Dictionary<string, object?>> rows = Db.Sql(Sql.entityName).
                 Size(0).
-                Where("$" + Db.config.id + " IN (@0)").
-                Parameters(searchIds).
+                Where("$" + Db.config.id + " IN (@searchIds)").
+                Param("@searchIds", searchIds).
                 ColOfDict();
             #endregion 
 
@@ -221,7 +225,7 @@ namespace SqlOrganize.Sql
                 string? parentId = Db.Entity(fo.EntityName).relations[fieldId].parentId;
                 string fieldName = Db.Entity(fo.EntityName).relations[fieldId].fieldName;
                 string refFieldName = Db.Entity(fo.EntityName).relations[fieldId].refFieldName;
-                string fkName = (!parentId.IsNoE()) ? parentId + "-" + fieldName : fieldName;
+                string fkName = (!parentId.IsNoE()) ? parentId + Db.config.separator + fieldName : fieldName;
 
                 List<object> ids = response.ColOfVal<object>(fkName).Distinct().ToList();
                 ids.RemoveAll(item => item.IsNoE());
@@ -254,7 +258,7 @@ namespace SqlOrganize.Sql
                             for (var k = 0; k < fo.FieldsRel[fieldId].Count; k++)
                             {
                                 var n = fo.FieldsRel[fieldId][k];
-                                response.ElementAt(i)[fieldId + "-" + n] = data.ElementAt(j)[n];
+                                response.ElementAt(i)[fieldId + Db.config.separator + n] = data.ElementAt(j)[n];
                             }
                         }
                     }
@@ -282,7 +286,7 @@ namespace SqlOrganize.Sql
             {
                 var entityName = rel.refEntityName;
                 Dictionary<string, object?> rowAux = new();
-                string f = fieldId + "-";
+                string f = fieldId + Db.config.separator;
                 foreach (var (column, value) in row)
                 {
                     if (column.Contains(f))
@@ -384,11 +388,11 @@ namespace SqlOrganize.Sql
         */
         protected void OrganizeRelations(int index)
         {
-            if (Fields[index].Contains("-"))
+            if (Fields[index].Contains(Db.config.separator))
             {
-                var f = Fields[index].Split("-");
+                var f = Fields[index].Split(Db.config.separator);
                 EntityRelation r = Db.Entity(EntityName).relations[f[0]];
-                string fkName = (!r.parentId.IsNoE()) ? r.parentId + "-" + r.fieldName : r.fieldName;
+                string fkName = (!r.parentId.IsNoE()) ? r.parentId + Db.config.separator + r.fieldName : r.fieldName;
 
                 if (!FieldsRel.ContainsKey(f[0]))
                     FieldsRel.Add(f[0], new List<string>());
@@ -412,9 +416,9 @@ namespace SqlOrganize.Sql
                 bool recorrerChildren = false;
                 for (var j = 0; j < Fields.Count; j++)
                 {
-                    if (Fields[j].Contains("-"))
+                    if (Fields[j].Contains(Db.config.separator))
                     {
-                        var f = Fields[j].Split("-");
+                        var f = Fields[j].Split(Db.config.separator);
                         if (f[0] == fieldId && !FieldsIdOrder.Contains(fieldId))
                         {
                             FieldsIdOrder.Add(fieldId);

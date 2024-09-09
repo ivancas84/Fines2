@@ -10,18 +10,18 @@ namespace Fines2Wpf.Forms.ListaSedesSemestre.DAO
         public IEnumerable<Dictionary<string, object?>> Search(ComisionSearch search)
         {
             var q = ContainerApp.db.Sql("comision")
-                .Fields("sede-*, domicilio-*")
+                .Fields("sede__*, domicilio__*")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1 
                 ")
-                .Parameters(search.calendario__anio, search.calendario__semestre);
+                .Param("@0", search.calendario__anio).Param("@1", search.calendario__semestre);
             var count = 2;
             if (!search.autorizada.IsNoE())
             {
                 q.Where("AND $autorizada = @" + count + " ");
-                q.Parameters(search.autorizada!);
+                q.Param("@0", search.autorizada!);
                 count++;
             }
     

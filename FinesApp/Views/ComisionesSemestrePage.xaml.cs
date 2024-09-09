@@ -68,7 +68,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         if (tbAnio.Text.IsNoE() || tbSemestre.Text.IsNoE())
             return;
 
-        var data = ContainerApp.db.Sql("calendario").Where("$anio >= @0 AND $semestre >= @1").Parameters(tbAnio.Text, tbSemestre.Text).Cache().ColOfDict();
+        var data = ContainerApp.db.Sql("calendario").Where("$anio >= @0 AND $semestre >= @1").Param("@0", tbAnio.Text).Param("@1", tbSemestre.Text).Cache().ColOfDict();
         ContainerApp.db.ClearAndAddDataToOC(data, calendarioOC);
     }
 

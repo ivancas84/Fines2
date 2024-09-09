@@ -232,11 +232,13 @@ namespace SqlOrganize.Sql
         #endregion
 
         #region Data
-        /// <summary> Metodos especiales para facilitar el uso de subclases sin necesidad de cast </summary>
-        public static T DefaultData<T>(this T data) where T : Data
+        /// <summary> Simplificar proceso de inicializar una clase de datos, asignarle instancia de Db y definir valores por defecto </summary>
+        public static T DataDefault<T>(this Db db) where T : Data, new()
         {
-            data.Default();
-            return data;
+            T obj = new T();
+            obj.SetDb(db);
+            obj.Default();
+            return obj;
         }
         #endregion
 

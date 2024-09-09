@@ -23,7 +23,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _plan__Label = null;
 
-        [JsonProperty("plan-Label")]
         public string? plan__Label
         {
             get { return _plan__Label; }
@@ -32,7 +31,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         protected string? _plan__id = null;
 
-        [JsonProperty("plan-id")]
         public string? plan__id
         {
             get { return _plan__id; }
@@ -40,7 +38,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _plan__orientacion = null;
 
-        [JsonProperty("plan-orientacion")]
         public string? plan__orientacion
         {
             get { return _plan__orientacion; }
@@ -48,7 +45,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _plan__resolucion = null;
 
-        [JsonProperty("plan-resolucion")]
         public string? plan__resolucion
         {
             get { return _plan__resolucion; }
@@ -56,7 +52,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _plan__distribucion_horaria = null;
 
-        [JsonProperty("plan-distribucion_horaria")]
         public string? plan__distribucion_horaria
         {
             get { return _plan__distribucion_horaria; }
@@ -64,7 +59,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _plan__pfid = null;
 
-        [JsonProperty("plan-pfid")]
         public string? plan__pfid
         {
             get { return _plan__pfid; }

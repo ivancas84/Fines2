@@ -17,7 +17,7 @@
 
         public string Pf()
         {
-            return (!fieldId.IsNoE()) ? fieldId! + "-" : "";
+            return (!fieldId.IsNoE()) ? fieldId! + db.config.separator : "";
         }
 
         public string Pt()

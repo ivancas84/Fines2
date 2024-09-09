@@ -31,7 +31,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
                     CompareParams compare = new CompareParams
                     {
-                        fieldsToCompare = ["nombres", "apellidos", "numero_documento"],
+                        FieldsToCompare = ["nombres", "apellidos", "numero_documento"],
                     };
                     var personaVal = db.Values("persona").SetNotNull(d).Set("numero_documento", dni).Reset().
                        PersistCompare(persist, compare);
@@ -109,7 +109,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             List<EntityPersist> persists = new();
 
-            string[] headers = { "persona-apellidos", "persona-nombres", "persona-numero_documento", "persona-descripcion_domicilio", "persona-localidad", "persona-fecha_nacimiento", "persona-telefono", "persona-email_abc", "comision-pfid", "descripcion_asignatura", "CENS" };
+            string[] headers = { "persona__apellidos", "persona__nombres", "persona__numero_documento", "persona__descripcion_domicilio", "persona__localidad", "persona__fecha_nacimiento", "persona__telefono", "persona__email_abc", "comision__pfid", "descripcion_asignatura", "CENS" };
 
             var _data = data.Split("\r\n");
             if (_data.IsNoE())
@@ -132,17 +132,17 @@ namespace SqlOrganize.Sql.Fines2Model3
                         dict[headers[k]] = values[k];
 
                     if (!dict["CENS"]!.ToString()!.Equals("462"))
-                        throw new Exception("CENS " + dict["CENS"] + " - no corresponde al 462");
+                        throw new Exception("CENS " + dict["CENS"] + ": no corresponde al 462");
 
-                    (string? dni, string? cuil) = PersonaValues.CuilDni(dict["persona-numero_documento"]);
+                    (string? dni, string? cuil) = PersonaValues.CuilDni(dict["persona__numero_documento"]);
                     CompareParams compare = new CompareParams
                     {
-                        fieldsToCompare = ["nombres", "apellidos", "numero_documento"],
+                        FieldsToCompare = ["nombres", "apellidos", "numero_documento"],
                     };
                     var personaValues = db.Values("persona", "persona").SetNotNull(dict).Set("numero_documento", dni).
                         PersistCompare(persist, compare);
 
-                    object pfid = dict["comision-pfid"]!;
+                    object pfid = dict["comision__pfid"]!;
                     string codigo = dict["descripcion_asignatura"]!.ToString()!.SubstringBetween("(", ")");
 
                     object? idCurso = db.CursoDeComisionPfidCodigoAsignaturaCalendarioSql(pfid, codigo, calendarioObj.id!).Value<object>("id");

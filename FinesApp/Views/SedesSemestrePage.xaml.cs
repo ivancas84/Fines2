@@ -44,7 +44,7 @@ public partial class SedesSemestrePage : Page, INotifyPropertyChanged
                 Cache().ColOfDict().ColOfVal<object>("sede");
 
             var sedeData = ContainerApp.db.Sql("sede").Where("$id IN (@0)").
-                Order("$nombre ASC").Parameters(idSedes).Cache().ColOfDict();
+                Order("$nombre ASC").Param("@0", idSedes).Cache().ColOfDict();
             ContainerApp.db.ClearAndAddDataToOC(sedeData, ocSede);
 
             ToastExtensions.Show("La consulta devolvió " + sedeData.Count() + " registros.");

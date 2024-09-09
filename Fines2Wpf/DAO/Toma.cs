@@ -12,11 +12,11 @@ namespace Fines2Wpf.DAO
                 Fields("curso").
                 Size(0).
                 Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1
                     AND $estado = 'Aprobada'
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre).Cache().ColOfDict().ColOfVal<object>("curso");
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre).Cache().ColOfDict().ColOfVal<object>("curso");
 
         }
 
@@ -26,10 +26,10 @@ namespace Fines2Wpf.DAO
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1 
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre).Cache().ColOfDict();
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre).Cache().ColOfDict();
 
         }
 
@@ -40,12 +40,12 @@ namespace Fines2Wpf.DAO
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1 
                     AND $estado = 'Aprobada'
                     AND $estado_contralor = 'Pasar'
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre);
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre);
         }
 
         

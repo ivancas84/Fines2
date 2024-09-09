@@ -18,7 +18,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (values.Count() <= 0)
                 throw new Exception("Sin datos para asignar");
 
-            Set("persona-nombres", values[0]);
+            Set("persona__nombres", values[0]);
 
             if (values.Count() != 5)
                 throw new Exception("Cantidad de valores distinto a 5, no será procesado.");
@@ -52,13 +52,13 @@ namespace SqlOrganize.Sql.Fines2Model3
                     throw new Exception("No se puede asignar nota final ni crec.");
             }
 
-            Set("persona-apellidos", values[1]);
+            Set("persona__apellidos", values[1]);
             var cuilDni = PersonaValues.CuilDni(values[2]);
 
-            Sset("persona-numero_documento", cuilDni.dni);
-            Sset("persona-cuil", cuilDni.cuil);
+            Sset("persona__numero_documento", cuilDni.dni);
+            Sset("persona__cuil", cuilDni.cuil);
 
-            if (GetStr("persona-numero_documento").Length < 7 || GetStr("persona-numero_documento").Length > 8)
+            if (GetStr("persona__numero_documento").Length < 7 || GetStr("persona__numero_documento").Length > 8)
                 throw new Exception("Longitud de DNI incorrecta.");
 
             return this;
@@ -77,7 +77,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (values.Count() <= 0)
                 throw new Exception("Sin datos para asignar");
 
-            Set("persona-nombres", values[0]);
+            Set("persona__nombres", values[0]);
 
             if (values.Count() != 2)
                 throw new Exception("Cantidad de valores distinto a 2, no será procesado.");
@@ -102,11 +102,11 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (nombresApellidos.Count() != 2)
                 throw new Exception("Procesamiento de nombres y apellidos incorrecto.");
 
-            Set("persona-apellidos", nombresApellidos[0].CleanStringOfDigits()!.Trim());
-            Set("persona-nombres", nombresApellidos[1].Trim());
-            Set("persona-numero_documento", nombreYDni[1].Trim());
+            Set("persona__apellidos", nombresApellidos[0].CleanStringOfDigits()!.Trim());
+            Set("persona__nombres", nombresApellidos[1].Trim());
+            Set("persona__numero_documento", nombreYDni[1].Trim());
 
-            if (GetStr("persona-numero_documento").Length < 7 || GetStr("persona-numero_documento").Length > 8)
+            if (GetStr("persona__numero_documento").Length < 7 || GetStr("persona__numero_documento").Length > 8)
                 throw new Exception("Longitud de DNI incorrecta.");
 
             return this;

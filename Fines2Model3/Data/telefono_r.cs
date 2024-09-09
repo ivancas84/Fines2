@@ -31,7 +31,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__Label = null;
 
-        [JsonProperty("persona-Label")]
         public string? persona__Label
         {
             get { return _persona__Label; }
@@ -40,7 +39,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         protected string? _persona__id = null;
 
-        [JsonProperty("persona-id")]
         public string? persona__id
         {
             get { return _persona__id; }
@@ -48,7 +46,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__nombres = null;
 
-        [JsonProperty("persona-nombres")]
         public string? persona__nombres
         {
             get { return _persona__nombres; }
@@ -56,7 +53,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__apellidos = null;
 
-        [JsonProperty("persona-apellidos")]
         public string? persona__apellidos
         {
             get { return _persona__apellidos; }
@@ -64,7 +60,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected DateTime? _persona__fecha_nacimiento = null;
 
-        [JsonProperty("persona-fecha_nacimiento")]
         public DateTime? persona__fecha_nacimiento
         {
             get { return _persona__fecha_nacimiento; }
@@ -72,7 +67,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__numero_documento = null;
 
-        [JsonProperty("persona-numero_documento")]
         public string? persona__numero_documento
         {
             get { return _persona__numero_documento; }
@@ -80,7 +74,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__cuil = null;
 
-        [JsonProperty("persona-cuil")]
         public string? persona__cuil
         {
             get { return _persona__cuil; }
@@ -88,7 +81,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__genero = null;
 
-        [JsonProperty("persona-genero")]
         public string? persona__genero
         {
             get { return _persona__genero; }
@@ -96,7 +88,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__apodo = null;
 
-        [JsonProperty("persona-apodo")]
         public string? persona__apodo
         {
             get { return _persona__apodo; }
@@ -104,7 +95,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__telefono = null;
 
-        [JsonProperty("persona-telefono")]
         public string? persona__telefono
         {
             get { return _persona__telefono; }
@@ -112,7 +102,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__email = null;
 
-        [JsonProperty("persona-email")]
         public string? persona__email
         {
             get { return _persona__email; }
@@ -120,7 +109,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__email_abc = null;
 
-        [JsonProperty("persona-email_abc")]
         public string? persona__email_abc
         {
             get { return _persona__email_abc; }
@@ -128,7 +116,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected DateTime? _persona__alta = null;
 
-        [JsonProperty("persona-alta")]
         public DateTime? persona__alta
         {
             get { return _persona__alta; }
@@ -136,7 +123,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__domicilio = null;
 
-        [JsonProperty("persona-domicilio")]
         public string? persona__domicilio
         {
             get { return _persona__domicilio; }
@@ -144,7 +130,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__lugar_nacimiento = null;
 
-        [JsonProperty("persona-lugar_nacimiento")]
         public string? persona__lugar_nacimiento
         {
             get { return _persona__lugar_nacimiento; }
@@ -152,7 +137,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected bool? _persona__telefono_verificado = null;
 
-        [JsonProperty("persona-telefono_verificado")]
         public bool? persona__telefono_verificado
         {
             get { return _persona__telefono_verificado; }
@@ -160,7 +144,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected bool? _persona__email_verificado = null;
 
-        [JsonProperty("persona-email_verificado")]
         public bool? persona__email_verificado
         {
             get { return _persona__email_verificado; }
@@ -168,7 +151,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected bool? _persona__info_verificada = null;
 
-        [JsonProperty("persona-info_verificada")]
         public bool? persona__info_verificada
         {
             get { return _persona__info_verificada; }
@@ -176,7 +158,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__descripcion_domicilio = null;
 
-        [JsonProperty("persona-descripcion_domicilio")]
         public string? persona__descripcion_domicilio
         {
             get { return _persona__descripcion_domicilio; }
@@ -184,7 +165,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected byte? _persona__cuil1 = null;
 
-        [JsonProperty("persona-cuil1")]
         public byte? persona__cuil1
         {
             get { return _persona__cuil1; }
@@ -192,7 +172,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected byte? _persona__cuil2 = null;
 
-        [JsonProperty("persona-cuil2")]
         public byte? persona__cuil2
         {
             get { return _persona__cuil2; }
@@ -200,7 +179,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__departamento = null;
 
-        [JsonProperty("persona-departamento")]
         public string? persona__departamento
         {
             get { return _persona__departamento; }
@@ -208,7 +186,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__localidad = null;
 
-        [JsonProperty("persona-localidad")]
         public string? persona__localidad
         {
             get { return _persona__localidad; }
@@ -216,7 +193,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__partido = null;
 
-        [JsonProperty("persona-partido")]
         public string? persona__partido
         {
             get { return _persona__partido; }
@@ -224,7 +200,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__codigo_area = null;
 
-        [JsonProperty("persona-codigo_area")]
         public string? persona__codigo_area
         {
             get { return _persona__codigo_area; }
@@ -232,7 +207,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _persona__nacionalidad = null;
 
-        [JsonProperty("persona-nacionalidad")]
         public string? persona__nacionalidad
         {
             get { return _persona__nacionalidad; }
@@ -240,7 +214,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected byte? _persona__sexo = null;
 
-        [JsonProperty("persona-sexo")]
         public byte? persona__sexo
         {
             get { return _persona__sexo; }
@@ -248,7 +221,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected byte? _persona__dia_nacimiento = null;
 
-        [JsonProperty("persona-dia_nacimiento")]
         public byte? persona__dia_nacimiento
         {
             get { return _persona__dia_nacimiento; }
@@ -256,7 +228,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected byte? _persona__mes_nacimiento = null;
 
-        [JsonProperty("persona-mes_nacimiento")]
         public byte? persona__mes_nacimiento
         {
             get { return _persona__mes_nacimiento; }
@@ -264,7 +235,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected ushort? _persona__anio_nacimiento = null;
 
-        [JsonProperty("persona-anio_nacimiento")]
         public ushort? persona__anio_nacimiento
         {
             get { return _persona__anio_nacimiento; }
@@ -272,7 +242,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__Label = null;
 
-        [JsonProperty("domicilio-Label")]
         public string? domicilio__Label
         {
             get { return _domicilio__Label; }
@@ -281,7 +250,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         protected string? _domicilio__id = null;
 
-        [JsonProperty("domicilio-id")]
         public string? domicilio__id
         {
             get { return _domicilio__id; }
@@ -289,7 +257,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__calle = null;
 
-        [JsonProperty("domicilio-calle")]
         public string? domicilio__calle
         {
             get { return _domicilio__calle; }
@@ -297,7 +264,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__entre = null;
 
-        [JsonProperty("domicilio-entre")]
         public string? domicilio__entre
         {
             get { return _domicilio__entre; }
@@ -305,7 +271,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__numero = null;
 
-        [JsonProperty("domicilio-numero")]
         public string? domicilio__numero
         {
             get { return _domicilio__numero; }
@@ -313,7 +278,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__piso = null;
 
-        [JsonProperty("domicilio-piso")]
         public string? domicilio__piso
         {
             get { return _domicilio__piso; }
@@ -321,7 +285,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__departamento = null;
 
-        [JsonProperty("domicilio-departamento")]
         public string? domicilio__departamento
         {
             get { return _domicilio__departamento; }
@@ -329,7 +292,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__barrio = null;
 
-        [JsonProperty("domicilio-barrio")]
         public string? domicilio__barrio
         {
             get { return _domicilio__barrio; }
@@ -337,7 +299,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__localidad = null;
 
-        [JsonProperty("domicilio-localidad")]
         public string? domicilio__localidad
         {
             get { return _domicilio__localidad; }

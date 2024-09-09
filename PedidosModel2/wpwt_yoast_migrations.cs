@@ -52,7 +52,7 @@ namespace SqlOrganize.Sql.PedidosModel2
 
                 case "version":
                     if (!db.IsNoE() && !_version.IsNoE()) {
-                        var row = db.Sql("wpwt_yoast_migrations").Where("$version = @0").Parameters(_version).Cache().Dict();
+                        var row = db.Sql("wpwt_yoast_migrations").Where("$version = @0").Param("@0", _version).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

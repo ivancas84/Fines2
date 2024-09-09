@@ -11,10 +11,10 @@ namespace SqlOrganize.Sql.Fines2Model3
             return db.Sql("disposicion").
                 Size(0).
                 Where(@"
-                        $planificacion-plan = @0 
-                        AND $planificacion-anio >= @1 
-                        AND $planificacion-semestre >= @2").
-                Parameters(plan!, anio!, semestre!);
+                        $planificacion__plan = @0 
+                        AND $planificacion__anio >= @1 
+                        AND $planificacion__semestre >= @2").
+                Param("@0", plan!).Param("@1", anio!).Param("@2", semestre!);
         }
 
         public static EntitySql DisposicionPlanificacionAsignaturaSql(this Db db, object planificacion, object asignatura)
@@ -23,7 +23,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Size(0).
                 Where(@"$planificacion = @0 AND $asignatura = @1"
             ).
-                Parameters(planificacion!, asignatura!);
+                Param("@0", planificacion!).
+                Param("@1", asignatura!);
         }
 
     }

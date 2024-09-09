@@ -27,9 +27,8 @@ namespace SqlOrganize.Sql
         ///     sql = "SELECT .. WHERE something = @0 AND $something_else = @1<br/> //la sintaxis debe ser compatible con el motor de base de datos
         ///     parameters = [value0, value1] //los valores pueden ser de cualquier tipo, que será reformateado para adaptarlo a las necesidades
         /// </example>
-        /// 
-        public List<object?> parameters { get; set; } = new List<object?>();
-
+        public Dictionary<string, object?> _parameters { get; set; } = new();
+        
         /// <summary>Consultas en SQL</summary>
         public string sql { get; set; } = "";
 
@@ -45,7 +44,11 @@ namespace SqlOrganize.Sql
             Dispose();
         }
 
-       
+        public Query Param(string key, object? value)
+        {
+            _parameters[key] = value;
+            return this;
+        }
 
         // Implement IDisposable interface
         public void Dispose()
@@ -208,35 +211,42 @@ namespace SqlOrganize.Sql
         {
             command.Connection = connection;
 
-            #region Procesar parameters
-            for (var i = parameters.Count - 1; i >= 0; i--) //recorremos la lista al revez para evitar renombrar parametros no deseados con nombre similar
+            var keys = _parameters.Keys.ToList();
+            var sortedKeys = keys.OrderByDescending(key => key.Length).ToList(); //recorremos los keys ordenados en forma descendiente para evitar renombrar keys similares
+
+            foreach (var key in sortedKeys)
             {
-                if (!sql.Contains("@" + i.ToString())) //control de que el sql posea el parametro
+                object? value = this._parameters[key];
+
+                if (!sql.Contains(key)) //control de que el sql posea el parametro
                     continue;
 
-                int j = 0;
                 List<Tuple<string, object>> _parameters = new();
-                if (parameters[i] is IEnumerable<object>)
+
+                string k = key.Replace("@", "");
+
+                if (value is IEnumerable<object>)
                 {
-                    foreach (object item in parameters[i] as IEnumerable<object>)
+                    int j = 0;
+
+                    foreach (object item in (IEnumerable<object>)value)
                     {
-                        var t = Tuple.Create($"@_{i}_{j}", item); //se le asigna un "_" adicional al nuevo nombre para evitar ser renombrado nuevamente.
+                        var t = Tuple.Create($"@_{k}_{j}", item); //se le asigna un "_" adicional al nuevo nombre para evitar ser renombrado nuevamente.
                         _parameters.Add(t);
                         j++;
                     }
 
-                    sql = sql.ReplaceFirst("@" + i.ToString(), string.Join(",", _parameters.Select(x => x.Item1)));
+                    sql = sql.ReplaceFirst(key, string.Join(",", _parameters.Select(x => x.Item1)));
                     foreach (var parameter in _parameters)
                         AddWithValue(command, parameter.Item1, parameter.Item2);
                 }
                 else
                 {
-                    var p = (parameters[i] == null) ? DBNull.Value : parameters[i];
-                    sql = sql.Replace("@" + i.ToString(), "@_" + i.ToString()); //renombro para evitar doble asignacion
-                    AddWithValue(command, "@_" + i.ToString(), p);
+                    var p = (value == null) ? DBNull.Value : value;
+                    sql = sql.Replace(key, "@_" + k); //renombro para evitar doble asignacion
+                    AddWithValue(command, "@_" + k, p);
                 }
             }
-            #endregion  
 
             command.CommandText = sql;
             command.ExecuteNonQuery();
@@ -257,8 +267,8 @@ namespace SqlOrganize.Sql
             q.sql = @"
                             SELECT auto_increment 
                             FROM INFORMATION_SCHEMA.TABLES 
-                            WHERE TABLE_NAME = @0";
-            q.parameters.Add(entityName);
+                            WHERE TABLE_NAME = @table_name";
+            q.Param("@table_name", entityName);
             return q.Value<ulong>();
         }
 

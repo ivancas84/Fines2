@@ -41,5 +41,7 @@
         /// Nombre de la base de datos
         /// </summary>       
         public virtual string dbName { get; set; }
+
+        public virtual string separator { get; set; } = "__";
     }
 }

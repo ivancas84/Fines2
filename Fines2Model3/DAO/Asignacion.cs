@@ -11,16 +11,16 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return db.Sql("alumno_comision")
                .Join("INNER JOIN (" + subSql + ") AS sub ON (sub.comision = $comision)")
-               .Where("$persona-numero_documento = @1")
-               .Parameters(curso, dni);
+               .Where("$persona__numero_documento = @1")
+               .Param("@0", curso).Param("@1", dni);
         }
 
         public static EntitySql AsignacionComisionDniSql(this Db db, object comision, object dni)
         {
 
             return db.Sql("alumno_comision")
-               .Where("$comision = @0 AND $persona-numero_documento = @1")
-               .Parameters(comision, dni);
+               .Where("$comision = @0 AND $persona__numero_documento = @1")
+               .Param("@0",comision).Param("@1", dni);
         }
 
         public static EntitySql AsignacionesDeComisionesSql(this Db db, params object[] id_comisiones)
@@ -31,7 +31,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     $comision IN ( @0 )
                 "
             )
-               .Parameters(id_comisiones.ToList());
+               .Param("@0", id_comisiones);
         }
 
         public static EntitySql AsignacionesDeComisionesAutorizadasDelPeriodoSql(this Db db, object anio, object semestre)
@@ -39,12 +39,12 @@ namespace SqlOrganize.Sql.Fines2Model3
             return db.Sql("alumno_comision")
                .Size(0)
                .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
-                    AND $comision-autorizada = true
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1 
+                    AND $comision__autorizada = true
                 "
                 )
-               .Parameters(anio, semestre);
+               .Param("@0", anio).Param("@1", semestre);
         }
 
 
@@ -54,16 +54,16 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Fields("$alumno")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0
-                    AND $calendario-semestre = @1 
-                    AND $comision-autorizada = true
+                    $calendario__anio = @0
+                    AND $calendario__semestre = @1 
+                    AND $comision__autorizada = true
                     AND $estado = 'Activo'
-                    AND $persona-genero IS NULL
+                    AND $persona__genero IS NULL
                 ");
 
             return db.Sql("alumno").
                 Join("INNER JOIN (" + subSql + ") AS sub ON (sub.alumno = alumno.id)").
-                Parameters(anio, semestre);
+                Param("@0", anio).Param("@1", semestre);
         }
 
         public static EntitySql AsignacionesActivasRestantesComisionSql(this Db db, object comision, IEnumerable<object> alumnos)
@@ -74,10 +74,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                     $estado = 'Activo'
                     AND $comision = @0                    
                 ")
-               .Parameters(comision);
+               .Param("@0", comision);
 
             if (alumnos.Any())
-                esql.And("$alumno NOT IN(@1)").Parameters(alumnos);
+                esql.And("$alumno NOT IN(@1)").Param("@1", alumnos);
  
             return esql;
 

@@ -16,7 +16,7 @@
 
         public string GetDisposicion()
         {
-            var id = db.DisposicionPlanificacionAsignaturaSql(Get("comision-planificacion"), Get("asignatura")).Cache().Dict()?["id"] ?? throw new Exception("Disposicion inexistente");
+            var id = db.DisposicionPlanificacionAsignaturaSql(Get("comision__planificacion"), Get("asignatura")).Cache().Dict()?["id"] ?? throw new Exception("Disposicion inexistente");
             return (string)id;
         }
 
@@ -48,7 +48,8 @@
 
             var dd = db.Sql("toma").
                 Where("$curso = @0 AND $estado = 'Aprobada' AND $estado_contralor = 'Pasar'").
-                Parameters(idCurso).Cache().Dict();
+                Param("@0", idCurso).
+                Cache().Dict();
 
             var s = ToString();
             if (!dd.IsNoE())
@@ -90,7 +91,7 @@
             
             var data = db.Sql("toma").
                 Where("$curso = @0 AND $estado = 'Aprobada' AND $estado_contralor = 'Pasar'").
-                Parameters(idCurso).Cache().Dict();
+                Param("@0", idCurso).Cache().Dict();
 
             return db.Values("toma").Set(data!);
         }

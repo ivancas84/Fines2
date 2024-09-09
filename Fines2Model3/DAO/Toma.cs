@@ -10,11 +10,11 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-id = @0 
+                    $calendario__id = @0 
                     AND $estado = 'Aprobada'
                     AND $estado_contralor != 'Modificar'
                 ")
-                .Parameters(idCalendario);
+                .Param("@0", idCalendario);
         }
 
         public static EntitySql TomaAprobadaDeCursoQuery(this Db db, params object[] idCurso)
@@ -27,7 +27,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     AND $estado = 'Aprobada'
                     AND $estado_contralor != 'Modificar'
                 ")
-                .Parameters(idCurso);
+                .Param("@0", idCurso);
         }
 
         public static EntitySql TomaAprobadaDeComisionQuery(this Db db, params object[] idComisiones)
@@ -36,11 +36,11 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $curso-comision IN ( @0 ) 
+                    $curso__comision IN ( @0 ) 
                     AND $estado = 'Aprobada'
                     AND $estado_contralor != 'Modificar'
                 ")
-                .Parameters(idComisiones);
+                .Param("@0", idComisiones);
         }
 
         public static EntitySql TomasPasarDeCalendarioSql(this Db db, object idCalendario)
@@ -49,11 +49,11 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-id = @0
+                    $calendario__id = @0
                     AND ($estado = 'Aprobada' OR $estado = 'Renuncia' OR $estado = 'Baja')
                     AND $estado_contralor = 'Pasar'
                 ")
-                .Parameters(idCalendario);
+                .Param("@0", idCalendario);
         }
 
         public static IEnumerable<object> IdTomasPasarSinPlanillaDocenteDeCalendario(this Db db, object idCalendario)
@@ -63,8 +63,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             IEnumerable<object> id_tomas_con_planilla_docente = db.Sql("asignacion_planilla_docente")
                 .Fields()
                 .Size(0)
-                .Where("$calendario-id = @0")
-                .Parameters(idCalendario).Cache().ColOfDict().ColOfVal<object>("toma");
+                .Where("$calendario__id = @0").
+                Param("@0", idCalendario).Cache().ColOfDict().ColOfVal<object>("toma");
 
 
             bool collectionsEqual = id_tomas.SequenceEqual(id_tomas_con_planilla_docente);

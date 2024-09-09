@@ -39,11 +39,11 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
                 Search(comisionObj).
                 Where(@" 
                     AND (
-                        ($planificacion-anio = '3' AND $planificacion-semestre = '1')
-                        OR ($planificacion-anio = '2' AND $planificacion-semestre = '2')
-                        OR ($planificacion-anio = '2' AND $planificacion-semestre = '1')
-                        OR ($planificacion-anio = '1' AND $planificacion-semestre = '2')
-                        OR ($planificacion-anio = '1' AND $planificacion-semestre = '1')
+                        ($planificacion__anio = '3' AND $planificacion__semestre = '1')
+                        OR ($planificacion__anio = '2' AND $planificacion__semestre = '2')
+                        OR ($planificacion__anio = '2' AND $planificacion__semestre = '1')
+                        OR ($planificacion__anio = '1' AND $planificacion__semestre = '2')
+                        OR ($planificacion__anio = '1' AND $planificacion__semestre = '1')
                     )
                 ").
                 Size(0).

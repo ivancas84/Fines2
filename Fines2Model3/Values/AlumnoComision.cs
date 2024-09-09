@@ -59,14 +59,14 @@ namespace SqlOrganize.Sql.Fines2Model3
 
                 CompareParams compare = new()
                 {
-                    fieldsToCompare = new List<string> { "nombres", "apellidos" },
-                    val = db.Values("persona", "persona").Set(asignacionData!),
+                    FieldsToCompare = new List<string> { "nombres", "apellidos" },
+                    Data = db.Values("persona", "persona").Set(asignacionData!).Values(),
                 };
 
                 var response = personaVal.Compare(compare);
 
                 if (!response.IsNoE())
-                    throw new Exception(" Comparacion de persona diferente: " + compare.val.ToStringFields("nombres", "apellidos"));
+                    throw new Exception(" Comparacion de persona diferente: " + compare.Data.ToStringKeyValuePair());
 
             }
             else //asignacion inexistente > agregar

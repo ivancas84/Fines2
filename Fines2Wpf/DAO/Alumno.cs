@@ -17,13 +17,13 @@ namespace Fines2Wpf.DAO
         public static EntitySql SearchLikeQuery(string search)
         {
             return ContainerApp.db.Sql("alumno").
-                Where("$persona-nombres LIKE @0 ").
-                Where("OR $persona-apellidos LIKE @0 ").
-                Where("OR $persona-numero_documento LIKE @0 ").
-                Where("OR $persona-email LIKE @0 ").
-                Where("OR $persona-telefono LIKE @0 ").
-                Order("$persona-nombres ASC, $persona-apellidos ASC").
-                Parameters("%" + search + "%");
+                Where("$persona__nombres LIKE @0 ").
+                Where("OR $persona__apellidos LIKE @0 ").
+                Where("OR $persona__numero_documento LIKE @0 ").
+                Where("OR $persona__email LIKE @0 ").
+                Where("OR $persona__telefono LIKE @0 ").
+                Order("$persona__nombres ASC, $persona__apellidos ASC").
+                Param ("@0", "%" + search + "%");
         }
     }
 }

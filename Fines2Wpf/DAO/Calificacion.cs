@@ -16,15 +16,15 @@ namespace Fines2Wpf.DAO
                     OR $crec >= 4)
                     AND $archivado = false
                 ")
-                .Order("$persona-apellidos ASC, $persona-nombres ASC, $planificacion_dis-anio ASC, $planificacion_dis-semestre ASC, $planificacion_dis-plan")
-                .Parameters(idsAlumnos);
+                .Order("$persona__apellidos ASC, $persona__nombres ASC, $planificacion_dis__anio ASC, $planificacion_dis__semestre ASC, $planificacion_dis__plan")
+                .Param("@0", idsAlumnos);
         }
 
 
         public EntitySql IdsAlumnosConCalificacionesAprobadasCruzadasNoArchivadasQuery(IEnumerable<object> ids)
         {
             return CalificacionesAprobadasNoArchivadasDeAlumnosQuery(ids).
-                Select("COUNT(DISTINCT $plan_pla-id) as cantidad_planes").
+                Select("COUNT(DISTINCT $plan_pla__id) as cantidad_planes").
                 Group("$alumno").
                 Having("cantidad_planes > 1");
         }
@@ -35,15 +35,15 @@ namespace Fines2Wpf.DAO
         {
             return ContainerApp.db.Sql("calificacion")
                 .Select("COUNT($id) as cantidad")
-                .Group("$alumno, $planificacion_dis-anio, $planificacion_dis-semestre")
+                .Group("$alumno, $planificacion_dis__anio, $planificacion_dis__semestre")
                 .Size(0)
                 .Where(@"
-                    CONCAT($alumno, $planificacion_dis-plan) IN (@0)
+                    CONCAT($alumno, $planificacion_dis__plan) IN (@0)
                     AND ($nota_final >= 7 OR $crec >= 4) 
                     AND $archivado = false
                 ")
-                .Order("$alumno ASC, $planificacion_dis-anio ASC, $planificacion_dis-semestre ASC")
-                .Parameters(alumnosYplanes);
+                .Order("$alumno ASC, $planificacion_dis__anio ASC, $planificacion_dis__semestre ASC")
+                .Param("@0", alumnosYplanes);
         }
 
 
@@ -61,12 +61,12 @@ namespace Fines2Wpf.DAO
                 .Size(0)
                 .Where(@"
                     $alumno = @0
-                    AND $planificacion_dis-anio = @1
-                    AND $planificacion_dis-semestre = @2
+                    AND $planificacion_dis__anio = @1
+                    AND $planificacion_dis__semestre = @2
                     AND $archivado = false
                     AND ($nota_final >= 7 OR $crec >= 4)
                 ")
-                .Parameters(alumno, anio, semestre);
+                .Param("@0", alumno).Param("@1", anio).Param("@2", semestre);
         }
 
         public EntitySql CalificacionesDeAlumnoPlanArchivoQuery(object idAlumno, object idPlan, bool archivado = false)
@@ -75,11 +75,11 @@ namespace Fines2Wpf.DAO
                .Size(0)
                .Where(@"
                     $alumno = @0
-                    AND $planificacion_dis-plan = @1
+                    AND $planificacion_dis__plan = @1
                     AND $archivado = @2
                 ")
-                .Order("$planificacion_dis-anio ASC, $planificacion_dis-semestre ASC, $asignatura-nombre")
-               .Parameters(idAlumno, idPlan, archivado);
+                .Order("$planificacion_dis__anio ASC, $planificacion_dis__semestre ASC, $asignatura__nombre")
+               .Param("@0", idAlumno).Param("@1", idPlan).Param("@2", archivado);
         }
 
         public EntitySql CalificacionesArchivadasDeAlumnoQuery(object idAlumno)
@@ -90,8 +90,8 @@ namespace Fines2Wpf.DAO
                     $alumno = @0
                     AND $archivado = true
                 ")
-                .Order("$planificacion_dis-anio ASC, $planificacion_dis-semestre ASC, $asignatura-nombre")
-               .Parameters(idAlumno);
+                .Order("$planificacion_dis__anio ASC, $planificacion_dis__semestre ASC, $asignatura__nombre")
+               .Param("@0", idAlumno);
         }
 
 

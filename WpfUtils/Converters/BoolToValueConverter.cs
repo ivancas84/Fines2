@@ -27,10 +27,15 @@ namespace WpfUtils.Converters
 
     /// <example>
     /// xmlns:conv1="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
-    /// <conv1:BoolToVisibilityConverter TrueValue = "Collapsed" FalseValue="Visible" x:Key="iBtvConv"/>
-    /// <conv1:BoolToVisibilityConverter TrueValue = "Visible" FalseValue="Collapsed" x:Key="btvConv"/>
+    /// <Page.Resources>
+    ///     <conv1:BoolToVisibilityConverter TrueValue = "Collapsed" FalseValue="Visible" x:Key="iBtvConv"/>
+    ///     <conv1:BoolToVisibilityConverter TrueValue = "Visible" FalseValue="Collapsed" x:Key="btvConv"/>
+    /// <Page.Resources>
+    /// ...
     /// <StackPanel Visibility="{Binding someBooleanVar, Converter={StaticResource btvConv},Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"/>
     /// <StackPanel Visibility="{Binding someBooleanVar, Converter={StaticResource iBtvConv},Mode=TwoWay,NotifyOnSourceUpdated=True,UpdateSourceTrigger=PropertyChanged}"/>
+    /// ...
+    /// <DataGridTextColumn Header="Status" Binding="{Binding IsActive, Converter={StaticResource BoolToYesNoConverter}}" />
     /// </example>
     public class BoolToVisibilityConverter : BoolToValueConverter<Visibility> { }
     public class BoolToObjectConverter : BoolToValueConverter<object> { }

@@ -9,10 +9,10 @@ namespace Fines2Wpf.DAO
         {
             return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
-                .Where(@"$calendario-anio = @0 
-                    AND $calendario-semestre = @1
-                    AND $persona-numero_documento IN (@2)")
-                .Parameters(anio, semestre, dni);
+                .Where(@"$calendario__anio = @0 
+                    AND $calendario__semestre = @1
+                    AND $persona__numero_documento IN (@2)")
+                .Param("@0", anio).Param("@1", semestre).Param("@2", dni);
 
         }
 
@@ -25,11 +25,11 @@ namespace Fines2Wpf.DAO
         {
             return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
-                .Where(@"$calendario-anio = @0 
-                    AND $calendario-semestre = @1 
-                    AND $comision-autorizada = true 
+                .Where(@"$calendario__anio = @0 
+                    AND $calendario__semestre = @1 
+                    AND $comision__autorizada = true 
                     AND $estado != 'Activo'")
-                .Parameters(anio, semestre);
+                .Param("@0", anio).Param("@1", semestre);
 
         }
 
@@ -38,11 +38,11 @@ namespace Fines2Wpf.DAO
             return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where(@"$alumno = @0
-                    AND $calendario-anio = @1 
-                    AND $calendario-semestre = @2 
-                    AND $comision-autorizada = true 
+                    AND $calendario__anio = @1 
+                    AND $calendario__semestre = @2 
+                    AND $comision__autorizada = true 
                     AND $estado = 'Activo'")
-                .Parameters(alumno, anio, semestre);
+                .Param("@0", alumno).Param("@1", anio).Param("@2", semestre);
         }
 
         public static EntitySql AsignacionesDeComisionSinPlanQuery(object comision, object plan)
@@ -50,11 +50,11 @@ namespace Fines2Wpf.DAO
             return ContainerApp.db.Sql("alumno_comision")
                .Size(0)
                .Where(@"
-                    $alumno-plan != @0
+                    $alumno__plan != @0
                     AND $comision = @1
                     AND $activo = true
                 ")
-               .Parameters(plan, comision);
+               .Param("@0", plan).Param("@1", comision);
 
         }
 

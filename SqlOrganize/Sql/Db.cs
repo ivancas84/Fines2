@@ -54,8 +54,8 @@ namespace SqlOrganize.Sql
         /// Configuracion de field
         /// </summary>
         /// <remarks>
-        /// - Si no existe el field consultado se devuelve una configuracion vacia<br/>
-        /// - No es obligatorio que exista el field en la configuracion, se cargaran los parametros por defecto.
+        /// * Si no existe el field consultado se devuelve una configuracion vacia<br/>
+        /// * No es obligatorio que exista el field en la configuracion, se cargaran los parametros por defecto.
         /// </remarks>
         public Field Field(string entityName, string fieldName)
         {
@@ -92,7 +92,7 @@ namespace SqlOrganize.Sql
             if (!Entity(entityName).relations.IsNoE())
                 foreach ((string fieldId, EntityRelation er) in Entity(entityName).relations)
                     foreach (string fieldName in FieldNames(er.refEntityName))
-                        fieldNamesR.Add(fieldId + "-" + fieldName);
+                        fieldNamesR.Add(fieldId + config.separator + fieldName);
 
             return FieldNames(entityName).Concat(fieldNamesR).ToList();
         }
@@ -156,15 +156,15 @@ namespace SqlOrganize.Sql
         /// Extrae los elementos de una key
         /// </summary>
         /// <param name="entityName">Nombre de la entidad</param>
-        /// <param name="key">fieldId-fieldName</param>
+        /// <param name="key">fieldId separator fieldName</param>
         /// <returns>Elementos de la relación</returns>
         /// <remarks>Asegurar existencia de caracter de separación.<br/>
         /// Se puede controlar por ej.: if (key.Contains("__")) </remarks>
-        public (string fieldId, string fieldName, string refEntityName) KeyDeconstruction(string entityName, string key, string separator = "__") {
-            int i = key.IndexOf(separator);
+        public (string fieldId, string fieldName, string refEntityName) KeyDeconstruction(string entityName, string key) {
+            int i = key.IndexOf(config.separator);
             string fieldId = key.Substring(0, i);
             string refEntityName = Entity(entityName!).relations[fieldId].refEntityName;
-            string fieldName = key.Substring(i + separator.Length); //se suman 2 porque es la longitud de "__" (el string de separacion)
+            string fieldName = key.Substring(i + config.separator.Length); //se suman 2 porque es la longitud de "__" (el string de separacion)
             return (fieldId, fieldName, refEntityName);
         }
 

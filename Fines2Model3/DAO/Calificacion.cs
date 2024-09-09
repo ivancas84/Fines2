@@ -1,4 +1,5 @@
 ﻿using SqlOrganize.CollectionUtils;
+using System.Numerics;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -12,10 +13,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                .Size(0)
                .Where(@"
                     $alumno = @0
-                    AND $planificacion_dis-plan = @1
+                    AND $planificacion_dis__plan = @1
                 ")
-                .Order("$planificacion_dis-anio ASC, $planificacion_dis-semestre ASC, $asignatura-nombre")
-               .Parameters(idAlumno, idPlan, archivado);
+                .Order("$planificacion_dis__anio ASC, $planificacion_dis__semestre ASC, $asignatura__nombre")
+               .Param("@0", idAlumno).Param("@1", idPlan);
         }
 
         public static EntitySql CalificacionesDesaprobadasDeAlumnoSql(this Db db, object alumno)
@@ -31,7 +32,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                             OR ($nota_final IS NULL AND $crec IS NULL)
                         )
                     ").
-                Parameters(alumno);
+                Param("@0", alumno);
         }
 
         public static EntitySql CalificacionesAprobadasAnterioresDeAlumnoPlanConAnioSemestreIngresoSql(this Db db, object plan, object alumno, object anio_actual, object semestre_actual)
@@ -39,11 +40,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             return db.Sql("calificacion").
                     Size(0).
                     Where(@"
-                        $planificacion_dis-plan = @0
-                        AND $planificacion_dis-anio < @1 AND $planificacion_dis-semestre < @2 
+                        $planificacion_dis__plan = @0
+                        AND $planificacion_dis__anio < @1 AND $planificacion_dis__semestre < @2 
                         AND $alumno = @3
                         AND ($nota_final >= 7 OR $crec >= 4)").
-                    Parameters(plan!, anio_actual!, semestre_actual!, alumno!);
+                    Param("@0", plan).
+                    Param("@1", anio_actual).
+                    Param("@2", semestre_actual).
+                    Param("@3", alumno);
         }
 
         public static EntitySql CalificacionesAprobadasDeAlumnoPlanConAnioSemestreIngresoSql(this Db db, object plan, object alumno, object anio, object semestre)
@@ -51,11 +55,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             return db.Sql("calificacion").
                     Size(0).
                     Where(@"
-                        $planificacion_dis-plan = @0
-                        AND $planificacion_dis-anio >= @1 AND $planificacion_dis-semestre >= @2 
+                        $planificacion_dis__plan = @0
+                        AND $planificacion_dis__anio >= @1 AND $planificacion_dis__semestre >= @2 
                         AND $alumno = @3
                         AND ($nota_final >= 7 OR $crec >= 4)").
-                    Parameters(plan!, anio!, semestre!, alumno!);
+                        Param("@0", plan).
+                        Param("@1", anio).
+                        Param("@2", semestre).
+                        Param("@3", alumno);
         }
 
         public static EntitySql CalificacionesAprobadasDeAlumnoPlanDistintoSql(this Db db, object alumno, object plan)
@@ -63,10 +70,11 @@ namespace SqlOrganize.Sql.Fines2Model3
             return db.Sql("calificacion").
                     Size(0).
                     Where(@"
-                        $planificacion_dis-plan != @0
+                        $planificacion_dis__plan != @0
                         AND $alumno = @1
                         AND ($nota_final >= 7 OR $crec >= 4)").
-                    Parameters(plan!, alumno!);
+                        Param("@0", plan).
+                        Param("@1", alumno);
         }
 
         public static EntitySql CalificacionDisposicionAlumnosSql(this Db db, object disposicion, params object[] alumnos)
@@ -74,7 +82,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             return db.Sql("calificacion").
                     Size(0).
                     Where("$disposicion = @0 AND $alumno IN (@1)").
-                    Parameters(disposicion!, alumnos!);
+                    Param("@0", disposicion).
+                    Param("@1", alumnos);
         }
 
 
@@ -88,7 +97,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             return db.Sql("calificacion").
                     Size(0).
                     Where("$alumno IN (" + subSql + ") AND $disposicion = @1 AND (nota_final >= 7 OR crec >= 4)").
-                    Parameters(cursoVal.Get("comision")!, cursoVal.GetDisposicion()!);
+                    Param("@0", cursoVal.Get("comision")!).
+                    Param("@1", cursoVal.GetDisposicion()!);
         }
 
         public static EntitySql CalificacionDesaprobadaCursoAlumnosActivosSql(this Db db, object curso)
@@ -101,7 +111,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             return db.Sql("calificacion").
                     Size(0).
                     Where(@"$alumno IN (" + subSql + ") AND $disposicion = @1 AND nota_final < 7 AND crec < 4").
-                    Parameters(cursoVal.Get("comision")!, cursoVal.GetDisposicion()!);
+                    Param("@0", cursoVal.Get("comision")!).
+                    Param("@1", cursoVal.GetDisposicion()!);
         }
 
         public static EntitySql CalificacionesCursoSql(this Db db, object curso)
@@ -120,14 +131,14 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             return db.Sql("calificacion")
                 .Select("COUNT($id) as cantidad")
-                .Group("$alumno, $planificacion_dis-anio, $planificacion_dis-semestre")
+                .Group("$alumno, $planificacion_dis__anio, $planificacion_dis__semestre")
                 .Size(0)
                 .Where(@"
-                    CONCAT($alumno, $planificacion_dis-plan) IN (@0)
+                    CONCAT($alumno, $planificacion_dis__plan) IN (@0)
                     AND ($nota_final >= 7 OR $crec >= 4) 
                 ")
-                .Order("$alumno ASC, $planificacion_dis-anio ASC, $planificacion_dis-semestre ASC")
-                .Parameters(alumnosYplanes);
+                .Order("$alumno ASC, $planificacion_dis__anio ASC, $planificacion_dis__semestre ASC").
+                Param("@0", alumnosYplanes);
         }
 
 
@@ -139,11 +150,12 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Size(0)
                 .Where(@"
                     $alumno IN (@0)
-                    AND $planificacion_dis-id = @1
+                    AND $planificacion_dis__id = @1
                     AND ($nota_final >= 7 OR $crec >= 4) 
                 ")
-                .Order("$alumno ASC, $planificacion_dis-anio ASC, $planificacion_dis-semestre ASC")
-                .Parameters(idAlumnos.ToList(), idPlanificacion);
+                .Order("$alumno ASC, $planificacion_dis__anio ASC, $planificacion_dis__semestre ASC").
+                Param("@0", idAlumnos.ToList()).
+                Param("@0", idPlanificacion);
         }
 
 
@@ -157,11 +169,12 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Size(0)
                 .Where(@"
                     $alumno IN (@0)
-                    AND $planificacion_dis-id = @1
+                    AND $planificacion_dis__id = @1
                     AND ($nota_final >= 7 OR $crec >= 4) 
                 ")
-                .Order("$alumno ASC, $planificacion_dis-anio ASC, $planificacion_dis-semestre ASC")
-                .Parameters(idAlumnos.ToList(), idPlanificacion);
+                .Order("$alumno ASC, $planificacion_dis__anio ASC, $planificacion_dis__semestre ASC").
+                Param("@0", idAlumnos.ToList()).
+                Param("@1", idPlanificacion);
         }
     }
 }

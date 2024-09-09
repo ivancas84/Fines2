@@ -12,13 +12,13 @@ namespace SqlOrganize.Sql
 {
     /// <summary>
     /// Valores de la entidad. Se definen los siguientes métodos básicos de administración<br/>
-    /// -sset: Seteo con cast y formateo<br/>
-    /// -set: Seteo directo<br/>
-    /// -check: Validar valor<br/>
-    /// -default: Asignar valor por defecto<br/>
-    /// -get: Retorno directo<br/>
-    /// -json: Transformar a json<br/>
-    /// -sql: Transformar a sql<br/>
+    /// * sset: Seteo con cast y formateo<br/>
+    /// * set: Seteo directo<br/>
+    /// * check: Validar valor<br/>
+    /// * default: Asignar valor por defecto<br/>
+    /// * get: Retorno directo<br/>
+    /// * json: Transformar a json<br/>
+    /// * sql: Transformar a sql<br/>
     /// </summary>
     /// <remarks>
     /// Los valores son almacenados en una colección. La ventaja es que se puede utilizar el estado "NO DEFINIDO" (no existe en la colección).</br>
@@ -146,7 +146,7 @@ namespace SqlOrganize.Sql
         }
 
         /// <summary>Formato SQL</summary>
-        /// <remarks>La conversion de formato es realizada directamente por la libreria SQL, pero para ciertos casos puede ser necesario <br/></remarks>
+        /// <remarks>La conversion de formato es realizada directamente por la libreria SQL, pero para ciertos casos puede ser necesario una transformación directa</remarks>
         public object Sql(string fieldName)
         {
             if (!values.ContainsKey(fieldName))
@@ -260,9 +260,9 @@ namespace SqlOrganize.Sql
         {
             string fieldName = CleanPf(_fieldName);
 
-            if (fieldName.Contains("-"))
+            if (fieldName.Contains(db.config.separator))
             {
-                var (fid, fn, ren) = db.KeyDeconstruction(entityName, fieldName, "-");
+                var (fid, fn, ren) = db.KeyDeconstruction(entityName, fieldName);
                 values[fieldName] = db.Values(ren).ValueField(fn, value);
             }
             else
@@ -449,6 +449,7 @@ namespace SqlOrganize.Sql
             return !v.HasErrors();
         }
 
+        /// <summary> Seteo lento solo de valores no nulos </summary>
         public EntityValues SsetNotNull(IDictionary<string, object?> row)
         {
             foreach (var fieldName in fieldNames)
@@ -459,6 +460,7 @@ namespace SqlOrganize.Sql
             return this;
         }
 
+        /// <summary> Seteo solo de valores no nulos </summary>
         public EntityValues SetNotNull(IDictionary<string, object?> row)
         {
             foreach (var fieldName in fieldNames)
@@ -737,9 +739,9 @@ namespace SqlOrganize.Sql
 
                 var values = GetValuesCache(fieldId);
                 if (values != null)
-                    Set(fieldId + "-Label", values.ToString());
+                    Set(fieldId + db.config.separator + "Label", values.ToString());
                 else
-                    Set(fieldId + "-Label", null);
+                    Set(fieldId + db.config.separator + "Label", null);
             }
 
             return this;
@@ -754,35 +756,32 @@ namespace SqlOrganize.Sql
             return obj;
         }
 
-        /// <summary>
-        /// Comparar valores con los indicados en parametro
-        /// </summary>
-        /// <param name="val">Valores externos a persistir<</param>
-        /// <param name="ignoreFields">Campos que seran ignorados en la comparacion<</param>
-        /// <param name="ignoreNull">Si el campo del parametro es nulo, sera ignorado en la comparacion<</param>
-        /// <param name="ignoreNonExistent">Si el campo no esta definido localmente, sera ignorado en la comparacion</param>
+        /// <summary>  Comparar valores con los indicados en parametro </summary>
+        /// <param name="Val">Valores externos a persistir<</param>
+        /// <param name="IgnoreFields">Campos que seran ignorados en la comparacion<</param>
+        /// <param name="IgnoreNull">Si el campo del parametro es nulo, sera ignorado en la comparacion<</param>
+        /// <param name="IgnoreNonExistent">Si el campo no esta definido localmente, sera ignorado en la comparacion</param>
 
         /// <returns>Valores del parametro que son diferentes o que no estan definidos localmente</returns>
         /// <remarks>Solo compara fieldNames</remarks>
         public virtual IDictionary<string, object?> Compare(CompareParams cp)
         {
             Dictionary<string, object?> dict1_ = new(values);
-            Dictionary<string, object?> dict2_ = new(cp.val.Values());
+            Dictionary<string, object?> dict2_ = new(cp.Data);
             Dictionary<string, object?> response = new();
 
-
-            if (!cp.ignoreFields.IsNoE())
-                foreach (var key in cp.ignoreFields!)
+            if (!cp.IgnoreFields.IsNoE())
+                foreach (var key in cp.IgnoreFields!)
                 {
                     dict1_.Remove(key);
                     dict2_.Remove(key);
                 }
 
-            if (!cp.fieldsToCompare.IsNoE())
+            if (!cp.FieldsToCompare.IsNoE())
             {
                 foreach (var fieldName in fieldNames)
                 {
-                    if (!cp.fieldsToCompare.Contains(fieldName))
+                    if (!cp.FieldsToCompare!.Contains(fieldName))
                     {
                         dict1_.Remove(fieldName);
                         dict2_.Remove(fieldName);
@@ -792,10 +791,10 @@ namespace SqlOrganize.Sql
 
             foreach (var fieldName in fieldNames)
             {
-                if (cp.ignoreNonExistent && (!dict1_.ContainsKey(fieldName) || !dict2_.ContainsKey(fieldName)))
+                if (cp.IgnoreNonExistent && (!dict1_.ContainsKey(fieldName) || !dict2_.ContainsKey(fieldName)))
                     continue;
 
-                if (cp.ignoreNull && (!dict2_.ContainsKey(fieldName) || dict2_[fieldName].IsNoE()))
+                if (cp.IgnoreNull && (!dict2_.ContainsKey(fieldName) || dict2_[fieldName].IsNoE()))
                     continue;
 
                 if (!dict1_.ContainsKey(fieldName) && dict2_.ContainsKey(fieldName))
@@ -969,11 +968,11 @@ namespace SqlOrganize.Sql
 
     public class CompareParams
     {
-        public EntityValues val  { get; set; }
-        public IEnumerable<string>? ignoreFields { get; set; } = null;
-        public bool ignoreNull { get; set; } = true;
-        public bool ignoreNonExistent { get; set; } = true;
-        public IEnumerable<string>? fieldsToCompare { get; set; } = null;
+        public IDictionary<string, object?> Data { get; set; }
+        public IEnumerable<string>? IgnoreFields { get; set; }
+        public bool IgnoreNull { get; set; }
+        public bool IgnoreNonExistent { get; set; }
+        public IEnumerable<string>? FieldsToCompare { get; set; }
     }
 
 }

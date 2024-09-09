@@ -75,7 +75,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 horasFin.RemoveAll(x => x.IsNoE());
                 horasFin.Sort((x, y) => TimeSpan.Compare((TimeSpan)y!, (TimeSpan)x!));
 
-            List<string> horarios_ = (List<string>)horarios.OrderBy(x => x["dia-numero"]).ColOfVal<string>("dia-dia").Distinct().ToList();
+            List<string> horarios_ = (List<string>)horarios.OrderBy(x => x["dia__numero"]).ColOfVal<string>("dia__dia").Distinct().ToList();
 
             string dias = string.Join(", ", horarios_);
             string hora_inicio = !horasInicio.IsNoE() ? ((TimeSpan)horasInicio[0]!).ToString(@"hh\:mm") : "?";
@@ -91,7 +91,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             IEnumerable<object> idsCursos = db.Sql("curso").
                 Where("$comision = @0").
-                Parameters(Get("id")).
+                Param("@0", Get("id")).
                 ColOfDict().
                 ColOfVal<object>("id");
             
@@ -100,15 +100,16 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             IEnumerable<Dictionary<string, object?>> distribucionesHorariasData = db.Sql("distribucion_horaria").
                 Select("SUM($horas_catedra) AS suma_horas_catedra").
-                Group("$disposicion-asignatura").
-                Where("$disposicion-planificacion IN ( @0 )").
-                Parameters(Get("planificacion")).ColOfDict();
+                Group("$disposicion__asignatura").
+                Where("$disposicion__planificacion IN ( @0 )").
+                Param("@0", Get("planificacion")).
+                ColOfDict();
 
             foreach(Dictionary<string, object?> dh in distribucionesHorariasData)
             {
                 EntityValues cursoVal = db.Values("curso").
                     Set("comision", Get("id")).
-                    Set("asignatura", dh["disposicion-asignatura"]).
+                    Set("asignatura", dh["disposicion__asignatura"]).
                     Set("horas_catedra", dh["suma_horas_catedra"]).
                     Default().Reset();
 
@@ -122,18 +123,19 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestre = db.Sql("comision").
                Where(@" 
-                        $calendario-anio = @0 
-                        AND $calendario-semestre= @1
+                        $calendario__anio = @0 
+                        AND $calendario__semestre= @1
                         AND $comision_siguiente IS NULL
                         AND $autorizada is true
-                        AND (($planificacion-anio = '3' AND $planificacion-semestre = '1')
-                        OR ($planificacion-anio = '2' AND $planificacion-semestre = '2')
-                        OR ($planificacion-anio = '2' AND $planificacion-semestre = '1')
-                        OR ($planificacion-anio = '1' AND $planificacion-semestre = '2')
-                        OR ($planificacion-anio = '1' AND $planificacion-semestre = '1'))
+                        AND (($planificacion__anio = '3' AND $planificacion__semestre = '1')
+                        OR ($planificacion__anio = '2' AND $planificacion__semestre = '2')
+                        OR ($planificacion__anio = '2' AND $planificacion__semestre = '1')
+                        OR ($planificacion__anio = '1' AND $planificacion__semestre = '2')
+                        OR ($planificacion__anio = '1' AND $planificacion__semestre = '1'))
                     ").
                Size(0).
-               Parameters(anioCalendario, semestreCalendario).
+               Param("@0", anioCalendario).
+               Param("@1", semestreCalendario).
                ColOfDict();
 
             List<EntityPersist> persists = new();
@@ -149,7 +151,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     Set("calendario", idCalendario).
                     Reset();
 
-                string? idPlanificacion = db.PlanificacionSiguienteSql(comValues.Get("planificacion-anio")!, comValues.Get("planificacion-semestre")!, comValues.Get("plan-id")!).Value<string>("id");
+                string? idPlanificacion = db.PlanificacionSiguienteSql(comValues.Get("planificacion__anio")!, comValues.Get("planificacion__semestre")!, comValues.Get("plan__id")!).Value<string>("id");
                 
                 comValues.Set("planificacion", idPlanificacion);
                 if (!comValues.Check())

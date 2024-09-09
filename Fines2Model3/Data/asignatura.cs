@@ -68,7 +68,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     if (_nombre == null)
                         return "Debe completar valor.";
                     if (!db.IsNoE() && !_nombre.IsNoE()) {
-                        var row = db.Sql("asignatura").Where("$nombre = @0").Parameters(_nombre).Cache().Dict();
+                        var row = db.Sql("asignatura").Equal("$nombre", _nombre).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

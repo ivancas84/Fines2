@@ -31,7 +31,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__Label = null;
 
-        [JsonProperty("domicilio-Label")]
         public string? domicilio__Label
         {
             get { return _domicilio__Label; }
@@ -40,7 +39,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         protected string? _domicilio__id = null;
 
-        [JsonProperty("domicilio-id")]
         public string? domicilio__id
         {
             get { return _domicilio__id; }
@@ -48,7 +46,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__calle = null;
 
-        [JsonProperty("domicilio-calle")]
         public string? domicilio__calle
         {
             get { return _domicilio__calle; }
@@ -56,7 +53,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__entre = null;
 
-        [JsonProperty("domicilio-entre")]
         public string? domicilio__entre
         {
             get { return _domicilio__entre; }
@@ -64,7 +60,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__numero = null;
 
-        [JsonProperty("domicilio-numero")]
         public string? domicilio__numero
         {
             get { return _domicilio__numero; }
@@ -72,7 +67,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__piso = null;
 
-        [JsonProperty("domicilio-piso")]
         public string? domicilio__piso
         {
             get { return _domicilio__piso; }
@@ -80,7 +74,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__departamento = null;
 
-        [JsonProperty("domicilio-departamento")]
         public string? domicilio__departamento
         {
             get { return _domicilio__departamento; }
@@ -88,7 +81,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__barrio = null;
 
-        [JsonProperty("domicilio-barrio")]
         public string? domicilio__barrio
         {
             get { return _domicilio__barrio; }
@@ -96,7 +88,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio__localidad = null;
 
-        [JsonProperty("domicilio-localidad")]
         public string? domicilio__localidad
         {
             get { return _domicilio__localidad; }
@@ -104,7 +95,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _centro_educativo__Label = null;
 
-        [JsonProperty("centro_educativo-Label")]
         public string? centro_educativo__Label
         {
             get { return _centro_educativo__Label; }
@@ -113,7 +103,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         protected string? _centro_educativo__id = null;
 
-        [JsonProperty("centro_educativo-id")]
         public string? centro_educativo__id
         {
             get { return _centro_educativo__id; }
@@ -121,7 +110,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _centro_educativo__nombre = null;
 
-        [JsonProperty("centro_educativo-nombre")]
         public string? centro_educativo__nombre
         {
             get { return _centro_educativo__nombre; }
@@ -129,7 +117,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _centro_educativo__cue = null;
 
-        [JsonProperty("centro_educativo-cue")]
         public string? centro_educativo__cue
         {
             get { return _centro_educativo__cue; }
@@ -137,7 +124,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _centro_educativo__domicilio = null;
 
-        [JsonProperty("centro_educativo-domicilio")]
         public string? centro_educativo__domicilio
         {
             get { return _centro_educativo__domicilio; }
@@ -145,7 +131,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _centro_educativo__observaciones = null;
 
-        [JsonProperty("centro_educativo-observaciones")]
         public string? centro_educativo__observaciones
         {
             get { return _centro_educativo__observaciones; }
@@ -153,7 +138,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio_cen__Label = null;
 
-        [JsonProperty("domicilio_cen-Label")]
         public string? domicilio_cen__Label
         {
             get { return _domicilio_cen__Label; }
@@ -162,7 +146,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         protected string? _domicilio_cen__id = null;
 
-        [JsonProperty("domicilio_cen-id")]
         public string? domicilio_cen__id
         {
             get { return _domicilio_cen__id; }
@@ -170,7 +153,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio_cen__calle = null;
 
-        [JsonProperty("domicilio_cen-calle")]
         public string? domicilio_cen__calle
         {
             get { return _domicilio_cen__calle; }
@@ -178,7 +160,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio_cen__entre = null;
 
-        [JsonProperty("domicilio_cen-entre")]
         public string? domicilio_cen__entre
         {
             get { return _domicilio_cen__entre; }
@@ -186,7 +167,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio_cen__numero = null;
 
-        [JsonProperty("domicilio_cen-numero")]
         public string? domicilio_cen__numero
         {
             get { return _domicilio_cen__numero; }
@@ -194,7 +174,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio_cen__piso = null;
 
-        [JsonProperty("domicilio_cen-piso")]
         public string? domicilio_cen__piso
         {
             get { return _domicilio_cen__piso; }
@@ -202,7 +181,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio_cen__departamento = null;
 
-        [JsonProperty("domicilio_cen-departamento")]
         public string? domicilio_cen__departamento
         {
             get { return _domicilio_cen__departamento; }
@@ -210,7 +188,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio_cen__barrio = null;
 
-        [JsonProperty("domicilio_cen-barrio")]
         public string? domicilio_cen__barrio
         {
             get { return _domicilio_cen__barrio; }
@@ -218,7 +195,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _domicilio_cen__localidad = null;
 
-        [JsonProperty("domicilio_cen-localidad")]
         public string? domicilio_cen__localidad
         {
             get { return _domicilio_cen__localidad; }

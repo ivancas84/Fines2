@@ -21,13 +21,15 @@ UPDATE " + sna + @" SET
             Dictionary<string, object?> _row = new();
 
             foreach (string fieldName in fieldNames)
+            {
+
                 if (row.ContainsKey(fieldName))
                 {
                     _row[fieldName] = row[fieldName];
-                    sql += fieldName + " = @" + count + ", ";
-                    count++;
-                    parameters.Add(row[fieldName]);
+                    sql += fieldName + " = @" + fieldName + ", ";
+                    _parameters["@"+fieldName] = row[fieldName];
                 }
+            }
             sql = sql.RemoveLastChar(',');
             
             return _row;

@@ -22,7 +22,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
             set { _docente__Label = value; NotifyPropertyChanged(); }
         }
 
-        private string? _encabezados = "persona-apellidos, persona-nombres, persona-numero_documento, nota_final, crec";
+        private string? _encabezados = "persona__apellidos, persona__nombres, persona__numero_documento, nota_final, crec";
 
         public string? encabezados
         {

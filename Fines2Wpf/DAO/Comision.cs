@@ -24,24 +24,24 @@ namespace Fines2Wpf.DAO
         {
             var q = ContainerApp.db.Sql("comision")
                 .Fields()
-                .Select("CONCAT($sede-numero, $division, '/', $planificacion-anio, $planificacion-semestre) AS numero")
+                .Select("CONCAT($sede__numero, $division, '/', $planificacion__anio, $planificacion__semestre) AS numero")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1 
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre);
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre);
             var count = 2;
             if (!autorizada.IsNoE())
             {
                 q.Where("AND $autorizada = @" + count + " ");
-                q.Parameters(autorizada!);
+                q.Param("@0", autorizada!);
                 count++;
             }
             if (!sede.IsNoE())
             {
                 q.Where("AND sede = @" + count + " ");
-                q.Parameters(sede!);
+                q.Param("@0", sede!);
             }
 
             return q.Cache().ColOfDict();
@@ -57,7 +57,7 @@ namespace Fines2Wpf.DAO
                 .Where(@"
                     $id IN ( @0 ) 
                 ")
-                .Parameters(ids).Cache().ColOfDict();
+                .Param("@0", ids).Cache().ColOfDict();
             
         }
 
@@ -66,11 +66,11 @@ namespace Fines2Wpf.DAO
             return ContainerApp.db.Sql("comision")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0
-                    AND $calendario-semestre = @1 
+                    $calendario__anio = @0
+                    AND $calendario__semestre = @1 
                     AND $comision_siguiente IS NOT NULL
                 ")
-                .Parameters(anio, semestre).Cache().ColOfDict();
+                .Param("@0", anio).Param("@0", semestre).Cache().ColOfDict();
 
         }
 
@@ -80,11 +80,11 @@ namespace Fines2Wpf.DAO
                 .Fields(ContainerApp.db.config.id)
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0
-                    AND $calendario-semestre = @1
+                    $calendario__anio = @0
+                    AND $calendario__semestre = @1
                     AND $autorizada = true
                 ")
-                .Parameters(anio, semestre).Cache().ColOfDict().ColOfVal<object>(ContainerApp.db.config.id);
+                .Param("@0", anio).Param("@1", semestre).Cache().ColOfDict().ColOfVal<object>(ContainerApp.db.config.id);
 
         }
 
@@ -100,11 +100,11 @@ namespace Fines2Wpf.DAO
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0
-                    AND $calendario-semestre = @1
+                    $calendario__anio = @0
+                    AND $calendario__semestre = @1
                     AND $autorizada = true
                 ")
-                .Parameters(anio, semestre);
+                .Param("@0", anio).Param("@1", semestre);
         }
 
 
@@ -114,22 +114,22 @@ namespace Fines2Wpf.DAO
                .Fields()
                .Size(0)
                .Where(@"
-                    $sede-nombre LIKE @0
+                    $sede__nombre LIKE @0
                     OR
-                    CONCAT($sede-numero, $division, '/', $planificacion-anio, $planificacion-semestre) LIKE @0
+                    CONCAT($sede__numero, $division, '/', $planificacion__anio, $planificacion__semestre) LIKE @0
                     OR
-                    CONCAT($calendario-anio, '-', $calendario-semestre) LIKE @0
+                    CONCAT($calendario__anio, '__', $calendario__semestre) LIKE @0
                 ")
-               .Order("$sede-numero ASC, $division ASC, $calendario-anio DESC, $calendario-semestre DESC")
-               .Parameters("%"+search+"%");
+               .Order("$sede__numero ASC, $division ASC, $calendario__anio DESC, $calendario__semestre DESC")
+               .Param("@0", "%"+search+"%");
         }
 
 
         public EntitySql HorariosQuery(params object[] idComisiones)
         {
             return ContainerApp.db.Sql("horario").
-                Where("$curso-comision IN ( @0 )").
-                Parameters(idComisiones).
+                Where("$curso__comision IN ( @0 )").
+                Param("@0", idComisiones).
                 Size(0);
         }
 

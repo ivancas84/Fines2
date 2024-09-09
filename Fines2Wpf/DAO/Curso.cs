@@ -11,11 +11,11 @@ namespace Fines2Wpf.DAO
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
-                    AND $comision-autorizada = true 
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1 
+                    AND $comision__autorizada = true 
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre).Cache().ColOfDict();
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre).Cache().ColOfDict();
 
         }
 
@@ -23,20 +23,20 @@ namespace Fines2Wpf.DAO
         {
             return ContainerApp.db.Sql("curso")
                 .Fields()
-                .Select("CONCAT($sede-numero, $comision-division, '/', $planificacion-anio, $planificacion-semestre) AS numero")
+                .Select("CONCAT($sede__numero, $comision__division, '/', $planificacion__anio, $planificacion__semestre) AS numero")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1 
                 ")
-                .Parameters(calendarioAnio, calendarioSemestre).Cache().ColOfDict();
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre).Cache().ColOfDict();
         }
 
         public EntitySql TomaActivaDeCursoQuery(object idCurso)
         {
             return ContainerApp.db.Sql("toma").
                 Where("$curso = @0 AND $estado = 'Aprobada' AND $estado_contralor = 'Pasar'").
-                Parameters(idCurso);
+                Param("@0", idCurso);
         }
 
 
@@ -46,8 +46,8 @@ namespace Fines2Wpf.DAO
               .Fields()
               .Size(0)
               .Where("$comision = @0")
-              .Parameters(idComision)
-              .Order("$asignatura-nombre ASC");
+              .Param("@0", idComision)
+              .Order("$asignatura__nombre ASC");
         }
 
     }

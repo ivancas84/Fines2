@@ -209,7 +209,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     if (_persona == null)
                         return "Debe completar valor.";
                     if (!db.IsNoE() && !_persona.IsNoE()) {
-                        var row = db.Sql("alumno").Where("$persona = @0").Parameters(_persona).Cache().Dict();
+                        var row = db.Sql("alumno").Equal("$persona", _persona).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
@@ -253,7 +253,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
                 case "libro_folio":
                     if (!db.IsNoE() && !_libro_folio.IsNoE()) {
-                        var row = db.Sql("alumno").Where("$libro_folio = @0").Parameters(_libro_folio).Cache().Dict();
+                        var row = db.Sql("alumno").Equal("$libro_folio", _libro_folio).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

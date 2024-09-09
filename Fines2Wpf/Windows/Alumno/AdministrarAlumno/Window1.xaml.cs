@@ -220,7 +220,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             var data = ContainerApp.db.Sql("alumno_comision").
                 Where("$alumno = @0").
                 Order("$calendario-anio DESC, $calendario-semestre DESC").
-                Parameters(a.id!).Cache().ColOfDict();
+                Param("@0", a.id!).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -309,8 +309,8 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 return;
 
             var data = ContainerApp.db.Sql("disposicion").
-                Where("$planificacion-plan = @0").
-                Parameters(a.plan!).Cache().ColOfDict();
+                Where("$planificacion__plan = @0").
+                Param("@0", a.plan!).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -326,7 +326,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             var data = ContainerApp.db.Sql("detalle_persona").
                 Where("$persona = @0").
-                Parameters(p.id!).Cache().ColOfDict();
+                Param("@0", p.id!).Cache().ColOfDict();
 
             foreach (var item in data)
             {
@@ -432,7 +432,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                 if (pgb.IsNoE() && !pgb.IsNoE() && pgb.id!.ToString().Equals(pcb.id))
                     return;
 
-                var a = ContainerApp.db.Sql("alumno").Where("$persona = @0").Parameters(pcb.id!).Obj<Alumno>();
+                var a = ContainerApp.db.Sql("alumno").Where("$persona = @0").Param("@0", pcb.id!).Obj<Alumno>();
 
                 SetPersonaGroupBox(pcb);
                 SetAlumnoGroupBox(a);
@@ -902,7 +902,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
         /// <remarks>https://github.com/Pericial/GAP/issues/68</remarks>
         private void AgregarArchivo_Click(object sender, RoutedEventArgs e)
         {
-            var a = ContainerApp.db.Data<DetallePersona>().DefaultData();
+            var a = ContainerApp.db.DataDefault<DetallePersona>();
             a.DefaultRel("archivo");
             var alumno = (Data_alumno)alumnoGroupBox.DataContext;
             a.persona = alumno.id;

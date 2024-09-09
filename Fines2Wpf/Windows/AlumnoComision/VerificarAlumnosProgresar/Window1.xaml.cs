@@ -19,7 +19,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.VerificarAlumnosProgresar
         {
             InitializeComponent();
             asignacionesDataGrid.ItemsSource = asignacionesOC;
-            headerTextBox.Text = "persona-numero_documento";
+            headerTextBox.Text = "persona__numero_documento";
         }
 
         private void ProcesarAlumnosButton_Click(object sender, RoutedEventArgs e)

@@ -31,7 +31,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _asignatura__Label = null;
 
-        [JsonProperty("asignatura-Label")]
         public string? asignatura__Label
         {
             get { return _asignatura__Label; }
@@ -40,7 +39,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         protected string? _asignatura__id = null;
 
-        [JsonProperty("asignatura-id")]
         public string? asignatura__id
         {
             get { return _asignatura__id; }
@@ -48,7 +46,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _asignatura__nombre = null;
 
-        [JsonProperty("asignatura-nombre")]
         public string? asignatura__nombre
         {
             get { return _asignatura__nombre; }
@@ -56,7 +53,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _asignatura__formacion = null;
 
-        [JsonProperty("asignatura-formacion")]
         public string? asignatura__formacion
         {
             get { return _asignatura__formacion; }
@@ -64,7 +60,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _asignatura__clasificacion = null;
 
-        [JsonProperty("asignatura-clasificacion")]
         public string? asignatura__clasificacion
         {
             get { return _asignatura__clasificacion; }
@@ -72,7 +67,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _asignatura__codigo = null;
 
-        [JsonProperty("asignatura-codigo")]
         public string? asignatura__codigo
         {
             get { return _asignatura__codigo; }
@@ -80,7 +74,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _asignatura__perfil = null;
 
-        [JsonProperty("asignatura-perfil")]
         public string? asignatura__perfil
         {
             get { return _asignatura__perfil; }
@@ -88,7 +81,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _planificacion__Label = null;
 
-        [JsonProperty("planificacion-Label")]
         public string? planificacion__Label
         {
             get { return _planificacion__Label; }
@@ -97,7 +89,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         protected string? _planificacion__id = null;
 
-        [JsonProperty("planificacion-id")]
         public string? planificacion__id
         {
             get { return _planificacion__id; }
@@ -105,7 +96,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _planificacion__anio = null;
 
-        [JsonProperty("planificacion-anio")]
         public string? planificacion__anio
         {
             get { return _planificacion__anio; }
@@ -113,7 +103,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _planificacion__semestre = null;
 
-        [JsonProperty("planificacion-semestre")]
         public string? planificacion__semestre
         {
             get { return _planificacion__semestre; }
@@ -121,7 +110,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _planificacion__plan = null;
 
-        [JsonProperty("planificacion-plan")]
         public string? planificacion__plan
         {
             get { return _planificacion__plan; }
@@ -129,7 +117,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _planificacion__pfid = null;
 
-        [JsonProperty("planificacion-pfid")]
         public string? planificacion__pfid
         {
             get { return _planificacion__pfid; }
@@ -137,7 +124,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _plan__Label = null;
 
-        [JsonProperty("plan-Label")]
         public string? plan__Label
         {
             get { return _plan__Label; }
@@ -146,7 +132,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         protected string? _plan__id = null;
 
-        [JsonProperty("plan-id")]
         public string? plan__id
         {
             get { return _plan__id; }
@@ -154,7 +139,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _plan__orientacion = null;
 
-        [JsonProperty("plan-orientacion")]
         public string? plan__orientacion
         {
             get { return _plan__orientacion; }
@@ -162,7 +146,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _plan__resolucion = null;
 
-        [JsonProperty("plan-resolucion")]
         public string? plan__resolucion
         {
             get { return _plan__resolucion; }
@@ -170,7 +153,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _plan__distribucion_horaria = null;
 
-        [JsonProperty("plan-distribucion_horaria")]
         public string? plan__distribucion_horaria
         {
             get { return _plan__distribucion_horaria; }
@@ -178,7 +160,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         protected string? _plan__pfid = null;
 
-        [JsonProperty("plan-pfid")]
         public string? plan__pfid
         {
             get { return _plan__pfid; }

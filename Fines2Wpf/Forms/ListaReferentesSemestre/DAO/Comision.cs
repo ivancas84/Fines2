@@ -9,22 +9,22 @@ namespace Fines2Wpf.Forms.ListaReferentesSemestre.DAO
         public IEnumerable<object> IdSedesSemestre(Search search)
         {
             var q = ContainerApp.db.Sql("comision")
-                .Fields("sede-_Id")
+                .Fields("sede___Id")
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
+                    $calendario__anio = @0 
+                    AND $calendariosemestre = @1 
                 ")
-                .Parameters(search.calendario__anio, search.calendario__semestre);
+                .Param("@0", search.calendario__anio).Param("@1", search.calendario__semestre);
             var count = 2;
             if (!search.autorizada.IsNoE())
             {
                 q.Where("AND $autorizada = @" + count + " ");
-                q.Parameters(search.autorizada!);
+                q.Param("@0", search.autorizada!);
                 count++;
             }
 
-            return q.Cache().ColOfDict().ColOfVal<object>("sede-_Id");
+            return q.Cache().ColOfDict().ColOfVal<object>("sede___Id");
 
 
         }

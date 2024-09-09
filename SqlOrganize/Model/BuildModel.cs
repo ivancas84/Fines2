@@ -595,7 +595,7 @@ namespace SqlOrganize.Model
                     if (entity.unique.Contains(field.name))
                     {
                         sw.WriteLine("                    if (!db.IsNoE() && !_" + fieldName + ".IsNoE()) {");
-                        sw.WriteLine("                        var row = db.Sql(\"" + entityName + "\").Where(\"$" + fieldName + " = @0\").Parameters(_" + fieldName + ").Cache().Dict();");
+                        sw.WriteLine("                        var row = db.Sql(\"" + entityName + "\").Equal(\"$" + fieldName + "\", _" + fieldName + ").Cache().Dict();");
                         sw.WriteLine("                        if (!row.IsNoE() && !_" + Config.id + ".ToString().Equals(row![\"" + Config.id + "\"]!.ToString()))");
                         sw.WriteLine("                            return \"Valor existente.\";");
                         sw.WriteLine("                    }");
@@ -671,7 +671,6 @@ namespace SqlOrganize.Model
 
                     sw.WriteLine("        protected string? _" + fieldId + "__Label = null;");
                     sw.WriteLine("");
-                    sw.WriteLine("        [JsonProperty(\"" + fieldId + "-Label\")]");
                     sw.WriteLine("        public string? " + fieldId + "__Label");
                     sw.WriteLine("        {");
                     sw.WriteLine("            get { return _" + fieldId + "__Label; }");
@@ -682,7 +681,6 @@ namespace SqlOrganize.Model
                     {
                         sw.WriteLine("        protected " + field.type + "? _" + fieldId + "__" + fieldName + " = null;");
                         sw.WriteLine("");
-                        sw.WriteLine("        [JsonProperty(\"" + fieldId + "-" + fieldName + "\")]");
                         sw.WriteLine("        public " + field.type + "? " + fieldId + "__" + fieldName);
                         sw.WriteLine("        {");
                         sw.WriteLine("            get { return _" + fieldId + "__" + fieldName + "; }");

@@ -56,7 +56,7 @@ public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
                 var personaDbVal = (PersonaValues)ContainerApp.db.Values("persona", "persona").Set(asignacionDb);
                 var personaFormVal = (PersonaValues)ContainerApp.db.Values("persona", "persona").Set(asignacionForm);
 
-                CompareParams cp = new() { val = personaFormVal, ignoreNull = false };
+                CompareParams cp = new() { Data = personaFormVal.Values(), IgnoreNull = false };
                 var comp = personaDbVal.Compare(cp);
 
                 Dictionary<string, object?> updatePersonaDb = new(); //datos a actualizar de la base local

@@ -73,7 +73,7 @@ namespace SqlOrganize.Sql.PedidosModel2
                     if (_option_name == null)
                         return "Debe completar valor.";
                     if (!db.IsNoE() && !_option_name.IsNoE()) {
-                        var row = db.Sql("wpwt_options").Where("$option_name = @0").Parameters(_option_name).Cache().Dict();
+                        var row = db.Sql("wpwt_options").Where("$option_name = @0").Param("@0", _option_name).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

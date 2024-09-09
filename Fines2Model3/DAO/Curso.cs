@@ -19,14 +19,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                .Fields()
                .Size(0)
                .Where(@"
-                    (CONCAT($sede-numero, $comision-division, '/', $planificacion-anio, $planificacion-semestre, ' ', $calendario-anio, '-', $calendario-semestre) LIKE @0)
-                    OR ($sede-nombre LIKE @0)
-                    OR (CONCAT($comision-pfid, '/', $planificacion-anio, $planificacion-semestre, ' ', $calendario-anio, '-', $calendario-semestre) LIKE @0)
-                    OR (CONCAT($comision-pfid, '/', $calendario-anio, '-', $calendario-semestre) LIKE @0)
+                    (CONCAT($sede__numero, $comision__division, '/', $planificacion__anio, $planificacion__semestre, ' ', $calendario__anio, '__', $calendario__semestre) LIKE @0)
+                    OR ($sede__nombre LIKE @0)
+                    OR (CONCAT($comision__pfid, '/', $planificacion__anio, $planificacion__semestre, ' ', $calendario__anio, '__', $calendario__semestre) LIKE @0)
+                    OR (CONCAT($comision__pfid, '/', $calendario__anio, '__', $calendario__semestre) LIKE @0)
 
                 ")
-               .Order("$sede-numero ASC, $comision-division ASC, $planificacion-anio ASC, $planificacion-semestre ASC")
-               .Parameters("%" + search + "%");
+               .Order("$sede__numero ASC, $comision__division ASC, $planificacion__anio ASC, $planificacion__semestre ASC")
+               .Param("@0","%" + search + "%");
         }
 
         public static EntitySql CursosAutorizadosPeriodoSql(this Db db, object calendarioAnio, object calendarioSemestre, object? sede = null, bool? autorizada = null)
@@ -35,11 +35,12 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
-                    AND $comision-autorizada = true 
-                ")
-                .Parameters(calendarioAnio, calendarioSemestre);
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1 
+                    AND $comision__autorizada = true 
+                ").
+                Param("@0", calendarioAnio).
+                Param("@1", calendarioSemestre);
 
         }
 
@@ -49,10 +50,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-id = @0 
-                    AND $comision-autorizada = true 
-                ")
-                .Parameters(idCalendario);
+                    $calendario__id = @0 
+                    AND $comision__autorizada = true 
+                ").
+                Param("@0", idCalendario);
 
         }
 
@@ -82,11 +83,13 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-id = @0 
-                    AND $comision-pfid = @1
-                    AND $asignatura-codigo IN ( @2 )
-                ")
-                .Parameters(idCalendario, pfid, codigos);
+                    $calendario__id = @0 
+                    AND $comision__pfid = @1
+                    AND $asignatura__codigo IN ( @2 )
+                ").
+                Param("@0", idCalendario).
+                Param("@1", pfid).
+                Param("@2", codigos);
         }
 
     }

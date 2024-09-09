@@ -65,7 +65,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
                 case "cue":
                     if (!db.IsNoE() && !_cue.IsNoE()) {
-                        var row = db.Sql("centro_educativo").Where("$cue = @0").Parameters(_cue).Cache().Dict();
+                        var row = db.Sql("centro_educativo").Equal("$cue", _cue).Cache().Dict();
                         if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }

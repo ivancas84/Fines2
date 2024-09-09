@@ -147,9 +147,9 @@ namespace SqlOrganize.Sql
 
         /// <summary>Indice dentro de una coleccíón</summary>
         /// <remarks>Facilita la impresion del número de fila, por ejemplo/remarks>
-        public int? _Index = null;
+        public int _Index = 0;
 
-        public int? Index
+        public int Index
         {
             get { return _Index; }
             set

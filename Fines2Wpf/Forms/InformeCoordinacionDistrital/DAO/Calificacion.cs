@@ -9,9 +9,9 @@ namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
         {
             return ContainerApp.db.Sql("calificacion")
                     .Size(0)
-                    .Where("$alumno = @0 AND ($nota_final >= 7 OR $crec >= 4) AND $planificacion_dis-plan = @1")
-                    .Parameters(idAlumno, idPlan)
-                    .Order("$planificacion_dis-anio ASC, $planificacion_dis-semestre ASC, $disposicion-orden_informe_coordinacion_distrital ASC").
+                    .Where("$alumno = @0 AND ($nota_final >= 7 OR $crec >= 4) AND $planificacion_dis__plan = @1")
+                    .Param("@0", idAlumno).Param("@1", idPlan)
+                    .Order("$planificacion_dis__anio ASC, $planificacion_dis__semestre ASC, $disposicion__orden_informe_coordinacion_distrital ASC").
                     Cache().ColOfDict();
         }
     }

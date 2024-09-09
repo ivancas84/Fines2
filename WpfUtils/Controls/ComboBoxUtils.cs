@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.ComponentModel;
-using SqlOrganize.Sql.Fines2Model3;
 
 namespace WpfUtils.Controls
 {

@@ -13,7 +13,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Where("OR $email LIKE @0 ").
                 Where("OR $telefono LIKE @0 ").
                 Order("$nombres ASC, $apellidos ASC").
-                Parameters("%" + search + "%");
+                Param("@0", "%" + search + "%");
         }
 
         public static EntitySql PersonaDniSql(this Db db, object cuilDni)
@@ -22,7 +22,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return db.Sql("persona").
                 Where("$numero_documento = @0").
-                Parameters(dni);
+                Param("@0", dni);
         }
 
 

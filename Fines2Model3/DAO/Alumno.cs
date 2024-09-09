@@ -6,7 +6,7 @@
         {
             return db.Sql("alumno").
                 Where("$persona = @0").
-                Parameters(persona);
+                Param("@0", persona);
         }
     }
 }

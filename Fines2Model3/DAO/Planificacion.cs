@@ -11,7 +11,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             return db.Sql("planificacion").
                 Where(@"
                     $anio = @0 AND $semestre = @1 AND $plan = @2
-                ").Parameters(anio_, semestre_, planId);
+                ").Param("@0", anio_).Param("@1", semestre_).Param("@2", planId);
 
         }
     }

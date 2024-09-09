@@ -137,7 +137,7 @@ namespace Fines2Wpf.Windows.ListaCursos
                             if (parentId != null)
                             {
                                 var parentFieldName = ContainerApp.db.Entity(mainEntityName).relations[fieldId].fieldName;
-                                value = v.Get()[fieldId + "-" + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
+                                value = v.Get()[fieldId + "__" + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
                                 fieldId = parentId;
                                 fieldName = parentFieldName;
                                 entityName = ContainerApp.db.Entity(mainEntityName).relations[parentId].refEntityName;
@@ -146,7 +146,7 @@ namespace Fines2Wpf.Windows.ListaCursos
                             else
                             {
                                 entityName = mainEntityName;
-                                value = v.Get()[fieldId + "-" + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
+                                value = v.Get()[fieldId + "__" + ContainerApp.db.Entity(mainEntityName).relations[fieldId].refFieldName];
                                 fieldName = ContainerApp.db.Entity(mainEntityName).relations[fieldId].fieldName;
                                 fieldId = null;
                             }

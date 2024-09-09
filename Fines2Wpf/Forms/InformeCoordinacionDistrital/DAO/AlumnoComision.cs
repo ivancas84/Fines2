@@ -11,20 +11,20 @@ namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
         protected IEnumerable<Dictionary<string, object>> FiltroInformeCoordinacionDistrital(string modalidad, string anioCalendario, int semestreCalendario, bool? comisionSiguienteNull = null)
         {
             var q = ContainerApp.db.Sql("alumno_comision").
-                Fields("estado, sede-nombre, comision-identificacion, alumno-id, plan_alu-id, persona-apellidos, persona-nombres, persona-numero_documento, persona-genero, persona-fecha_nacimiento, persona-telefono, persona-email, alumno-tiene_dni, alumno-tiene_partida, alumno-tiene_certificado, alumno-creado, alumno-estado_inscripcion, planificacion-plan").
-                Select(@"CONCAT($planificacion-anio, '°', $planificacion-semestre, 'C') AS tramo").
+                Fields("estado, sede__nombre, comision__identificacion, alumno__id, plan_alu__id, persona__apellidos, persona__nombres, persona__numero_documento, persona__genero, persona__fecha_nacimiento, persona__telefono, persona__email, alumno__tiene_dni, alumno__tiene_partida, alumno__tiene_certificado, alumno__creado, alumno__estado_inscripcion, planificacion__plan").
+                Select(@"CONCAT($planificacion__anio, '°', $planificacion__semestre, 'C') AS tramo").
                 Size(0).
                 Where(@"
-                    $modalidad-id = @0 AND $calendario-anio = @1 AND $calendario-semestre = @2 AND
-                    $estado != 'Mesa' AND $comision-autorizada IS TRUE
+                    $modalidad__id = @0 AND $calendario__anio = @1 AND $calendario__semestre = @2 AND
+                    $estado != 'Mesa' AND $comision__autorizada IS TRUE
                 ").
-                Order("$sede-numero ASC, $comision-division ASC, $persona-apellidos ASC, $persona-nombres ASC").
-                Parameters(modalidad, anioCalendario, semestreCalendario);
+                Order("$sede__numero ASC, $comision__division ASC, $persona__apellidos ASC, $persona__nombres ASC").
+                Param("@0", modalidad).Param("@1", anioCalendario).Param("@2", semestreCalendario);
 
             if (!comisionSiguienteNull.IsNoE() && comisionSiguienteNull == true)
-                q.Where("AND $comision-comision_siguiente IS NULL");
+                q.Where("AND $comision__comision_siguiente IS NULL");
             else if (!comisionSiguienteNull.IsNoE() && !comisionSiguienteNull == false)
-                q.Where("AND $comision-comision_siguiente IS NOT NULL");
+                q.Where("AND $comision__comision_siguiente IS NOT NULL");
 
             return q.ColOfDict();
         }
@@ -37,12 +37,12 @@ namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
             foreach (Dictionary<string, object> alu_com in alumno_comision_)
             {
                 var v = (AlumnoComisionValues)ContainerApp.db.Values("alumno_comision").Set(alu_com);
-                alu_com["persona-genero"] = alu_com["persona-genero"].ToString().ToUpper();
-                alu_com["tiene_dni"] = (bool)alu_com["alumno-tiene_dni"] ? "SÍ" : "NO";
-                alu_com["tiene_cuil"] = (bool)alu_com["alumno-tiene_dni"] ? "SÍ" : "NO";
-                alu_com["tiene_partida"] = (bool)alu_com["alumno-tiene_partida"] ? "SÍ" : "NO";
-                alu_com["tiene_certificado"] = (bool)alu_com["alumno-tiene_certificado"] ? "SÍ" : "NO";
-                DateTime creado = (DateTime)alu_com["alumno-creado"];
+                alu_com["persona__genero"] = alu_com["persona__genero"].ToString().ToUpper();
+                alu_com["tiene_dni"] = (bool)alu_com["alumno__tiene_dni"] ? "SÍ" : "NO";
+                alu_com["tiene_cuil"] = (bool)alu_com["alumno__tiene_dni"] ? "SÍ" : "NO";
+                alu_com["tiene_partida"] = (bool)alu_com["alumno__tiene_partida"] ? "SÍ" : "NO";
+                alu_com["tiene_certificado"] = (bool)alu_com["alumno__tiene_certificado"] ? "SÍ" : "NO";
+                DateTime creado = (DateTime)alu_com["alumno__creado"];
                 string estado = (alu_com["estado"].IsDbNull()) ? "Activo" : (string)alu_com["estado"];
                 alu_com["cuatrimestre_ingreso"] = null;
                 alu_com["estado_ingreso"] = v.EstadoIngreso();
@@ -77,8 +77,8 @@ namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
                 alu_com["asignatura324"] = null;
                 alu_com["asignatura325"] = null;
 
-                var plan = (!alu_com["plan_alu-id"].IsDbNull()) ? alu_com["plan_alu-id"] : alu_com["planificacion-plan"];
-                var calificaciones = calificacionDAO.AprobadasPorAlumnoPlan((string)alu_com["alumno-id"], (string)plan);
+                var plan = (!alu_com["plan_alu__id"].IsDbNull()) ? alu_com["plan_alu__id"] : alu_com["planificacion__plan"];
+                var calificaciones = calificacionDAO.AprobadasPorAlumnoPlan((string)alu_com["alumno__id"], (string)plan);
 
                 foreach (Dictionary<string, object> calificacion in calificaciones)
                 {
@@ -92,7 +92,7 @@ namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
                     {
                         nota = Decimal.ToInt32((decimal)calificacion["crec"]).ToString() + "c";
                     }
-                    string key = "asignatura" + calificacion["planificacion_dis-anio"].ToString() + calificacion["planificacion_dis-semestre"].ToString() + (string)calificacion["disposicion-orden_informe_coordinacion_distrital"].ToString();
+                    string key = "asignatura" + calificacion["planificacion_dis__anio"].ToString() + calificacion["planificacion_dis__semestre"].ToString() + (string)calificacion["disposicion__orden_informe_coordinacion_distrital"].ToString();
                     alu_com[key] = nota;
                 }
             }

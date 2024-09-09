@@ -26,7 +26,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
         {
             InitializeComponent();
             statusGrid.ItemsSource = statusData;
-            headerTextBox.Text = "comision-pfid, persona-cuil1, persona-numero_documento, persona-cuil2, persona-apellidos, persona-nombres, persona-genero, persona-fecha_nacimiento";
+            headerTextBox.Text = "comision__pfid, persona__cuil1, persona__numero_documento, persona__cuil2, persona__apellidos, persona__nombres, persona__genero, persona__fecha_nacimiento";
         }
 
         private void ProcesarAlumnosButton_Click(object sender, RoutedEventArgs e)
@@ -71,7 +71,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                         asignacionData.Add(_headers.ElementAt(i), values.ElementAt(i));
                     #endregion
 
-                    string pfid = (string)asignacionData["comision-pfid"]!;
+                    string pfid = (string)asignacionData["comision__pfid"]!;
 
                     if (!comisiones.ContainsKey(pfid))
                         continue;
@@ -90,9 +90,9 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
 
                         CompareParams cp = new()
                         {
-                            val = personaExistenteVal!,
-                            ignoreNull = true,
-                            fieldsToCompare = new List<string> { "apellidos", "nombres", "numero_documento" },
+                            Data = personaExistenteVal.Values()!,
+                            IgnoreNull = true,
+                            FieldsToCompare = new List<string> { "apellidos", "nombres", "numero_documento" },
                         };
                         var dataDifferent = personaVal.Compare(cp);
                         if (!dataDifferent.IsNoE())
@@ -117,9 +117,9 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
 
                         cp = new()
                         {
-                            val = personaExistenteVal,
-                            ignoreNull = true,
-                            ignoreFields = new List<string> { "apellidos", "nombres", "numero_documento" },
+                            Data = personaExistenteVal.Values(),
+                            IgnoreNull = true,
+                            IgnoreFields = new List<string> { "apellidos", "nombres", "numero_documento" },
                         };
                         dataDifferent = personaVal.Compare(cp);
                         if (!dataDifferent.IsNoE())
@@ -270,7 +270,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
                     var otrasAsignaciones = alumnoComisionDAO.AsignacionesDelAlumnoEnOtrasComisionesAutorizadas(comisiones[pfid].id!, alumnoVal.Get("id"));
                     foreach (var a in otrasAsignaciones)
                     {
-                        IDictionary<string, object?> comD = ContainerApp.db.Sql("comision").Cache().Id(a["comision-id"]);
+                        IDictionary<string, object?> comD = ContainerApp.db.Sql("comision").Cache().Id(a["comision__id"]);
                         ComisionValues comV = (ComisionValues)ContainerApp.db.Values("comision").SetValues(comD!);
 
                         statusData.Add(new StatusData()

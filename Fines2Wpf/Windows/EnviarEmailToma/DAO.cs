@@ -11,13 +11,13 @@ namespace Fines2Wpf.Windows.EnviarEmailToma
                 .Fields()
                 .Size(0)
                 .Where(@"
-                    $calendario-anio = @0 
-                    AND $calendario-semestre = @1 
+                    $calendario__anio = @0 
+                    AND $calendario__semestre = @1 
                     AND $confirmada = false
-                    AND $docente-email_abc IS NOT NULL
+                    AND $docente__email_abc IS NOT NULL
                 ")
-                .Order("$comision-pfid ASC")
-                .Parameters("2023", "2").Cache().ColOfDict();
+                .Order("$comision__pfid ASC")
+                .Param("@0", "2023").Param("@1", "2").Cache().ColOfDict();
 
         }
     }
