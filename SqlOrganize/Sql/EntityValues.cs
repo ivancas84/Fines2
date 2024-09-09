@@ -710,7 +710,7 @@ namespace SqlOrganize.Sql
             }
             else
             {
-                return field.defaultValue;
+                return field.defaultValue.ToString().CleanStringOfNonDigits();
             }
         }
 

@@ -229,20 +229,18 @@ WHERE " + id + " = @update_" + id + @";
             string idKey = Db.config.id;
             string _key = key;
 
-            if (key.Contains("__"))
-                separator = "__";
-
-            if (!separator.IsNoE())
+            if (key.Contains(Db.config.separator))
             {
-                int indexSeparator = key.IndexOf(separator!);
+                int indexSeparator = key.IndexOf(Db.config.separator!);
                 string fieldId = key.Substring(0, indexSeparator);
                 entityName = Db.Entity(entityName!).relations[fieldId].refEntityName;
-                idKey = fieldId + separator + Db.config.id;
-                _key = key.Substring(indexSeparator + separator!.Length); //se suma la cantidad de caracteres del separador
+                idKey = fieldId + Db.config.separator + Db.config.id;
+                _key = key.Substring(indexSeparator + Db.config.separator!.Length);
             }
 
             return UpdateValueIds(entityName, _key, data.GetPropertyValue(key), data.GetPropertyValue(idKey)!);
         }
+
         /// <summary>
         /// Actualiza valor local o de relacion
         /// </summary>
@@ -254,13 +252,13 @@ WHERE " + id + " = @update_" + id + @";
         public EntityPersist UpdateValueRel(string _entityName, string key, object? value, IDictionary<string, object?> source)
         {
             string idKey = Db.config.id;
-            if (key.Contains("__"))
+            if (key.Contains(Db.config.separator))
             {
-                int indexSeparator = key.IndexOf("__");
+                int indexSeparator = key.IndexOf(Db.config.separator);
                 string fieldId = key.Substring(0, indexSeparator);
                 _entityName = Db.Entity(_entityName!).relations[fieldId].refEntityName;
-                idKey = fieldId + "__" + Db.config.id;
-                key = key.Substring(indexSeparator + "__".Length); //se suma la cantidad de caracteres del separador
+                idKey = fieldId + Db.config.separator + Db.config.id;
+                key = key.Substring(indexSeparator + Db.config.separator.Length); //se suma la cantidad de caracteres del separador
             }
 
             return UpdateValueIds(_entityName, key, value, source[idKey]!);

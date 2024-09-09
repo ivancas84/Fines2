@@ -3,10 +3,7 @@ using CommunityToolkit.WinUI.Notifications;
 using SqlOrganize;
 using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql;
-using SqlOrganize.Sql.Fines2Model3;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Data;
 

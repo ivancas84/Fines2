@@ -12,7 +12,6 @@ using SqlOrganize.Sql.Fines2Model3;
 using SqlOrganize.Sql;
 using SqlOrganize.CollectionUtils;
 
-
 namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
 {
     /// <summary>

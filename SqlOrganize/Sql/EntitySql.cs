@@ -107,7 +107,7 @@ namespace SqlOrganize.Sql
         public EntitySql Equal(string fieldName, object? value)
         {
             string fn = "@"+fieldName.Replace("$", "");
-            return Where(fieldName = " = " + fn).Param(fn, value);
+            return Where(fieldName + " = " + fn).Param(fn, value);
         }
 
         public EntitySql Search(Data data)
