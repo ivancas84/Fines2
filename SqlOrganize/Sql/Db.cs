@@ -164,7 +164,7 @@ namespace SqlOrganize.Sql
             int i = key.IndexOf(config.separator);
             string fieldId = key.Substring(0, i);
             string refEntityName = Entity(entityName!).relations[fieldId].refEntityName;
-            string fieldName = key.Substring(i + config.separator.Length); //se suman 2 porque es la longitud de "__" (el string de separacion)
+            string fieldName = key.Substring(i + config.separator.Length);
             return (fieldId, fieldName, refEntityName);
         }
 

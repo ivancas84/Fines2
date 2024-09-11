@@ -90,7 +90,7 @@ namespace SqlOrganize.CollectionUtils
         /// <param name="target"></param>
         /// <param name="source"></param>
         /// <remarks>https://stackoverflow.com/questions/8702603/merging-two-objects-in-c-sharp</remarks>
-        public static void CopyValues<T>(this T target, T source, bool targetNull = true, bool sourceNotNull = false)
+        public static void CopyValues<T>(this T target, object source, bool targetNull = true, bool sourceNotNull = false)
         {
             Type t = typeof(T);
 
@@ -98,14 +98,15 @@ namespace SqlOrganize.CollectionUtils
 
             foreach (var prop in properties)
             {
-                var propT = target.GetType().GetProperty(prop.Name);
+                var propT = target!.GetType().GetProperty(prop.Name);
                 var valorTarget = propT!.GetValue(target, null);
-                var valorSource = prop.GetValue(source, null);
 
-                if (sourceNotNull && valorSource == null)
+                var valorSource = source.GetPropertyValue(prop.Name);
+
+                if (sourceNotNull && valorSource.IsNoE())
                     continue;
 
-                if (targetNull && valorTarget != null)
+                if (targetNull && !valorTarget.IsNoE())
                     continue;
 
                 prop.SetValue(target, valorSource, null);
@@ -122,7 +123,7 @@ namespace SqlOrganize.CollectionUtils
         /// <param name="targetNull">La copia se realiza solamente si el campo del target es null</param>
         /// <param name="sourceNotNull">La copia se realiza solamente si el campo del surce es not null</param>
         /// <param name="compareNotNull">Se realiza comparacion de valores no nulos, si son distintos, dispara excepcion</param>
-        public static void CopyValues<T, W>(this T target, W source, bool targetNull = true, bool sourceNotNull = false, bool compareNotNull = false)
+        public static T CopyValues<T, W>(this T target, W source, bool targetNull = true, bool sourceNotNull = false, bool compareNotNull = false)
         {
             Type t = typeof(W);
 
@@ -157,6 +158,8 @@ namespace SqlOrganize.CollectionUtils
 
                 propT.SetValue(target, value, null);
             }
+
+            return target;
         }
 
         public static void Merge(this IDictionary<string, object?> dictionary1, IDictionary<string, object?> dictionary2, string prefix = "")
