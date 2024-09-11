@@ -439,11 +439,31 @@
                   }
                 }
               },
-              "asignatura": {
-                "fieldName": "asignatura",
-                "refEntityName": "asignatura",
+              "disposicion": {
+                "fieldName": "disposicion",
+                "refEntityName": "disposicion",
                 "refFieldName": "id",
-                "children": {}
+                "children": {
+                  "asignatura": {
+                    "fieldName": "asignatura",
+                    "refEntityName": "asignatura",
+                    "refFieldName": "id",
+                    "children": {}
+                  },
+                  "planificacion_dis": {
+                    "fieldName": "planificacion",
+                    "refEntityName": "planificacion",
+                    "refFieldName": "id",
+                    "children": {
+                      "plan_pla": {
+                        "fieldName": "plan",
+                        "refEntityName": "plan",
+                        "refFieldName": "id",
+                        "children": {}
+                      }
+                    }
+                  }
+                }
               }
             }
           },
@@ -555,11 +575,29 @@
         "refFieldName": "id",
         "parentId": "comision"
       },
+      "disposicion": {
+        "fieldName": "disposicion",
+        "refEntityName": "disposicion",
+        "refFieldName": "id",
+        "parentId": "curso"
+      },
       "asignatura": {
         "fieldName": "asignatura",
         "refEntityName": "asignatura",
         "refFieldName": "id",
-        "parentId": "curso"
+        "parentId": "disposicion"
+      },
+      "planificacion_dis": {
+        "fieldName": "planificacion",
+        "refEntityName": "planificacion",
+        "refFieldName": "id",
+        "parentId": "disposicion"
+      },
+      "plan_pla": {
+        "fieldName": "plan",
+        "refEntityName": "plan",
+        "refFieldName": "id",
+        "parentId": "planificacion_dis"
       },
       "docente": {
         "fieldName": "docente",
@@ -769,11 +807,31 @@
               }
             }
           },
-          "asignatura": {
-            "fieldName": "asignatura",
-            "refEntityName": "asignatura",
+          "disposicion_cur": {
+            "fieldName": "disposicion",
+            "refEntityName": "disposicion",
             "refFieldName": "id",
-            "children": {}
+            "children": {
+              "asignatura": {
+                "fieldName": "asignatura",
+                "refEntityName": "asignatura",
+                "refFieldName": "id",
+                "children": {}
+              },
+              "planificacion_dis": {
+                "fieldName": "planificacion",
+                "refEntityName": "planificacion",
+                "refFieldName": "id",
+                "children": {
+                  "plan_pla": {
+                    "fieldName": "plan",
+                    "refEntityName": "plan",
+                    "refFieldName": "id",
+                    "children": {}
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -820,12 +878,12 @@
             "refFieldName": "id",
             "children": {}
           },
-          "planificacion_dis": {
+          "planificacion_dis1": {
             "fieldName": "planificacion",
             "refEntityName": "planificacion",
             "refFieldName": "id",
             "children": {
-              "plan_pla": {
+              "plan_pla1": {
                 "fieldName": "plan",
                 "refEntityName": "plan",
                 "refFieldName": "id",
@@ -897,11 +955,29 @@
         "refFieldName": "id",
         "parentId": "comision"
       },
+      "disposicion_cur": {
+        "fieldName": "disposicion",
+        "refEntityName": "disposicion",
+        "refFieldName": "id",
+        "parentId": "curso"
+      },
       "asignatura": {
         "fieldName": "asignatura",
         "refEntityName": "asignatura",
         "refFieldName": "id",
-        "parentId": "curso"
+        "parentId": "disposicion_cur"
+      },
+      "planificacion_dis": {
+        "fieldName": "planificacion",
+        "refEntityName": "planificacion",
+        "refFieldName": "id",
+        "parentId": "disposicion_cur"
+      },
+      "plan_pla": {
+        "fieldName": "plan",
+        "refEntityName": "plan",
+        "refFieldName": "id",
+        "parentId": "planificacion_dis"
       },
       "alumno": {
         "fieldName": "alumno",
@@ -945,17 +1021,17 @@
         "refFieldName": "id",
         "parentId": "disposicion"
       },
-      "planificacion_dis": {
+      "planificacion_dis1": {
         "fieldName": "planificacion",
         "refEntityName": "planificacion",
         "refFieldName": "id",
         "parentId": "disposicion"
       },
-      "plan_pla": {
+      "plan_pla1": {
         "fieldName": "plan",
         "refEntityName": "plan",
         "refFieldName": "id",
-        "parentId": "planificacion_dis"
+        "parentId": "planificacion_dis1"
       }
     }
   },
@@ -1503,14 +1579,15 @@
       "horas_catedra",
       "ige",
       "comision",
-      "asignatura",
       "alta",
       "descripcion_horario",
-      "codigo"
+      "codigo",
+      "disposicion",
+      "observaciones"
     ],
     "fk": [
       "comision",
-      "asignatura"
+      "disposicion"
     ],
     "orderDefault": {},
     "noAdmin": [],
@@ -1519,7 +1596,6 @@
       "id",
       "horas_catedra",
       "comision",
-      "asignatura",
       "alta"
     ],
     "uniqueMultiple": [],
@@ -1585,11 +1661,31 @@
           }
         }
       },
-      "asignatura": {
-        "fieldName": "asignatura",
-        "refEntityName": "asignatura",
+      "disposicion": {
+        "fieldName": "disposicion",
+        "refEntityName": "disposicion",
         "refFieldName": "id",
-        "children": {}
+        "children": {
+          "asignatura": {
+            "fieldName": "asignatura",
+            "refEntityName": "asignatura",
+            "refFieldName": "id",
+            "children": {}
+          },
+          "planificacion_dis": {
+            "fieldName": "planificacion",
+            "refEntityName": "planificacion",
+            "refFieldName": "id",
+            "children": {
+              "plan_pla": {
+                "fieldName": "plan",
+                "refEntityName": "plan",
+                "refFieldName": "id",
+                "children": {}
+              }
+            }
+          }
+        }
       }
     },
     "relations": {
@@ -1647,11 +1743,29 @@
         "refFieldName": "id",
         "parentId": "comision"
       },
+      "disposicion": {
+        "fieldName": "disposicion",
+        "refEntityName": "disposicion",
+        "refFieldName": "id",
+        "parentId": null
+      },
       "asignatura": {
         "fieldName": "asignatura",
         "refEntityName": "asignatura",
         "refFieldName": "id",
-        "parentId": null
+        "parentId": "disposicion"
+      },
+      "planificacion_dis": {
+        "fieldName": "planificacion",
+        "refEntityName": "planificacion",
+        "refFieldName": "id",
+        "parentId": "disposicion"
+      },
+      "plan_pla": {
+        "fieldName": "plan",
+        "refEntityName": "plan",
+        "refFieldName": "id",
+        "parentId": "planificacion_dis"
       }
     }
   },
@@ -2416,11 +2530,31 @@
               }
             }
           },
-          "asignatura": {
-            "fieldName": "asignatura",
-            "refEntityName": "asignatura",
+          "disposicion": {
+            "fieldName": "disposicion",
+            "refEntityName": "disposicion",
             "refFieldName": "id",
-            "children": {}
+            "children": {
+              "asignatura": {
+                "fieldName": "asignatura",
+                "refEntityName": "asignatura",
+                "refFieldName": "id",
+                "children": {}
+              },
+              "planificacion_dis": {
+                "fieldName": "planificacion",
+                "refEntityName": "planificacion",
+                "refFieldName": "id",
+                "children": {
+                  "plan_pla": {
+                    "fieldName": "plan",
+                    "refEntityName": "plan",
+                    "refFieldName": "id",
+                    "children": {}
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -2492,11 +2626,29 @@
         "refFieldName": "id",
         "parentId": "comision"
       },
+      "disposicion": {
+        "fieldName": "disposicion",
+        "refEntityName": "disposicion",
+        "refFieldName": "id",
+        "parentId": "curso"
+      },
       "asignatura": {
         "fieldName": "asignatura",
         "refEntityName": "asignatura",
         "refFieldName": "id",
-        "parentId": "curso"
+        "parentId": "disposicion"
+      },
+      "planificacion_dis": {
+        "fieldName": "planificacion",
+        "refEntityName": "planificacion",
+        "refFieldName": "id",
+        "parentId": "disposicion"
+      },
+      "plan_pla": {
+        "fieldName": "plan",
+        "refEntityName": "plan",
+        "refFieldName": "id",
+        "parentId": "planificacion_dis"
       },
       "dia": {
         "fieldName": "dia",
@@ -3033,11 +3185,31 @@
               }
             }
           },
-          "asignatura": {
-            "fieldName": "asignatura",
-            "refEntityName": "asignatura",
+          "disposicion": {
+            "fieldName": "disposicion",
+            "refEntityName": "disposicion",
             "refFieldName": "id",
-            "children": {}
+            "children": {
+              "asignatura": {
+                "fieldName": "asignatura",
+                "refEntityName": "asignatura",
+                "refFieldName": "id",
+                "children": {}
+              },
+              "planificacion_dis": {
+                "fieldName": "planificacion",
+                "refEntityName": "planificacion",
+                "refFieldName": "id",
+                "children": {
+                  "plan_pla": {
+                    "fieldName": "plan",
+                    "refEntityName": "plan",
+                    "refFieldName": "id",
+                    "children": {}
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -3135,11 +3307,29 @@
         "refFieldName": "id",
         "parentId": "comision"
       },
+      "disposicion": {
+        "fieldName": "disposicion",
+        "refEntityName": "disposicion",
+        "refFieldName": "id",
+        "parentId": "curso"
+      },
       "asignatura": {
         "fieldName": "asignatura",
         "refEntityName": "asignatura",
         "refFieldName": "id",
-        "parentId": "curso"
+        "parentId": "disposicion"
+      },
+      "planificacion_dis": {
+        "fieldName": "planificacion",
+        "refEntityName": "planificacion",
+        "refFieldName": "id",
+        "parentId": "disposicion"
+      },
+      "plan_pla": {
+        "fieldName": "plan",
+        "refEntityName": "plan",
+        "refFieldName": "id",
+        "parentId": "planificacion_dis"
       },
       "docente": {
         "fieldName": "docente",

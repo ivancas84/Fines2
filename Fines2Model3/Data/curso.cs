@@ -42,12 +42,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _comision; }
             set { _comision = value; NotifyPropertyChanged(nameof(comision)); }
         }
-        protected string? _asignatura = null;
-        public string? asignatura
-        {
-            get { return _asignatura; }
-            set { _asignatura = value; NotifyPropertyChanged(nameof(asignatura)); }
-        }
         protected DateTime? _alta = null;
         public DateTime? alta
         {
@@ -65,6 +59,18 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _codigo; }
             set { _codigo = value; NotifyPropertyChanged(nameof(codigo)); }
+        }
+        protected string? _disposicion = null;
+        public string? disposicion
+        {
+            get { return _disposicion; }
+            set { _disposicion = value; NotifyPropertyChanged(nameof(disposicion)); }
+        }
+        protected string? _observaciones = null;
+        public string? observaciones
+        {
+            get { return _observaciones; }
+            set { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); }
         }
         protected override string ValidateField(string columnName)
         {
@@ -90,11 +96,6 @@ namespace SqlOrganize.Sql.Fines2Model3
                         return "Debe completar valor.";
                     return "";
 
-                case "asignatura":
-                    if (_asignatura == null)
-                        return "Debe completar valor.";
-                    return "";
-
                 case "alta":
                     if (_alta == null)
                         return "Debe completar valor.";
@@ -104,6 +105,12 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return "";
 
                 case "codigo":
+                    return "";
+
+                case "disposicion":
+                    return "";
+
+                case "observaciones":
                     return "";
 
             }

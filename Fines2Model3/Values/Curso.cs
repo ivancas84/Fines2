@@ -6,20 +6,6 @@
         {
         }
 
-        public virtual object Get(string fieldName)
-        {
-            if (fieldName.Equals("disposicion"))
-                return GetDisposicion();
-
-            return values[fieldName]!;
-        }
-
-        public string GetDisposicion()
-        {
-            var id = db.DisposicionPlanificacionAsignaturaSql(Get("comision__planificacion"), Get("asignatura")).Cache().Dict()?["id"] ?? throw new Exception("Disposicion inexistente");
-            return (string)id;
-        }
-
 
         public override string ToString()
         {

@@ -17,15 +17,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Param("@0", plan!).Param("@1", anio!).Param("@2", semestre!);
         }
 
-        public static EntitySql DisposicionPlanificacionAsignaturaSql(this Db db, object planificacion, object asignatura)
-        {
-            return db.Sql("disposicion").
-                Size(0).
-                Where(@"$planificacion = @0 AND $asignatura = @1"
-            ).
-                Param("@0", planificacion!).
-                Param("@1", asignatura!);
-        }
+        
 
     }
 }

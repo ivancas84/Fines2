@@ -60,9 +60,21 @@ namespace SqlOrganize.Sql.Fines2Model3
                         calendario__semestre = (short?)val.GetDefault("semestre");
                         calendario__insertado = (DateTime?)val.GetDefault("insertado");
                     break;
+                    case "disposicion_cur":
+                        val = db!.Values("disposicion");
+                        disposicion_cur__id = (string?)val.GetDefault("id");
+                    break;
                     case "asignatura":
                         val = db!.Values("asignatura");
                         asignatura__id = (string?)val.GetDefault("id");
+                    break;
+                    case "planificacion_dis":
+                        val = db!.Values("planificacion");
+                        planificacion_dis__id = (string?)val.GetDefault("id");
+                    break;
+                    case "plan_pla":
+                        val = db!.Values("plan");
+                        plan_pla__id = (string?)val.GetDefault("id");
                     break;
                     case "alumno":
                         val = db!.Values("alumno");
@@ -105,13 +117,13 @@ namespace SqlOrganize.Sql.Fines2Model3
                         val = db!.Values("asignatura");
                         asignatura_dis__id = (string?)val.GetDefault("id");
                     break;
-                    case "planificacion_dis":
+                    case "planificacion_dis1":
                         val = db!.Values("planificacion");
-                        planificacion_dis__id = (string?)val.GetDefault("id");
+                        planificacion_dis1__id = (string?)val.GetDefault("id");
                     break;
-                    case "plan_pla":
+                    case "plan_pla1":
                         val = db!.Values("plan");
-                        plan_pla__id = (string?)val.GetDefault("id");
+                        plan_pla1__id = (string?)val.GetDefault("id");
                     break;
                 }
             }
@@ -152,13 +164,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _curso__comision; }
             set { _curso__comision = value; NotifyPropertyChanged(nameof(curso__comision)); }
         }
-        protected string? _curso__asignatura = null;
-
-        public string? curso__asignatura
-        {
-            get { return _curso__asignatura; }
-            set { _curso__asignatura = value; NotifyPropertyChanged(nameof(curso__asignatura)); }
-        }
         protected DateTime? _curso__alta = null;
 
         public DateTime? curso__alta
@@ -179,6 +184,20 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _curso__codigo; }
             set { _curso__codigo = value; NotifyPropertyChanged(nameof(curso__codigo)); }
+        }
+        protected string? _curso__disposicion = null;
+
+        public string? curso__disposicion
+        {
+            get { return _curso__disposicion; }
+            set { _curso__disposicion = value; NotifyPropertyChanged(nameof(curso__disposicion)); }
+        }
+        protected string? _curso__observaciones = null;
+
+        public string? curso__observaciones
+        {
+            get { return _curso__observaciones; }
+            set { _curso__observaciones = value; NotifyPropertyChanged(nameof(curso__observaciones)); }
         }
         protected string? _comision__Label = null;
 
@@ -735,6 +754,42 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _calendario__descripcion; }
             set { _calendario__descripcion = value; NotifyPropertyChanged(nameof(calendario__descripcion)); }
         }
+        protected string? _disposicion_cur__Label = null;
+
+        public string? disposicion_cur__Label
+        {
+            get { return _disposicion_cur__Label; }
+            set { _disposicion_cur__Label = value; NotifyPropertyChanged(nameof(disposicion_cur__Label)); }
+        }
+
+        protected string? _disposicion_cur__id = null;
+
+        public string? disposicion_cur__id
+        {
+            get { return _disposicion_cur__id; }
+            set { _disposicion_cur__id = value; curso__disposicion = value; NotifyPropertyChanged(nameof(disposicion_cur__id)); }
+        }
+        protected string? _disposicion_cur__asignatura = null;
+
+        public string? disposicion_cur__asignatura
+        {
+            get { return _disposicion_cur__asignatura; }
+            set { _disposicion_cur__asignatura = value; NotifyPropertyChanged(nameof(disposicion_cur__asignatura)); }
+        }
+        protected string? _disposicion_cur__planificacion = null;
+
+        public string? disposicion_cur__planificacion
+        {
+            get { return _disposicion_cur__planificacion; }
+            set { _disposicion_cur__planificacion = value; NotifyPropertyChanged(nameof(disposicion_cur__planificacion)); }
+        }
+        protected int? _disposicion_cur__orden_informe_coordinacion_distrital = null;
+
+        public int? disposicion_cur__orden_informe_coordinacion_distrital
+        {
+            get { return _disposicion_cur__orden_informe_coordinacion_distrital; }
+            set { _disposicion_cur__orden_informe_coordinacion_distrital = value; NotifyPropertyChanged(nameof(disposicion_cur__orden_informe_coordinacion_distrital)); }
+        }
         protected string? _asignatura__Label = null;
 
         public string? asignatura__Label
@@ -748,7 +803,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? asignatura__id
         {
             get { return _asignatura__id; }
-            set { _asignatura__id = value; curso__asignatura = value; NotifyPropertyChanged(nameof(asignatura__id)); }
+            set { _asignatura__id = value; disposicion_cur__asignatura = value; NotifyPropertyChanged(nameof(asignatura__id)); }
         }
         protected string? _asignatura__nombre = null;
 
@@ -784,6 +839,92 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _asignatura__perfil; }
             set { _asignatura__perfil = value; NotifyPropertyChanged(nameof(asignatura__perfil)); }
+        }
+        protected string? _planificacion_dis__Label = null;
+
+        public string? planificacion_dis__Label
+        {
+            get { return _planificacion_dis__Label; }
+            set { _planificacion_dis__Label = value; NotifyPropertyChanged(nameof(planificacion_dis__Label)); }
+        }
+
+        protected string? _planificacion_dis__id = null;
+
+        public string? planificacion_dis__id
+        {
+            get { return _planificacion_dis__id; }
+            set { _planificacion_dis__id = value; disposicion_cur__planificacion = value; NotifyPropertyChanged(nameof(planificacion_dis__id)); }
+        }
+        protected string? _planificacion_dis__anio = null;
+
+        public string? planificacion_dis__anio
+        {
+            get { return _planificacion_dis__anio; }
+            set { _planificacion_dis__anio = value; NotifyPropertyChanged(nameof(planificacion_dis__anio)); }
+        }
+        protected string? _planificacion_dis__semestre = null;
+
+        public string? planificacion_dis__semestre
+        {
+            get { return _planificacion_dis__semestre; }
+            set { _planificacion_dis__semestre = value; NotifyPropertyChanged(nameof(planificacion_dis__semestre)); }
+        }
+        protected string? _planificacion_dis__plan = null;
+
+        public string? planificacion_dis__plan
+        {
+            get { return _planificacion_dis__plan; }
+            set { _planificacion_dis__plan = value; NotifyPropertyChanged(nameof(planificacion_dis__plan)); }
+        }
+        protected string? _planificacion_dis__pfid = null;
+
+        public string? planificacion_dis__pfid
+        {
+            get { return _planificacion_dis__pfid; }
+            set { _planificacion_dis__pfid = value; NotifyPropertyChanged(nameof(planificacion_dis__pfid)); }
+        }
+        protected string? _plan_pla__Label = null;
+
+        public string? plan_pla__Label
+        {
+            get { return _plan_pla__Label; }
+            set { _plan_pla__Label = value; NotifyPropertyChanged(nameof(plan_pla__Label)); }
+        }
+
+        protected string? _plan_pla__id = null;
+
+        public string? plan_pla__id
+        {
+            get { return _plan_pla__id; }
+            set { _plan_pla__id = value; planificacion_dis__plan = value; NotifyPropertyChanged(nameof(plan_pla__id)); }
+        }
+        protected string? _plan_pla__orientacion = null;
+
+        public string? plan_pla__orientacion
+        {
+            get { return _plan_pla__orientacion; }
+            set { _plan_pla__orientacion = value; NotifyPropertyChanged(nameof(plan_pla__orientacion)); }
+        }
+        protected string? _plan_pla__resolucion = null;
+
+        public string? plan_pla__resolucion
+        {
+            get { return _plan_pla__resolucion; }
+            set { _plan_pla__resolucion = value; NotifyPropertyChanged(nameof(plan_pla__resolucion)); }
+        }
+        protected string? _plan_pla__distribucion_horaria = null;
+
+        public string? plan_pla__distribucion_horaria
+        {
+            get { return _plan_pla__distribucion_horaria; }
+            set { _plan_pla__distribucion_horaria = value; NotifyPropertyChanged(nameof(plan_pla__distribucion_horaria)); }
+        }
+        protected string? _plan_pla__pfid = null;
+
+        public string? plan_pla__pfid
+        {
+            get { return _plan_pla__pfid; }
+            set { _plan_pla__pfid = value; NotifyPropertyChanged(nameof(plan_pla__pfid)); }
         }
         protected string? _alumno__Label = null;
 
@@ -1422,91 +1563,91 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _asignatura_dis__perfil; }
             set { _asignatura_dis__perfil = value; NotifyPropertyChanged(nameof(asignatura_dis__perfil)); }
         }
-        protected string? _planificacion_dis__Label = null;
+        protected string? _planificacion_dis1__Label = null;
 
-        public string? planificacion_dis__Label
+        public string? planificacion_dis1__Label
         {
-            get { return _planificacion_dis__Label; }
-            set { _planificacion_dis__Label = value; NotifyPropertyChanged(nameof(planificacion_dis__Label)); }
+            get { return _planificacion_dis1__Label; }
+            set { _planificacion_dis1__Label = value; NotifyPropertyChanged(nameof(planificacion_dis1__Label)); }
         }
 
-        protected string? _planificacion_dis__id = null;
+        protected string? _planificacion_dis1__id = null;
 
-        public string? planificacion_dis__id
+        public string? planificacion_dis1__id
         {
-            get { return _planificacion_dis__id; }
-            set { _planificacion_dis__id = value; disposicion__planificacion = value; NotifyPropertyChanged(nameof(planificacion_dis__id)); }
+            get { return _planificacion_dis1__id; }
+            set { _planificacion_dis1__id = value; disposicion__planificacion = value; NotifyPropertyChanged(nameof(planificacion_dis1__id)); }
         }
-        protected string? _planificacion_dis__anio = null;
+        protected string? _planificacion_dis1__anio = null;
 
-        public string? planificacion_dis__anio
+        public string? planificacion_dis1__anio
         {
-            get { return _planificacion_dis__anio; }
-            set { _planificacion_dis__anio = value; NotifyPropertyChanged(nameof(planificacion_dis__anio)); }
+            get { return _planificacion_dis1__anio; }
+            set { _planificacion_dis1__anio = value; NotifyPropertyChanged(nameof(planificacion_dis1__anio)); }
         }
-        protected string? _planificacion_dis__semestre = null;
+        protected string? _planificacion_dis1__semestre = null;
 
-        public string? planificacion_dis__semestre
+        public string? planificacion_dis1__semestre
         {
-            get { return _planificacion_dis__semestre; }
-            set { _planificacion_dis__semestre = value; NotifyPropertyChanged(nameof(planificacion_dis__semestre)); }
+            get { return _planificacion_dis1__semestre; }
+            set { _planificacion_dis1__semestre = value; NotifyPropertyChanged(nameof(planificacion_dis1__semestre)); }
         }
-        protected string? _planificacion_dis__plan = null;
+        protected string? _planificacion_dis1__plan = null;
 
-        public string? planificacion_dis__plan
+        public string? planificacion_dis1__plan
         {
-            get { return _planificacion_dis__plan; }
-            set { _planificacion_dis__plan = value; NotifyPropertyChanged(nameof(planificacion_dis__plan)); }
+            get { return _planificacion_dis1__plan; }
+            set { _planificacion_dis1__plan = value; NotifyPropertyChanged(nameof(planificacion_dis1__plan)); }
         }
-        protected string? _planificacion_dis__pfid = null;
+        protected string? _planificacion_dis1__pfid = null;
 
-        public string? planificacion_dis__pfid
+        public string? planificacion_dis1__pfid
         {
-            get { return _planificacion_dis__pfid; }
-            set { _planificacion_dis__pfid = value; NotifyPropertyChanged(nameof(planificacion_dis__pfid)); }
+            get { return _planificacion_dis1__pfid; }
+            set { _planificacion_dis1__pfid = value; NotifyPropertyChanged(nameof(planificacion_dis1__pfid)); }
         }
-        protected string? _plan_pla__Label = null;
+        protected string? _plan_pla1__Label = null;
 
-        public string? plan_pla__Label
+        public string? plan_pla1__Label
         {
-            get { return _plan_pla__Label; }
-            set { _plan_pla__Label = value; NotifyPropertyChanged(nameof(plan_pla__Label)); }
+            get { return _plan_pla1__Label; }
+            set { _plan_pla1__Label = value; NotifyPropertyChanged(nameof(plan_pla1__Label)); }
         }
 
-        protected string? _plan_pla__id = null;
+        protected string? _plan_pla1__id = null;
 
-        public string? plan_pla__id
+        public string? plan_pla1__id
         {
-            get { return _plan_pla__id; }
-            set { _plan_pla__id = value; planificacion_dis__plan = value; NotifyPropertyChanged(nameof(plan_pla__id)); }
+            get { return _plan_pla1__id; }
+            set { _plan_pla1__id = value; planificacion_dis1__plan = value; NotifyPropertyChanged(nameof(plan_pla1__id)); }
         }
-        protected string? _plan_pla__orientacion = null;
+        protected string? _plan_pla1__orientacion = null;
 
-        public string? plan_pla__orientacion
+        public string? plan_pla1__orientacion
         {
-            get { return _plan_pla__orientacion; }
-            set { _plan_pla__orientacion = value; NotifyPropertyChanged(nameof(plan_pla__orientacion)); }
+            get { return _plan_pla1__orientacion; }
+            set { _plan_pla1__orientacion = value; NotifyPropertyChanged(nameof(plan_pla1__orientacion)); }
         }
-        protected string? _plan_pla__resolucion = null;
+        protected string? _plan_pla1__resolucion = null;
 
-        public string? plan_pla__resolucion
+        public string? plan_pla1__resolucion
         {
-            get { return _plan_pla__resolucion; }
-            set { _plan_pla__resolucion = value; NotifyPropertyChanged(nameof(plan_pla__resolucion)); }
+            get { return _plan_pla1__resolucion; }
+            set { _plan_pla1__resolucion = value; NotifyPropertyChanged(nameof(plan_pla1__resolucion)); }
         }
-        protected string? _plan_pla__distribucion_horaria = null;
+        protected string? _plan_pla1__distribucion_horaria = null;
 
-        public string? plan_pla__distribucion_horaria
+        public string? plan_pla1__distribucion_horaria
         {
-            get { return _plan_pla__distribucion_horaria; }
-            set { _plan_pla__distribucion_horaria = value; NotifyPropertyChanged(nameof(plan_pla__distribucion_horaria)); }
+            get { return _plan_pla1__distribucion_horaria; }
+            set { _plan_pla1__distribucion_horaria = value; NotifyPropertyChanged(nameof(plan_pla1__distribucion_horaria)); }
         }
-        protected string? _plan_pla__pfid = null;
+        protected string? _plan_pla1__pfid = null;
 
-        public string? plan_pla__pfid
+        public string? plan_pla1__pfid
         {
-            get { return _plan_pla__pfid; }
-            set { _plan_pla__pfid = value; NotifyPropertyChanged(nameof(plan_pla__pfid)); }
+            get { return _plan_pla1__pfid; }
+            set { _plan_pla1__pfid = value; NotifyPropertyChanged(nameof(plan_pla1__pfid)); }
         }
     }
 }

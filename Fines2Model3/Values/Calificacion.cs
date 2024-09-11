@@ -120,11 +120,11 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             if (IsNullOrEmpty("curso")) throw new Exception("No está definido el curso");
             var cursoObj = db.Sql("curso").Equal("id", Get("curso")).Cache().Dict()!.Obj<Data_curso_r>();
-            
-            var disposicion = db.DisposicionPlanificacionAsignaturaSql(cursoObj!.comision__planificacion!, cursoObj.asignatura!).Cache().Dict()?["id"] 
-                ?? throw new Exception("Disposicion no definida");
 
-            Set("disposicion", disposicion);
+            if (cursoObj.disposicion.IsNoE())
+                throw new Exception("Disposicion no definida");
+
+            Set("disposicion", cursoObj.disposicion);
 
             PersonaValues personaVal = (PersonaValues)GetValues("persona");
             AlumnoComisionValues asignacionValues = (AlumnoComisionValues)db.Values("alumno_comision");
@@ -137,7 +137,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (asignacionValues.IsNullOrEmpty("alumno")) throw new Exception("Alumno no definido");
             Set("alumno", asignacionValues.Get("alumno"));
 
-            var calificacionData = db.CalificacionDisposicionAlumnosSql(disposicion, Get("alumno")).Cache().Dict();
+            var calificacionData = db.CalificacionDisposicionAlumnosSql(cursoObj.disposicion!, Get("alumno")).Cache().Dict();
 
             if (calificacionData.IsNoE())
             {

@@ -266,7 +266,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
                 throw new Exception("No existe calendario seleccionado");
             var idTomas = ContainerApp.db.IdTomasPasarSinPlanillaDocenteDeCalendario(cbxCalendario.SelectedValue);
             var tomas = ContainerApp.db.Sql("toma").Where("$id IN (@0)").
-                Order("$docente-numero_documento ASC").
+                Order("$docente__numero_documento ASC").
                 Size(0).
                 Param("@0", idTomas).Cache().ColOfDict();
 

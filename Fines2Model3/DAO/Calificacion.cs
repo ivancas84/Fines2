@@ -98,7 +98,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     Size(0).
                     Where("$alumno IN (" + subSql + ") AND $disposicion = @1 AND (nota_final >= 7 OR crec >= 4)").
                     Param("@0", cursoVal.Get("comision")!).
-                    Param("@1", cursoVal.GetDisposicion()!);
+                    Param("@1", cursoVal.Get("disposicion")!);
         }
 
         public static EntitySql CalificacionDesaprobadaCursoAlumnosActivosSql(this Db db, object curso)
@@ -112,7 +112,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     Size(0).
                     Where(@"$alumno IN (" + subSql + ") AND $disposicion = @1 AND nota_final < 7 AND crec < 4").
                     Param("@0", cursoVal.Get("comision")!).
-                    Param("@1", cursoVal.GetDisposicion()!);
+                    Param("@1", cursoVal.Get("disposicion")!);
         }
 
         public static EntitySql CalificacionesCursoSql(this Db db, object curso)
@@ -121,7 +121,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             var alumnos = db.AsignacionesDeComisionesSql(cursoData["comision"]).Cache().ColOfDict().ColOfVal<object>("alumno");
 
-            var disposicion = ((CursoValues)db.Values("curso").SetValues(cursoData)).GetDisposicion();
+            var disposicion = ((CursoValues)db.Values("curso").SetValues(cursoData)).Get("disposicion");
 
             return db.CalificacionDisposicionAlumnosSql(disposicion, alumnos.ToArray());
         }
