@@ -251,7 +251,7 @@ namespace SqlOrganize.CollectionUtils
             return response;
         }
 
-        public static IEnumerable<Dictionary<string, object?>> ColOfDict(this IEnumerable<object> source)
+        public static IEnumerable<Dictionary<string, object?>> EnumOfDicts(this IEnumerable<object> source)
         {
             List<Dictionary<string, object?>> response = new();
 

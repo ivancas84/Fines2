@@ -68,7 +68,7 @@ namespace SqlOrganize.Sql
         /// <summary>
         /// Nombres de campos de la entidad
         /// </summary>
-        /// <remarks>Importante, por cada entidad y por cada relacion, debe incluirse el campo derivado db.config.id. Varios metodos definidos asumen que el valor de _Id esta incluido (EntityValues, DbCache, EntitySql, etc)<br/>
+        /// <remarks>Importante, por cada entidad y por cada relacion, debe incluirse el campo derivado db.config.id. Varios metodos definidos asumen que el valor de _Id esta incluido (EntityVal, DbCache, EntitySql, etc)<br/>
         /// Utilizar FieldNamesRel, para devolver los nombres de campos junto el nombre de campos de relaciones</remarks>
         /// <param name="entityName"></param>
         /// <returns>Nombres de campos de la entidad</returns>
@@ -130,13 +130,13 @@ namespace SqlOrganize.Sql
             return new(this, entityName, fieldId);
         }
 
-        public virtual EntityValues Values(string entityName, string? fieldId = null)
+        public virtual EntityVal Values(string entityName, string? fieldId = null)
         {
             return new(this, entityName, fieldId);
         }
 
         /// <summary> Crear instancia de Data vacia</summary>
-        public virtual T Data<T>() where T : Data, new()
+        public virtual T Data<T>() where T : EntityData, new()
         {
             T obj = new T();
             obj.SetDb(this);
@@ -145,7 +145,7 @@ namespace SqlOrganize.Sql
 
 
         /// <summary> Crear instancia de Data a partir un diccionario de valores</summary>
-        public virtual T Data<T>(IDictionary<string, object?> item) where T : Data, new()
+        public virtual T Data<T>(IDictionary<string, object?> item) where T : EntityData, new()
         {
             T obj = item.Obj<T>()!;
             obj.SetDb(this);

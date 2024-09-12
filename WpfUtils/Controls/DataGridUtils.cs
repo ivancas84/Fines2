@@ -64,7 +64,7 @@ namespace WpfUtils.Controls
         {
             IDictionary<string, object?> source = row.DataContext.Dict();
 
-            EntityValues v = db.Values(entityName, fieldId).Set(source);
+            EntityVal v = db.Values(entityName, fieldId).Set(source);
             var fieldValue = v.GetOrNull(fieldName);
             if(fieldValue.IsNoE()) {
                 if (value.IsNoE())
@@ -140,7 +140,7 @@ namespace WpfUtils.Controls
 
             IDictionary<string, object?> source = cell.DataContext.Dict();
 
-            EntityValues v = db.Values(entityName, fieldId).Set(source);
+            EntityVal v = db.Values(entityName, fieldId).Set(source);
 
             v.Sset(fieldName, value);
             DataGridRow row = DataGridRow.GetRowContainingElement(cell);
@@ -171,12 +171,11 @@ namespace WpfUtils.Controls
             }
         }
 
-        public static void SaveRowFromDataGrid(this Db db, string entityName, Data data, string title = "")
+        public static void SaveRowFromDataGrid(this Db db, EntityData data, string title = "")
         {
-            var p = db.Persist();
             try
             {
-                p.Persist(entityName, data).Exec().RemoveCache();
+                data.GetValues().Persist().Exec().RemoveCache();
                 new ToastContentBuilder()
                  .AddText(title)
                  .AddText("Registro realizado")

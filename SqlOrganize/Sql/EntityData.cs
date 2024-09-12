@@ -8,11 +8,11 @@ namespace SqlOrganize.Sql
     /// <summary>
     /// Comportamiento general para las clases de datos
     /// </summary>
-    public class Data : INotifyPropertyChanged, IDataErrorInfo
+    public class EntityData : INotifyPropertyChanged, IDataErrorInfo
     {
         public virtual string entityName { get; }
 
-        private EntityValues? values;
+        private EntityVal? values;
 
         /// <summary>Campos a ignorar para marcar isUpdated</summary>
         public List<string> _isUpdatedIgnore = new() { nameof(IsUpdated), nameof(Msg), nameof(Error) };
@@ -33,7 +33,7 @@ namespace SqlOrganize.Sql
 
         /// <summary>Obtener instancia de values asociada</summary>
         /// <remarks>Debe estar definida la instancia de Db</remarks>
-        public EntityValues GetValues()
+        public EntityVal GetValues()
         {
             if (values == null)
                 values = db!.Values(entityName).SetValues(this);
@@ -41,7 +41,7 @@ namespace SqlOrganize.Sql
         }
 
         /// <summary>Obtener instancia de values asociadas y realizar un cast</summary>
-        public T GetValues<T>() where T : EntityValues
+        public T GetValues<T>() where T : EntityVal
         {
             return (T)GetValues();
         }
@@ -130,49 +130,74 @@ namespace SqlOrganize.Sql
 
         /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
         /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
-        public bool _isUpdated = false;
+        public bool isUpdated = false;
 
         public bool IsUpdated
         {
-            get { return _isUpdated; }
+            get { return isUpdated; }
             set
             {
-                if (_isUpdated != value)
+                if (isUpdated != value)
                 {
-                    _isUpdated = value;
+                    isUpdated = value;
                     NotifyPropertyChanged(nameof(IsUpdated));
                 }
-            }
-        }
-
-        /// <summary>Indice dentro de una coleccíón</summary>
-        /// <remarks>Facilita la impresion del número de fila, por ejemplo/remarks>
-        public int _Index = 0;
-
-        public int Index
-        {
-            get { return _Index; }
-            set
-            {
-                _Index = value; //por el momento no ejecuta NotifyPropertyChanged
             }
         }
 
         /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
         /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
-        public bool _isError = false;
+        public bool isPersisted = false;
+
+        public bool IsPersisted
+        {
+            get { return isPersisted; }
+            set
+            {
+                if (isPersisted != value)
+                {
+                    isPersisted = value;
+                    NotifyPropertyChanged(nameof(IsPersisted));
+                }
+            }
+        }
+
+
+        /// <summary>Indice dentro de una coleccíón</summary>
+        /// <remarks>Facilita la impresion del número de fila, por ejemplo/remarks>
+        public int index = 0;
+
+        public int Index
+        {
+            get { return index; }
+            set
+            {
+                index = value; //por el momento no ejecuta NotifyPropertyChanged
+            }
+        }
+
+        /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
+        /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
+        public bool isError = false;
 
         public bool IsError
         {
-            get { return _isError; }
+            get { return isError; }
             set
             {
-                if (_isError != value)
+                if (isError != value)
                 {
-                    _isError = value;
-                    NotifyPropertyChanged(nameof(IsUpdated));
+                    isError = value;
+                    NotifyPropertyChanged(nameof(IsError));
                 }
             }
+        }
+
+        protected string? __Id = null;
+        public string? _Id
+        {
+            get { return __Id; }
+            set { __Id = value; NotifyPropertyChanged(nameof(_Id)); }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -190,7 +215,7 @@ namespace SqlOrganize.Sql
             return db.Persist().DeleteIds(entityName, this.GetPropertyValue("id"));
         }
 
-        public T AddToOC<T>(ObservableCollection<T> oc) where T : Data
+        public T AddToOC<T>(ObservableCollection<T> oc) where T : EntityData
         {
             oc.Add((T)this);
             return (T)this;

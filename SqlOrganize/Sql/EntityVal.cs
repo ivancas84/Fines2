@@ -24,7 +24,7 @@ namespace SqlOrganize.Sql
     /// Los valores son almacenados en una colección. La ventaja es que se puede utilizar el estado "NO DEFINIDO" (no existe en la colección).</br>
     /// Es necesario acceder a la base de datos para consultar la estructura y puede ser necesario para definir el valor por defecto de algunos elementos
     /// </remarks>
-    public class EntityValues : EntityFieldId
+    public class EntityVal : EntityFieldId
     {
         /// <summary>Se mantiene una lista independiente de fieldNames por si se necesitan definir fieldNames adicionales a los de la db para procesamiento o comparacion</summary>
         protected List<string> fieldNames;
@@ -33,7 +33,7 @@ namespace SqlOrganize.Sql
 
         protected IDictionary<string, object?> values = new Dictionary<string, object?>();
 
-        public EntityValues(Db _db, string _entityName, string? _fieldId = null) : base(_db, _entityName, _fieldId)
+        public EntityVal(Db _db, string _entityName, string? _fieldId = null) : base(_db, _entityName, _fieldId)
         {
             fieldNames = new List<string>(db.FieldNames(entityName));
         }
@@ -45,13 +45,13 @@ namespace SqlOrganize.Sql
             return values;
         }
 
-        public virtual EntityValues SetValues(IDictionary<string, object?> row)
+        public virtual EntityVal SetValues(IDictionary<string, object?> row)
         {
             values.Merge(row);
             return this;
         }
 
-        public EntityValues SetValues(Data obj)
+        public EntityVal SetValues(EntityData obj)
         {
             values = obj.Dict() ?? new Dictionary<string, object?>();
             return SetValues(obj.Dict());
@@ -63,19 +63,19 @@ namespace SqlOrganize.Sql
             return values.ContainsKey(fieldId);
         }
 
-        public EntityValues Clear()
+        public EntityVal Clear()
         {
             values.Clear();
             return this;
         }
 
-        public virtual EntityValues Set(Data o)
+        public virtual EntityVal Set(object o)
         {
             var d = o.Dict();
             return Set(d);
         }
 
-        public virtual EntityValues Sset(IDictionary<string, object?> row)
+        public virtual EntityVal Sset(IDictionary<string, object?> row)
         {
             foreach (var fieldName in fieldNames)
                 if (row.ContainsKey(Pf() + fieldName))
@@ -84,7 +84,7 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public virtual EntityValues Set(IDictionary<string, object?> row)
+        public virtual EntityVal Set(IDictionary<string, object?> row)
         {
             foreach (var fieldName in fieldNames)
                 if (row.ContainsKey(Pf() + fieldName))
@@ -93,7 +93,7 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public virtual EntityValues Set(string fieldName, object? value)
+        public virtual EntityVal Set(string fieldName, object? value)
         {
             string fn = fieldName;
             if (!Pf().IsNoE() && fieldName.Contains(Pf()))
@@ -102,7 +102,7 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public EntityValues Remove(string fieldName)
+        public EntityVal Remove(string fieldName)
         {
             values.Remove(fieldName);
             return this;
@@ -256,7 +256,7 @@ namespace SqlOrganize.Sql
         }
 
         /// <summary>Seteo "lento", con verificacion y convercion de tipo de datos</summary>
-        public virtual EntityValues Sset(string _fieldName, object? value)
+        public virtual EntityVal Sset(string _fieldName, object? value)
         {
             string fieldName = CleanPf(_fieldName);
 
@@ -275,7 +275,7 @@ namespace SqlOrganize.Sql
 
         /// <summary>Resetear valores definidos</summary>
         /// <returns></returns>
-        public virtual EntityValues Reset()
+        public virtual EntityVal Reset()
         {
             List<string> fieldNames = new List<string>(this.fieldNames);
             fieldNames.Remove(db.config.id); //id debe dejarse para el final porque puede depender de otros valores
@@ -292,7 +292,7 @@ namespace SqlOrganize.Sql
 
         /// <summary>Reasigna fieldName</summary>
         /// <remarks>fieldName debe estar definido obligatoriamente</remarks>
-        public virtual EntityValues Reset(string fieldName)
+        public virtual EntityVal Reset(string fieldName)
         {
             Field field = db.Field(entityName, fieldName);
 
@@ -346,7 +346,7 @@ namespace SqlOrganize.Sql
 
         /// <summary>Asignar valor por defecto para aquellos valores no definidos</summary>
         /// <returns></returns>
-        public EntityValues Default()
+        public EntityVal Default()
         {
             foreach (var fieldName in fieldNames)
                 Default(fieldName); //Default chequea la existencia del campo fieldName en Values
@@ -359,7 +359,7 @@ namespace SqlOrganize.Sql
         /// </summary>
         /// <param name="fieldName"></param>
         /// <returns></returns>
-        public EntityValues SetDefault(string fieldName)
+        public EntityVal SetDefault(string fieldName)
         {
             if (values.ContainsKey(fieldName))
                 Remove(fieldName);
@@ -373,7 +373,7 @@ namespace SqlOrganize.Sql
         /// <example>db.Values("entityName").Set(source).Set("_Id", null).Reset("_Id"); //inicializa y reasigna _Id individualmente //<br/>
         /// db.Values("entityName").Set(source).Default().Reset() //inicializa y reasigna _Id conjuntamente</example>
         /// <returns></returns>
-        public EntityValues Reset__Id()
+        public EntityVal Reset__Id()
         {
             List<string> fieldsId = db.Entity(entityName).id;
             foreach (string fieldName in fieldsId)
@@ -395,7 +395,7 @@ namespace SqlOrganize.Sql
         }
 
         /// <summary>Definir valor por defecto del field si no esta definido</summary>
-        public EntityValues Default(string fieldName)
+        public EntityVal Default(string fieldName)
         {
             if (values.ContainsKey(fieldName))
                 return this;
@@ -450,7 +450,7 @@ namespace SqlOrganize.Sql
         }
 
         /// <summary> Seteo lento solo de valores no nulos </summary>
-        public EntityValues SsetNotNull(IDictionary<string, object?> row)
+        public EntityVal SsetNotNull(IDictionary<string, object?> row)
         {
             foreach (var fieldName in fieldNames)
                 if (row.ContainsKey(Pf() + fieldName))
@@ -461,7 +461,7 @@ namespace SqlOrganize.Sql
         }
 
         /// <summary> Seteo solo de valores no nulos </summary>
-        public EntityValues SetNotNull(IDictionary<string, object?> row)
+        public EntityVal SetNotNull(IDictionary<string, object?> row)
         {
             foreach (var fieldName in fieldNames)
                 if (row.ContainsKey(Pf() + fieldName))
@@ -471,15 +471,15 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        /// <summary>Crear instancia de EntityValues de una relacion a partir de los valores definidos en la instancia</summary>
-        public EntityValues GetValues(string fieldId)
+        /// <summary>Crear instancia de EntityVal de una relacion a partir de los valores definidos en la instancia</summary>
+        public EntityVal GetValues(string fieldId)
         {
             EntityRelation rel = db.Entity(entityName).relations[fieldId];
             return db.Values(rel.refEntityName, fieldId).Set(Values());
         }
 
-        /// <summary>Crear instancia de EntityValues obteniendo del cache o consulta los valores de la relacion</summary>
-        public EntityValues? GetValuesCache(string fieldId)
+        /// <summary>Crear instancia de EntityVal obteniendo del cache o consulta los valores de la relacion</summary>
+        public EntityVal? GetValuesCache(string fieldId)
         {
             EntityRelation rel = db.Entity(entityName).relations[fieldId];
             if (rel.parentId == null)
@@ -493,7 +493,7 @@ namespace SqlOrganize.Sql
             }
             else
             {
-                EntityValues? values = GetValuesCache(rel.parentId);
+                EntityVal? values = GetValuesCache(rel.parentId);
                 if (!values.IsNoE())
                     return values!.GetValuesCache(rel.fieldName);
             }
@@ -730,7 +730,7 @@ namespace SqlOrganize.Sql
             return false;
         }
 
-        public EntityValues ResetLabels()
+        public EntityVal ResetLabels()
         {
             Set("Label", ToString());
 
@@ -746,7 +746,7 @@ namespace SqlOrganize.Sql
 
             return this;
         }
-        public virtual T GetData<T>() where T : Data, new()
+        public virtual T GetData<T>() where T : EntityData, new()
         {
             ResetLabels();
             var obj = db.Data<T>(Values());
@@ -843,13 +843,13 @@ namespace SqlOrganize.Sql
             return db.Persist().Update(this);
         }
 
-        public EntityValues Insert(EntityPersist persist)
+        public EntityVal Insert(EntityPersist persist)
         {
             persist.Insert(this);
             return this;
         }
 
-        public EntityValues Update(EntityPersist persist)
+        public EntityVal Update(EntityPersist persist)
         {
             persist.Update(this);
             return this;
@@ -879,7 +879,7 @@ namespace SqlOrganize.Sql
 
         }
 
-        public EntityValues Persist(EntityPersist persist)
+        public EntityVal Persist(EntityPersist persist)
         {
             persist.Persist(this);
             return this;
@@ -891,13 +891,13 @@ namespace SqlOrganize.Sql
 
         }
 
-        public EntityValues PersistCondition(EntityPersist persist, object? condition)
+        public EntityVal PersistCondition(EntityPersist persist, object? condition)
         {
             persist.PersistCondition(this, condition);
             return this;
         }
 
-        public EntityValues PersistCompare(EntityPersist persist, CompareParams compare)
+        public EntityVal PersistCompare(EntityPersist persist, CompareParams compare)
         {
             persist.PersistCompare(this, compare);
             return this;
@@ -908,7 +908,7 @@ namespace SqlOrganize.Sql
             return db.Persist().PersistCompare(this, compare);
         }
 
-        public EntityValues InsertIfNotExists(EntityPersist persist)
+        public EntityVal InsertIfNotExists(EntityPersist persist)
         {
             persist.InsertIfNotExists(this);
             return this;
@@ -942,7 +942,7 @@ namespace SqlOrganize.Sql
                 return SqlUniqueWithoutIdIfExists();
         }
 
-        public EntityValues ReloadValues()
+        public EntityVal ReloadValues()
         {
             if (!IsNullOrEmpty("id"))
             {
@@ -952,7 +952,7 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public EntityValues ReloadSet()
+        public EntityVal ReloadSet()
         {
             if (!IsNullOrEmpty("id"))
             {

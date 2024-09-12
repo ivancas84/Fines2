@@ -20,6 +20,11 @@ namespace SqlOrganize.ValueTypesUtils
             return textInfo.ToTitleCase(str);
         }
 
+        public static string ToCamelCase(this string str)
+        {
+            return str.ToTitleCase().Replace(" ", "").Replace("_", ""); ;
+        }
+
         public static string RandomString(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -60,6 +65,7 @@ namespace SqlOrganize.ValueTypesUtils
         {
             return Regex.Replace(key, @"\d", "");
         }
+
         public static string ReplaceFirst(this string @this, string oldValue, string newValue)
         {
             int startindex = @this.IndexOf(oldValue);
@@ -343,7 +349,6 @@ namespace SqlOrganize.ValueTypesUtils
                     return numberString; // For numbers above 10, just return the input string
             }
         }
-
 
         public static string ConvertTextToHtml(this string text)
         {

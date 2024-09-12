@@ -14,7 +14,6 @@ namespace SqlOrganize.Model
 
         public Dictionary<string, Dictionary<string, Field>> fields { get; set; } = new();
 
-
         protected void resetField(Field f)
         {
             f.checks = new()
@@ -522,7 +521,7 @@ namespace SqlOrganize.Model
 
             foreach (var (entityName, entity) in entities)
             {
-                using StreamWriter sw = File.CreateText(Config.dataClassesPath + entityName + ".cs");
+                using StreamWriter sw = File.CreateText(Config.dataClassesPath + entityName.ToCamelCase() + ".cs");
                 sw.WriteLine("#nullable enable");
                 sw.WriteLine("using System;");
                 sw.WriteLine("using System.ComponentModel;");
@@ -530,14 +529,14 @@ namespace SqlOrganize.Model
                 sw.WriteLine("");
                 sw.WriteLine("namespace SqlOrganize.Sql." + Config.dataClassesNamespace);
                 sw.WriteLine("{");
-                sw.WriteLine("    public class Data_" + entityName + " : SqlOrganize.Sql.Data");
+                sw.WriteLine("    public class " + entityName.ToCamelCase() + " : SqlOrganize.Sql.EntityData");
                 sw.WriteLine("    {");
                 sw.WriteLine("");
                 sw.WriteLine("        public override string entityName => \"" + entityName + "\";");
                 sw.WriteLine("");
                 sw.WriteLine("        public override void Default()");
                 sw.WriteLine("        {");
-                sw.WriteLine("            EntityValues val = db!.Values(\"" + entityName + "\");");
+                sw.WriteLine("            EntityVal val = db!.Values(\"" + entityName + "\");");
 
 
                 foreach (var (fieldName, field) in fields[entityName])
@@ -555,7 +554,7 @@ namespace SqlOrganize.Model
                 sw.WriteLine("");
 
                 Dictionary<string, Field> _fields = new(fields[entityName]);
-                if (!_fields.ContainsKey(Config.id))
+                /*if (!_fields.ContainsKey(Config.id))
                 {
                     Field _Id = new Field()
                     {
@@ -564,7 +563,7 @@ namespace SqlOrganize.Model
                         type = "string"
                     };
                     _fields[Config.id] = _Id;
-                }
+                }*/
 
                 foreach (var (fieldName, field) in _fields)
                 {
@@ -622,21 +621,21 @@ namespace SqlOrganize.Model
                 if (entities[entityName].relations.Count() == 0)
                     continue;
 
-                using StreamWriter sw = File.CreateText(Config.dataClassesPath + entityName + "_r.cs");
+                using StreamWriter sw = File.CreateText(Config.dataClassesPath + entityName.ToCamelCase() + "_.cs");
                 sw.WriteLine("#nullable enable");
                 sw.WriteLine("using System;");
                 sw.WriteLine("using Newtonsoft.Json;");
                 sw.WriteLine("");
                 sw.WriteLine("namespace SqlOrganize.Sql." + Config.dataClassesNamespace);
                 sw.WriteLine("{");
-                sw.WriteLine("    public class Data_" + entityName + "_r" + " : Data_" + entityName);
+                sw.WriteLine("    public class " + entityName.ToCamelCase() + "_" + " : " + entityName.ToCamelCase());
                 sw.WriteLine("    {");
                 sw.WriteLine("");
 
                 #region Generar valores por defecto (por el momento no generamos valores por defecto para las relaciones, puede dar lugar a confusion)
                 sw.WriteLine("        public void DefaultRel(params string[] fieldIds)");
                 sw.WriteLine("        {");
-                sw.WriteLine("            EntityValues val;");
+                sw.WriteLine("            EntityVal val;");
                 sw.WriteLine("            foreach(string fieldId in fieldIds)");
                 sw.WriteLine("            {");
                 sw.WriteLine("                switch(fieldId)");

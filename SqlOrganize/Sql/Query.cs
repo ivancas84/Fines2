@@ -69,7 +69,7 @@ namespace SqlOrganize.Sql
         /// </summary>
         /// <returns>Resultado como List -Dictionary -string, object- -</returns>
         /// <remarks>Convert the result to json with "JsonConvert.SerializeObject(data, Formatting.Indented)"</remarks>
-        public IEnumerable<Dictionary<string, object?>> ColOfDict()
+        public IEnumerable<Dictionary<string, object?>> Dicts()
         {
             using DbCommand command = NewCommand();
             Exec(connection!, command);
@@ -78,12 +78,12 @@ namespace SqlOrganize.Sql
             
         }
 
-        public IEnumerable<T> ColOfObj<T>() where T : class, new()
+        public IEnumerable<T> Objs<T>() where T : class, new()
         {
             using DbCommand command = NewCommand();
             Exec(connection!, command);
             using DbDataReader reader = command.ExecuteReader();
-            return reader.ColOfObj<T>();
+            return reader.Objs<T>();
         }
 
         public IDictionary<string, object?>? Dict()
@@ -287,7 +287,7 @@ namespace SqlOrganize.Sql
             q.sql = @"SELECT DISTINCT TableName, RecordId 
                     FROM AuditLog 
                     WHERE ChangeDateTime > '" + lastChecked + "';";
-            return q.ColOfDict();
+            return q.Dicts();
 
         }
         #endregion

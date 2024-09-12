@@ -70,7 +70,7 @@ namespace SqlOrganize
         }
 
 
-        public static IEnumerable<T> ColOfObj<T>(this IEnumerable<Dictionary<string, object?>> rows) where T : class, new()
+        public static IEnumerable<T> Objs<T>(this IEnumerable<Dictionary<string, object?>> rows) where T : class, new()
         {
             var results = new List<T>();
 

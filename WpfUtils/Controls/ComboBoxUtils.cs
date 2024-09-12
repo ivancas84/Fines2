@@ -54,7 +54,7 @@ namespace WpfUtils.Controls
             timer.Start();
         }
 
-        public static void InitComboBoxConstructor<T>(this System.Windows.Controls.ComboBox comboBox, ObservableCollection<T> oc, string displayMemberPath = "Label", string selectedValuePath = "id") where T : Data
+        public static void InitComboBoxConstructor<T>(this System.Windows.Controls.ComboBox comboBox, ObservableCollection<T> oc, string displayMemberPath = "Label", string selectedValuePath = "id") where T : EntityData
         {
             comboBox.ItemsSource = oc;
             comboBox.SelectedValuePath = selectedValuePath;
@@ -63,7 +63,7 @@ namespace WpfUtils.Controls
 
 
         /// <summary>Inicializacion de autocomplete combobox</summary>
-        public static (string?, TextBox?, int?) SetTimerTickInitializeItem<T>(this System.Windows.Controls.ComboBox comboBox, DispatcherTimer typingTimer, string propertyName = "Label") where T : Data
+        public static (string?, TextBox?, int?) SetTimerTickInitializeItem<T>(this System.Windows.Controls.ComboBox comboBox, DispatcherTimer typingTimer, string propertyName = "Label") where T : EntityData
         {
             typingTimer.Stop();
             string? text = comboBox.Text;
@@ -128,7 +128,7 @@ namespace WpfUtils.Controls
         }
 
         #region filter con delay v1
-        public static (ICollectionView cv, DispatcherTimer timer) FilterTextBox_InitializeConstructor<T>(this DataGrid dg, ObservableCollection<T> oc) where T : Data
+        public static (ICollectionView cv, DispatcherTimer timer) FilterTextBox_InitializeConstructor<T>(this DataGrid dg, ObservableCollection<T> oc) where T : EntityData
         {
             var cvs = new CollectionViewSource() { Source = oc };
             ICollectionView cv = cvs.View;

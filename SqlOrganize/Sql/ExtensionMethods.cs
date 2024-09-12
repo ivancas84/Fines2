@@ -11,11 +11,11 @@ namespace SqlOrganize.Sql
     {
         #region EntitySql + Query
         /// <summary>Ejecucion rapida de EntitySql</summary>
-        public static IEnumerable<Dictionary<string, object?>> ColOfDict(this EntitySql esql)
+        public static IEnumerable<Dictionary<string, object?>> Dicts(this EntitySql esql)
         {
             using Query query = esql.Query();
             using DbConnection connection = query.OpenConnection();
-            return query.ColOfDict();
+            return query.Dicts();
         }
 
         /// <summary>Ejecucion rapida de EntitySql</summary>
@@ -33,7 +33,7 @@ namespace SqlOrganize.Sql
             return query.Obj<T>();
         }
 
-        public static T? Data<T>(this EntitySql esql) where T : Data, new()
+        public static T? Data<T>(this EntitySql esql) where T : EntityData, new()
         {
             var data = esql.Dict();
             if (data.IsNoE())
@@ -72,7 +72,7 @@ namespace SqlOrganize.Sql
 
         public static IDictionary<string, object?>? DictOne(this EntitySql entitySql)
         {
-            IEnumerable<Dictionary<string, object?>> rows = entitySql.ColOfDict();
+            IEnumerable<Dictionary<string, object?>> rows = entitySql.Dicts();
 
             if (rows.Count() > 1)
                 throw new Exception("La consulta de uno retorno mas de un resultado para " + entitySql.entityName);
@@ -209,7 +209,7 @@ namespace SqlOrganize.Sql
             return persist;
         }
 
-        public static EntityPersist RemoveCache(this EntityPersist persist, EntityValues values)
+        public static EntityPersist RemoveCache(this EntityPersist persist, EntityVal values)
         {
             persist.RemoveCacheQueries();
             persist.Db.cache!.Remove(values.entityName + values.Get(persist.Db.config.id));
@@ -217,8 +217,8 @@ namespace SqlOrganize.Sql
         }
         #endregion
 
-        #region EntitySql + EntityValues
-        public static IDictionary<string, object?>? DictUniqueFieldOrValues(this EntityValues values, string fieldName)
+        #region EntitySql + EntityVal
+        public static IDictionary<string, object?>? DictUniqueFieldOrValues(this EntityVal values, string fieldName)
         {
             try
             {
@@ -233,7 +233,7 @@ namespace SqlOrganize.Sql
 
         #region Data
         /// <summary> Simplificar proceso de inicializar una clase de datos, asignarle instancia de Db y definir valores por defecto </summary>
-        public static T DataDefault<T>(this Db db) where T : Data, new()
+        public static T DataDefault<T>(this Db db) where T : EntityData, new()
         {
             T obj = new T();
             obj.SetDb(db);
@@ -242,8 +242,8 @@ namespace SqlOrganize.Sql
         }
         #endregion
 
-        #region Data + EntityValues
-        public static IEnumerable<T> ColOfData<T>(this Db db, IEnumerable<Dictionary<string, object?>> rows) where T : Data, new()
+        #region Data + EntityVal
+        public static IEnumerable<T> ColOfData<T>(this Db db, IEnumerable<Dictionary<string, object?>> rows) where T : EntityData, new()
         {
             var results = new List<T>();
 
@@ -256,13 +256,13 @@ namespace SqlOrganize.Sql
         }
 
 
-        public static void ClearAndAddDataToOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : Data, new()
+        public static void ClearAndAddDataToOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : EntityData, new()
         {
             oc.Clear();
             db.AddDataToOC(source, oc);
         }
 
-        public static void AddDataToOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : Data, new()
+        public static void AddDataToOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : EntityData, new()
         {
             for(var i = 0; i < source.Count(); i++) {
                 T obj = db.ToData<T>(source.ElementAt(i));
@@ -274,7 +274,7 @@ namespace SqlOrganize.Sql
 
         /// <summary>Obtiene una clase Data a partir de una instancia de Values</summary>
         /// <remarks>Incorpora codigo adicional redefinido en las clases values</remarks>
-        public static T ToData<T>(this Db db, IDictionary<string, object?> item) where T : Data, new()
+        public static T ToData<T>(this Db db, IDictionary<string, object?> item) where T : EntityData, new()
         {
             T _obj = new T(); //crear objeto vacio para obtener el entityName
             return db.Values(_obj.entityName).
@@ -282,12 +282,12 @@ namespace SqlOrganize.Sql
                 GetData<T>();
         }
 
-        public static EntityValues ToValues(this Db db, Data data, string? fieldId = null)
+        public static EntityVal ToValues(this Db db, EntityData data, string? fieldId = null)
         {
             return db.Values(data.entityName, fieldId).SetValues(data);
         }
 
-        public static T ToValues<T>(this Db db, Data data, string? fieldId = null) where T : EntityValues
+        public static T ToValues<T>(this Db db, EntityData data, string? fieldId = null) where T : EntityVal
         {
             return (T)db.Values(data.entityName, fieldId).SetValues(data);
         }
