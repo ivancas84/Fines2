@@ -17,12 +17,12 @@ namespace FinesApp.Views;
 public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
 {
     #region Autocomplete v3 - origen
-    private ObservableCollection<Data_persona> origenOC = new(); //datos consultados de la base de datos
+    private ObservableCollection<Persona_> origenOC = new(); //datos consultados de la base de datos
     private DispatcherTimer origenTypingTimer; //timer para buscar
     #endregion
 
     #region Autocomplete v3 - destino
-    private ObservableCollection<Data_persona> destinoOC = new(); //datos consultados de la base de datos
+    private ObservableCollection<Persona_> destinoOC = new(); //datos consultados de la base de datos
     private DispatcherTimer destinoTypingTimer; //timer para buscar
     #endregion
 
@@ -49,11 +49,11 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
     {
         try
         {
-            (string? text, TextBox? origenTextBox, int? origenTextBoxPos) = origenComboBox.SetTimerTickInitializeItem<Data_persona>(origenTypingTimer);
+            (string? text, TextBox? origenTextBox, int? origenTextBoxPos) = origenComboBox.SetTimerTickInitializeItem<Persona_>(origenTypingTimer);
             if (text == null)
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).Dicts(); //busqueda de valores a mostrar en funcion del texto
 
             ContainerApp.db.ClearAndAddDataToOC(list, origenOC);
 
@@ -76,13 +76,13 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
     {
         try
         {
-            (string? text, TextBox? destinoTextBox, int? destinoTextBoxPos) = destinoComboBox.SetTimerTickInitializeItem<Data_persona>(destinoTypingTimer);
+            (string? text, TextBox? destinoTextBox, int? destinoTextBoxPos) = destinoComboBox.SetTimerTickInitializeItem<Persona_>(destinoTypingTimer);
             if (text == null)
                 return;
 
             var textBox = (TextBox)destinoComboBox.Template.FindName("PART_EditableTextBox", destinoComboBox);
 
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).Dicts(); //busqueda de valores a mostrar en funcion del texto
 
             ContainerApp.db.ClearAndAddDataToOC(list, destinoOC);
 
@@ -105,8 +105,8 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
     {
         try
         {
-            var personaOrigenObj = (Data_persona)origenComboBox.SelectedItem;
-            var personaDestinoObj = (Data_persona)destinoComboBox.SelectedItem;
+            var personaOrigenObj = (Persona_)origenComboBox.SelectedItem;
+            var personaDestinoObj = (Persona_)destinoComboBox.SelectedItem;
 
             if (personaOrigenObj.IsNoE() || personaDestinoObj.IsNoE())
                 throw new Exception("Debe seleccionar ambas personas");

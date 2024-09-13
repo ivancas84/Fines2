@@ -2,7 +2,7 @@
 
 namespace SqlOrganize.Sql.Fines2Model3      
 {
-    public class AsignaturaValues : EntityValues
+    public class AsignaturaValues : EntityVal
     {
         public AsignaturaValues(Db _db, string? _fieldId = null) : base(_db, "asignatura", _fieldId)
         {

@@ -48,7 +48,7 @@ namespace Fines2Wpf.Windows.Curso.ListaCursoSemestreSinTomasAprobadas
             }
 
             cursoData.Clear();
-            cursoData.AddRange(cursosSinTomasAprobadasSemestre.ColOfObj<Model>());
+            cursoData.AddRange(cursosSinTomasAprobadasSemestre.Objs<Model>());
         }
     }
 

@@ -44,8 +44,8 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarAlumnosListadoGeneral
             ContainerApp.db.Persist().UpdateValueIds("alumno_comision", "programafines", false, asignacionesIds).AddTo(persists);
             #endregion
             IDictionary<string, Data_comision_r> comisiones = ContainerApp.db.ComisionesAutorizadasDePeriodoSql(DateTime.Now.Year, DateTime.Now.ToSemester()).
-                Cache().ColOfDict().
-                ColOfObj<Data_comision_r>().
+                Cache().Dicts().
+                Objs<Data_comision_r>().
                 DictOfObjByPropertyNames("pfid");
 
             Dictionary<string, object> dict = new Dictionary<string, object>();

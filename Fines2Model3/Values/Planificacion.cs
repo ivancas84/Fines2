@@ -1,6 +1,6 @@
 ﻿namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class PlanificacionValues : EntityValues
+    public class PlanificacionValues : EntityVal
     {
         public PlanificacionValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
         {
@@ -9,7 +9,7 @@
         {
             var s = GetStr("?", "/", "anio", "semestre");
 
-            EntityValues? planVal = GetValuesCache("plan");
+            EntityVal? planVal = GetValuesCache("plan");
             if (!planVal.IsNoE())
                 s += " " + planVal!.ToString();
             

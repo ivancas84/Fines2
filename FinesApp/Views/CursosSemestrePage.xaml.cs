@@ -15,13 +15,13 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
 {
 
     private ObservableCollection<CursoConTomaItem> cursoOC = new();
-    private ObservableCollection<Data_calendario> ocCalendario = new();
+    private ObservableCollection<Calendario> ocCalendario = new();
 
     public CursosSemestrePage()
     {
         InitializeComponent();
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        var data = ContainerApp.db.Sql("calendario").Cache().ColOfDict();
+        var data = ContainerApp.db.Sql("calendario").Cache().Dicts();
         ContainerApp.db.ClearAndAddDataToOC(data, ocCalendario);
         DataContext = this;
         dgdCurso.ItemsSource = cursoOC;
@@ -35,9 +35,9 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
             cursoOC.Clear();
             return;
         }
-        var data = ContainerApp.db.CursosAutorizadosCalendarioSql(cbxCalendario.SelectedValue).Cache().ColOfDict();
+        var data = ContainerApp.db.CursosAutorizadosCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
         var idCursos = data.ColOfVal<object>("id");
-        var dataToma = ContainerApp.db.TomaAprobadaDeCursoQuery(idCursos).Cache().ColOfDict().DictOfDictByKeys("curso");
+        var dataToma = ContainerApp.db.TomaAprobadaDeCursoQuery(idCursos).Cache().Dicts().DictOfDictByKeys("curso");
 
         cursoOC.Clear();
         foreach(var cursoData in data)
@@ -45,7 +45,7 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
             CursoConTomaItem curso = ContainerApp.db.ToData<CursoConTomaItem>(cursoData);
             if (dataToma.ContainsKey(curso.id))
             {
-                Data_toma_r toma = ContainerApp.db.ToData<Data_toma_r>(dataToma[curso.id]);
+                Toma_ toma = ContainerApp.db.ToData<Toma_>(dataToma[curso.id]);
                 curso.toma_docente__Label = toma.docente__Label;
             }
             cursoOC.Add(curso);

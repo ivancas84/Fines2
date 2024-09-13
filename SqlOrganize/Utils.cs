@@ -97,7 +97,7 @@ namespace SqlOrganize
         /// <typeparam name="T"></typeparam>
         /// <param name="rd"></param>
         /// <returns></returns>
-        public static IEnumerable<T> ColOfObj<T>(this DbDataReader rd) where T : class, new()
+        public static IEnumerable<T> Objs<T>(this DbDataReader rd) where T : class, new()
         {
             var results = new List<T>();
             var cols = rd.ColumnNames();

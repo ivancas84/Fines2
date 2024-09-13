@@ -40,7 +40,7 @@ namespace Fines2Wpf.Forms.ListaModalidad
         {
             IEnumerable<Dictionary<string, object>> list = dao.AllModalidad();
             modalidadData.Clear();
-            modalidadData.AddRange(list.ColOfObj<Modalidad>());
+            modalidadData.AddRange(list.Objs<Modalidad>());
         }
         private void ModalidadGrid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
@@ -67,7 +67,7 @@ namespace Fines2Wpf.Forms.ListaModalidad
 
                     do
                     {
-                        EntityValues v = ContainerApp.db.Values(entityName, fieldId).Set(source).Set(fieldName, value);
+                        EntityVal v = ContainerApp.db.Values(entityName, fieldId).Set(source).Set(fieldName, value);
                         IDictionary<string, object>? row;
 
                         //en caso de que el campo editado sea unico, se consultan sus valores

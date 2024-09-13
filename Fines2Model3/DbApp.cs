@@ -9,13 +9,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
         }
 
-        public T Values<T>(Data data, string fieldId) where T : EntityValues
+        public T Values<T>(EntityData data, string fieldId) where T : EntityVal
         {
             return (T)Values(data.entityName, fieldId);
         }
 
-        /// <summary>Referencia y cast rapido para una determinada subclase de EntityValues</summary>
-        public T Values<T>(string? fieldId = null) where T : EntityValues
+        /// <summary>Referencia y cast rapido para una determinada subclase de EntityVal</summary>
+        public T Values<T>(string? fieldId = null) where T : EntityVal
         {
             if (typeof(T) == typeof(AlumnoValues))
                 return (T)Values("alumno", fieldId);
@@ -59,7 +59,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             throw new InvalidOperationException($"Unsupported type: {typeof(T).Name}");
         }
 
-        public override EntityValues Values(string entityName, string? fieldId = null)
+        public override EntityVal Values(string entityName, string? fieldId = null)
         {
             switch (entityName)
             {
@@ -107,7 +107,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return new CursoValues(this, entityName, fieldId);
             }
 
-            return new EntityValues(this, entityName, fieldId);
+            return new EntityVal(this, entityName, fieldId);
 
         }
     }

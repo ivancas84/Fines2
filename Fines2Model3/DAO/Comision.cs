@@ -76,7 +76,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (headers.IsNoE())
                 headers = ["persona__apellidos", "persona__nombres", "persona__numero_documento", "persona__genero", "persona__fecha_nacimiento", "persona__telefono", "persona__email"];
 
-            Data_comision_r? comObj = db.Sql("comision").Equal("id", idComision).Cache().Data<Data_comision_r>() ?? throw new Exception("comision inexistente");
+            Comision_? comObj = db.Sql("comision").Equal("id", idComision).Cache().Data<Comision_>() ?? throw new Exception("comision inexistente");
 
             List<EntityPersist> persists = new();
         
@@ -111,7 +111,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                         Sset("comision", comObj.id).InsertIfNotExists(persist);
 
                     var otrasAsignaciones = db.Sql("alumno_comision").Where("$alumno = @0 AND $comision != @1").
-                        Param("@0", alumnoVal.Get("id")).Param("@1", comObj.id).Cache().ColOfDict();
+                        Param("@0", alumnoVal.Get("id")).Param("@1", comObj.id).Cache().Dicts();
                     foreach (var oa in otrasAsignaciones)
                         persist.logging.AddLog("alumno_comision", "Asignacion existente " + db.Values("alumno_comision").SetValues(oa).ToString(), "PersistAsignacionesComisionText", Logging.Level.Warning);
 
@@ -130,10 +130,10 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>
         /// <remarks> Los datos se obtienen desde un xlsx de https://programafines.ar/inicial/index4.php?a=46</remarks>
-        public static IEnumerable<EntityPersist> PersistComisionesPf(this Db db, Data_calendario calendarioObj, string data)
+        public static IEnumerable<EntityPersist> PersistComisionesPf(this Db db, Calendario calendarioObj, string data)
         {
 
-            var pfidComisiones = db.ComisionesAutorizadasDeCalendarioSql(calendarioObj.id!).Cache().ColOfDict().ColOfVal<string>("pfid");
+            var pfidComisiones = db.ComisionesAutorizadasDeCalendarioSql(calendarioObj.id!).Cache().Dicts().ColOfVal<string>("pfid");
             List<string> dias = new() { "Lunes", "Martes", "Miercoles", "Jueves", "Viernes" };
 
             Dictionary<string, object> dict = new Dictionary<string, object>();
@@ -229,7 +229,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             return persists;
         }
 
-        public static EntityPersist GenerarCursos(this Db db, EntityValues comisionVal)
+        public static EntityPersist GenerarCursos(this Db db, EntityVal comisionVal)
         {
             EntityPersist persist = db.Persist();
             if (comisionVal.IsNullOrEmpty("id") || comisionVal.IsNullOrEmpty("planificacion"))
@@ -238,7 +238,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             IEnumerable<object> idsCursos = db.Sql("curso").
                 Where("$comision = @0").
                 Param("@0", comisionVal.Get("id")).
-                ColOfDict().
+                Dicts().
                 ColOfVal<object>("id");
 
             if (idsCursos.Count() > 0)
@@ -248,11 +248,11 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Select("SUM($horas_catedra) AS suma_horas_catedra").
                 Group("$disposicion__asignatura").
                 Where("$disposicion__planificacion IN ( @0 )").
-                Param("@0", comisionVal.Get("planificacion")).ColOfDict();
+                Param("@0", comisionVal.Get("planificacion")).Dicts();
 
             foreach (Dictionary<string, object?> dh in distribucionesHorariasData)
             {
-                EntityValues cursoVal = db.Values("curso").
+                EntityVal cursoVal = db.Values("curso").
                     Set("comision", comisionVal.Get("id")).
                     Set("asignatura", dh["disposicion__asignatura"]).
                     Set("horas_catedra", dh["suma_horas_catedra"]).

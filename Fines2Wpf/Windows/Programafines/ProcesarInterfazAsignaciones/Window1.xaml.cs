@@ -151,8 +151,8 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                     pfidsComisiones.Add(formItem.comision!, com!["id"]!);
 
                     asignacionesDb = (Dictionary<string, AsignacionDbItem>)ContainerApp.db.AsignacionesDeComisionesSql(com["id"]!).
-                        Cache().ColOfDict().
-                        ColOfObj<AsignacionDbItem>().
+                        Cache().Dicts().
+                        Objs<AsignacionDbItem>().
                         DictOfObjByPropertyNames("persona__numero_documento");
                 }
                 else
@@ -167,12 +167,12 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
             {
                 pfidsComisiones = (Dictionary<string, object?>)ContainerApp.db.
                     ComisionesAutorizadasDePeriodoSql(DateTime.Now.Year, 1).
-                    Cache().ColOfDict().
+                    Cache().Dicts().
                     DictOfObjByPropertyNames("id", "pfid");
 
                 asignacionesDb = (Dictionary<string, AsignacionDbItem>)ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
-                    Cache().ColOfDict().
-                    ColOfObj<AsignacionDbItem>().
+                    Cache().Dicts().
+                    Objs<AsignacionDbItem>().
                     DictOfObjByPropertyNames("persona__numero_documento");
             }
 
@@ -299,7 +299,7 @@ namespace Fines2Wpf.Windows.Programafines.ProcesarInterfazAsignaciones
                                 if (!updatePersonaDb.IsNoE())
                                 {
                                     updatePersonaDb["id"] = personaDbVal.Get("id");
-                                    persist.Update("persona", updatePersonaDb);
+                                    ContainerApp.db.Values("persona").Set(updatePersonaDb).Update(persist);
                                 }
                                 #endregion
 

@@ -14,7 +14,7 @@ namespace Fines2Wpf.Forms.ListaModalidad
 
         public IEnumerable<Dictionary<string, object>> AllModalidad()
         {
-            return ContainerApp.db.Sql("modalidad").Cache().ColOfDict();
+            return ContainerApp.db.Sql("modalidad").Cache().Dicts();
         }
 
         public IDictionary<string, object>? RowByEntityFieldValue(string entityName, string fieldName, object value)

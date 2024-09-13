@@ -20,7 +20,7 @@ namespace Fines2Wpf.Windows.Toma.Contralor
             tomaDataGrid.ItemsSource = tomasOC;
 
             var idTomas = DAO.Toma2.IdTomasPasarSinPlanillaDocenteDePeriodo("2024", "1");
-            var tomas = ContainerApp.db.Sql("toma").Where("$id IN (@0)").Param("@0", idTomas).Cache().ColOfDict();
+            var tomas = ContainerApp.db.Sql("toma").Where("$id IN (@0)").Param("@0", idTomas).Cache().Dicts();
 
             tomasOC.Clear();
             foreach (var item in tomas)

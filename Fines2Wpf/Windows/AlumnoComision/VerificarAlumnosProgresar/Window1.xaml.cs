@@ -38,7 +38,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.VerificarAlumnosProgresar
             }
 
             IEnumerable<Dictionary<string, object?>> asignacionesData = DAO.AlumnoComision2.TodasLasAsignacionesAsignacionesDelSemestrePorDNIQuery("2024", "1", dnis).
-                Cache().ColOfDict();
+                Cache().Dicts();
 
             ContainerApp.db.ClearAndAddDataToOC(asignacionesData, asignacionesOC);
         }

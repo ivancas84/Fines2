@@ -5,7 +5,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class CalificacionValues : EntityValues
+    public class CalificacionValues : EntityVal
     {
         public CalificacionValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
         {
@@ -119,7 +119,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             logging.Clear();
 
             if (IsNullOrEmpty("curso")) throw new Exception("No está definido el curso");
-            var cursoObj = db.Sql("curso").Equal("id", Get("curso")).Cache().Dict()!.Obj<Data_curso_r>();
+            var cursoObj = db.Sql("curso").Equal("id", Get("curso")).Cache().Dict()!.Obj<Curso_>();
 
             if (cursoObj.disposicion.IsNoE())
                 throw new Exception("Disposicion no definida");
@@ -178,9 +178,9 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary>Crear y devolver calificacion error</summary>
         /// <remarks>Este metodo quiza deberia estar en un item y ser un constructor estatico?</remarks>
-        public Data_calificacion_r GetCalificacionConError(int id, string message, string nombres)
+        public Calificacion_ GetCalificacionConError(int id, string message, string nombres)
         {
-            var calificacionError = db.Data<Data_calificacion_r>();
+            var calificacionError = db.Data<Calificacion_>();
             calificacionError.IsError = true;
             calificacionError.Msg += "Id " + id + ": " + message;
             calificacionError.persona__nombres = nombres;

@@ -3,7 +3,7 @@ using SqlOrganize.ValueTypesUtils;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class AlumnoComisionValues : EntityValues
+    public class AlumnoComisionValues : EntityVal
     {
         public AlumnoComisionValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
         {
@@ -47,7 +47,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         /// <exception cref="Exception"></exception>
         public EntityPersist PersistProcesarComisionPersona(object comision, PersonaValues personaVal)
         {
-            Data_comision_r comisionObj = db.Sql("comision").Cache().Id(comision)!.Obj<Data_comision_r>()!;
+            Comision_ comisionObj = db.Sql("comision").Cache().Id(comision)!.Obj<Comision_>()!;
 
             var asignacionData = db.AsignacionComisionDniSql(comision, personaVal.Get("numero_documento")).Cache().Dict();
 

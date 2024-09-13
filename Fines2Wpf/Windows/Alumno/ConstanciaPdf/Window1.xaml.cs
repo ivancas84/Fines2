@@ -93,7 +93,7 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaPdf
             if (string.IsNullOrEmpty(text) || text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = DAO.Alumno.SearchLikeQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = DAO.Alumno.SearchLikeQuery(text).Cache().Dicts(); //busqueda de valores a mostrar en funcion del texto
 
             foreach (var item in list)
             {

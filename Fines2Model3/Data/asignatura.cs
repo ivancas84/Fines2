@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_asignatura : SqlOrganize.Sql.Data
+    public class Asignatura : SqlOrganize.Sql.EntityData
     {
 
         public override string entityName => "asignatura";
 
         public override void Default()
         {
-            EntityValues val = db!.Values("asignatura");
+            EntityVal val = db!.Values("asignatura");
             _id = (string?)val.GetDefault("id");
         }
 

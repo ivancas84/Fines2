@@ -111,7 +111,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             resolucionInscripcionComboBox.SelectedValuePath = "id";
             resolucionInscripcionComboBox.DisplayMemberPath = "numero";
             resolucionInscripcionComboBox.ItemsSource = resolucionOC;
-            var data = ContainerApp.db.Sql("resolucion").Order("$numero ASC").Cache().ColOfDict();
+            var data = ContainerApp.db.Sql("resolucion").Order("$numero ASC").Cache().Dicts();
             ContainerApp.db.ClearAndAddDataToOC(data, resolucionOC);
             #endregion
 
@@ -119,7 +119,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             planComboBox.SelectedValuePath = "id";
             planComboBox.DisplayMemberPath = "Label";
             planComboBox.ItemsSource = planOC;
-            var dataPlan = ContainerApp.db.Sql("plan").Order("$orientacion ASC").Cache().ColOfDict();
+            var dataPlan = ContainerApp.db.Sql("plan").Order("$orientacion ASC").Cache().Dicts();
 
             planOC.Clear();
             foreach (var item in dataPlan)
@@ -220,7 +220,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             var data = ContainerApp.db.Sql("alumno_comision").
                 Where("$alumno = @0").
                 Order("$calendario-anio DESC, $calendario-semestre DESC").
-                Param("@0", a.id!).Cache().ColOfDict();
+                Param("@0", a.id!).Cache().Dicts();
 
             foreach (var item in data)
             {
@@ -247,7 +247,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (a.plan.IsNoE())
                 return;
             
-            var data = calificacionDAO.CalificacionesDeAlumnoPlanArchivoQuery(a.id!, a.plan!, false).Cache().ColOfDict();
+            var data = calificacionDAO.CalificacionesDeAlumnoPlanArchivoQuery(a.id!, a.plan!, false).Cache().Dicts();
 
             foreach (var item in data)
             {
@@ -286,7 +286,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (a.IsNoE() || a.id.IsNoE())
                 return;
 
-            var data = calificacionDAO.CalificacionesArchivadasDeAlumnoQuery(a.id!).Cache().ColOfDict();
+            var data = calificacionDAO.CalificacionesArchivadasDeAlumnoQuery(a.id!).Cache().Dicts();
 
             foreach (var item in data)
             {
@@ -310,7 +310,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             var data = ContainerApp.db.Sql("disposicion").
                 Where("$planificacion__plan = @0").
-                Param("@0", a.plan!).Cache().ColOfDict();
+                Param("@0", a.plan!).Cache().Dicts();
 
             foreach (var item in data)
             {
@@ -326,7 +326,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
             var data = ContainerApp.db.Sql("detalle_persona").
                 Where("$persona = @0").
-                Param("@0", p.id!).Cache().ColOfDict();
+                Param("@0", p.id!).Cache().Dicts();
 
             foreach (var item in data)
             {
@@ -412,7 +412,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (this.personaComboBox.Text.IsNoE() || this.personaComboBox.Text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object>> list = DAO.Persona.SearchLikeQuery(this.personaComboBox.Text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object>> list = DAO.Persona.SearchLikeQuery(this.personaComboBox.Text).Cache().Dicts(); //busqueda de valores a mostrar en funcion del texto
 
             foreach (var item in list)
             {
@@ -505,7 +505,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (asignacion.SearchComision.IsNoE() || asignacion.SearchComision.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(asignacion.SearchComision).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(asignacion.SearchComision).Cache().Dicts(); //busqueda de valores a mostrar en funcion del texto
             foreach(var item in list)
             {
                 var val = ContainerApp.db.Values("comision").Set(item);
@@ -769,7 +769,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             if (calificacion.SearchCurso.IsNoE() || calificacion.SearchCurso.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.BusquedaAproximadaCurso(calificacion.SearchCurso).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.BusquedaAproximadaCurso(calificacion.SearchCurso).Cache().Dicts(); //busqueda de valores a mostrar en funcion del texto
             foreach (var item in list)
             {
                 var val = (CursoValues)ContainerApp.db.Values("curso").Set(item);
@@ -855,7 +855,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
             Microsoft.Win32.OpenFileDialog openFileDlg = new Microsoft.Win32.OpenFileDialog();
 
             var button = (e.OriginalSource as Button);
-            var dp = (DetallePersona)button!.DataContext;
+            var 0 = (DetallePersona)button!.DataContext;
             var alu = (Data_alumno)alumnoGroupBox.DataContext;
             bool? result = openFileDlg.ShowDialog();  // Launch OpenFileDialog by calling ShowDialog method
 
@@ -882,7 +882,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                     dp.descripcion = dp.descripcion.IsNoE() ? dp.archivo__name : dp.descripcion;
                     dp.persona = alu.persona;
 
-                    EntityValues archivoVal = ContainerApp.db.Values("file", "archivo").Set(dp).Default();
+                    EntityVal archivoVal = ContainerApp.db.Values("file", "archivo").Set(dp).Default();
                     
                     ContainerApp.db.Persist().Persist(archivoVal)
                         .Persist("detalle_persona", dp)
@@ -983,7 +983,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 
 
 
-            EntityValues ticketsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_tickets").Default().
+            EntityVal ticketsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_tickets").Default().
                Set("subject", persona.apellidos!.ToUpper() + ", " + persona.nombres!.ToTitleCase() + ": " + tituloTextBox.Text).
                Set("status", 4). //cerrada
                Set("category", 2). //legajo
@@ -992,7 +992,7 @@ namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
                Set("cust_28", comentarioTextBox.Text). //comentario
                Set("assigned_agent", "").Reset();
 
-            EntityValues threadsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_threads").Default().
+            EntityVal threadsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_threads").Default().
                 Set("ticket", ticketsValues.Get("id")).
                 Set("body", threads_body.ToString()).Reset();
 

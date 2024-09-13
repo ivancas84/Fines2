@@ -8,7 +8,7 @@ namespace Fines2Wpf.Forms.ListaPlanificacion.DAO
 
         public IEnumerable<Dictionary<string, object>> All()
         {
-            return ContainerApp.db.Sql("planificacion").Cache().ColOfDict();
+            return ContainerApp.db.Sql("planificacion").Cache().Dicts();
         }
 
         public void UpdateValueRel(string key, object value, Dictionary<string, object> source)

@@ -38,7 +38,7 @@ namespace Fines2Wpf.Forms.ListaSedesSemestre
         private void ComisionSearch()
         {
             IEnumerable<Dictionary<string, object>> list = comisionDAO.Search(comisionSearch);
-            sedeGrid.ItemsSource = list.ColOfObj<Sede>();
+            sedeGrid.ItemsSource = list.Objs<Sede>();
         }
 
         private void BuscarButton_Click(object sender, RoutedEventArgs e)

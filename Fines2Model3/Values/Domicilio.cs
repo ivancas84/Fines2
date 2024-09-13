@@ -2,7 +2,7 @@
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class DomicilioValues : EntityValues
+    public class DomicilioValues : EntityVal
     {
         public DomicilioValues(Db _db, string entityName, string? _fieldId = null) : base(_db, entityName, _fieldId)
         {

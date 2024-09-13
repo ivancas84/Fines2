@@ -2,7 +2,7 @@
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class AlumnoValues : EntityValues
+    public class AlumnoValues : EntityVal
     {
         public AlumnoValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
         {
@@ -51,7 +51,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             #region Desarchivar calificaciones aprobadas del mismo plan
             IEnumerable < Dictionary<string, object?>> calificacionesAprobadas = db.CalificacionesAprobadasDeAlumnoPlanConAnioSemestreIngresoSql(Get("plan"), Get("id"), Get("anio_ingreso"), Get("semestre_ingreso")).
-                ColOfDict();
+                Dicts();
 
             idsCalificaciones = calificacionesAprobadas.ColOfVal<object>("id");
 
@@ -71,14 +71,12 @@ namespace SqlOrganize.Sql.Fines2Model3
             {
                 if (!idsDisposicionesAprobadas.Contains(id))
                 {
-                    Data_calificacion calificacionObj = db.Data<Data_calificacion>();
+                    Calificacion_ calificacionObj = db.Data<Calificacion_>();
                     calificacionObj.Default();
                     calificacionObj.disposicion = (string)id;
                     calificacionObj.alumno = (string)Get("id");
                     calificacionObj.archivado = false;
-                    db.Persist().
-                        Insert("calificacion", calificacionObj).
-                        AddTo(persists);
+                    db.Values("calificacion").Set(calificacionObj).Insert().AddTo(persists);
                 }
             }
             #endregion

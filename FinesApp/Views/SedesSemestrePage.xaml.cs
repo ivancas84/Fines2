@@ -16,8 +16,8 @@ namespace FinesApp.Views;
 public partial class SedesSemestrePage : Page, INotifyPropertyChanged
 {
 
-    private ObservableCollection<Data_calendario> ocCalendario = new();
-    private ObservableCollection<Data_sede_r> ocSede = new();
+    private ObservableCollection<Calendario> ocCalendario = new();
+    private ObservableCollection<Sede_> ocSede = new();
 
     public SedesSemestrePage()
     {
@@ -26,7 +26,7 @@ public partial class SedesSemestrePage : Page, INotifyPropertyChanged
 
         #region cbxCalendario
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        var data = ContainerApp.db.Sql("calendario").Cache().ColOfDict();
+        var data = ContainerApp.db.Sql("calendario").Cache().Dicts();
         ContainerApp.db.ClearAndAddDataToOC(data, ocCalendario);
         #endregion
 
@@ -41,10 +41,10 @@ public partial class SedesSemestrePage : Page, INotifyPropertyChanged
                 throw new Exception("Debe seleccionar calendario");
 
             IEnumerable<object> idSedes = ContainerApp.db.ComisionesAutorizadasDeCalendarioSql(cbxCalendario.SelectedValue).
-                Cache().ColOfDict().ColOfVal<object>("sede");
+                Cache().Dicts().ColOfVal<object>("sede");
 
             var sedeData = ContainerApp.db.Sql("sede").Where("$id IN (@0)").
-                Order("$nombre ASC").Param("@0", idSedes).Cache().ColOfDict();
+                Order("$nombre ASC").Param("@0", idSedes).Cache().Dicts();
             ContainerApp.db.ClearAndAddDataToOC(sedeData, ocSede);
 
             ToastExtensions.Show("La consulta devolvió " + sedeData.Count() + " registros.");

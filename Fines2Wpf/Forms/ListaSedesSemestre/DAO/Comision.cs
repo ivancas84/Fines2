@@ -26,7 +26,7 @@ namespace Fines2Wpf.Forms.ListaSedesSemestre.DAO
             }
     
 
-            return q.Cache().ColOfDict();
+            return q.Cache().Dicts();
         }
 
         public void UpdateValueRel(string key, object value, Dictionary<string, object?> source)

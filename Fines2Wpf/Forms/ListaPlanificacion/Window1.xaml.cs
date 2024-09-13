@@ -18,7 +18,7 @@ namespace Fines2Wpf.Forms.ListaPlanificacion
             InitializeComponent();
             planificacionGrid.CellEditEnding += PlanificacionGrid_CellEditEnding;
             IEnumerable<Dictionary<string, object>> list = planificacionDAO.All();
-            planificacionGrid.ItemsSource = list.ColOfObj<Planificacion>();
+            planificacionGrid.ItemsSource = list.Objs<Planificacion>();
         }
 
 

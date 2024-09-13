@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlOrganize", "SqlOrganize\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqlOrganizeMy", "SqlOrganizeMy\SqlOrganizeMy.csproj", "{1A700C8C-392E-41A5-BD75-5E4FC4D5DE59}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fines2Wpf", "Fines2Wpf\Fines2Wpf.csproj", "{93DB5E13-1437-4C36-A6E1-9084C05ACEA8}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PedidosMigracion", "PedidosMigracion\PedidosMigracion.csproj", "{F96FF7FA-5972-4170-B1C6-47BEC6ED6152}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{7EFAD90A-4D1E-44D6-B3B7-87115014499E}"
@@ -25,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinesApp", "FinesApp\FinesA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FinesApp.Core", "FinesApp.Core\FinesApp.Core.csproj", "{EF6EA1C6-4EB4-4633-AF73-D35255B65DB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfUtils", "WpfUtils\WpfUtils.csproj", "{CB1D4A9B-2913-4090-B511-361698E80264}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfUtils", "WpfUtils\WpfUtils.csproj", "{CB1D4A9B-2913-4090-B511-361698E80264}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +39,6 @@ Global
 		{1A700C8C-392E-41A5-BD75-5E4FC4D5DE59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A700C8C-392E-41A5-BD75-5E4FC4D5DE59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A700C8C-392E-41A5-BD75-5E4FC4D5DE59}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93DB5E13-1437-4C36-A6E1-9084C05ACEA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93DB5E13-1437-4C36-A6E1-9084C05ACEA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93DB5E13-1437-4C36-A6E1-9084C05ACEA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93DB5E13-1437-4C36-A6E1-9084C05ACEA8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F96FF7FA-5972-4170-B1C6-47BEC6ED6152}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F96FF7FA-5972-4170-B1C6-47BEC6ED6152}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F96FF7FA-5972-4170-B1C6-47BEC6ED6152}.Release|Any CPU.ActiveCfg = Release|Any CPU

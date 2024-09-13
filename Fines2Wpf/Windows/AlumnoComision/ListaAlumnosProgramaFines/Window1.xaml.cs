@@ -25,7 +25,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosProgramaFines
             alumnosNoActivosDataGrid.ItemsSource = alumnosNoActivosEnProgramaFinesOC;
 
             var alumnoComisionData = new List<Dictionary<string,object?>>();
-            //var alumnoComisionData = DAO.AlumnoComision2.AsignacionesActivasDeComisionesAutorizadasSinProgramafinesPorSemestreQuery("2024", "1").Cache().ColOfDict();
+            //var alumnoComisionData = DAO.AlumnoComision2.AsignacionesActivasDeComisionesAutorizadasSinProgramafinesPorSemestreQuery("2024", "1").Cache().Dicts();
 
             alumnosOC.Clear();
             foreach(var ac in alumnoComisionData)
@@ -38,7 +38,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosProgramaFines
             jsonTextBox.Text = Newtonsoft.Json.JsonConvert.SerializeObject(alumnosOC);
 
             alumnosNoActivosEnProgramaFinesOC.Clear();
-            var asignacionesNoActivasData = DAO.AlumnoComision2.AsignacionesNoActivasDeComisionesAutorizadasConProgramafinesPorSemestreQuery("2024", "1").Cache().ColOfDict();
+            var asignacionesNoActivasData = DAO.AlumnoComision2.AsignacionesNoActivasDeComisionesAutorizadasConProgramafinesPorSemestreQuery("2024", "1").Cache().Dicts();
             foreach (var ac in asignacionesNoActivasData)
             {
                 var apf = AlumnoProgramaFines(ac);

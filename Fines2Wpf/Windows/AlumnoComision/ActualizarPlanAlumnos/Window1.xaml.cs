@@ -17,12 +17,12 @@ namespace Fines2Wpf.Windows.AlumnoComision.ActualizarPlanAlumnos
         {
             InitializeComponent();
         
-            var comisiones = ContainerApp.db.ComisionesAutorizadasDePeriodoSql("2024", "1").Cache().ColOfDict();
+            var comisiones = ContainerApp.db.ComisionesAutorizadasDePeriodoSql("2024", "1").Cache().Dicts();
             bool persist_ = false;
             var persist = ContainerApp.db.Persist();
             foreach (var comision in comisiones)
             {
-                var idAlumnos = DAO.AlumnoComision2.AsignacionesDeComisionSinPlanQuery(comision["id"]!, comision["planificacion__plan"]!).Cache().ColOfDict().ColOfVal<object>("alumno");
+                var idAlumnos = DAO.AlumnoComision2.AsignacionesDeComisionSinPlanQuery(comision["id"]!, comision["planificacion__plan"]!).Cache().Dicts().ColOfVal<object>("alumno");
                 if (idAlumnos.IsNoE()) continue;
                 persist_ = true;
                 persist.UpdateValueIds("alumno", "plan", comision["planificacion__plan"], idAlumnos.ToArray());

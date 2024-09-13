@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class ComisionValues : EntityValues
+    public class ComisionValues : EntityVal
     {
         public ComisionValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
         {
@@ -14,7 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             var s = "";
 
-            EntityValues? v = GetValuesCache("sede");
+            EntityVal? v = GetValuesCache("sede");
             s += (!v.IsNoE()) ? (v.GetOrNull("numero")?.ToString() ?? "?") : "?";
             s += GetOrNull("division")?.ToString() ?? "?";
             s += "/";
@@ -92,7 +92,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             IEnumerable<object> idsCursos = db.Sql("curso").
                 Where("$comision = @0").
                 Param("@0", Get("id")).
-                ColOfDict().
+                Dicts().
                 ColOfVal<object>("id");
             
             if(idsCursos.Count()>0)
@@ -103,11 +103,11 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Group("$disposicion__asignatura").
                 Where("$disposicion__planificacion IN ( @0 )").
                 Param("@0", Get("planificacion")).
-                ColOfDict();
+                Dicts();
 
             foreach(Dictionary<string, object?> dh in distribucionesHorariasData)
             {
-                EntityValues cursoVal = db.Values("curso").
+                EntityVal cursoVal = db.Values("curso").
                     Set("comision", Get("id")).
                     Set("asignatura", dh["disposicion__asignatura"]).
                     Set("horas_catedra", dh["suma_horas_catedra"]).
@@ -136,7 +136,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                Size(0).
                Param("@0", anioCalendario).
                Param("@1", semestreCalendario).
-               ColOfDict();
+               Dicts();
 
             List<EntityPersist> persists = new();
             for(var i = 0; i < comisionesAutorizadasSemestre.Count(); i++)

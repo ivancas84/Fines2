@@ -1,6 +1,6 @@
 ﻿namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class SedeValues : EntityValues
+    public class SedeValues : EntityVal
     {
         public SedeValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
         {
@@ -11,9 +11,9 @@
             var obj = base.GetData<T>();
 
 
-            if (obj is Data_sede_r c)
+            if (obj is Sede_ c)
             {
-                EntityValues domicilioVal = GetValuesCache("domicilio");
+                EntityVal domicilioVal = GetValuesCache("domicilio");
                 c.domicilio__Label = domicilioVal.ToString(); 
             }
 

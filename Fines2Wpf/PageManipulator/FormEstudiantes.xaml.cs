@@ -16,7 +16,7 @@ namespace Fines2Wpf.PageManipulator
         {
 
             InitializeComponent();
-            var asignaciones = asignacionDAO.AsignacionesActivasDeComisionesAutorizadasPorSemestreQuery("2023", "2").Cache().ColOfDict();
+            var asignaciones = asignacionDAO.AsignacionesActivasDeComisionesAutorizadasPorSemestreQuery("2023", "2").Cache().Dicts();
 
             asignacionesTextBox.Text = @"[
 ";

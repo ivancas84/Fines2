@@ -41,7 +41,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.TransferirAlumnosActivos
                     AND $estado = 'Activo'
                 ")
                 .Param("@0", calendarioAnioTextBox.Text).Param("@1", calendarioSemestreTextBox.Text)
-                .Cache().ColOfDict()
+                .Cache().Dicts()
                 .DictOfListByKeys("comision__comision_siguiente");
            
             asignacionOC.Clear();
@@ -54,7 +54,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.TransferirAlumnosActivos
                     acObj.comision__Label = acObj.sede__numero + acObj.comision__division + "/" + acObj.planificacion__anio + acObj.planificacion__semestre;
                     asignacionOC.Add(acObj);
 
-                    EntityValues acVal = ContainerApp.db.Values("alumno_comision").
+                    EntityVal acVal = ContainerApp.db.Values("alumno_comision").
                         Set("comision", idComisionSiguiente).
                         Set("alumno", acObj.alumno).
                         Set("estado", "Activo").Default().Reset();

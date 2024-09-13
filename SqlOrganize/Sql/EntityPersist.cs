@@ -169,7 +169,12 @@ WHERE " + id + " = @update_" + id + i + @";
             return this;
         }
 
-        public EntityPersist UpdateValue(EntityVal values, string fieldName, object? newValue)
+        public EntityPersist UpdateVal(EntityVal values, string fieldName)
+        {
+            UpdateValueIds(values.entityName, fieldName, values.Get(fieldName), values.Get("id"));
+            return this;
+        }
+        public EntityPersist UpdateVal(EntityVal values, string fieldName, object? newValue)
         {
             UpdateValueIds(values.entityName, fieldName, newValue, values.Get("id"));
             values.Set(fieldName, newValue);

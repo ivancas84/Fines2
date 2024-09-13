@@ -27,7 +27,7 @@ namespace Fines2Wpf.Pedidos.Windows.GenerarTareasCalificacionesSemestre
         {
             Data_toma_r search = (Data_toma_r)searchGroupBox.DataContext;
             tomaOC.Clear();
-            var data = tomaDAO.TomasAprobadasSemestreQuery(search.calendario__anio!, search.calendario__semestre!).Cache().ColOfDict();
+            var data = tomaDAO.TomasAprobadasSemestreQuery(search.calendario__anio!, search.calendario__semestre!).Cache().Dicts();
             foreach (var item in data)
             {
                 //item.Obj<Data_disposicion_r>();
@@ -45,7 +45,7 @@ namespace Fines2Wpf.Pedidos.Windows.GenerarTareasCalificacionesSemestre
             foreach (var t in tomaOC)
             {
                 string cursoLabel = t.comision__pfid + " " + t.sede__numero + t.comision__division + "/" + t.planificacion__anio + t.planificacion__semestre + " " + t.calendario__anio + "-" + t.calendario__semestre + " " + t.asignatura__nombre + " " + t.asignatura__codigo;
-                EntityValues ticketsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_tickets").Default().
+                EntityVal ticketsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_tickets").Default().
                    Set("subject", " " + cursoLabel + ": " + t.docente__apellidos!.ToUpper() + ", " + t.docente__nombres).
                    Set("status", 1).
                    Set("cust_24", t.docente__numero_documento).
@@ -53,7 +53,7 @@ namespace Fines2Wpf.Pedidos.Windows.GenerarTareasCalificacionesSemestre
                    Set("cust_28", "Carga de calificación período " + search.calendario__anio + "-" + search.calendario__semestre).
                    Set("assigned_agent", "").Reset();
 
-                EntityValues threadsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_threads").Default().
+                EntityVal threadsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_threads").Default().
                     Set("ticket", ticketsValues.Get("id")).
                     Set("body", @"
                         <p>SEDE " + t.sede__nombre + @"</p>

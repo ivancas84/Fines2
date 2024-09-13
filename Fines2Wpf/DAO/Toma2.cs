@@ -88,7 +88,7 @@ namespace Fines2Wpf.DAO
 
         public static IEnumerable<object> IdTomasPasarSinPlanillaDocenteDePeriodo(object calendarioAnio, object calendarioSemestre)
         {
-            IEnumerable<object> id_tomas = TomasPasarDePeriodoSql(calendarioAnio, calendarioSemestre).Cache().ColOfDict().ColOfVal<object>("id");
+            IEnumerable<object> id_tomas = TomasPasarDePeriodoSql(calendarioAnio, calendarioSemestre).Cache().Dicts().ColOfVal<object>("id");
 
             IEnumerable<object> id_tomas_con_planilla_docente =  ContainerApp.db.Sql("asignacion_planilla_docente")
                 .Fields()
@@ -97,7 +97,7 @@ namespace Fines2Wpf.DAO
                     $calendario__anio = @0 
                     AND $calendario__semestre = @1
                 ")
-                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre).Cache().ColOfDict().ColOfVal<object>("toma");
+                .Param("@0", calendarioAnio).Param("@1", calendarioSemestre).Cache().Dicts().ColOfVal<object>("toma");
 
 
             bool collectionsEqual = id_tomas.SequenceEqual(id_tomas_con_planilla_docente);

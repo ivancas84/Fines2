@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_email : SqlOrganize.Sql.Data
+    public class Email : SqlOrganize.Sql.EntityData
     {
 
         public override string entityName => "email";
 
         public override void Default()
         {
-            EntityValues val = db!.Values("email");
+            EntityVal val = db!.Values("email");
             _id = (string?)val.GetDefault("id");
             _verificado = (bool?)val.GetDefault("verificado");
             _insertado = (DateTime?)val.GetDefault("insertado");

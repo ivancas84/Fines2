@@ -17,13 +17,13 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
 {
 
     #region Autocomplete v3 - organismo
-    private ObservableCollection<Data_curso_r> cursoOC = new(); //datos consultados de la base de datos
+    private ObservableCollection<Curso_> cursoOC = new(); //datos consultados de la base de datos
     private DispatcherTimer cursoTypingTimer; //timer para buscar
     #endregion
 
-    private ObservableCollection<Data_calificacion_r> calificacionProcesadaOC = new();
-    private ObservableCollection<Data_calificacion_r> calificacionAprobadaOC = new(); //calificaciones aprobadas del curso
-    private ObservableCollection<Data_alumno_comision_r> asignacionDesaprobadaOC = new(); //asignaciones activas que no figuran aprobadas del curso
+    private ObservableCollection<Calificacion_> calificacionProcesadaOC = new();
+    private ObservableCollection<Calificacion_> calificacionAprobadaOC = new(); //calificaciones aprobadas del curso
+    private ObservableCollection<AlumnoComision_> asignacionDesaprobadaOC = new(); //asignaciones activas que no figuran aprobadas del curso
 
     List<EntityPersist> persists = new();
 
@@ -79,7 +79,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
 
     private void EliminarButton_Click(object sender, RoutedEventArgs e)
     {
-        var calificaciones = ContainerApp.db.CalificacionesCursoSql(cursoComboBox.SelectedValue).Cache().ColOfDict().ColOfVal<object>("id");
+        var calificaciones = ContainerApp.db.CalificacionesCursoSql(cursoComboBox.SelectedValue).Cache().Dicts().ColOfVal<object>("id");
 
         if (!calificaciones.Any())
         {
@@ -104,7 +104,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
             return;
         }
 
-        var cursoSeleccionado = (Data_curso_r)cursoComboBox.SelectedItem;
+        var cursoSeleccionado = (Curso_)cursoComboBox.SelectedItem;
         if (cursoSeleccionado.IsNoE())
         {
             ToastExtensions.Show("Falta seleccionar el curso");
@@ -137,7 +137,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
 
                 calificacionVal.PersistProcesarCurso(cursoSeleccionado.id).AddToIfSql(persists);
 
-                Data_calificacion_r calificacionObj = calificacionVal.GetData<Data_calificacion_r>();
+                Calificacion_ calificacionObj = calificacionVal.GetData<Calificacion_>();
 
                 dnisProcesados.Add(calificacionObj.persona__numero_documento);
 

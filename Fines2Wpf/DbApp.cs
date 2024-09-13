@@ -11,7 +11,7 @@ namespace Fines2Wpf
         }
 
 
-        public override EntityValues Values(string entityName, string? fieldId = null)
+        public override EntityVal Values(string entityName, string? fieldId = null)
         {
             switch (entityName)
             {
@@ -49,7 +49,7 @@ namespace Fines2Wpf
                     return new CursoValues(this, entityName, fieldId);
             }
 
-            return new EntityValues(this, entityName, fieldId);
+            return new EntityVal(this, entityName, fieldId);
 
         }
     }

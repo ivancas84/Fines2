@@ -109,7 +109,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
 
         private void LoadData()
         {
-            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.Sql("comision").Search(comisionSearch).Size(0).Cache().ColOfDict();
+            IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.Sql("comision").Search(comisionSearch).Size(0).Cache().Dicts();
             IEnumerable<object> idsSede = list.ColOfVal<object>("sede");
             IEnumerable<object> idsComision = list.ColOfVal<object>("id");
 
@@ -118,7 +118,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                 referentesData = (Dictionary<string, List<Dictionary<string, object?>>>)ContainerApp.db.Sql("designacion").
                 Where("$cargo__descripcion IN ('Colaborador', 'Referente') AND $sede IN( @0 ) AND $hasta IS NULL").
                 Param("@0", idsSede).
-                Cache().ColOfDict().
+                Cache().Dicts().
                 DictOfListByKeys("sede");
             }
 
@@ -139,7 +139,7 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                         $comision IN ( @0 ) AND $estado = 'Activo'
                     ").
                     Param("@0", idsComision).
-                    ColOfDict().
+                    Dicts().
                     DictOfDictByKeysValue("cantidad", "comision");
 
                 cantidadAlumnosPorComision = (Dictionary<string, object?>)ContainerApp.db.Sql("alumno_comision").
@@ -150,10 +150,10 @@ namespace Fines2Wpf.Windows.Comision.ListaComisionesSemestre
                         $comision IN ( @0 )
                     ").
                     Param("@0", idsComision).
-                    ColOfDict().
+                    Dicts().
                     DictOfDictByKeysValue("cantidad", "comision");
 
-                horariosComision = (Dictionary<string, List<Dictionary<string, object?>>>)comisionDAO.HorariosQuery(idsComision).Cache().ColOfDict().DictOfListByKeys("curso__comision");
+                horariosComision = (Dictionary<string, List<Dictionary<string, object?>>>)comisionDAO.HorariosQuery(idsComision).Cache().Dicts().DictOfListByKeys("curso__comision");
 
             }
 

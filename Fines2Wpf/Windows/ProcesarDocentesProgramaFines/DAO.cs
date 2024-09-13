@@ -16,7 +16,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                     AND $calendario-semestre = @1 
                     AND $pfid IS NOT NULL
                 ")
-                .Param("@0", "2024").Param("@1", "1").Cache().ColOfDict().ColOfVal<string>("pfid");
+                .Param("@0", "2024").Param("@1", "1").Cache().Dicts().ColOfVal<string>("pfid");
 
         }
 

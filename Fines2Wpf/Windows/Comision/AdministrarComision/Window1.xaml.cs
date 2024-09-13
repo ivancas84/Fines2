@@ -77,7 +77,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
 
             var data = ContainerApp.db.Sql("modalidad").
                 Order("$nombre").
-                Cache().ColOfDict();
+                Cache().Dicts();
 
             ContainerApp.db.ClearAndAddDataToOC(data, modalidadOC);
             #endregion
@@ -89,7 +89,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
 
             data = ContainerApp.db.Sql("planificacion").
                 Order("$plan__distribucion_horaria DESC, $anio ASC, $semestre ASC").
-                Cache().ColOfDict();
+                Cache().Dicts();
 
             planificacionOC.Clear();
             foreach (var item in data)
@@ -107,7 +107,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
 
             data = ContainerApp.db.Sql("calendario").
                 Order("$anio DESC, $semestre DESC, $inicio DESC, $fin DESC, $descripcion ASC").
-                Cache().ColOfDict();
+                Cache().Dicts();
 
             calendarioOC.Clear();
             foreach (var item in data)
@@ -156,7 +156,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
         {
             var comision = (Data_comision)comisionGroupBox.DataContext;
             cursoOC.Clear();
-            cursoOC.AddRange(cursoDAO.CursosDeComisionQuery(comision.id!).Cache().ColOfDict().ColOfObj<Data_curso_r>());
+            cursoOC.AddRange(cursoDAO.CursosDeComisionQuery(comision.id!).Cache().Dicts().Objs<Data_curso_r>());
 
         }
 
@@ -248,7 +248,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             if (text.IsNoE() || text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = sedeDAO.BusquedaAproximadaQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = sedeDAO.BusquedaAproximadaQuery(text).Cache().Dicts(); //busqueda de valores a mostrar en funcion del texto
 
             foreach (var item in list)
             {
@@ -312,7 +312,7 @@ namespace Fines2Wpf.Windows.Comision.AdministrarComision
             if (text.IsNoE() || text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = comisionDAO.BusquedaAproximadaQuery(text).Cache().Dicts(); //busqueda de valores a mostrar en funcion del texto
 
             foreach (var item in list)
             {

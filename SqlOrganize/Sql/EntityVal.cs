@@ -843,6 +843,11 @@ namespace SqlOrganize.Sql
             return db.Persist().Update(this);
         }
 
+        public EntityPersist Update(string fieldName)
+        {
+            return db.Persist().UpdateVal(this, fieldName);
+        }
+
         public EntityVal Insert(EntityPersist persist)
         {
             persist.Insert(this);

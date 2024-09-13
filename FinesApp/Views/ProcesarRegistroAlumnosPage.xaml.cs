@@ -14,7 +14,7 @@ namespace FinesApp.Views;
 
 public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
 {
-    private ObservableCollection<Data_alumno_comision_r> asignacionRegistroOC = new();
+    private ObservableCollection<AlumnoComision_> asignacionRegistroOC = new();
 
     public ProcesarRegistroAlumnosPage()
     {
@@ -29,9 +29,9 @@ public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
     {
         asignacionRegistroOC.Clear();
 
-        IDictionary<string, Data_alumno_comision_r> asignacionesDb = ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
-            Cache().ColOfDict().
-            ColOfObj<Data_alumno_comision_r>().
+        IDictionary<string, AlumnoComision_> asignacionesDb = ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
+            Cache().Dicts().
+            Objs<AlumnoComision_>().
             DictOfObjByPropertyNames("persona__numero_documento");
 
         IEnumerable<string> _headers = headersTextBox.Text.Split(", ").Select(s => s.Trim());
@@ -46,7 +46,7 @@ public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
 
             var values = _data[j].Split("\t");
 
-            Data_alumno_comision_r asignacionForm = new();
+            AlumnoComision_ asignacionForm = new();
             for (var i = 0; i < _headers.Count(); i++)
                 asignacionForm.SetPropertyValue(_headers.ElementAt(i), values.ElementAt(i));
 

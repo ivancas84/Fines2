@@ -96,7 +96,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 asignacionData = ContainerApp.db.Sql("alumno_comision").
                 Where("$comision = @0").
                 Order("$estado ASC, $persona__apellidos ASC, $persona__nombres ASC").
-                Param("@0", curso.comision!).Cache().ColOfDict();
+                Param("@0", curso.comision!).Cache().Dicts();
                 idsAlumnos = asignacionData.ColOfVal<object>("alumno");
                 dnis = asignacionData.ColOfVal<string>("persona__numero_documento");
                 asignacionOC.Clear();
@@ -128,7 +128,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 Where(" AND $disposicion__planificacion = @1").
                 Where(" AND $alumno IN (@2)").
                 Where(" AND ($nota_final >= 7 OR $crec >= 4)").
-                Param("@0", curso.asignatura!).Param("@1", curso.comision__planificacion!).Param("@2", idsAlumnos).Cache().ColOfDict();
+                Param("@0", curso.asignatura!).Param("@1", curso.comision__planificacion!).Param("@2", idsAlumnos).Cache().Dicts();
                 calificacionExistenteOC.Clear();
                 foreach (Dictionary<string, object?> kvp in calificacionExistenteData)
                 {
@@ -166,13 +166,13 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
             IDictionary<string, Dictionary<string, object?>> personasExistentesPorDNI = ContainerApp.db.Sql("persona").
                 Where("$numero_documento IN (@0)").
                 Param("@0", dnisCalificaciones).
-                Cache().ColOfDict().
+                Cache().Dicts().
                 DictOfDictByKeys("numero_documento");
 
             IDictionary<string, Dictionary<string, object?>>  alumnosExistentesPorDNI = ContainerApp.db.Sql("alumno").
                 Where("$persona__numero_documento IN (@0)").
                 Param("@0", dnisCalificaciones).
-                Cache().ColOfDict().
+                Cache().Dicts().
                 DictOfDictByKeys("persona__numero_documento");
 
             IDictionary<string, Dictionary<string, object?>> asignacionesExistentesPorDNI = asignacionData.DictOfDictByKeys("persona__numero_documento");
@@ -292,7 +292,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                                 Where("$alumno = @0").
                                 Param("@0", calificacion.alumno).
                                 Order("$calendario__anio DESC, $calendario__semestre DESC").
-                                Cache().ColOfDict();
+                                Cache().Dicts();
                             List<string> asignacionesExistentesLabel = new();
                             foreach (var item in asignacionesExistentes)
                             {
@@ -342,7 +342,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
 
                 var values = datos.ElementAt(j).Split("\t");
 
-                EntityValues calificacion = ContainerApp.db.Values("calificacion");
+                EntityVal calificacion = ContainerApp.db.Values("calificacion");
                 for (var i = 0; i < encabezados.Count(); i++)
                 {
                     if (values.ElementAt(i).IsNoE()) continue;
@@ -390,7 +390,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 if (cal.agregar_persona)
                 {
                     cal.domicilio_per__id = null;
-                    EntityValues valPer = ContainerApp.db.Values("persona","persona").Set(cal).Default().Reset();
+                    EntityVal valPer = ContainerApp.db.Values("persona","persona").Set(cal).Default().Reset();
                     if (valPer.Check())
                     {
                         persist.Insert(valPer);
@@ -410,7 +410,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                     cal.alumno__anio_ingreso = "1";
                     cal.alumno__semestre_ingreso = 1;
                     cal.alumno__resolucion_inscripcion = null;
-                    EntityValues valAlu = ContainerApp.db.Values("alumno", "alumno").Set(cal!).Default().Reset();
+                    EntityVal valAlu = ContainerApp.db.Values("alumno", "alumno").Set(cal!).Default().Reset();
                     if (valAlu.Check())
                     {
                         persist.Insert(valAlu);
@@ -427,7 +427,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                 {
                     //Si el alumno existe pero no existe la asignacion, se consultan las asignaciones existentes del alumno
                     
-                    EntityValues valAc = ContainerApp.db.Values("alumno_comision").
+                    EntityVal valAc = ContainerApp.db.Values("alumno_comision").
                         Set("comision", curso.comision).
                         Set("alumno", cal.alumno).
                         Set("estado", "Activo").
@@ -443,7 +443,7 @@ namespace Fines2Wpf.Windows.Calificacion.CargarCalificacionesCurso
                     }
                 }
 
-                EntityValues valCal = ContainerApp.db.Values("calificacion").Set(cal).Default().Reset();
+                EntityVal valCal = ContainerApp.db.Values("calificacion").Set(cal).Default().Reset();
                 if (valCal.Check())
                     persist.Insert(valCal);
                 else { 

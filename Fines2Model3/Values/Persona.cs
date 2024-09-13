@@ -5,7 +5,7 @@ using SqlOrganize.ValueTypesUtils;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class PersonaValues : EntityValues
+    public class PersonaValues : EntityVal
     {
 
         public PersonaValues(Db db, string entityName, string? fieldId = null) : base(db, entityName, fieldId)
@@ -363,7 +363,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         public override T GetData<T>()
         {
             var obj = db.Data<T>(Values());
-            if(obj is Data_persona p)
+            if(obj is Persona_ p)
             {
                 p.Label = p.nombres + " " + p.apellidos + " " + p.numero_documento;
             }

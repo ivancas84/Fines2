@@ -823,9 +823,7 @@
       "ticket_id",
       "customer_id"
     ],
-    "fk": [
-      "ticket_id"
-    ],
+    "fk": [],
     "orderDefault": {},
     "noAdmin": [],
     "unique": [],
@@ -846,71 +844,8 @@
     "id": [
       "id"
     ],
-    "tree": {
-      "ticket_id": {
-        "fieldName": "ticket_id",
-        "refEntityName": "wpwt_psmsc_tickets",
-        "refFieldName": "id",
-        "children": {
-          "customer": {
-            "fieldName": "customer",
-            "refEntityName": "wpwt_psmsc_customers",
-            "refFieldName": "id",
-            "children": {}
-          },
-          "status": {
-            "fieldName": "status",
-            "refEntityName": "wpwt_psmsc_statuses",
-            "refFieldName": "id",
-            "children": {}
-          },
-          "priority": {
-            "fieldName": "priority",
-            "refEntityName": "wpwt_psmsc_priorities",
-            "refFieldName": "id",
-            "children": {}
-          },
-          "category": {
-            "fieldName": "category",
-            "refEntityName": "wpwt_psmsc_categories",
-            "refFieldName": "id",
-            "children": {}
-          }
-        }
-      }
-    },
-    "relations": {
-      "ticket_id": {
-        "fieldName": "ticket_id",
-        "refEntityName": "wpwt_psmsc_tickets",
-        "refFieldName": "id",
-        "parentId": null
-      },
-      "customer": {
-        "fieldName": "customer",
-        "refEntityName": "wpwt_psmsc_customers",
-        "refFieldName": "id",
-        "parentId": "ticket_id"
-      },
-      "status": {
-        "fieldName": "status",
-        "refEntityName": "wpwt_psmsc_statuses",
-        "refFieldName": "id",
-        "parentId": "ticket_id"
-      },
-      "priority": {
-        "fieldName": "priority",
-        "refEntityName": "wpwt_psmsc_priorities",
-        "refFieldName": "id",
-        "parentId": "ticket_id"
-      },
-      "category": {
-        "fieldName": "category",
-        "refEntityName": "wpwt_psmsc_categories",
-        "refFieldName": "id",
-        "parentId": "ticket_id"
-      }
-    }
+    "tree": {},
+    "relations": {}
   },
   "wpwt_psmsc_categories": {
     "name": "wpwt_psmsc_categories",
@@ -1272,9 +1207,7 @@
       "date_created",
       "date_updated"
     ],
-    "fk": [
-      "ticket"
-    ],
+    "fk": [],
     "orderDefault": {},
     "noAdmin": [],
     "unique": [],
@@ -1291,71 +1224,8 @@
     "id": [
       "id"
     ],
-    "tree": {
-      "ticket": {
-        "fieldName": "ticket",
-        "refEntityName": "wpwt_psmsc_tickets",
-        "refFieldName": "id",
-        "children": {
-          "customer": {
-            "fieldName": "customer",
-            "refEntityName": "wpwt_psmsc_customers",
-            "refFieldName": "id",
-            "children": {}
-          },
-          "status": {
-            "fieldName": "status",
-            "refEntityName": "wpwt_psmsc_statuses",
-            "refFieldName": "id",
-            "children": {}
-          },
-          "priority": {
-            "fieldName": "priority",
-            "refEntityName": "wpwt_psmsc_priorities",
-            "refFieldName": "id",
-            "children": {}
-          },
-          "category": {
-            "fieldName": "category",
-            "refEntityName": "wpwt_psmsc_categories",
-            "refFieldName": "id",
-            "children": {}
-          }
-        }
-      }
-    },
-    "relations": {
-      "ticket": {
-        "fieldName": "ticket",
-        "refEntityName": "wpwt_psmsc_tickets",
-        "refFieldName": "id",
-        "parentId": null
-      },
-      "customer": {
-        "fieldName": "customer",
-        "refEntityName": "wpwt_psmsc_customers",
-        "refFieldName": "id",
-        "parentId": "ticket"
-      },
-      "status": {
-        "fieldName": "status",
-        "refEntityName": "wpwt_psmsc_statuses",
-        "refFieldName": "id",
-        "parentId": "ticket"
-      },
-      "priority": {
-        "fieldName": "priority",
-        "refEntityName": "wpwt_psmsc_priorities",
-        "refFieldName": "id",
-        "parentId": "ticket"
-      },
-      "category": {
-        "fieldName": "category",
-        "refEntityName": "wpwt_psmsc_categories",
-        "refFieldName": "id",
-        "parentId": "ticket"
-      }
-    }
+    "tree": {},
+    "relations": {}
   },
   "wpwt_psmsc_ticket_tags": {
     "name": "wpwt_psmsc_ticket_tags",
@@ -1429,12 +1299,7 @@
       "last_reply_source",
       "misc"
     ],
-    "fk": [
-      "customer",
-      "status",
-      "priority",
-      "category"
-    ],
+    "fk": [],
     "orderDefault": {},
     "noAdmin": [],
     "unique": [],
@@ -1448,64 +1313,15 @@
       "category",
       "date_created",
       "date_updated",
+      "user_type",
       "last_reply_by"
     ],
     "uniqueMultiple": [],
     "id": [
       "id"
     ],
-    "tree": {
-      "customer": {
-        "fieldName": "customer",
-        "refEntityName": "wpwt_psmsc_customers",
-        "refFieldName": "id",
-        "children": {}
-      },
-      "status": {
-        "fieldName": "status",
-        "refEntityName": "wpwt_psmsc_statuses",
-        "refFieldName": "id",
-        "children": {}
-      },
-      "priority": {
-        "fieldName": "priority",
-        "refEntityName": "wpwt_psmsc_priorities",
-        "refFieldName": "id",
-        "children": {}
-      },
-      "category": {
-        "fieldName": "category",
-        "refEntityName": "wpwt_psmsc_categories",
-        "refFieldName": "id",
-        "children": {}
-      }
-    },
-    "relations": {
-      "customer": {
-        "fieldName": "customer",
-        "refEntityName": "wpwt_psmsc_customers",
-        "refFieldName": "id",
-        "parentId": null
-      },
-      "status": {
-        "fieldName": "status",
-        "refEntityName": "wpwt_psmsc_statuses",
-        "refFieldName": "id",
-        "parentId": null
-      },
-      "priority": {
-        "fieldName": "priority",
-        "refEntityName": "wpwt_psmsc_priorities",
-        "refFieldName": "id",
-        "parentId": null
-      },
-      "category": {
-        "fieldName": "category",
-        "refEntityName": "wpwt_psmsc_categories",
-        "refFieldName": "id",
-        "parentId": null
-      }
-    }
+    "tree": {},
+    "relations": {}
   },
   "wpwt_psmsc_wh_exceptions": {
     "name": "wpwt_psmsc_wh_exceptions",

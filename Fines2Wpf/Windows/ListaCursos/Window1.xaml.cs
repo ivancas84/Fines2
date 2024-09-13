@@ -44,7 +44,7 @@ namespace Fines2Wpf.Windows.ListaCursos
             try
             {
                 IEnumerable<Dictionary<string, object>> list = cursoDAO.CursosSemestre(search.calendario__anio, search.calendario__semestre);
-                cursoData.AddRange(list.ColOfObj<Data_curso_r>());
+                cursoData.AddRange(list.Objs<Data_curso_r>());
             }
             catch (Exception ex)
             {
@@ -86,7 +86,7 @@ namespace Fines2Wpf.Windows.ListaCursos
                     do
                     {
                         continueWhile = (fieldId == null) ? false : true;
-                        EntityValues v = ContainerApp.db.Values(entityName, fieldId).Set(source);
+                        EntityVal v = ContainerApp.db.Values(entityName, fieldId).Set(source);
                         if (!v.GetOrNull(fieldName).IsNoE() && v.Get(fieldName).Equals(value))
                         {
                             if (reload)

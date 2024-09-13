@@ -1,6 +1,6 @@
 ﻿namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class TomaQrItem : Data_toma_r
+    public class TomaQrItem : Toma_
     {
         public Byte[] qr_code { get; set; }
 

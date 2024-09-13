@@ -1,6 +1,6 @@
 ﻿namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class DisposicionValues : EntityValues
+    public class DisposicionValues : EntityVal
     {
         public DisposicionValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
         {
@@ -10,7 +10,7 @@
         {
             var s = "";
 
-            EntityValues? v = GetValuesCache("asignatura");
+            EntityVal? v = GetValuesCache("asignatura");
             if(v != null)
             {
                 s += v.GetOrNull("nombre")?.ToString() ?? "?";

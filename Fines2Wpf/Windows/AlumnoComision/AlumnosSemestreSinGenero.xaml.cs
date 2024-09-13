@@ -61,7 +61,7 @@ namespace Fines2Wpf.Windows.AlumnoComision
 
                 alumnosSinGenero.Clear();
                 alumnos = dataDAO.AlumnosActivosDeComisionesAutorizadasPorSemestreSinGenero("2023", "2");
-                alumnosSinGenero.AddRange(alumnos.ColOfObj<Data_alumno_r>());
+                alumnosSinGenero.AddRange(alumnos.Objs<Data_alumno_r>());
             }
 
 

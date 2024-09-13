@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_file : SqlOrganize.Sql.Data
+    public class File : SqlOrganize.Sql.EntityData
     {
 
         public override string entityName => "file";
 
         public override void Default()
         {
-            EntityValues val = db!.Values("file");
+            EntityVal val = db!.Values("file");
             _id = (string?)val.GetDefault("id");
             _created = (DateTime?)val.GetDefault("created");
         }

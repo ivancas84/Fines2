@@ -60,22 +60,22 @@ namespace Fines2Wpf.Windows.ListaTomas
             tomasAprobadasOC.Clear();
             tomasAprobadasOC.AddRange(
                 DAO.Toma2.TomasAprobadasSinModificarDePeriodoSql(search.calendario__anio, search.calendario__semestre).
-                Cache().ColOfDict().
-                ColOfObj<TomaPosesionPdf.ConstanciaData>()
+                Cache().Dicts().
+                Objs<TomaPosesionPdf.ConstanciaData>()
             );
 
             tomasRenunciadasOC.Clear();
             tomasRenunciadasOC.AddRange(
                 DAO.Toma2.TomasRenunciaBajaSinModificarDePeriodoSql(search.calendario__anio, search.calendario__semestre).
-                Cache().ColOfDict().
-                ColOfObj<TomaPosesionPdf.ConstanciaData>()
+                Cache().Dicts().
+                Objs<TomaPosesionPdf.ConstanciaData>()
             );
 
             tomasParticularesOC.Clear();
             tomasParticularesOC.AddRange(
                 DAO.Toma2.TomasParticularesDePeriodoSql(search.calendario__anio, search.calendario__semestre).
-                Cache().ColOfDict().
-                ColOfObj<TomaPosesionPdf.ConstanciaData>()
+                Cache().Dicts().
+                Objs<TomaPosesionPdf.ConstanciaData>()
             );
 
 
@@ -86,7 +86,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                 .Where(@"
                     $id IN ( @0 ) 
                 ")
-                .Param("@0", idTomas).Cache().ColOfDict();
+                .Param("@0", idTomas).Cache().Dicts();
     
                  tomasContralorOC.Clear();
 
@@ -203,7 +203,7 @@ namespace Fines2Wpf.Windows.ListaTomas
                     if (key.Contains("__"))
                         (fieldId, fieldName, entityName) = ContainerApp.db.KeyDeconstruction(entityName, key);
 
-                    EntityValues v = ContainerApp.db.Values(entityName, fieldId).Set(source);
+                    EntityVal v = ContainerApp.db.Values(entityName, fieldId).Set(source);
                     v.Sset(fieldName, value);
 
                     if (v.Check())
@@ -303,7 +303,7 @@ namespace Fines2Wpf.Windows.ListaTomas
 
         private void PasarTodoButton_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<object> id_tomas_aprobadas = DAO.Toma2.TomasPasarDePeriodoSql(calendarioAnioText.Text, calendarioSemestreText.Text).Cache().ColOfDict().ColOfVal<object>("id");
+            IEnumerable<object> id_tomas_aprobadas = DAO.Toma2.TomasPasarDePeriodoSql(calendarioAnioText.Text, calendarioSemestreText.Text).Cache().Dicts().ColOfVal<object>("id");
 
             ContainerApp.db.Persist().UpdateValueIds("toma", "estado_contralor", "Pasar", id_tomas_aprobadas.ToArray()).Exec().RemoveCacheDetail();
             

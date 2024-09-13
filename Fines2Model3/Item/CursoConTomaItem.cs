@@ -13,13 +13,13 @@ namespace SqlOrganize.Sql.Fines2Model3
     /// Curso con toma
     /// </summary>
     /// <example>
-    ///     var comision = (Data_comision)comisionComboBox.SelectedItem;
-    ///     var cursosData = ContainerApp.db.Sql("curso").Equal("$comision", comision.id).Cache().ColOfDict();
-    ///     var tomaData = ContainerApp.db.TomaAprobadaDeComisionQuery(comision.id).Cache().ColOfDict();
+    ///     var comision = (Comision)comisionComboBox.SelectedItem;
+    ///     var cursosData = ContainerApp.db.Sql("curso").Equal("$comision", comision.id).Cache().Dicts();
+    ///     var tomaData = ContainerApp.db.TomaAprobadaDeComisionQuery(comision.id).Cache().Dicts();
     ///     cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
     ///     ContainerApp.db.ClearAndAddDataToOC(cursosData, cursoOC);
     /// </example>
-    public class CursoConTomaItem : Data_curso_r
+    public class CursoConTomaItem : Curso_
     {
         protected string? _toma_docente__Label = null;
 

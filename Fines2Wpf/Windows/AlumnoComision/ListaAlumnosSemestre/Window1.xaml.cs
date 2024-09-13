@@ -107,7 +107,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         public void LoadAsignaciones()
         {
             asignacionOC.Clear();
-            var data = ContainerApp.db.Sql("alumno_comision").Search(search).Size(0).Cache().ColOfDict();
+            var data = ContainerApp.db.Sql("alumno_comision").Search(search).Size(0).Cache().Dicts();
             if(data.IsNoE())
                return;
             
@@ -124,7 +124,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
                 alumnosYplanes.Add(o.alumno!.ToString() +o.planificacion__plan!.ToString());
                 asignacionOCAux.Add(o);
             }
-            var dataCalificacionesDict_ = calificacionDAO.CantidadCalificacionesAprobadasAgrupadasPorPlanificacionSinArchivarPorAlumnosYPlanesQuery(alumnosYplanes).ColOfDict();
+            var dataCalificacionesDict_ = calificacionDAO.CantidadCalificacionesAprobadasAgrupadasPorPlanificacionSinArchivarPorAlumnosYPlanesQuery(alumnosYplanes).Dicts();
             var dataCalificacionesDict = dataCalificacionesDict_.DictOfDictByKeysValue("cantidad", "alumno", "planificacion_dis__anio", "planificacion_dis__semestre");
                 
             foreach (var d in asignacionOCAux)
@@ -245,7 +245,7 @@ namespace Fines2Wpf.Windows.AlumnoComision.ListaAlumnosSemestre
         public ObservableCollection<Data_sede> Sedes()
         {
             ObservableCollection<Data_sede> r = new ObservableCollection<Data_sede>();
-            var data = ContainerApp.db.Sql("sede").Size(0).Cache().ColOfDict();
+            var data = ContainerApp.db.Sql("sede").Size(0).Cache().Dicts();
             ContainerApp.db.ClearAndAddDataToOC(data, r);
             return r;
         }

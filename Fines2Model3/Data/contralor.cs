@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_contralor : SqlOrganize.Sql.Data
+    public class Contralor : SqlOrganize.Sql.EntityData
     {
 
         public override string entityName => "contralor";
 
         public override void Default()
         {
-            EntityValues val = db!.Values("contralor");
+            EntityVal val = db!.Values("contralor");
             _id = (string?)val.GetDefault("id");
             _insertado = (DateTime?)val.GetDefault("insertado");
         }

@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_calendario : SqlOrganize.Sql.Data
+    public class Calendario : SqlOrganize.Sql.EntityData
     {
 
         public override string entityName => "calendario";
 
         public override void Default()
         {
-            EntityValues val = db!.Values("calendario");
+            EntityVal val = db!.Values("calendario");
             _id = (string?)val.GetDefault("id");
             _anio = (short?)val.GetDefault("anio");
             _semestre = (short?)val.GetDefault("semestre");

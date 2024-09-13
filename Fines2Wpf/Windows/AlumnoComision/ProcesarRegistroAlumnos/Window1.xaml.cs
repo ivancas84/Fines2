@@ -29,12 +29,12 @@ namespace Fines2Wpf.Windows.AlumnoComision.ProcesarRegistroAlumnos
         {
             IDictionary<string, object?>  pfidsComisiones = ContainerApp.db.
                 ComisionesAutorizadasDePeriodoSql(DateTime.Now.Year, 1).
-                Cache().ColOfDict().
+                Cache().Dicts().
                 DictOfDictByKeysValue("id", "pfid");
 
             IDictionary<string, Data_alumno_comision_r> asignacionesDb = ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
-                Cache().ColOfDict().
-                ColOfObj<Data_alumno_comision_r>().
+                Cache().Dicts().
+                Objs<Data_alumno_comision_r>().
                 DictOfObjByPropertyNames("persona__numero_documento");
 
             return (pfidsComisiones, asignacionesDb);

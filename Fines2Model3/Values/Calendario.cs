@@ -5,7 +5,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class CalendarioValues : EntityValues
+    public class CalendarioValues : EntityVal
     {
         public CalendarioValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
         {
@@ -58,7 +58,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             string label = ToString();
 
             var obj = db.Data<T>(Values());
-            if (obj is Data_calendario p)
+            if (obj is Calendario p)
                 p.Label = label;
             if (Logging.HasLogs())
                 obj.Msg += Logging.ToString();

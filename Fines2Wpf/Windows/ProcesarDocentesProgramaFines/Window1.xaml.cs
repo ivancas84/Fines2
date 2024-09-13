@@ -39,10 +39,10 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                 var d = docente.Dict();
                 if (!d["anio_nacimiento"].IsNoE() && !d["mes_nacimiento"].IsNoE() && !d["dia_nacimiento"].IsNoE())
                     d["fecha_nacimiento"] = new DateTime((int)d["anio_nacimiento"], (int)d["mes_nacimiento"], (int)d["dia_nacimiento"]);
-                EntityValues vPersona = ContainerApp.db.Values("persona").Set(d).Reset();
+                EntityVal vPersona = ContainerApp.db.Values("persona").Set(d).Reset();
                 var row = dao.RowByEntityUnique("persona", vPersona.Values());
                 if (row != null) {
-                    EntityValues vPersonaAux = ContainerApp.db.Values("persona").Set(row);
+                    EntityVal vPersonaAux = ContainerApp.db.Values("persona").Set(row);
                     CompareParams cp = new()
                     {
                         Data = vPersona.Values()
@@ -91,7 +91,7 @@ namespace Fines2Wpf.Windows.ProcesarDocentesProgramaFines
                         }
                         else
                         {
-                            EntityValues vToma = ContainerApp.db.Values("toma").
+                            EntityVal vToma = ContainerApp.db.Values("toma").
                                 Set("curso", idCurso).
                                 Set("docente", vPersona.Get("id")).
                                 Set("estado", "Aprobada").

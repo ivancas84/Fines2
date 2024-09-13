@@ -3,7 +3,7 @@ using SqlOrganize.Sql.Fines2Model3;
 
 namespace Fines2Wpf.Windows.Alumno.AdministrarAlumno
 {
-    internal class Alumno : Data_alumno
+    internal class AlumnoItem : Data_alumno
     {
         public string? _color_estado_inscripcion { set; get; } = null;
 

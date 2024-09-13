@@ -148,7 +148,7 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
             if (string.IsNullOrEmpty(text) || text.Length < 3) //restricciones para buscar, texto no nulo y mayor a 2 caracteres
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = DAO.Alumno.SearchLikeQuery(text).Cache().ColOfDict(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = DAO.Alumno.SearchLikeQuery(text).Cache().Dicts(); //busqueda de valores a mostrar en funcion del texto
 
             foreach (var item in list)
             {
@@ -184,7 +184,7 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
 
             }
 
-            EntityValues ticketsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_tickets").Default().
+            EntityVal ticketsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_tickets").Default().
                Set("subject", " Constancia de alumno regular : " + alumno.persona__apellidos!.ToUpper() + ", " + alumno.persona__nombres!.ToTitleCase()).
                Set("status", 4). //cerado
                Set("category", 10). //constancia
@@ -193,7 +193,7 @@ namespace Fines2Wpf.Windows.Alumno.ConstanciaAlumnoRegularPdf
                Set("cust_28", "Válido por 30 días").
                Set("assigned_agent", "").Reset();
 
-            EntityValues threadsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_threads").Default().
+            EntityVal threadsValues = ContainerApp.dbPedidos.Values("wpwt_psmsc_threads").Default().
                 Set("ticket", ticketsValues.Get("id")).
                 Set("body", threads_body.ToString()).Reset();
 

@@ -151,7 +151,7 @@ namespace Fines2Model3.DAO
             string res = await response.Content.ReadAsStringAsync();
         }
 
-        public static async Task PF_InscribirEstudianteValues(HttpClient client, string comisionPfid, EntityValues persona)
+        public static async Task PF_InscribirEstudianteValues(HttpClient client, string comisionPfid, EntityVal persona)
         {
             Dictionary<string, string> dataForm = new();
 

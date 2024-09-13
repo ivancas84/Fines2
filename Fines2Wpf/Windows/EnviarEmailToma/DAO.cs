@@ -17,7 +17,7 @@ namespace Fines2Wpf.Windows.EnviarEmailToma
                     AND $docente__email_abc IS NOT NULL
                 ")
                 .Order("$comision__pfid ASC")
-                .Param("@0", "2023").Param("@1", "2").Cache().ColOfDict();
+                .Param("@0", "2023").Param("@1", "2").Cache().Dicts();
 
         }
     }

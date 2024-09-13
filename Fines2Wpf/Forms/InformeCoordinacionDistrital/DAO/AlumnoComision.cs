@@ -26,7 +26,7 @@ namespace Fines2Wpf.Forms.InformeCoordinacionDistrital.DAO
             else if (!comisionSiguienteNull.IsNoE() && !comisionSiguienteNull == false)
                 q.Where("AND $comision__comision_siguiente IS NOT NULL");
 
-            return q.ColOfDict();
+            return q.Dicts();
         }
 
         public IEnumerable<Dictionary<string, object>> InformeCoordinacionDistrital(string modalidad, string anioCalendario, int semestreCalendario, bool? comisionSiguienteNull = null)

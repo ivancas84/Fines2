@@ -44,7 +44,7 @@ namespace Fines2Wpf.DAO
                 q.Param("@0", sede!);
             }
 
-            return q.Cache().ColOfDict();
+            return q.Cache().Dicts();
         }
 
 
@@ -57,7 +57,7 @@ namespace Fines2Wpf.DAO
                 .Where(@"
                     $id IN ( @0 ) 
                 ")
-                .Param("@0", ids).Cache().ColOfDict();
+                .Param("@0", ids).Cache().Dicts();
             
         }
 
@@ -70,7 +70,7 @@ namespace Fines2Wpf.DAO
                     AND $calendario__semestre = @1 
                     AND $comision_siguiente IS NOT NULL
                 ")
-                .Param("@0", anio).Param("@0", semestre).Cache().ColOfDict();
+                .Param("@0", anio).Param("@0", semestre).Cache().Dicts();
 
         }
 
@@ -84,7 +84,7 @@ namespace Fines2Wpf.DAO
                     AND $calendario__semestre = @1
                     AND $autorizada = true
                 ")
-                .Param("@0", anio).Param("@1", semestre).Cache().ColOfDict().ColOfVal<object>(ContainerApp.db.config.id);
+                .Param("@0", anio).Param("@1", semestre).Cache().Dicts().ColOfVal<object>(ContainerApp.db.config.id);
 
         }
 

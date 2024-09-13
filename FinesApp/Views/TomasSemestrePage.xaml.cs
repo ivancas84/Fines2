@@ -23,8 +23,8 @@ namespace FinesApp.Views;
 public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 {
 
-    private ObservableCollection<Data_calendario> ocCalendario = new();
-    private ObservableCollection<Data_toma_r> ocToma = new();
+    private ObservableCollection<Calendario> ocCalendario = new();
+    private ObservableCollection<Toma_> ocToma = new();
    
     IEnumerable<EntityPersist>? persists;
 
@@ -41,7 +41,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         dgdResultadoGenerarTomasPDF.ItemsSource = ocResultadoGenerarTomasPDF;
         dgdResultadoGenerarContralor.ItemsSource = ocResultadoGenerarContralor;
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        var data = ContainerApp.db.Sql("calendario").Cache().ColOfDict();
+        var data = ContainerApp.db.Sql("calendario").Cache().Dicts();
         ContainerApp.db.ClearAndAddDataToOC(data, ocCalendario);
     }
 
@@ -49,17 +49,17 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     private void OcToma_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems != null)
-            foreach (Data_toma_r newItem in e.NewItems)
+            foreach (Toma_ newItem in e.NewItems)
                 newItem.PropertyChanged += TomaItem_PropertyChanged;
 
         if (e.OldItems != null)
-            foreach (Data_toma_r oldItem in e.OldItems)
+            foreach (Toma_ oldItem in e.OldItems)
                 oldItem.PropertyChanged -= TomaItem_PropertyChanged;
     }
 
     private void TomaItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-       ContainerApp.db.Persist().UpdateKeyFromData("toma", e.PropertyName, (Data_toma_r)sender).Exec().RemoveCache();
+        ContainerApp.db.Values("toma").Set(sender).Update(e.PropertyName).Exec().RemoveCache();
     }
     #endregion
 
@@ -76,7 +76,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             return;
         }
 
-        var tomaData = ContainerApp.db.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().ColOfDict();
+        var tomaData = ContainerApp.db.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
         ContainerApp.db.ClearAndAddDataToOC(tomaData, ocToma);
     }
 
@@ -86,7 +86,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         try
         {
             var button = (e.OriginalSource as Button);
-            var toma = (Data_toma_r)button.DataContext;
+            var toma = (Toma_)button.DataContext;
 
             EmailToma email = new EmailToma(toma);
             email.Send();
@@ -115,7 +115,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     private void EliminarTomaButton_Click(object sender, RoutedEventArgs e)
     {
         var button = (e.OriginalSource as Button);
-        var toma = (Data_toma_r)button.DataContext;
+        var toma = (Toma_)button.DataContext;
         try
         {
             ContainerApp.db.Persist().DeleteIds("toma", toma.id!).Exec().RemoveCache();
@@ -130,7 +130,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     #endregion
 
     #region Tab Procesar Docentes PF (XLSX y HTML)
-    ObservableCollection<Data> ocData = new();
+    ObservableCollection<EntityData> ocData = new();
 
     private void btnProcesarDocentesPF_Click(object sender, RoutedEventArgs e)
     {
@@ -140,12 +140,12 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             if (cbxCalendario.SelectedIndex < 0)
                 throw new Exception("Verificar formulario");
 
-            var calendarioObj = (Data_calendario)cbxCalendario.SelectedItem;
+            var calendarioObj = (Calendario)cbxCalendario.SelectedItem;
             persists = ContainerApp.db.PersistTomasPf(calendarioObj, tbxDocentesPF.Text);
             ocData.Clear();
             for (var i = 0; i < persists.Count(); i++)
             {
-                Data obj = new();
+                EntityData obj = new();
                 obj.Index = i;
                 obj.Label = persists.ElementAt(i).logging.ToString();
                 ocData.Add(obj);
@@ -182,12 +182,12 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             if (cbxCalendario.SelectedIndex < 0)
                 throw new Exception("Verificar formulario");
 
-            var calendarioObj = (Data_calendario)cbxCalendario.SelectedItem;
+            var calendarioObj = (Calendario)cbxCalendario.SelectedItem;
             persists = ContainerApp.db.PersistTomasPfHtml(calendarioObj, tbxDocentesPF.Text);
             ocData.Clear();
             for (var i = 0; i < persists.Count(); i++)
             {
-                Data obj = new();
+                EntityData obj = new();
                 obj.Index = i;
                 obj.Label = persists.ElementAt(i).logging.ToString();
                 ocData.Add(obj);
@@ -221,17 +221,17 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     #endregion
 
     #region Tab Generar Tomas Pdf
-    private ObservableCollection<Data> ocResultadoGenerarTomasPDF = new();
+    private ObservableCollection<EntityData> ocResultadoGenerarTomasPDF = new();
     private void btnGenerarTomasPDF_Click(object sender, RoutedEventArgs e)
     {
         QRCodeGenerator qrGenerator = new QRCodeGenerator();
 
-        IEnumerable<Dictionary<string, object?>> tomasData = ContainerApp.db.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().ColOfDict();
+        IEnumerable<Dictionary<string, object?>> tomasData = ContainerApp.db.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
         
         ocResultadoGenerarTomasPDF.Clear();
         for(var i = 0; i < tomasData.Count(); i++)
         {
-            var obj = new Data();
+            var obj = new EntityData();
             obj.Index = 0;
             try
             {
@@ -268,7 +268,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             var tomas = ContainerApp.db.Sql("toma").Where("$id IN (@0)").
                 Order("$docente__numero_documento ASC").
                 Size(0).
-                Param("@0", idTomas).Cache().ColOfDict();
+                Param("@0", idTomas).Cache().Dicts();
 
             ocResultadoGenerarContralor.Clear();
             foreach (var item in tomas)
@@ -496,14 +496,14 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     internal class EmailToma : SmtpClient
     {
 
-        Data_toma_r Model;
+        Toma_ Model;
         public string? Subject = null;
         public string? Body = null;
         List<string>? To = new();
         public string? Bcc = null;
         public string? Attachment = null;
 
-        public EmailToma(Data_toma_r model) : base()
+        public EmailToma(Toma_ model) : base()
         {
             Host = ContainerApp.config.emailDocenteHost;
             Port = 587;
@@ -562,7 +562,7 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
 
     }
 
-    internal class TomaContralorItem : Data_toma_r
+    internal class TomaContralorItem : Toma_
     {
         public string cupof
         {

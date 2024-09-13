@@ -47,7 +47,7 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
                     )
                 ").
                 Size(0).
-                ColOfDict();
+                Dicts();
             #endregion
 
 
@@ -58,7 +58,7 @@ namespace Fines2Wpf.Windows.Comision.GenerarComisionesSemestre
 
                 string idPlanificacionSiguiente = ContainerApp.db.PlanificacionSiguienteSql(comObj.planificacion__anio!, comObj.planificacion__semestre!, comObj.plan__id!).Value<string>();
 
-                EntityValues comisionVal = ContainerApp.db.Values("comision").
+                EntityVal comisionVal = ContainerApp.db.Values("comision").
                     Set(comObj).
                     SetDefault("id").
                     Set("planificacion", idPlanificacionSiguiente).

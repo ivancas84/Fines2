@@ -1,6 +1,6 @@
 ﻿namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class CursoValues : EntityValues
+    public class CursoValues : EntityVal
     {
         public CursoValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
         {
@@ -11,7 +11,7 @@
         {
             var s = "";
 
-            EntityValues? v = GetValuesCache("sede");
+            EntityVal? v = GetValuesCache("sede");
             v = GetValuesCache("comision");
             s += (v?.GetOrNull("pfid")?.ToString() ?? "?") ?? "?";
 
@@ -69,7 +69,7 @@
         }
 
 
-        public EntityValues? ValuesTomaActiva()
+        public EntityVal? ValuesTomaActiva()
         {
             var idCurso = GetOrNull("id");
             if (idCurso.IsNoE())
@@ -86,7 +86,7 @@
         {
             var obj = base.GetData<T>();
 
-            if (obj is Data_curso_r c)
+            if (obj is Curso_ c)
                 c.Label = ToString();
             
             return obj;

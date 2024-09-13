@@ -5,14 +5,14 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Data_calificacion : SqlOrganize.Sql.Data
+    public class Calificacion : SqlOrganize.Sql.EntityData
     {
 
         public override string entityName => "calificacion";
 
         public override void Default()
         {
-            EntityValues val = db!.Values("calificacion");
+            EntityVal val = db!.Values("calificacion");
             _id = (string?)val.GetDefault("id");
             _archivado = (bool?)val.GetDefault("archivado");
         }

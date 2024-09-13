@@ -53,7 +53,7 @@ END AS edad, count(*) as cantidad
                 Group("$comision__pfid, $planificacion__anio, $planificacion__semestre, $plan__orientacion, edad").
                 Where("$calendario__anio = @0 AND $calendario__semestre = @1 AND $comision__autorizada").
                 Size(0).
-                Param("@0", ContainerApp.config.anio).Param("@1", ContainerApp.config.semestre).ColOfDict();
+                Param("@0", ContainerApp.config.anio).Param("@1", ContainerApp.config.semestre).Dicts();
 
 
             ContainerApp.db.ClearAndAddDataToOC(data, informeEdadOC);
@@ -64,7 +64,7 @@ END AS edad, count(*) as cantidad
                 Where("$calendario__anio = @0 AND $calendario__semestre = @1 AND $comision__autorizada").
                 Size(0).
 
-                Param("@0", ContainerApp.config.anio).Param("@1", ContainerApp.config.semestre).ColOfDict();
+                Param("@0", ContainerApp.config.anio).Param("@1", ContainerApp.config.semestre).Dicts();
 
             ContainerApp.db.ClearAndAddDataToOC(data, informeGeneroOC);
         }

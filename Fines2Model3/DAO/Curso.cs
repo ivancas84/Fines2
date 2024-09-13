@@ -10,7 +10,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public static class Curso
+    public static class CursoDAO
     {
 
         public static EntitySql BusquedaAproximadaCurso(this Db db, string search)

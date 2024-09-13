@@ -20,7 +20,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 {
 
     #region Autocomplete v3 - comision
-    private ObservableCollection<Data_comision_r> comisionOC = new(); //datos consultados de la base de datos
+    private ObservableCollection<Comision_> comisionOC = new(); //datos consultados de la base de datos
     private DispatcherTimer comisionTypingTimer; //timer para buscar
     #endregion
 
@@ -53,11 +53,11 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     {
         try
         {
-            (string? text, TextBox? textBox, int? textBoxPos) = cbxComision.SetTimerTickInitializeItem<Data_comision_r>(comisionTypingTimer);
+            (string? text, TextBox? textBox, int? textBoxPos) = cbxComision.SetTimerTickInitializeItem<Comision_>(comisionTypingTimer);
             if (text == null)
                 return;
 
-            var list = ContainerApp.db.BusquedaAproximadaComision(text).ColOfDict();
+            var list = ContainerApp.db.BusquedaAproximadaComision(text).Dicts();
 
             ContainerApp.db.ClearAndAddDataToOC(list, comisionOC);
 
@@ -80,33 +80,33 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
         if (cb.SelectedIndex > -1)
         {
-            var obj = (Data_comision)cb.SelectedItem;
+            var obj = (Comision)cb.SelectedItem;
             Buscar(obj);
         }
     }
 
     #endregion
 
-    private void Buscar(Data_comision comision)
+    private void Buscar(Comision comision)
     {
         try
         {
-            var cursosData = ContainerApp.db.Sql("curso").Equal("$comision", comision.id).Cache().ColOfDict();
-            var tomaData = ContainerApp.db.TomaAprobadaDeComisionQuery(comision.id).Cache().ColOfDict();
+            var cursosData = ContainerApp.db.Sql("curso").Equal("$comision", comision.id).Cache().Dicts();
+            var tomaData = ContainerApp.db.TomaAprobadaDeComisionQuery(comision.id).Cache().Dicts();
             cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
             ContainerApp.db.ClearAndAddDataToOC(cursosData, cursoOC);
 
             var idsAsignaturas = cursosData.ColOfVal<string>("asignatura-id").ToList();
 
-            //var disposicionesData = ContainerApp.db.Sql("disposicion").Equal("$planificacion", comision.planificacion).Cache().ColOfDict();
+            //var disposicionesData = ContainerApp.db.Sql("disposicion").Equal("$planificacion", comision.planificacion).Cache().Dicts();
             //var idsDisposiciones = disposicionesData.ColOfVal<string>("id").ToList();
 
 
-            var asignacionesData = ContainerApp.db.AsignacionesDeComisionesSql(comision.id).Cache().ColOfDict();
+            var asignacionesData = ContainerApp.db.AsignacionesDeComisionesSql(comision.id).Cache().Dicts();
 
             var idAlumnos = asignacionesData.ColOfVal<object>("alumno").ToArray();
 
-            var calificacionesData = ContainerApp.db.CalificacionesAprobadasPorAlumnoDePlanificacionSql(comision.planificacion, idAlumnos).Cache().ColOfDict().DictOfListByKeys("alumno");
+            var calificacionesData = ContainerApp.db.CalificacionesAprobadasPorAlumnoDePlanificacionSql(comision.planificacion, idAlumnos).Cache().Dicts().DictOfListByKeys("alumno");
 
 
 
@@ -119,7 +119,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
                     foreach (var cal in calificacionesData[itemObj.alumno])
                     {
                         itemObj.cantidad_aprobadas++;
-                        var calificacionObj = ContainerApp.db.ToData<Data_calificacion_r>(cal);
+                        var calificacionObj = ContainerApp.db.ToData<Calificacion_>(cal);
 
                         int index = idsAsignaturas.IndexOf(calificacionObj.asignatura_dis__id);
                         switch (index)
@@ -179,7 +179,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
     #region tab registro alumnos
     private IEnumerable<EntityPersist> persists;
-    private ObservableCollection<Data> ocDataPersist = new();
+    private ObservableCollection<EntityData> ocDataPersist = new();
 
     private void btnProcesarAlumnos_Click(object sender, RoutedEventArgs e)
     {
@@ -188,7 +188,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             persists = ContainerApp.db.PersistAsignacionesComisionText(cbxComision.SelectedValue, tbxAlumnos.Text);
             foreach(var p in persists)
             {
-                var resultObj = ContainerApp.db.Data<Data>();
+                var resultObj = ContainerApp.db.Data<EntityData>();
                 resultObj.Label = p.logging.ToString();
                 ocDataPersist.Add(resultObj);
             }
@@ -251,7 +251,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             }
 
             persist.Transaction().RemoveCache();
-            Buscar((Data_comision)cbxComision.SelectedItem);
+            Buscar((Comision)cbxComision.SelectedItem);
             ToastExtensions.Show("Se ha cambiado el estado de los alumnos");
         } catch (Exception ex) { 
             ex.ToastException();
@@ -264,7 +264,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             if (!asignacionOC.Any())
                 throw new Exception("La lista de alumnos esta vacía");
 
-            var comObj = (Data_comision)cbxComision.SelectedItem;
+            var comObj = (Comision)cbxComision.SelectedItem;
 
             if (comObj.IsNoE())
                 throw new Exception("No se encuentra seleccionada ninguna comision");
@@ -273,7 +273,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             if(comObj.comision_siguiente.IsNoE())
                 throw new Exception("No se encuentra definida la comision siguiente");
 
-            var idAlumnosExistentes = ContainerApp.db.AsignacionesDeComisionesSql(comObj.comision_siguiente).Cache().ColOfDict().DictOfDictByKeysValue("id","alumno");
+            var idAlumnosExistentes = ContainerApp.db.AsignacionesDeComisionesSql(comObj.comision_siguiente).Cache().Dicts().DictOfDictByKeysValue("id","alumno");
 
 
             EntityPersist persist = ContainerApp.db.Persist();
@@ -325,7 +325,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             if (cbxComision.SelectedIndex < 0)
                 throw new Exception("No existe comision seleccionada");
 
-            var comValues = ((Data_comision)cbxComision.SelectedItem).GetValues();
+            var comValues = ((Comision)cbxComision.SelectedItem).GetValues();
 
             ContainerApp.db.GenerarCursos(comValues).Transaction().RemoveCache();
             persists.Transaction().RemoveCache();

@@ -41,7 +41,7 @@ namespace Fines2Wpf.Windows.Curso.GenerarCursosSemestre
             IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestre = ContainerApp.db.Sql("comision").
                 Search((Data_comision_r)formGroupBox.DataContext).
                 Size(0).
-                ColOfDict();
+                Dicts();
             #endregion
 
             #region consultar cursos de comisiones para verificar si ya existen cursos  (las comisiones con cursos generados se ignoran)
@@ -51,7 +51,7 @@ namespace Fines2Wpf.Windows.Curso.GenerarCursosSemestre
                 Where("$comision IN (@0)").
                 Size(0).
                 Param("@0", idComisionesAutorizadasSemestre).
-                ColOfDict().DictOfListByKeys("comision");
+                Dicts().DictOfListByKeys("comision");
             #endregion
 
             EntityPersist persist = ContainerApp.db.Persist();
@@ -72,12 +72,12 @@ namespace Fines2Wpf.Windows.Curso.GenerarCursosSemestre
                     Group("$disposicion__asignatura").
                     Where("$disposicion__planificacion = @0").
                     Param("@0", comObj.planificacion).
-                    ColOfDict().
+                    Dicts().
                     DictOfDictByKeysValue("suma_horas_catedra", "disposicion__asignatura");
 
                 foreach(var (asignatura, suma_horas_catedra) in asignaturasDeComision)
                 {
-                    EntityValues cursoVal = ContainerApp.db.Values("curso").
+                    EntityVal cursoVal = ContainerApp.db.Values("curso").
                         Set("comision", comObj.id).
                         Set("asignatura", asignatura).
                         Set("horas_catedra", suma_horas_catedra).

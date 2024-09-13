@@ -24,7 +24,7 @@ namespace Fines2Wpf.Forms.ListaReferentesSemestre.DAO
                 count++;
             }
 
-            return q.Cache().ColOfDict().ColOfVal<object>("sede___Id");
+            return q.Cache().Dicts().ColOfVal<object>("sede___Id");
 
 
         }

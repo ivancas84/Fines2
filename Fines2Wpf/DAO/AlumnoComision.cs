@@ -25,7 +25,7 @@ namespace Fines2Wpf.DAO
 
             return ContainerApp.db.Sql("alumno_comision")
                 .Where("$persona__numero_documento IN (@0)")
-                .Param("@0", dnis).Cache().ColOfDict();
+                .Param("@0", dnis).Cache().Dicts();
 
         }
 
@@ -36,7 +36,7 @@ namespace Fines2Wpf.DAO
         /// <returns></returns>
         public IEnumerable<object> IdAlumnosParaTransferirDeComision(string comision, object anio, object semestre)
         {
-            var alumnoComision_ = AsignacionesActivasPorComisionesQuery(new List<object>() { comision }).Cache().ColOfDict();
+            var alumnoComision_ = AsignacionesActivasPorComisionesQuery(new List<object>() { comision }).Cache().Dicts();
             var idAlumnos = alumnoComision_.ColOfVal<object>("alumno").Distinct().ToList();
             var idPlan = alumnoComision_.ElementAt(0)["planificacion__plan"];
             return ContainerApp.db.Sql("calificacion")
@@ -49,7 +49,7 @@ namespace Fines2Wpf.DAO
                     AND ($nota_final >= 7 OR $crec >= 4)  
                  ")
                 .Having("SUM($disposicion) > 3")
-                .Param("@0", idAlumnos).Param("@0", idPlan).Cache().ColOfDict().ColOfVal<object>("id");
+                .Param("@0", idAlumnos).Param("@0", idPlan).Cache().Dicts().ColOfVal<object>("id");
 
 
 
@@ -66,7 +66,7 @@ namespace Fines2Wpf.DAO
                     AND $calendario__semestre = @1 
                     AND $comision__autorizada = true
                 ")
-                .Param("@0", anio).Param("@0", semestre).Cache().ColOfDict().ColOfVal<object>("alumno");
+                .Param("@0", anio).Param("@0", semestre).Cache().Dicts().ColOfVal<object>("alumno");
 
         }
 
@@ -82,7 +82,7 @@ namespace Fines2Wpf.DAO
                     AND $comision__autorizada = true
                     AND $estado = 'Activo'
                 ")
-                .Param("@0", anio).Param("@0", semestre).Cache().ColOfDict().ColOfVal<object>("alumno");
+                .Param("@0", anio).Param("@0", semestre).Cache().Dicts().ColOfVal<object>("alumno");
 
         }
 
@@ -98,7 +98,7 @@ namespace Fines2Wpf.DAO
                     AND $estado = 'Activo'
                     AND $persona__genero IS NULL
                 ")
-                .Param("@0", anio).Param("@0", semestre).Cache().ColOfDict().ColOfVal<object>("alumno");
+                .Param("@0", anio).Param("@0", semestre).Cache().Dicts().ColOfVal<object>("alumno");
         }
 
 
@@ -110,7 +110,7 @@ namespace Fines2Wpf.DAO
                 .Where(@"
                     $comision IN (@0) 
                 ")
-                .Param("@0", idsComisiones).Cache().ColOfDict();
+                .Param("@0", idsComisiones).Cache().Dicts();
         }
 
         public EntitySql AsignacionesActivasPorComisionesQuery(IEnumerable<object> idsComisiones)
@@ -132,7 +132,7 @@ namespace Fines2Wpf.DAO
                 .Size(0)
                 .Where(@"
                     $comision IN (@0)
-                ").Cache().ColOfDict().ColOfVal<object>("alumno");
+                ").Cache().Dicts().ColOfVal<object>("alumno");
         }
 
         
@@ -171,7 +171,7 @@ namespace Fines2Wpf.DAO
             return ContainerApp.db.Sql("alumno_comision")
                 .Size(0)
                 .Where("$calendario__anio = @0 AND $calendario__semestre = @1 AND $comision__autorizada = true")
-                .Param("@0", anio).Param("@0", semestre).Cache().ColOfDict();
+                .Param("@0", anio).Param("@0", semestre).Cache().Dicts();
 
         }
 
@@ -213,7 +213,7 @@ namespace Fines2Wpf.DAO
                     AND $alumno = @3
                     AND $comision__autorizada = true
                 ")
-                .Param("@0", anio).Param("@1", semestre).Param("@2", idComision).Param("@3", idAlumno).ColOfDict();
+                .Param("@0", anio).Param("@1", semestre).Param("@2", idComision).Param("@3", idAlumno).Dicts();
             return r;
         }
 
@@ -234,7 +234,7 @@ namespace Fines2Wpf.DAO
                     AND $alumno = @1
                     AND $comision__autorizada = true
                 ")
-                .Param("@0", idComision).Param("@0", idAlumno).ColOfDict();
+                .Param("@0", idComision).Param("@0", idAlumno).Dicts();
 
         }
     }

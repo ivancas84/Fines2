@@ -66,7 +66,7 @@ namespace WpfUtils
         {
             IDictionary<string, object?> source = row.DataContext.Dict();
 
-            EntityValues v = db.Values(entityName, fieldId).Set(source);
+            EntityVal v = db.Values(entityName, fieldId).Set(source);
             var fieldValue = v.GetOrNull(fieldName);
             if(fieldValue.IsNoE()) {
                 if (value.IsNoE())
@@ -141,7 +141,7 @@ namespace WpfUtils
 
             IDictionary<string, object?> source = cell.DataContext.Dict();
 
-            EntityValues v = db.Values(entityName, fieldId).Set(source);
+            EntityVal v = db.Values(entityName, fieldId).Set(source);
 
             v.Sset(fieldName, value);
             DataGridRow row = DataGridRow.GetRowContainingElement(cell);

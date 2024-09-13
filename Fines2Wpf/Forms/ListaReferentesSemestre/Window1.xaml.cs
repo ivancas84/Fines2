@@ -37,7 +37,7 @@ namespace Fines2Wpf.Forms.ListaReferentesSemestre
         private void Search()
         {
             IEnumerable<Dictionary<string, object>> list = designacionDAO.referentesSemestre(search);
-            referenteGrid.ItemsSource = list.ColOfObj<Designacion>();
+            referenteGrid.ItemsSource = list.Objs<Designacion>();
         }
 
         private void BuscarButton_Click(object sender, RoutedEventArgs e)
