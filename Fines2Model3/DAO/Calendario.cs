@@ -13,7 +13,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             List<EntityPersist> persists = new();
 
-            var pfidComisiones = db.ComisionesAutorizadasDeCalendarioSql(calendarioObj.id).Cache().Dicts().ColOfVal<string>("pfid");
+            var pfidComisiones = db.ComisionesAutorizadasDeCalendarioSql(calendarioObj.id).Cache().Dicts().EnumOfVal<string>("pfid");
             var docentes = JsonConvert.DeserializeObject<List<DocentePfItem>>(data)!;
             
             foreach (DocentePfItem docenteItem in docentes)

@@ -74,13 +74,12 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     private void BuscarButton_Click(object sender, RoutedEventArgs e)
     {
         var dataComisiones = ContainerApp.db.ComisionesDePeriodoSql(tbAnio.Text, tbSemestre.Text).Cache().Dicts();
-        var idSedes = dataComisiones.ColOfVal<object>("sede");
+        var idSedes = dataComisiones.EnumOfVal<object>("sede");
         var dataReferentes = ContainerApp.db.ReferentesDeSedeQuery(idSedes).Cache().Dicts().DictOfListByKeys("sede");
         comisionOC.Clear();
         for (var i = 0; i < dataComisiones.Count(); i++)
         {
             ComisionConReferentesItem obj = ContainerApp.db.ToData<ComisionConReferentesItem>(dataComisiones.ElementAt(i));
-            //obj.PropertyChanged += Item_PropertyChanged;
 
             if (dataReferentes.ContainsKey(obj.sede))
                 foreach (var dataReferente in dataReferentes[obj.sede])

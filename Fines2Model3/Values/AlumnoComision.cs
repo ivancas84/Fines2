@@ -1,5 +1,6 @@
 ﻿using SqlOrganize.DateTimeUtils;
 using SqlOrganize.ValueTypesUtils;
+using System.Net;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -49,7 +50,9 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             Comision_ comisionObj = db.Sql("comision").Cache().Id(comision)!.Obj<Comision_>()!;
 
-            var asignacionData = db.AsignacionComisionDniSql(comision, personaVal.Get("numero_documento")).Cache().Dict();
+            var asignacionData = db.Sql("alumno_comision")
+               .Where("$comision = @0 AND $persona__numero_documento = @1")
+               .Param("@0", comision).Param("@1", personaVal.Get("numero_documento")).Cache().Dict();
 
             EntityPersist persist = db.Persist();
 
@@ -82,7 +85,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                     personaVal.Set("id", personaData!["id"]);
                 } 
 
-                var alumnoData = db.AlumnoPersonaSql(personaVal.Get("id")).Cache().Dict();
+                var alumnoData = db.Sql("alumno").
+                    Where("$persona = @0").
+                    Param("@0", personaVal.Get("id")).Cache().Dict();
+
                 var alumnoVal = db.Values("alumno");
                 if (alumnoData.IsNoE())
                 {

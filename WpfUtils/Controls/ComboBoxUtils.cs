@@ -1,12 +1,11 @@
 ﻿#nullable enable
 using System.Windows.Threading;
 using System.Windows.Input;
-using SqlOrganize.Sql;
-using SqlOrganize;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.ComponentModel;
+using Utils;
 
 namespace WpfUtils.Controls
 {
@@ -54,16 +53,16 @@ namespace WpfUtils.Controls
             timer.Start();
         }
 
-        public static void InitComboBoxConstructor<T>(this System.Windows.Controls.ComboBox comboBox, ObservableCollection<T> oc, string displayMemberPath = "Label", string selectedValuePath = "id") where T : EntityData
+        public static void InitComboBoxConstructor<T>(this System.Windows.Controls.ComboBox comboBox, IEnumerable<T> ienum, string displayMemberPath = "Label", string selectedValuePath = "Id") where T : class
         {
-            comboBox.ItemsSource = oc;
+            comboBox.ItemsSource = ienum;
             comboBox.SelectedValuePath = selectedValuePath;
             comboBox.DisplayMemberPath = displayMemberPath;
         }
 
 
         /// <summary>Inicializacion de autocomplete combobox</summary>
-        public static (string?, TextBox?, int?) SetTimerTickInitializeItem<T>(this System.Windows.Controls.ComboBox comboBox, DispatcherTimer typingTimer, string propertyName = "Label") where T : EntityData
+        public static (string?, TextBox?, int?) SetTimerTickInitializeItem<T>(this System.Windows.Controls.ComboBox comboBox, DispatcherTimer typingTimer, string propertyName = "Label")
         {
             typingTimer.Stop();
             string? text = comboBox.Text;
@@ -118,17 +117,17 @@ namespace WpfUtils.Controls
         }
 
 
-        public static void ComboBoxUpdateSelectedValue(this Db db, object sender, string entityName, string fieldName)
+        /*public static void ComboBoxUpdateSelectedValue(this Db db, object sender, string entityName, string fieldName)
         {
             var cb = (ComboBox)sender;
             string actualValue = cb.DataContext.GetPropertyValue(fieldName).ToString();
             if (cb.SelectedIndex < 0 && cb.SelectedValue.ToString().Equals(actualValue))
                 return;
             db.Persist().UpdateValueIds(entityName, fieldName, cb.SelectedValue, cb.DataContext.GetPropertyValue("id")!).Exec().RemoveCache();
-        }
+        }*/
 
         #region filter con delay v1
-        public static (ICollectionView cv, DispatcherTimer timer) FilterTextBox_InitializeConstructor<T>(this DataGrid dg, ObservableCollection<T> oc) where T : EntityData
+        public static (ICollectionView cv, DispatcherTimer timer) FilterTextBox_InitializeConstructor<T>(this DataGrid dg, ObservableCollection<T> oc)
         {
             var cvs = new CollectionViewSource() { Source = oc };
             ICollectionView cv = cvs.View;

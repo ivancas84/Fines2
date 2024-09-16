@@ -119,7 +119,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             var cursoData = db.Sql("curso").Cache().Id(curso);
 
-            var alumnos = db.AsignacionesDeComisionesSql(cursoData["comision"]).Cache().Dicts().ColOfVal<object>("alumno");
+            var alumnos = db.Sql("alumno_comision")
+               .Size(0)
+               .Where(@"
+                    $comision IN ( @0 )
+                "
+            )
+               .Param("@0", cursoData["comision"]).Cache().Dicts().EnumOfVal<object>("alumno");
 
             var disposicion = ((CursoValues)db.Values("curso").SetValues(cursoData)).Get("disposicion");
 

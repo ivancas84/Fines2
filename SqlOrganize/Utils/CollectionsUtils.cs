@@ -226,7 +226,7 @@ namespace SqlOrganize.CollectionUtils
         /// <param name="rows">Lista de diccionarios</param>
         /// <param name="key">Llave del diccionario</param>
         /// <returns>Lista de valores de una entrada del diccionario</returns>
-        public static IEnumerable<T> ColOfVal<T>(this IEnumerable<Dictionary<string, object?>> rows, string key)
+        public static IEnumerable<T> EnumOfVal<T>(this IEnumerable<Dictionary<string, object?>> rows, string key)
         {
             List<T> response = new();
             foreach (Dictionary<string, object?> row in rows)
@@ -237,7 +237,7 @@ namespace SqlOrganize.CollectionUtils
             return response;
         }
 
-        public static IEnumerable<T?> ColOfProp<T, V>(this IEnumerable<V> source, string key)
+        public static IEnumerable<T?> EnumOfProp<T, V>(this IEnumerable<V> source, string key)
         {
             Type t = typeof(V);
 

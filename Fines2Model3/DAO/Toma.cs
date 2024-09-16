@@ -58,13 +58,13 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public static IEnumerable<object> IdTomasPasarSinPlanillaDocenteDeCalendario(this Db db, object idCalendario)
         {
-            IEnumerable<object> id_tomas = db.TomasPasarDeCalendarioSql(idCalendario).Cache().Dicts().ColOfVal<object>("id");
+            IEnumerable<object> id_tomas = db.TomasPasarDeCalendarioSql(idCalendario).Cache().Dicts().EnumOfVal<object>("id");
 
             IEnumerable<object> id_tomas_con_planilla_docente = db.Sql("asignacion_planilla_docente")
                 .Fields()
                 .Size(0)
                 .Where("$calendario__id = @0").
-                Param("@0", idCalendario).Cache().Dicts().ColOfVal<object>("toma");
+                Param("@0", idCalendario).Cache().Dicts().EnumOfVal<object>("toma");
 
 
             bool collectionsEqual = id_tomas.SequenceEqual(id_tomas_con_planilla_docente);

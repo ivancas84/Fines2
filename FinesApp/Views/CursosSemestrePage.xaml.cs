@@ -36,7 +36,7 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
             return;
         }
         var data = ContainerApp.db.CursosAutorizadosCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
-        var idCursos = data.ColOfVal<object>("id");
+        var idCursos = data.EnumOfVal<object>("id");
         var dataToma = ContainerApp.db.TomaAprobadaDeCursoQuery(idCursos).Cache().Dicts().DictOfDictByKeys("curso");
 
         cursoOC.Clear();

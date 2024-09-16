@@ -67,15 +67,15 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (horarios.IsNoE())
                 return "?";
 
-            List<TimeSpan?> horasInicio = horarios.ColOfVal<TimeSpan?>("hora_inicio").ToList();
+            List<TimeSpan?> horasInicio = horarios.EnumOfVal<TimeSpan?>("hora_inicio").ToList();
                 horasInicio.RemoveAll(x => x.IsNoE());
                 horasInicio.Sort((x,y) => TimeSpan.Compare((TimeSpan)x!, (TimeSpan)y!));
 
-            List<TimeSpan?> horasFin = horarios.ColOfVal<TimeSpan?>("hora_fin").ToList();
+            List<TimeSpan?> horasFin = horarios.EnumOfVal<TimeSpan?>("hora_fin").ToList();
                 horasFin.RemoveAll(x => x.IsNoE());
                 horasFin.Sort((x, y) => TimeSpan.Compare((TimeSpan)y!, (TimeSpan)x!));
 
-            List<string> horarios_ = (List<string>)horarios.OrderBy(x => x["dia__numero"]).ColOfVal<string>("dia__dia").Distinct().ToList();
+            List<string> horarios_ = (List<string>)horarios.OrderBy(x => x["dia__numero"]).EnumOfVal<string>("dia__dia").Distinct().ToList();
 
             string dias = string.Join(", ", horarios_);
             string hora_inicio = !horasInicio.IsNoE() ? ((TimeSpan)horasInicio[0]!).ToString(@"hh\:mm") : "?";
@@ -93,7 +93,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Where("$comision = @0").
                 Param("@0", Get("id")).
                 Dicts().
-                ColOfVal<object>("id");
+                EnumOfVal<object>("id");
             
             if(idsCursos.Count()>0)
                 persist.DeleteIds("curso", idsCursos.ToArray());

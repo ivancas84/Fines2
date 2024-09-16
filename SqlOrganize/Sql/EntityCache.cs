@@ -138,7 +138,7 @@ namespace SqlOrganize.Sql
             EntitySql sqlAux = Sql.Clone();
             sqlAux.fields = Db.config.id;
 
-            IEnumerable<object> ids = Db.Cache(sqlAux).DictsQuery().ColOfVal<object>(Db.config.id);
+            IEnumerable<object> ids = Db.Cache(sqlAux).DictsQuery().EnumOfVal<object>(Db.config.id);
 
             return BuildDicts(_fields, ids.ToArray());
         }
@@ -198,6 +198,31 @@ namespace SqlOrganize.Sql
             return (dict.IsNoE()) ? null : Db.ToData<T>(dict!);
         }
 
+        public IEnumerable<T> EnumOfData<T>() where T : EntityData, new()
+        {
+            var dicts = Dicts();
+            List<T> list = new List<T>();
+            foreach (var d in dicts)
+            {
+                var e = Db.ToData<T>(d);
+                list.Add(e);
+            }
+            return list;
+        }
+
+
+        public IEnumerable<EntityVal> EnumOfVal()
+        {
+            var dicts = Dicts();
+            List<EntityVal> list = new ();
+            foreach (var d in dicts)
+            {
+                var e = Db.Values(Sql.entityName).Set(d);
+                list.Add(e);
+            }
+            return list;
+        }
+
         /// <summary>Organiza los elementos a consultar y efectua la consulta a la base de datos.</summary>
         protected IEnumerable<Dictionary<string, object?>> BuildDicts(List<string> fields, params object[] ids)
         {
@@ -233,7 +258,7 @@ namespace SqlOrganize.Sql
                 string refFieldName = Db.Entity(fo.EntityName).relations[fieldId].refFieldName;
                 string fkName = (!parentId.IsNoE()) ? parentId + Db.config.separator + fieldName : fieldName;
 
-                List<object> ids = response.ColOfVal<object>(fkName).Distinct().ToList();
+                List<object> ids = response.EnumOfVal<object>(fkName).Distinct().ToList();
                 ids.RemoveAll(item => item.IsNoE());
                 IEnumerable<IDictionary<string, object?>> data;
                 if (ids.Count() == 1 && ids.ElementAt(0).IsNoE())

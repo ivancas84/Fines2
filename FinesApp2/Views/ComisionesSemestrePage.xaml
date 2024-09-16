@@ -1,0 +1,82 @@
+﻿<Page
+    x:Class="FinesApp2.Views.ComisionesSemestrePage"
+    Style="{DynamicResource MahApps.Styles.Page}"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:properties="clr-namespace:FinesApp2.Properties"
+    mc:Ignorable="d"
+    d:DesignHeight="450" d:DesignWidth="800">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="48" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+
+		<ScrollViewer
+			HorizontalScrollBarVisibility="Visible"
+			Grid.Row="1"
+			Margin="{StaticResource MediumLeftRightMargin}"
+			Background="{DynamicResource MahApps.Brushes.Gray10}">
+
+			<TabControl>
+
+				<TabItem
+					Header="Comisiones Semestre">
+
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height = "Auto" />
+							<RowDefinition Height = "Auto" />
+						</Grid.RowDefinitions>
+
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width = "*" />
+						</Grid.ColumnDefinitions>
+						<GroupBox
+											Name="searchGroupBox"
+											Margin="10">
+							<GroupBox.Header>
+								<Label Foreground="White">Selección de año, semestre</Label>
+							</GroupBox.Header>
+
+							<StackPanel>
+
+
+								<WrapPanel>
+									<Label
+									FontWeight="Bold"
+									Margin = "3, 3, 3, 0">_Calendario:</Label>
+									<ComboBox
+												Name="cbxCalendario"
+												Margin = "3, 0, 3, 3"
+									SelectionChanged="cbxCalendario_SelectionChanged"/>
+								</WrapPanel>
+
+
+							</StackPanel>
+						</GroupBox>
+						<GroupBox
+						Name="comisionGroupBox"
+						Grid.Row="1"
+						Margin="10">
+							<GroupBox.Header>
+								<Label Foreground="White">Comisiones</Label>
+							</GroupBox.Header>
+							<DataGrid Name="dgComision"  >
+								
+							</DataGrid>
+
+						</GroupBox>
+					</Grid>
+
+				</TabItem>
+				
+			</TabControl>
+
+
+		</ScrollViewer>
+	</Grid>
+</Page>

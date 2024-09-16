@@ -41,7 +41,7 @@ public partial class SedesSemestrePage : Page, INotifyPropertyChanged
                 throw new Exception("Debe seleccionar calendario");
 
             IEnumerable<object> idSedes = ContainerApp.db.ComisionesAutorizadasDeCalendarioSql(cbxCalendario.SelectedValue).
-                Cache().Dicts().ColOfVal<object>("sede");
+                Cache().Dicts().EnumOfVal<object>("sede");
 
             var sedeData = ContainerApp.db.Sql("sede").Where("$id IN (@0)").
                 Order("$nombre ASC").Param("@0", idSedes).Cache().Dicts();

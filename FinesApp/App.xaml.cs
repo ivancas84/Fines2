@@ -116,6 +116,8 @@ public partial class App : Application
 
         services.AddTransient<SedesSemestrePage>();
 
+        services.AddTransient<AdministrarAlumnoPage>();
+
         // Configuration
         services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
     }

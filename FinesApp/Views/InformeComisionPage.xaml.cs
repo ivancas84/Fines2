@@ -96,15 +96,21 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
             ContainerApp.db.ClearAndAddDataToOC(cursosData, cursoOC);
 
-            var idsAsignaturas = cursosData.ColOfVal<string>("asignatura-id").ToList();
+            var idsAsignaturas = cursosData.EnumOfVal<string>("asignatura-id").ToList();
 
             //var disposicionesData = ContainerApp.db.Sql("disposicion").Equal("$planificacion", comision.planificacion).Cache().Dicts();
-            //var idsDisposiciones = disposicionesData.ColOfVal<string>("id").ToList();
+            //var idsDisposiciones = disposicionesData.EnumOfVal<string>("id").ToList();
 
 
-            var asignacionesData = ContainerApp.db.AsignacionesDeComisionesSql(comision.id).Cache().Dicts();
+            var asignacionesData = ContainerApp.db.Sql("alumno_comision")
+               .Size(0)
+               .Where(@"
+                    $comision IN ( @0 )
+                "
+            )
+               .Param("@0", comision.id).Cache().Dicts();
 
-            var idAlumnos = asignacionesData.ColOfVal<object>("alumno").ToArray();
+            var idAlumnos = asignacionesData.EnumOfVal<object>("alumno").ToArray();
 
             var calificacionesData = ContainerApp.db.CalificacionesAprobadasPorAlumnoDePlanificacionSql(comision.planificacion, idAlumnos).Cache().Dicts().DictOfListByKeys("alumno");
 
@@ -273,7 +279,13 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             if(comObj.comision_siguiente.IsNoE())
                 throw new Exception("No se encuentra definida la comision siguiente");
 
-            var idAlumnosExistentes = ContainerApp.db.AsignacionesDeComisionesSql(comObj.comision_siguiente).Cache().Dicts().DictOfDictByKeysValue("id","alumno");
+            var idAlumnosExistentes = ContainerApp.db.Sql("alumno_comision")
+               .Size(0)
+               .Where(@"
+                    $comision IN ( @0 )
+                "
+            )
+               .Param("@0", comObj.comision_siguiente).Cache().Dicts().DictOfDictByKeysValue("id","alumno");
 
 
             EntityPersist persist = ContainerApp.db.Persist();

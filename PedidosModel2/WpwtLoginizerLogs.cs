@@ -89,7 +89,7 @@ namespace SqlOrganize.Sql.PedidosModel2
                         return "Debe completar valor.";
                     if (!db.IsNoE() && !_ip.IsNoE()) {
                         var row = db.Sql("wpwt_loginizer_logs").Equal("$ip", _ip).Cache().Dict();
-                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
+                        if (!row.IsNoE() && !_Id.ToString().Equals(row!["id"]!.ToString()))
                             return "Valor existente.";
                     }
                     return "";

@@ -30,7 +30,7 @@ namespace WpfUtils.Fines.Curso
             var calificacionAprobadaData = db.CalificacionAprobadaCursoSql(curso).Cache().Dicts();
             db.ClearAndAddDataToOC(calificacionAprobadaData, calificacionAprobadaOC);
 
-            var alumnosConCalificacionAprobada = calificacionAprobadaData.ColOfVal<object>("alumno");
+            var alumnosConCalificacionAprobada = calificacionAprobadaData.EnumOfVal<object>("alumno");
             var asignacionDesaprobadaData = db.AsignacionesActivasRestantesComisionSql(cursoData["comision"], alumnosConCalificacionAprobada).Cache().Dicts();
 
             db.ClearAndAddDataToOC(asignacionDesaprobadaData, asignacionDesaprobadaOC);

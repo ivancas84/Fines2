@@ -79,7 +79,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
 
     private void EliminarButton_Click(object sender, RoutedEventArgs e)
     {
-        var calificaciones = ContainerApp.db.CalificacionesCursoSql(cursoComboBox.SelectedValue).Cache().Dicts().ColOfVal<object>("id");
+        var calificaciones = ContainerApp.db.CalificacionesCursoSql(cursoComboBox.SelectedValue).Cache().Dicts().EnumOfVal<object>("id");
 
         if (!calificaciones.Any())
         {

@@ -133,7 +133,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         public static IEnumerable<EntityPersist> PersistComisionesPf(this Db db, Calendario calendarioObj, string data)
         {
 
-            var pfidComisiones = db.ComisionesAutorizadasDeCalendarioSql(calendarioObj.id!).Cache().Dicts().ColOfVal<string>("pfid");
+            var pfidComisiones = db.ComisionesAutorizadasDeCalendarioSql(calendarioObj.id!).Cache().Dicts().EnumOfVal<string>("pfid");
             List<string> dias = new() { "Lunes", "Martes", "Miercoles", "Jueves", "Viernes" };
 
             Dictionary<string, object> dict = new Dictionary<string, object>();
@@ -239,7 +239,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Where("$comision = @0").
                 Param("@0", comisionVal.Get("id")).
                 Dicts().
-                ColOfVal<object>("id");
+                EnumOfVal<object>("id");
 
             if (idsCursos.Count() > 0)
                 persist.DeleteIds("curso", idsCursos.ToArray());

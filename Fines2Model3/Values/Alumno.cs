@@ -53,7 +53,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             IEnumerable < Dictionary<string, object?>> calificacionesAprobadas = db.CalificacionesAprobadasDeAlumnoPlanConAnioSemestreIngresoSql(Get("plan"), Get("id"), Get("anio_ingreso"), Get("semestre_ingreso")).
                 Dicts();
 
-            idsCalificaciones = calificacionesAprobadas.ColOfVal<object>("id");
+            idsCalificaciones = calificacionesAprobadas.EnumOfVal<object>("id");
 
             if (idsCalificaciones.Count() > 0)
                 db.Persist().
@@ -62,7 +62,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             #endregion
 
             #region Insertar calificaciones de disposiciones faltantes
-            IEnumerable<object> idsDisposicionesAprobadas = calificacionesAprobadas.ColOfVal<object>("disposicion");
+            IEnumerable<object> idsDisposicionesAprobadas = calificacionesAprobadas.EnumOfVal<object>("disposicion");
 
             IEnumerable<object> idsDisposiciones = db.DisposicionesPlanAnioSemestre(Get("plan"), Get("anio_ingreso"),Get("semestre_ingreso")).
                 Column<object>("id");

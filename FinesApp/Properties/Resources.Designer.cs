@@ -282,5 +282,27 @@ namespace FinesApp.Properties {
                 return ResourceManager.GetString("ShellMenuItemViewsSedesSemestrePageHeader", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to AdministrarAlumno.
+        /// </summary>
+        public static string AdministrarAlumnoPageTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("AdministrarAlumnoPageTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MenuItemViewsAdministrarAlumnoPageHeader.
+        /// </summary>
+        public static string ShellMenuItemViewsAdministrarAlumnoPageHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("ShellMenuItemViewsAdministrarAlumnoPageHeader", resourceCulture);
+            }
+        }
     }
 }

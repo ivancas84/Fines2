@@ -10,9 +10,4 @@
 	<ItemGroup>
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
 	</ItemGroup>
-	
-	<ItemGroup>
-		<ProjectReference Include="..\SqlOrganizeMy\SqlOrganizeMy.csproj" />
-		<ProjectReference Include="..\SqlOrganize\SqlOrganize.csproj" />
-	</ItemGroup>
 </Project>
