@@ -119,12 +119,11 @@ namespace SqlOrganize.Sql.Fines2Model3
             return persist;
         }
 
-        public IEnumerable<EntityPersist> GenerarComisionesSemestreSiguiente(short anioCalendario, short semestreCalendario, object idCalendario)
+        public IEnumerable<EntityPersist> GenerarComisionesSemestreSiguiente(object idCalendario, object idCalendarioComisionesSiguientes)
         {
             IEnumerable<Dictionary<string, object?>> comisionesAutorizadasSemestre = db.Sql("comision").
                Where(@" 
-                        $calendario__anio = @0 
-                        AND $calendario__semestre= @1
+                        $calendario__id = @0 
                         AND $comision_siguiente IS NULL
                         AND $autorizada is true
                         AND (($planificacion__anio = '3' AND $planificacion__semestre = '1')
@@ -134,8 +133,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                         OR ($planificacion__anio = '1' AND $planificacion__semestre = '1'))
                     ").
                Size(0).
-               Param("@0", anioCalendario).
-               Param("@1", semestreCalendario).
+               Param("@0", idCalendario).
                Dicts();
 
             List<EntityPersist> persists = new();

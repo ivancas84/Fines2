@@ -22,25 +22,25 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected string? _disposicion = null;
         public string? disposicion
         {
             get { return _disposicion; }
-            set { _disposicion = value; NotifyPropertyChanged(nameof(disposicion)); }
+            set { if( _disposicion != value) { _disposicion = value; NotifyPropertyChanged(nameof(disposicion)); } }
         }
         protected string? _alumno = null;
         public string? alumno
         {
             get { return _alumno; }
-            set { _alumno = value; NotifyPropertyChanged(nameof(alumno)); }
+            set { if( _alumno != value) { _alumno = value; NotifyPropertyChanged(nameof(alumno)); } }
         }
         protected string? _modo = null;
         public string? modo
         {
             get { return _modo; }
-            set { _modo = value; NotifyPropertyChanged(nameof(modo)); }
+            set { if( _modo != value) { _modo = value; NotifyPropertyChanged(nameof(modo)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -75,7 +75,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Disposicion? disposicion_
         {
             get { return _disposicion_; }
-            set { _disposicion_ = value; NotifyPropertyChanged(nameof(disposicion_)); }
+            set {
+                _disposicion_ = value;
+                disposicion = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(disposicion_));
+            }
         }
 
         //disposicion_pendiente.alumno _o:o alumno.id
@@ -83,7 +87,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Alumno? alumno_
         {
             get { return _alumno_; }
-            set { _alumno_ = value; NotifyPropertyChanged(nameof(alumno_)); }
+            set {
+                _alumno_ = value;
+                alumno = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(alumno_));
+            }
         }
 
     }

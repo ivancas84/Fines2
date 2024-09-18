@@ -22,19 +22,19 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected short? _numero = null;
         public short? numero
         {
             get { return _numero; }
-            set { _numero = value; NotifyPropertyChanged(nameof(numero)); }
+            set { if( _numero != value) { _numero = value; NotifyPropertyChanged(nameof(numero)); } }
         }
         protected string? _dia = null;
         public string? dia
         {
             get { return _dia; }
-            set { _dia = value; NotifyPropertyChanged(nameof(dia)); }
+            set { if( _dia != value) { _dia = value; NotifyPropertyChanged(nameof(dia)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -72,7 +72,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             return "";
         }
         //horario.dia _m:o dia.id
-        protected ObservableCollection<Horario> _Horario_dia_ { get; set; } = new ();
+        public ObservableCollection<Horario> Horario_dia_ { get; set; } = new ();
 
     }
 }

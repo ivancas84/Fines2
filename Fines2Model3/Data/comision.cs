@@ -23,97 +23,97 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected string? _turno = null;
         public string? turno
         {
             get { return _turno; }
-            set { _turno = value; NotifyPropertyChanged(nameof(turno)); }
+            set { if( _turno != value) { _turno = value; NotifyPropertyChanged(nameof(turno)); } }
         }
         protected string? _division = null;
         public string? division
         {
             get { return _division; }
-            set { _division = value; NotifyPropertyChanged(nameof(division)); }
+            set { if( _division != value) { _division = value; NotifyPropertyChanged(nameof(division)); } }
         }
         protected string? _comentario = null;
         public string? comentario
         {
             get { return _comentario; }
-            set { _comentario = value; NotifyPropertyChanged(nameof(comentario)); }
+            set { if( _comentario != value) { _comentario = value; NotifyPropertyChanged(nameof(comentario)); } }
         }
         protected bool? _autorizada = null;
         public bool? autorizada
         {
             get { return _autorizada; }
-            set { _autorizada = value; NotifyPropertyChanged(nameof(autorizada)); }
+            set { if( _autorizada != value) { _autorizada = value; NotifyPropertyChanged(nameof(autorizada)); } }
         }
         protected bool? _apertura = null;
         public bool? apertura
         {
             get { return _apertura; }
-            set { _apertura = value; NotifyPropertyChanged(nameof(apertura)); }
+            set { if( _apertura != value) { _apertura = value; NotifyPropertyChanged(nameof(apertura)); } }
         }
         protected bool? _publicada = null;
         public bool? publicada
         {
             get { return _publicada; }
-            set { _publicada = value; NotifyPropertyChanged(nameof(publicada)); }
+            set { if( _publicada != value) { _publicada = value; NotifyPropertyChanged(nameof(publicada)); } }
         }
         protected string? _observaciones = null;
         public string? observaciones
         {
             get { return _observaciones; }
-            set { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); }
+            set { if( _observaciones != value) { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); } }
         }
         protected DateTime? _alta = null;
         public DateTime? alta
         {
             get { return _alta; }
-            set { _alta = value; NotifyPropertyChanged(nameof(alta)); }
+            set { if( _alta != value) { _alta = value; NotifyPropertyChanged(nameof(alta)); } }
         }
         protected string? _sede = null;
         public string? sede
         {
             get { return _sede; }
-            set { _sede = value; NotifyPropertyChanged(nameof(sede)); }
+            set { if( _sede != value) { _sede = value; NotifyPropertyChanged(nameof(sede)); } }
         }
         protected string? _modalidad = null;
         public string? modalidad
         {
             get { return _modalidad; }
-            set { _modalidad = value; NotifyPropertyChanged(nameof(modalidad)); }
+            set { if( _modalidad != value) { _modalidad = value; NotifyPropertyChanged(nameof(modalidad)); } }
         }
         protected string? _planificacion = null;
         public string? planificacion
         {
             get { return _planificacion; }
-            set { _planificacion = value; NotifyPropertyChanged(nameof(planificacion)); }
+            set { if( _planificacion != value) { _planificacion = value; NotifyPropertyChanged(nameof(planificacion)); } }
         }
         protected string? _comision_siguiente = null;
         public string? comision_siguiente
         {
             get { return _comision_siguiente; }
-            set { _comision_siguiente = value; NotifyPropertyChanged(nameof(comision_siguiente)); }
+            set { if( _comision_siguiente != value) { _comision_siguiente = value; NotifyPropertyChanged(nameof(comision_siguiente)); } }
         }
         protected string? _calendario = null;
         public string? calendario
         {
             get { return _calendario; }
-            set { _calendario = value; NotifyPropertyChanged(nameof(calendario)); }
+            set { if( _calendario != value) { _calendario = value; NotifyPropertyChanged(nameof(calendario)); } }
         }
         protected string? _identificacion = null;
         public string? identificacion
         {
             get { return _identificacion; }
-            set { _identificacion = value; NotifyPropertyChanged(nameof(identificacion)); }
+            set { if( _identificacion != value) { _identificacion = value; NotifyPropertyChanged(nameof(identificacion)); } }
         }
         protected string? _pfid = null;
         public string? pfid
         {
             get { return _pfid; }
-            set { _pfid = value; NotifyPropertyChanged(nameof(pfid)); }
+            set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -196,7 +196,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Sede? sede_
         {
             get { return _sede_; }
-            set { _sede_ = value; NotifyPropertyChanged(nameof(sede_)); }
+            set {
+                _sede_ = value;
+                sede = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(sede_));
+            }
         }
 
         //comision.modalidad _o:o modalidad.id
@@ -204,7 +208,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Modalidad? modalidad_
         {
             get { return _modalidad_; }
-            set { _modalidad_ = value; NotifyPropertyChanged(nameof(modalidad_)); }
+            set {
+                _modalidad_ = value;
+                modalidad = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(modalidad_));
+            }
         }
 
         //comision.planificacion _o:o planificacion.id
@@ -212,7 +220,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Planificacion? planificacion_
         {
             get { return _planificacion_; }
-            set { _planificacion_ = value; NotifyPropertyChanged(nameof(planificacion_)); }
+            set {
+                _planificacion_ = value;
+                planificacion = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(planificacion_));
+            }
         }
 
         //comision.calendario _o:o calendario.id
@@ -220,20 +232,24 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Calendario? calendario_
         {
             get { return _calendario_; }
-            set { _calendario_ = value; NotifyPropertyChanged(nameof(calendario_)); }
+            set {
+                _calendario_ = value;
+                calendario = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(calendario_));
+            }
         }
 
         //alumno_comision.comision _m:o comision.id
-        protected ObservableCollection<AlumnoComision> _AlumnoComision_comision_ { get; set; } = new ();
+        public ObservableCollection<AlumnoComision> AlumnoComision_comision_ { get; set; } = new ();
 
         //comision_relacionada.comision _m:o comision.id
-        protected ObservableCollection<ComisionRelacionada> _ComisionRelacionada_comision_ { get; set; } = new ();
+        public ObservableCollection<ComisionRelacionada> ComisionRelacionada_comision_ { get; set; } = new ();
 
         //comision_relacionada.relacion _m:o comision.id
-        protected ObservableCollection<ComisionRelacionada> _ComisionRelacionada_relacion_ { get; set; } = new ();
+        public ObservableCollection<ComisionRelacionada> ComisionRelacionada_relacion_ { get; set; } = new ();
 
         //curso.comision _m:o comision.id
-        protected ObservableCollection<Curso> _Curso_comision_ { get; set; } = new ();
+        public ObservableCollection<Curso> Curso_comision_ { get; set; } = new ();
 
     }
 }

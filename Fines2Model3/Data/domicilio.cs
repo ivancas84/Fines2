@@ -22,49 +22,49 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected string? _calle = null;
         public string? calle
         {
             get { return _calle; }
-            set { _calle = value; NotifyPropertyChanged(nameof(calle)); }
+            set { if( _calle != value) { _calle = value; NotifyPropertyChanged(nameof(calle)); } }
         }
         protected string? _entre = null;
         public string? entre
         {
             get { return _entre; }
-            set { _entre = value; NotifyPropertyChanged(nameof(entre)); }
+            set { if( _entre != value) { _entre = value; NotifyPropertyChanged(nameof(entre)); } }
         }
         protected string? _numero = null;
         public string? numero
         {
             get { return _numero; }
-            set { _numero = value; NotifyPropertyChanged(nameof(numero)); }
+            set { if( _numero != value) { _numero = value; NotifyPropertyChanged(nameof(numero)); } }
         }
         protected string? _piso = null;
         public string? piso
         {
             get { return _piso; }
-            set { _piso = value; NotifyPropertyChanged(nameof(piso)); }
+            set { if( _piso != value) { _piso = value; NotifyPropertyChanged(nameof(piso)); } }
         }
         protected string? _departamento = null;
         public string? departamento
         {
             get { return _departamento; }
-            set { _departamento = value; NotifyPropertyChanged(nameof(departamento)); }
+            set { if( _departamento != value) { _departamento = value; NotifyPropertyChanged(nameof(departamento)); } }
         }
         protected string? _barrio = null;
         public string? barrio
         {
             get { return _barrio; }
-            set { _barrio = value; NotifyPropertyChanged(nameof(barrio)); }
+            set { if( _barrio != value) { _barrio = value; NotifyPropertyChanged(nameof(barrio)); } }
         }
         protected string? _localidad = null;
         public string? localidad
         {
             get { return _localidad; }
-            set { _localidad = value; NotifyPropertyChanged(nameof(localidad)); }
+            set { if( _localidad != value) { _localidad = value; NotifyPropertyChanged(nameof(localidad)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -109,13 +109,13 @@ namespace SqlOrganize.Sql.Fines2Model3
             return "";
         }
         //centro_educativo.domicilio _m:o domicilio.id
-        protected ObservableCollection<CentroEducativo> _CentroEducativo_domicilio_ { get; set; } = new ();
+        public ObservableCollection<CentroEducativo> CentroEducativo_domicilio_ { get; set; } = new ();
 
         //persona.domicilio _m:o domicilio.id
-        protected ObservableCollection<Persona> _Persona_domicilio_ { get; set; } = new ();
+        public ObservableCollection<Persona> Persona_domicilio_ { get; set; } = new ();
 
         //sede.domicilio _m:o domicilio.id
-        protected ObservableCollection<Sede> _Sede_domicilio_ { get; set; } = new ();
+        public ObservableCollection<Sede> Sede_domicilio_ { get; set; } = new ();
 
     }
 }

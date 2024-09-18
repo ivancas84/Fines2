@@ -183,13 +183,6 @@ namespace SqlOrganize.Sql
             }
         }
 
-        protected string? __Id = null;
-        public string? _Id
-        {
-            get { return __Id; }
-            set { __Id = value; NotifyPropertyChanged(nameof(_Id)); }
-        }
-
         public EntityPersist Delete()
         {
             return db.Persist().DeleteIds(entityName, this.GetPropertyValue("id"));

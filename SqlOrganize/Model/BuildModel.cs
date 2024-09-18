@@ -657,7 +657,7 @@ namespace SqlOrganize.Model
                     else
                     {
                         sw.WriteLine("        //" + rel.entityName + "." + rel.fieldName + " _m:o " + rel.refEntityName + ".id");
-                        sw.WriteLine("        protected ObservableCollection<" + rel.entityName.ToCamelCase() + "> _" + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_ { get; set; } = new ();");
+                        sw.WriteLine("        public ObservableCollection<" + rel.entityName.ToCamelCase() + "> " + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_ { get; set; } = new ();");
                         sw.WriteLine("");
                     }
                     

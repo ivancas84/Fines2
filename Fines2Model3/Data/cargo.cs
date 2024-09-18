@@ -22,13 +22,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected string? _descripcion = null;
         public string? descripcion
         {
             get { return _descripcion; }
-            set { _descripcion = value; NotifyPropertyChanged(nameof(descripcion)); }
+            set { if( _descripcion != value) { _descripcion = value; NotifyPropertyChanged(nameof(descripcion)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -56,7 +56,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             return "";
         }
         //designacion.cargo _m:o cargo.id
-        protected ObservableCollection<Designacion> _Designacion_cargo_ { get; set; } = new ();
+        public ObservableCollection<Designacion> Designacion_cargo_ { get; set; } = new ();
 
     }
 }

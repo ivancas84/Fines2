@@ -23,43 +23,43 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected string? _tipo = null;
         public string? tipo
         {
             get { return _tipo; }
-            set { _tipo = value; NotifyPropertyChanged(nameof(tipo)); }
+            set { if( _tipo != value) { _tipo = value; NotifyPropertyChanged(nameof(tipo)); } }
         }
         protected string? _prefijo = null;
         public string? prefijo
         {
             get { return _prefijo; }
-            set { _prefijo = value; NotifyPropertyChanged(nameof(prefijo)); }
+            set { if( _prefijo != value) { _prefijo = value; NotifyPropertyChanged(nameof(prefijo)); } }
         }
         protected string? _numero = null;
         public string? numero
         {
             get { return _numero; }
-            set { _numero = value; NotifyPropertyChanged(nameof(numero)); }
+            set { if( _numero != value) { _numero = value; NotifyPropertyChanged(nameof(numero)); } }
         }
         protected DateTime? _insertado = null;
         public DateTime? insertado
         {
             get { return _insertado; }
-            set { _insertado = value; NotifyPropertyChanged(nameof(insertado)); }
+            set { if( _insertado != value) { _insertado = value; NotifyPropertyChanged(nameof(insertado)); } }
         }
         protected DateTime? _eliminado = null;
         public DateTime? eliminado
         {
             get { return _eliminado; }
-            set { _eliminado = value; NotifyPropertyChanged(nameof(eliminado)); }
+            set { if( _eliminado != value) { _eliminado = value; NotifyPropertyChanged(nameof(eliminado)); } }
         }
         protected string? _persona = null;
         public string? persona
         {
             get { return _persona; }
-            set { _persona = value; NotifyPropertyChanged(nameof(persona)); }
+            set { if( _persona != value) { _persona = value; NotifyPropertyChanged(nameof(persona)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -105,7 +105,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Persona? persona_
         {
             get { return _persona_; }
-            set { _persona_ = value; NotifyPropertyChanged(nameof(persona_)); }
+            set {
+                _persona_ = value;
+                persona = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(persona_));
+            }
         }
 
     }

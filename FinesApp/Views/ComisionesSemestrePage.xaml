@@ -40,7 +40,7 @@
 						Name="searchGroupBox"
 						Margin="10">
                             <GroupBox.Header>
-                                <Label Foreground="White">Selección de año, semestre</Label>
+                                <Label Foreground="White">Selección de calendario</Label>
                             </GroupBox.Header>
 
                             <StackPanel>
@@ -49,23 +49,15 @@
                                 <WrapPanel Orientation="Horizontal">
 
                                     <Label
-									Margin= "2">Año:</Label>
-
-                                    <TextBox
-									MinWidth="200"
-									Name = "tbAnio"
-									LostFocus="tbAnio_LostFocus"/>
-
-                                    <Label
-									Margin = "2">Semestre:</Label>
-
-                                    <TextBox
-									MinWidth="200"
-									Name = "tbSemestre" 
-									LostFocus="tbSemestre_LostFocus"/>
+                                        FontWeight="Bold"
+                                        Margin = "3, 3, 3, 0">_Calendario:</Label>
+                                    <ComboBox
+						                Name="cbxCalendario"
+						                Margin = "3, 0, 3, 3"
+                                        SelectionChanged="cbxCalendario_SelectionChanged"/>
                                     <Button
-									Content = "_Buscar..."
-									Click="BuscarButton_Click" />
+									    Content = "_Buscar..."
+									    Click="BuscarButton_Click" />
                                 </WrapPanel>
 
                                 <WrapPanel Margin="0,25,0,0">
@@ -73,12 +65,12 @@
 								Margin= "2">Calendario:</Label>
 
                                     <ComboBox
-								Width="200"
-								Name = "cbxCalendario" />
+								        Width="200"
+								        Name = "cbxCalendarioComisionesSiguientes" />
 
                                     <Button
-								Content = "_Generar Comisiones Siguientes..."
-								Click="btnGenerarComisionesSiguientes_Click" />
+								        Content = "_Generar Comisiones Siguientes..."
+								        Click="btnGenerarComisionesSiguientes_Click" />
                                 </WrapPanel>
 
                                 <Button

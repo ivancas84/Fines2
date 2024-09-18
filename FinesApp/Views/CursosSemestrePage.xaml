@@ -40,21 +40,16 @@
 						<Label Foreground="White">Selección de año, semestre</Label>
 					</GroupBox.Header>
 
-					<StackPanel>
-
-
-                        <WrapPanel>
-                            <Label
-							FontWeight="Bold"
-							Margin = "3, 3, 3, 0">_Calendario:</Label>
-                            <ComboBox
-										Name="cbxCalendario"
-										Margin = "3, 0, 3, 3"
+                    <WrapPanel>
+                        <Label
+						FontWeight="Bold"
+						Margin = "3, 3, 3, 0">_Calendario:</Label>
+                        <ComboBox
+							Name="cbxCalendario"
+							Margin = "3, 0, 3, 3"
 							SelectionChanged="cbxCalendario_SelectionChanged"/>
-                        </WrapPanel>
+                    </WrapPanel>
 
-
-                    </StackPanel>
 				</GroupBox>
 
 				<GroupBox

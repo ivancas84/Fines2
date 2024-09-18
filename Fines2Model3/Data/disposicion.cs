@@ -22,25 +22,25 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected string? _asignatura = null;
         public string? asignatura
         {
             get { return _asignatura; }
-            set { _asignatura = value; NotifyPropertyChanged(nameof(asignatura)); }
+            set { if( _asignatura != value) { _asignatura = value; NotifyPropertyChanged(nameof(asignatura)); } }
         }
         protected string? _planificacion = null;
         public string? planificacion
         {
             get { return _planificacion; }
-            set { _planificacion = value; NotifyPropertyChanged(nameof(planificacion)); }
+            set { if( _planificacion != value) { _planificacion = value; NotifyPropertyChanged(nameof(planificacion)); } }
         }
         protected int? _orden_informe_coordinacion_distrital = null;
         public int? orden_informe_coordinacion_distrital
         {
             get { return _orden_informe_coordinacion_distrital; }
-            set { _orden_informe_coordinacion_distrital = value; NotifyPropertyChanged(nameof(orden_informe_coordinacion_distrital)); }
+            set { if( _orden_informe_coordinacion_distrital != value) { _orden_informe_coordinacion_distrital = value; NotifyPropertyChanged(nameof(orden_informe_coordinacion_distrital)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -75,7 +75,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Asignatura? asignatura_
         {
             get { return _asignatura_; }
-            set { _asignatura_ = value; NotifyPropertyChanged(nameof(asignatura_)); }
+            set {
+                _asignatura_ = value;
+                asignatura = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(asignatura_));
+            }
         }
 
         //disposicion.planificacion _o:o planificacion.id
@@ -83,20 +87,24 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Planificacion? planificacion_
         {
             get { return _planificacion_; }
-            set { _planificacion_ = value; NotifyPropertyChanged(nameof(planificacion_)); }
+            set {
+                _planificacion_ = value;
+                planificacion = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(planificacion_));
+            }
         }
 
         //calificacion.disposicion _m:o disposicion.id
-        protected ObservableCollection<Calificacion> _Calificacion_disposicion_ { get; set; } = new ();
+        public ObservableCollection<Calificacion> Calificacion_disposicion_ { get; set; } = new ();
 
         //curso.disposicion _m:o disposicion.id
-        protected ObservableCollection<Curso> _Curso_disposicion_ { get; set; } = new ();
+        public ObservableCollection<Curso> Curso_disposicion_ { get; set; } = new ();
 
         //disposicion_pendiente.disposicion _m:o disposicion.id
-        protected ObservableCollection<DisposicionPendiente> _DisposicionPendiente_disposicion_ { get; set; } = new ();
+        public ObservableCollection<DisposicionPendiente> DisposicionPendiente_disposicion_ { get; set; } = new ();
 
         //distribucion_horaria.disposicion _m:o disposicion.id
-        protected ObservableCollection<DistribucionHoraria> _DistribucionHoraria_disposicion_ { get; set; } = new ();
+        public ObservableCollection<DistribucionHoraria> DistribucionHoraria_disposicion_ { get; set; } = new ();
 
     }
 }

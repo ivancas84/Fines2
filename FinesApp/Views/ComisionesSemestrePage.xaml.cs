@@ -16,8 +16,9 @@ namespace FinesApp.Views;
 
 public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 {
-    private ObservableCollection<ComisionConReferentesItem> comisionOC = new();
-    private ObservableCollection<Calendario> calendarioOC = new();
+    private ObservableCollection<Comision> comisionOC = new();
+    private ObservableCollection<Calendario> ocCalendario = new();
+    private ObservableCollection<Calendario> ocCalendarioComisionesSiguientes = new();
     private ObservableCollection<Calendario> calendarioPFOC = new();
 
     IEnumerable<EntityPersist> persists;
@@ -30,7 +31,8 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         comisionOC.CollectionChanged += Items_CollectionChanged;
         dgdResultadoInformeGlobalPF.ItemsSource = ocResultadoInformeGlobal;
 
-        cbxCalendario.InitComboBoxConstructor(calendarioOC);
+        cbxCalendario.InitComboBoxConstructor(ocCalendario);
+        cbxCalendarioComisionesSiguientes.InitComboBoxConstructor(ocCalendarioComisionesSiguientes);
         cbxCalendarioInformeGlobalPF.InitComboBoxConstructor(calendarioPFOC);
 
         Loaded += ComisionesSemestrePage_Loaded;
@@ -40,11 +42,11 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems != null)
-            foreach (ComisionConReferentesItem newItem in e.NewItems)
+            foreach (Comision newItem in e.NewItems)
                 newItem.PropertyChanged += Item_PropertyChanged;
 
         if (e.OldItems != null)
-            foreach (ComisionConReferentesItem oldItem in e.OldItems)
+            foreach (Comision oldItem in e.OldItems)
                 oldItem.PropertyChanged -= Item_PropertyChanged;
     }
 
@@ -62,29 +64,30 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         ContainerApp.db.Sql("calendario").Cache().ClearAndAddDataToOC(calendarioPFOC);
     }
 
-    private void LoadCalendario()
+    private void LoadCalendarioComisionesSiguientes()
     {
-        if (tbAnio.Text.IsNoE() || tbSemestre.Text.IsNoE())
+        if (cbxCalendario.SelectedIndex < 0)
             return;
 
+        Calendario cal = cbxCalendario.SelectedItem as Calendario;
+
         ContainerApp.db.Sql("calendario").Where("$anio >= @0 AND $semestre >= @1").
-            Param("@0", tbAnio.Text).Param("@1", tbSemestre.Text).Cache().ClearAndAddDataToOC(calendarioOC);
+            Param("@0", cal.anio).Param("@1", cal.semestre).Cache().ClearAndAddDataToOC(ocCalendarioComisionesSiguientes);
     }
 
     private void BuscarButton_Click(object sender, RoutedEventArgs e)
     {
-        var dataComisiones = ContainerApp.db.ComisionesDePeriodoSql(tbAnio.Text, tbSemestre.Text).Cache().Dicts();
+        var dataComisiones = ContainerApp.db.ComisionesAutorizadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
         var idSedes = dataComisiones.ColOfVal<object>("sede");
         var dataReferentes = ContainerApp.db.ReferentesDeSedeQuery(idSedes).Cache().Dicts().DictOfListByKeys("sede");
         comisionOC.Clear();
         for (var i = 0; i < dataComisiones.Count(); i++)
         {
-            ComisionConReferentesItem obj = ContainerApp.db.ToData<ComisionConReferentesItem>(dataComisiones.ElementAt(i));
-            //obj.PropertyChanged += Item_PropertyChanged;
+            Comision obj = ContainerApp.db.ToData<Comision>(dataComisiones.ElementAt(i));
 
             if (dataReferentes.ContainsKey(obj.sede))
                 foreach (var dataReferente in dataReferentes[obj.sede])
-                    obj.referentes.Add(ContainerApp.db.ToData<Designacion>(dataReferente).Label);
+                    ContainerApp.db.ToData<Designacion>(dataReferente).AddToOC(obj.sede_.Designacion_sede_);
                 
             obj.Index = i;
             comisionOC.Add(obj);
@@ -95,10 +98,10 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     {
         try
         {
-            if (tbAnio.Text.IsNoE() || tbSemestre.Text.IsNoE() || cbxCalendario.SelectedIndex < 0)
+            if (cbxCalendario.SelectedIndex < 0 || cbxCalendarioComisionesSiguientes.SelectedIndex < 0)
                 throw new Exception("Verificar formulario");
 
-            IEnumerable<EntityPersist> persists = ContainerApp.db.Values<ComisionValues>().GenerarComisionesSemestreSiguiente(short.Parse(tbAnio.Text), short.Parse(tbSemestre.Text), cbxCalendario.SelectedValue);
+            IEnumerable<EntityPersist> persists = ContainerApp.db.Values<ComisionValues>().GenerarComisionesSemestreSiguiente(cbxCalendario.SelectedValue, cbxCalendarioComisionesSiguientes.SelectedValue);
 
             persists.Transaction().RemoveCache();
             ToastExtensions.Show("Comisiones agregadas");
@@ -130,15 +133,6 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         }
     }
 
-    private void tbAnio_LostFocus(object sender, RoutedEventArgs e)
-    {
-        LoadCalendario();
-    }
-
-    private void tbSemestre_LostFocus(object sender, RoutedEventArgs e)
-    {
-        LoadCalendario();
-    }
 
     #region Pestaña Procesar Informe Global PF
     ObservableCollection<EntityData> ocResultadoInformeGlobal = new();
@@ -202,7 +196,11 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     }
 
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
     #endregion
 
-    
+    private void cbxCalendario_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        LoadCalendarioComisionesSiguientes();
+    }
 }

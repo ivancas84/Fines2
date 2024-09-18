@@ -22,25 +22,25 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected string? _numero = null;
         public string? numero
         {
             get { return _numero; }
-            set { _numero = value; NotifyPropertyChanged(nameof(numero)); }
+            set { if( _numero != value) { _numero = value; NotifyPropertyChanged(nameof(numero)); } }
         }
         protected short? _anio = null;
         public short? anio
         {
             get { return _anio; }
-            set { _anio = value; NotifyPropertyChanged(nameof(anio)); }
+            set { if( _anio != value) { _anio = value; NotifyPropertyChanged(nameof(anio)); } }
         }
         protected string? _tipo = null;
         public string? tipo
         {
             get { return _tipo; }
-            set { _tipo = value; NotifyPropertyChanged(nameof(tipo)); }
+            set { if( _tipo != value) { _tipo = value; NotifyPropertyChanged(nameof(tipo)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -69,7 +69,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             return "";
         }
         //alumno.resolucion_inscripcion _m:o resolucion.id
-        protected ObservableCollection<Alumno> _Alumno_resolucion_inscripcion_ { get; set; } = new ();
+        public ObservableCollection<Alumno> Alumno_resolucion_inscripcion_ { get; set; } = new ();
 
     }
 }

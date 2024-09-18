@@ -22,19 +22,19 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected string? _nombre = null;
         public string? nombre
         {
             get { return _nombre; }
-            set { _nombre = value; NotifyPropertyChanged(nameof(nombre)); }
+            set { if( _nombre != value) { _nombre = value; NotifyPropertyChanged(nameof(nombre)); } }
         }
         protected string? _pfid = null;
         public string? pfid
         {
             get { return _pfid; }
-            set { _pfid = value; NotifyPropertyChanged(nameof(pfid)); }
+            set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -65,7 +65,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             return "";
         }
         //comision.modalidad _m:o modalidad.id
-        protected ObservableCollection<Comision> _Comision_modalidad_ { get; set; } = new ();
+        public ObservableCollection<Comision> Comision_modalidad_ { get; set; } = new ();
 
     }
 }

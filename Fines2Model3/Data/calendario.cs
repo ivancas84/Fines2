@@ -25,43 +25,43 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected DateTime? _inicio = null;
         public DateTime? inicio
         {
             get { return _inicio; }
-            set { _inicio = value; NotifyPropertyChanged(nameof(inicio)); }
+            set { if( _inicio != value) { _inicio = value; NotifyPropertyChanged(nameof(inicio)); } }
         }
         protected DateTime? _fin = null;
         public DateTime? fin
         {
             get { return _fin; }
-            set { _fin = value; NotifyPropertyChanged(nameof(fin)); }
+            set { if( _fin != value) { _fin = value; NotifyPropertyChanged(nameof(fin)); } }
         }
         protected short? _anio = null;
         public short? anio
         {
             get { return _anio; }
-            set { _anio = value; NotifyPropertyChanged(nameof(anio)); }
+            set { if( _anio != value) { _anio = value; NotifyPropertyChanged(nameof(anio)); } }
         }
         protected short? _semestre = null;
         public short? semestre
         {
             get { return _semestre; }
-            set { _semestre = value; NotifyPropertyChanged(nameof(semestre)); }
+            set { if( _semestre != value) { _semestre = value; NotifyPropertyChanged(nameof(semestre)); } }
         }
         protected DateTime? _insertado = null;
         public DateTime? insertado
         {
             get { return _insertado; }
-            set { _insertado = value; NotifyPropertyChanged(nameof(insertado)); }
+            set { if( _insertado != value) { _insertado = value; NotifyPropertyChanged(nameof(insertado)); } }
         }
         protected string? _descripcion = null;
         public string? descripcion
         {
             get { return _descripcion; }
-            set { _descripcion = value; NotifyPropertyChanged(nameof(descripcion)); }
+            set { if( _descripcion != value) { _descripcion = value; NotifyPropertyChanged(nameof(descripcion)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -99,7 +99,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             return "";
         }
         //comision.calendario _m:o calendario.id
-        protected ObservableCollection<Comision> _Comision_calendario_ { get; set; } = new ();
+        public ObservableCollection<Comision> Comision_calendario_ { get; set; } = new ();
 
     }
 }

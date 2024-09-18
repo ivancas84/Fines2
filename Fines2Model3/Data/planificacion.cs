@@ -22,31 +22,31 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected string? _anio = null;
         public string? anio
         {
             get { return _anio; }
-            set { _anio = value; NotifyPropertyChanged(nameof(anio)); }
+            set { if( _anio != value) { _anio = value; NotifyPropertyChanged(nameof(anio)); } }
         }
         protected string? _semestre = null;
         public string? semestre
         {
             get { return _semestre; }
-            set { _semestre = value; NotifyPropertyChanged(nameof(semestre)); }
+            set { if( _semestre != value) { _semestre = value; NotifyPropertyChanged(nameof(semestre)); } }
         }
         protected string? _plan = null;
         public string? plan
         {
             get { return _plan; }
-            set { _plan = value; NotifyPropertyChanged(nameof(plan)); }
+            set { if( _plan != value) { _plan = value; NotifyPropertyChanged(nameof(plan)); } }
         }
         protected string? _pfid = null;
         public string? pfid
         {
             get { return _pfid; }
-            set { _pfid = value; NotifyPropertyChanged(nameof(pfid)); }
+            set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -86,14 +86,18 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Plan? plan_
         {
             get { return _plan_; }
-            set { _plan_ = value; NotifyPropertyChanged(nameof(plan_)); }
+            set {
+                _plan_ = value;
+                plan = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(plan_));
+            }
         }
 
         //comision.planificacion _m:o planificacion.id
-        protected ObservableCollection<Comision> _Comision_planificacion_ { get; set; } = new ();
+        public ObservableCollection<Comision> Comision_planificacion_ { get; set; } = new ();
 
         //disposicion.planificacion _m:o planificacion.id
-        protected ObservableCollection<Disposicion> _Disposicion_planificacion_ { get; set; } = new ();
+        public ObservableCollection<Disposicion> Disposicion_planificacion_ { get; set; } = new ();
 
     }
 }

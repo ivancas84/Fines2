@@ -12,44 +12,37 @@ namespace FinesApp.Views;
 
 public partial class CursosSemestrePage : Page, INotifyPropertyChanged
 {
-
-    private ObservableCollection<CursoConTomaItem> cursoOC = new();
+    private ObservableCollection<Curso> ocCurso = new();
     private ObservableCollection<Calendario> ocCalendario = new();
 
     public CursosSemestrePage()
     {
         InitializeComponent();
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        var data = ContainerApp.db.Sql("calendario").Cache().Dicts();
-        ContainerApp.db.ClearAndAddDataToOC(data, ocCalendario);
+        ContainerApp.db.Sql("calendario").Cache().ClearAndAddDataToOC(ocCalendario);
         DataContext = this;
-        dgdCurso.ItemsSource = cursoOC;
-
+        dgdCurso.ItemsSource = ocCurso;
     }
 
     private void LoadCursos()
     {
         if (cbxCalendario.SelectedIndex < 0)
         {
-            cursoOC.Clear();
+            ocCurso.Clear();
             return;
         }
         var data = ContainerApp.db.CursosAutorizadosCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
         var idCursos = data.ColOfVal<object>("id");
         var dataToma = ContainerApp.db.TomaAprobadaDeCursoQuery(idCursos).Cache().Dicts().DictOfDictByKeys("curso");
 
-        cursoOC.Clear();
+        ocCurso.Clear();
         foreach(var cursoData in data)
         {
-            CursoConTomaItem curso = ContainerApp.db.ToData<CursoConTomaItem>(cursoData);
+            Curso curso = ContainerApp.db.ToData<Curso>(cursoData);
             if (dataToma.ContainsKey(curso.id))
-            {
-                Toma toma = ContainerApp.db.ToData<Toma>(dataToma[curso.id]);
-                curso.toma_docente__Label = toma.docente_.Label;
-            }
-            cursoOC.Add(curso);
+                curso.toma_activa_ = ContainerApp.db.ToData<Toma>(dataToma[curso.id]);
+            ocCurso.Add(curso);
         }
-
     }
 
     private void cbxCalendario_SelectionChanged(object sender, SelectionChangedEventArgs e)

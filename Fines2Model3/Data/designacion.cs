@@ -23,49 +23,49 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected DateTime? _desde = null;
         public DateTime? desde
         {
             get { return _desde; }
-            set { _desde = value; NotifyPropertyChanged(nameof(desde)); }
+            set { if( _desde != value) { _desde = value; NotifyPropertyChanged(nameof(desde)); } }
         }
         protected DateTime? _hasta = null;
         public DateTime? hasta
         {
             get { return _hasta; }
-            set { _hasta = value; NotifyPropertyChanged(nameof(hasta)); }
+            set { if( _hasta != value) { _hasta = value; NotifyPropertyChanged(nameof(hasta)); } }
         }
         protected string? _cargo = null;
         public string? cargo
         {
             get { return _cargo; }
-            set { _cargo = value; NotifyPropertyChanged(nameof(cargo)); }
+            set { if( _cargo != value) { _cargo = value; NotifyPropertyChanged(nameof(cargo)); } }
         }
         protected string? _sede = null;
         public string? sede
         {
             get { return _sede; }
-            set { _sede = value; NotifyPropertyChanged(nameof(sede)); }
+            set { if( _sede != value) { _sede = value; NotifyPropertyChanged(nameof(sede)); } }
         }
         protected string? _persona = null;
         public string? persona
         {
             get { return _persona; }
-            set { _persona = value; NotifyPropertyChanged(nameof(persona)); }
+            set { if( _persona != value) { _persona = value; NotifyPropertyChanged(nameof(persona)); } }
         }
         protected DateTime? _alta = null;
         public DateTime? alta
         {
             get { return _alta; }
-            set { _alta = value; NotifyPropertyChanged(nameof(alta)); }
+            set { if( _alta != value) { _alta = value; NotifyPropertyChanged(nameof(alta)); } }
         }
         protected string? _pfid = null;
         public string? pfid
         {
             get { return _pfid; }
-            set { _pfid = value; NotifyPropertyChanged(nameof(pfid)); }
+            set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -116,7 +116,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Cargo? cargo_
         {
             get { return _cargo_; }
-            set { _cargo_ = value; NotifyPropertyChanged(nameof(cargo_)); }
+            set {
+                _cargo_ = value;
+                cargo = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(cargo_));
+            }
         }
 
         //designacion.sede _o:o sede.id
@@ -124,7 +128,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Sede? sede_
         {
             get { return _sede_; }
-            set { _sede_ = value; NotifyPropertyChanged(nameof(sede_)); }
+            set {
+                _sede_ = value;
+                sede = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(sede_));
+            }
         }
 
         //designacion.persona _o:o persona.id
@@ -132,7 +140,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         public Persona? persona_
         {
             get { return _persona_; }
-            set { _persona_ = value; NotifyPropertyChanged(nameof(persona_)); }
+            set {
+                _persona_ = value;
+                persona = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(persona_));
+            }
         }
 
     }

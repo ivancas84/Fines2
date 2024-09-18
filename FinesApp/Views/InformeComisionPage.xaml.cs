@@ -24,7 +24,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     private DispatcherTimer comisionTypingTimer; //timer para buscar
     #endregion
 
-    private ObservableCollection<CursoConTomaItem> cursoOC = new(); //datos consultados de la base de datos
+    private ObservableCollection<Curso> cursoOC = new(); //datos consultados de la base de datos
 
     private ObservableCollection<AsignacionConAsignaturasItem> asignacionOC = new(); //datos consultados de la base de datos
 
@@ -161,14 +161,14 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     private void WhatsAppLink_Click(object sender, RoutedEventArgs e)
     {
 
-        var data = ((Hyperlink)e.OriginalSource).DataContext as CursoConTomaItem;
+        var data = ((Hyperlink)e.OriginalSource).DataContext as Curso;
 
         var hyperlink = sender as Hyperlink;
         string phoneNumber = hyperlink?.Tag.ToString();
 
         if (!string.IsNullOrEmpty(phoneNumber))
         {
-            string message = "Hola " + data.toma_docente__nombres + " quería hacerte una consulta acerca de la asignatura " + data.asignatura_.nombre + " de comision " + data.comision_.pfid;
+            string message = "Hola " + data.toma_activa_.docente_.Label + " quería hacerte una consulta acerca de la asignatura " + data.asignatura_.nombre + " de comision " + data.comision_.pfid;
             string whatsappUrl = $"https://web.whatsapp.com/send?phone={phoneNumber}&text={Uri.EscapeDataString(message)}";
 
             Process.Start(new ProcessStartInfo(whatsappUrl) { UseShellExecute = true });

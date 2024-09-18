@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SqlOrganize.Sql;
 using SqlOrganize.Sql.Fines2Model3;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace SqlOrganize.Sql.Fines2Model3
     ///     cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
     ///     ContainerApp.db.ClearAndAddDataToOC(cursosData, cursoOC);
     /// </example>
-    public class CursoConToma : Curso
+    public partial class Curso : EntityData
     {
 
         //curso.asignatura _o:o asignatura.id

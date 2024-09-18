@@ -23,31 +23,31 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { _id = value; NotifyPropertyChanged(nameof(id)); }
+            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
         protected DateTime? _fecha_contralor = null;
         public DateTime? fecha_contralor
         {
             get { return _fecha_contralor; }
-            set { _fecha_contralor = value; NotifyPropertyChanged(nameof(fecha_contralor)); }
+            set { if( _fecha_contralor != value) { _fecha_contralor = value; NotifyPropertyChanged(nameof(fecha_contralor)); } }
         }
         protected DateTime? _fecha_consejo = null;
         public DateTime? fecha_consejo
         {
             get { return _fecha_consejo; }
-            set { _fecha_consejo = value; NotifyPropertyChanged(nameof(fecha_consejo)); }
+            set { if( _fecha_consejo != value) { _fecha_consejo = value; NotifyPropertyChanged(nameof(fecha_consejo)); } }
         }
         protected DateTime? _insertado = null;
         public DateTime? insertado
         {
             get { return _insertado; }
-            set { _insertado = value; NotifyPropertyChanged(nameof(insertado)); }
+            set { if( _insertado != value) { _insertado = value; NotifyPropertyChanged(nameof(insertado)); } }
         }
         protected string? _planilla_docente = null;
         public string? planilla_docente
         {
             get { return _planilla_docente; }
-            set { _planilla_docente = value; NotifyPropertyChanged(nameof(planilla_docente)); }
+            set { if( _planilla_docente != value) { _planilla_docente = value; NotifyPropertyChanged(nameof(planilla_docente)); } }
         }
         protected override string ValidateField(string columnName)
         {
@@ -85,7 +85,11 @@ namespace SqlOrganize.Sql.Fines2Model3
         public PlanillaDocente? planilla_docente_
         {
             get { return _planilla_docente_; }
-            set { _planilla_docente_ = value; NotifyPropertyChanged(nameof(planilla_docente_)); }
+            set {
+                _planilla_docente_ = value;
+                planilla_docente = (value != null) ? value.id : null;
+                NotifyPropertyChanged(nameof(planilla_docente_));
+            }
         }
 
     }
