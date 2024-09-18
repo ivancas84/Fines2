@@ -54,7 +54,7 @@
         /// Todas las tablas deben tener un identificador, que puede ser real o ficticio<br/>
         /// El identificador ficticio se define como "_Id"
         /// </remarks>
-        public virtual string id { get; set; } = "_Id";
+        public virtual string id { get; set; } = "id";
 
     }
 }

@@ -582,7 +582,7 @@ namespace SqlOrganize.Model
                     sw.WriteLine("        public " + field.type + "? " + fieldName);
                     sw.WriteLine("        {");
                     sw.WriteLine("            get { return _" + fieldName + "; }");
-                    sw.WriteLine("            set { _" + fieldName + " = value; NotifyPropertyChanged(nameof(" + fieldName + ")); }");
+                    sw.WriteLine("            set { if( _" + fieldName + " != value) { _" + fieldName + " = value; NotifyPropertyChanged(nameof(" + fieldName + ")); } }");
                     sw.WriteLine("        }");
                 }
 
@@ -630,7 +630,11 @@ namespace SqlOrganize.Model
                     sw.WriteLine("        public " + relation.refEntityName.ToCamelCase() + "? " + relation.fieldName + "_");
                     sw.WriteLine("        {");
                     sw.WriteLine("            get { return _" + relation.fieldName + "_; }");
-                    sw.WriteLine("            set { _" + relation.fieldName + "_ = value; NotifyPropertyChanged(nameof(" + relation.fieldName + "_)); }");
+                    sw.WriteLine("            set {");
+                    sw.WriteLine("                _" + relation.fieldName + "_ = value;");
+                    sw.WriteLine("                " + relation.fieldName + " = (value != null) ? value." + this.Config.id + " : null;");
+                    sw.WriteLine("                NotifyPropertyChanged(nameof(" + relation.fieldName + "_));");
+                    sw.WriteLine("            }");
                     sw.WriteLine("        }");
                     sw.WriteLine("");
                 }
@@ -659,8 +663,6 @@ namespace SqlOrganize.Model
                     
                 }
                 #endregion
-
-
 
                 #region fin clase, fin namespace
                 sw.WriteLine("    }");
