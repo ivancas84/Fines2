@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -126,6 +127,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //curso.comision _o:o comision.id
         protected Comision? _comision_ = null;
         public Comision? comision_
         {
@@ -133,6 +135,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _comision_ = value; NotifyPropertyChanged(nameof(comision_)); }
         }
 
+        //curso.disposicion _o:o disposicion.id
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {
@@ -140,12 +143,22 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _disposicion_ = value; NotifyPropertyChanged(nameof(disposicion_)); }
         }
 
+        //curso.asignatura _o:o asignatura.id
         protected Asignatura? _asignatura_ = null;
         public Asignatura? asignatura_
         {
             get { return _asignatura_; }
             set { _asignatura_ = value; NotifyPropertyChanged(nameof(asignatura_)); }
         }
+
+        //calificacion.curso _m:o curso.id
+        protected ObservableCollection<Calificacion> _Calificacion_curso_ { get; set; } = new ();
+
+        //horario.curso _m:o curso.id
+        protected ObservableCollection<Horario> _Horario_curso_ { get; set; } = new ();
+
+        //toma.curso _m:o curso.id
+        protected ObservableCollection<Toma> _Toma_curso_ { get; set; } = new ();
 
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -54,5 +55,8 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //designacion.cargo _m:o cargo.id
+        protected ObservableCollection<Designacion> _Designacion_cargo_ { get; set; } = new ();
+
     }
 }

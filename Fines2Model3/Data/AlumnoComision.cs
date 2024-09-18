@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -98,6 +99,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //alumno_comision.comision _o:o comision.id
         protected Comision? _comision_ = null;
         public Comision? comision_
         {
@@ -105,6 +107,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _comision_ = value; NotifyPropertyChanged(nameof(comision_)); }
         }
 
+        //alumno_comision.alumno _o:o alumno.id
         protected Alumno? _alumno_ = null;
         public Alumno? alumno_
         {

@@ -71,6 +71,8 @@ namespace SqlOrganize.Model
 
                 EntityTree tree = new()
                 {
+                    fieldId = fieldId,
+                    entityName = entity.name,
                     fieldName = field.name,
                     refEntityName = field.refEntityName!,
                     refFieldName = field.refFieldName!,

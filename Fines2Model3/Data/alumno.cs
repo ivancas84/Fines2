@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -307,6 +308,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //alumno.persona _o:o persona.id
         protected Persona? _persona_ = null;
         public Persona? persona_
         {
@@ -314,6 +316,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _persona_ = value; NotifyPropertyChanged(nameof(persona_)); }
         }
 
+        //alumno.plan _o:o plan.id
         protected Plan? _plan_ = null;
         public Plan? plan_
         {
@@ -321,12 +324,22 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _plan_ = value; NotifyPropertyChanged(nameof(plan_)); }
         }
 
+        //alumno.resolucion_inscripcion _o:o resolucion.id
         protected Resolucion? _resolucion_inscripcion_ = null;
         public Resolucion? resolucion_inscripcion_
         {
             get { return _resolucion_inscripcion_; }
             set { _resolucion_inscripcion_ = value; NotifyPropertyChanged(nameof(resolucion_inscripcion_)); }
         }
+
+        //alumno_comision.alumno _m:o alumno.id
+        protected ObservableCollection<AlumnoComision> _AlumnoComision_alumno_ { get; set; } = new ();
+
+        //calificacion.alumno _m:o alumno.id
+        protected ObservableCollection<Calificacion> _Calificacion_alumno_ { get; set; } = new ();
+
+        //disposicion_pendiente.alumno _m:o alumno.id
+        protected ObservableCollection<DisposicionPendiente> _DisposicionPendiente_alumno_ { get; set; } = new ();
 
     }
 }

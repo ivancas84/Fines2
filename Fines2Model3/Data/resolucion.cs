@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -67,5 +68,8 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //alumno.resolucion_inscripcion _m:o resolucion.id
+        protected ObservableCollection<Alumno> _Alumno_resolucion_inscripcion_ { get; set; } = new ();
+
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -81,12 +82,16 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //centro_educativo.domicilio _o:o domicilio.id
         protected Domicilio? _domicilio_ = null;
         public Domicilio? domicilio_
         {
             get { return _domicilio_; }
             set { _domicilio_ = value; NotifyPropertyChanged(nameof(domicilio_)); }
         }
+
+        //sede.centro_educativo _m:o centro_educativo.id
+        protected ObservableCollection<Sede> _Sede_centro_educativo_ { get; set; } = new ();
 
     }
 }

@@ -1,6 +1,9 @@
 ﻿using Newtonsoft.Json;
 using SqlOrganize.CollectionUtils;
+using SqlOrganize.Sql;
 using SqlOrganize.ValueTypesUtils;
+using System.Collections.Generic;
+using System.Xml.Linq;
 
 namespace SqlOrganize.Model
 {
@@ -508,12 +511,20 @@ namespace SqlOrganize.Model
 
         }
 
-        public void CreateFileData()
+        public List<EntityTree> RelationsRef(string entityName)
         {
-            _CreateFileData();
+            List<EntityTree> response = new();
+
+            foreach (var (eN, entity) in entities)
+                foreach (var (fid, et) in entity.tree)
+                    if (et.refEntityName.Equals(entityName))
+                        response.Add(et);
+
+
+            return response;
         }
 
-        public void _CreateFileData()
+        public void CreateFileData()
         {
             if (!Directory.Exists(Config.dataClassesPath))
                 Directory.CreateDirectory(Config.dataClassesPath);
@@ -525,6 +536,7 @@ namespace SqlOrganize.Model
                 sw.WriteLine("using System;");
                 sw.WriteLine("using System.ComponentModel;");
                 sw.WriteLine("using System.Collections.Generic;");
+                sw.WriteLine("using System.Collections.ObjectModel;");
                 sw.WriteLine("");
                 sw.WriteLine("namespace SqlOrganize.Sql." + Config.dataClassesNamespace);
                 sw.WriteLine("{");
@@ -607,12 +619,13 @@ namespace SqlOrganize.Model
                 sw.WriteLine("            return \"\";");
                 sw.WriteLine("        }");
 
-
+                #region atributos fk
                 foreach (var (fieldId, relation) in entities[entityName].relations)
                 {
                     if (!relation.parentId.IsNoE())
                         continue;
 
+                    sw.WriteLine("        //" + entityName + "." + relation.fieldName + " _o:o " + relation.refEntityName + ".id");
                     sw.WriteLine("        protected " + relation.refEntityName.ToCamelCase() + "? _" + relation.fieldName + "_ = null;");
                     sw.WriteLine("        public " + relation.refEntityName.ToCamelCase() + "? " + relation.fieldName + "_");
                     sw.WriteLine("        {");
@@ -621,7 +634,31 @@ namespace SqlOrganize.Model
                     sw.WriteLine("        }");
                     sw.WriteLine("");
                 }
+                #endregion
 
+                #region atributos ref
+                foreach (var rel in RelationsRef(entityName))
+                {
+                    if (entities[rel.entityName].unique.Contains(rel.fieldName))
+                    {
+                        sw.WriteLine("        //" + rel.entityName + "." + rel.fieldName + " _o:o " + rel.refEntityName + ".id");
+                        sw.WriteLine("        protected " + rel.entityName.ToCamelCase() + "? _" + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_ = null;");
+                        sw.WriteLine("        public " + rel.entityName.ToCamelCase() + "? " + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_");
+                        sw.WriteLine("        {");
+                        sw.WriteLine("            get { return _" + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_; }");
+                        sw.WriteLine("            set { _" + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_ = value; NotifyPropertyChanged(nameof(" + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_)); }");
+                        sw.WriteLine("        }");
+                        sw.WriteLine("");
+                    }
+                    else
+                    {
+                        sw.WriteLine("        //" + rel.entityName + "." + rel.fieldName + " _m:o " + rel.refEntityName + ".id");
+                        sw.WriteLine("        protected ObservableCollection<" + rel.entityName.ToCamelCase() + "> _" + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_ { get; set; } = new ();");
+                        sw.WriteLine("");
+                    }
+                    
+                }
+                #endregion
 
 
 

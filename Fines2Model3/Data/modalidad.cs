@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -63,5 +64,8 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //comision.modalidad _m:o modalidad.id
+        protected ObservableCollection<Comision> _Comision_modalidad_ { get; set; } = new ();
+
     }
 }

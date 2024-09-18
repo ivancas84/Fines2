@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -99,6 +100,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //telefono.persona _o:o persona.id
         protected Persona? _persona_ = null;
         public Persona? persona_
         {

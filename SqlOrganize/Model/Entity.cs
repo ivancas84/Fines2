@@ -1,4 +1,6 @@
-﻿namespace SqlOrganize.Model
+﻿using SqlOrganize.Sql;
+
+namespace SqlOrganize.Model
 {
     public class Entity
     {
@@ -60,6 +62,8 @@
 
         public Dictionary<string, EntityTree> tree { get; set; } = new();
         public Dictionary<string, EntityRelation> relations { get; set; } = new();
+
+     
 
     }
 }

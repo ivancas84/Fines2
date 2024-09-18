@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -70,5 +71,8 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //horario.dia _m:o dia.id
+        protected ObservableCollection<Horario> _Horario_dia_ { get; set; } = new ();
+
     }
 }

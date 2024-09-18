@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -82,6 +83,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //horario.curso _o:o curso.id
         protected Curso? _curso_ = null;
         public Curso? curso_
         {
@@ -89,6 +91,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _curso_ = value; NotifyPropertyChanged(nameof(curso_)); }
         }
 
+        //horario.dia _o:o dia.id
         protected Dia? _dia_ = null;
         public Dia? dia_
         {

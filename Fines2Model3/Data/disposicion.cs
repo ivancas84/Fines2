@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -69,6 +70,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //disposicion.asignatura _o:o asignatura.id
         protected Asignatura? _asignatura_ = null;
         public Asignatura? asignatura_
         {
@@ -76,12 +78,25 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _asignatura_ = value; NotifyPropertyChanged(nameof(asignatura_)); }
         }
 
+        //disposicion.planificacion _o:o planificacion.id
         protected Planificacion? _planificacion_ = null;
         public Planificacion? planificacion_
         {
             get { return _planificacion_; }
             set { _planificacion_ = value; NotifyPropertyChanged(nameof(planificacion_)); }
         }
+
+        //calificacion.disposicion _m:o disposicion.id
+        protected ObservableCollection<Calificacion> _Calificacion_disposicion_ { get; set; } = new ();
+
+        //curso.disposicion _m:o disposicion.id
+        protected ObservableCollection<Curso> _Curso_disposicion_ { get; set; } = new ();
+
+        //disposicion_pendiente.disposicion _m:o disposicion.id
+        protected ObservableCollection<DisposicionPendiente> _DisposicionPendiente_disposicion_ { get; set; } = new ();
+
+        //distribucion_horaria.disposicion _m:o disposicion.id
+        protected ObservableCollection<DistribucionHoraria> _DistribucionHoraria_disposicion_ { get; set; } = new ();
 
     }
 }

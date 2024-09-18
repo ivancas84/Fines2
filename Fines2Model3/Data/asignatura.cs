@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -90,5 +91,11 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //curso.asignatura _m:o asignatura.id
+        protected ObservableCollection<Curso> _Curso_asignatura_ { get; set; } = new ();
+
+        //disposicion.asignatura _m:o asignatura.id
+        protected ObservableCollection<Disposicion> _Disposicion_asignatura_ { get; set; } = new ();
+
     }
 }

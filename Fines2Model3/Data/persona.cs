@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -321,12 +322,39 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //persona.domicilio _o:o domicilio.id
         protected Domicilio? _domicilio_ = null;
         public Domicilio? domicilio_
         {
             get { return _domicilio_; }
             set { _domicilio_ = value; NotifyPropertyChanged(nameof(domicilio_)); }
         }
+
+        //alumno.persona _o:o persona.id
+        protected Alumno? _Alumno_persona_ = null;
+        public Alumno? Alumno_persona_
+        {
+            get { return _Alumno_persona_; }
+            set { _Alumno_persona_ = value; NotifyPropertyChanged(nameof(Alumno_persona_)); }
+        }
+
+        //designacion.persona _m:o persona.id
+        protected ObservableCollection<Designacion> _Designacion_persona_ { get; set; } = new ();
+
+        //detalle_persona.persona _m:o persona.id
+        protected ObservableCollection<DetallePersona> _DetallePersona_persona_ { get; set; } = new ();
+
+        //email.persona _m:o persona.id
+        protected ObservableCollection<Email> _Email_persona_ { get; set; } = new ();
+
+        //telefono.persona _m:o persona.id
+        protected ObservableCollection<Telefono> _Telefono_persona_ { get; set; } = new ();
+
+        //toma.docente _m:o persona.id
+        protected ObservableCollection<Toma> _Toma_docente_ { get; set; } = new ();
+
+        //toma.reemplazo _m:o persona.id
+        protected ObservableCollection<Toma> _Toma_reemplazo_ { get; set; } = new ();
 
     }
 }

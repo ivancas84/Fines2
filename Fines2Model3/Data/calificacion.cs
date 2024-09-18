@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -162,6 +163,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //calificacion.curso _o:o curso.id
         protected Curso? _curso_ = null;
         public Curso? curso_
         {
@@ -169,6 +171,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _curso_ = value; NotifyPropertyChanged(nameof(curso_)); }
         }
 
+        //calificacion.alumno _o:o alumno.id
         protected Alumno? _alumno_ = null;
         public Alumno? alumno_
         {
@@ -176,6 +179,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _alumno_ = value; NotifyPropertyChanged(nameof(alumno_)); }
         }
 
+        //calificacion.disposicion _o:o disposicion.id
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {

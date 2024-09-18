@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -109,6 +110,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //detalle_persona.archivo _o:o file.id
         protected File? _archivo_ = null;
         public File? archivo_
         {
@@ -116,6 +118,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _archivo_ = value; NotifyPropertyChanged(nameof(archivo_)); }
         }
 
+        //detalle_persona.persona _o:o persona.id
         protected Persona? _persona_ = null;
         public Persona? persona_
         {

@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -93,6 +94,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //asignacion_planilla_docente.planilla_docente _o:o planilla_docente.id
         protected PlanillaDocente? _planilla_docente_ = null;
         public PlanillaDocente? planilla_docente_
         {
@@ -100,6 +102,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _planilla_docente_ = value; NotifyPropertyChanged(nameof(planilla_docente_)); }
         }
 
+        //asignacion_planilla_docente.toma _o:o toma.id
         protected Toma? _toma_ = null;
         public Toma? toma_
         {

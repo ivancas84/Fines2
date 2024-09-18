@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -79,6 +80,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //contralor.planilla_docente _o:o planilla_docente.id
         protected PlanillaDocente? _planilla_docente_ = null;
         public PlanillaDocente? planilla_docente_
         {

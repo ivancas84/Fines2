@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -97,5 +98,8 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //comision.calendario _m:o calendario.id
+        protected ObservableCollection<Comision> _Comision_calendario_ { get; set; } = new ();
+
     }
 }

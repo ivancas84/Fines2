@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -69,6 +70,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //disposicion_pendiente.disposicion _o:o disposicion.id
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {
@@ -76,6 +78,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _disposicion_ = value; NotifyPropertyChanged(nameof(disposicion_)); }
         }
 
+        //disposicion_pendiente.alumno _o:o alumno.id
         protected Alumno? _alumno_ = null;
         public Alumno? alumno_
         {

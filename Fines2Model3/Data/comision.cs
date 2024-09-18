@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -190,6 +191,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //comision.sede _o:o sede.id
         protected Sede? _sede_ = null;
         public Sede? sede_
         {
@@ -197,6 +199,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _sede_ = value; NotifyPropertyChanged(nameof(sede_)); }
         }
 
+        //comision.modalidad _o:o modalidad.id
         protected Modalidad? _modalidad_ = null;
         public Modalidad? modalidad_
         {
@@ -204,6 +207,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _modalidad_ = value; NotifyPropertyChanged(nameof(modalidad_)); }
         }
 
+        //comision.planificacion _o:o planificacion.id
         protected Planificacion? _planificacion_ = null;
         public Planificacion? planificacion_
         {
@@ -211,12 +215,25 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _planificacion_ = value; NotifyPropertyChanged(nameof(planificacion_)); }
         }
 
+        //comision.calendario _o:o calendario.id
         protected Calendario? _calendario_ = null;
         public Calendario? calendario_
         {
             get { return _calendario_; }
             set { _calendario_ = value; NotifyPropertyChanged(nameof(calendario_)); }
         }
+
+        //alumno_comision.comision _m:o comision.id
+        protected ObservableCollection<AlumnoComision> _AlumnoComision_comision_ { get; set; } = new ();
+
+        //comision_relacionada.comision _m:o comision.id
+        protected ObservableCollection<ComisionRelacionada> _ComisionRelacionada_comision_ { get; set; } = new ();
+
+        //comision_relacionada.relacion _m:o comision.id
+        protected ObservableCollection<ComisionRelacionada> _ComisionRelacionada_relacion_ { get; set; } = new ();
+
+        //curso.comision _m:o comision.id
+        protected ObservableCollection<Curso> _Curso_comision_ { get; set; } = new ();
 
     }
 }

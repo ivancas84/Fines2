@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -80,12 +81,19 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //planificacion.plan _o:o plan.id
         protected Plan? _plan_ = null;
         public Plan? plan_
         {
             get { return _plan_; }
             set { _plan_ = value; NotifyPropertyChanged(nameof(plan_)); }
         }
+
+        //comision.planificacion _m:o planificacion.id
+        protected ObservableCollection<Comision> _Comision_planificacion_ { get; set; } = new ();
+
+        //disposicion.planificacion _m:o planificacion.id
+        protected ObservableCollection<Disposicion> _Disposicion_planificacion_ { get; set; } = new ();
 
     }
 }

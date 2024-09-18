@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -204,6 +205,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //toma.curso _o:o curso.id
         protected Curso? _curso_ = null;
         public Curso? curso_
         {
@@ -211,6 +213,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _curso_ = value; NotifyPropertyChanged(nameof(curso_)); }
         }
 
+        //toma.docente _o:o persona.id
         protected Persona? _docente_ = null;
         public Persona? docente_
         {
@@ -218,6 +221,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _docente_ = value; NotifyPropertyChanged(nameof(docente_)); }
         }
 
+        //toma.reemplazo _o:o persona.id
         protected Persona? _reemplazo_ = null;
         public Persona? reemplazo_
         {
@@ -225,12 +229,16 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _reemplazo_ = value; NotifyPropertyChanged(nameof(reemplazo_)); }
         }
 
+        //toma.planilla_docente _o:o planilla_docente.id
         protected PlanillaDocente? _planilla_docente_ = null;
         public PlanillaDocente? planilla_docente_
         {
             get { return _planilla_docente_; }
             set { _planilla_docente_ = value; NotifyPropertyChanged(nameof(planilla_docente_)); }
         }
+
+        //asignacion_planilla_docente.toma _m:o toma.id
+        protected ObservableCollection<AsignacionPlanillaDocente> _AsignacionPlanillaDocente_toma_ { get; set; } = new ();
 
     }
 }

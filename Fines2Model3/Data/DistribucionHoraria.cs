@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -69,6 +70,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        //distribucion_horaria.disposicion _o:o disposicion.id
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {

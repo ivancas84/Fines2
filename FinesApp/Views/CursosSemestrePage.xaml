@@ -69,10 +69,9 @@
                             <DataGridTextColumn Header="ID" Binding="{Binding id}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Pfid" Binding="{Binding comision_.pfid}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Sede" Binding="{Binding comision_.sede_.nombre}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Domicilio" Binding="{Binding domicilio__Label}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__Label}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura_dis__Label}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Año" Binding="{Binding planificacion_dis__Label}"></DataGridTextColumn>
+							<DataGridTextColumn Header="Domicilio" Binding="{Binding comision_.sede_.domicilio_.Label}"></DataGridTextColumn>
+							<DataGridTextColumn Header="Asignatura" Binding="{Binding disposicion_.asignatura_.Label}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Planificacion" Binding="{Binding disposicion_.planificacion_.Label}"></DataGridTextColumn>
 							<DataGridTextColumn Header="Horario" Binding="{Binding descripcion_horario}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Horario" Binding="{Binding toma_docente__Label}"></DataGridTextColumn>
 
