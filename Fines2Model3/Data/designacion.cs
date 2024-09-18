@@ -110,5 +110,26 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected Cargo? _cargo_ = null;
+        public Cargo? cargo_
+        {
+            get { return _cargo_; }
+            set { _cargo_ = value; NotifyPropertyChanged(nameof(cargo_)); }
+        }
+
+        protected Sede? _sede_ = null;
+        public Sede? sede_
+        {
+            get { return _sede_; }
+            set { _sede_ = value; NotifyPropertyChanged(nameof(sede_)); }
+        }
+
+        protected Persona? _persona_ = null;
+        public Persona? persona_
+        {
+            get { return _persona_; }
+            set { _persona_ = value; NotifyPropertyChanged(nameof(persona_)); }
+        }
+
     }
 }

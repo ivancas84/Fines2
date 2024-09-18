@@ -71,7 +71,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             {
                 if (!idsDisposicionesAprobadas.Contains(id))
                 {
-                    Calificacion_ calificacionObj = db.Data<Calificacion_>();
+                    Calificacion calificacionObj = db.Data<Calificacion>();
                     calificacionObj.Default();
                     calificacionObj.disposicion = (string)id;
                     calificacionObj.alumno = (string)Get("id");

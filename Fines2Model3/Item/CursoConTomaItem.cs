@@ -19,8 +19,9 @@ namespace SqlOrganize.Sql.Fines2Model3
     ///     cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
     ///     ContainerApp.db.ClearAndAddDataToOC(cursosData, cursoOC);
     /// </example>
-    public class CursoConTomaItem : Curso_
+    public class CursoConTomaItem : Curso
     {
+
         protected string? _toma_docente__Label = null;
 
         public string? toma_docente__Label

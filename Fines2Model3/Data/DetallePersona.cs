@@ -109,5 +109,19 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected File? _archivo_ = null;
+        public File? archivo_
+        {
+            get { return _archivo_; }
+            set { _archivo_ = value; NotifyPropertyChanged(nameof(archivo_)); }
+        }
+
+        protected Persona? _persona_ = null;
+        public Persona? persona_
+        {
+            get { return _persona_; }
+            set { _persona_ = value; NotifyPropertyChanged(nameof(persona_)); }
+        }
+
     }
 }

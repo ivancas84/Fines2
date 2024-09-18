@@ -24,7 +24,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 {
 
     private ObservableCollection<Calendario> ocCalendario = new();
-    private ObservableCollection<Toma_> ocToma = new();
+    private ObservableCollection<Toma> ocToma = new();
    
     IEnumerable<EntityPersist>? persists;
 
@@ -34,7 +34,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
         DataContext = this;
 
-        ocToma.CollectionChanged += OcToma_CollectionChanged;
+        ocToma.CollectionChanged += OcTomaCollectionChanged;
         dgdToma.ItemsSource = ocToma;
 
         dgdResultadoProcesamiento.ItemsSource = ocData;
@@ -46,14 +46,14 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     }
 
     #region OcToma
-    private void OcToma_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    private void OcTomaCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems != null)
-            foreach (Toma_ newItem in e.NewItems)
+            foreach (Toma newItem in e.NewItems)
                 newItem.PropertyChanged += TomaItem_PropertyChanged;
 
         if (e.OldItems != null)
-            foreach (Toma_ oldItem in e.OldItems)
+            foreach (Toma oldItem in e.OldItems)
                 oldItem.PropertyChanged -= TomaItem_PropertyChanged;
     }
 
@@ -86,7 +86,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         try
         {
             var button = (e.OriginalSource as Button);
-            var toma = (Toma_)button.DataContext;
+            var toma = (Toma)button.DataContext;
 
             EmailToma email = new EmailToma(toma);
             email.Send();
@@ -108,14 +108,14 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         ImageConverter converter = new ImageConverter();
         toma.qr_code = (byte[])converter.ConvertTo(qrCodeImage, typeof(byte[]));
         ConstanciaDocument document = new(toma);
-        document.GeneratePdf(ContainerApp.config.downloadPath + toma.comision__pfid + "_" + toma.asignatura__codigo + "_" + toma.docente__numero_documento + ".pdf");
+        document.GeneratePdf(ContainerApp.config.downloadPath + toma.comision__pfid + "_" + toma.asignatura__codigo + "_" + toma.docente_.numero_documento + ".pdf");
         */
     }
 
     private void EliminarTomaButton_Click(object sender, RoutedEventArgs e)
     {
         var button = (e.OriginalSource as Button);
-        var toma = (Toma_)button.DataContext;
+        var toma = (Toma)button.DataContext;
         try
         {
             ContainerApp.db.Persist().DeleteIds("toma", toma.id!).Exec().RemoveCache();
@@ -243,7 +243,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
                 ImageConverter converter = new ImageConverter();
                 toma.qr_code = (byte[])converter.ConvertTo(qrCodeImage, typeof(byte[]));
                 ConstanciaDocument document = new(toma);
-                document.GeneratePdf(ContainerApp.config.downloadPath + toma.comision__pfid + "_" + toma.asignatura__codigo + "_" + toma.docente__numero_documento + ".pdf");
+                document.GeneratePdf(ContainerApp.config.downloadPath + toma.curso_.comision_.pfid + "_" + toma.curso_.disposicion_.asignatura_.codigo + "_" + toma.docente_.numero_documento + ".pdf");
                 obj.Msg = "Toma generada correctamente";
             } catch (Exception ex)
             {
@@ -274,21 +274,21 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             foreach (var item in tomas)
             {
                 TomaContralorItem tomaObj = item.Obj<TomaContralorItem>();
-                tomaObj.docente__numero_documento = tomaObj.docente__numero_documento;
-                tomaObj.docente__Label = tomaObj.docente__apellidos!.ToUpper() + " " + tomaObj.docente__nombres!.ToTitleCase();
-                tomaObj.plan__Label = tomaObj.plan__orientacion!.Acronym();
+                tomaObj.docente_.numero_documento = tomaObj.docente_.numero_documento;
+                tomaObj.docente_.Label = tomaObj.docente_.apellidos!.ToUpper() + " " + tomaObj.docente_.nombres!.ToTitleCase();
+                tomaObj.curso_.disposicion_.planificacion_.plan_.Label = tomaObj.curso_.disposicion_.planificacion_.plan_.orientacion!.Acronym();
 
-                if (tomaObj.comision__turno.IsNoE())
-                    tomaObj.planificacion__Label = "V";
+                if (tomaObj.curso_.comision_.turno.IsNoE())
+                    tomaObj.curso_.disposicion_.planificacion_.Label = "V";
                 else
-                    tomaObj.planificacion__Label = tomaObj.comision__turno!.Acronym();
+                    tomaObj.curso_.disposicion_.planificacion_.Label = tomaObj.curso_.comision_.turno!.Acronym();
 
 
-                if (tomaObj.docente__cuil1.IsNoE())
-                    tomaObj.docente__cuil1 = Convert.ToByte(tomaObj.docente__cuil.Substring(0, 2));
+                if (tomaObj.docente_.cuil1.IsNoE())
+                    tomaObj.docente_.cuil1 = Convert.ToByte(tomaObj.docente_.cuil.Substring(0, 2));
 
-                if (tomaObj.docente__cuil2.IsNoE())
-                    tomaObj.docente__cuil2 = Convert.ToByte(tomaObj.docente__cuil.Substring(10, 1));
+                if (tomaObj.docente_.cuil2.IsNoE())
+                    tomaObj.docente_.cuil2 = Convert.ToByte(tomaObj.docente_.cuil.Substring(10, 1));
 
                 ocResultadoGenerarContralor.Add(tomaObj);
             }
@@ -399,23 +399,23 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
                 });
                 // step 2
                 table.Cell().Row(1).Column(1).Element(BlockHeader).Text("Nombre").Bold();
-                table.Cell().Row(1).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.docente__apellidos!.ToUpper() + ", " + textInfo.ToTitleCase(Model.docente__nombres));
+                table.Cell().Row(1).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.docente_.apellidos!.ToUpper() + ", " + textInfo.ToTitleCase(Model.docente_.nombres));
 
                 table.Cell().Row(2).Column(1).Element(BlockHeader).Text("CUIL").Bold();
-                table.Cell().Row(2).Column(2).Element(BlockContent).Text(Model.docente__cuil);
+                table.Cell().Row(2).Column(2).Element(BlockContent).Text(Model.docente_.cuil);
 
                 table.Cell().Row(2).Column(3).Element(BlockHeader).Text("Fecha de Nacimiento:").Bold();
 
-                if (Model.docente__fecha_nacimiento.IsNoE())
+                if (Model.docente_.fecha_nacimiento.IsNoE())
                     table.Cell().Row(2).Column(4).Element(BlockContent).Text("");
                 else
-                    table.Cell().Row(2).Column(4).Element(BlockContent).Text(((DateTime)Model.docente__fecha_nacimiento!).ToString("dd/MM/yyyy"));
+                    table.Cell().Row(2).Column(4).Element(BlockContent).Text(((DateTime)Model.docente_.fecha_nacimiento!).ToString("dd/MM/yyyy"));
 
                 table.Cell().Row(3).Column(1).Element(BlockHeader).Text("Email").Bold();
-                table.Cell().Row(3).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.docente__email_abc);
+                table.Cell().Row(3).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.docente_.email_abc);
 
                 table.Cell().Row(4).Column(1).Element(BlockHeader).Text("Domicilio").Bold();
-                table.Cell().Row(4).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.docente__descripcion_domicilio);
+                table.Cell().Row(4).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.docente_.descripcion_domicilio);
 
             });
         }
@@ -437,31 +437,31 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
                 });
                 // step 2
                 table.Cell().Row(1).Column(1).Element(BlockHeader).Text("Sede").Bold();
-                table.Cell().Row(1).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.sede__nombre);
+                table.Cell().Row(1).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.curso_.comision_.sede_.nombre);
 
                 table.Cell().Row(1).Column(5).Element(BlockHeader).Text("Comisión").Bold();
-                table.Cell().Row(1).Column(6).Element(BlockContent).Text(Model.comision__pfid);
+                table.Cell().Row(1).Column(6).Element(BlockContent).Text(Model.curso_.comision_.pfid);
 
                 table.Cell().Row(2).Column(1).Element(BlockHeader).Text("Domicilio").Bold();
-                table.Cell().Row(2).Column(2).ColumnSpan(5).Element(BlockContent).Text(Model.domicilio__calle + " e/ " + Model.domicilio__entre + " N° " + Model.domicilio__numero + " " + Model.domicilio__localidad);
+                table.Cell().Row(2).Column(2).ColumnSpan(5).Element(BlockContent).Text(Model.curso_.comision_.sede_.domicilio_.calle + " e/ " + Model.curso_.comision_.sede_.domicilio_.entre + " N° " + Model.curso_.comision_.sede_.domicilio_.numero + " " + Model.curso_.comision_.sede_.domicilio_.localidad);
 
                 table.Cell().Row(3).Column(1).Element(BlockHeader).Text("Horario").Bold();
-                table.Cell().Row(3).Column(2).ColumnSpan(5).Element(BlockContent).Text(Model.curso__descripcion_horario);
+                table.Cell().Row(3).Column(2).ColumnSpan(5).Element(BlockContent).Text(Model.curso_.descripcion_horario);
 
                 table.Cell().Row(4).Column(1).Element(BlockHeader).Text("Fecha Toma").Bold();
-                table.Cell().Row(4).Column(2).ColumnSpan(2).Element(BlockContent).Text(((DateTime)Model.calendario__inicio!).ToString("dd/MM/yyyy"));
+                table.Cell().Row(4).Column(2).ColumnSpan(2).Element(BlockContent).Text(((DateTime)Model.curso_.comision_.calendario_.inicio!).ToString("dd/MM/yyyy"));
 
                 table.Cell().Row(4).Column(4).Element(BlockHeader).Text("Fecha Fin").Bold();
-                table.Cell().Row(4).Column(5).ColumnSpan(2).Element(BlockContent).Text(((DateTime)Model.calendario__fin).ToString("dd/MM/yyyy"));
+                table.Cell().Row(4).Column(5).ColumnSpan(2).Element(BlockContent).Text(((DateTime)Model.curso_.comision_.calendario_.fin).ToString("dd/MM/yyyy"));
 
                 table.Cell().Row(5).Column(1).Element(BlockHeader).Text("Asignatura").Bold();
-                table.Cell().Row(5).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.asignatura__nombre + " " + Model.asignatura__codigo);
+                table.Cell().Row(5).Column(2).ColumnSpan(3).Element(BlockContent).Text(Model.curso_.disposicion_.asignatura_.nombre + " " + Model.curso_.disposicion_.asignatura_.codigo);
 
                 table.Cell().Row(5).Column(5).Element(BlockHeader).Text("Hs Cát").Bold();
-                table.Cell().Row(5).Column(6).Element(BlockContent).Text(Model.curso__horas_catedra.ToString());
+                table.Cell().Row(5).Column(6).Element(BlockContent).Text(Model.curso_.horas_catedra.ToString());
 
                 table.Cell().Row(6).Column(1).Element(BlockHeader).Text("Resolución").Bold();
-                table.Cell().Row(6).Column(2).ColumnSpan(5).Element(BlockContent).Text(Model.plan__resolucion);
+                table.Cell().Row(6).Column(2).ColumnSpan(5).Element(BlockContent).Text(Model.curso_.disposicion_.planificacion_.plan_.resolucion);
 
 
             });
@@ -496,33 +496,33 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     internal class EmailToma : SmtpClient
     {
 
-        Toma_ Model;
+        Toma Model;
         public string? Subject = null;
         public string? Body = null;
         List<string>? To = new();
         public string? Bcc = null;
         public string? Attachment = null;
 
-        public EmailToma(Toma_ model) : base()
+        public EmailToma(Toma model) : base()
         {
             Host = ContainerApp.config.emailDocenteHost;
             Port = 587;
             Credentials = new NetworkCredential(ContainerApp.config.emailDocenteUser, ContainerApp.config.emailDocentePassword);
             EnableSsl = true;
             Model = model;
-            Attachment = $"{ContainerApp.config.downloadPath}{Model.comision__pfid}_{Model.asignatura__codigo}_{Model.docente__numero_documento}.pdf";
-            if (Model.docente__email_abc.IsNoE() && Model.docente__email.IsNoE())
+            Attachment = $"{ContainerApp.config.downloadPath}{Model.curso_.comision_.pfid}_{Model.curso_.disposicion_.asignatura_.codigo}_{Model.docente_.numero_documento}.pdf";
+            if (Model.docente_.email_abc.IsNoE() && Model.docente_.email.IsNoE())
                 throw new Exception("Emails no definidos");
-            if (!Model.docente__email_abc.IsNoE())
-                To.Add(Model.docente__email_abc);
-            if(!Model.docente__email.IsNoE())
-                To.Add(Model.docente__email);
+            if (!Model.docente_.email_abc.IsNoE())
+                To.Add(Model.docente_.email_abc);
+            if(!Model.docente_.email.IsNoE())
+                To.Add(Model.docente_.email);
             //Attachment = @"C:\Users\ivan\Downloads\10077_WQQ_36936393.pdf";
             //To = "icastaneda@abc.gob.ar";
             Bcc = ContainerApp.config.emailDocenteBcc.Replace(" ", "");
-            Subject = $"Toma de posesión: {Model.comision__pfid} {Model.asignatura__nombre}";
+            Subject = $"Toma de posesión: {Model.curso_.comision_.pfid} {Model.curso_.disposicion_.asignatura_.nombre}";
             Body = $@"
-<p>Hola {Model.docente__nombres} {Model.docente__apellidos}, usted ha recibido este email porque fue designado/a en la asignatura <strong>{Model.asignatura__nombre}</strong> de sede {Model.sede__nombre}</p>
+<p>Hola {Model.docente_.nombres} {Model.docente_.apellidos}, usted ha recibido este email porque fue designado/a en la asignatura <strong>{Model.curso_.disposicion_.asignatura_.nombre}</strong> de sede {Model.curso_.comision_.sede_.nombre}</p>
 <p><strong>Para confirmar su toma de posesión, necesitamos que responda este email indicando que la información del documento adjunto es correcta.</strong></p>
 <p>Se recuerda que al aceptar su toma de posesión, usted se compromete a:</p>
   <ul>
@@ -562,7 +562,7 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
 
     }
 
-    internal class TomaContralorItem : Toma_
+    internal class TomaContralorItem : Toma
     {
         public string cupof
         {

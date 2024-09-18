@@ -190,5 +190,33 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected Sede? _sede_ = null;
+        public Sede? sede_
+        {
+            get { return _sede_; }
+            set { _sede_ = value; NotifyPropertyChanged(nameof(sede_)); }
+        }
+
+        protected Modalidad? _modalidad_ = null;
+        public Modalidad? modalidad_
+        {
+            get { return _modalidad_; }
+            set { _modalidad_ = value; NotifyPropertyChanged(nameof(modalidad_)); }
+        }
+
+        protected Planificacion? _planificacion_ = null;
+        public Planificacion? planificacion_
+        {
+            get { return _planificacion_; }
+            set { _planificacion_ = value; NotifyPropertyChanged(nameof(planificacion_)); }
+        }
+
+        protected Calendario? _calendario_ = null;
+        public Calendario? calendario_
+        {
+            get { return _calendario_; }
+            set { _calendario_ = value; NotifyPropertyChanged(nameof(calendario_)); }
+        }
+
     }
 }

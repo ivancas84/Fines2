@@ -307,5 +307,26 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected Persona? _persona_ = null;
+        public Persona? persona_
+        {
+            get { return _persona_; }
+            set { _persona_ = value; NotifyPropertyChanged(nameof(persona_)); }
+        }
+
+        protected Plan? _plan_ = null;
+        public Plan? plan_
+        {
+            get { return _plan_; }
+            set { _plan_ = value; NotifyPropertyChanged(nameof(plan_)); }
+        }
+
+        protected Resolucion? _resolucion_inscripcion_ = null;
+        public Resolucion? resolucion_inscripcion_
+        {
+            get { return _resolucion_inscripcion_; }
+            set { _resolucion_inscripcion_ = value; NotifyPropertyChanged(nameof(resolucion_inscripcion_)); }
+        }
+
     }
 }

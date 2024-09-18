@@ -511,7 +511,6 @@ namespace SqlOrganize.Model
         public void CreateFileData()
         {
             _CreateFileData();
-            _CreateFileDataRel();
         }
 
         public void _CreateFileData()
@@ -607,94 +606,33 @@ namespace SqlOrganize.Model
                 sw.WriteLine("");
                 sw.WriteLine("            return \"\";");
                 sw.WriteLine("        }");
-                sw.WriteLine("    }");
-                sw.WriteLine("}");
 
-            }
-        }
-
-        public void _CreateFileDataRel()
-        {
-
-            foreach (var (entityName, entity) in entities)
-            {
-                if (entities[entityName].relations.Count() == 0)
-                    continue;
-
-                using StreamWriter sw = File.CreateText(Config.dataClassesPath + entityName.ToCamelCase() + "_.cs");
-                sw.WriteLine("#nullable enable");
-                sw.WriteLine("using System;");
-                sw.WriteLine("using Newtonsoft.Json;");
-                sw.WriteLine("");
-                sw.WriteLine("namespace SqlOrganize.Sql." + Config.dataClassesNamespace);
-                sw.WriteLine("{");
-                sw.WriteLine("    public class " + entityName.ToCamelCase() + "_" + " : " + entityName.ToCamelCase());
-                sw.WriteLine("    {");
-                sw.WriteLine("");
-
-                #region Generar valores por defecto (por el momento no generamos valores por defecto para las relaciones, puede dar lugar a confusion)
-                sw.WriteLine("        public void DefaultRel(params string[] fieldIds)");
-                sw.WriteLine("        {");
-                sw.WriteLine("            EntityVal val;");
-                sw.WriteLine("            foreach(string fieldId in fieldIds)");
-                sw.WriteLine("            {");
-                sw.WriteLine("                switch(fieldId)");
-                sw.WriteLine("                {");               
 
                 foreach (var (fieldId, relation) in entities[entityName].relations)
                 {
-                    sw.WriteLine("                    case \"" + fieldId + "\":");
-                    sw.WriteLine("                        val = db!.Values(\"" + relation.refEntityName + "\");");
-                    foreach (var (fieldName, field) in fields[relation.refEntityName])
-                        if (field.defaultValue != null && field.defaultValueClassData)
-                        {
-                    
-                            string df = "(" + field.type + "?)val.GetDefault(\"" + fieldName + "\")";
-                            sw.WriteLine("                        " + fieldId + "__" + fieldName + " = " + df + ";");
-                        }
-                    sw.WriteLine("                    break;");
-
-                }
-                sw.WriteLine("                }");
-                sw.WriteLine("            }");
-                sw.WriteLine("        }");
-                #endregion
-                foreach (var (fieldId, relation) in entities[entityName].relations)
-                {
-                    var fs = "";
-
                     if (!relation.parentId.IsNoE())
-                        fs = relation.parentId + "__" + relation.fieldName;
-                    else
-                        fs = relation.fieldName;
+                        continue;
 
-                    sw.WriteLine("        protected string? _" + fieldId + "__Label = null;");
-                    sw.WriteLine("");
-                    sw.WriteLine("        public string? " + fieldId + "__Label");
+                    sw.WriteLine("        protected " + relation.refEntityName.ToCamelCase() + "? _" + relation.fieldName + "_ = null;");
+                    sw.WriteLine("        public " + relation.refEntityName.ToCamelCase() + "? " + relation.fieldName + "_");
                     sw.WriteLine("        {");
-                    sw.WriteLine("            get { return _" + fieldId + "__Label; }");
-                    sw.WriteLine("            set { _" + fieldId + "__Label = value; NotifyPropertyChanged(nameof(" + fieldId + "__Label)); }");
+                    sw.WriteLine("            get { return _" + relation.fieldName + "_; }");
+                    sw.WriteLine("            set { _" + relation.fieldName + "_ = value; NotifyPropertyChanged(nameof(" + relation.fieldName + "_)); }");
                     sw.WriteLine("        }");
                     sw.WriteLine("");
-                    foreach (var (fieldName, field) in fields[relation.refEntityName])
-                    {
-                        sw.WriteLine("        protected " + field.type + "? _" + fieldId + "__" + fieldName + " = null;");
-                        sw.WriteLine("");
-                        sw.WriteLine("        public " + field.type + "? " + fieldId + "__" + fieldName);
-                        sw.WriteLine("        {");
-                        sw.WriteLine("            get { return _" + fieldId + "__" + fieldName + "; }");
-                        if(fieldName != relation.refFieldName)
-                            sw.WriteLine("            set { _" + fieldId + "__" + fieldName + " = value; NotifyPropertyChanged(nameof(" + fieldId + "__" + fieldName + ")); }");
-                        else
-                            sw.WriteLine("            set { _" + fieldId + "__" + fieldName + " = value; " + fs + " = value; NotifyPropertyChanged(nameof(" + fieldId + "__" + fieldName + ")); }");
-
-                        sw.WriteLine("        }");
-                    }
                 }
+
+
+
+
+                #region fin clase, fin namespace
                 sw.WriteLine("    }");
                 sw.WriteLine("}");
+                #endregion
+
             }
         }
+
 
         protected List<string> DefineId(Entity entity)
         {

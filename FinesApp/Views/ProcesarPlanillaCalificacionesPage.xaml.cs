@@ -17,13 +17,13 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
 {
 
     #region Autocomplete v3 - organismo
-    private ObservableCollection<Curso_> cursoOC = new(); //datos consultados de la base de datos
+    private ObservableCollection<SqlOrganize.Sql.Fines2Model3.Curso> cursoOC = new(); //datos consultados de la base de datos
     private DispatcherTimer cursoTypingTimer; //timer para buscar
     #endregion
 
-    private ObservableCollection<Calificacion_> calificacionProcesadaOC = new();
-    private ObservableCollection<Calificacion_> calificacionAprobadaOC = new(); //calificaciones aprobadas del curso
-    private ObservableCollection<AlumnoComision_> asignacionDesaprobadaOC = new(); //asignaciones activas que no figuran aprobadas del curso
+    private ObservableCollection<Calificacion> calificacionProcesadaOC = new();
+    private ObservableCollection<Calificacion> calificacionAprobadaOC = new(); //calificaciones aprobadas del curso
+    private ObservableCollection<AlumnoComision> asignacionDesaprobadaOC = new(); //asignaciones activas que no figuran aprobadas del curso
 
     List<EntityPersist> persists = new();
 
@@ -104,7 +104,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
             return;
         }
 
-        var cursoSeleccionado = (Curso_)cursoComboBox.SelectedItem;
+        var cursoSeleccionado = (SqlOrganize.Sql.Fines2Model3.Curso)cursoComboBox.SelectedItem;
         if (cursoSeleccionado.IsNoE())
         {
             ToastExtensions.Show("Falta seleccionar el curso");
@@ -137,9 +137,9 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
 
                 calificacionVal.PersistProcesarCurso(cursoSeleccionado.id).AddToIfSql(persists);
 
-                Calificacion_ calificacionObj = calificacionVal.GetData<Calificacion_>();
+                Calificacion calificacionObj = calificacionVal.GetData<Calificacion>();
 
-                dnisProcesados.Add(calificacionObj.persona__numero_documento);
+                dnisProcesados.Add(calificacionObj.alumno_.persona_.numero_documento);
 
                 calificacionProcesadaOC.Add(calificacionObj);
             }

@@ -47,7 +47,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         /// <exception cref="Exception"></exception>
         public EntityPersist PersistProcesarComisionPersona(object comision, PersonaValues personaVal)
         {
-            Comision_ comisionObj = db.Sql("comision").Cache().Id(comision)!.Obj<Comision_>()!;
+            Comision comisionObj = db.Sql("comision").Cache().Id(comision)!.Obj<Comision>()!;
 
             var asignacionData = db.AsignacionComisionDniSql(comision, personaVal.Get("numero_documento")).Cache().Dict();
 
@@ -88,7 +88,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 {
                     logging.AddLog("alumno", "Alumno insertado", "insert", Logging.Level.Warning);
                     alumnoVal.Set("persona", personaVal.Get("id")).
-                        Set("plan", comisionObj.planificacion__plan).
+                        Set("plan", comisionObj.planificacion_.plan).
                         Default().Insert(persist);
                 }
                 else
@@ -97,7 +97,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     alumnoVal.Set(alumnoData!);
                 }
 
-                if (!alumnoVal.Get("plan").Equals(comisionObj.planificacion__plan))
+                if (!alumnoVal.Get("plan").Equals(comisionObj.planificacion_.plan))
                     logging.AddLog("alumno", "Plan alumno distinto de comision", null, Logging.Level.Warning);
 
                 logging.AddLog("alumno", "Asignacion insertada", "insert", Logging.Level.Warning);

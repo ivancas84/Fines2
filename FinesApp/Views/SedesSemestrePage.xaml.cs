@@ -17,7 +17,7 @@ public partial class SedesSemestrePage : Page, INotifyPropertyChanged
 {
 
     private ObservableCollection<Calendario> ocCalendario = new();
-    private ObservableCollection<Sede_> ocSede = new();
+    private ObservableCollection<Sede> ocSede = new();
 
     public SedesSemestrePage()
     {

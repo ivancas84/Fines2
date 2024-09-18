@@ -14,7 +14,7 @@ namespace FinesApp.Views;
 
 public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
 {
-    private ObservableCollection<AlumnoComision_> asignacionRegistroOC = new();
+    private ObservableCollection<AlumnoComision> asignacionRegistroOC = new();
 
     public ProcesarRegistroAlumnosPage()
     {
@@ -29,9 +29,9 @@ public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
     {
         asignacionRegistroOC.Clear();
 
-        IDictionary<string, AlumnoComision_> asignacionesDb = ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
+        IDictionary<string, AlumnoComision> asignacionesDb = ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
             Cache().Dicts().
-            Objs<AlumnoComision_>().
+            Objs<AlumnoComision>().
             DictOfObjByPropertyNames("persona__numero_documento");
 
         IEnumerable<string> _headers = headersTextBox.Text.Split(", ").Select(s => s.Trim());
@@ -46,13 +46,13 @@ public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
 
             var values = _data[j].Split("\t");
 
-            AlumnoComision_ asignacionForm = new();
+            AlumnoComision asignacionForm = new();
             for (var i = 0; i < _headers.Count(); i++)
                 asignacionForm.SetPropertyValue(_headers.ElementAt(i), values.ElementAt(i));
 
-            if (asignacionesDb.ContainsKey(asignacionForm.persona__numero_documento))
+            if (asignacionesDb.ContainsKey(asignacionForm.alumno_.persona_.numero_documento))
             {
-                var asignacionDb = asignacionesDb[asignacionForm.persona__numero_documento];
+                var asignacionDb = asignacionesDb[asignacionForm.alumno_.persona_.numero_documento];
                 var personaDbVal = (PersonaValues)ContainerApp.db.Values("persona", "persona").Set(asignacionDb);
                 var personaFormVal = (PersonaValues)ContainerApp.db.Values("persona", "persona").Set(asignacionForm);
 

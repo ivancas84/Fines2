@@ -60,5 +60,19 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected Comision? _comision_ = null;
+        public Comision? comision_
+        {
+            get { return _comision_; }
+            set { _comision_ = value; NotifyPropertyChanged(nameof(comision_)); }
+        }
+
+        protected Comision? _relacion_ = null;
+        public Comision? relacion_
+        {
+            get { return _relacion_; }
+            set { _relacion_ = value; NotifyPropertyChanged(nameof(relacion_)); }
+        }
+
     }
 }

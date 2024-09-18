@@ -69,5 +69,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected Disposicion? _disposicion_ = null;
+        public Disposicion? disposicion_
+        {
+            get { return _disposicion_; }
+            set { _disposicion_ = value; NotifyPropertyChanged(nameof(disposicion_)); }
+        }
+
     }
 }

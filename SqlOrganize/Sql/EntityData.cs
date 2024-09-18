@@ -12,8 +12,6 @@ namespace SqlOrganize.Sql
     {
         public virtual string entityName { get; }
 
-        private EntityVal? values;
-
         /// <summary>Campos a ignorar para marcar isUpdated</summary>
         public List<string> _isUpdatedIgnore = new() { nameof(IsUpdated), nameof(Msg), nameof(Error) };
 
@@ -35,16 +33,9 @@ namespace SqlOrganize.Sql
         /// <remarks>Debe estar definida la instancia de Db</remarks>
         public EntityVal GetValues()
         {
-            if (values == null)
-                values = db!.Values(entityName).SetValues(this);
-            return values;
+            return db!.Values(entityName).SetValues(this);
         }
 
-        /// <summary>Obtener instancia de values asociadas y realizar un cast</summary>
-        public T GetValues<T>() where T : EntityVal
-        {
-            return (T)GetValues();
-        }
 
         public string this[string columnName]
         {
@@ -145,8 +136,7 @@ namespace SqlOrganize.Sql
             }
         }
 
-        /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
-        /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
+        /// <summary>Propiedad opcional para indicar que ya existe en la base de datos</summary>
         public bool isPersisted = false;
 
         public bool IsPersisted
@@ -200,16 +190,6 @@ namespace SqlOrganize.Sql
             set { __Id = value; NotifyPropertyChanged(nameof(_Id)); }
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
-        {
-            if (!_isUpdatedIgnore.Contains(propertyName))
-                IsUpdated = true;
-
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         public EntityPersist Delete()
         {
             return db.Persist().DeleteIds(entityName, this.GetPropertyValue("id"));
@@ -221,6 +201,17 @@ namespace SqlOrganize.Sql
             return (T)this;
         }
 
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
+        {
+            if (!_isUpdatedIgnore.Contains(propertyName))
+                IsUpdated = true;
+
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
 
     }
 

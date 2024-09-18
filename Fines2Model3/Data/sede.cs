@@ -144,5 +144,19 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected Domicilio? _domicilio_ = null;
+        public Domicilio? domicilio_
+        {
+            get { return _domicilio_; }
+            set { _domicilio_ = value; NotifyPropertyChanged(nameof(domicilio_)); }
+        }
+
+        protected CentroEducativo? _centro_educativo_ = null;
+        public CentroEducativo? centro_educativo_
+        {
+            get { return _centro_educativo_; }
+            set { _centro_educativo_ = value; NotifyPropertyChanged(nameof(centro_educativo_)); }
+        }
+
     }
 }

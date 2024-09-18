@@ -80,5 +80,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected Plan? _plan_ = null;
+        public Plan? plan_
+        {
+            get { return _plan_; }
+            set { _plan_ = value; NotifyPropertyChanged(nameof(plan_)); }
+        }
+
     }
 }

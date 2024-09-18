@@ -119,7 +119,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             logging.Clear();
 
             if (IsNullOrEmpty("curso")) throw new Exception("No está definido el curso");
-            var cursoObj = db.Sql("curso").Equal("id", Get("curso")).Cache().Dict()!.Obj<Curso_>();
+            var cursoObj = db.Sql("curso").Equal("id", Get("curso")).Cache().Dict()!.Obj<Curso>();
 
             if (cursoObj.disposicion.IsNoE())
                 throw new Exception("Disposicion no definida");
@@ -178,12 +178,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary>Crear y devolver calificacion error</summary>
         /// <remarks>Este metodo quiza deberia estar en un item y ser un constructor estatico?</remarks>
-        public Calificacion_ GetCalificacionConError(int id, string message, string nombres)
+        public Calificacion GetCalificacionConError(int id, string message, string nombres)
         {
-            var calificacionError = db.Data<Calificacion_>();
+            var calificacionError = db.Data<Calificacion>();
             calificacionError.IsError = true;
             calificacionError.Msg += "Id " + id + ": " + message;
-            calificacionError.persona__nombres = nombres;
+            calificacionError.alumno_.persona_.nombres = nombres;
             return calificacionError;
         }
 

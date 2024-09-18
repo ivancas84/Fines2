@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class AsignacionConAsignaturasItem : AlumnoComision_
+    public class AsignacionConAsignaturasItem : AlumnoComision
     {
 
 

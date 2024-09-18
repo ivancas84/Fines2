@@ -82,5 +82,19 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected Curso? _curso_ = null;
+        public Curso? curso_
+        {
+            get { return _curso_; }
+            set { _curso_ = value; NotifyPropertyChanged(nameof(curso_)); }
+        }
+
+        protected Dia? _dia_ = null;
+        public Dia? dia_
+        {
+            get { return _dia_; }
+            set { _dia_ = value; NotifyPropertyChanged(nameof(dia_)); }
+        }
+
     }
 }

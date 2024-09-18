@@ -321,5 +321,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected Domicilio? _domicilio_ = null;
+        public Domicilio? domicilio_
+        {
+            get { return _domicilio_; }
+            set { _domicilio_ = value; NotifyPropertyChanged(nameof(domicilio_)); }
+        }
+
     }
 }

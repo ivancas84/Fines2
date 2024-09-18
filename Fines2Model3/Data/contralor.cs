@@ -79,5 +79,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected PlanillaDocente? _planilla_docente_ = null;
+        public PlanillaDocente? planilla_docente_
+        {
+            get { return _planilla_docente_; }
+            set { _planilla_docente_ = value; NotifyPropertyChanged(nameof(planilla_docente_)); }
+        }
+
     }
 }

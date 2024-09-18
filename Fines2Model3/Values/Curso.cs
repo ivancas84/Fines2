@@ -86,7 +86,7 @@
         {
             var obj = base.GetData<T>();
 
-            if (obj is Curso_ c)
+            if (obj is Curso c)
                 c.Label = ToString();
             
             return obj;

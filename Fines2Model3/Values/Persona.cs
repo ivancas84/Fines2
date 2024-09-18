@@ -363,7 +363,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         public override T GetData<T>()
         {
             var obj = db.Data<T>(Values());
-            if(obj is Persona_ p)
+            if(obj is Persona p)
             {
                 p.Label = p.nombres + " " + p.apellidos + " " + p.numero_documento;
             }

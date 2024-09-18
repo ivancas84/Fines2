@@ -76,7 +76,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (headers.IsNoE())
                 headers = ["persona__apellidos", "persona__nombres", "persona__numero_documento", "persona__genero", "persona__fecha_nacimiento", "persona__telefono", "persona__email"];
 
-            Comision_? comObj = db.Sql("comision").Equal("id", idComision).Cache().Data<Comision_>() ?? throw new Exception("comision inexistente");
+            Comision? comObj = db.Sql("comision").Equal("id", idComision).Cache().Data<Comision>() ?? throw new Exception("comision inexistente");
 
             List<EntityPersist> persists = new();
         
@@ -102,9 +102,9 @@ namespace SqlOrganize.Sql.Fines2Model3
 
                     var alumnoVal = db.Values("alumno").
                         Sset("persona", personaValues.Get("id")!).
-                        Sset("anio_ingreso", comObj.planificacion__anio!).
-                        Sset("semestre_ingreso", comObj.planificacion__semestre!).
-                        Sset("plan", comObj.plan__id).InsertIfNotExists(persist);
+                        Sset("anio_ingreso", comObj.planificacion_.anio!).
+                        Sset("semestre_ingreso", comObj.planificacion_.semestre!).
+                        Sset("plan", comObj.planificacion_.plan_.id).InsertIfNotExists(persist);
 
                     db.Values("alumno_comision").
                         Sset("alumno", alumnoVal.Get("id")).

@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Controls;
 using SqlOrganize.Sql;
 using WpfUtils.Controls;
@@ -45,8 +44,8 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
             CursoConTomaItem curso = ContainerApp.db.ToData<CursoConTomaItem>(cursoData);
             if (dataToma.ContainsKey(curso.id))
             {
-                Toma_ toma = ContainerApp.db.ToData<Toma_>(dataToma[curso.id]);
-                curso.toma_docente__Label = toma.docente__Label;
+                Toma toma = ContainerApp.db.ToData<Toma>(dataToma[curso.id]);
+                curso.toma_docente__Label = toma.docente_.Label;
             }
             cursoOC.Add(curso);
         }

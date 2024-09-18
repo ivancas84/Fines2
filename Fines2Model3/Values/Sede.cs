@@ -11,10 +11,10 @@
             var obj = base.GetData<T>();
 
 
-            if (obj is Sede_ c)
+            if (obj is Sede c)
             {
                 EntityVal domicilioVal = GetValuesCache("domicilio");
-                c.domicilio__Label = domicilioVal.ToString(); 
+                c.domicilio_.Label = domicilioVal.ToString(); 
             }
 
             return obj;

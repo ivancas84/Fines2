@@ -69,5 +69,19 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected Asignatura? _asignatura_ = null;
+        public Asignatura? asignatura_
+        {
+            get { return _asignatura_; }
+            set { _asignatura_ = value; NotifyPropertyChanged(nameof(asignatura_)); }
+        }
+
+        protected Planificacion? _planificacion_ = null;
+        public Planificacion? planificacion_
+        {
+            get { return _planificacion_; }
+            set { _planificacion_ = value; NotifyPropertyChanged(nameof(planificacion_)); }
+        }
+
     }
 }

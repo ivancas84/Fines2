@@ -93,5 +93,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             return "";
         }
+        protected Persona? _persona_ = null;
+        public Persona? persona_
+        {
+            get { return _persona_; }
+            set { _persona_ = value; NotifyPropertyChanged(nameof(persona_)); }
+        }
+
     }
 }

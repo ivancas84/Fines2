@@ -10,9 +10,9 @@ namespace WpfUtils.Fines.Curso
 {
     public static class Curso
     {
-        public static void SetCursoTimerTick(this DbApp db, System.Windows.Controls.ComboBox cursoComboBox, DispatcherTimer cursoTypingTimer, ObservableCollection<Curso_> cursoOC)
+        public static void SetCursoTimerTick(this DbApp db, System.Windows.Controls.ComboBox cursoComboBox, DispatcherTimer cursoTypingTimer, ObservableCollection<SqlOrganize.Sql.Fines2Model3.Curso> cursoOC)
         {
-            (string? text, TextBox textBox, int? textBoxPos) = cursoComboBox.SetTimerTickInitializeItem<Curso_>(cursoTypingTimer);
+            (string? text, TextBox textBox, int? textBoxPos) = cursoComboBox.SetTimerTickInitializeItem<SqlOrganize.Sql.Fines2Model3.Curso>(cursoTypingTimer);
             if (text == null)
                 return;
 
@@ -23,7 +23,7 @@ namespace WpfUtils.Fines.Curso
             cursoComboBox.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
         }
 
-        public static void ConsultarCalificacionesAprobadasAsignacionesDesaprobadas(this Db db, object curso, ObservableCollection<Calificacion_> calificacionAprobadaOC, ObservableCollection<AlumnoComision_> asignacionDesaprobadaOC)
+        public static void ConsultarCalificacionesAprobadasAsignacionesDesaprobadas(this Db db, object curso, ObservableCollection<Calificacion> calificacionAprobadaOC, ObservableCollection<AlumnoComision> asignacionDesaprobadaOC)
         {
             var cursoData = db.Sql("curso").Cache().Id(curso);
 

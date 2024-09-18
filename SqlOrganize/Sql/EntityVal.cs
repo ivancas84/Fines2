@@ -45,6 +45,47 @@ namespace SqlOrganize.Sql
             return values;
         }
 
+        public IDictionary<string, object?> ValuesTree()
+        {
+            Dictionary<string, object?> response = new();
+            if (ContainsKey("Label"))
+                response["Label"] = values["Label"];
+
+            foreach (string fieldName in fieldNames)
+            {
+                if (ContainsKey(fieldName))
+                    response[fieldName] = values[fieldName];
+
+            }
+
+            ValuesTreeRecursive(db.Entity(entityName).tree, response);
+
+            return response;
+        }
+
+        protected void ValuesTreeRecursive(IDictionary<string, EntityTree> tree, IDictionary<string, object?> response)
+        {
+            foreach (var (fieldId, et) in tree)
+            {
+                if (response.ContainsKey(et.fieldName) && !response[et.fieldName].IsNoE())
+                {
+                    response[et.fieldName + "_"] = new Dictionary<string, object?>();
+
+                    if (ContainsKey(fieldId + db.config.separator + "Label"))
+                        (response[et.fieldName + "_"] as Dictionary<string, object?>)!["Label"] = values[fieldId + db.config.separator + "Label"];
+
+                    foreach (string fieldName in db.FieldNames(et.refEntityName))
+                    {
+                        if (ContainsKey(fieldId + db.config.separator + fieldName))
+                            (response[et.fieldName + "_"] as Dictionary<string, object?>)![fieldName] = values[fieldId + db.config.separator + fieldName];
+                    }
+
+                    if (!et.children.IsNoE())
+                        ValuesTreeRecursive(et.children, (response[et.fieldName + "_"] as Dictionary<string, object?>)!);
+                }
+            }
+        }
+
         public virtual EntityVal SetValues(IDictionary<string, object?> row)
         {
             values.Merge(row);
@@ -736,7 +777,6 @@ namespace SqlOrganize.Sql
 
             foreach (var (fieldId, rel) in this.db.Entity(entityName).relations)
             {
-
                 var values = GetValuesCache(fieldId);
                 if (values != null)
                     Set(fieldId + db.config.separator + "Label", values.ToString());
@@ -749,7 +789,8 @@ namespace SqlOrganize.Sql
         public virtual T GetData<T>() where T : EntityData, new()
         {
             ResetLabels();
-            var obj = db.Data<T>(Values());
+
+            var obj = db.Data<T>(ValuesTree());
             if (Logging.HasLogs())
                 obj.Msg += Logging.ToString();
 

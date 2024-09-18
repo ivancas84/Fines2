@@ -20,7 +20,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 {
 
     #region Autocomplete v3 - comision
-    private ObservableCollection<Comision_> comisionOC = new(); //datos consultados de la base de datos
+    private ObservableCollection<Comision> comisionOC = new(); //datos consultados de la base de datos
     private DispatcherTimer comisionTypingTimer; //timer para buscar
     #endregion
 
@@ -53,7 +53,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     {
         try
         {
-            (string? text, TextBox? textBox, int? textBoxPos) = cbxComision.SetTimerTickInitializeItem<Comision_>(comisionTypingTimer);
+            (string? text, TextBox? textBox, int? textBoxPos) = cbxComision.SetTimerTickInitializeItem<Comision>(comisionTypingTimer);
             if (text == null)
                 return;
 
@@ -119,9 +119,9 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
                     foreach (var cal in calificacionesData[itemObj.alumno])
                     {
                         itemObj.cantidad_aprobadas++;
-                        var calificacionObj = ContainerApp.db.ToData<Calificacion_>(cal);
+                        var calificacionObj = ContainerApp.db.ToData<Calificacion>(cal);
 
-                        int index = idsAsignaturas.IndexOf(calificacionObj.asignatura_dis__id);
+                        int index = idsAsignaturas.IndexOf(calificacionObj.disposicion_.asignatura_.id);
                         switch (index)
                         {
                             case 0: 
@@ -168,7 +168,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
         if (!string.IsNullOrEmpty(phoneNumber))
         {
-            string message = "Hola " + data.toma_docente__nombres + " quería hacerte una consulta acerca de la asignatura " + data.asignatura__nombre + " de comision " + data.comision__pfid;
+            string message = "Hola " + data.toma_docente__nombres + " quería hacerte una consulta acerca de la asignatura " + data.asignatura_.nombre + " de comision " + data.comision_.pfid;
             string whatsappUrl = $"https://web.whatsapp.com/send?phone={phoneNumber}&text={Uri.EscapeDataString(message)}";
 
             Process.Start(new ProcessStartInfo(whatsappUrl) { UseShellExecute = true });
