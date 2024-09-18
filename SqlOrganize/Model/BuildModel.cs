@@ -540,7 +540,7 @@ namespace SqlOrganize.Model
                 sw.WriteLine("");
                 sw.WriteLine("namespace SqlOrganize.Sql." + Config.dataClassesNamespace);
                 sw.WriteLine("{");
-                sw.WriteLine("    public class " + entityName.ToCamelCase() + " : SqlOrganize.Sql.EntityData");
+                sw.WriteLine("    public partial class " + entityName.ToCamelCase() + " : SqlOrganize.Sql.EntityData");
                 sw.WriteLine("    {");
                 sw.WriteLine("");
                 sw.WriteLine("        public override string entityName => \"" + entityName + "\";");

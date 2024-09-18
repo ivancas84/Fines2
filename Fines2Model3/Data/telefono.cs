@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Telefono : SqlOrganize.Sql.EntityData
+    public partial class Telefono : SqlOrganize.Sql.EntityData
     {
 
         public override string entityName => "telefono";

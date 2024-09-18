@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class DisposicionPendiente : SqlOrganize.Sql.EntityData
+    public partial class DisposicionPendiente : SqlOrganize.Sql.EntityData
     {
 
         public override string entityName => "disposicion_pendiente";

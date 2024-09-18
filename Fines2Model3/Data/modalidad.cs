@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public class Modalidad : SqlOrganize.Sql.EntityData
+    public partial class Modalidad : SqlOrganize.Sql.EntityData
     {
 
         public override string entityName => "modalidad";
