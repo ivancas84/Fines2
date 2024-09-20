@@ -136,13 +136,8 @@ namespace SqlOrganize.Sql
 
         public EntitySql Unique(EntityData obj)
         {
-            var d = obj.Dict();
+            var d = obj.ToDict();
             return Unique(d);
-        }
-
-        public EntitySql Unique(EntityVal values)
-        {
-            return Unique(values.Values());
         }
 
         public EntitySql Unique(IDictionary<string, object?> row)

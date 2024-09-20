@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
 using SqlOrganize.CollectionUtils;
+using SqlOrganize.DateTimeUtils;
 using SqlOrganize.Sql;
 using SqlOrganize.ValueTypesUtils;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace SqlOrganize.Model
@@ -537,31 +539,18 @@ namespace SqlOrganize.Model
                 sw.WriteLine("using System.ComponentModel;");
                 sw.WriteLine("using System.Collections.Generic;");
                 sw.WriteLine("using System.Collections.ObjectModel;");
+                sw.WriteLine("using System.Text.RegularExpressions;");
                 sw.WriteLine("");
                 sw.WriteLine("namespace SqlOrganize.Sql." + Config.dataClassesNamespace);
                 sw.WriteLine("{");
-                sw.WriteLine("    public partial class " + entityName.ToCamelCase() + " : SqlOrganize.Sql.EntityData");
+                sw.WriteLine("    public partial class " + entityName.ToCamelCase() + " : EntityData");
                 sw.WriteLine("    {");
                 sw.WriteLine("");
-                sw.WriteLine("        public override string entityName => \"" + entityName + "\";");
-                sw.WriteLine("");
-                sw.WriteLine("        public override void Default()");
+              sw.WriteLine("        public " + entityName.ToCamelCase() + "()");
                 sw.WriteLine("        {");
-                sw.WriteLine("            EntityVal val = db!.Values(\"" + entityName + "\");");
-
-
-                foreach (var (fieldName, field) in fields[entityName])
-                {
-                    if (field.defaultValue != null && field.defaultValueClassData)
-                    {
-                        string df = "(" + field.type + "?)val.GetDefault(\"" + fieldName + "\")";
-                        sw.WriteLine("            _" + fieldName + " = " + df + ";");
-                    }
-                }
+                sw.WriteLine("            _entityName = \"" + entityName + "\";");
+                sw.WriteLine("            _db = Context.db;");
                 sw.WriteLine("        }");
-
-                sw.WriteLine("");
-
                 sw.WriteLine("");
 
                 Dictionary<string, Field> _fields = new(fields[entityName]);
@@ -585,39 +574,6 @@ namespace SqlOrganize.Model
                     sw.WriteLine("            set { if( _" + fieldName + " != value) { _" + fieldName + " = value; NotifyPropertyChanged(nameof(" + fieldName + ")); } }");
                     sw.WriteLine("        }");
                 }
-
-                sw.WriteLine("        protected override string ValidateField(string columnName)");
-                sw.WriteLine("        {");
-                sw.WriteLine("");
-                sw.WriteLine("            switch (columnName)");
-                sw.WriteLine("            {");
-                sw.WriteLine("");
-                foreach (var (fieldName, field) in fields[entityName])
-                {
-                    sw.WriteLine("                case \"" + fieldName + "\":");
-
-                    if (field.notNull)
-                    {
-                        sw.WriteLine("                    if (_" + fieldName + " == null)");
-                        sw.WriteLine("                        return \"Debe completar valor.\";");
-
-                    }
-                    if (entity.unique.Contains(field.name))
-                    {
-                        sw.WriteLine("                    if (!db.IsNoE() && !_" + fieldName + ".IsNoE()) {");
-                        sw.WriteLine("                        var row = db.Sql(\"" + entityName + "\").Equal(\"$" + fieldName + "\", _" + fieldName + ").Cache().Dict();");
-                        sw.WriteLine("                        if (!row.IsNoE() && !_" + Config.id + ".ToString().Equals(row![\"" + Config.id + "\"]!.ToString()))");
-                        sw.WriteLine("                            return \"Valor existente.\";");
-                        sw.WriteLine("                    }");
-                    }
-                    sw.WriteLine("                    return \"\";");
-                    sw.WriteLine("");
-
-                }
-                sw.WriteLine("            }");
-                sw.WriteLine("");
-                sw.WriteLine("            return \"\";");
-                sw.WriteLine("        }");
 
                 #region atributos fk
                 foreach (var (fieldId, relation) in entities[entityName].relations)
@@ -643,21 +599,23 @@ namespace SqlOrganize.Model
                 #region atributos ref
                 foreach (var rel in RelationsRef(entityName))
                 {
+                    string fn = (rel.fieldName.Contains(rel.refEntityName)) ? "" : rel.fieldName + "_";
+
                     if (entities[rel.entityName].unique.Contains(rel.fieldName))
                     {
                         sw.WriteLine("        //" + rel.entityName + "." + rel.fieldName + " _o:o " + rel.refEntityName + ".id");
-                        sw.WriteLine("        protected " + rel.entityName.ToCamelCase() + "? _" + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_ = null;");
-                        sw.WriteLine("        public " + rel.entityName.ToCamelCase() + "? " + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_");
+                        sw.WriteLine("        protected " + rel.entityName.ToCamelCase() + "? _" + rel.entityName.ToCamelCase() + "_" + fn + " = null;");
+                        sw.WriteLine("        public " + rel.entityName.ToCamelCase() + "? " + rel.entityName.ToCamelCase() + "_" + fn);
                         sw.WriteLine("        {");
-                        sw.WriteLine("            get { return _" + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_; }");
-                        sw.WriteLine("            set { _" + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_ = value; NotifyPropertyChanged(nameof(" + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_)); }");
+                        sw.WriteLine("            get { return _" + rel.entityName.ToCamelCase() + "_" + fn + "; }");
+                        sw.WriteLine("            set { _" + rel.entityName.ToCamelCase() + "_" + fn + " = value; NotifyPropertyChanged(nameof(" + rel.entityName.ToCamelCase() + "_" + fn + ")); }");
                         sw.WriteLine("        }");
                         sw.WriteLine("");
                     }
                     else
                     {
                         sw.WriteLine("        //" + rel.entityName + "." + rel.fieldName + " _m:o " + rel.refEntityName + ".id");
-                        sw.WriteLine("        public ObservableCollection<" + rel.entityName.ToCamelCase() + "> " + rel.entityName.ToCamelCase() + "_" + rel.fieldName + "_ { get; set; } = new ();");
+                        sw.WriteLine("        public ObservableCollection<" + rel.entityName.ToCamelCase() + "> " + rel.entityName.ToCamelCase() + "_" + fn + " { get; set; } = new ();");
                         sw.WriteLine("");
                     }
                     

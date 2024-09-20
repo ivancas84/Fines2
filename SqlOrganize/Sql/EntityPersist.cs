@@ -73,11 +73,9 @@ namespace SqlOrganize.Sql
             if ((ids.Count() + _parameters.Count()) > 2100) //SQL Server no admite mas de 2100 parametros, se define consulta alternativa para estos casos
             {
                 List<object> ids_ = new();
-                var v = Db.Values(entityName!);
                 foreach (var id in ids)
                 {
-                    v.Set(Db.config.id, id);
-                    var id_ = v.Sql(Db.config.id);
+                    var id_ = Db.SqlValue(entityName, Db.config.id, id);
                     ids_.Add(id_);
                     detail.Add((entityName!, id, method));
 
@@ -113,24 +111,23 @@ DELETE " + e.alias + " FROM " + e.name + " " + e.alias + @"
 
         abstract protected IDictionary<string, object?> _Update(string _entityName, IDictionary<string, object?> row);
 
-        public EntityPersist Update(EntityVal values)
+        public EntityPersist Update(string entityName, IDictionary<string, object?> row)
         {
-            var row = values.Values();
-
-            IDictionary<string, object?> _row = _Update(values.entityName, row!);
+            IDictionary<string, object?> _row = _Update(entityName, row!);
 
             string i = count.ToString();
 
-            string id = Db.Mapping(values.entityName!).Map(Db.config.id);
+            string id = Db.Mapping(entityName!).Map(Db.config.id);
             sql += @"
-WHERE " + id + " = @update_" + id + i + @";
+WHERE " + id + " = @update_" + i + @";
 ";
-            Param("@update_" + id + i, row[Db.config.id]!);
-            detail.Add((values.entityName!, row[Db.config.id]!, "update"));
-            logging.AddLog(values.entityName, "registro actualizado " + _row.ToStringKeyValuePair(), "update", Logging.Level.Info);
+            Param("@update_" + i, row[Db.config.id]!);
+            detail.Add((entityName!, row[Db.config.id]!, "update"));
+            logging.AddLog(entityName, "registro actualizado " + _row.ToStringKeyValuePair(), "update", Logging.Level.Info);
 
             return this;
         }
+
 
         public EntityPersist UpdateIds(string _entityName, Dictionary<string, object?> row, params object[] ids)
         {
@@ -143,11 +140,9 @@ WHERE " + id + " = @update_" + id + i + @";
             if ((ids.Count() + _parameters.Count()) > 2100) //SQL Server no admite mas de 2100 parametros, se define consulta alternativa para estos casos
             {
                 List<object> ids_ = new();
-                var v = Db.Values(_entityName!);
                 foreach (var id in ids)
                 {
-                    v.Set(Db.config.id, id);
-                    var id_ = v.Sql(Db.config.id);
+                    var id_ = Db.SqlValue(_entityName, Db.config.id, id);
                     ids_.Add(id_);
                     detail.Add((_entityName!, id, "update"));
 
@@ -156,9 +151,9 @@ WHERE " + id + " = @update_" + id + i + @";
 ";
             } else
             {
-                sql += @"WHERE " + idMap + " IN (@map_" + idMap + i + @");
+                sql += @"WHERE " + idMap + " IN (@map_id" + i + @");
 ";
-                Param("@map_" + idMap + i, ids);
+                Param("@map_id" + i, ids);
 
                 foreach (var id in ids)
                     detail.Add((_entityName!, id, "update"));
@@ -169,15 +164,15 @@ WHERE " + id + " = @update_" + id + i + @";
             return this;
         }
 
-        public EntityPersist UpdateVal(EntityVal values, string fieldName)
+        public EntityPersist UpdateField(EntityData data , string fieldName)
         {
-            UpdateValueIds(values.entityName, fieldName, values.Get(fieldName), values.Get("id"));
-            return this;
+            return UpdateFieldIds(data.entityName, fieldName, data.GetPropertyValue(fieldName), data.GetPropertyValue(Db.config.id));
         }
-        public EntityPersist UpdateVal(EntityVal values, string fieldName, object? newValue)
+
+        public EntityPersist UpdateField(EntityData data, string fieldName, object? newValue)
         {
-            UpdateValueIds(values.entityName, fieldName, newValue, values.Get("id"));
-            values.Set(fieldName, newValue);
+            UpdateFieldIds(data.entityName, fieldName, newValue, data.GetPropertyValue(Db.config.id));
+            data.SetPropertyValue(fieldName, newValue);
             return this;
         }
 
@@ -190,7 +185,7 @@ WHERE " + id + " = @update_" + id + i + @";
         /// <param name="id">Identificacion de la fila a actualizar</param>
         /// <param name="_entityName">Nombre de la entidad, si no se especifica se toma el atributo</param>
         /// <returns>Mismo objeto</returns>
-        public EntityPersist UpdateValueIds(string _entityName, string key, object? value, params object[] ids)
+        public EntityPersist UpdateFieldIds(string _entityName, string key, object? value, params object[] ids)
         {
             Dictionary<string, object?> row = new Dictionary<string, object?>()
             {
@@ -222,8 +217,13 @@ WHERE " + id + " = @update_" + id + i + @";
             
             object[] ids = q.Column<object>(Db.config.id).ToArray();
             if(ids.Any())
-                return UpdateValueIds(_entityName, key, value, ids);
+                return UpdateFieldIds(_entityName, key, value, ids);
             return this;
+        }
+
+        public EntityPersist Update(EntityData data)
+        {
+            return Update(data.entityName, data.ToDict()!);
         }
 
         /// <summary>
@@ -246,40 +246,35 @@ WHERE " + id + " = @update_" + id + i + @";
                 key = key.Substring(indexSeparator + Db.config.separator.Length); //se suma la cantidad de caracteres del separador
             }
 
-            return UpdateValueIds(_entityName, key, value, source[idKey]!);
+            return UpdateFieldIds(_entityName, key, value, source[idKey]!);
         }
 
 
-        public EntityPersist InsertIfNotExists(EntityVal values)
+        public EntityPersist InsertIfNotExists(EntityData data)
         {
-            values.Reset();
+            data.Reset();
 
-            IDictionary<string, object?>? row = values.SqlUnique().DictOne() ?? null;
+            IDictionary<string, object?>? row = data.SqlUnique().DictOne() ?? null;
 
             if (row.IsNoE()) //actualizar
             {
-                if (!values.Default().Reset().Check())
-                    throw new Exception("Los campos a insertar poseen errores: " + values.Logging.ToString());
+                if (!data.Check())
+                    throw new Exception("Los campos a insertar poseen errores: " + data.Logging.ToString());
 
-                return Insert(values);
+                return Insert(data);
             }
 
-            logging.AddLog(values.entityName, "Registro existente " + values.ToString(), "insert_if_not_exists", Logging.Level.Info);
-            values.Sset("id", row!["id"]);
+            logging.AddLog(data.entityName, "Registro existente " + data.Label, "insert_if_not_exists", Logging.Level.Info);
+
             return this;
         }
 
-
-
         /// <summary>Insercion de EntityVal</summary>
         /// <remarks>Define id si no existe</remarks>
-        public EntityPersist Insert(EntityVal v)
+        public EntityPersist Insert(EntityData data)
         {
-            if (v.GetOrNull(Db.config.id).IsNoE())
-                v.SetDefault(Db.config.id);
-            return Insert(v.entityName, v.Values()!);
+            return Insert(data.entityName, data.ToDict()!);
         }
-
 
         /// <summary>Comportamiento basico de insercion</summary>
         /// <remarks>Debe estar definido el id</remarks>
@@ -297,7 +292,7 @@ WHERE " + id + " = @update_" + id + i + @";
             string sn = Db.Entity(_entityName!).schemaName;
             sql += "INSERT INTO " + sn + @" (" + String.Join(", ", row_.Keys) + @") 
 VALUES (";
-
+            
             foreach (var (key, value) in row_)
             {
                 sql += "@" + key + i + ", ";
@@ -319,17 +314,19 @@ VALUES (";
             return sql;
         }
 
-
-        /// <summary>Comportamiento general de persistencia</summary>
-        /// <remarks>Dependiendo del contexto se puede evitar el codigo adicional generado por el comportamiento general</remarks>
-        public EntityPersist Persist(EntityVal v)
+        public EntityPersist Persist(EntityData data)
         {
+            data.Reset();
 
-            v.Reset();
+            if (!data.Check())
+                throw new Exception("Los campos a persistir poseen errores: " + data.Logging.ToString());
+
             IDictionary<string, object?>? row = null;
-            try {
-                row = v.SqlUnique().DictOne();
-            } catch(UniqueException) { }
+            try
+            {
+                row = data.SqlUnique().DictOne();
+            }
+            catch (UniqueException) { }
 
             if (!row.IsNoE())
             {
@@ -337,9 +334,7 @@ VALUES (";
                 //if (v.values.ContainsKey(Db.config.id) && v.Get(Db.config.id).ToString() != rows.ElementAt(0)[Db.config.id].ToString())
                 //    throw new Exception("Los id son diferentes");
 
-                v.Set(Db.config.id, row![Db.config.id]);
-                if (!v.Check())
-                    throw new Exception("Los campos a actualizar poseen errores: " + v.Logging.ToString());
+                data.SetPropertyValue(Db.config.id, row![Db.config.id]);
 
                 CompareParams cmp = new()
                 {
@@ -348,41 +343,31 @@ VALUES (";
                     Data = row
                 };
 
-                if(!v.Compare(cmp).IsNoE())
-                    return Update(v);
+                if (!data.Compare(cmp).IsNoE())
+                    return Update(data);
 
-                logging.AddLog(v.entityName, "registro identico " + row.ToStringKeyValuePair(), "persist", Logging.Level.Info);
+                logging.AddLog(data.entityName, "registro identico " + row.ToStringKeyValuePair(), "persist", Logging.Level.Info);
                 return this;
             }
 
-            if (!v.Values().ContainsKey(Db.config.id) || v.Values()[Db.config.id].IsNoE())
-                v.SetDefault(Db.config.id);
+           
 
-            v.Default().Reset(Db.config.id).Check();
-
-            if (v.Logging.HasErrors())
-                throw new Exception("Los campos a insertar poseen errores: " + v.Logging.ToString());
-
-            return Insert(v.entityName, v.Values());
+            return Insert(data);
         }
 
-        public EntityPersist PersistCondition(EntityVal v, object? condition)
+  
+        public EntityPersist PersistCondition(EntityData data, object? condition)
         {
+            data.Reset();
+
+            if (!data.Check())
+                throw new Exception("Error al persistir: " + data.Logging.ToString());
+
+
             if (condition.IsNoE())
-            {
-                v.Default().Reset();
-                if (!v.Check())
-                    throw new Exception("INSERT ERROR: " + v.Logging.ToString());
-
-                return Insert(v);
-            }
-
-            v.Reset();
-
-            if (!v.Check())
-                throw new Exception("UPDATE ERROR: " + v.Logging.ToString());
-
-            return Update(v);
+                return Insert(data);
+            
+            return Update(data);
         } 
 
         public Query Query(Query q)
@@ -413,14 +398,17 @@ VALUES (";
         }
 
         /// <summary> Si la comparación es diferente, no actualiza! sino actualiza todo! </summary>
-        public EntityPersist PersistCompare(EntityVal values, CompareParams compare)
+        public EntityPersist PersistCompare(EntityData data, CompareParams compare)
         {
-            values.Reset();
+            data.Reset();
+
+            if (!data.Check())
+                throw new Exception("Los campos a persistir poseen errores: " + data.Logging.ToString());
 
             IDictionary<string, object?> row = null;
             try
             {
-                row = values.SqlUnique().DictOne();
+                row = data.SqlUnique().DictOne();
             }
             catch (UniqueException) { }
 
@@ -429,27 +417,19 @@ VALUES (";
                 //Se controla la existencia de id diferente? No! Se reasigna el id, dejo el codigo comentado
                 //if (v.values.ContainsKey(Db.config.id) && v.Get(Db.config.id).ToString() != rows.ElementAt(0)[Db.config.id].ToString())
                 //    throw new Exception("Los id son diferentes");
-
                 compare.Data = row!;
-                var response = values.Compare(compare);
+                var response = data.Compare(compare);
 
                 if (!response.IsNoE())
                     throw new Exception("Comparacion diferente: " + compare.Data.ToStringKeys(response.Keys.ToArray()));
 
-                values.Set(Db.config.id, row[Db.config.id]);
-                if (!values.Check())
-                    throw new Exception("Los campos a actualizar poseen errores: " + values.Logging.ToString());
+                data.SetPropertyValue(Db.config.id, row[Db.config.id]);
+                
 
-                return Update(values);
-
+                return Update(data);
             }
-            else
-            {
-                if (!values.Default().Reset().Check())
-                    throw new Exception("Los campos a insertar poseen errores: " + values.Logging.ToString());
 
-                return Insert(values);
-            }
+            return Insert(data);
         }
 
         public EntityPersist TransferOm(string entityName, object origenId, object destinoId)
@@ -459,7 +439,7 @@ VALUES (";
             {
                 object[] ids = Db.Sql(field.entityName).Equal(field.name, origenId).Column<object>("id").ToArray();
                 if (ids.Any())
-                    UpdateValueIds(field.entityName, field.name, destinoId!, ids);
+                    UpdateFieldIds(field.entityName, field.name, destinoId!, ids);
             }
             return this;
         }

@@ -143,13 +143,6 @@ namespace SqlOrganize.Sql
             return BuildDicts(_fields, ids.ToArray());
         }
 
-
-        public EntityVal? EntityVal()
-        {
-            IDictionary<string, object?>? dict = Dict();
-            return (!dict.IsNoE()) ? Db.Values(Sql.entityName).SetValues(dict!) : null;
-        }
-
         public object? Value(string fieldName)
         {
             var dict = Dict();

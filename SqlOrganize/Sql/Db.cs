@@ -130,28 +130,6 @@ namespace SqlOrganize.Sql
             return new(this, entityName, fieldId);
         }
 
-        public virtual EntityVal Values(string entityName, string? fieldId = null)
-        {
-            return new(this, entityName, fieldId);
-        }
-
-        /// <summary> Crear instancia de Data vacia</summary>
-        public virtual T Data<T>() where T : EntityData, new()
-        {
-            T obj = new T();
-            obj.SetDb(this);
-            return obj;
-        }
-
-
-        /// <summary> Crear instancia de Data a partir un diccionario de valores</summary>
-        public virtual T Data<T>(IDictionary<string, object?> item) where T : EntityData, new()
-        {
-            T obj = item.Obj<T>()!;
-            obj.SetDb(this);
-            return obj;
-        }
-
         /// <summary>
         /// Extrae los elementos de una key
         /// </summary>

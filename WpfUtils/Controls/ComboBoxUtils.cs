@@ -124,7 +124,7 @@ namespace WpfUtils.Controls
             string actualValue = cb.DataContext.GetPropertyValue(fieldName).ToString();
             if (cb.SelectedIndex < 0 && cb.SelectedValue.ToString().Equals(actualValue))
                 return;
-            db.Persist().UpdateValueIds(entityName, fieldName, cb.SelectedValue, cb.DataContext.GetPropertyValue("id")!).Exec().RemoveCache();
+            db.Persist().UpdateFieldIds(entityName, fieldName, cb.SelectedValue, cb.DataContext.GetPropertyValue("id")!).Exec().RemoveCache();
         }
 
         #region filter con delay v1
