@@ -3,21 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class PlanillaDocente : SqlOrganize.Sql.EntityData
+    public partial class PlanillaDocente : EntityData
     {
 
-        public override string entityName => "planilla_docente";
-
-        public override void Default()
+        public PlanillaDocente()
         {
-            EntityVal val = db!.Values("planilla_docente");
-            _id = (string?)val.GetDefault("id");
-            _insertado = (DateTime?)val.GetDefault("insertado");
+            _entityName = "planilla_docente";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -55,48 +52,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _observaciones; }
             set { if( _observaciones != value) { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "numero":
-                    if (_numero == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "insertado":
-                    if (_insertado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "fecha_contralor":
-                    return "";
-
-                case "fecha_consejo":
-                    return "";
-
-                case "observaciones":
-                    return "";
-
-            }
-
-            return "";
-        }
         //asignacion_planilla_docente.planilla_docente _m:o planilla_docente.id
-        public ObservableCollection<AsignacionPlanillaDocente> AsignacionPlanillaDocente_planilla_docente_ { get; set; } = new ();
+        public ObservableCollection<AsignacionPlanillaDocente> AsignacionPlanillaDocente_ { get; set; } = new ();
 
         //contralor.planilla_docente _m:o planilla_docente.id
-        public ObservableCollection<Contralor> Contralor_planilla_docente_ { get; set; } = new ();
+        public ObservableCollection<Contralor> Contralor_ { get; set; } = new ();
 
         //toma.planilla_docente _m:o planilla_docente.id
-        public ObservableCollection<Toma> Toma_planilla_docente_ { get; set; } = new ();
+        public ObservableCollection<Toma> Toma_ { get; set; } = new ();
 
     }
 }

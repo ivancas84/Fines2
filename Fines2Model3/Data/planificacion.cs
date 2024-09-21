@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Planificacion : SqlOrganize.Sql.EntityData
+    public partial class Planificacion : EntityData
     {
 
-        public override string entityName => "planificacion";
-
-        public override void Default()
+        public Planificacion()
         {
-            EntityVal val = db!.Values("planificacion");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "planificacion";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -48,39 +46,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _pfid; }
             set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "anio":
-                    if (_anio == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "semestre":
-                    if (_semestre == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "plan":
-                    if (_plan == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "pfid":
-                    return "";
-
-            }
-
-            return "";
-        }
         //planificacion.plan _o:o plan.id
         protected Plan? _plan_ = null;
         public Plan? plan_
@@ -94,10 +59,10 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
         //comision.planificacion _m:o planificacion.id
-        public ObservableCollection<Comision> Comision_planificacion_ { get; set; } = new ();
+        public ObservableCollection<Comision> Comision_ { get; set; } = new ();
 
         //disposicion.planificacion _m:o planificacion.id
-        public ObservableCollection<Disposicion> Disposicion_planificacion_ { get; set; } = new ();
+        public ObservableCollection<Disposicion> Disposicion_ { get; set; } = new ();
 
     }
 }

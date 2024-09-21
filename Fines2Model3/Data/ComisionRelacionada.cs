@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class ComisionRelacionada : SqlOrganize.Sql.EntityData
+    public partial class ComisionRelacionada : EntityData
     {
 
-        public override string entityName => "comision_relacionada";
-
-        public override void Default()
+        public ComisionRelacionada()
         {
-            EntityVal val = db!.Values("comision_relacionada");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "comision_relacionada";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -35,31 +33,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _relacion; }
             set { if( _relacion != value) { _relacion = value; NotifyPropertyChanged(nameof(relacion)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "comision":
-                    if (_comision == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "relacion":
-                    if (_relacion == null)
-                        return "Debe completar valor.";
-                    return "";
-
-            }
-
-            return "";
         }
         //comision_relacionada.comision _o:o comision.id
         protected Comision? _comision_ = null;

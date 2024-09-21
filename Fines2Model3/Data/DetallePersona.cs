@@ -3,22 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class DetallePersona : SqlOrganize.Sql.EntityData
+    public partial class DetallePersona : EntityData
     {
 
-        public override string entityName => "detalle_persona";
-
-        public override void Default()
+        public DetallePersona()
         {
-            EntityVal val = db!.Values("detalle_persona");
-            _id = (string?)val.GetDefault("id");
-            _creado = (DateTime?)val.GetDefault("creado");
-            _fecha = (DateTime?)val.GetDefault("fecha");
+            _entityName = "detalle_persona";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -67,48 +63,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _asunto; }
             set { if( _asunto != value) { _asunto = value; NotifyPropertyChanged(nameof(asunto)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "descripcion":
-                    if (_descripcion == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "archivo":
-                    return "";
-
-                case "creado":
-                    if (_creado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "persona":
-                    if (_persona == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "fecha":
-                    return "";
-
-                case "tipo":
-                    return "";
-
-                case "asunto":
-                    return "";
-
-            }
-
-            return "";
         }
         //detalle_persona.archivo _o:o file.id
         protected File? _archivo_ = null;

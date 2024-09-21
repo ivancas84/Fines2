@@ -3,21 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Calificacion : SqlOrganize.Sql.EntityData
+    public partial class Calificacion : EntityData
     {
 
-        public override string entityName => "calificacion";
-
-        public override void Default()
+        public Calificacion()
         {
-            EntityVal val = db!.Values("calificacion");
-            _id = (string?)val.GetDefault("id");
-            _archivado = (bool?)val.GetDefault("archivado");
+            _entityName = "calificacion";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -102,66 +99,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _archivado; }
             set { if( _archivado != value) { _archivado = value; NotifyPropertyChanged(nameof(archivado)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "nota1":
-                    return "";
-
-                case "nota2":
-                    return "";
-
-                case "nota3":
-                    return "";
-
-                case "nota_final":
-                    return "";
-
-                case "crec":
-                    return "";
-
-                case "curso":
-                    return "";
-
-                case "porcentaje_asistencia":
-                    return "";
-
-                case "observaciones":
-                    return "";
-
-                case "division":
-                    return "";
-
-                case "alumno":
-                    if (_alumno == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "disposicion":
-                    if (_disposicion == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "fecha":
-                    return "";
-
-                case "archivado":
-                    if (_archivado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-            }
-
-            return "";
         }
         //calificacion.curso _o:o curso.id
         protected Curso? _curso_ = null;

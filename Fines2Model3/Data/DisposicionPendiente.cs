@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class DisposicionPendiente : SqlOrganize.Sql.EntityData
+    public partial class DisposicionPendiente : EntityData
     {
 
-        public override string entityName => "disposicion_pendiente";
-
-        public override void Default()
+        public DisposicionPendiente()
         {
-            EntityVal val = db!.Values("disposicion_pendiente");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "disposicion_pendiente";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -41,34 +39,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _modo; }
             set { if( _modo != value) { _modo = value; NotifyPropertyChanged(nameof(modo)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "disposicion":
-                    if (_disposicion == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "alumno":
-                    if (_alumno == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "modo":
-                    return "";
-
-            }
-
-            return "";
         }
         //disposicion_pendiente.disposicion _o:o disposicion.id
         protected Disposicion? _disposicion_ = null;

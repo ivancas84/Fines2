@@ -3,21 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Sede : SqlOrganize.Sql.EntityData
+    public partial class Sede : EntityData
     {
 
-        public override string entityName => "sede";
-
-        public override void Default()
+        public Sede()
         {
-            EntityVal val = db!.Values("sede");
-            _id = (string?)val.GetDefault("id");
-            _alta = (DateTime?)val.GetDefault("alta");
+            _entityName = "sede";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -91,60 +88,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _pfid_organizacion; }
             set { if( _pfid_organizacion != value) { _pfid_organizacion = value; NotifyPropertyChanged(nameof(pfid_organizacion)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "numero":
-                    if (_numero == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "nombre":
-                    if (_nombre == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "observaciones":
-                    return "";
-
-                case "alta":
-                    if (_alta == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "baja":
-                    return "";
-
-                case "domicilio":
-                    return "";
-
-                case "centro_educativo":
-                    return "";
-
-                case "fecha_traspaso":
-                    return "";
-
-                case "organizacion":
-                    return "";
-
-                case "pfid":
-                    return "";
-
-                case "pfid_organizacion":
-                    return "";
-
-            }
-
-            return "";
-        }
         //sede.domicilio _o:o domicilio.id
         protected Domicilio? _domicilio_ = null;
         public Domicilio? domicilio_
@@ -170,10 +113,10 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
         //comision.sede _m:o sede.id
-        public ObservableCollection<Comision> Comision_sede_ { get; set; } = new ();
+        public ObservableCollection<Comision> Comision_ { get; set; } = new ();
 
         //designacion.sede _m:o sede.id
-        public ObservableCollection<Designacion> Designacion_sede_ { get; set; } = new ();
+        public ObservableCollection<Designacion> Designacion_ { get; set; } = new ();
 
     }
 }

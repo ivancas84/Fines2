@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class TipoSede : SqlOrganize.Sql.EntityData
+    public partial class TipoSede : EntityData
     {
 
-        public override string entityName => "tipo_sede";
-
-        public override void Default()
+        public TipoSede()
         {
-            EntityVal val = db!.Values("tipo_sede");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "tipo_sede";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -29,31 +27,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _descripcion; }
             set { if( _descripcion != value) { _descripcion = value; NotifyPropertyChanged(nameof(descripcion)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "descripcion":
-                    if (_descripcion == null)
-                        return "Debe completar valor.";
-                    if (!db.IsNoE() && !_descripcion.IsNoE()) {
-                        var row = db.Sql("tipo_sede").Equal("$descripcion", _descripcion).Cache().Dict();
-                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
-                            return "Valor existente.";
-                    }
-                    return "";
-
-            }
-
-            return "";
         }
     }
 }

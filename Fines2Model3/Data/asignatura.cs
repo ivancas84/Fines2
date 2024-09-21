@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Asignatura : SqlOrganize.Sql.EntityData
+    public partial class Asignatura : EntityData
     {
 
-        public override string entityName => "asignatura";
-
-        public override void Default()
+        public Asignatura()
         {
-            EntityVal val = db!.Values("asignatura");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "asignatura";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -54,48 +52,11 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _perfil; }
             set { if( _perfil != value) { _perfil = value; NotifyPropertyChanged(nameof(perfil)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "nombre":
-                    if (_nombre == null)
-                        return "Debe completar valor.";
-                    if (!db.IsNoE() && !_nombre.IsNoE()) {
-                        var row = db.Sql("asignatura").Equal("$nombre", _nombre).Cache().Dict();
-                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
-                            return "Valor existente.";
-                    }
-                    return "";
-
-                case "formacion":
-                    return "";
-
-                case "clasificacion":
-                    return "";
-
-                case "codigo":
-                    return "";
-
-                case "perfil":
-                    return "";
-
-            }
-
-            return "";
-        }
         //curso.asignatura _m:o asignatura.id
-        public ObservableCollection<Curso> Curso_asignatura_ { get; set; } = new ();
+        public ObservableCollection<Curso> Curso_ { get; set; } = new ();
 
         //disposicion.asignatura _m:o asignatura.id
-        public ObservableCollection<Disposicion> Disposicion_asignatura_ { get; set; } = new ();
+        public ObservableCollection<Disposicion> Disposicion_ { get; set; } = new ();
 
     }
 }

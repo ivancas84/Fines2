@@ -561,6 +561,15 @@ namespace SqlOrganize.Sql
             }
         }
 
+        public bool IsNullOrEmpty(params string[] fieldNames)
+        {
+            foreach (var fieldName in fieldNames)
+                if (this.GetPropertyValue(fieldName).IsNoE())
+                    return true;
+
+            return false;
+        }
+
         #endregion
 
         #region Sql
@@ -584,6 +593,11 @@ namespace SqlOrganize.Sql
                 return SqlField(fieldName);
             else
                 return SqlUniqueWithoutIdIfExists();
+        }
+
+        public EntitySql SqlRef(string entityName, string fkName)
+        {
+            return db.Sql(entityName).Equal(fkName, this.GetPropertyValue("id"));
         }
         #endregion
 

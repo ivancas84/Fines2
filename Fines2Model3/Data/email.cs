@@ -3,22 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Email : SqlOrganize.Sql.EntityData
+    public partial class Email : EntityData
     {
 
-        public override string entityName => "email";
-
-        public override void Default()
+        public Email()
         {
-            EntityVal val = db!.Values("email");
-            _id = (string?)val.GetDefault("id");
-            _verificado = (bool?)val.GetDefault("verificado");
-            _insertado = (DateTime?)val.GetDefault("insertado");
+            _entityName = "email";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -55,44 +51,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _persona; }
             set { if( _persona != value) { _persona = value; NotifyPropertyChanged(nameof(persona)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "email":
-                    if (_email == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "verificado":
-                    if (_verificado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "insertado":
-                    if (_insertado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "eliminado":
-                    return "";
-
-                case "persona":
-                    if (_persona == null)
-                        return "Debe completar valor.";
-                    return "";
-
-            }
-
-            return "";
         }
         //email.persona _o:o persona.id
         protected Persona? _persona_ = null;

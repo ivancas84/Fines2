@@ -3,21 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Telefono : SqlOrganize.Sql.EntityData
+    public partial class Telefono : EntityData
     {
 
-        public override string entityName => "telefono";
-
-        public override void Default()
+        public Telefono()
         {
-            EntityVal val = db!.Values("telefono");
-            _id = (string?)val.GetDefault("id");
-            _insertado = (DateTime?)val.GetDefault("insertado");
+            _entityName = "telefono";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -60,45 +57,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _persona; }
             set { if( _persona != value) { _persona = value; NotifyPropertyChanged(nameof(persona)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "tipo":
-                    return "";
-
-                case "prefijo":
-                    return "";
-
-                case "numero":
-                    if (_numero == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "insertado":
-                    if (_insertado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "eliminado":
-                    return "";
-
-                case "persona":
-                    if (_persona == null)
-                        return "Debe completar valor.";
-                    return "";
-
-            }
-
-            return "";
         }
         //telefono.persona _o:o persona.id
         protected Persona? _persona_ = null;

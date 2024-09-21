@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Resolucion : SqlOrganize.Sql.EntityData
+    public partial class Resolucion : EntityData
     {
 
-        public override string entityName => "resolucion";
-
-        public override void Default()
+        public Resolucion()
         {
-            EntityVal val = db!.Values("resolucion");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "resolucion";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -42,34 +40,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _tipo; }
             set { if( _tipo != value) { _tipo = value; NotifyPropertyChanged(nameof(tipo)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "numero":
-                    if (_numero == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "anio":
-                    return "";
-
-                case "tipo":
-                    return "";
-
-            }
-
-            return "";
-        }
         //alumno.resolucion_inscripcion _m:o resolucion.id
-        public ObservableCollection<Alumno> Alumno_resolucion_inscripcion_ { get; set; } = new ();
+        public ObservableCollection<Alumno> Alumno_ { get; set; } = new ();
 
     }
 }

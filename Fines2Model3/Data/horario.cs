@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Horario : SqlOrganize.Sql.EntityData
+    public partial class Horario : EntityData
     {
 
-        public override string entityName => "horario";
-
-        public override void Default()
+        public Horario()
         {
-            EntityVal val = db!.Values("horario");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "horario";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -47,41 +45,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _dia; }
             set { if( _dia != value) { _dia = value; NotifyPropertyChanged(nameof(dia)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "hora_inicio":
-                    if (_hora_inicio == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "hora_fin":
-                    if (_hora_fin == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "curso":
-                    if (_curso == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "dia":
-                    if (_dia == null)
-                        return "Debe completar valor.";
-                    return "";
-
-            }
-
-            return "";
         }
         //horario.curso _o:o curso.id
         protected Curso? _curso_ = null;

@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class CentroEducativo : SqlOrganize.Sql.EntityData
+    public partial class CentroEducativo : EntityData
     {
 
-        public override string entityName => "centro_educativo";
-
-        public override void Default()
+        public CentroEducativo()
         {
-            EntityVal val = db!.Values("centro_educativo");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "centro_educativo";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -48,40 +46,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _observaciones; }
             set { if( _observaciones != value) { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "nombre":
-                    if (_nombre == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "cue":
-                    if (!db.IsNoE() && !_cue.IsNoE()) {
-                        var row = db.Sql("centro_educativo").Equal("$cue", _cue).Cache().Dict();
-                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
-                            return "Valor existente.";
-                    }
-                    return "";
-
-                case "domicilio":
-                    return "";
-
-                case "observaciones":
-                    return "";
-
-            }
-
-            return "";
-        }
         //centro_educativo.domicilio _o:o domicilio.id
         protected Domicilio? _domicilio_ = null;
         public Domicilio? domicilio_
@@ -95,7 +59,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
         //sede.centro_educativo _m:o centro_educativo.id
-        public ObservableCollection<Sede> Sede_centro_educativo_ { get; set; } = new ();
+        public ObservableCollection<Sede> Sede_ { get; set; } = new ();
 
     }
 }

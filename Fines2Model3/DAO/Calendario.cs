@@ -9,16 +9,16 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>
         /// <remarks> Los datos se obtienen desde el html procesado con pagemanipulator de https://programafines.ar/inicial/index4.php?a=46</remarks>
-        public static IEnumerable<EntityPersist> PersistTomasPfHtml(this Db db, Calendario calendarioObj, string data)
+        public static IEnumerable<EntityPersist> PersistTomasPfHtml(Calendario calendarioObj, string data)
         {
             List<EntityPersist> persists = new();
 
-            var pfidComisiones = db.ComisionesAutorizadasDeCalendarioSql(calendarioObj.id).Cache().Dicts().ColOfVal<string>("pfid");
+            var pfidComisiones = ComisionDAO.ComisionesAutorizadasDeCalendarioSql(calendarioObj.id).Cache().Dicts().ColOfVal<string>("pfid");
             var docentes = JsonConvert.DeserializeObject<List<DocentePfItem>>(data)!;
             
             foreach (DocentePfItem docenteItem in docentes)
             {
-                EntityPersist persist = db.Persist();
+                EntityPersist persist = Context.db.Persist();
 
                 try
                 {
@@ -105,7 +105,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>
         /// <remarks> Los datos se obtienen desde un xlsx de https://programafines.ar/inicial/index4.php?a=46</remarks>
-        public static IEnumerable<EntityPersist> PersistTomasPf(this Db db, Calendario calendarioObj, string data)
+        public static IEnumerable<EntityPersist> PersistTomasPf(Calendario calendarioObj, string data)
         {
             List<EntityPersist> persists = new();
 

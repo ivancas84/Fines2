@@ -3,21 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Designacion : SqlOrganize.Sql.EntityData
+    public partial class Designacion : EntityData
     {
 
-        public override string entityName => "designacion";
-
-        public override void Default()
+        public Designacion()
         {
-            EntityVal val = db!.Values("designacion");
-            _id = (string?)val.GetDefault("id");
-            _alta = (DateTime?)val.GetDefault("alta");
+            _entityName = "designacion";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -66,50 +63,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _pfid; }
             set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "desde":
-                    return "";
-
-                case "hasta":
-                    return "";
-
-                case "cargo":
-                    if (_cargo == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "sede":
-                    if (_sede == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "persona":
-                    if (_persona == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "alta":
-                    if (_alta == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "pfid":
-                    return "";
-
-            }
-
-            return "";
         }
         //designacion.cargo _o:o cargo.id
         protected Cargo? _cargo_ = null;

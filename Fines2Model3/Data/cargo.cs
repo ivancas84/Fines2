@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Cargo : SqlOrganize.Sql.EntityData
+    public partial class Cargo : EntityData
     {
 
-        public override string entityName => "cargo";
-
-        public override void Default()
+        public Cargo()
         {
-            EntityVal val = db!.Values("cargo");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "cargo";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -30,33 +28,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _descripcion; }
             set { if( _descripcion != value) { _descripcion = value; NotifyPropertyChanged(nameof(descripcion)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "descripcion":
-                    if (_descripcion == null)
-                        return "Debe completar valor.";
-                    if (!db.IsNoE() && !_descripcion.IsNoE()) {
-                        var row = db.Sql("cargo").Equal("$descripcion", _descripcion).Cache().Dict();
-                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
-                            return "Valor existente.";
-                    }
-                    return "";
-
-            }
-
-            return "";
-        }
         //designacion.cargo _m:o cargo.id
-        public ObservableCollection<Designacion> Designacion_cargo_ { get; set; } = new ();
+        public ObservableCollection<Designacion> Designacion_ { get; set; } = new ();
 
     }
 }

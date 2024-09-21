@@ -3,22 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class AlumnoComision : SqlOrganize.Sql.EntityData
+    public partial class AlumnoComision : EntityData
     {
 
-        public override string entityName => "alumno_comision";
-
-        public override void Default()
+        public AlumnoComision()
         {
-            EntityVal val = db!.Values("alumno_comision");
-            _id = (string?)val.GetDefault("id");
-            _creado = (DateTime?)val.GetDefault("creado");
-            _estado = (string?)val.GetDefault("estado");
+            _entityName = "alumno_comision";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -61,43 +57,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _pfid; }
             set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "creado":
-                    if (_creado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "observaciones":
-                    return "";
-
-                case "comision":
-                    return "";
-
-                case "alumno":
-                    if (_alumno == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "estado":
-                    return "";
-
-                case "pfid":
-                    return "";
-
-            }
-
-            return "";
         }
         //alumno_comision.comision _o:o comision.id
         protected Comision? _comision_ = null;

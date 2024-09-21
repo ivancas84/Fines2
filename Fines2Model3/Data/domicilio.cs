@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Domicilio : SqlOrganize.Sql.EntityData
+    public partial class Domicilio : EntityData
     {
 
-        public override string entityName => "domicilio";
-
-        public override void Default()
+        public Domicilio()
         {
-            EntityVal val = db!.Values("domicilio");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "domicilio";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -66,56 +64,14 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _localidad; }
             set { if( _localidad != value) { _localidad = value; NotifyPropertyChanged(nameof(localidad)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "calle":
-                    if (_calle == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "entre":
-                    return "";
-
-                case "numero":
-                    if (_numero == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "piso":
-                    return "";
-
-                case "departamento":
-                    return "";
-
-                case "barrio":
-                    return "";
-
-                case "localidad":
-                    if (_localidad == null)
-                        return "Debe completar valor.";
-                    return "";
-
-            }
-
-            return "";
-        }
         //centro_educativo.domicilio _m:o domicilio.id
-        public ObservableCollection<CentroEducativo> CentroEducativo_domicilio_ { get; set; } = new ();
+        public ObservableCollection<CentroEducativo> CentroEducativo_ { get; set; } = new ();
 
         //persona.domicilio _m:o domicilio.id
-        public ObservableCollection<Persona> Persona_domicilio_ { get; set; } = new ();
+        public ObservableCollection<Persona> Persona_ { get; set; } = new ();
 
         //sede.domicilio _m:o domicilio.id
-        public ObservableCollection<Sede> Sede_domicilio_ { get; set; } = new ();
+        public ObservableCollection<Sede> Sede_ { get; set; } = new ();
 
     }
 }

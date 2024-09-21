@@ -3,22 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class AsignacionPlanillaDocente : SqlOrganize.Sql.EntityData
+    public partial class AsignacionPlanillaDocente : EntityData
     {
 
-        public override string entityName => "asignacion_planilla_docente";
-
-        public override void Default()
+        public AsignacionPlanillaDocente()
         {
-            EntityVal val = db!.Values("asignacion_planilla_docente");
-            _id = (string?)val.GetDefault("id");
-            _insertado = (DateTime?)val.GetDefault("insertado");
-            _reclamo = (bool?)val.GetDefault("reclamo");
+            _entityName = "asignacion_planilla_docente";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -55,44 +51,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _reclamo; }
             set { if( _reclamo != value) { _reclamo = value; NotifyPropertyChanged(nameof(reclamo)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "planilla_docente":
-                    if (_planilla_docente == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "toma":
-                    if (_toma == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "insertado":
-                    if (_insertado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "comentario":
-                    return "";
-
-                case "reclamo":
-                    if (_reclamo == null)
-                        return "Debe completar valor.";
-                    return "";
-
-            }
-
-            return "";
         }
         //asignacion_planilla_docente.planilla_docente _o:o planilla_docente.id
         protected PlanillaDocente? _planilla_docente_ = null;

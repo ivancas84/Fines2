@@ -3,21 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class File : SqlOrganize.Sql.EntityData
+    public partial class File : EntityData
     {
 
-        public override string entityName => "file";
-
-        public override void Default()
+        public File()
         {
-            EntityVal val = db!.Values("file");
-            _id = (string?)val.GetDefault("id");
-            _created = (DateTime?)val.GetDefault("created");
+            _entityName = "file";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -54,46 +51,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _created; }
             set { if( _created != value) { _created = value; NotifyPropertyChanged(nameof(created)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "name":
-                    if (_name == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "type":
-                    if (_type == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "content":
-                    if (_content == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "size":
-                    if (_size == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "created":
-                    if (_created == null)
-                        return "Debe completar valor.";
-                    return "";
-
-            }
-
-            return "";
         }
         //detalle_persona.archivo _m:o file.id
         public ObservableCollection<DetallePersona> DetallePersona_archivo_ { get; set; } = new ();

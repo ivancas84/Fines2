@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Disposicion : SqlOrganize.Sql.EntityData
+    public partial class Disposicion : EntityData
     {
 
-        public override string entityName => "disposicion";
-
-        public override void Default()
+        public Disposicion()
         {
-            EntityVal val = db!.Values("disposicion");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "disposicion";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -41,34 +39,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _orden_informe_coordinacion_distrital; }
             set { if( _orden_informe_coordinacion_distrital != value) { _orden_informe_coordinacion_distrital = value; NotifyPropertyChanged(nameof(orden_informe_coordinacion_distrital)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "asignatura":
-                    if (_asignatura == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "planificacion":
-                    if (_planificacion == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "orden_informe_coordinacion_distrital":
-                    return "";
-
-            }
-
-            return "";
         }
         //disposicion.asignatura _o:o asignatura.id
         protected Asignatura? _asignatura_ = null;
@@ -95,16 +65,16 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
         //calificacion.disposicion _m:o disposicion.id
-        public ObservableCollection<Calificacion> Calificacion_disposicion_ { get; set; } = new ();
+        public ObservableCollection<Calificacion> Calificacion_ { get; set; } = new ();
 
         //curso.disposicion _m:o disposicion.id
-        public ObservableCollection<Curso> Curso_disposicion_ { get; set; } = new ();
+        public ObservableCollection<Curso> Curso_ { get; set; } = new ();
 
         //disposicion_pendiente.disposicion _m:o disposicion.id
-        public ObservableCollection<DisposicionPendiente> DisposicionPendiente_disposicion_ { get; set; } = new ();
+        public ObservableCollection<DisposicionPendiente> DisposicionPendiente_ { get; set; } = new ();
 
         //distribucion_horaria.disposicion _m:o disposicion.id
-        public ObservableCollection<DistribucionHoraria> DistribucionHoraria_disposicion_ { get; set; } = new ();
+        public ObservableCollection<DistribucionHoraria> DistribucionHoraria_ { get; set; } = new ();
 
     }
 }

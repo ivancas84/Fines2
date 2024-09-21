@@ -3,21 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Contralor : SqlOrganize.Sql.EntityData
+    public partial class Contralor : EntityData
     {
 
-        public override string entityName => "contralor";
-
-        public override void Default()
+        public Contralor()
         {
-            EntityVal val = db!.Values("contralor");
-            _id = (string?)val.GetDefault("id");
-            _insertado = (DateTime?)val.GetDefault("insertado");
+            _entityName = "contralor";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -48,37 +45,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _planilla_docente; }
             set { if( _planilla_docente != value) { _planilla_docente = value; NotifyPropertyChanged(nameof(planilla_docente)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "fecha_contralor":
-                    return "";
-
-                case "fecha_consejo":
-                    return "";
-
-                case "insertado":
-                    if (_insertado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "planilla_docente":
-                    if (_planilla_docente == null)
-                        return "Debe completar valor.";
-                    return "";
-
-            }
-
-            return "";
         }
         //contralor.planilla_docente _o:o planilla_docente.id
         protected PlanillaDocente? _planilla_docente_ = null;

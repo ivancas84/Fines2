@@ -1,22 +1,26 @@
-﻿using SqlOrganize.CollectionUtils;
+﻿using SqlOrganize;
+using SqlOrganize.CollectionUtils;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace SqlOrganize.Sql.Fines2Model3
+namespace Fines2Model3.Data_
 {
-    public class AlumnoValues : EntityVal
+    public partial class Alumno : EntityData
     {
-        public AlumnoValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
-        {
-        }
-
         public void GenerarCalificaciones()
         {
             List<EntityPersist> persists = new();
 
             if (IsNullOrEmpty("id", "plan", "anio_ingreso", "semestre_ingreso"))
-                    throw new Exception("No se encuentran definidos los datos principales del alumno para generar las calificaciones.");
+                throw new Exception("No se encuentran definidos los datos principales del alumno para generar las calificaciones.");
 
             #region Eliminar calificaciones desaprobadas
-            IEnumerable<object> idsCalificaciones = db.CalificacionesDesaprobadasDeAlumnoSql(Get("id")).
+            IEnumerable<object> idsCalificaciones = CalificacionDAO.CalificacionesDesaprobadasDeAlumnoSql(this.id).
                 Column<object>("id");
 
             if (idsCalificaciones.Count() > 0)
@@ -50,7 +54,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             #endregion
 
             #region Desarchivar calificaciones aprobadas del mismo plan
-            IEnumerable < Dictionary<string, object?>> calificacionesAprobadas = db.CalificacionesAprobadasDeAlumnoPlanConAnioSemestreIngresoSql(Get("plan"), Get("id"), Get("anio_ingreso"), Get("semestre_ingreso")).
+            IEnumerable<Dictionary<string, object?>> calificacionesAprobadas = db.CalificacionesAprobadasDeAlumnoPlanConAnioSemestreIngresoSql(Get("plan"), Get("id"), Get("anio_ingreso"), Get("semestre_ingreso")).
                 Dicts();
 
             idsCalificaciones = calificacionesAprobadas.ColOfVal<object>("id");
@@ -64,7 +68,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             #region Insertar calificaciones de disposiciones faltantes
             IEnumerable<object> idsDisposicionesAprobadas = calificacionesAprobadas.ColOfVal<object>("disposicion");
 
-            IEnumerable<object> idsDisposiciones = db.DisposicionesPlanAnioSemestre(Get("plan"), Get("anio_ingreso"),Get("semestre_ingreso")).
+            IEnumerable<object> idsDisposiciones = db.DisposicionesPlanAnioSemestre(Get("plan"), Get("anio_ingreso"), Get("semestre_ingreso")).
                 Column<object>("id");
 
             foreach (var id in idsDisposiciones)
@@ -116,32 +120,33 @@ namespace SqlOrganize.Sql.Fines2Model3
             persists.Transaction().RemoveCache();
         }
 
-        public string ColorEstadoInscripcion(string? estadoInscripcion)
+        // TODO CREO QUE ES UNA PROPIEDAD
+        public static string ColorEstadoInscripcion(string? estadoInscripcion)
         {
             if (estadoInscripcion.IsNoE())
-                return (db.config as Config)!.colorRed; //red
+                return (Context.db.config as SqlOrganize.Sql.Fines2Model3.Config)!.colorRed; //red
 
             if (estadoInscripcion!.Equals("Correcto"))
-                return (db.config as Config)!.colorGreen;//green
+                return (Context.db.config as SqlOrganize.Sql.Fines2Model3.Config)!.colorGreen;//green
 
             else if (estadoInscripcion.Equals("Indeterminado"))
-                return (db.config as Config)!.colorRed; //red
+                return (Context.db.config as SqlOrganize.Sql.Fines2Model3.Config)!.colorRed; //red
 
 
             else if (estadoInscripcion.Equals("Caso particular"))
-                return (db.config as Config)!.colorRed;  //red
+                return (Context.db.config as SqlOrganize.Sql.Fines2Model3.Config)!.colorRed;  //red
 
 
             else if (estadoInscripcion.Equals("Titulado"))
-                return (db.config as Config)!.colorGreen; //green
+                return (Context.db.config as SqlOrganize.Sql.Fines2Model3.Config)!.colorGreen; //green
 
-            return (db.config as Config)!.colorGray; //gray
+            return (Context.db.config as SqlOrganize.Sql.Fines2Model3.Config)!.colorGray; //gray
         }
 
 
         public string ColorCantidadAprobadasSemestreActual(long cantidadAprobadas, short anio, short semestre, short anioActual, short semestreActual, short? anioIngreso, short? semestreIngreso)
         {
-            if(anioActual == anio && semestreActual == semestre)
+            if (anioActual == anio && semestreActual == semestre)
                 return "#d7d7d7"; //gray
 
             return ColorCantidadAprobadas(cantidadAprobadas, anio, semestre, anioIngreso, semestreIngreso);
@@ -215,7 +220,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             tramo += GetOrNull("semestre_ingreso")?.ToString() ?? "1";
             return tramo;
         }
+
     }
 }
-
-    

@@ -3,26 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Toma : SqlOrganize.Sql.EntityData
+    public partial class Toma : EntityData
     {
 
-        public override string entityName => "toma";
-
-        public override void Default()
+        public Toma()
         {
-            EntityVal val = db!.Values("toma");
-            _id = (string?)val.GetDefault("id");
-            _alta = (DateTime?)val.GetDefault("alta");
-            _calificacion = (bool?)val.GetDefault("calificacion");
-            _temas_tratados = (bool?)val.GetDefault("temas_tratados");
-            _asistencia = (bool?)val.GetDefault("asistencia");
-            _sin_planillas = (bool?)val.GetDefault("sin_planillas");
-            _confirmada = (bool?)val.GetDefault("confirmada");
+            _entityName = "toma";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -126,85 +118,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _confirmada; }
             set { if( _confirmada != value) { _confirmada = value; NotifyPropertyChanged(nameof(confirmada)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "fecha_toma":
-                    return "";
-
-                case "estado":
-                    return "";
-
-                case "observaciones":
-                    return "";
-
-                case "comentario":
-                    return "";
-
-                case "tipo_movimiento":
-                    if (_tipo_movimiento == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "estado_contralor":
-                    return "";
-
-                case "alta":
-                    if (_alta == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "curso":
-                    if (_curso == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "docente":
-                    return "";
-
-                case "reemplazo":
-                    return "";
-
-                case "planilla_docente":
-                    return "";
-
-                case "calificacion":
-                    if (_calificacion == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "temas_tratados":
-                    if (_temas_tratados == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "asistencia":
-                    if (_asistencia == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "sin_planillas":
-                    if (_sin_planillas == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "confirmada":
-                    if (_confirmada == null)
-                        return "Debe completar valor.";
-                    return "";
-
-            }
-
-            return "";
-        }
         //toma.curso _o:o curso.id
         protected Curso? _curso_ = null;
         public Curso? curso_
@@ -254,7 +167,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
         //asignacion_planilla_docente.toma _m:o toma.id
-        public ObservableCollection<AsignacionPlanillaDocente> AsignacionPlanillaDocente_toma_ { get; set; } = new ();
+        public ObservableCollection<AsignacionPlanillaDocente> AsignacionPlanillaDocente_ { get; set; } = new ();
 
     }
 }

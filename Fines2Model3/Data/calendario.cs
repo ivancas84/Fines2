@@ -3,23 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Calendario : SqlOrganize.Sql.EntityData
+    public partial class Calendario : EntityData
     {
 
-        public override string entityName => "calendario";
-
-        public override void Default()
+        public Calendario()
         {
-            EntityVal val = db!.Values("calendario");
-            _id = (string?)val.GetDefault("id");
-            _anio = (short?)val.GetDefault("anio");
-            _semestre = (short?)val.GetDefault("semestre");
-            _insertado = (DateTime?)val.GetDefault("insertado");
+            _entityName = "calendario";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -63,43 +58,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _descripcion; }
             set { if( _descripcion != value) { _descripcion = value; NotifyPropertyChanged(nameof(descripcion)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "inicio":
-                    return "";
-
-                case "fin":
-                    return "";
-
-                case "anio":
-                    return "";
-
-                case "semestre":
-                    return "";
-
-                case "insertado":
-                    if (_insertado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "descripcion":
-                    return "";
-
-            }
-
-            return "";
-        }
         //comision.calendario _m:o calendario.id
-        public ObservableCollection<Comision> Comision_calendario_ { get; set; } = new ();
+        public ObservableCollection<Comision> Comision_ { get; set; } = new ();
 
     }
 }

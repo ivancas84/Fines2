@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class DistribucionHoraria : SqlOrganize.Sql.EntityData
+    public partial class DistribucionHoraria : EntityData
     {
 
-        public override string entityName => "distribucion_horaria";
-
-        public override void Default()
+        public DistribucionHoraria()
         {
-            EntityVal val = db!.Values("distribucion_horaria");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "distribucion_horaria";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -41,34 +39,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _disposicion; }
             set { if( _disposicion != value) { _disposicion = value; NotifyPropertyChanged(nameof(disposicion)); } }
-        }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "horas_catedra":
-                    if (_horas_catedra == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "dia":
-                    if (_dia == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "disposicion":
-                    return "";
-
-            }
-
-            return "";
         }
         //distribucion_horaria.disposicion _o:o disposicion.id
         protected Disposicion? _disposicion_ = null;

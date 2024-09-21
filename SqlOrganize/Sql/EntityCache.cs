@@ -155,6 +155,16 @@ namespace SqlOrganize.Sql
             return (!dict.IsNoE()) ? (T)dict[fieldName] : default(T);
         }
 
+        public IEnumerable<object> Values(string fieldName)
+        {
+            return Dicts().ColOfVal<object>(fieldName);
+        }
+
+        public IEnumerable<T> Values<T>(string fieldName)
+        {
+            return Dicts().ColOfVal<T>(fieldName);
+        }
+
         /// <summary>Efectua una consulta a la base de datos, la almacena en cache.<br/>
         /// Dependiendo del tipo de consulta almacena la fila de resultado en cache.</summary>
         /// <remarks>Cuando se esta seguro de que se desea consultar una sola fila. Utilizar este metodo para evitar que se tenga que procesar un tamaño grande de resultado</remarks>

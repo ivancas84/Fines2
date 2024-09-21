@@ -3,21 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Comision : SqlOrganize.Sql.EntityData
+    public partial class Comision : EntityData
     {
 
-        public override string entityName => "comision";
-
-        public override void Default()
+        public Comision()
         {
-            EntityVal val = db!.Values("comision");
-            _id = (string?)val.GetDefault("id");
-            _alta = (DateTime?)val.GetDefault("alta");
+            _entityName = "comision";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -115,82 +112,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _pfid; }
             set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "turno":
-                    return "";
-
-                case "division":
-                    if (_division == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "comentario":
-                    return "";
-
-                case "autorizada":
-                    if (_autorizada == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "apertura":
-                    if (_apertura == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "publicada":
-                    if (_publicada == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "observaciones":
-                    return "";
-
-                case "alta":
-                    if (_alta == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "sede":
-                    if (_sede == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "modalidad":
-                    if (_modalidad == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "planificacion":
-                    return "";
-
-                case "comision_siguiente":
-                    return "";
-
-                case "calendario":
-                    if (_calendario == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "identificacion":
-                    return "";
-
-                case "pfid":
-                    return "";
-
-            }
-
-            return "";
-        }
         //comision.sede _o:o sede.id
         protected Sede? _sede_ = null;
         public Sede? sede_
@@ -240,16 +161,16 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
         //alumno_comision.comision _m:o comision.id
-        public ObservableCollection<AlumnoComision> AlumnoComision_comision_ { get; set; } = new ();
+        public ObservableCollection<AlumnoComision> AlumnoComision_ { get; set; } = new ();
 
         //comision_relacionada.comision _m:o comision.id
-        public ObservableCollection<ComisionRelacionada> ComisionRelacionada_comision_ { get; set; } = new ();
+        public ObservableCollection<ComisionRelacionada> ComisionRelacionada_ { get; set; } = new ();
 
         //comision_relacionada.relacion _m:o comision.id
         public ObservableCollection<ComisionRelacionada> ComisionRelacionada_relacion_ { get; set; } = new ();
 
         //curso.comision _m:o comision.id
-        public ObservableCollection<Curso> Curso_comision_ { get; set; } = new ();
+        public ObservableCollection<Curso> Curso_ { get; set; } = new ();
 
     }
 }

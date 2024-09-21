@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Plan : SqlOrganize.Sql.EntityData
+    public partial class Plan : EntityData
     {
 
-        public override string entityName => "plan";
-
-        public override void Default()
+        public Plan()
         {
-            EntityVal val = db!.Values("plan");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "plan";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -48,40 +46,11 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _pfid; }
             set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "orientacion":
-                    if (_orientacion == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "resolucion":
-                    return "";
-
-                case "distribucion_horaria":
-                    return "";
-
-                case "pfid":
-                    return "";
-
-            }
-
-            return "";
-        }
         //alumno.plan _m:o plan.id
-        public ObservableCollection<Alumno> Alumno_plan_ { get; set; } = new ();
+        public ObservableCollection<Alumno> Alumno_ { get; set; } = new ();
 
         //planificacion.plan _m:o plan.id
-        public ObservableCollection<Planificacion> Planificacion_plan_ { get; set; } = new ();
+        public ObservableCollection<Planificacion> Planificacion_ { get; set; } = new ();
 
     }
 }

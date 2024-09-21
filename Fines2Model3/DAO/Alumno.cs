@@ -2,9 +2,9 @@
 {
     public static class AlumnoDAO
     {
-        public static EntitySql AlumnoPersonaSql(this Db db, object persona)
+        public static EntitySql AlumnoPersonaSql(object persona)
         {
-            return db.Sql("alumno").
+            return Context.db.Sql("alumno").
                 Where("$persona = @0").
                 Param("@0", persona);
         }

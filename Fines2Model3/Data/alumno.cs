@@ -3,29 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Alumno : SqlOrganize.Sql.EntityData
+    public partial class Alumno : EntityData
     {
 
-        public override string entityName => "alumno";
-
-        public override void Default()
+        public Alumno()
         {
-            EntityVal val = db!.Values("alumno");
-            _id = (string?)val.GetDefault("id");
-            _anio_ingreso = (string?)val.GetDefault("anio_ingreso");
-            _semestre_ingreso = (short?)val.GetDefault("semestre_ingreso");
-            _tiene_dni = (bool?)val.GetDefault("tiene_dni");
-            _tiene_constancia = (bool?)val.GetDefault("tiene_constancia");
-            _tiene_certificado = (bool?)val.GetDefault("tiene_certificado");
-            _previas_completas = (bool?)val.GetDefault("previas_completas");
-            _tiene_partida = (bool?)val.GetDefault("tiene_partida");
-            _creado = (DateTime?)val.GetDefault("creado");
-            _confirmado_direccion = (bool?)val.GetDefault("confirmado_direccion");
+            _entityName = "alumno";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -189,125 +178,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _confirmado_direccion; }
             set { if( _confirmado_direccion != value) { _confirmado_direccion = value; NotifyPropertyChanged(nameof(confirmado_direccion)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "anio_ingreso":
-                    return "";
-
-                case "observaciones":
-                    return "";
-
-                case "persona":
-                    if (_persona == null)
-                        return "Debe completar valor.";
-                    if (!db.IsNoE() && !_persona.IsNoE()) {
-                        var row = db.Sql("alumno").Equal("$persona", _persona).Cache().Dict();
-                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
-                            return "Valor existente.";
-                    }
-                    return "";
-
-                case "estado_inscripcion":
-                    return "";
-
-                case "fecha_titulacion":
-                    return "";
-
-                case "plan":
-                    return "";
-
-                case "resolucion_inscripcion":
-                    return "";
-
-                case "anio_inscripcion":
-                    return "";
-
-                case "semestre_inscripcion":
-                    return "";
-
-                case "semestre_ingreso":
-                    return "";
-
-                case "adeuda_legajo":
-                    return "";
-
-                case "adeuda_deudores":
-                    return "";
-
-                case "documentacion_inscripcion":
-                    return "";
-
-                case "anio_inscripcion_completo":
-                    return "";
-
-                case "establecimiento_inscripcion":
-                    return "";
-
-                case "libro_folio":
-                    if (!db.IsNoE() && !_libro_folio.IsNoE()) {
-                        var row = db.Sql("alumno").Equal("$libro_folio", _libro_folio).Cache().Dict();
-                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
-                            return "Valor existente.";
-                    }
-                    return "";
-
-                case "libro":
-                    return "";
-
-                case "folio":
-                    return "";
-
-                case "comentarios":
-                    return "";
-
-                case "tiene_dni":
-                    if (_tiene_dni == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "tiene_constancia":
-                    if (_tiene_constancia == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "tiene_certificado":
-                    if (_tiene_certificado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "previas_completas":
-                    if (_previas_completas == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "tiene_partida":
-                    if (_tiene_partida == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "creado":
-                    if (_creado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "confirmado_direccion":
-                    if (_confirmado_direccion == null)
-                        return "Debe completar valor.";
-                    return "";
-
-            }
-
-            return "";
-        }
         //alumno.persona _o:o persona.id
         protected Persona? _persona_ = null;
         public Persona? persona_
@@ -345,13 +215,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
         //alumno_comision.alumno _m:o alumno.id
-        public ObservableCollection<AlumnoComision> AlumnoComision_alumno_ { get; set; } = new ();
+        public ObservableCollection<AlumnoComision> AlumnoComision_ { get; set; } = new ();
 
         //calificacion.alumno _m:o alumno.id
-        public ObservableCollection<Calificacion> Calificacion_alumno_ { get; set; } = new ();
+        public ObservableCollection<Calificacion> Calificacion_ { get; set; } = new ();
 
         //disposicion_pendiente.alumno _m:o alumno.id
-        public ObservableCollection<DisposicionPendiente> DisposicionPendiente_alumno_ { get; set; } = new ();
+        public ObservableCollection<DisposicionPendiente> DisposicionPendiente_ { get; set; } = new ();
 
     }
 }

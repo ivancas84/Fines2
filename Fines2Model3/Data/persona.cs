@@ -3,24 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Persona : SqlOrganize.Sql.EntityData
+    public partial class Persona : EntityData
     {
 
-        public override string entityName => "persona";
-
-        public override void Default()
+        public Persona()
         {
-            EntityVal val = db!.Values("persona");
-            _id = (string?)val.GetDefault("id");
-            _alta = (DateTime?)val.GetDefault("alta");
-            _telefono_verificado = (bool?)val.GetDefault("telefono_verificado");
-            _email_verificado = (bool?)val.GetDefault("email_verificado");
-            _info_verificada = (bool?)val.GetDefault("info_verificada");
+            _entityName = "persona";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -196,132 +190,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _anio_nacimiento; }
             set { if( _anio_nacimiento != value) { _anio_nacimiento = value; NotifyPropertyChanged(nameof(anio_nacimiento)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "nombres":
-                    if (_nombres == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "apellidos":
-                    return "";
-
-                case "fecha_nacimiento":
-                    return "";
-
-                case "numero_documento":
-                    if (_numero_documento == null)
-                        return "Debe completar valor.";
-                    if (!db.IsNoE() && !_numero_documento.IsNoE()) {
-                        var row = db.Sql("persona").Equal("$numero_documento", _numero_documento).Cache().Dict();
-                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
-                            return "Valor existente.";
-                    }
-                    return "";
-
-                case "cuil":
-                    if (!db.IsNoE() && !_cuil.IsNoE()) {
-                        var row = db.Sql("persona").Equal("$cuil", _cuil).Cache().Dict();
-                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
-                            return "Valor existente.";
-                    }
-                    return "";
-
-                case "genero":
-                    return "";
-
-                case "apodo":
-                    return "";
-
-                case "telefono":
-                    return "";
-
-                case "email":
-                    return "";
-
-                case "email_abc":
-                    if (!db.IsNoE() && !_email_abc.IsNoE()) {
-                        var row = db.Sql("persona").Equal("$email_abc", _email_abc).Cache().Dict();
-                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
-                            return "Valor existente.";
-                    }
-                    return "";
-
-                case "alta":
-                    if (_alta == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "domicilio":
-                    return "";
-
-                case "lugar_nacimiento":
-                    return "";
-
-                case "telefono_verificado":
-                    if (_telefono_verificado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "email_verificado":
-                    if (_email_verificado == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "info_verificada":
-                    if (_info_verificada == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "descripcion_domicilio":
-                    return "";
-
-                case "cuil1":
-                    return "";
-
-                case "cuil2":
-                    return "";
-
-                case "departamento":
-                    return "";
-
-                case "localidad":
-                    return "";
-
-                case "partido":
-                    return "";
-
-                case "codigo_area":
-                    return "";
-
-                case "nacionalidad":
-                    return "";
-
-                case "sexo":
-                    return "";
-
-                case "dia_nacimiento":
-                    return "";
-
-                case "mes_nacimiento":
-                    return "";
-
-                case "anio_nacimiento":
-                    return "";
-
-            }
-
-            return "";
-        }
         //persona.domicilio _o:o domicilio.id
         protected Domicilio? _domicilio_ = null;
         public Domicilio? domicilio_
@@ -335,24 +203,24 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
         //alumno.persona _o:o persona.id
-        protected Alumno? _Alumno_persona_ = null;
-        public Alumno? Alumno_persona_
+        protected Alumno? _Alumno_ = null;
+        public Alumno? Alumno_
         {
-            get { return _Alumno_persona_; }
-            set { _Alumno_persona_ = value; NotifyPropertyChanged(nameof(Alumno_persona_)); }
+            get { return _Alumno_; }
+            set { _Alumno_ = value; NotifyPropertyChanged(nameof(Alumno_)); }
         }
 
         //designacion.persona _m:o persona.id
-        public ObservableCollection<Designacion> Designacion_persona_ { get; set; } = new ();
+        public ObservableCollection<Designacion> Designacion_ { get; set; } = new ();
 
         //detalle_persona.persona _m:o persona.id
-        public ObservableCollection<DetallePersona> DetallePersona_persona_ { get; set; } = new ();
+        public ObservableCollection<DetallePersona> DetallePersona_ { get; set; } = new ();
 
         //email.persona _m:o persona.id
-        public ObservableCollection<Email> Email_persona_ { get; set; } = new ();
+        public ObservableCollection<Email> Email_ { get; set; } = new ();
 
         //telefono.persona _m:o persona.id
-        public ObservableCollection<Telefono> Telefono_persona_ { get; set; } = new ();
+        public ObservableCollection<Telefono> Telefono_ { get; set; } = new ();
 
         //toma.docente _m:o persona.id
         public ObservableCollection<Toma> Toma_docente_ { get; set; } = new ();

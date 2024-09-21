@@ -3,20 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Modalidad : SqlOrganize.Sql.EntityData
+    public partial class Modalidad : EntityData
     {
 
-        public override string entityName => "modalidad";
-
-        public override void Default()
+        public Modalidad()
         {
-            EntityVal val = db!.Values("modalidad");
-            _id = (string?)val.GetDefault("id");
+            _entityName = "modalidad";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -36,36 +34,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _pfid; }
             set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "nombre":
-                    if (_nombre == null)
-                        return "Debe completar valor.";
-                    if (!db.IsNoE() && !_nombre.IsNoE()) {
-                        var row = db.Sql("modalidad").Equal("$nombre", _nombre).Cache().Dict();
-                        if (!row.IsNoE() && !_id.ToString().Equals(row!["id"]!.ToString()))
-                            return "Valor existente.";
-                    }
-                    return "";
-
-                case "pfid":
-                    return "";
-
-            }
-
-            return "";
-        }
         //comision.modalidad _m:o modalidad.id
-        public ObservableCollection<Comision> Comision_modalidad_ { get; set; } = new ();
+        public ObservableCollection<Comision> Comision_ { get; set; } = new ();
 
     }
 }

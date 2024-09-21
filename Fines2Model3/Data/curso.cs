@@ -3,21 +3,18 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Curso : SqlOrganize.Sql.EntityData
+    public partial class Curso : EntityData
     {
 
-        public override string entityName => "curso";
-
-        public override void Default()
+        public Curso()
         {
-            EntityVal val = db!.Values("curso");
-            _id = (string?)val.GetDefault("id");
-            _alta = (DateTime?)val.GetDefault("alta");
+            _entityName = "curso";
+            _db = Context.db;
         }
-
 
         protected string? _id = null;
         public string? id
@@ -79,54 +76,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _asignatura; }
             set { if( _asignatura != value) { _asignatura = value; NotifyPropertyChanged(nameof(asignatura)); } }
         }
-        protected override string ValidateField(string columnName)
-        {
-
-            switch (columnName)
-            {
-
-                case "id":
-                    if (_id == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "horas_catedra":
-                    if (_horas_catedra == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "ige":
-                    return "";
-
-                case "comision":
-                    if (_comision == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "alta":
-                    if (_alta == null)
-                        return "Debe completar valor.";
-                    return "";
-
-                case "descripcion_horario":
-                    return "";
-
-                case "codigo":
-                    return "";
-
-                case "disposicion":
-                    return "";
-
-                case "observaciones":
-                    return "";
-
-                case "asignatura":
-                    return "";
-
-            }
-
-            return "";
-        }
         //curso.comision _o:o comision.id
         protected Comision? _comision_ = null;
         public Comision? comision_
@@ -164,13 +113,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
         //calificacion.curso _m:o curso.id
-        public ObservableCollection<Calificacion> Calificacion_curso_ { get; set; } = new ();
+        public ObservableCollection<Calificacion> Calificacion_ { get; set; } = new ();
 
         //horario.curso _m:o curso.id
-        public ObservableCollection<Horario> Horario_curso_ { get; set; } = new ();
+        public ObservableCollection<Horario> Horario_ { get; set; } = new ();
 
         //toma.curso _m:o curso.id
-        public ObservableCollection<Toma> Toma_curso_ { get; set; } = new ();
+        public ObservableCollection<Toma> Toma_ { get; set; } = new ();
 
     }
 }

@@ -7,9 +7,9 @@ namespace SqlOrganize.Sql.Fines2Model3
     {
 
         /// <summary> Todas las calificaciones del alumno para un determinado plan </summary>
-        public static EntitySql CalificacionesDeAlumnoPlanQuery(this Db db, object idAlumno, object idPlan, bool archivado = false)
+        public static EntitySql CalificacionesDeAlumnoPlanQuery( object idAlumno, object idPlan, bool archivado = false)
         {
-            return db.Sql("calificacion")
+            return Context.db.Sql("calificacion")
                .Size(0)
                .Where(@"
                     $alumno = @0
@@ -19,9 +19,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                .Param("@0", idAlumno).Param("@1", idPlan);
         }
 
-        public static EntitySql CalificacionesDesaprobadasDeAlumnoSql(this Db db, object alumno)
+        public static EntitySql CalificacionesDesaprobadasDeAlumnoSql(object alumno)
         {
-            return db.Sql("calificacion").
+            return Context.db.Sql("calificacion").
                 Size(0).
                 Where(@"
                         $alumno = @0
@@ -35,9 +35,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Param("@0", alumno);
         }
 
-        public static EntitySql CalificacionesAprobadasAnterioresDeAlumnoPlanConAnioSemestreIngresoSql(this Db db, object plan, object alumno, object anio_actual, object semestre_actual)
+        public static EntitySql CalificacionesAprobadasAnterioresDeAlumnoPlanConAnioSemestreIngresoSql(object plan, object alumno, object anio_actual, object semestre_actual)
         {
-            return db.Sql("calificacion").
+            return Context.db.Sql("calificacion").
                     Size(0).
                     Where(@"
                         $planificacion_dis__plan = @0
@@ -50,9 +50,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     Param("@3", alumno);
         }
 
-        public static EntitySql CalificacionesAprobadasDeAlumnoPlanConAnioSemestreIngresoSql(this Db db, object plan, object alumno, object anio, object semestre)
+        public static EntitySql CalificacionesAprobadasDeAlumnoPlanConAnioSemestreIngresoSql(object plan, object alumno, object anio, object semestre)
         {
-            return db.Sql("calificacion").
+            return Context.db.Sql("calificacion").
                     Size(0).
                     Where(@"
                         $planificacion_dis__plan = @0
@@ -65,9 +65,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                         Param("@3", alumno);
         }
 
-        public static EntitySql CalificacionesAprobadasDeAlumnoPlanDistintoSql(this Db db, object alumno, object plan)
+        public static EntitySql CalificacionesAprobadasDeAlumnoPlanDistintoSql(object alumno, object plan)
         {
-            return db.Sql("calificacion").
+            return Context.db.Sql("calificacion").
                     Size(0).
                     Where(@"
                         $planificacion_dis__plan != @0
@@ -77,9 +77,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                         Param("@1", alumno);
         }
 
-        public static EntitySql CalificacionDisposicionAlumnosSql(this Db db, object disposicion, params object[] alumnos)
+        public static EntitySql CalificacionDisposicionAlumnosSql(object disposicion, params object[] alumnos)
         {
-            return db.Sql("calificacion").
+            return Context.db.Sql("calificacion").
                     Size(0).
                     Where("$disposicion = @0 AND $alumno IN (@1)").
                     Param("@0", disposicion).
@@ -87,49 +87,49 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
 
-        public static EntitySql CalificacionAprobadaCursoSql(this Db db, object curso)
+        public static EntitySql CalificacionAprobadaCursoSql(object idCurso)
         {
-            var data = db.Sql("curso").Cache().Id(curso) ?? throw new Exception("curso inexistente");
-            CursoValues cursoVal = (CursoValues)db.Values("curso").SetValues(data);
+            var data = Context.db.Sql("curso").Cache().Id(idCurso) ?? throw new Exception("curso inexistente");
+            var curso = Context.db.ToData<Curso>(data);
 
             string subSql = "SELECT DISTINCT alumno FROM alumno_comision WHERE comision = @0";
 
-            return db.Sql("calificacion").
+            return Context.db.Sql("calificacion").
                     Size(0).
                     Where("$alumno IN (" + subSql + ") AND $disposicion = @1 AND (nota_final >= 7 OR crec >= 4)").
-                    Param("@0", cursoVal.Get("comision")!).
-                    Param("@1", cursoVal.Get("disposicion")!);
+                    Param("@0", curso.comision!).
+                    Param("@1", curso.disposicion!);
         }
 
-        public static EntitySql CalificacionDesaprobadaCursoAlumnosActivosSql(this Db db, object curso)
+        public static EntitySql CalificacionDesaprobadaCursoAlumnosActivosSql(object idCurso)
         {
-            var data = db.Sql("curso").Cache().Id(curso) ?? throw new Exception("curso inexistente");
-            CursoValues cursoVal = (CursoValues)db.Values("curso").SetValues(data);
+            var data = Context.db.Sql("curso").Cache().Id(idCurso) ?? throw new Exception("curso inexistente");
+            Curso curso = Context.db.ToData<Curso>(data);
 
             string subSql = "SELECT DISTINCT alumno FROM alumno_comision WHERE estado = 'Activo' AND comision = @0";
 
-            return db.Sql("calificacion").
+            return Context.db.Sql("calificacion").
                     Size(0).
                     Where(@"$alumno IN (" + subSql + ") AND $disposicion = @1 AND nota_final < 7 AND crec < 4").
-                    Param("@0", cursoVal.Get("comision")!).
-                    Param("@1", cursoVal.Get("disposicion")!);
+                    Param("@0", curso.comision!).
+                    Param("@1", curso.disposicion!);
         }
 
-        public static EntitySql CalificacionesCursoSql(this Db db, object curso)
+        public static EntitySql CalificacionesCursoSql(object idCurso)
         {
-            var cursoData = db.Sql("curso").Cache().Id(curso);
+            var cursoData = Context.db.Sql("curso").Cache().Id(idCurso);
 
-            var alumnos = db.AsignacionesDeComisionesSql(cursoData["comision"]).Cache().Dicts().ColOfVal<object>("alumno");
+            var curso = Context.db.ToData<Curso>(cursoData);
 
-            var disposicion = ((CursoValues)db.Values("curso").SetValues(cursoData)).Get("disposicion");
+            var idAlumnos = curso.comision_.SqlRef("alumno_comision", "comision").Cache().Values("alumno");
 
-            return db.CalificacionDisposicionAlumnosSql(disposicion, alumnos.ToArray());
+            return CalificacionDisposicionAlumnosSql(curso.disposicion!, idAlumnos.ToArray());
         }
 
 
-        public static EntitySql CantidadCalificacionesAprobadasPorAlumnoDePlaniticacion(this Db db, List<object> alumnosYplanes)
+        public static EntitySql CantidadCalificacionesAprobadasPorAlumnoDePlaniticacion(List<object> alumnosYplanes)
         {
-            return db.Sql("calificacion")
+            return Context.db.Sql("calificacion")
                 .Select("COUNT($id) as cantidad")
                 .Group("$alumno, $planificacion_dis__anio, $planificacion_dis__semestre")
                 .Size(0)
@@ -144,9 +144,9 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary> Calificaciones aprobadas de alumno para una determinada planificacion </summary>
         /// <remarks> Recordar que una planificacion es la combinacion entre anio, semestre y plan</remarks>
-        public static EntitySql CalificacionesAprobadasPorAlumnoDePlanificacionSql(this Db db, object idPlanificacion, params object[] idAlumnos)
+        public static EntitySql CalificacionesAprobadasPorAlumnoDePlanificacionSql(object idPlanificacion, params object[] idAlumnos)
         {
-            return db.Sql("calificacion")
+            return Context.db.Sql("calificacion")
                 .Size(0)
                 .Where(@"
                     $alumno IN (@0)
@@ -161,9 +161,9 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary> Cantidad de calificaciones de alumno para una determinada planificacion </summary>
         /// <remarks> Recordar que una planificacion es la combinacion entre anio, semestre y plan</remarks>
-        public static EntitySql CantidadCalificacionesAprobadasPorAlumnoDePlanificacionSql(this Db db, object idPlanificacion, params object[] idAlumnos)
+        public static EntitySql CantidadCalificacionesAprobadasPorAlumnoDePlanificacionSql(object idPlanificacion, params object[] idAlumnos)
         {
-            return db.Sql("calificacion")
+            return Context.db.Sql("calificacion")
                 .Select("COUNT($id) as cantidad")
                 .Group("$alumno")
                 .Size(0)
