@@ -15,26 +15,26 @@ namespace SqlOrganize.Sql
     /// </summary>
     public class EntityData : INotifyPropertyChanged, IDataErrorInfo
     {
-        #region atributos y propiedades generales
+      
         /// <summary>Campos a ignorar para marcar isUpdated</summary>
-        protected List<string> _isUpdatedIgnore = new() { nameof(IsUpdated), nameof(Msg), nameof(Error) };
 
+        #region entityName
         protected string _entityName;
         public virtual string entityName { get { return _entityName; } }
+        #endregion
 
+        #region Logging
         protected Logging _Logging = new Logging();
         public Logging Logging { get { return _Logging; } }
-
+        #endregion
 
         /// <summary>Flag opcional para indicar que debe ejecutarse la validacion</summary>
         public bool _Validate = false;
 
-        /// <summary>
-        /// Si se construye una instancia de data con valores por defecto, puede ser necesario acceder a la base de datos para definirlos.
-        /// Db no debe definirse como propiedad para evitar errores en la serializacion/deserializacion
-        /// </summary>
+        #region db
         protected Db _db;
         public Db db { get { return _db; } }
+        #endregion
 
         public string this[string columnName]
         {
@@ -91,8 +91,7 @@ namespace SqlOrganize.Sql
             }
         }
 
-        /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
-        /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
+        #region Label
         protected string _Label = "";
 
         public virtual string Label
@@ -107,39 +106,25 @@ namespace SqlOrganize.Sql
                 }
             }
         }
+        #endregion
 
-        /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
-        /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
-        public bool isUpdated = false;
 
-        public bool IsUpdated
+        #region Status (propiedad opcional para indicar estado)
+        protected string _Status = "";
+
+        public virtual string Status
         {
-            get { return isUpdated; }
+            get { return _Status; }
             set
             {
-                if (isUpdated != value)
+                if (_Status != value)
                 {
-                    isUpdated = value;
-                    NotifyPropertyChanged(nameof(IsUpdated));
+                    _Status = value;
+                    NotifyPropertyChanged(nameof(Status));
                 }
             }
         }
-
-        /// <summary>Propiedad opcional para indicar que ya existe en la base de datos</summary>
-        protected bool isPersisted = false;
-
-        public bool IsPersisted
-        {
-            get { return isPersisted; }
-            set
-            {
-                if (isPersisted != value)
-                {
-                    isPersisted = value;
-                    NotifyPropertyChanged(nameof(IsPersisted));
-                }
-            }
-        }
+        #endregion
 
 
         /// <summary>Indice dentro de una coleccíón</summary>
@@ -155,23 +140,14 @@ namespace SqlOrganize.Sql
             }
         }
 
-        /// <summary>Propiedad opcional para indicar que se esta actualizando</summary>
-        /// <remarks>Cargar en false al finalizar la inicializacion</remarks>
-        protected bool isError = false;
 
-        public bool IsError
+        public static T CreateEmpty<T>(string fieldName = "Label") where T : EntityData, new()
         {
-            get { return isError; }
-            set
-            {
-                if (isError != value)
-                {
-                    isError = value;
-                    NotifyPropertyChanged(nameof(IsError));
-                }
-            }
+            T obj = new();
+            obj.Set("id", null);
+            obj.Set(fieldName, "-Seleccione " + obj.entityName.ToTitleCase() + "-");
+            return obj;
         }
-        #endregion
 
         #region set or get properties particulares
         public virtual object? Get(string fieldName)
@@ -248,36 +224,6 @@ namespace SqlOrganize.Sql
             }
         }
 
-        /*public virtual void SetRef<T>(string? fieldName) where T : EntityData, new()
-        {
-            var obj = new T(); //creo para obtener entityName
-
-            List<Field> fieldsRef = db.Entity(this.entityName).FieldsRef();
-
-            string fn = "";
-            foreach(Field field in fieldsRef)
-            {
-                if (field.entityName.Equals(obj.entityName))
-                {
-                    if(fieldName.IsNoE() || field.name.Equals(fieldName))
-                    {
-                        fn = field.name;
-                        break;
-                    }
-                }
-            }
-
-            if (fn.IsNoE())
-                throw new Exception("Error " + entityName + "." +  fieldName + ": No se encontró el field referenciado.");
-
-
-            var datas = db.Sql(entityName).Equal(fn, Get("id")).Cache().Datas<T>();
-
-            Set(obj.entityName + "_")
-        }*/
-        
-
-
         /// <summary> Asignar valor por defecto a propiedades simples </summary>
         public virtual void Default()
         {
@@ -308,7 +254,7 @@ namespace SqlOrganize.Sql
         {
             foreach (var fieldName in db.FieldNames(entityName))
                 if (!dict[fieldName].IsNoE())
-                    this.Set(fieldName, dict[fieldName]);
+                    Set(fieldName, dict[fieldName]);
         }
 
         /// <summary> Seteo "lento" de propiedades simples </summary>
@@ -425,7 +371,7 @@ namespace SqlOrganize.Sql
             Reset(db.config.id);
         }
 
-        /// <summary> Convertir propiedades particulares a diccionario </summary>
+        /// <summary> Convertir propiedades simples a diccionario </summary>
         public virtual IDictionary<string, object?> ToDict()
         {
             Dictionary<string, object?> response = new();
@@ -680,9 +626,17 @@ namespace SqlOrganize.Sql
             return Get(db.config.id);
         }
 
-        public PersistContext PersistCondition(object? condition)
+        public object PersistCondition(object? condition)
         {
-            return db.Persist().PersistCondition(this, condition);
+            db.Persist().PersistCondition(this, condition).Exec().RemoveCache();
+            return Get(db.config.id)!;
+
+        }
+
+        public object PersistCondition(PersistContext persist, object? condition)
+        {
+            persist.PersistCondition(this, condition);
+            return Get(db.config.id)!;
 
         }
 
@@ -721,9 +675,6 @@ namespace SqlOrganize.Sql
 
         protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
         {
-            if (!_isUpdatedIgnore.Contains(propertyName))
-                IsUpdated = true;
-
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion

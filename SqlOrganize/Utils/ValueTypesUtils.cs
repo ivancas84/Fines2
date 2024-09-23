@@ -17,7 +17,7 @@ namespace SqlOrganize.ValueTypesUtils
         public static string ToTitleCase(this string str)
         {
             TextInfo textInfo = new CultureInfo("es-AR", false).TextInfo;
-            return textInfo.ToTitleCase(str);
+            return textInfo.ToTitleCase(str).Replace("_", " ");
         }
 
         public static string ToCamelCase(this string str)

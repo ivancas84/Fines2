@@ -64,7 +64,7 @@ namespace WpfUtils.Controls
         {
             try
             {
-                data.Persist().Exec().RemoveCache();
+                data.Persist();
                 new ToastContentBuilder()
                  .AddText(title)
                  .AddText("Registro realizado")

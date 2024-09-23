@@ -568,12 +568,15 @@ namespace SqlOrganize.Model
 
                 foreach (var (fieldName, field) in _fields)
                 {
+                    sw.WriteLine("        #region " + fieldName + "");
                     sw.WriteLine("        protected " + field.type + "? _" + fieldName + " = null;");
                     sw.WriteLine("        public " + field.type + "? " + fieldName);
                     sw.WriteLine("        {");
                     sw.WriteLine("            get { return _" + fieldName + "; }");
                     sw.WriteLine("            set { if( _" + fieldName + " != value) { _" + fieldName + " = value; NotifyPropertyChanged(nameof(" + fieldName + ")); } }");
                     sw.WriteLine("        }");
+                    sw.WriteLine("        #endregion");
+                    sw.WriteLine("");
                 }
 
                 #region atributos fk
@@ -586,7 +589,7 @@ namespace SqlOrganize.Model
                     if (!relation.parentId.IsNoE())
                         continue;
 
-                    sw.WriteLine("        //" + entityName + "." + relation.fieldName + " _" + rel + ":o " + relation.refEntityName + ".id");
+                    sw.WriteLine("        #region " + relation.fieldName + " (fk " + entityName + "." + relation.fieldName + " _" + rel + ":o " + relation.refEntityName + ".id)");
                     sw.WriteLine("        protected " + relation.refEntityName.ToCamelCase() + "? _" + relation.fieldName + "_ = null;");
                     sw.WriteLine("        public " + relation.refEntityName.ToCamelCase() + "? " + relation.fieldName + "_");
                     sw.WriteLine("        {");
@@ -597,6 +600,7 @@ namespace SqlOrganize.Model
                     sw.WriteLine("                NotifyPropertyChanged(nameof(" + relation.fieldName + "_));");
                     sw.WriteLine("            }");
                     sw.WriteLine("        }");
+                    sw.WriteLine("        #endregion");
                     sw.WriteLine("");
                 }
                 #endregion
@@ -608,19 +612,21 @@ namespace SqlOrganize.Model
 
                     if (entities[rel.entityName].unique.Contains(rel.fieldName))
                     {
-                        sw.WriteLine("        //" + rel.entityName + "." + rel.fieldName + " _o:o " + rel.refEntityName + ".id");
+                        sw.WriteLine("        #region " + rel.entityName.ToCamelCase() + "_" + fn + "(ref " + rel.entityName + "." + rel.fieldName + " _o:o " + rel.refEntityName + ".id)");
                         sw.WriteLine("        protected " + rel.entityName.ToCamelCase() + "? _" + rel.entityName.ToCamelCase() + "_" + fn + " = null;");
                         sw.WriteLine("        public " + rel.entityName.ToCamelCase() + "? " + rel.entityName.ToCamelCase() + "_" + fn);
                         sw.WriteLine("        {");
                         sw.WriteLine("            get { return _" + rel.entityName.ToCamelCase() + "_" + fn + "; }");
                         sw.WriteLine("            set { _" + rel.entityName.ToCamelCase() + "_" + fn + " = value; NotifyPropertyChanged(nameof(" + rel.entityName.ToCamelCase() + "_" + fn + ")); }");
                         sw.WriteLine("        }");
+                        sw.WriteLine("        #endregion");
                         sw.WriteLine("");
                     }
                     else
                     {
-                        sw.WriteLine("        //" + rel.entityName + "." + rel.fieldName + " _m:o " + rel.refEntityName + ".id");
+                        sw.WriteLine("        #region " + rel.entityName.ToCamelCase() + "_" + fn + " (ref " + rel.entityName + "." + rel.fieldName + " _m:o " + rel.refEntityName + ".id)");
                         sw.WriteLine("        public ObservableCollection<" + rel.entityName.ToCamelCase() + "> " + rel.entityName.ToCamelCase() + "_" + fn + " { get; set; } = new ();");
+                        sw.WriteLine("        #endregion");
                         sw.WriteLine("");
                     }
                     

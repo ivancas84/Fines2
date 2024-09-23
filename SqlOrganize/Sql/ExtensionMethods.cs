@@ -86,7 +86,7 @@ namespace SqlOrganize.Sql
         }
         #endregion
 
-        #region EntityPersist + Query
+        #region PersistContext + Query
         /// <summary>Ejecución persistencia</summary>
         public static PersistContext Exec(this PersistContext persist)
         {
@@ -149,7 +149,7 @@ namespace SqlOrganize.Sql
         }
         #endregion
 
-        #region EntityPersist + Cache
+        #region PersistContext + Cache
         public static void RemoveCache(this IEnumerable<PersistContext> persists)
         {
 

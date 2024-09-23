@@ -125,6 +125,12 @@ namespace SqlOrganize.Sql
             return oc;
         }
 
+        public void AddDataToOC<T>(ObservableCollection<T> oc) where T : EntityData, new()
+        {
+            var source = Dicts();
+            Db.AddDataToOC(source, oc);
+        }
+
 
         public void AddDataToClearOC<T>(ObservableCollection<T> oc) where T : EntityData, new()
         {

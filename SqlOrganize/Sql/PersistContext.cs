@@ -79,14 +79,14 @@ namespace SqlOrganize.Sql
                     detail.Add((entityName!, id, method));
 
                 }
-                sql += @"WHERE " + idMap + " IN (" + String.Join(",", ids_) + @");
+                sql += @"WHERE " + idMap + " IN (" + System.String.Join(",", ids_) + @");
 ";
             }
             else
             {
-                sql += @"WHERE " + idMap + " IN (@" + idMap + i + @");
+                sql += @"WHERE " + idMap + " IN (@delete_id" + i + @");
 ";
-                Param("@" + idMap + i, ids);
+                Param("@delete_id" + i, ids);
 
                 foreach (var id in ids)
                     detail.Add((entityName!, id, "delete"));
@@ -349,8 +349,6 @@ VALUES (";
                 return this;
             }
 
-           
-
             return Insert(data);
         }
 
@@ -393,6 +391,24 @@ VALUES (";
             if (!this.Sql().IsNoE())
                 persists.Add(this);
 
+            return this;
+        }
+
+        public PersistContext UpdateCompare(EntityData dataToUpdate, EntityData dataToCompare)
+        {
+            dataToUpdate.Set(Db.config.id, dataToCompare.Get(Db.config.id));
+
+            CompareParams cmp = new()
+            {
+                IgnoreNonExistent = true,
+                IgnoreNull = false,
+                Data = dataToCompare.ToDict()
+            };
+
+            if (!dataToUpdate.Compare(cmp).IsNoE())
+                return Update(dataToUpdate);
+
+            logging.AddLog(dataToUpdate.entityName, "registro identico " + cmp.Data.ToStringKeyValuePair(), "persist", Logging.Level.Info);
             return this;
         }
 
