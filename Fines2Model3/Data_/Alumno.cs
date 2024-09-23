@@ -25,36 +25,36 @@ namespace SqlOrganize.Sql.Fines2Model3
             #region Archivar calificaciones aprobadas del mismo plan pero con año y semestre inferior
             if (!Get("anio_ingreso").Equals("1") && (short)Get("semestre_ingreso") != 1)
             {
-                IEnumerable<object> idsCalificacionesAnteriores = db.
-                    CalificacionesAprobadasAnterioresDeAlumnoPlanConAnioSemestreIngresoSql(Get("plan"), Get("id"), Get("anio_ingreso"), Get("semestre_ingreso")).
+                IEnumerable<object> idsCalificacionesAnteriores = CalificacionDAO.
+                    CalificacionesAprobadasAnterioresDeAlumnoPlanConAnioSemestreIngresoSql(plan, id, anio_ingreso, semestre_ingreso).
                     Column<object>("id");
 
                 if (idsCalificacionesAnteriores.Any())
                     db.Persist().
-                        UpdateValueIds("calificacion", "archivado", true, idsCalificacionesAnteriores.ToArray()).
+                        UpdateFieldIds("calificacion", "archivado", true, idsCalificacionesAnteriores.ToArray()).
                         AddTo(persists);
             }
             #endregion
 
             #region Archivar calificaciones aprobadas de otro plan
-            idsCalificaciones = db.CalificacionesAprobadasDeAlumnoPlanDistintoSql(Get("id"), Get("plan")).
+            idsCalificaciones = CalificacionDAO.CalificacionesAprobadasDeAlumnoPlanDistintoSql(id, plan).
                 Column<object>("id");
 
             if (idsCalificaciones.Count() > 0)
                 db.Persist().
-                    UpdateValueIds("calificacion", "archivado", true, idsCalificaciones.ToArray()).
+                    UpdateFieldIds("calificacion", "archivado", true, idsCalificaciones.ToArray()).
                     AddTo(persists);
             #endregion
 
             #region Desarchivar calificaciones aprobadas del mismo plan
-            IEnumerable<Dictionary<string, object?>> calificacionesAprobadas = db.CalificacionesAprobadasDeAlumnoPlanConAnioSemestreIngresoSql(Get("plan"), Get("id"), Get("anio_ingreso"), Get("semestre_ingreso")).
+            IEnumerable<Dictionary<string, object?>> calificacionesAprobadas = CalificacionDAO.CalificacionesAprobadasDeAlumnoPlanConAnioSemestreIngresoSql(plan, id, anio_ingreso, semestre_ingreso).
                 Dicts();
 
             idsCalificaciones = calificacionesAprobadas.ColOfVal<object>("id");
 
             if (idsCalificaciones.Count() > 0)
                 db.Persist().
-                    UpdateValueIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
+                    UpdateFieldIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
                     AddTo(persists);
             #endregion
 
@@ -68,8 +68,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             {
                 if (!idsDisposicionesAprobadas.Contains(id))
                 {
-                    Calificacion calificacionObj = db.Data<Calificacion>();
-                    calificacionObj.Default();
+                    Calificacion calificacionObj = new Calificacion();
                     calificacionObj.disposicion = (string)id;
                     calificacionObj.alumno = (string)Get("id");
                     calificacionObj.archivado = false;
@@ -105,7 +104,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     Column<object>("id");
 
                 if (idsCalificaciones.Count() > 0)
-                    ContainerApp.db.Persist().UpdateValueIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
+                    ContainerApp.db.Persist().UpdateFieldIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
                         AddTo(persists);
             }
             #endregion*/

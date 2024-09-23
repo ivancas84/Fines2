@@ -53,7 +53,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
                 comValues.
                     Insert().
-                    UpdateValueIds("comision", "comision_siguiente", comValues.Get("id"), actualId!).
+                    UpdateFieldIds("comision", "comision_siguiente", comValues.Get("id"), actualId!).
                     AddTo(persists);
             }
 

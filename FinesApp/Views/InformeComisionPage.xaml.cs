@@ -247,7 +247,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             foreach (AsignacionConAsignaturasItem asiObj in asignacionOC)
             {
                 string estado = (asiObj.cantidad_aprobadas < 3) ? "No activo" : "Activo"; 
-                persist.UpdateValueIds("alumno_comision", "estado", estado, asiObj.id);
+                persist.UpdateFieldIds("alumno_comision", "estado", estado, asiObj.id);
             }
 
             persist.Transaction().RemoveCache();

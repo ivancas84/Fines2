@@ -124,7 +124,7 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
             {
                 if (alumnoDestinoData.IsNoE())
                 {
-                    ContainerApp.db.Persist().UpdateValueIds("alumno", "persona", personaOrigenObj.id!, personaDestinoObj.id!).AddToIfSql(persists);
+                    ContainerApp.db.Persist().UpdateFieldIds("alumno", "persona", personaOrigenObj.id!, personaDestinoObj.id!).AddToIfSql(persists);
                 }
                 else
                 {

@@ -53,7 +53,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         ContainerApp.db.Persist().
-            UpdateValueIds("comision", e.PropertyName, sender.GetPropertyValue(e.PropertyName), sender.GetPropertyValue("id")).
+            UpdateFieldIds("comision", e.PropertyName, sender.GetPropertyValue(e.PropertyName), sender.GetPropertyValue("id")).
             Exec().
             RemoveCache();
     }

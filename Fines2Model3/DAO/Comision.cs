@@ -180,7 +180,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                             }
                             else
                             {
-                                persist.UpdateValueIds("persona", "cuil", String.Join("", cuil), id!);
+                                persist.UpdateFieldIds("persona", "cuil", String.Join("", cuil), id!);
                             }
                             persist.AddTo(persists);
                             continue;
@@ -215,7 +215,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                         throw new Exception("No existe curso " + dict["comision__pfid"].ToString() + " " + dict["asignatura__codigo"].ToString());
 
                     dict["id"] = cursoData["id"];
-                    persist.UpdateValueIds("curso", "descripcion_horario", dict["descripcion_horario"].ToString()!, dict["id"]!).AddTo(persists);
+                    persist.UpdateFieldIds("curso", "descripcion_horario", dict["descripcion_horario"].ToString()!, dict["id"]!).AddTo(persists);
                     procesar_docente = true;
                 }
                 catch (Exception ex)
