@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "distribucion_horaria";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -40,7 +41,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _disposicion; }
             set { if( _disposicion != value) { _disposicion = value; NotifyPropertyChanged(nameof(disposicion)); } }
         }
-        //distribucion_horaria.disposicion _o:o disposicion.id
+        //distribucion_horaria.disposicion _m:o disposicion.id
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {

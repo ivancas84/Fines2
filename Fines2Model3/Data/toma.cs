@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "toma";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -118,7 +119,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _confirmada; }
             set { if( _confirmada != value) { _confirmada = value; NotifyPropertyChanged(nameof(confirmada)); } }
         }
-        //toma.curso _o:o curso.id
+        //toma.curso _m:o curso.id
         protected Curso? _curso_ = null;
         public Curso? curso_
         {
@@ -130,7 +131,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //toma.docente _o:o persona.id
+        //toma.docente _m:o persona.id
         protected Persona? _docente_ = null;
         public Persona? docente_
         {
@@ -142,7 +143,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //toma.reemplazo _o:o persona.id
+        //toma.reemplazo _m:o persona.id
         protected Persona? _reemplazo_ = null;
         public Persona? reemplazo_
         {
@@ -154,7 +155,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //toma.planilla_docente _o:o planilla_docente.id
+        //toma.planilla_docente _m:o planilla_docente.id
         protected PlanillaDocente? _planilla_docente_ = null;
         public PlanillaDocente? planilla_docente_
         {

@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "sede";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -88,7 +89,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _pfid_organizacion; }
             set { if( _pfid_organizacion != value) { _pfid_organizacion = value; NotifyPropertyChanged(nameof(pfid_organizacion)); } }
         }
-        //sede.domicilio _o:o domicilio.id
+        //sede.domicilio _m:o domicilio.id
         protected Domicilio? _domicilio_ = null;
         public Domicilio? domicilio_
         {
@@ -100,7 +101,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //sede.centro_educativo _o:o centro_educativo.id
+        //sede.centro_educativo _m:o centro_educativo.id
         protected CentroEducativo? _centro_educativo_ = null;
         public CentroEducativo? centro_educativo_
         {

@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "contralor";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -46,7 +47,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _planilla_docente; }
             set { if( _planilla_docente != value) { _planilla_docente = value; NotifyPropertyChanged(nameof(planilla_docente)); } }
         }
-        //contralor.planilla_docente _o:o planilla_docente.id
+        //contralor.planilla_docente _m:o planilla_docente.id
         protected PlanillaDocente? _planilla_docente_ = null;
         public PlanillaDocente? planilla_docente_
         {

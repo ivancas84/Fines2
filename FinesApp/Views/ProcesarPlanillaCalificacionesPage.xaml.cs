@@ -25,7 +25,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
     private ObservableCollection<Calificacion> calificacionAprobadaOC = new(); //calificaciones aprobadas del curso
     private ObservableCollection<AlumnoComision> asignacionDesaprobadaOC = new(); //asignaciones activas que no figuran aprobadas del curso
 
-    List<EntityPersist> persists = new();
+    List<PersistContext> persists = new();
 
     private ObservableCollection<string> dnisProcesados = new();
     public ProcesarPlanillaCalificacionesPage()

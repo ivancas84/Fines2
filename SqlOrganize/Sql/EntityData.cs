@@ -13,7 +13,7 @@ namespace SqlOrganize.Sql
     /// <summary>
     /// Comportamiento general para las clases de datos
     /// </summary>
-    public abstract class EntityData : INotifyPropertyChanged, IDataErrorInfo
+    public class EntityData : INotifyPropertyChanged, IDataErrorInfo
     {
         #region atributos y propiedades generales
         /// <summary>Campos a ignorar para marcar isUpdated</summary>
@@ -174,13 +174,117 @@ namespace SqlOrganize.Sql
         #endregion
 
         #region set or get properties particulares
+        public virtual object? Get(string fieldName)
+        {
+            PropertyInfo propertyInfo = GetType().GetProperty(fieldName);
+            if (propertyInfo == null)
+                throw new Exception("No existe " + entityName + "." + fieldName);
+
+            return propertyInfo.GetValue(this, null);
+        }
+
+        public virtual void Set(string fieldName, object? value)
+        {
+            PropertyInfo propertyInfo = GetType().GetProperty(fieldName);
+            if (propertyInfo == null || !propertyInfo.CanWrite)
+                throw new Exception(entityName + "." + fieldName + " no existe o no tiene permisos de esctritura");
+
+            propertyInfo.SetValue(this, value);
+
+        }
+
+        public virtual void Sset(string fieldName, object? value)
+        {
+            PropertyInfo? propertyInfo = GetType().GetProperty(fieldName);
+            if (propertyInfo == null || !propertyInfo.CanWrite)
+                throw new Exception(entityName + "." + fieldName + " no existe o no tiene permisos de esctritura");
+
+
+            if ((value == null) || (value.ToString() == ""))
+            {
+                propertyInfo.SetValue(this, null);
+                return;
+            }
+
+
+            Field field = db.Field(entityName, fieldName);
+
+            switch (field.type)
+            {
+                default:
+                    propertyInfo.SetValue(this, Convert.ChangeType(value, propertyInfo.PropertyType));
+                    return;
+
+                case "decimal":
+                    if (value is decimal)
+                    {
+                        propertyInfo.SetValue(this, value);
+                        return;
+                    }
+                    var v = value.ToString().Replace('.', ',')!;
+                    propertyInfo.SetValue(this, Convert.ChangeType(v, propertyInfo.PropertyType));
+                    return;
+
+
+                case "bool":
+                    if (value is decimal)
+                    {
+                        propertyInfo.SetValue(this, value);
+                        return;
+                    }
+
+                    propertyInfo.SetValue(this, value.ToString().ToBool());
+                    return;
+
+                case "DateTime":
+                    if (value is DateTime)
+                    {
+                        propertyInfo.SetValue(this, value);
+                        return;
+                    }
+
+                    propertyInfo.SetValue(this, DateTime.Parse(value.ToString()!));
+                    return;
+            }
+        }
+
+        /*public virtual void SetRef<T>(string? fieldName) where T : EntityData, new()
+        {
+            var obj = new T(); //creo para obtener entityName
+
+            List<Field> fieldsRef = db.Entity(this.entityName).FieldsRef();
+
+            string fn = "";
+            foreach(Field field in fieldsRef)
+            {
+                if (field.entityName.Equals(obj.entityName))
+                {
+                    if(fieldName.IsNoE() || field.name.Equals(fieldName))
+                    {
+                        fn = field.name;
+                        break;
+                    }
+                }
+            }
+
+            if (fn.IsNoE())
+                throw new Exception("Error " + entityName + "." +  fieldName + ": No se encontró el field referenciado.");
+
+
+            var datas = db.Sql(entityName).Equal(fn, Get("id")).Cache().Datas<T>();
+
+            Set(obj.entityName + "_")
+        }*/
+        
+
+
         /// <summary> Asignar valor por defecto a propiedades simples </summary>
         public virtual void Default()
         {
             foreach (var fieldName in db.FieldNames(entityName))
             {
                 var def = GetDefault(fieldName);
-                this.SetPropertyValue(fieldName, def);
+                this.Set(fieldName, def);
             }
         }
 
@@ -196,7 +300,7 @@ namespace SqlOrganize.Sql
         public virtual void Set(IDictionary<string, object?> dict)
         {
             foreach (var fieldName in db.FieldNames(entityName))
-                this.SetPropertyValue(fieldName, dict[fieldName]);
+                this.Set(fieldName, dict[fieldName]);
         }
 
         /// <summary> Seteo solo de valores no nulos </summary>
@@ -204,7 +308,7 @@ namespace SqlOrganize.Sql
         {
             foreach (var fieldName in db.FieldNames(entityName))
                 if (!dict[fieldName].IsNoE())
-                    this.SetPropertyValue(fieldName, dict[fieldName]);
+                    this.Set(fieldName, dict[fieldName]);
         }
 
         /// <summary> Seteo "lento" de propiedades simples </summary>
@@ -223,98 +327,10 @@ namespace SqlOrganize.Sql
         }
 
         /// <summary>Seteo "lento" de un determinado campo, con verificacion y convercion de tipo de datos</summary>
-        public virtual void Sset(string fieldName, object? value)
-        {
-
-            this.SetPropertyValue(fieldName, ValueField(fieldName, value));
-        }
 
         public virtual void SetDefault(string fieldName)
         {
-            this.SetPropertyValue(fieldName, GetDefault(fieldName));
-        }
-
-        /// <summary> Realizar cast y otras operaciones al parametro value, para definir correctamente el valor del field </summary>
-        /// <remarks>Utilizado para seteo "lento"</remarks>
-        public virtual object? ValueField(string fieldName, object? value)
-        {
-            Field field = db.Field(entityName, fieldName);
-            if (value == null)
-                return null;
-
-            switch (field.type)
-            {
-                case "string":
-                    try
-                    {
-                        return (string)value;
-                    }
-                    catch (Exception e)
-                    {
-                        return value.ToString();
-                    }
-
-                case "decimal":
-                    if (value is decimal)
-                        return value;
-                    else
-                    {
-                        var v = value.ToString().Replace('.', ',')!;
-                        return (v == "") ? null : decimal.Parse(v);
-                    }
-
-                case "int":
-                case "Int32":
-                    if (value is Int32)
-                        return (Int32)value;
-                    else
-                    {
-                        var v = value.ToString()!;
-                        return (v == "") ? null : Int32.Parse(v);
-                    }
-
-                case "short":
-                    if (value is short)
-                        return value;
-                    else
-                    {
-                        var v = value.ToString()!;
-                        return (v == "") ? null : short.Parse(v);
-                    }
-
-                case "ushort":
-                    if (value is ushort)
-                        return value;
-                    else
-                    {
-                        var v = value.ToString()!;
-                        return (v == "") ? null : ushort.Parse(v);
-                    }
-
-                case "byte":
-                    if (value is byte)
-                        return value;
-                    else
-                    {
-                        var v = value.ToString()!;
-                        return (v == "") ? null : byte.Parse(v);
-                    }
-
-                case "bool":
-                    if (value is bool)
-                        return (bool)value;
-                    else
-                        return (value as string)!.ToBool();
-
-                case "DateTime":
-                    if (value is DateTime)
-                        return (DateTime)value;
-                    else
-                        return DateTime.Parse(value.ToString()!);
-
-                default:
-                    return value;
-            }
+            this.Set(fieldName, GetDefault(fieldName));
         }
 
         /// <summary> Obtener valor por defecto de un field </summary>
@@ -414,7 +430,7 @@ namespace SqlOrganize.Sql
         {
             Dictionary<string, object?> response = new();
             foreach (var fieldName in db.FieldNames(entityName))
-                response[fieldName] = this.GetPropertyValue(fieldName);
+                response[fieldName] = this.Get(fieldName);
             return response;
         }
 
@@ -427,41 +443,41 @@ namespace SqlOrganize.Sql
             foreach (var (resetKey, resetValue) in field.resets)
             {
                 var rk = resetKey.ToLower();
-                var val = this.GetPropertyValue(fieldName);
+                var val = this.Get(fieldName);
                 switch (rk)
                 {
                     case "trim":
                         if (!val.IsNoE())
-                            this.SetPropertyValue(fieldName, val.ToString()!.Trim(((string)resetValue).ToChar()));
+                            this.Set(fieldName, val.ToString()!.Trim(((string)resetValue).ToChar()));
                         break;
 
                     case "removemultiplespaces":
                         if (!val.IsNoE())
-                            this.SetPropertyValue(fieldName, Regex.Replace(val!.ToString()!, @"\s+", " "));
+                            this.Set(fieldName, Regex.Replace(val!.ToString()!, @"\s+", " "));
                         break;
 
                     case "nullifempty":
                         if (val.IsNoE())
-                            this.SetPropertyValue(fieldName, null);
+                            this.Set(fieldName, null);
                         break;
 
                     case "defaultifnull":
                         if (val.IsNoE())
-                            this.SetPropertyValue(fieldName, GetDefault(fieldName));
+                            this.Set(fieldName, GetDefault(fieldName));
                         break;
 
                     case "setdefault":
-                        this.SetPropertyValue(fieldName, GetDefault(fieldName));
+                        this.Set(fieldName, GetDefault(fieldName));
                         break;
 
                     case "cleandigits":
                         if (!val.IsNoE())
-                            this.SetPropertyValue(fieldName, val.ToString().CleanStringOfDigits());
+                            this.Set(fieldName, val.ToString().CleanStringOfDigits());
                         break;
 
                     case "cleannondigits":
                         if (val.IsNoE())
-                            this.SetPropertyValue(fieldName, val.ToString().CleanStringOfNonDigits());
+                            this.Set(fieldName, val.ToString().CleanStringOfNonDigits());
                         break;
                 }
             }
@@ -492,14 +508,14 @@ namespace SqlOrganize.Sql
         {
             Field field = db.Field(entityName, fieldName);
             if (field.IsRequired())
-                if(this.GetPropertyValue(fieldName).IsNoE())
+                if(this.IsNullOrEmpty(fieldName))
                     return "Debe completar valor.";
 
             if (field.IsUnique())
-                if (this.GetPropertyValue(fieldName).IsNoE())
+                if (this.IsNullOrEmpty(fieldName))
                 {
-                    var row = db.Sql(entityName).Equal("$" + fieldName, this.GetPropertyValue(fieldName)).Cache().Dict();
-                    if (!row.IsNoE() && !this.GetPropertyValue(db.config.id).Equals(row[db.config.id]))
+                    var row = db.Sql(entityName).Equal("$" + fieldName, this.Get(fieldName)).Cache().Dict();
+                    if (!row.IsNoE() && !this.Get(db.config.id).Equals(row[db.config.id]))
                         return "Valor existente.";
                 }
 
@@ -524,7 +540,7 @@ namespace SqlOrganize.Sql
             Logging.ClearByKey(fieldName);
 
             Field field = db.Field(entityName, fieldName);
-            Validation v = new(this.GetPropertyValue(fieldName));
+            Validation v = new(this.Get(fieldName));
             v.Clear();
             foreach (var (checkMethod, param) in field.checks)
             {
@@ -552,7 +568,7 @@ namespace SqlOrganize.Sql
         /// <summary> Recargar valores particulares </summary>
         public void Reload()
         {
-            var id = this.GetPropertyValue("id");
+            var id = this.Get("id");
 
             if (id.IsNoE())
             {
@@ -564,7 +580,7 @@ namespace SqlOrganize.Sql
         public bool IsNullOrEmpty(params string[] fieldNames)
         {
             foreach (var fieldName in fieldNames)
-                if (this.GetPropertyValue(fieldName).IsNoE())
+                if (this.Get(fieldName).IsNoE())
                     return true;
 
             return false;
@@ -575,7 +591,7 @@ namespace SqlOrganize.Sql
         #region Sql
         public EntitySql SqlField(string fieldName)
         {
-            return db.Sql(entityName).Equal(fieldName, this.GetPropertyValue(fieldName));
+            return db.Sql(entityName).Equal(fieldName, this.Get(fieldName));
         }
 
         public EntitySql SqlUniqueWithoutIdIfExists()
@@ -597,85 +613,98 @@ namespace SqlOrganize.Sql
 
         public EntitySql SqlRef(string entityName, string fkName)
         {
-            return db.Sql(entityName).Equal(fkName, this.GetPropertyValue("id"));
+            return db.Sql(entityName).Equal(fkName, this.Get("id"));
         }
         #endregion
 
         #region Persistencia
-        public EntityPersist Insert()
+        public PersistContext Insert()
         {
             return db.Persist().Insert(this);
         }
 
-        public EntityPersist Update()
+        public PersistContext Update()
         {
             return db.Persist().Update(this);
         }
 
-        public EntityPersist UpdateField(string fieldName)
+        /// <summary> Crea contexto de persistencia y actualiza campo </summary>
+        public void UpdateField(string fieldName)
         {
-            return db.Persist().UpdateField(this, fieldName);
+            db.Persist().UpdateField(this, fieldName).Exec().RemoveCache();
         }
 
-        public EntityData Insert(EntityPersist persist)
+        public PersistContext UpdateField(PersistContext persist, string fieldName)
+        {
+            return persist.UpdateField(this, fieldName);
+        }
+
+        public void Insert(PersistContext persist)
         {
             persist.Insert(this);
-            return this;
         }
 
-        public EntityData InsertIfNotExists(EntityPersist persist)
+        public void InsertIfNotExists(PersistContext persist)
         {
             persist.InsertIfNotExists(this);
-            return this;
         }
 
-        public EntityData Update(EntityPersist persist)
+        public void Update(PersistContext persist)
         {
             persist.Update(this);
-            return this;
         }
 
-        public EntityPersist Delete()
+        public void Delete(PersistContext persist)
         {
-            return db!.Persist().DeleteIds(entityName, this.GetPropertyValue("id"));
+            persist.DeleteIds(entityName, Get("id"));
         }
 
-        public EntityPersist Persist()
+        public void Delete()
         {
-            return db!.Persist().Persist(this);
+            db.Persist().DeleteIds(entityName, Get("id")).Exec().RemoveCache();
         }
 
-        public EntityData Persist(EntityPersist persist)
+        /// <summary> Crear contexto de persistencia y ejecutar persistencia de entidad </summary>
+        /// <returns> Identificador del objeto persistido </returns>
+        public object Persist()
+        {
+            db!.Persist().Persist(this).Exec().RemoveCache();
+            return Get(db.config.id);
+        }
+
+        /// <summary> Agregar persistencia de entidad en contexto existente </summary>
+        /// <returns> Identificador del objeto persistido </returns>
+        public object Persist(PersistContext persist)
         {
             persist.Persist(this);
-            return this;
+            return Get(db.config.id);
         }
 
-        public EntityPersist PersistCondition(object? condition)
+        public PersistContext PersistCondition(object? condition)
         {
             return db.Persist().PersistCondition(this, condition);
 
         }
 
-        public EntityPersist PersistId()
+        public PersistContext PersistId()
         {
             Reset();
             if (!Check())
                 throw new Exception("Error al verificar " + Logging.ToString());
 
-            if (this.GetPropertyValue(db.config.id).IsNoE())
+            if (this.Get(db.config.id).IsNoE())
                 return Insert();
             else
                 return Update();
         }
 
-        public EntityData PersistCompare(EntityPersist persist, CompareParams compare)
+        public EntityData PersistCompare(PersistContext persist, CompareParams compare)
         {
             persist.PersistCompare(this, compare);
             return this;
         }
 
-        public EntityPersist? PersistCompare(CompareParams compare)
+        public PersistContext? PersistCompare(CompareParams compare)
         {
             return db.Persist().PersistCompare(this, compare);
         }

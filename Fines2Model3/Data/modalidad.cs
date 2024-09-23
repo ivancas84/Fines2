@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "modalidad";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;

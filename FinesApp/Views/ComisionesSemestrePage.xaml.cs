@@ -21,7 +21,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     private ObservableCollection<Calendario> ocCalendarioComisionesSiguientes = new();
     private ObservableCollection<Calendario> calendarioPFOC = new();
 
-    IEnumerable<EntityPersist> persists;
+    IEnumerable<PersistContext> persists;
 
     public ComisionesSemestrePage()
     {
@@ -61,7 +61,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 
     private void ComisionesSemestrePage_Loaded(object sender, RoutedEventArgs e)
     {
-        ContainerApp.db.Sql("calendario").Cache().ClearAndAddDataToOC(calendarioPFOC);
+        ContainerApp.db.Sql("calendario").Cache().AddDataToClearOC(calendarioPFOC);
     }
 
     private void LoadCalendarioComisionesSiguientes()
@@ -72,7 +72,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         Calendario cal = cbxCalendario.SelectedItem as Calendario;
 
         ContainerApp.db.Sql("calendario").Where("$anio >= @0 AND $semestre >= @1").
-            Param("@0", cal.anio).Param("@1", cal.semestre).Cache().ClearAndAddDataToOC(ocCalendarioComisionesSiguientes);
+            Param("@0", cal.anio).Param("@1", cal.semestre).Cache().AddDataToClearOC(ocCalendarioComisionesSiguientes);
     }
 
     private void BuscarButton_Click(object sender, RoutedEventArgs e)
@@ -87,7 +87,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 
             if (dataReferentes.ContainsKey(obj.sede))
                 foreach (var dataReferente in dataReferentes[obj.sede])
-                    ContainerApp.db.ToData<Designacion>(dataReferente).AddToOC(obj.sede_.Designacion_sede_);
+                    ContainerApp.db.ToData<Designacion>(dataReferente).AddToOC(obj.sede_.Designacion_);
                 
             obj.Index = i;
             comisionOC.Add(obj);
@@ -101,7 +101,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
             if (cbxCalendario.SelectedIndex < 0 || cbxCalendarioComisionesSiguientes.SelectedIndex < 0)
                 throw new Exception("Verificar formulario");
 
-            IEnumerable<EntityPersist> persists = ContainerApp.db.Values<ComisionValues>().GenerarComisionesSemestreSiguiente(cbxCalendario.SelectedValue, cbxCalendarioComisionesSiguientes.SelectedValue);
+            IEnumerable<PersistContext> persists = ContainerApp.db.Values<ComisionValues>().GenerarComisionesSemestreSiguiente(cbxCalendario.SelectedValue, cbxCalendarioComisionesSiguientes.SelectedValue);
 
             persists.Transaction().RemoveCache();
             ToastExtensions.Show("Comisiones agregadas");
@@ -115,13 +115,10 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     {
         try
         {
-            List<EntityPersist> persists = new();
+            List<PersistContext> persists = new();
 
             foreach(var comObj in comisionOC)
-            {
-                ComisionValues comVal = (ComisionValues)comObj.GetValues();
-                comVal.GenerarCursos().AddTo(persists);
-            }
+                comObj.GenerarCursos().AddTo(persists);
 
             persists.Transaction().RemoveCache();
             ToastExtensions.Show("Se han generado los cursos");

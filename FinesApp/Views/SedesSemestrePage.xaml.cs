@@ -27,7 +27,7 @@ public partial class SedesSemestrePage : Page, INotifyPropertyChanged
         #region cbxCalendario
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
         var data = ContainerApp.db.Sql("calendario").Cache().Dicts();
-        ContainerApp.db.ClearAndAddDataToOC(data, ocCalendario);
+        ContainerApp.db.AddDataToClearOC(data, ocCalendario);
         #endregion
 
         dgdSedes.ItemsSource = ocSede;
@@ -45,7 +45,7 @@ public partial class SedesSemestrePage : Page, INotifyPropertyChanged
 
             var sedeData = ContainerApp.db.Sql("sede").Where("$id IN (@0)").
                 Order("$nombre ASC").Param("@0", idSedes).Cache().Dicts();
-            ContainerApp.db.ClearAndAddDataToOC(sedeData, ocSede);
+            ContainerApp.db.AddDataToClearOC(sedeData, ocSede);
 
             ToastExtensions.Show("La consulta devolvió " + sedeData.Count() + " registros.");
         }

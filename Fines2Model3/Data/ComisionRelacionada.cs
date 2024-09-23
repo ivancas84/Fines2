@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "comision_relacionada";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -34,7 +35,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _relacion; }
             set { if( _relacion != value) { _relacion = value; NotifyPropertyChanged(nameof(relacion)); } }
         }
-        //comision_relacionada.comision _o:o comision.id
+        //comision_relacionada.comision _m:o comision.id
         protected Comision? _comision_ = null;
         public Comision? comision_
         {
@@ -46,7 +47,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //comision_relacionada.relacion _o:o comision.id
+        //comision_relacionada.relacion _m:o comision.id
         protected Comision? _relacion_ = null;
         public Comision? relacion_
         {

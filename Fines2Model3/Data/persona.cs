@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "persona";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -190,7 +191,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _anio_nacimiento; }
             set { if( _anio_nacimiento != value) { _anio_nacimiento = value; NotifyPropertyChanged(nameof(anio_nacimiento)); } }
         }
-        //persona.domicilio _o:o domicilio.id
+        //persona.domicilio _m:o domicilio.id
         protected Domicilio? _domicilio_ = null;
         public Domicilio? domicilio_
         {

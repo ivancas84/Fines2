@@ -2,7 +2,7 @@
 
 namespace SqlOrganize.Sql
 {
-    
+
     /// <summary>
     /// Contenedor principal de SqlOrganize
     /// </summary>
@@ -74,7 +74,7 @@ namespace SqlOrganize.Sql
         /// <returns>Nombres de campos de la entidad</returns>
         public List<string> FieldNames(string entityName) {
             var l = FieldsEntity(entityName).Keys.ToList();
-            if(!l.Contains(config.id))
+            if (!l.Contains(config.id))
                 l.Insert(0, config.id); //Importante!! id debe ser incluido,
             return l;
         }
@@ -105,7 +105,7 @@ namespace SqlOrganize.Sql
 
         public Entity Entity(string entityName)
         {
-            if(!entities.ContainsKey(entityName))
+            if (!entities.ContainsKey(entityName))
                 throw new Exception("La entidad " + entityName + " no existe");
 
             return entities[entityName];
@@ -119,11 +119,12 @@ namespace SqlOrganize.Sql
 
         public abstract EntitySql Sql(string entity_name);
 
-        public EntityCache Cache(EntitySql sql){
+        public EntityCache Cache(EntitySql sql) {
             return new EntityCache(this, sql);
         }
 
-        public abstract EntityPersist Persist();
+        /// <summary> Crear contexto de persistencia </summary>
+        public abstract PersistContext Persist();
 
         public virtual EntityMapping Mapping(string entityName, string? fieldId = null)
         {

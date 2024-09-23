@@ -550,6 +550,7 @@ namespace SqlOrganize.Model
                 sw.WriteLine("        {");
                 sw.WriteLine("            _entityName = \"" + entityName + "\";");
                 sw.WriteLine("            _db = Context.db;");
+                sw.WriteLine("            Default();");
                 sw.WriteLine("        }");
                 sw.WriteLine("");
 
@@ -578,10 +579,14 @@ namespace SqlOrganize.Model
                 #region atributos fk
                 foreach (var (fieldId, relation) in entities[entityName].relations)
                 {
+                    string rel = "m";
+                    if (entities[entityName].unique.Contains(relation.fieldName))
+                        rel = "o";
+
                     if (!relation.parentId.IsNoE())
                         continue;
 
-                    sw.WriteLine("        //" + entityName + "." + relation.fieldName + " _o:o " + relation.refEntityName + ".id");
+                    sw.WriteLine("        //" + entityName + "." + relation.fieldName + " _" + rel + ":o " + relation.refEntityName + ".id");
                     sw.WriteLine("        protected " + relation.refEntityName.ToCamelCase() + "? _" + relation.fieldName + "_ = null;");
                     sw.WriteLine("        public " + relation.refEntityName.ToCamelCase() + "? " + relation.fieldName + "_");
                     sw.WriteLine("        {");

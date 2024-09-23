@@ -55,7 +55,7 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
 
             IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).Dicts(); //busqueda de valores a mostrar en funcion del texto
 
-            ContainerApp.db.ClearAndAddDataToOC(list, origenOC);
+            ContainerApp.db.AddDataToClearOC(list, origenOC);
 
             origenComboBox.SetTimerTickFinalize(origenTextBox!, text, (int)origenTextBoxPos!);
         }
@@ -84,7 +84,7 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
 
             IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).Dicts(); //busqueda de valores a mostrar en funcion del texto
 
-            ContainerApp.db.ClearAndAddDataToOC(list, destinoOC);
+            ContainerApp.db.AddDataToClearOC(list, destinoOC);
 
             destinoComboBox.SetTimerTickFinalize(destinoTextBox!, text, (int)destinoTextBoxPos!);
         }
@@ -112,7 +112,7 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
                 throw new Exception("Debe seleccionar ambas personas");
 
 
-            List<EntityPersist> persists = new();
+            List<PersistContext> persists = new();
 
             List<Field> fieldsOmPersona = ContainerApp.db.Entity("persona").FieldsOm();
             ContainerApp.db.Persist().TransferOm("persona", personaOrigenObj.id!, personaDestinoObj.id!).AddToIfSql(persists);

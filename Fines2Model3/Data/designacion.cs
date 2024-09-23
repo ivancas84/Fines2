@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "designacion";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -64,7 +65,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _pfid; }
             set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
-        //designacion.cargo _o:o cargo.id
+        //designacion.cargo _m:o cargo.id
         protected Cargo? _cargo_ = null;
         public Cargo? cargo_
         {
@@ -76,7 +77,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //designacion.sede _o:o sede.id
+        //designacion.sede _m:o sede.id
         protected Sede? _sede_ = null;
         public Sede? sede_
         {
@@ -88,7 +89,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //designacion.persona _o:o persona.id
+        //designacion.persona _m:o persona.id
         protected Persona? _persona_ = null;
         public Persona? persona_
         {

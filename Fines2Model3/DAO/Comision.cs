@@ -71,14 +71,14 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary>Persistencia de asignaciones</summary>
         /// <returns>persists y asignaciones persistidas</returns>
-        public static IEnumerable<EntityPersist> PersistAsignacionesComisionText(this Db db, object idComision, string text, params string[]? headers)
+        public static IEnumerable<PersistContext> PersistAsignacionesComisionText(this Db db, object idComision, string text, params string[]? headers)
         {            
             if (headers.IsNoE())
                 headers = ["persona__apellidos", "persona__nombres", "persona__numero_documento", "persona__genero", "persona__fecha_nacimiento", "persona__telefono", "persona__email"];
 
             Comision? comObj = db.Sql("comision").Equal("id", idComision).Cache().Data<Comision>() ?? throw new Exception("comision inexistente");
 
-            List<EntityPersist> persists = new();
+            List<PersistContext> persists = new();
         
 
             string[] _data = text.Split("\r\n");
@@ -87,7 +87,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             for (var j = 0; j < _data.Length; j++)
             {
-                EntityPersist persist = db.Persist();
+                PersistContext persist = db.Persist();
 
                 try
                 {
@@ -130,7 +130,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>
         /// <remarks> Los datos se obtienen desde un xlsx de https://programafines.ar/inicial/index4.php?a=46</remarks>
-        public static IEnumerable<EntityPersist> PersistComisionesPf(this Db db, Calendario calendarioObj, string data)
+        public static IEnumerable<PersistContext> PersistComisionesPf(this Db db, Calendario calendarioObj, string data)
         {
 
             var pfidComisiones = db.ComisionesAutorizadasDeCalendarioSql(calendarioObj.id!).Cache().Dicts().ColOfVal<string>("pfid");
@@ -141,11 +141,11 @@ namespace SqlOrganize.Sql.Fines2Model3
             bool procesar_docente = false;
 
 
-            List<EntityPersist> persists = new();
+            List<PersistContext> persists = new();
 
             foreach (var line in data.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
-                EntityPersist persist = db.Persist();
+                PersistContext persist = db.Persist();
 
                 try
                 {
@@ -229,9 +229,9 @@ namespace SqlOrganize.Sql.Fines2Model3
             return persists;
         }
 
-        public static EntityPersist GenerarCursos(this Db db, EntityVal comisionVal)
+        public static PersistContext GenerarCursos(this Db db, EntityVal comisionVal)
         {
-            EntityPersist persist = db.Persist();
+            PersistContext persist = db.Persist();
             if (comisionVal.IsNullOrEmpty("id") || comisionVal.IsNullOrEmpty("planificacion"))
                 throw new Exception("No se pueden generar los cursos: No está correctamente definido el id o la planificación");
 

@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "asignacion_planilla_docente";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -52,7 +53,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _reclamo; }
             set { if( _reclamo != value) { _reclamo = value; NotifyPropertyChanged(nameof(reclamo)); } }
         }
-        //asignacion_planilla_docente.planilla_docente _o:o planilla_docente.id
+        //asignacion_planilla_docente.planilla_docente _m:o planilla_docente.id
         protected PlanillaDocente? _planilla_docente_ = null;
         public PlanillaDocente? planilla_docente_
         {
@@ -64,7 +65,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //asignacion_planilla_docente.toma _o:o toma.id
+        //asignacion_planilla_docente.toma _m:o toma.id
         protected Toma? _toma_ = null;
         public Toma? toma_
         {

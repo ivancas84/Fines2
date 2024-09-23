@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "horario";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -46,7 +47,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _dia; }
             set { if( _dia != value) { _dia = value; NotifyPropertyChanged(nameof(dia)); } }
         }
-        //horario.curso _o:o curso.id
+        //horario.curso _m:o curso.id
         protected Curso? _curso_ = null;
         public Curso? curso_
         {
@@ -58,7 +59,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //horario.dia _o:o dia.id
+        //horario.dia _m:o dia.id
         protected Dia? _dia_ = null;
         public Dia? dia_
         {

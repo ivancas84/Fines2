@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "asignatura";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -52,9 +53,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _perfil; }
             set { if( _perfil != value) { _perfil = value; NotifyPropertyChanged(nameof(perfil)); } }
         }
-        //curso.asignatura _m:o asignatura.id
-        public ObservableCollection<Curso> Curso_ { get; set; } = new ();
-
         //disposicion.asignatura _m:o asignatura.id
         public ObservableCollection<Disposicion> Disposicion_ { get; set; } = new ();
 

@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "comision";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -112,7 +113,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _pfid; }
             set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
-        //comision.sede _o:o sede.id
+        //comision.sede _m:o sede.id
         protected Sede? _sede_ = null;
         public Sede? sede_
         {
@@ -124,7 +125,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //comision.modalidad _o:o modalidad.id
+        //comision.modalidad _m:o modalidad.id
         protected Modalidad? _modalidad_ = null;
         public Modalidad? modalidad_
         {
@@ -136,7 +137,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //comision.planificacion _o:o planificacion.id
+        //comision.planificacion _m:o planificacion.id
         protected Planificacion? _planificacion_ = null;
         public Planificacion? planificacion_
         {
@@ -148,7 +149,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //comision.calendario _o:o calendario.id
+        //comision.calendario _m:o calendario.id
         protected Calendario? _calendario_ = null;
         public Calendario? calendario_
         {

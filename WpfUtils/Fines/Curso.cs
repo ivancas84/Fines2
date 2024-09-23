@@ -6,19 +6,19 @@ using System.Windows.Threading;
 using WpfUtils.Controls;
 using System.Windows.Controls;
 
-namespace WpfUtils.Fines.Curso
+namespace WpfUtils.Fines
 {
-    public static class Curso
+    public static class CursoWpf
     {
-        public static void SetCursoTimerTick(this DbApp db, System.Windows.Controls.ComboBox cursoComboBox, DispatcherTimer cursoTypingTimer, ObservableCollection<SqlOrganize.Sql.Fines2Model3.Curso> cursoOC)
+        public static void SetCursoTimerTick(System.Windows.Controls.ComboBox cursoComboBox, DispatcherTimer cursoTypingTimer, ObservableCollection<SqlOrganize.Sql.Fines2Model3.Curso> cursoOC)
         {
             (string? text, TextBox textBox, int? textBoxPos) = cursoComboBox.SetTimerTickInitializeItem<SqlOrganize.Sql.Fines2Model3.Curso>(cursoTypingTimer);
             if (text == null)
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = db.BusquedaAproximadaCurso(text).Size(30).Dicts(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = Context.db.BusquedaAproximadaCurso(text).Size(30).Dicts(); //busqueda de valores a mostrar en funcion del texto
 
-            db.ClearAndAddDataToOC(list, cursoOC);
+            Context.db.AddDataToClearOC(list, cursoOC);
             
             cursoComboBox.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
         }
@@ -27,13 +27,13 @@ namespace WpfUtils.Fines.Curso
         {
             var cursoData = db.Sql("curso").Cache().Id(curso);
 
-            var calificacionAprobadaData = db.CalificacionAprobadaCursoSql(curso).Cache().Dicts();
-            db.ClearAndAddDataToOC(calificacionAprobadaData, calificacionAprobadaOC);
+            var calificacionAprobadaData = CalificacionDAO.CalificacionAprobadaCursoSql(curso).Cache().Dicts();
+            db.AddDataToClearOC(calificacionAprobadaData, calificacionAprobadaOC);
 
             var alumnosConCalificacionAprobada = calificacionAprobadaData.ColOfVal<object>("alumno");
-            var asignacionDesaprobadaData = db.AsignacionesActivasRestantesComisionSql(cursoData["comision"], alumnosConCalificacionAprobada).Cache().Dicts();
+            var asignacionDesaprobadaData = AsignacionDAO.AsignacionesActivasRestantesComisionSql(cursoData["comision"], alumnosConCalificacionAprobada).Cache().Dicts();
 
-            db.ClearAndAddDataToOC(asignacionDesaprobadaData, asignacionDesaprobadaOC);
+            db.AddDataToClearOC(asignacionDesaprobadaData, asignacionDesaprobadaOC);
         }
 
     }

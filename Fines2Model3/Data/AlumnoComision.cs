@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "alumno_comision";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -58,7 +59,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _pfid; }
             set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
-        //alumno_comision.comision _o:o comision.id
+        //alumno_comision.comision _m:o comision.id
         protected Comision? _comision_ = null;
         public Comision? comision_
         {
@@ -70,7 +71,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //alumno_comision.alumno _o:o alumno.id
+        //alumno_comision.alumno _m:o alumno.id
         protected Alumno? _alumno_ = null;
         public Alumno? alumno_
         {

@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "planificacion";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -46,7 +47,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _pfid; }
             set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
-        //planificacion.plan _o:o plan.id
+        //planificacion.plan _m:o plan.id
         protected Plan? _plan_ = null;
         public Plan? plan_
         {

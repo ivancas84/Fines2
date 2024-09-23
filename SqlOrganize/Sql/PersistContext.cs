@@ -1,5 +1,4 @@
 ﻿using System.Data.Common;
-using Newtonsoft.Json.Linq;
 using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql.Exceptions;
 using SqlOrganize.ValueTypesUtils;
@@ -8,19 +7,20 @@ namespace SqlOrganize.Sql
 {
 
     /// <summary>
-    /// Persistencia de datos
+    /// Contexto de persistencia de datos
     /// </summary>
-    public abstract class EntityPersist
+    public abstract class PersistContext
     {
-        /// <summary>conexion opcional</summary>
+        /// <summary> Conexion opcional </summary>
         protected DbConnection? connection;
 
-        /// <summary>transaccion opcional</summary>
+        /// <summary> Transaccion opcional </summary>
         protected DbTransaction transaction;
 
-        /// <summary> cantidad de consultas registradas </summary>
-        protected int count = 0; 
+        /// <summary> Cantidad de consultas registradas </summary>
+        protected int count = 0;
 
+        /// <summary> Logging </summary>
         public Logging logging = new Logging();
 
         public Db Db { get; }
@@ -40,19 +40,18 @@ namespace SqlOrganize.Sql
         /// </remarks>
         public List<(string entityName, object id, string action)> detail = new();
 
-
-        public EntityPersist SetConn(DbConnection connection)
+        public PersistContext SetConn(DbConnection connection)
         {
             this.connection = connection;
             return this;
         }
 
-        public EntityPersist(Db db)
+        public PersistContext(Db db)
         {
             Db = db;
         }
 
-        public EntityPersist Param(string name, object? value)
+        public PersistContext Param(string name, object? value)
         {
             _parameters[name] = value;
             return this;
@@ -94,7 +93,7 @@ namespace SqlOrganize.Sql
             }
         }
 
-        public EntityPersist DeleteIds(string _entityName, params object[] ids)
+        public PersistContext DeleteIds(string _entityName, params object[] ids)
         {
             count++;
 
@@ -111,7 +110,7 @@ DELETE " + e.alias + " FROM " + e.name + " " + e.alias + @"
 
         abstract protected IDictionary<string, object?> _Update(string _entityName, IDictionary<string, object?> row);
 
-        public EntityPersist Update(string entityName, IDictionary<string, object?> row)
+        public PersistContext Update(string entityName, IDictionary<string, object?> row)
         {
             IDictionary<string, object?> _row = _Update(entityName, row!);
 
@@ -129,7 +128,7 @@ WHERE " + id + " = @update_" + i + @";
         }
 
 
-        public EntityPersist UpdateIds(string _entityName, Dictionary<string, object?> row, params object[] ids)
+        public PersistContext UpdateIds(string _entityName, Dictionary<string, object?> row, params object[] ids)
         {
             IDictionary<string, object?> _row = _Update(_entityName, row);
 
@@ -164,12 +163,12 @@ WHERE " + id + " = @update_" + i + @";
             return this;
         }
 
-        public EntityPersist UpdateField(EntityData data , string fieldName)
+        public PersistContext UpdateField(EntityData data , string fieldName)
         {
             return UpdateFieldIds(data.entityName, fieldName, data.GetPropertyValue(fieldName), data.GetPropertyValue(Db.config.id));
         }
 
-        public EntityPersist UpdateField(EntityData data, string fieldName, object? newValue)
+        public PersistContext UpdateField(EntityData data, string fieldName, object? newValue)
         {
             UpdateFieldIds(data.entityName, fieldName, newValue, data.GetPropertyValue(Db.config.id));
             data.SetPropertyValue(fieldName, newValue);
@@ -185,7 +184,7 @@ WHERE " + id + " = @update_" + i + @";
         /// <param name="id">Identificacion de la fila a actualizar</param>
         /// <param name="_entityName">Nombre de la entidad, si no se especifica se toma el atributo</param>
         /// <returns>Mismo objeto</returns>
-        public EntityPersist UpdateFieldIds(string _entityName, string key, object? value, params object[] ids)
+        public PersistContext UpdateFieldIds(string _entityName, string key, object? value, params object[] ids)
         {
             Dictionary<string, object?> row = new Dictionary<string, object?>()
             {
@@ -202,14 +201,14 @@ WHERE " + id + " = @update_" + i + @";
         /// <param name="id">Identificacion de la fila a actualizar</param>
         /// <param name="_entityName">Nombre de la entidad, si no se especifica se toma el atributo</param>
         /// <returns>Mismo objeto</returns>
-        public EntityPersist UpdateValueAll(string _entityName, string key, object value)
+        public PersistContext UpdateValueAll(string _entityName, string key, object value)
         {
             Dictionary<string, object> row = new Dictionary<string, object>() { { key, value } };
             object[] ids = Db.Sql(_entityName).Fields(Db.config.id).Size(0).Column<object>().ToArray();
             return (ids.Count() > 0) ? UpdateIds(_entityName, row, ids) : this;
         }
 
-        public EntityPersist UpdateValueWhere(string _entityName, string key, object value, string where, IDictionary<string, object>? parameters = null)
+        public PersistContext UpdateValueWhere(string _entityName, string key, object value, string where, IDictionary<string, object>? parameters = null)
         {
             var q = Db.Sql(_entityName).Where(where);
             if (!parameters.IsNoE())
@@ -221,7 +220,7 @@ WHERE " + id + " = @update_" + i + @";
             return this;
         }
 
-        public EntityPersist Update(EntityData data)
+        public PersistContext Update(EntityData data)
         {
             return Update(data.entityName, data.ToDict()!);
         }
@@ -234,7 +233,7 @@ WHERE " + id + " = @update_" + i + @";
         /// <param name="source">Fuente con todos los valores sin actualizar</param>
         /// <param name="_entityName">Opcional nombre de la entidad, si no existe toma el atributo</param>
         /// <returns>Mismo objeto</returns>
-        public EntityPersist UpdateValueRel(string _entityName, string key, object? value, IDictionary<string, object?> source)
+        public PersistContext UpdateValueRel(string _entityName, string key, object? value, IDictionary<string, object?> source)
         {
             string idKey = Db.config.id;
             if (key.Contains(Db.config.separator))
@@ -250,7 +249,7 @@ WHERE " + id + " = @update_" + i + @";
         }
 
 
-        public EntityPersist InsertIfNotExists(EntityData data)
+        public PersistContext InsertIfNotExists(EntityData data)
         {
             data.Reset();
 
@@ -271,14 +270,14 @@ WHERE " + id + " = @update_" + i + @";
 
         /// <summary>Insercion de EntityVal</summary>
         /// <remarks>Define id si no existe</remarks>
-        public EntityPersist Insert(EntityData data)
+        public PersistContext Insert(EntityData data)
         {
             return Insert(data.entityName, data.ToDict()!);
         }
 
         /// <summary>Comportamiento basico de insercion</summary>
         /// <remarks>Debe estar definido el id</remarks>
-        public EntityPersist Insert(string _entityName, IDictionary<string, object?> row)
+        public PersistContext Insert(string _entityName, IDictionary<string, object?> row)
         {
             count++;
             string i = count.ToString();
@@ -314,7 +313,7 @@ VALUES (";
             return sql;
         }
 
-        public EntityPersist Persist(EntityData data)
+        public PersistContext Persist(EntityData data)
         {
             data.Reset();
 
@@ -356,7 +355,7 @@ VALUES (";
         }
 
   
-        public EntityPersist PersistCondition(EntityData data, object? condition)
+        public PersistContext PersistCondition(EntityData data, object? condition)
         {
             data.Reset();
 
@@ -383,13 +382,13 @@ VALUES (";
         }
 
 
-        public EntityPersist AddTo(List<EntityPersist> persists)
+        public PersistContext AddTo(List<PersistContext> persists)
         {
             persists.Add(this);
             return this;
         }
 
-        public EntityPersist AddToIfSql(List<EntityPersist> persists)
+        public PersistContext AddToIfSql(List<PersistContext> persists)
         {
             if (!this.Sql().IsNoE())
                 persists.Add(this);
@@ -398,7 +397,7 @@ VALUES (";
         }
 
         /// <summary> Si la comparación es diferente, no actualiza! sino actualiza todo! </summary>
-        public EntityPersist PersistCompare(EntityData data, CompareParams compare)
+        public PersistContext PersistCompare(EntityData data, CompareParams compare)
         {
             data.Reset();
 
@@ -432,7 +431,7 @@ VALUES (";
             return Insert(data);
         }
 
-        public EntityPersist TransferOm(string entityName, object origenId, object destinoId)
+        public PersistContext TransferOm(string entityName, object origenId, object destinoId)
         {
             List<Field> fieldsOmPersona = Db.Entity(entityName).FieldsOm();
             foreach (var field in fieldsOmPersona)

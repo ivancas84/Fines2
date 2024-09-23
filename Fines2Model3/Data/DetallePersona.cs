@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "detalle_persona";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -64,7 +65,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _asunto; }
             set { if( _asunto != value) { _asunto = value; NotifyPropertyChanged(nameof(asunto)); } }
         }
-        //detalle_persona.archivo _o:o file.id
+        //detalle_persona.archivo _m:o file.id
         protected File? _archivo_ = null;
         public File? archivo_
         {
@@ -76,7 +77,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //detalle_persona.persona _o:o persona.id
+        //detalle_persona.persona _m:o persona.id
         protected Persona? _persona_ = null;
         public Persona? persona_
         {

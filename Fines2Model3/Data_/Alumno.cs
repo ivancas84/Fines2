@@ -1,20 +1,13 @@
-﻿using SqlOrganize;
-using SqlOrganize.CollectionUtils;
+﻿using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql;
-using SqlOrganize.Sql.Fines2Model3;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Fines2Model3.Data_
+namespace SqlOrganize.Sql.Fines2Model3
 {
     public partial class Alumno : EntityData
     {
         public void GenerarCalificaciones()
         {
-            List<EntityPersist> persists = new();
+            List<PersistContext> persists = new();
 
             if (IsNullOrEmpty("id", "plan", "anio_ingreso", "semestre_ingreso"))
                 throw new Exception("No se encuentran definidos los datos principales del alumno para generar las calificaciones.");

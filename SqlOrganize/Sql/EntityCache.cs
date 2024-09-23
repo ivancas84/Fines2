@@ -110,10 +110,26 @@ namespace SqlOrganize.Sql
             return response;
         }
 
-        public void ClearAndAddDataToOC<T>(ObservableCollection<T> oc) where T : EntityData, new()
+        public ObservableCollection<T> Datas<T>() where T : EntityData, new()
         {
             var source = Dicts();
-            Db.ClearAndAddDataToOC(source, oc);
+            ObservableCollection < T > oc = new();
+
+            for (var i = 0; i < source.Count(); i++)
+            {
+                T obj = Db.ToData<T>(source.ElementAt(i));
+                obj.Index = i;
+                oc.Add(obj);
+            }
+
+            return oc;
+        }
+
+
+        public void AddDataToClearOC<T>(ObservableCollection<T> oc) where T : EntityData, new()
+        {
+            var source = Dicts();
+            Db.AddDataToClearOC(source, oc);
         }
 
         /// <summary>

@@ -3,7 +3,7 @@ using System.Configuration;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    static class Context
+    public static class Context
     {
         public static DbMy db;
 

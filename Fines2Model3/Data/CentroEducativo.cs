@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "centro_educativo";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -46,7 +47,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _observaciones; }
             set { if( _observaciones != value) { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); } }
         }
-        //centro_educativo.domicilio _o:o domicilio.id
+        //centro_educativo.domicilio _m:o domicilio.id
         protected Domicilio? _domicilio_ = null;
         public Domicilio? domicilio_
         {

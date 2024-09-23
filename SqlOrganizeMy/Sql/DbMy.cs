@@ -34,7 +34,7 @@ namespace SqlOrganize.Sql
             */
         }
 
-        public override EntityPersist Persist()
+        public override PersistContext Persist()
         {
             return new EntityPersistMy(this);
         }

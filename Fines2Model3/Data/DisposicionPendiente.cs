@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "disposicion_pendiente";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -40,7 +41,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _modo; }
             set { if( _modo != value) { _modo = value; NotifyPropertyChanged(nameof(modo)); } }
         }
-        //disposicion_pendiente.disposicion _o:o disposicion.id
+        //disposicion_pendiente.disposicion _m:o disposicion.id
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {
@@ -52,7 +53,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //disposicion_pendiente.alumno _o:o alumno.id
+        //disposicion_pendiente.alumno _m:o alumno.id
         protected Alumno? _alumno_ = null;
         public Alumno? alumno_
         {

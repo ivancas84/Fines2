@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "calificacion";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -100,7 +101,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _archivado; }
             set { if( _archivado != value) { _archivado = value; NotifyPropertyChanged(nameof(archivado)); } }
         }
-        //calificacion.curso _o:o curso.id
+        //calificacion.curso _m:o curso.id
         protected Curso? _curso_ = null;
         public Curso? curso_
         {
@@ -112,7 +113,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //calificacion.alumno _o:o alumno.id
+        //calificacion.alumno _m:o alumno.id
         protected Alumno? _alumno_ = null;
         public Alumno? alumno_
         {
@@ -124,7 +125,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //calificacion.disposicion _o:o disposicion.id
+        //calificacion.disposicion _m:o disposicion.id
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {

@@ -59,7 +59,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
             var list = ContainerApp.db.BusquedaAproximadaComision(text).Dicts();
 
-            ContainerApp.db.ClearAndAddDataToOC(list, comisionOC);
+            ContainerApp.db.AddDataToClearOC(list, comisionOC);
 
             cbxComision.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
         }
@@ -94,7 +94,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             var cursosData = ContainerApp.db.Sql("curso").Equal("$comision", comision.id).Cache().Dicts();
             var tomaData = ContainerApp.db.TomaAprobadaDeComisionQuery(comision.id).Cache().Dicts();
             cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
-            ContainerApp.db.ClearAndAddDataToOC(cursosData, cursoOC);
+            ContainerApp.db.AddDataToClearOC(cursosData, cursoOC);
 
             var idsAsignaturas = cursosData.ColOfVal<string>("asignatura-id").ToList();
 
@@ -149,7 +149,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
                 }
                 asignacionOC.Add(itemObj);
             }
-            //ContainerApp.db.ClearAndAddDataToOC(data, alumnos3OC);
+            //ContainerApp.db.AddDataToClearOC(data, alumnos3OC);
         
         }
         catch (Exception ex)
@@ -178,7 +178,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
 
     #region tab registro alumnos
-    private IEnumerable<EntityPersist> persists;
+    private IEnumerable<PersistContext> persists;
     private ObservableCollection<EntityData> ocDataPersist = new();
 
     private void btnProcesarAlumnos_Click(object sender, RoutedEventArgs e)
@@ -242,7 +242,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             if (!asignacionOC.Any())
                 throw new Exception("La lista de alumnos esta vacía");
 
-            EntityPersist persist = ContainerApp.db.Persist();
+            PersistContext persist = ContainerApp.db.Persist();
 
             foreach (AsignacionConAsignaturasItem asiObj in asignacionOC)
             {
@@ -276,7 +276,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             var idAlumnosExistentes = ContainerApp.db.AsignacionesDeComisionesSql(comObj.comision_siguiente).Cache().Dicts().DictOfDictByKeysValue("id","alumno");
 
 
-            EntityPersist persist = ContainerApp.db.Persist();
+            PersistContext persist = ContainerApp.db.Persist();
 
             foreach (AsignacionConAsignaturasItem asiObj in asignacionOC)
             {

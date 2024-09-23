@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "alumno";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -190,7 +191,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //alumno.plan _o:o plan.id
+        //alumno.plan _m:o plan.id
         protected Plan? _plan_ = null;
         public Plan? plan_
         {
@@ -202,7 +203,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //alumno.resolucion_inscripcion _o:o resolucion.id
+        //alumno.resolucion_inscripcion _m:o resolucion.id
         protected Resolucion? _resolucion_inscripcion_ = null;
         public Resolucion? resolucion_inscripcion_
         {

@@ -176,5 +176,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Param("@0", idAlumnos.ToList()).
                 Param("@1", idPlanificacion);
         }
+
+
     }
 }

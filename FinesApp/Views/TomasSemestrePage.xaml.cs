@@ -26,7 +26,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     private ObservableCollection<Calendario> ocCalendario = new();
     private ObservableCollection<Toma> ocToma = new();
    
-    IEnumerable<EntityPersist>? persists;
+    IEnumerable<PersistContext>? persists;
 
     public TomasSemestrePage()
     {
@@ -42,7 +42,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         dgdResultadoGenerarContralor.ItemsSource = ocResultadoGenerarContralor;
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
         var data = ContainerApp.db.Sql("calendario").Cache().Dicts();
-        ContainerApp.db.ClearAndAddDataToOC(data, ocCalendario);
+        ContainerApp.db.AddDataToClearOC(data, ocCalendario);
     }
 
     #region OcToma
@@ -77,7 +77,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         }
 
         var tomaData = ContainerApp.db.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
-        ContainerApp.db.ClearAndAddDataToOC(tomaData, ocToma);
+        ContainerApp.db.AddDataToClearOC(tomaData, ocToma);
     }
 
     #region Pestaña principal
@@ -221,7 +221,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     #endregion
 
     #region Tab Generar Tomas Pdf
-    private ObservableCollection<EntityData> ocResultadoGenerarTomasPDF = new();
+    private ObservableCollection<Toma> ocResultadoGenerarTomasPDF = new();
     private void btnGenerarTomasPDF_Click(object sender, RoutedEventArgs e)
     {
         QRCodeGenerator qrGenerator = new QRCodeGenerator();
@@ -231,10 +231,12 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         ocResultadoGenerarTomasPDF.Clear();
         for(var i = 0; i < tomasData.Count(); i++)
         {
-            var obj = new EntityData();
-            obj.Index = 0;
+            var toma = new Toma();
+            toma.Index = 0;
             try
             {
+                toma = new Toma();
+
                 TomaQrItem toma = ContainerApp.db.ToData<TomaQrItem>(tomasData.ElementAt(i));
                 obj.Label = toma.Label;
                 QRCodeData qrCodeData = qrGenerator.CreateQrCode(ContainerApp.config.urlValidarToma + toma.id, QRCodeGenerator.ECCLevel.Q);

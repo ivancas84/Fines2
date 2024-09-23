@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "disposicion";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -40,7 +41,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _orden_informe_coordinacion_distrital; }
             set { if( _orden_informe_coordinacion_distrital != value) { _orden_informe_coordinacion_distrital = value; NotifyPropertyChanged(nameof(orden_informe_coordinacion_distrital)); } }
         }
-        //disposicion.asignatura _o:o asignatura.id
+        //disposicion.asignatura _m:o asignatura.id
         protected Asignatura? _asignatura_ = null;
         public Asignatura? asignatura_
         {
@@ -52,7 +53,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //disposicion.planificacion _o:o planificacion.id
+        //disposicion.planificacion _m:o planificacion.id
         protected Planificacion? _planificacion_ = null;
         public Planificacion? planificacion_
         {

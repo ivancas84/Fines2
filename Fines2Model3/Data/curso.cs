@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "curso";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -70,13 +71,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _observaciones; }
             set { if( _observaciones != value) { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); } }
         }
-        protected string? _asignatura = null;
-        public string? asignatura
-        {
-            get { return _asignatura; }
-            set { if( _asignatura != value) { _asignatura = value; NotifyPropertyChanged(nameof(asignatura)); } }
-        }
-        //curso.comision _o:o comision.id
+        //curso.comision _m:o comision.id
         protected Comision? _comision_ = null;
         public Comision? comision_
         {
@@ -88,7 +83,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        //curso.disposicion _o:o disposicion.id
+        //curso.disposicion _m:o disposicion.id
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {
@@ -97,18 +92,6 @@ namespace SqlOrganize.Sql.Fines2Model3
                 _disposicion_ = value;
                 disposicion = (value != null) ? value.id : null;
                 NotifyPropertyChanged(nameof(disposicion_));
-            }
-        }
-
-        //curso.asignatura _o:o asignatura.id
-        protected Asignatura? _asignatura_ = null;
-        public Asignatura? asignatura_
-        {
-            get { return _asignatura_; }
-            set {
-                _asignatura_ = value;
-                asignatura = (value != null) ? value.id : null;
-                NotifyPropertyChanged(nameof(asignatura_));
             }
         }
 

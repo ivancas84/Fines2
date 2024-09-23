@@ -14,6 +14,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             _entityName = "email";
             _db = Context.db;
+            Default();
         }
 
         protected string? _id = null;
@@ -52,7 +53,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             get { return _persona; }
             set { if( _persona != value) { _persona = value; NotifyPropertyChanged(nameof(persona)); } }
         }
-        //email.persona _o:o persona.id
+        //email.persona _m:o persona.id
         protected Persona? _persona_ = null;
         public Persona? persona_
         {

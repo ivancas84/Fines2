@@ -9,16 +9,16 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>
         /// <remarks> Los datos se obtienen desde el html procesado con pagemanipulator de https://programafines.ar/inicial/index4.php?a=46</remarks>
-        public static IEnumerable<EntityPersist> PersistTomasPfHtml(Calendario calendarioObj, string data)
+        public static IEnumerable<PersistContext> PersistTomasPfHtml(Calendario calendarioObj, string data)
         {
-            List<EntityPersist> persists = new();
+            List<PersistContext> persists = new();
 
             var pfidComisiones = ComisionDAO.ComisionesAutorizadasDeCalendarioSql(calendarioObj.id).Cache().Dicts().ColOfVal<string>("pfid");
             var docentes = JsonConvert.DeserializeObject<List<DocentePfItem>>(data)!;
             
             foreach (DocentePfItem docenteItem in docentes)
             {
-                EntityPersist persist = Context.db.Persist();
+                PersistContext persist = Context.db.Persist();
 
                 try
                 {
@@ -105,9 +105,9 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>
         /// <remarks> Los datos se obtienen desde un xlsx de https://programafines.ar/inicial/index4.php?a=46</remarks>
-        public static IEnumerable<EntityPersist> PersistTomasPf(Calendario calendarioObj, string data)
+        public static IEnumerable<PersistContext> PersistTomasPf(Calendario calendarioObj, string data)
         {
-            List<EntityPersist> persists = new();
+            List<PersistContext> persists = new();
 
             string[] headers = { "persona__apellidos", "persona__nombres", "persona__numero_documento", "persona__descripcion_domicilio", "persona__localidad", "persona__fecha_nacimiento", "persona__telefono", "persona__email_abc", "comision__pfid", "descripcion_asignatura", "CENS" };
 
@@ -117,7 +117,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             for (var j = 0; j < _data.Length; j++)
             {
-                EntityPersist persist = db.Persist();
+                PersistContext persist = db.Persist();
 
                 try
                 {

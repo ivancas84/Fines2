@@ -88,7 +88,7 @@ namespace SqlOrganize.Sql
 
         #region EntityPersist + Query
         /// <summary>Ejecución persistencia</summary>
-        public static EntityPersist Exec(this EntityPersist persist)
+        public static PersistContext Exec(this PersistContext persist)
         {
             if (persist.Sql().IsNoE())
                 return persist;
@@ -109,13 +109,13 @@ namespace SqlOrganize.Sql
             return persist;
         }
 
-        public static EntityPersist Transaction(this EntityPersist persist)
+        public static PersistContext Transaction(this PersistContext persist)
         {
             return persist.Exec();
         }
 
         /// <summary>Ejecución de IEnumerable de persistencias</summary>
-        public static IEnumerable<EntityPersist> Exec(this IEnumerable<EntityPersist> persists)
+        public static IEnumerable<PersistContext> Exec(this IEnumerable<PersistContext> persists)
         {
             if (persists.IsNoE())
                 return persists;
@@ -125,7 +125,7 @@ namespace SqlOrganize.Sql
             query.BeginTransaction();
             try
             {
-                foreach (EntityPersist persist in persists)
+                foreach (PersistContext persist in persists)
                 {
                     if (persist.Sql().IsNoE())
                         continue;
@@ -143,14 +143,14 @@ namespace SqlOrganize.Sql
             return persists;
         }
 
-        public static IEnumerable<EntityPersist> Transaction(this IEnumerable<EntityPersist> persists)
+        public static IEnumerable<PersistContext> Transaction(this IEnumerable<PersistContext> persists)
         {
             return persists.Exec();
         }
         #endregion
 
         #region EntityPersist + Cache
-        public static void RemoveCache(this IEnumerable<EntityPersist> persists)
+        public static void RemoveCache(this IEnumerable<PersistContext> persists)
         {
 
             if (persists.IsNoE())
@@ -158,7 +158,7 @@ namespace SqlOrganize.Sql
 
             persists.ElementAt(0).RemoveCacheQueries();
 
-            foreach (EntityPersist persist in persists)
+            foreach (PersistContext persist in persists)
                 persist.RemoveCacheDetail();
         }
 
@@ -182,7 +182,7 @@ namespace SqlOrganize.Sql
             return cache;
         }
 
-        public static EntityPersist RemoveCacheQueries(this EntityPersist persist)
+        public static PersistContext RemoveCacheQueries(this PersistContext persist)
         {
             persist.Db.cache!.RemoveCacheQueries();
             return persist;
@@ -191,26 +191,26 @@ namespace SqlOrganize.Sql
         /// <summary>
         /// Remover de la cache todas las consultas y las entidades indicadas en el parametro
         /// </summary>
-        public static EntityPersist RemoveCache(this EntityPersist persist)
+        public static PersistContext RemoveCache(this PersistContext persist)
         {
             return persist.RemoveCacheQueries().RemoveCacheDetail();
         }
 
-        public static EntityPersist RemoveCacheDetail(this EntityPersist persist)
+        public static PersistContext RemoveCacheDetail(this PersistContext persist)
         {
             foreach (var d in persist.detail)
                 persist.Db.cache!.Remove(d.entityName + d.id);
             return persist;
         }
 
-        public static EntityPersist RemoveCache(this EntityPersist persist, string entityName, object id)
+        public static PersistContext RemoveCache(this PersistContext persist, string entityName, object id)
         {
             persist.RemoveCacheQueries();
             persist.Db.cache!.Remove(entityName + id);
             return persist;
         }
 
-        public static EntityPersist RemoveCache(this EntityPersist persist, EntityData data)
+        public static PersistContext RemoveCache(this PersistContext persist, EntityData data)
         {
             persist.RemoveCacheQueries();
             persist.Db.cache!.Remove(data.entityName + data.GetPropertyValue(persist.Db.config.id));
@@ -246,7 +246,7 @@ namespace SqlOrganize.Sql
         }
 
 
-        public static void ClearAndAddDataToOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : EntityData, new()
+        public static void AddDataToClearOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : EntityData, new()
         {
             oc.Clear();
             db.AddDataToOC(source, oc);
