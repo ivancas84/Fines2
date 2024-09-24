@@ -11,7 +11,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 {
     public partial class Comision : EntityData
     {
-        public PersistContext GenerarCursos()
+        public PersistContext PersistCursos()
         {
             if (IsNullOrEmpty("id", "planificacion"))
                 throw new Exception("No se pueden generar los cursos: No está correctamente definido el id o la planificación");
@@ -103,6 +103,68 @@ namespace SqlOrganize.Sql.Fines2Model3
             string hora_fin = !horasFin.IsNoE() ? ((TimeSpan)horasFin[0]!).ToString(@"hh\:mm") : "?";
             return dias + " " + hora_inicio + " " + hora_fin;
         }
+
+        /// <summary>Persistencia de asignaciones a partir de datos definidos en un texto</summary>
+        /// <returns>persists y asignaciones persistidas</returns>
+        public IEnumerable<PersistContext> PersistAsignaciones(string text, params string[]? headers)
+        {
+            if (headers.IsNoE())
+                headers = ["apellidos", "nombres", "numero_documento", "genero", "fecha_nacimiento", "telefono", "email"];
+
+            List<PersistContext> persists = new();
+
+            string[] _data = text.Split("\r\n");
+            if (_data.IsNoE())
+                throw new Exception("Datos vacios");
+
+            for (var j = 0; j < _data.Length; j++)
+            {
+                PersistContext persist = Context.db.Persist();
+
+                try
+                {
+                    IDictionary<string, object?> dict = _data[j].DictFromText(headers!);
+
+                    Persona persona = new Persona();
+                    persona.SetNotNull(dict); 
+
+                    CompareParams compare = new CompareParams
+                    {
+                        FieldsToCompare = ["nombres", "apellidos", "numero_documento"],
+                    };
+
+                    persona.PersistCompare(persist, compare);
+
+                    Alumno alumno = new Alumno();
+                    alumno.persona_ = persona;
+                    alumno.anio_ingreso = planificacion_!.anio;
+                    alumno.semestre_ingreso = Convert.ToInt16(planificacion_!.semestre);
+                    alumno.plan_ = planificacion_.plan_;
+                    alumno.InsertIfNotExists(persist);
+
+                    AlumnoComision asignacion = new AlumnoComision();
+                    asignacion.alumno_ = alumno;
+                    asignacion.comision_ = this;
+                    asignacion.InsertIfNotExists(persist);
+
+                    var otrasAsignaciones = AsignacionDAO.OtrasAsignacionesDeAlumnoSql(alumno.id!, id!).Cache().Datas<AlumnoComision>();
+                    foreach (var oa in otrasAsignaciones)
+                        persist.logging.AddLog("alumno_comision", "Asignacion existente " + oa.Label, "PersistAsignacionesComisionText", Logging.Level.Warning);
+
+                    persist.AddTo(persists);
+                }
+                catch (Exception ex)
+                {
+                    persist.logging.AddLog("alumno_comision", ex.Message, "PersistAsignacionesComisionText", Logging.Level.Error);
+                }
+
+            }
+
+            return persists;
+        }
+
+
+
 
 
     }

@@ -358,6 +358,11 @@ namespace SqlOrganize.Sql
 
         }
 
+        public T ShallowCopy<T>()
+        {
+            return (T)MemberwiseClone();
+        }
+
         /// <summary> Resetear valores </summary>
         /// <remarks> El reseteo tiene lugar por ejemplo para mejorar la sintaxis (eliminar espacios en blanco) o cuando un valor depende de otros </remarks>
         public virtual void Reset()
@@ -564,9 +569,10 @@ namespace SqlOrganize.Sql
         #endregion
 
         #region Persistencia
-        public PersistContext Insert()
+        public object Insert()
         {
-            return db.Persist().Insert(this);
+            db.Persist().Insert(this);
+            return this.Get(db.config.id);
         }
 
         public PersistContext Update()
@@ -585,9 +591,10 @@ namespace SqlOrganize.Sql
             return persist.UpdateField(this, fieldName);
         }
 
-        public void Insert(PersistContext persist)
+        public object Insert(PersistContext persist)
         {
             persist.Insert(this);
+            return Get(db.config.id)!;
         }
 
         public void InsertIfNotExists(PersistContext persist)
@@ -652,10 +659,10 @@ namespace SqlOrganize.Sql
                 return Update();
         }
 
-        public EntityData PersistCompare(PersistContext persist, CompareParams compare)
+        public object PersistCompare(PersistContext persist, CompareParams compare)
         {
             persist.PersistCompare(this, compare);
-            return this;
+            return Get(db.config.id)!;
         }
 
         public PersistContext? PersistCompare(CompareParams compare)

@@ -440,7 +440,6 @@ VALUES (";
 
                 data.SetPropertyValue(Db.config.id, row[Db.config.id]);
                 
-
                 return Update(data);
             }
 

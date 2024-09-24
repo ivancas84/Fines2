@@ -4,9 +4,9 @@ namespace SqlOrganize.Sql.Fines2Model3
 {
     public static class TomaDAO
     {
-        public static EntitySql TomasAprobadasDeCalendarioSql(this Db db, object idCalendario)
+        public static EntitySql TomasAprobadasDeCalendarioSql(object idCalendario)
         {
-            return db.Sql("toma")
+            return Context.db.Sql("toma")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -17,9 +17,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Param("@0", idCalendario);
         }
 
-        public static EntitySql TomaAprobadaDeCursoQuery(this Db db, params object[] idCurso)
+        public static EntitySql TomaAprobadaDeCursoQuery(params object[] idCurso)
         {
-            return db.Sql("toma")
+            return Context.db.Sql("toma")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -30,9 +30,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Param("@0", idCurso);
         }
 
-        public static EntitySql TomaAprobadaDeComisionQuery(this Db db, params object[] idComisiones)
+        public static EntitySql TomaAprobadaDeComisionQuery(params object[] idComisiones)
         {
-            return db.Sql("toma")
+            return Context.db.Sql("toma")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -43,9 +43,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Param("@0", idComisiones);
         }
 
-        public static EntitySql TomasPasarDeCalendarioSql(this Db db, object idCalendario)
+        public static EntitySql TomasPasarDeCalendarioSql(object idCalendario)
         {
-            return db.Sql("toma")
+            return Context.db.Sql("toma")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -56,11 +56,11 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Param("@0", idCalendario);
         }
 
-        public static IEnumerable<object> IdTomasPasarSinPlanillaDocenteDeCalendario(this Db db, object idCalendario)
+        public static IEnumerable<object> IdTomasPasarSinPlanillaDocenteDeCalendario(object idCalendario)
         {
-            IEnumerable<object> id_tomas = db.TomasPasarDeCalendarioSql(idCalendario).Cache().Dicts().ColOfVal<object>("id");
+            IEnumerable<object> id_tomas = TomasPasarDeCalendarioSql(idCalendario).Cache().Dicts().ColOfVal<object>("id");
 
-            IEnumerable<object> id_tomas_con_planilla_docente = db.Sql("asignacion_planilla_docente")
+            IEnumerable<object> id_tomas_con_planilla_docente = Context.db.Sql("asignacion_planilla_docente")
                 .Fields()
                 .Size(0)
                 .Where("$calendario__id = @0").

@@ -4,7 +4,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 {
     public static class AsignacionDAO
     {
-
+    
+        public static EntitySql OtrasAsignacionesDeAlumnoSql(object idAlumno, object idComision)
+        {
+            return Context.db.Sql("alumno_comision").Where("$alumno = @0 AND $comision != @1").
+                       Param("@0", idAlumno).Param("@1", idComision);
+        }
         public static EntitySql AsignacionCursoDniSql(object curso, object dni)
         {
             string subSql = "SELECT comision FROM curso WHERE id = @0";
