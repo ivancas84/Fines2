@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtPsmscTicketTags : SqlOrganize.Sql.EntityData
+    public class WpwtPsmscTicketTags : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_psmsc_ticket_tags";

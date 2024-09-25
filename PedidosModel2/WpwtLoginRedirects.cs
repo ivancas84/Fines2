@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtLoginRedirects : SqlOrganize.Sql.EntityData
+    public class WpwtLoginRedirects : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_login_redirects";

@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Horario : EntityData
+    public partial class Horario : Entity
     {
 
         public Horario()
@@ -17,59 +17,108 @@ namespace SqlOrganize.Sql.Fines2Model3
             Default();
         }
 
+        #region id
         protected string? _id = null;
         public string? id
         {
             get { return _id; }
             set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
+        #endregion
+
+        #region hora_inicio
         protected DateTime? _hora_inicio = null;
         public DateTime? hora_inicio
         {
             get { return _hora_inicio; }
             set { if( _hora_inicio != value) { _hora_inicio = value; NotifyPropertyChanged(nameof(hora_inicio)); } }
         }
+        #endregion
+
+        #region hora_fin
         protected DateTime? _hora_fin = null;
         public DateTime? hora_fin
         {
             get { return _hora_fin; }
             set { if( _hora_fin != value) { _hora_fin = value; NotifyPropertyChanged(nameof(hora_fin)); } }
         }
+        #endregion
+
+        #region curso
         protected string? _curso = null;
         public string? curso
         {
             get { return _curso; }
             set { if( _curso != value) { _curso = value; NotifyPropertyChanged(nameof(curso)); } }
         }
+        #endregion
+
+        #region dia
         protected string? _dia = null;
         public string? dia
         {
             get { return _dia; }
             set { if( _dia != value) { _dia = value; NotifyPropertyChanged(nameof(dia)); } }
         }
-        //horario.curso _m:o curso.id
+        #endregion
+
+        #region curso (fk horario.curso _ m:o curso.id)
         protected Curso? _curso_ = null;
         public Curso? curso_
         {
             get { return _curso_; }
             set {
+                if(value != null && AutoAddRef)
+                {
+                    _curso_!.Horario_.Remove(this);
+                }
                 _curso_ = value;
-                curso = (value != null) ? value.id : null;
+
+                if(value != null)
+                {
+                    curso = value.id;
+                    if(AutoAddRef && !_curso_!.Horario_.Contains(this))
+                    {
+                        _curso_!.Horario_.Add(this);
+                    }
+                }
+                else
+                {
+                    curso = null;
+                }
                 NotifyPropertyChanged(nameof(curso_));
             }
         }
+        #endregion
 
-        //horario.dia _m:o dia.id
+        #region dia (fk horario.dia _ m:o dia.id)
         protected Dia? _dia_ = null;
         public Dia? dia_
         {
             get { return _dia_; }
             set {
+                if(value != null && AutoAddRef)
+                {
+                    _dia_!.Horario_.Remove(this);
+                }
                 _dia_ = value;
-                dia = (value != null) ? value.id : null;
+
+                if(value != null)
+                {
+                    dia = value.id;
+                    if(AutoAddRef && !_dia_!.Horario_.Contains(this))
+                    {
+                        _dia_!.Horario_.Add(this);
+                    }
+                }
+                else
+                {
+                    dia = null;
+                }
                 NotifyPropertyChanged(nameof(dia_));
             }
         }
+        #endregion
 
     }
 }

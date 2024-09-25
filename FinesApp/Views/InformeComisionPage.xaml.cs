@@ -179,7 +179,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
     #region tab registro alumnos
     private IEnumerable<PersistContext> persists;
-    private ObservableCollection<EntityData> ocDataPersist = new();
+    private ObservableCollection<Entity> ocDataPersist = new();
 
     private void btnProcesarAlumnos_Click(object sender, RoutedEventArgs e)
     {
@@ -188,7 +188,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             persists = ContainerApp.db.PersistAsignacionesComisionText(cbxComision.SelectedValue, tbxAlumnos.Text);
             foreach(var p in persists)
             {
-                var resultObj = ContainerApp.db.Data<EntityData>();
+                var resultObj = ContainerApp.db.Data<Entity>();
                 resultObj.Label = p.logging.ToString();
                 ocDataPersist.Add(resultObj);
             }

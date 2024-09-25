@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Disposicion : EntityData
+    public partial class Disposicion : Entity
     {
 
         public Disposicion()
@@ -17,65 +17,115 @@ namespace SqlOrganize.Sql.Fines2Model3
             Default();
         }
 
+        #region id
         protected string? _id = null;
         public string? id
         {
             get { return _id; }
             set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
+        #endregion
+
+        #region asignatura
         protected string? _asignatura = null;
         public string? asignatura
         {
             get { return _asignatura; }
             set { if( _asignatura != value) { _asignatura = value; NotifyPropertyChanged(nameof(asignatura)); } }
         }
+        #endregion
+
+        #region planificacion
         protected string? _planificacion = null;
         public string? planificacion
         {
             get { return _planificacion; }
             set { if( _planificacion != value) { _planificacion = value; NotifyPropertyChanged(nameof(planificacion)); } }
         }
+        #endregion
+
+        #region orden_informe_coordinacion_distrital
         protected int? _orden_informe_coordinacion_distrital = null;
         public int? orden_informe_coordinacion_distrital
         {
             get { return _orden_informe_coordinacion_distrital; }
             set { if( _orden_informe_coordinacion_distrital != value) { _orden_informe_coordinacion_distrital = value; NotifyPropertyChanged(nameof(orden_informe_coordinacion_distrital)); } }
         }
-        //disposicion.asignatura _m:o asignatura.id
+        #endregion
+
+        #region asignatura (fk disposicion.asignatura _ m:o asignatura.id)
         protected Asignatura? _asignatura_ = null;
         public Asignatura? asignatura_
         {
             get { return _asignatura_; }
             set {
+                if(value != null && AutoAddRef)
+                {
+                    _asignatura_!.Disposicion_.Remove(this);
+                }
                 _asignatura_ = value;
-                asignatura = (value != null) ? value.id : null;
+
+                if(value != null)
+                {
+                    asignatura = value.id;
+                    if(AutoAddRef && !_asignatura_!.Disposicion_.Contains(this))
+                    {
+                        _asignatura_!.Disposicion_.Add(this);
+                    }
+                }
+                else
+                {
+                    asignatura = null;
+                }
                 NotifyPropertyChanged(nameof(asignatura_));
             }
         }
+        #endregion
 
-        //disposicion.planificacion _m:o planificacion.id
+        #region planificacion (fk disposicion.planificacion _ m:o planificacion.id)
         protected Planificacion? _planificacion_ = null;
         public Planificacion? planificacion_
         {
             get { return _planificacion_; }
             set {
+                if(value != null && AutoAddRef)
+                {
+                    _planificacion_!.Disposicion_.Remove(this);
+                }
                 _planificacion_ = value;
-                planificacion = (value != null) ? value.id : null;
+
+                if(value != null)
+                {
+                    planificacion = value.id;
+                    if(AutoAddRef && !_planificacion_!.Disposicion_.Contains(this))
+                    {
+                        _planificacion_!.Disposicion_.Add(this);
+                    }
+                }
+                else
+                {
+                    planificacion = null;
+                }
                 NotifyPropertyChanged(nameof(planificacion_));
             }
         }
+        #endregion
 
-        //calificacion.disposicion _m:o disposicion.id
+        #region Calificacion_ (ref calificacion.disposicion _m:o disposicion.id)
         public ObservableCollection<Calificacion> Calificacion_ { get; set; } = new ();
+        #endregion
 
-        //curso.disposicion _m:o disposicion.id
+        #region Curso_ (ref curso.disposicion _m:o disposicion.id)
         public ObservableCollection<Curso> Curso_ { get; set; } = new ();
+        #endregion
 
-        //disposicion_pendiente.disposicion _m:o disposicion.id
+        #region DisposicionPendiente_ (ref disposicion_pendiente.disposicion _m:o disposicion.id)
         public ObservableCollection<DisposicionPendiente> DisposicionPendiente_ { get; set; } = new ();
+        #endregion
 
-        //distribucion_horaria.disposicion _m:o disposicion.id
+        #region DistribucionHoraria_ (ref distribucion_horaria.disposicion _m:o disposicion.id)
         public ObservableCollection<DistribucionHoraria> DistribucionHoraria_ { get; set; } = new ();
+        #endregion
 
     }
 }

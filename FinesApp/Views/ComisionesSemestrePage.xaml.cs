@@ -132,7 +132,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 
 
     #region Pestaña Procesar Informe Global PF
-    ObservableCollection<EntityData> ocResultadoInformeGlobal = new();
+    ObservableCollection<Entity> ocResultadoInformeGlobal = new();
 
     private void btnProcesarInformeGlobalPF_Click(object sender, RoutedEventArgs e)
     {
@@ -146,7 +146,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
             ocResultadoInformeGlobal.Clear();
             for (var i = 0; i < persists.Count(); i++)
             {
-                EntityData obj = new();
+                Entity obj = new();
                 obj.Index = i;
                 obj.Label = persists.ElementAt(i).logging.ToString();
                 ocResultadoInformeGlobal.Add(obj);

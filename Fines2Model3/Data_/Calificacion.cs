@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Calificacion : EntityData
+    public partial class Calificacion : Entity
     {
         public string nota_aprobada { 
             get {
@@ -127,7 +127,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         public static Calificacion CreateCalificacionError(int id, string message, string nombres)
         {
             var calificacionError = new Calificacion();
-            calificacionError.IsError = true;
+            calificacionError.Status = "Error";
             calificacionError.Msg += "Id " + id + ": " + message;
             calificacionError.alumno_.persona_.nombres = nombres;
             return calificacionError;

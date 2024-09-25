@@ -1,6 +1,6 @@
 ﻿namespace SqlOrganize.Model
 {
-    public class Entity
+    public class EntityMetadata
     {
   
         public string name { get; set; }

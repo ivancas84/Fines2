@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Curso : EntityData
+    public partial class Curso : Entity
     {
 
         public Curso()
@@ -17,92 +17,156 @@ namespace SqlOrganize.Sql.Fines2Model3
             Default();
         }
 
+        #region id
         protected string? _id = null;
         public string? id
         {
             get { return _id; }
             set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
+        #endregion
+
+        #region horas_catedra
         protected int? _horas_catedra = null;
         public int? horas_catedra
         {
             get { return _horas_catedra; }
             set { if( _horas_catedra != value) { _horas_catedra = value; NotifyPropertyChanged(nameof(horas_catedra)); } }
         }
+        #endregion
+
+        #region ige
         protected string? _ige = null;
         public string? ige
         {
             get { return _ige; }
             set { if( _ige != value) { _ige = value; NotifyPropertyChanged(nameof(ige)); } }
         }
+        #endregion
+
+        #region comision
         protected string? _comision = null;
         public string? comision
         {
             get { return _comision; }
             set { if( _comision != value) { _comision = value; NotifyPropertyChanged(nameof(comision)); } }
         }
+        #endregion
+
+        #region alta
         protected DateTime? _alta = null;
         public DateTime? alta
         {
             get { return _alta; }
             set { if( _alta != value) { _alta = value; NotifyPropertyChanged(nameof(alta)); } }
         }
+        #endregion
+
+        #region descripcion_horario
         protected string? _descripcion_horario = null;
         public string? descripcion_horario
         {
             get { return _descripcion_horario; }
             set { if( _descripcion_horario != value) { _descripcion_horario = value; NotifyPropertyChanged(nameof(descripcion_horario)); } }
         }
+        #endregion
+
+        #region codigo
         protected string? _codigo = null;
         public string? codigo
         {
             get { return _codigo; }
             set { if( _codigo != value) { _codigo = value; NotifyPropertyChanged(nameof(codigo)); } }
         }
+        #endregion
+
+        #region disposicion
         protected string? _disposicion = null;
         public string? disposicion
         {
             get { return _disposicion; }
             set { if( _disposicion != value) { _disposicion = value; NotifyPropertyChanged(nameof(disposicion)); } }
         }
+        #endregion
+
+        #region observaciones
         protected string? _observaciones = null;
         public string? observaciones
         {
             get { return _observaciones; }
             set { if( _observaciones != value) { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); } }
         }
-        //curso.comision _m:o comision.id
+        #endregion
+
+        #region comision (fk curso.comision _ m:o comision.id)
         protected Comision? _comision_ = null;
         public Comision? comision_
         {
             get { return _comision_; }
             set {
+                if(value != null && AutoAddRef)
+                {
+                    _comision_!.Curso_.Remove(this);
+                }
                 _comision_ = value;
-                comision = (value != null) ? value.id : null;
+
+                if(value != null)
+                {
+                    comision = value.id;
+                    if(AutoAddRef && !_comision_!.Curso_.Contains(this))
+                    {
+                        _comision_!.Curso_.Add(this);
+                    }
+                }
+                else
+                {
+                    comision = null;
+                }
                 NotifyPropertyChanged(nameof(comision_));
             }
         }
+        #endregion
 
-        //curso.disposicion _m:o disposicion.id
+        #region disposicion (fk curso.disposicion _ m:o disposicion.id)
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {
             get { return _disposicion_; }
             set {
+                if(value != null && AutoAddRef)
+                {
+                    _disposicion_!.Curso_.Remove(this);
+                }
                 _disposicion_ = value;
-                disposicion = (value != null) ? value.id : null;
+
+                if(value != null)
+                {
+                    disposicion = value.id;
+                    if(AutoAddRef && !_disposicion_!.Curso_.Contains(this))
+                    {
+                        _disposicion_!.Curso_.Add(this);
+                    }
+                }
+                else
+                {
+                    disposicion = null;
+                }
                 NotifyPropertyChanged(nameof(disposicion_));
             }
         }
+        #endregion
 
-        //calificacion.curso _m:o curso.id
+        #region Calificacion_ (ref calificacion.curso _m:o curso.id)
         public ObservableCollection<Calificacion> Calificacion_ { get; set; } = new ();
+        #endregion
 
-        //horario.curso _m:o curso.id
+        #region Horario_ (ref horario.curso _m:o curso.id)
         public ObservableCollection<Horario> Horario_ { get; set; } = new ();
+        #endregion
 
-        //toma.curso _m:o curso.id
+        #region Toma_ (ref toma.curso _m:o curso.id)
         public ObservableCollection<Toma> Toma_ { get; set; } = new ();
+        #endregion
 
     }
 }

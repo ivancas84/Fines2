@@ -110,7 +110,7 @@ namespace SqlOrganize.Sql
             return Where(fieldName + " = " + fn).Param(fn, value);
         }
 
-        public EntitySql Search(EntityData data)
+        public EntitySql Search(Entity data)
         {
             var d = data.Dict();
             return Search(d);
@@ -134,7 +134,7 @@ namespace SqlOrganize.Sql
             return this;
         }
 
-        public EntitySql Unique(EntityData obj)
+        public EntitySql Unique(Entity obj)
         {
             var d = obj.ToDict();
             return Unique(d);

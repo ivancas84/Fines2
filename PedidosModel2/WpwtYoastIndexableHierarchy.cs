@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtYoastIndexableHierarchy : SqlOrganize.Sql.EntityData
+    public class WpwtYoastIndexableHierarchy : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_yoast_indexable_hierarchy";

@@ -32,9 +32,9 @@ namespace SqlOrganize.Sql
         /// <summary>
         /// Procesa atributo entities para generar el diccionario de entidades que seran utilizadas durante todo el proyecto
         /// </summary>
-        public Dictionary<string, Entity> Entities()
+        public Dictionary<string, EntityMetadata> Entities()
         {
-            return JsonConvert.DeserializeObject<Dictionary<string, Entity>>(entities)!;
+            return JsonConvert.DeserializeObject<Dictionary<string, EntityMetadata>>(entities)!;
         }
 
         /// <summary>

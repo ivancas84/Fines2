@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtYoastPrimaryTerm : SqlOrganize.Sql.EntityData
+    public class WpwtYoastPrimaryTerm : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_yoast_primary_term";

@@ -9,7 +9,7 @@ using SqlOrganize.CollectionUtils;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Comision : EntityData
+    public partial class Comision : Entity
     {
         public PersistContext PersistCursos()
         {

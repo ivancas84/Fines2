@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtTermmeta : SqlOrganize.Sql.EntityData
+    public class WpwtTermmeta : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_termmeta";

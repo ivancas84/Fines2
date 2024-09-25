@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class DistribucionHoraria : EntityData
+    public partial class DistribucionHoraria : Entity
     {
 
         public DistribucionHoraria()
@@ -17,41 +17,70 @@ namespace SqlOrganize.Sql.Fines2Model3
             Default();
         }
 
+        #region id
         protected string? _id = null;
         public string? id
         {
             get { return _id; }
             set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
+        #endregion
+
+        #region horas_catedra
         protected int? _horas_catedra = null;
         public int? horas_catedra
         {
             get { return _horas_catedra; }
             set { if( _horas_catedra != value) { _horas_catedra = value; NotifyPropertyChanged(nameof(horas_catedra)); } }
         }
+        #endregion
+
+        #region dia
         protected int? _dia = null;
         public int? dia
         {
             get { return _dia; }
             set { if( _dia != value) { _dia = value; NotifyPropertyChanged(nameof(dia)); } }
         }
+        #endregion
+
+        #region disposicion
         protected string? _disposicion = null;
         public string? disposicion
         {
             get { return _disposicion; }
             set { if( _disposicion != value) { _disposicion = value; NotifyPropertyChanged(nameof(disposicion)); } }
         }
-        //distribucion_horaria.disposicion _m:o disposicion.id
+        #endregion
+
+        #region disposicion (fk distribucion_horaria.disposicion _ m:o disposicion.id)
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {
             get { return _disposicion_; }
             set {
+                if(value != null && AutoAddRef)
+                {
+                    _disposicion_!.DistribucionHoraria_.Remove(this);
+                }
                 _disposicion_ = value;
-                disposicion = (value != null) ? value.id : null;
+
+                if(value != null)
+                {
+                    disposicion = value.id;
+                    if(AutoAddRef && !_disposicion_!.DistribucionHoraria_.Contains(this))
+                    {
+                        _disposicion_!.DistribucionHoraria_.Add(this);
+                    }
+                }
+                else
+                {
+                    disposicion = null;
+                }
                 NotifyPropertyChanged(nameof(disposicion_));
             }
         }
+        #endregion
 
     }
 }

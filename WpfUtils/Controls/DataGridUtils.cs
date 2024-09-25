@@ -60,7 +60,7 @@ namespace WpfUtils.Controls
             }
         }
 
-        public static void SaveRowFromDataGrid(this Db db, EntityData data, string title = "")
+        public static void SaveRowFromDataGrid(this Db db, Entity data, string title = "")
         {
             try
             {

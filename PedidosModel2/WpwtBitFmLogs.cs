@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtBitFmLogs : SqlOrganize.Sql.EntityData
+    public class WpwtBitFmLogs : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_bit_fm_logs";

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Persona : EntityData
+    public partial class Persona : Entity
     {
         public static (string? dni, string? cuil) CuilDni(object? value)
         {

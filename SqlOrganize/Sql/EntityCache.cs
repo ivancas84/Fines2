@@ -110,14 +110,14 @@ namespace SqlOrganize.Sql
             return response;
         }
 
-        public ObservableCollection<T> Datas<T>() where T : EntityData, new()
+        public ObservableCollection<T> Entities<T>() where T : Entity, new()
         {
             var source = Dicts();
             ObservableCollection < T > oc = new();
 
             for (var i = 0; i < source.Count(); i++)
             {
-                T obj = Db.ToData<T>(source.ElementAt(i));
+                T obj = Entity.CreateFromDict<T>(source.ElementAt(i));
                 obj.Index = i;
                 oc.Add(obj);
             }
@@ -125,17 +125,17 @@ namespace SqlOrganize.Sql
             return oc;
         }
 
-        public void AddDataToOC<T>(ObservableCollection<T> oc) where T : EntityData, new()
+        public void AddEntityToOC<T>(ObservableCollection<T> oc) where T : Entity, new()
         {
             var source = Dicts();
-            Db.AddDataToOC(source, oc);
+            Db.AddEntityToOC(source, oc);
         }
 
 
-        public void AddDataToClearOC<T>(ObservableCollection<T> oc) where T : EntityData, new()
+        public void AddEntityToClearOC<T>(ObservableCollection<T> oc) where T : Entity, new()
         {
             var source = Dicts();
-            Db.AddDataToClearOC(source, oc);
+            Db.AddEntityToClearOC(source, oc);
         }
 
         /// <summary>
@@ -216,11 +216,11 @@ namespace SqlOrganize.Sql
         /// <summary>Efectua una consulta a la base de datos, la almacena en cache.<br/>
         /// Dependiendo del tipo de consulta almacena la fila de resultado en cache.</summary>
         /// <remarks>Cuando se esta seguro de que se desea consultar una sola fila. Utilizar este metodo para evitar que se tenga que procesar un tamaño grande de resultado</remarks>
-        public T? Data<T>() where T : EntityData, new()
+        public T? ToEntity<T>() where T : Entity, new()
         {
 
             IDictionary<string, object?>? dict = Dict();
-            return (dict.IsNoE()) ? null : Db.ToData<T>(dict!);
+            return (dict.IsNoE()) ? null : Entity.CreateFromDict<T>(dict!);
         }
 
         /// <summary>Organiza los elementos a consultar y efectua la consulta a la base de datos.</summary>

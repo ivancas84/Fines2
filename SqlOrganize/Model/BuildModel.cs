@@ -4,6 +4,7 @@ using SqlOrganize.DateTimeUtils;
 using SqlOrganize.Sql;
 using SqlOrganize.ValueTypesUtils;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -15,7 +16,7 @@ namespace SqlOrganize.Model
 
         public List<Table> Tables { get; } = new();
 
-        public Dictionary<string, Entity> entities { get; } = new();
+        public Dictionary<string, EntityMetadata> entities { get; } = new();
 
         public Dictionary<string, Dictionary<string, Field>> fields { get; set; } = new();
 
@@ -232,7 +233,7 @@ namespace SqlOrganize.Model
                 if (Config.reservedEntities.Contains(t.Name!))
                     continue;
 
-                var e = new Entity();
+                var e = new EntityMetadata();
                 e.name = t.Name!;
                 e.alias = t.Alias!;
                 e.fields = t.ColumnNames;
@@ -255,8 +256,8 @@ namespace SqlOrganize.Model
             {
                 using (StreamReader r = new StreamReader(config.configPath + "entities.json"))
                 {
-                    Dictionary<string, EntityAux> entitiesAux = JsonConvert.DeserializeObject<Dictionary<string, EntityAux>>(r.ReadToEnd())!;
-                    foreach (KeyValuePair<string, EntityAux> e in entitiesAux)
+                    Dictionary<string, EntityMetadataAux> entitiesAux = JsonConvert.DeserializeObject<Dictionary<string, EntityMetadataAux>>(r.ReadToEnd())!;
+                    foreach (KeyValuePair<string, EntityMetadataAux> e in entitiesAux)
                     {
                         if (!entities.ContainsKey(e.Key))
                             continue;
@@ -543,10 +544,10 @@ namespace SqlOrganize.Model
                 sw.WriteLine("");
                 sw.WriteLine("namespace SqlOrganize.Sql." + Config.dataClassesNamespace);
                 sw.WriteLine("{");
-                sw.WriteLine("    public partial class " + entityName.ToCamelCase() + " : EntityData");
+                sw.WriteLine("    public partial class " + entityName.ToCamelCase() + " : Entity");
                 sw.WriteLine("    {");
                 sw.WriteLine("");
-              sw.WriteLine("        public " + entityName.ToCamelCase() + "()");
+                sw.WriteLine("        public " + entityName.ToCamelCase() + "()");
                 sw.WriteLine("        {");
                 sw.WriteLine("            _entityName = \"" + entityName + "\";");
                 sw.WriteLine("            _db = Context.db;");
@@ -582,26 +583,69 @@ namespace SqlOrganize.Model
                 #region atributos fk
                 foreach (var (fieldId, relation) in entities[entityName].relations)
                 {
-                    string rel = "m";
-                    if (entities[entityName].unique.Contains(relation.fieldName))
-                        rel = "o";
-
                     if (!relation.parentId.IsNoE())
                         continue;
 
-                    sw.WriteLine("        #region " + relation.fieldName + " (fk " + entityName + "." + relation.fieldName + " _" + rel + ":o " + relation.refEntityName + ".id)");
-                    sw.WriteLine("        protected " + relation.refEntityName.ToCamelCase() + "? _" + relation.fieldName + "_ = null;");
-                    sw.WriteLine("        public " + relation.refEntityName.ToCamelCase() + "? " + relation.fieldName + "_");
-                    sw.WriteLine("        {");
-                    sw.WriteLine("            get { return _" + relation.fieldName + "_; }");
-                    sw.WriteLine("            set {");
-                    sw.WriteLine("                _" + relation.fieldName + "_ = value;");
-                    sw.WriteLine("                " + relation.fieldName + " = (value != null) ? value." + this.Config.id + " : null;");
-                    sw.WriteLine("                NotifyPropertyChanged(nameof(" + relation.fieldName + "_));");
-                    sw.WriteLine("            }");
-                    sw.WriteLine("        }");
-                    sw.WriteLine("        #endregion");
-                    sw.WriteLine("");
+                    string refFieldName = (relation.fieldName.Contains(relation.refEntityName)) ? "" : relation.fieldName + "_";
+
+                    if (entities[entityName].unique.Contains(relation.fieldName)) //o
+                    {
+                        sw.WriteLine("        #region " + relation.fieldName + " (fk " + entityName + "." + relation.fieldName + " _ o:o " + relation.refEntityName + ".id)");
+                        sw.WriteLine("        protected " + relation.refEntityName.ToCamelCase() + "? _" + relation.fieldName + "_ = null;");
+                        sw.WriteLine("        public " + relation.refEntityName.ToCamelCase() + "? " + relation.fieldName + "_");
+                        sw.WriteLine("        {");
+                        sw.WriteLine("            get { return _" + relation.fieldName + "_; }");
+                        sw.WriteLine("            set {");
+                        sw.WriteLine("                if(value != null)");
+                        sw.WriteLine("                {");
+                        sw.WriteLine("                    _" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + " = this;");
+                        sw.WriteLine("                    " + relation.fieldName + " = value." + this.Config.id + ";");
+                        sw.WriteLine("                    _" + relation.fieldName + "_ = value;");
+
+                        sw.WriteLine("                }");
+                        sw.WriteLine("                else");
+                        sw.WriteLine("                {");
+                        sw.WriteLine("                    " + relation.fieldName + " = null;");
+                        sw.WriteLine("                }");
+                        sw.WriteLine("                NotifyPropertyChanged(nameof(" + relation.fieldName + "_));");
+                        sw.WriteLine("            }");
+                        sw.WriteLine("        }");
+                        sw.WriteLine("        #endregion");
+                        sw.WriteLine("");
+                    }
+                    else //m
+                    {
+                        sw.WriteLine("        #region " + relation.fieldName + " (fk " + entityName + "." + relation.fieldName + " _ m:o " + relation.refEntityName + ".id)");
+                        sw.WriteLine("        protected " + relation.refEntityName.ToCamelCase() + "? _" + relation.fieldName + "_ = null;");
+                        sw.WriteLine("        public " + relation.refEntityName.ToCamelCase() + "? " + relation.fieldName + "_");
+                        sw.WriteLine("        {");
+                        sw.WriteLine("            get { return _" + relation.fieldName + "_; }");
+                        sw.WriteLine("            set {");
+                        sw.WriteLine("                if(value != null && AutoAddRef)");
+                        sw.WriteLine("                {");
+                        sw.WriteLine("                    _" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + ".Remove(this);");
+                        sw.WriteLine("                }");
+
+                        sw.WriteLine("                _" + relation.fieldName + "_ = value;");
+                        sw.WriteLine("");
+                        sw.WriteLine("                if(value != null)");
+                        sw.WriteLine("                {");
+                        sw.WriteLine("                    " + relation.fieldName + " = value." + this.Config.id + ";");
+                        sw.WriteLine("                    if(AutoAddRef && !_" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + ".Contains(this))");
+                        sw.WriteLine("                    {");
+                        sw.WriteLine("                        _" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + ".Add(this);");
+                        sw.WriteLine("                    }");
+                        sw.WriteLine("                }");
+                        sw.WriteLine("                else");
+                        sw.WriteLine("                {");
+                        sw.WriteLine("                    " + relation.fieldName + " = null;");
+                        sw.WriteLine("                }");
+                        sw.WriteLine("                NotifyPropertyChanged(nameof(" + relation.fieldName + "_));");
+                        sw.WriteLine("            }");
+                        sw.WriteLine("        }");
+                        sw.WriteLine("        #endregion");
+                        sw.WriteLine("");
+                    }
                 }
                 #endregion
 
@@ -641,8 +685,7 @@ namespace SqlOrganize.Model
             }
         }
 
-
-        protected List<string> DefineId(Entity entity)
+        protected List<string> DefineId(EntityMetadata entity)
         {
             if (entity.pk.Count == 1)
                 return entity.pk;

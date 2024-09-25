@@ -97,7 +97,7 @@ namespace SqlOrganize.Sql
         {
             count++;
 
-            Entity e = Db.Entity(_entityName);
+            EntityMetadata e = Db.Entity(_entityName);
 
             sql += @"
 DELETE " + e.alias + " FROM " + e.name + " " + e.alias + @"
@@ -163,12 +163,12 @@ WHERE " + id + " = @update_" + i + @";
             return this;
         }
 
-        public PersistContext UpdateField(EntityData data , string fieldName)
+        public PersistContext UpdateField(Entity data , string fieldName)
         {
             return UpdateFieldIds(data.entityName, fieldName, data.GetPropertyValue(fieldName), data.GetPropertyValue(Db.config.id));
         }
 
-        public PersistContext UpdateField(EntityData data, string fieldName, object? newValue)
+        public PersistContext UpdateField(Entity data, string fieldName, object? newValue)
         {
             UpdateFieldIds(data.entityName, fieldName, newValue, data.GetPropertyValue(Db.config.id));
             data.SetPropertyValue(fieldName, newValue);
@@ -208,19 +208,7 @@ WHERE " + id + " = @update_" + i + @";
             return (ids.Count() > 0) ? UpdateIds(_entityName, row, ids) : this;
         }
 
-        public PersistContext UpdateValueWhere(string _entityName, string key, object value, string where, IDictionary<string, object>? parameters = null)
-        {
-            var q = Db.Sql(_entityName).Where(where);
-            if (!parameters.IsNoE())
-                q.Params(parameters!);
-            
-            object[] ids = q.Column<object>(Db.config.id).ToArray();
-            if(ids.Any())
-                return UpdateFieldIds(_entityName, key, value, ids);
-            return this;
-        }
-
-        public PersistContext Update(EntityData data)
+        public PersistContext Update(Entity data)
         {
             return Update(data.entityName, data.ToDict()!);
         }
@@ -249,7 +237,7 @@ WHERE " + id + " = @update_" + i + @";
         }
 
 
-        public PersistContext InsertIfNotExists(EntityData data)
+        public PersistContext InsertIfNotExists(Entity data)
         {
             data.Reset();
 
@@ -270,7 +258,7 @@ WHERE " + id + " = @update_" + i + @";
 
         /// <summary>Insercion de EntityVal</summary>
         /// <remarks>Define id si no existe</remarks>
-        public PersistContext Insert(EntityData data)
+        public PersistContext Insert(Entity data)
         {
             return Insert(data.entityName, data.ToDict()!);
         }
@@ -313,7 +301,7 @@ VALUES (";
             return sql;
         }
 
-        public PersistContext Persist(EntityData data)
+        public PersistContext Persist(Entity data)
         {
             data.Reset();
 
@@ -353,7 +341,7 @@ VALUES (";
         }
 
   
-        public PersistContext PersistCondition(EntityData data, object? condition)
+        public PersistContext PersistCondition(Entity data, object? condition)
         {
             data.Reset();
 
@@ -394,7 +382,7 @@ VALUES (";
             return this;
         }
 
-        public PersistContext UpdateCompare(EntityData dataToUpdate, EntityData dataToCompare)
+        public PersistContext UpdateCompare(Entity dataToUpdate, Entity dataToCompare)
         {
             dataToUpdate.Set(Db.config.id, dataToCompare.Get(Db.config.id));
 
@@ -413,7 +401,7 @@ VALUES (";
         }
 
         /// <summary> Si la comparación es diferente, no actualiza! sino actualiza todo! </summary>
-        public PersistContext PersistCompare(EntityData data, CompareParams compare)
+        public PersistContext PersistCompare(Entity data, CompareParams compare)
         {
             data.Reset();
 

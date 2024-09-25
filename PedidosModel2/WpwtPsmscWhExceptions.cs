@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtPsmscWhExceptions : SqlOrganize.Sql.EntityData
+    public class WpwtPsmscWhExceptions : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_psmsc_wh_exceptions";

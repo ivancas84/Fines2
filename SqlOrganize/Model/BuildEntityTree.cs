@@ -6,14 +6,14 @@ namespace SqlOrganize.Model
     {
         public Config Config;
 
-        public Dictionary<string, Entity> Entities;
+        public Dictionary<string, EntityMetadata> Entities;
 
         public Dictionary<string, Dictionary<string, Field>> Fields;
 
         public string EntityName { get; set; }
         protected List<string> FieldIds = new();
 
-        public BuildEntityTree(Config config, Dictionary<string, Entity> entities, Dictionary<string, Dictionary<string, Field>> fields, string entityName)
+        public BuildEntityTree(Config config, Dictionary<string, EntityMetadata> entities, Dictionary<string, Dictionary<string, Field>> fields, string entityName)
         {
             Config = config;
             Entities = entities;
@@ -58,7 +58,7 @@ namespace SqlOrganize.Model
             return GetFieldId(name);
         }
 
-        protected Dictionary<string, EntityTree> Fk(Entity entity, List<string> entitiesVisited, string? alias = null)
+        protected Dictionary<string, EntityTree> Fk(EntityMetadata entity, List<string> entitiesVisited, string? alias = null)
         {
             entitiesVisited.Add(entity.name!);
             List<Field> fk = FieldsFkNotReferenced(entity, entitiesVisited);
@@ -88,7 +88,7 @@ namespace SqlOrganize.Model
             return dict;
         }
 
-        public List<Field> FieldsFkNotReferenced(Entity e, List<string> referencedEntityNames)
+        public List<Field> FieldsFkNotReferenced(EntityMetadata e, List<string> referencedEntityNames)
         {
             List<Field> fields = new();
 

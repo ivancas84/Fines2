@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtActionschedulerActions : SqlOrganize.Sql.EntityData
+    public class WpwtActionschedulerActions : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_actionscheduler_actions";

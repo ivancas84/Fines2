@@ -3,7 +3,7 @@ using SqlOrganize.Sql;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Alumno : EntityData
+    public partial class Alumno : Entity
     {
         public void GenerarCalificaciones()
         {

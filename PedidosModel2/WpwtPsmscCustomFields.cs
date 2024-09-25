@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtPsmscCustomFields : SqlOrganize.Sql.EntityData
+    public class WpwtPsmscCustomFields : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_psmsc_custom_fields";

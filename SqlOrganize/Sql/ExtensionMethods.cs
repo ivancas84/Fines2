@@ -34,12 +34,12 @@ namespace SqlOrganize.Sql
             return query.Obj<T>();
         }
 
-        public static T? Data<T>(this EntitySql esql) where T : EntityData, new()
+        public static T? ToEntity<T>(this EntitySql esql) where T : Entity, new()
         {
             var data = esql.Dict();
             if (data.IsNoE())
                 return null;
-            return esql.Db.ToData<T>(data!);
+            return Entity.CreateFromDict<T>(data!);
         }
 
         public static IEnumerable<T> Column<T>(this EntitySql esql, string columnName)
@@ -210,7 +210,7 @@ namespace SqlOrganize.Sql
             return persist;
         }
 
-        public static PersistContext RemoveCache(this PersistContext persist, EntityData data)
+        public static PersistContext RemoveCache(this PersistContext persist, Entity data)
         {
             persist.RemoveCacheQueries();
             persist.Db.cache!.Remove(data.entityName + data.GetPropertyValue(persist.Db.config.id));
@@ -219,7 +219,7 @@ namespace SqlOrganize.Sql
         #endregion
 
         #region EntitySql + EntityVal
-        public static IDictionary<string, object?>? DictUniqueFieldOrValues(this EntityData data, string fieldName)
+        public static IDictionary<string, object?>? DictUniqueFieldOrValues(this Entity data, string fieldName)
         {
             try
             {
@@ -233,43 +233,33 @@ namespace SqlOrganize.Sql
         #endregion
 
         #region Data + EntityVal
-        public static IEnumerable<T> ColOfData<T>(this Db db, IEnumerable<Dictionary<string, object?>> rows) where T : EntityData, new()
+        public static IEnumerable<T> Entities<T>(this Db db, IEnumerable<Dictionary<string, object?>> rows) where T : Entity, new()
         {
             var results = new List<T>();
 
             foreach (var item in rows)
             {
-                T obj = db.ToData<T>(item);
+                T obj = Entity.CreateFromDict<T>(item);
                 results.Add(obj);
             }
             return results;
         }
 
 
-        public static void AddDataToClearOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : EntityData, new()
+        public static void AddEntityToClearOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : Entity, new()
         {
             oc.Clear();
-            db.AddDataToOC(source, oc);
+            db.AddEntityToOC(source, oc);
         }
 
-        public static void AddDataToOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : EntityData, new()
+        public static void AddEntityToOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : Entity, new()
         {
             for (var i = 0; i < source.Count(); i++) {
-                T obj = db.ToData<T>(source.ElementAt(i));
+                T obj = Entity.CreateFromDict<T>(source.ElementAt(i));
                 obj.Index = i;
                 oc.Add(obj);
             }
-        }
-
-
-        /// <summary>Obtiene una clase Data a partir de una instancia de Values</summary>
-        /// <remarks>Incorpora codigo adicional redefinido en las clases values</remarks>
-        public static T ToData<T>(this Db db, IDictionary<string, object?> item) where T : EntityData, new()
-        {
-            T _obj = new T(); //crear objeto vacio para obtener el entityName
-            var valuesTree = db.ValuesTree(item, _obj.entityName);
-            return valuesTree.Obj<T>();
-        }
+        }        
         #endregion
 
 

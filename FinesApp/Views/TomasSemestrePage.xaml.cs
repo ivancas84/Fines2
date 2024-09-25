@@ -130,7 +130,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     #endregion
 
     #region Tab Procesar Docentes PF (XLSX y HTML)
-    ObservableCollection<EntityData> ocData = new();
+    ObservableCollection<Entity> ocData = new();
 
     private void btnProcesarDocentesPF_Click(object sender, RoutedEventArgs e)
     {
@@ -145,7 +145,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             ocData.Clear();
             for (var i = 0; i < persists.Count(); i++)
             {
-                EntityData obj = new();
+                Entity obj = new();
                 obj.Index = i;
                 obj.Label = persists.ElementAt(i).logging.ToString();
                 ocData.Add(obj);
@@ -187,7 +187,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             ocData.Clear();
             for (var i = 0; i < persists.Count(); i++)
             {
-                EntityData obj = new();
+                Entity obj = new();
                 obj.Index = i;
                 obj.Label = persists.ElementAt(i).logging.ToString();
                 ocData.Add(obj);

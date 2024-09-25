@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtFrmtFormViews : SqlOrganize.Sql.EntityData
+    public class WpwtFrmtFormViews : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_frmt_form_views";

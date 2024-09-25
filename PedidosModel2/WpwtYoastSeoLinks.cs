@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtYoastSeoLinks : SqlOrganize.Sql.EntityData
+    public class WpwtYoastSeoLinks : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_yoast_seo_links";

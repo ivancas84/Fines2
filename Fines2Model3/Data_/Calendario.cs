@@ -11,7 +11,7 @@ using SqlOrganize.ValueTypesUtils;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Calendario : EntityData
+    public partial class Calendario : Entity
     {
 
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>

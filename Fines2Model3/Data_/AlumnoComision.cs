@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class AlumnoComision : EntityData
+    public partial class AlumnoComision : Entity
     {
         
         public object Persist1(PersistContext persist)

@@ -20,7 +20,7 @@ namespace SqlOrganize.Sql.Fines2Model3
     ///     cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
     ///     ContainerApp.db.AddDataToClearOC(cursosData, cursoOC);
     /// </example>
-    public partial class Curso : EntityData
+    public partial class Curso : Entity
     {
 
         //curso.asignatura _o:o asignatura.id

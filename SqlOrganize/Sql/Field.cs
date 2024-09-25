@@ -60,9 +60,9 @@
 
         public Dictionary<string, object> resets = new();
 
-        public Entity Entity() => this.db.Entity(entityName);
+        public EntityMetadata Entity() => this.db.Entity(entityName);
 
-        public Entity RefEntity() => this.db.Entity(refEntityName!);
+        public EntityMetadata RefEntity() => this.db.Entity(refEntityName!);
 
         public bool IsRequired()
         {

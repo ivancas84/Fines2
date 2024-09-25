@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtPsmscEmailNotifications : SqlOrganize.Sql.EntityData
+    public class WpwtPsmscEmailNotifications : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_psmsc_email_notifications";

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtUsers : SqlOrganize.Sql.EntityData
+    public class WpwtUsers : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_users";

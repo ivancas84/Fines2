@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtYoastMigrations : SqlOrganize.Sql.EntityData
+    public class WpwtYoastMigrations : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_yoast_migrations";

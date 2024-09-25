@@ -21,7 +21,7 @@ namespace SqlOrganize.Sql
 
         //public Dictionary<string, Dictionary<string, EntityRel>> relations { get; set; } = new();
 
-        public Dictionary<string, Entity> entities { get; set; }
+        public Dictionary<string, EntityMetadata> entities { get; set; }
 
         public Dictionary<string, Dictionary<string, Field>> fields { get; set; }
 
@@ -32,7 +32,7 @@ namespace SqlOrganize.Sql
             config = _config;
             this.cache = cache;
             entities = schema.Entities();
-            foreach (Entity e in entities.Values)
+            foreach (EntityMetadata e in entities.Values)
                 e.db = this;
 
             fields = schema.Fields();
@@ -103,7 +103,7 @@ namespace SqlOrganize.Sql
             return e.fields.Except(e.noAdmin).ToList();
         }
 
-        public Entity Entity(string entityName)
+        public EntityMetadata Entity(string entityName)
         {
             if (!entities.ContainsKey(entityName))
                 throw new Exception("La entidad " + entityName + " no existe");

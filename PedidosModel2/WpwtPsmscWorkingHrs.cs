@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SqlOrganize.Sql.PedidosModel2
 {
-    public class WpwtPsmscWorkingHrs : SqlOrganize.Sql.EntityData
+    public class WpwtPsmscWorkingHrs : SqlOrganize.Sql.Entity
     {
 
         public override string entityName => "wpwt_psmsc_working_hrs";

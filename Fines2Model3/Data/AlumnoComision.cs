@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class AlumnoComision : EntityData
+    public partial class AlumnoComision : Entity
     {
 
         public AlumnoComision()
@@ -17,71 +17,126 @@ namespace SqlOrganize.Sql.Fines2Model3
             Default();
         }
 
+        #region id
         protected string? _id = null;
         public string? id
         {
             get { return _id; }
             set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
         }
+        #endregion
+
+        #region creado
         protected DateTime? _creado = null;
         public DateTime? creado
         {
             get { return _creado; }
             set { if( _creado != value) { _creado = value; NotifyPropertyChanged(nameof(creado)); } }
         }
+        #endregion
+
+        #region observaciones
         protected string? _observaciones = null;
         public string? observaciones
         {
             get { return _observaciones; }
             set { if( _observaciones != value) { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); } }
         }
+        #endregion
+
+        #region comision
         protected string? _comision = null;
         public string? comision
         {
             get { return _comision; }
             set { if( _comision != value) { _comision = value; NotifyPropertyChanged(nameof(comision)); } }
         }
+        #endregion
+
+        #region alumno
         protected string? _alumno = null;
         public string? alumno
         {
             get { return _alumno; }
             set { if( _alumno != value) { _alumno = value; NotifyPropertyChanged(nameof(alumno)); } }
         }
+        #endregion
+
+        #region estado
         protected string? _estado = null;
         public string? estado
         {
             get { return _estado; }
             set { if( _estado != value) { _estado = value; NotifyPropertyChanged(nameof(estado)); } }
         }
+        #endregion
+
+        #region pfid
         protected uint? _pfid = null;
         public uint? pfid
         {
             get { return _pfid; }
             set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
         }
-        //alumno_comision.comision _m:o comision.id
+        #endregion
+
+        #region comision (fk alumno_comision.comision _ m:o comision.id)
         protected Comision? _comision_ = null;
         public Comision? comision_
         {
             get { return _comision_; }
             set {
+                if(value != null && AutoAddRef)
+                {
+                    _comision_!.AlumnoComision_.Remove(this);
+                }
                 _comision_ = value;
-                comision = (value != null) ? value.id : null;
+
+                if(value != null)
+                {
+                    comision = value.id;
+                    if(AutoAddRef && !_comision_!.AlumnoComision_.Contains(this))
+                    {
+                        _comision_!.AlumnoComision_.Add(this);
+                    }
+                }
+                else
+                {
+                    comision = null;
+                }
                 NotifyPropertyChanged(nameof(comision_));
             }
         }
+        #endregion
 
-        //alumno_comision.alumno _m:o alumno.id
+        #region alumno (fk alumno_comision.alumno _ m:o alumno.id)
         protected Alumno? _alumno_ = null;
         public Alumno? alumno_
         {
             get { return _alumno_; }
             set {
+                if(value != null && AutoAddRef)
+                {
+                    _alumno_!.AlumnoComision_.Remove(this);
+                }
                 _alumno_ = value;
-                alumno = (value != null) ? value.id : null;
+
+                if(value != null)
+                {
+                    alumno = value.id;
+                    if(AutoAddRef && !_alumno_!.AlumnoComision_.Contains(this))
+                    {
+                        _alumno_!.AlumnoComision_.Add(this);
+                    }
+                }
+                else
+                {
+                    alumno = null;
+                }
                 NotifyPropertyChanged(nameof(alumno_));
             }
         }
+        #endregion
 
     }
 }

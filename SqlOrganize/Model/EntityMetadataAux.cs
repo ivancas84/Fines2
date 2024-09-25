@@ -11,7 +11,7 @@ namespace SqlOrganize.Model
     Clase Entity Auxiliar utilizada unicamente para mapear valores json 
     y asignarlos correctamente a la clase Entity
     */
-    public class EntityAux : Entity
+    public class EntityMetadataAux : EntityMetadata
     {
         public List<string> fieldsAdd { get; set; } 
         public List<string> fieldsSub { get; set; }
