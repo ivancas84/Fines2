@@ -301,7 +301,7 @@ VALUES (";
             return sql;
         }
 
-        public PersistContext Persist(Entity data)
+        public object Persist(Entity data)
         {
             data.Reset();
 
@@ -331,16 +331,17 @@ VALUES (";
                 };
 
                 if (!data.Compare(cmp).IsNoE())
-                    return Update(data);
+                    return data.Get("id");
 
                 logging.AddLog(data.entityName, "registro identico " + row.ToStringKeyValuePair(), "persist", Logging.Level.Info);
-                return this;
+                return data.Get("id");
             }
 
-            return Insert(data);
+            Insert(data);
+            return data.Get("id");
         }
 
-  
+
         public PersistContext PersistCondition(Entity data, object? condition)
         {
             data.Reset();
@@ -367,20 +368,6 @@ VALUES (";
             return Query(Db.Query());
         }
 
-
-        public PersistContext AddTo(List<PersistContext> persists)
-        {
-            persists.Add(this);
-            return this;
-        }
-
-        public PersistContext AddToIfSql(List<PersistContext> persists)
-        {
-            if (!this.Sql().IsNoE())
-                persists.Add(this);
-
-            return this;
-        }
 
         public PersistContext UpdateCompare(Entity dataToUpdate, Entity dataToCompare)
         {

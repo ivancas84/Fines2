@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
+using System.Collections.ObjectModel;
+using System.Data.Common;
 
 namespace SqlOrganize.Sql
 {
@@ -15,6 +17,12 @@ namespace SqlOrganize.Sql
     /// </remarks>
     public abstract class Db
     {
+        /// <summary>
+        /// Contextos de persistencia
+        /// </summary>
+        /// <remarks> Los contextos de persistencia son almacenados en la coleccion para ser ejecutados posteriormente </remarks>
+        public Collection<PersistContext> PersistQueue { get; set; }
+
         public virtual Config config { get; }
 
         //public Dictionary<string, Dictionary<string, EntityTree>> tree { get; set; } = new();
@@ -148,6 +156,78 @@ namespace SqlOrganize.Sql
         }
 
 
+        public void ExecuteQueue()
+        {
+            if (PersistQueue.IsNoE())
+                return;
+
+            var query = PersistQueue.ElementAt(0).Db.Query();
+            using DbConnection connection = query.OpenConnection();
+            query.BeginTransaction();
+            try
+            {
+                foreach (PersistContext persist in PersistQueue)
+                {
+                    if (persist.Sql().IsNoE())
+                        continue;
+                    persist.Query(query).ExecTransaction();
+                }
+
+                query.CommitTransaction();
+            }
+            catch (Exception ex)
+            {
+                query.RollbackTransaction();
+                throw ex;
+            }
+        }
+
+        public CreateQueue CreateQueue()
+        {
+            return new CreateQueue(this);
+        }
+
+        public void RemoveCache()
+        {
+            cache!.RemoveCacheQueries();
+
+            foreach (PersistContext context in PersistQueue)
+                foreach (var d in context.detail)
+                    context.Db.cache!.Remove(d.entityName + d.id);
+        }
+
+        public void ClearQueue()
+        {
+            PersistQueue?.Clear();
+        }
+
+        public void ProcessQueue()
+        {
+            ExecuteQueue();
+            RemoveCache();
+            ClearQueue();
+        }
     }
 
+    public class CreateQueue : IDisposable
+    {
+        private readonly Db _db;  // Reference to the Db instance
+
+        public CreateQueue(Db db)
+        {
+            _db = db;
+            _db.PersistQueue = new Collection<PersistContext>();  // Initialize or reset the queue
+        }
+
+        // The Dispose method is called automatically when the 'using' block is exited
+        public void Dispose()
+        {
+            // Clear the queue and free resources
+            if (_db.PersistQueue != null)
+            {
+                _db.PersistQueue.Clear();
+                _db.PersistQueue = null;  // Set it to null to free up resources
+            }
+        }
+    }
 }

@@ -590,7 +590,7 @@ namespace SqlOrganize.Sql
         /// <summary> Crea contexto de persistencia y actualiza campo </summary>
         public void UpdateField(string fieldName)
         {
-            db.Persist().UpdateField(this, fieldName).Exec().RemoveCache();
+            db.Persist().UpdateField(this, fieldName);
         }
 
         public PersistContext UpdateField(PersistContext persist, string fieldName)
@@ -621,39 +621,27 @@ namespace SqlOrganize.Sql
 
         public void Delete()
         {
-            db.Persist().DeleteIds(entityName, Get("id")).Exec().RemoveCache();
+            db.Persist().DeleteIds(entityName, Get("id"));
         }
 
         /// <summary> Crear contexto de persistencia y ejecutar persistencia de entidad </summary>
         /// <returns> Identificador del objeto persistido </returns>
         public object Persist()
         {
-            db!.Persist().Persist(this).Exec().RemoveCache();
+            db!.Persist().Persist(this);
             return Get(db.config.id);
         }
 
-        /// <summary> Agregar persistencia de entidad en contexto existente </summary>
-        /// <returns> Identificador del objeto persistido </returns>
-        public object Persist(PersistContext persist)
-        {
-            persist.Persist(this);
-            return Get(db.config.id);
-        }
-
+        /// <summary> Persistencia rapida en base a condicion </summary>
+        /// <remarks> Si ya existe PersistContext, utilizar PersistContext.PersistCondition</remarks>
         public object PersistCondition(object? condition)
         {
-            db.Persist().PersistCondition(this, condition).Exec().RemoveCache();
+            db.Persist().PersistCondition(this, condition);
             return Get(db.config.id)!;
-
         }
 
-        public object PersistCondition(PersistContext persist, object? condition)
-        {
-            persist.PersistCondition(this, condition);
-            return Get(db.config.id)!;
-
-        }
-
+        /// <summary> Persistencia rapida en base a Id </summary>
+        /// <remarks> Si ya existe PersistContext, utilizar PersistContext.PersistId</remarks>
         public PersistContext PersistId()
         {
             Reset();
@@ -666,15 +654,12 @@ namespace SqlOrganize.Sql
                 return Update();
         }
 
-        public object PersistCompare(PersistContext persist, CompareParams compare)
+        /// <summary> Persistencia rapida en base a comparacion </summary>
+        /// <remarks> Si ya existe PersistContext, utilizar PersistContext.PersistCompare</remarks>
+        public object PersistCompare(CompareParams compare)
         {
-            persist.PersistCompare(this, compare);
+            db.Persist().PersistCompare(this, compare);
             return Get(db.config.id)!;
-        }
-
-        public PersistContext? PersistCompare(CompareParams compare)
-        {
-            return db.Persist().PersistCompare(this, compare);
         }
         #endregion
 

@@ -86,82 +86,8 @@ namespace SqlOrganize.Sql
         }
         #endregion
 
-        #region PersistContext + Query
-        /// <summary>Ejecución persistencia</summary>
-        public static PersistContext Exec(this PersistContext persist)
-        {
-            if (persist.Sql().IsNoE())
-                return persist;
-
-            var query = persist.Query();
-            using DbConnection connection = query.OpenConnection();
-            query.BeginTransaction();
-            try
-            {
-                query.ExecTransaction();
-                query.CommitTransaction();
-            }
-            catch (Exception ex)
-            {
-                query.RollbackTransaction();
-                throw;
-            }
-            return persist;
-        }
-
-        public static PersistContext Transaction(this PersistContext persist)
-        {
-            return persist.Exec();
-        }
-
-        /// <summary>Ejecución de IEnumerable de persistencias</summary>
-        public static IEnumerable<PersistContext> Exec(this IEnumerable<PersistContext> persists)
-        {
-            if (persists.IsNoE())
-                return persists;
-
-            var query = persists.ElementAt(0).Db.Query();
-            using DbConnection connection = query.OpenConnection();
-            query.BeginTransaction();
-            try
-            {
-                foreach (PersistContext persist in persists)
-                {
-                    if (persist.Sql().IsNoE())
-                        continue;
-                    persist.Query(query).ExecTransaction();
-                }
-
-                query.CommitTransaction();
-            }
-            catch (Exception ex)
-            {
-                query.RollbackTransaction();
-                throw ex;
-            }
-
-            return persists;
-        }
-
-        public static IEnumerable<PersistContext> Transaction(this IEnumerable<PersistContext> persists)
-        {
-            return persists.Exec();
-        }
-        #endregion
-
-        #region PersistContext + Cache
-        public static void RemoveCache(this IEnumerable<PersistContext> persists)
-        {
-
-            if (persists.IsNoE())
-                return;
-
-            persists.ElementAt(0).RemoveCacheQueries();
-
-            foreach (PersistContext persist in persists)
-                persist.RemoveCacheDetail();
-        }
-
+     
+        #region Cache
         public static IMemoryCache RemoveCacheQueries(this IMemoryCache cache)
         {
             List<string> queries;
@@ -180,41 +106,6 @@ namespace SqlOrganize.Sql
             }
 
             return cache;
-        }
-
-        public static PersistContext RemoveCacheQueries(this PersistContext persist)
-        {
-            persist.Db.cache!.RemoveCacheQueries();
-            return persist;
-        }
-
-        /// <summary>
-        /// Remover de la cache todas las consultas y las entidades indicadas en el parametro
-        /// </summary>
-        public static PersistContext RemoveCache(this PersistContext persist)
-        {
-            return persist.RemoveCacheQueries().RemoveCacheDetail();
-        }
-
-        public static PersistContext RemoveCacheDetail(this PersistContext persist)
-        {
-            foreach (var d in persist.detail)
-                persist.Db.cache!.Remove(d.entityName + d.id);
-            return persist;
-        }
-
-        public static PersistContext RemoveCache(this PersistContext persist, string entityName, object id)
-        {
-            persist.RemoveCacheQueries();
-            persist.Db.cache!.Remove(entityName + id);
-            return persist;
-        }
-
-        public static PersistContext RemoveCache(this PersistContext persist, Entity data)
-        {
-            persist.RemoveCacheQueries();
-            persist.Db.cache!.Remove(data.entityName + data.GetPropertyValue(persist.Db.config.id));
-            return persist;
         }
         #endregion
 

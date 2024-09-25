@@ -51,7 +51,13 @@ namespace WpfUtils.Controls
             try
             {
                 if (!data.GetPropertyValue("id").IsNoE())
-                    db.Persist().DeleteIds(entityName, data.GetPropertyValue("id")!).Exec().RemoveCache();
+                {
+                    using (db.CreateQueue())
+                    {
+                        db.Persist().DeleteIds(entityName, data.GetPropertyValue("id")!);
+                        db.ProcessQueue();
+                    }
+                }
                 oc.Remove(data);
             }
             catch (Exception ex)
