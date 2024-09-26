@@ -18,7 +18,7 @@ namespace WpfUtils.Fines
 
             IEnumerable<Dictionary<string, object?>> list = Context.db.BusquedaAproximadaCurso(text).Size(30).Dicts(); //busqueda de valores a mostrar en funcion del texto
 
-            Context.db.AddDataToClearOC(list, cursoOC);
+            Context.db.AddEntityToClearOC(list, cursoOC);
             
             cursoComboBox.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
         }
@@ -28,12 +28,12 @@ namespace WpfUtils.Fines
             var cursoData = db.Sql("curso").Cache().Id(curso);
 
             var calificacionAprobadaData = CalificacionDAO.CalificacionAprobadaCursoSql(curso).Cache().Dicts();
-            db.AddDataToClearOC(calificacionAprobadaData, calificacionAprobadaOC);
+            db.AddEntityToClearOC(calificacionAprobadaData, calificacionAprobadaOC);
 
             var alumnosConCalificacionAprobada = calificacionAprobadaData.ColOfVal<object>("alumno");
             var asignacionDesaprobadaData = AsignacionDAO.AsignacionesActivasRestantesComisionSql(cursoData["comision"], alumnosConCalificacionAprobada).Cache().Dicts();
 
-            db.AddDataToClearOC(asignacionDesaprobadaData, asignacionDesaprobadaOC);
+            db.AddEntityToClearOC(asignacionDesaprobadaData, asignacionDesaprobadaOC);
         }
 
     }

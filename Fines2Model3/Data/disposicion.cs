@@ -53,25 +53,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region asignatura (fk disposicion.asignatura _ m:o asignatura.id)
+        #region asignatura (fk disposicion.asignatura _m:o asignatura.id)
         protected Asignatura? _asignatura_ = null;
         public Asignatura? asignatura_
         {
             get { return _asignatura_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _asignatura_ != null && AutoAddToCollection)
                     _asignatura_!.Disposicion_.Remove(this);
-                }
+
                 _asignatura_ = value;
 
                 if(value != null)
                 {
                     asignatura = value.id;
-                    if(AutoAddRef && !_asignatura_!.Disposicion_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_asignatura_!.Disposicion_.Contains(this))
                         _asignatura_!.Disposicion_.Add(this);
-                    }
                 }
                 else
                 {
@@ -82,25 +79,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region planificacion (fk disposicion.planificacion _ m:o planificacion.id)
+        #region planificacion (fk disposicion.planificacion _m:o planificacion.id)
         protected Planificacion? _planificacion_ = null;
         public Planificacion? planificacion_
         {
             get { return _planificacion_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _planificacion_ != null && AutoAddToCollection)
                     _planificacion_!.Disposicion_.Remove(this);
-                }
+
                 _planificacion_ = value;
 
                 if(value != null)
                 {
                     planificacion = value.id;
-                    if(AutoAddRef && !_planificacion_!.Disposicion_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_planificacion_!.Disposicion_.Contains(this))
                         _planificacion_!.Disposicion_.Add(this);
-                    }
                 }
                 else
                 {

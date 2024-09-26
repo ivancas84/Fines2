@@ -62,25 +62,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region curso (fk horario.curso _ m:o curso.id)
+        #region curso (fk horario.curso _m:o curso.id)
         protected Curso? _curso_ = null;
         public Curso? curso_
         {
             get { return _curso_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _curso_ != null && AutoAddToCollection)
                     _curso_!.Horario_.Remove(this);
-                }
+
                 _curso_ = value;
 
                 if(value != null)
                 {
                     curso = value.id;
-                    if(AutoAddRef && !_curso_!.Horario_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_curso_!.Horario_.Contains(this))
                         _curso_!.Horario_.Add(this);
-                    }
                 }
                 else
                 {
@@ -91,25 +88,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region dia (fk horario.dia _ m:o dia.id)
+        #region dia (fk horario.dia _m:o dia.id)
         protected Dia? _dia_ = null;
         public Dia? dia_
         {
             get { return _dia_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _dia_ != null && AutoAddToCollection)
                     _dia_!.Horario_.Remove(this);
-                }
+
                 _dia_ = value;
 
                 if(value != null)
                 {
                     dia = value.id;
-                    if(AutoAddRef && !_dia_!.Horario_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_dia_!.Horario_.Contains(this))
                         _dia_!.Horario_.Add(this);
-                    }
                 }
                 else
                 {

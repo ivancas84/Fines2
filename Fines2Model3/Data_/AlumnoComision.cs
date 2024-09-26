@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SqlOrganize.DateTimeUtils;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -17,6 +18,19 @@ namespace SqlOrganize.Sql.Fines2Model3
             alumno_!.persona = (string)alumno_!.persona_!.Persist(persist)!;
             alumno = (string)alumno_!.Persist(persist)!;
             return Persist(persist);
+        }
+
+        public override string? Label
+        {
+            get {
+                if (!_Label.IsNoE())
+                    return _Label;
+
+                return estado ?? "?" + " " +comision_?.Label ?? "?" + " " + alumno_?.Label ?? "?";
+            }
+            set { 
+                Label = value; 
+                NotifyPropertyChanged(nameof(Label)); }
         }
 
     }

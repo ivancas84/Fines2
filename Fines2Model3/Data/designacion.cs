@@ -89,25 +89,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region cargo (fk designacion.cargo _ m:o cargo.id)
+        #region cargo (fk designacion.cargo _m:o cargo.id)
         protected Cargo? _cargo_ = null;
         public Cargo? cargo_
         {
             get { return _cargo_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _cargo_ != null && AutoAddToCollection)
                     _cargo_!.Designacion_.Remove(this);
-                }
+
                 _cargo_ = value;
 
                 if(value != null)
                 {
                     cargo = value.id;
-                    if(AutoAddRef && !_cargo_!.Designacion_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_cargo_!.Designacion_.Contains(this))
                         _cargo_!.Designacion_.Add(this);
-                    }
                 }
                 else
                 {
@@ -118,25 +115,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region sede (fk designacion.sede _ m:o sede.id)
+        #region sede (fk designacion.sede _m:o sede.id)
         protected Sede? _sede_ = null;
         public Sede? sede_
         {
             get { return _sede_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _sede_ != null && AutoAddToCollection)
                     _sede_!.Designacion_.Remove(this);
-                }
+
                 _sede_ = value;
 
                 if(value != null)
                 {
                     sede = value.id;
-                    if(AutoAddRef && !_sede_!.Designacion_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_sede_!.Designacion_.Contains(this))
                         _sede_!.Designacion_.Add(this);
-                    }
                 }
                 else
                 {
@@ -147,25 +141,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region persona (fk designacion.persona _ m:o persona.id)
+        #region persona (fk designacion.persona _m:o persona.id)
         protected Persona? _persona_ = null;
         public Persona? persona_
         {
             get { return _persona_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _persona_ != null && AutoAddToCollection)
                     _persona_!.Designacion_.Remove(this);
-                }
+
                 _persona_ = value;
 
                 if(value != null)
                 {
                     persona = value.id;
-                    if(AutoAddRef && !_persona_!.Designacion_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_persona_!.Designacion_.Contains(this))
                         _persona_!.Designacion_.Add(this);
-                    }
                 }
                 else
                 {

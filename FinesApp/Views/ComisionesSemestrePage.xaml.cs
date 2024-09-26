@@ -21,7 +21,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     private ObservableCollection<Calendario> ocCalendarioComisionesSiguientes = new();
     private ObservableCollection<Calendario> calendarioPFOC = new();
 
-    IEnumerable<PersistContext> persists;
+    Collection<PersistContext> persists = new();
 
     public ComisionesSemestrePage()
     {
@@ -61,7 +61,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 
     private void ComisionesSemestrePage_Loaded(object sender, RoutedEventArgs e)
     {
-        ContainerApp.db.Sql("calendario").Cache().AddDataToClearOC(calendarioPFOC);
+        ContainerApp.db.Sql("calendario").Cache().AddEntityToClearOC(calendarioPFOC);
     }
 
     private void LoadCalendarioComisionesSiguientes()
@@ -72,7 +72,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         Calendario cal = cbxCalendario.SelectedItem as Calendario;
 
         ContainerApp.db.Sql("calendario").Where("$anio >= @0 AND $semestre >= @1").
-            Param("@0", cal.anio).Param("@1", cal.semestre).Cache().AddDataToClearOC(ocCalendarioComisionesSiguientes);
+            Param("@0", cal.anio).Param("@1", cal.semestre).Cache().AddEntityToClearOC(ocCalendarioComisionesSiguientes);
     }
 
     private void BuscarButton_Click(object sender, RoutedEventArgs e)
@@ -101,11 +101,15 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
             if (cbxCalendario.SelectedIndex < 0 || cbxCalendarioComisionesSiguientes.SelectedIndex < 0)
                 throw new Exception("Verificar formulario");
 
-            IEnumerable<PersistContext> persists = ContainerApp.db.Values<ComisionValues>().GenerarComisionesSemestreSiguiente(cbxCalendario.SelectedValue, cbxCalendarioComisionesSiguientes.SelectedValue);
+            using (Context.db.CreateQueue())
+            {
+                (cbxCalendario.SelectedItem as Calendario).GenerarComisionesSemestreSiguiente((string)cbxCalendarioComisionesSiguientes.SelectedValue);
+                Context.db.ProcessQueue();
+            }
 
-            persists.Transaction().RemoveCache();
             ToastExtensions.Show("Comisiones agregadas");
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             ex.ToastException();
         }
@@ -115,12 +119,13 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     {
         try
         {
-            List<PersistContext> persists = new();
+            using (Context.db.CreateQueue())
+            {
+                foreach (var comObj in comisionOC)
+                    comObj.GenerarCursos();
+                Context.db.ProcessQueue();
+            }
 
-            foreach(var comObj in comisionOC)
-                comObj.GenerarCursos().AddTo(persists);
-
-            persists.Transaction().RemoveCache();
             ToastExtensions.Show("Se han generado los cursos");
 
         }
@@ -163,6 +168,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     {
         try
         {
+            using(Context.db.CreateQueue(persists))
             if (persists.IsNoE())
                 throw new Exception("No hay nada para persistir");
 

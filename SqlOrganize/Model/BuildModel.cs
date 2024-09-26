@@ -590,18 +590,21 @@ namespace SqlOrganize.Model
 
                     if (entities[entityName].unique.Contains(relation.fieldName)) //o
                     {
-                        sw.WriteLine("        #region " + relation.fieldName + " (fk " + entityName + "." + relation.fieldName + " _ o:o " + relation.refEntityName + ".id)");
+                        sw.WriteLine("        #region " + relation.fieldName + " (fk " + entityName + "." + relation.fieldName + " _o:o " + relation.refEntityName + ".id)");
                         sw.WriteLine("        protected " + relation.refEntityName.ToCamelCase() + "? _" + relation.fieldName + "_ = null;");
                         sw.WriteLine("        public " + relation.refEntityName.ToCamelCase() + "? " + relation.fieldName + "_");
                         sw.WriteLine("        {");
                         sw.WriteLine("            get { return _" + relation.fieldName + "_; }");
                         sw.WriteLine("            set {");
+                        sw.WriteLine("                if(_" + relation.fieldName + "_ != null)");
+                        sw.WriteLine("                    _" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + " = null;");
+                        sw.WriteLine("");
+                        sw.WriteLine("                _" + relation.fieldName + "_ = value;");
+                        sw.WriteLine("");
                         sw.WriteLine("                if(value != null)");
                         sw.WriteLine("                {");
                         sw.WriteLine("                    _" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + " = this;");
                         sw.WriteLine("                    " + relation.fieldName + " = value." + this.Config.id + ";");
-                        sw.WriteLine("                    _" + relation.fieldName + "_ = value;");
-
                         sw.WriteLine("                }");
                         sw.WriteLine("                else");
                         sw.WriteLine("                {");
@@ -615,26 +618,22 @@ namespace SqlOrganize.Model
                     }
                     else //m
                     {
-                        sw.WriteLine("        #region " + relation.fieldName + " (fk " + entityName + "." + relation.fieldName + " _ m:o " + relation.refEntityName + ".id)");
+                        sw.WriteLine("        #region " + relation.fieldName + " (fk " + entityName + "." + relation.fieldName + " _m:o " + relation.refEntityName + ".id)");
                         sw.WriteLine("        protected " + relation.refEntityName.ToCamelCase() + "? _" + relation.fieldName + "_ = null;");
                         sw.WriteLine("        public " + relation.refEntityName.ToCamelCase() + "? " + relation.fieldName + "_");
                         sw.WriteLine("        {");
                         sw.WriteLine("            get { return _" + relation.fieldName + "_; }");
                         sw.WriteLine("            set {");
-                        sw.WriteLine("                if(value != null && AutoAddRef)");
-                        sw.WriteLine("                {");
+                        sw.WriteLine("                if( _" + relation.fieldName + "_ != null && AutoAddToCollection)");
                         sw.WriteLine("                    _" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + ".Remove(this);");
-                        sw.WriteLine("                }");
-
+                        sw.WriteLine("");
                         sw.WriteLine("                _" + relation.fieldName + "_ = value;");
                         sw.WriteLine("");
                         sw.WriteLine("                if(value != null)");
                         sw.WriteLine("                {");
                         sw.WriteLine("                    " + relation.fieldName + " = value." + this.Config.id + ";");
-                        sw.WriteLine("                    if(AutoAddRef && !_" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + ".Contains(this))");
-                        sw.WriteLine("                    {");
+                        sw.WriteLine("                    if(AutoAddToCollection && !_" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + ".Contains(this))");
                         sw.WriteLine("                        _" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + ".Add(this);");
-                        sw.WriteLine("                    }");
                         sw.WriteLine("                }");
                         sw.WriteLine("                else");
                         sw.WriteLine("                {");

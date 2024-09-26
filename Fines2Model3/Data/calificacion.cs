@@ -143,25 +143,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region curso (fk calificacion.curso _ m:o curso.id)
+        #region curso (fk calificacion.curso _m:o curso.id)
         protected Curso? _curso_ = null;
         public Curso? curso_
         {
             get { return _curso_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _curso_ != null && AutoAddToCollection)
                     _curso_!.Calificacion_.Remove(this);
-                }
+
                 _curso_ = value;
 
                 if(value != null)
                 {
                     curso = value.id;
-                    if(AutoAddRef && !_curso_!.Calificacion_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_curso_!.Calificacion_.Contains(this))
                         _curso_!.Calificacion_.Add(this);
-                    }
                 }
                 else
                 {
@@ -172,25 +169,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region alumno (fk calificacion.alumno _ m:o alumno.id)
+        #region alumno (fk calificacion.alumno _m:o alumno.id)
         protected Alumno? _alumno_ = null;
         public Alumno? alumno_
         {
             get { return _alumno_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _alumno_ != null && AutoAddToCollection)
                     _alumno_!.Calificacion_.Remove(this);
-                }
+
                 _alumno_ = value;
 
                 if(value != null)
                 {
                     alumno = value.id;
-                    if(AutoAddRef && !_alumno_!.Calificacion_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_alumno_!.Calificacion_.Contains(this))
                         _alumno_!.Calificacion_.Add(this);
-                    }
                 }
                 else
                 {
@@ -201,25 +195,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region disposicion (fk calificacion.disposicion _ m:o disposicion.id)
+        #region disposicion (fk calificacion.disposicion _m:o disposicion.id)
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {
             get { return _disposicion_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _disposicion_ != null && AutoAddToCollection)
                     _disposicion_!.Calificacion_.Remove(this);
-                }
+
                 _disposicion_ = value;
 
                 if(value != null)
                 {
                     disposicion = value.id;
-                    if(AutoAddRef && !_disposicion_!.Calificacion_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_disposicion_!.Calificacion_.Contains(this))
                         _disposicion_!.Calificacion_.Add(this);
-                    }
                 }
                 else
                 {

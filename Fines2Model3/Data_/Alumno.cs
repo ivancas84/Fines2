@@ -5,21 +5,21 @@ namespace SqlOrganize.Sql.Fines2Model3
 {
     public partial class Alumno : Entity
     {
-        public void GenerarCalificaciones()
+        public PersistContext GenerarCalificaciones()
         {
-            List<PersistContext> persists = new();
 
             if (IsNullOrEmpty("id", "plan", "anio_ingreso", "semestre_ingreso"))
                 throw new Exception("No se encuentran definidos los datos principales del alumno para generar las calificaciones.");
 
+            
             #region Eliminar calificaciones desaprobadas
             IEnumerable<object> idsCalificaciones = CalificacionDAO.CalificacionesDesaprobadasDeAlumnoSql(this.id).
-                Column<object>("id");
-
+            Column<object>("id");
+            
+            var persist = Context.db.Persist();
             if (idsCalificaciones.Count() > 0)
-                db.Persist().
-                    DeleteIds("calificacion", idsCalificaciones.ToArray()).
-                    AddTo(persists);
+                persist.
+                    DeleteIds("calificacion", idsCalificaciones.ToArray());
             #endregion
 
             #region Archivar calificaciones aprobadas del mismo plan pero con año y semestre inferior
@@ -30,9 +30,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                     Column<object>("id");
 
                 if (idsCalificacionesAnteriores.Any())
-                    db.Persist().
-                        UpdateFieldIds("calificacion", "archivado", true, idsCalificacionesAnteriores.ToArray()).
-                        AddTo(persists);
+                    persist.
+                    UpdateFieldIds("calificacion", "archivado", true, idsCalificacionesAnteriores.ToArray());
             }
             #endregion
 
@@ -41,9 +40,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Column<object>("id");
 
             if (idsCalificaciones.Count() > 0)
-                db.Persist().
-                    UpdateFieldIds("calificacion", "archivado", true, idsCalificaciones.ToArray()).
-                    AddTo(persists);
+                persist.
+                    UpdateFieldIds("calificacion", "archivado", true, idsCalificaciones.ToArray());
             #endregion
 
             #region Desarchivar calificaciones aprobadas del mismo plan
@@ -53,9 +51,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             idsCalificaciones = calificacionesAprobadas.ColOfVal<object>("id");
 
             if (idsCalificaciones.Count() > 0)
-                db.Persist().
-                    UpdateFieldIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
-                    AddTo(persists);
+                persist.
+                    UpdateFieldIds("calificacion", "archivado", false, idsCalificaciones.ToArray());
             #endregion
 
             #region Insertar calificaciones de disposiciones faltantes
@@ -72,7 +69,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     calificacionObj.disposicion = (string)id;
                     calificacionObj.alumno = (string)Get("id");
                     calificacionObj.archivado = false;
-                    db.Values("calificacion").Set(calificacionObj).Insert().AddTo(persists);
+                    persist.Insert(calificacionObj);
                 }
             }
             #endregion
@@ -108,8 +105,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                         AddTo(persists);
             }
             #endregion*/
-
-            persists.Transaction().RemoveCache();
+            return persist;
         }
 
         // TODO CREO QUE ES UNA PROPIEDAD

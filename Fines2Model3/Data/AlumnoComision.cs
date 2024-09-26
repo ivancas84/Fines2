@@ -80,25 +80,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region comision (fk alumno_comision.comision _ m:o comision.id)
+        #region comision (fk alumno_comision.comision _m:o comision.id)
         protected Comision? _comision_ = null;
         public Comision? comision_
         {
             get { return _comision_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _comision_ != null && AutoAddToCollection)
                     _comision_!.AlumnoComision_.Remove(this);
-                }
+
                 _comision_ = value;
 
                 if(value != null)
                 {
                     comision = value.id;
-                    if(AutoAddRef && !_comision_!.AlumnoComision_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_comision_!.AlumnoComision_.Contains(this))
                         _comision_!.AlumnoComision_.Add(this);
-                    }
                 }
                 else
                 {
@@ -109,25 +106,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region alumno (fk alumno_comision.alumno _ m:o alumno.id)
+        #region alumno (fk alumno_comision.alumno _m:o alumno.id)
         protected Alumno? _alumno_ = null;
         public Alumno? alumno_
         {
             get { return _alumno_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _alumno_ != null && AutoAddToCollection)
                     _alumno_!.AlumnoComision_.Remove(this);
-                }
+
                 _alumno_ = value;
 
                 if(value != null)
                 {
                     alumno = value.id;
-                    if(AutoAddRef && !_alumno_!.AlumnoComision_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_alumno_!.AlumnoComision_.Contains(this))
                         _alumno_!.AlumnoComision_.Add(this);
-                    }
                 }
                 else
                 {

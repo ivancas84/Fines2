@@ -59,7 +59,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
             var list = ContainerApp.db.BusquedaAproximadaComision(text).Dicts();
 
-            ContainerApp.db.AddDataToClearOC(list, comisionOC);
+            ContainerApp.db.AddEntityToClearOC(list, comisionOC);
 
             cbxComision.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
         }
@@ -94,7 +94,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             var cursosData = ContainerApp.db.Sql("curso").Equal("$comision", comision.id).Cache().Dicts();
             var tomaData = ContainerApp.db.TomaAprobadaDeComisionQuery(comision.id).Cache().Dicts();
             cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
-            ContainerApp.db.AddDataToClearOC(cursosData, cursoOC);
+            ContainerApp.db.AddEntityToClearOC(cursosData, cursoOC);
 
             var idsAsignaturas = cursosData.ColOfVal<string>("asignatura-id").ToList();
 
@@ -149,7 +149,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
                 }
                 asignacionOC.Add(itemObj);
             }
-            //ContainerApp.db.AddDataToClearOC(data, alumnos3OC);
+            //ContainerApp.db.AddEntityToClearOC(data, alumnos3OC);
         
         }
         catch (Exception ex)
@@ -168,7 +168,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
         if (!string.IsNullOrEmpty(phoneNumber))
         {
-            string message = "Hola " + data.toma_activa_.docente_.Label + " quería hacerte una consulta acerca de la asignatura " + data.asignatura_.nombre + " de comision " + data.comision_.pfid;
+            string message = "Hola " + data.toma_activa_.docente_.Label + " quería hacerte una consulta acerca de la asignatura " + data.disposicion_.asignatura_.nombre + " de comision " + data.comision_.pfid;
             string whatsappUrl = $"https://web.whatsapp.com/send?phone={phoneNumber}&text={Uri.EscapeDataString(message)}";
 
             Process.Start(new ProcessStartInfo(whatsappUrl) { UseShellExecute = true });
@@ -325,11 +325,15 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             if (cbxComision.SelectedIndex < 0)
                 throw new Exception("No existe comision seleccionada");
 
-            var comValues = ((Comision)cbxComision.SelectedItem).GetValues();
+            var comision = ((Comision)cbxComision.SelectedItem);
 
-            ContainerApp.db.GenerarCursos(comValues).Transaction().RemoveCache();
-            persists.Transaction().RemoveCache();
-            ToastExtensions.Show("Se han generado los cursos");
+            using (Context.db.CreateQueue())
+            {
+                comision.GenerarCursos();
+                Context.db.ProcessQueue();
+                ToastExtensions.Show("Se han generado los cursos");
+            }
+
         }
         catch (Exception ex)
         {

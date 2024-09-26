@@ -53,25 +53,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region disposicion (fk disposicion_pendiente.disposicion _ m:o disposicion.id)
+        #region disposicion (fk disposicion_pendiente.disposicion _m:o disposicion.id)
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {
             get { return _disposicion_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _disposicion_ != null && AutoAddToCollection)
                     _disposicion_!.DisposicionPendiente_.Remove(this);
-                }
+
                 _disposicion_ = value;
 
                 if(value != null)
                 {
                     disposicion = value.id;
-                    if(AutoAddRef && !_disposicion_!.DisposicionPendiente_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_disposicion_!.DisposicionPendiente_.Contains(this))
                         _disposicion_!.DisposicionPendiente_.Add(this);
-                    }
                 }
                 else
                 {
@@ -82,25 +79,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region alumno (fk disposicion_pendiente.alumno _ m:o alumno.id)
+        #region alumno (fk disposicion_pendiente.alumno _m:o alumno.id)
         protected Alumno? _alumno_ = null;
         public Alumno? alumno_
         {
             get { return _alumno_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _alumno_ != null && AutoAddToCollection)
                     _alumno_!.DisposicionPendiente_.Remove(this);
-                }
+
                 _alumno_ = value;
 
                 if(value != null)
                 {
                     alumno = value.id;
-                    if(AutoAddRef && !_alumno_!.DisposicionPendiente_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_alumno_!.DisposicionPendiente_.Contains(this))
                         _alumno_!.DisposicionPendiente_.Add(this);
-                    }
                 }
                 else
                 {

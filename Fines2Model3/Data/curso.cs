@@ -98,25 +98,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region comision (fk curso.comision _ m:o comision.id)
+        #region comision (fk curso.comision _m:o comision.id)
         protected Comision? _comision_ = null;
         public Comision? comision_
         {
             get { return _comision_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _comision_ != null && AutoAddToCollection)
                     _comision_!.Curso_.Remove(this);
-                }
+
                 _comision_ = value;
 
                 if(value != null)
                 {
                     comision = value.id;
-                    if(AutoAddRef && !_comision_!.Curso_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_comision_!.Curso_.Contains(this))
                         _comision_!.Curso_.Add(this);
-                    }
                 }
                 else
                 {
@@ -127,25 +124,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region disposicion (fk curso.disposicion _ m:o disposicion.id)
+        #region disposicion (fk curso.disposicion _m:o disposicion.id)
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {
             get { return _disposicion_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _disposicion_ != null && AutoAddToCollection)
                     _disposicion_!.Curso_.Remove(this);
-                }
+
                 _disposicion_ = value;
 
                 if(value != null)
                 {
                     disposicion = value.id;
-                    if(AutoAddRef && !_disposicion_!.Curso_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_disposicion_!.Curso_.Contains(this))
                         _disposicion_!.Curso_.Add(this);
-                    }
                 }
                 else
                 {

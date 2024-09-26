@@ -2,9 +2,9 @@
 
 namespace SqlOrganize.Sql
 {
-    public class EntityPersistMy : PersistContext
+    public class PersistContextMy : PersistContext
     {
-        public EntityPersistMy(Db db) : base(db)
+        public PersistContextMy(Db db) : base(db)
         {
         }
 

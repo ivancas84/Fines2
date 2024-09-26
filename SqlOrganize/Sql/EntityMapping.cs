@@ -104,9 +104,11 @@ namespace SqlOrganize.Sql
 
         protected string _Map(string fieldName)
         {
+            return Pt() + "." + fieldName;
+
+            /*
             if (!fieldName.Contains(".")) //chequeo de funciones especiales
                 return Pt() + "." + fieldName;
-
 
             int lastIndex = fieldName.LastIndexOf('.');
 
@@ -120,8 +122,7 @@ namespace SqlOrganize.Sql
             Field field = db.Field(entityName, fn);
 
             return CastString(field.dataType, Pt() + "." + fn);
-            
-            
+            */
         }
 
     }

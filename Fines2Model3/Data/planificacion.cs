@@ -62,25 +62,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region plan (fk planificacion.plan _ m:o plan.id)
+        #region plan (fk planificacion.plan _m:o plan.id)
         protected Plan? _plan_ = null;
         public Plan? plan_
         {
             get { return _plan_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _plan_ != null && AutoAddToCollection)
                     _plan_!.Planificacion_.Remove(this);
-                }
+
                 _plan_ = value;
 
                 if(value != null)
                 {
                     plan = value.id;
-                    if(AutoAddRef && !_plan_!.Planificacion_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_plan_!.Planificacion_.Contains(this))
                         _plan_!.Planificacion_.Add(this);
-                    }
                 }
                 else
                 {

@@ -1,10 +1,5 @@
 ﻿using SqlOrganize.Sql.Fines2Model3;
 using SqlOrganize.Sql;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SqlOrganize.CollectionUtils;
 using Newtonsoft.Json;
 using SqlOrganize.ValueTypesUtils;
@@ -13,10 +8,55 @@ namespace SqlOrganize.Sql.Fines2Model3
 {
     public partial class Calendario : Entity
     {
+        public override string? Label
+        {
+            get
+            {
+                if (!_Label.IsNoE())
+                    return _Label;
+
+                return anio?.ToString() ?? "?" + " " + semestre ?? "?" + " " + descripcion ?? "?";
+            }
+            set
+            {
+                Label = value;
+                NotifyPropertyChanged(nameof(Label));
+            }
+        }
+
+        public static (short anio, short semestre) AnioSemestreAnterior(short anio, short semestre)
+        {
+            if (semestre == 1)
+            {
+                semestre = 2;
+                anio--;
+            }
+            else
+            {
+                semestre = 1;
+            }
+
+            return (anio, semestre);
+        }
+
+        public static (short anio, short semestre) AnioSemestreSiguiente(short anio, short semestre)
+        {
+            if (semestre == 2)
+            {
+                semestre = 1;
+                anio++;
+            }
+            else
+            {
+                semestre = 2;
+            }
+
+            return (anio, semestre);
+        }
 
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>
         /// <remarks> Los datos se obtienen desde un xlsx de https://programafines.ar/inicial/index4.php?a=46</remarks>
-        public IEnumerable<PersistContext> PersistComisionesPf(string data)
+        public void PersistComisionesPf(string data)
         {
 
             var pfidComisiones = ComisionDAO.ComisionesAutorizadasDeCalendarioSql(id!).Cache().Dicts().ColOfVal<string>("pfid");
@@ -26,12 +66,11 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             bool procesar_docente = false;
 
-            List<PersistContext> persists = new();
 
             foreach (var line in data.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 PersistContext persist = db.Persist();
-
+                
                 try
                 {
                     #region 2da parte
@@ -66,9 +105,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             }
                             else
                             {
-                                persist.UpdateFieldIds("persona", "cuil", String.Join("", cuil), id!);
+                                persist.UpdateFieldIds("persona", "cuil", System.String.Join("", cuil), id!);
                             }
-                            persist.AddTo(persists);
                             continue;
                         }
 
@@ -103,27 +141,24 @@ namespace SqlOrganize.Sql.Fines2Model3
                         throw new Exception("No existe curso " + dict["comision__pfid"].ToString() + " " + dict["asignatura__codigo"].ToString());
 
                     dict["id"] = cursoData["id"];
-                    persist.UpdateFieldIds("curso", "descripcion_horario", dict["descripcion_horario"].ToString()!, dict["id"]!).AddTo(persists);
+                    persist.UpdateFieldIds("curso", "descripcion_horario", dict["descripcion_horario"].ToString()!, dict["id"]!);
                     procesar_docente = true;
                     #endregion
                 }
                 catch (Exception ex)
                 {
                     persist.logging.AddLog("comision", ex.Message, "persist_comisiones_pf", Logging.Level.Error);
-                    persist.AddTo(persists);
                 }
 
             }
 
-            return persists;
         }
 
 
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>
         /// <remarks> Los datos se obtienen desde el html procesado con pagemanipulator de https://programafines.ar/inicial/index4.php?a=46</remarks>
-        public IEnumerable<PersistContext> PersistTomasPfHtml(string data)
+        public void PersistTomasPfHtml(string data)
         {
-            List<PersistContext> persists = new();
 
             var pfidComisiones = ComisionDAO.ComisionesAutorizadasDeCalendarioSql(id).Cache().Dicts().ColOfVal<string>("pfid");
             var docentes = JsonConvert.DeserializeObject<List<DocentePfItem>>(data)!;
@@ -150,7 +185,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     persona.SetNotNull(d);
                     persona.numero_documento = dni;
                     persona.Reset();
-                    persona.PersistCompare(persist, compare);
+                    persist.PersistCompare(persona, compare);
                     #endregion
 
 
@@ -173,7 +208,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 throw new Exception("No existe curso " + cargo["comision"] + " " + cargo["codigo"]);
 
 
-                            Toma? rowTomaActiva = TomaDAO.TomaAprobadaDeCursoQuery(idCurso).Cache().Data<Toma>();
+                            Toma? rowTomaActiva = TomaDAO.TomaAprobadaDeCursoQuery(idCurso).Cache().ToEntity<Toma>();
                             if (rowTomaActiva != null)
                             {
                                 if (!rowTomaActiva.docente!.Equals(persona.id))
@@ -191,7 +226,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 toma.tipo_movimiento = "AI";
                                 toma.fecha_toma = inicio;
                                 toma.Reset();
-                                toma.Insert(persist);
+                                persist.Insert(toma);
                             }
                         }
                         catch (Exception ex)
@@ -200,27 +235,21 @@ namespace SqlOrganize.Sql.Fines2Model3
                         }
 
                     }
-
-                    if (existenCargos)
-                        persist.AddTo(persists);
                     #endregion
 
                 }
                 catch (Exception ex)
                 {
                     persist.logging.AddLog("calendario", "ERROR " + ex.Message + " (" + docenteItem.Dict().ToStringKeyValuePair() + ")", "PersistTomasPfHtml");
-                    persist.AddTo(persists);
                 }
 
             }
-            return persists;
         }
 
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>
         /// <remarks> Los datos se obtienen desde un xlsx de https://programafines.ar/inicial/index4.php?a=46</remarks>
-        public static IEnumerable<PersistContext> PersistTomasPf(string data)
+        public void PersistTomasPf(string data)
         {
-            List<PersistContext> persists = new();
 
             string[] headers = { "persona__apellidos", "persona__nombres", "persona__numero_documento", "persona__descripcion_domicilio", "persona__localidad", "persona__fecha_nacimiento", "persona__telefono", "persona__email_abc", "comision__pfid", "descripcion_asignatura", "CENS" };
 
@@ -247,18 +276,21 @@ namespace SqlOrganize.Sql.Fines2Model3
                     if (!dict["CENS"]!.ToString()!.Equals("462"))
                         throw new Exception("CENS " + dict["CENS"] + ": no corresponde al 462");
 
-                    (string? dni, string? cuil) = PersonaValues.CuilDni(dict["persona__numero_documento"]);
+                    (string? dni, string? cuil) = Persona.CuilDni(dict["persona__numero_documento"]);
                     CompareParams compare = new CompareParams
                     {
                         FieldsToCompare = ["nombres", "apellidos", "numero_documento"],
                     };
-                    var personaValues = db.Values("persona", "persona").SetNotNull(dict).Set("numero_documento", dni).
-                        PersistCompare(persist, compare);
+
+                    Persona persona = new();
+                    persona.Set(dict, "persona");
+                    persona.Set("numer_docuemento", dni);
+                    persist.PersistCompare(persona, compare);
 
                     object pfid = dict["comision__pfid"]!;
                     string codigo = dict["descripcion_asignatura"]!.ToString()!.SubstringBetween("(", ")");
 
-                    object? idCurso = db.CursoDeComisionPfidCodigoAsignaturaCalendarioSql(pfid, codigo, calendarioObj.id!).Value<object>("id");
+                    object? idCurso = CursoDAO.CursoDeComisionPfidCodigoAsignaturaCalendarioSql(pfid, codigo, id!).Value<object>("id");
                     if (idCurso.IsNoE())
                         throw new Exception("No existe curso");
 
@@ -296,15 +328,11 @@ namespace SqlOrganize.Sql.Fines2Model3
                     continue;
                 }
 
-                persist.AddTo(persists);
             }
-
-            return persists;
-
 
         }
 
-        public static IEnumerable<PersistContext> GenerarComisionesSemestreSiguiente(string idCalendarioComisionesAutorizdasSemestre, string idCalendarioComisionesSiguientes)
+        public IEnumerable<PersistContext> GenerarComisionesSemestreSiguiente(string idCalendarioComisionesSiguientes)
         {
             IEnumerable<Comision> comisionesAutorizadasSemestre = Context.db.Sql("comision").
                Where(@" 
@@ -318,11 +346,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                         OR ($planificacion__anio = '1' AND $planificacion__semestre = '1'))
                     ").
                Size(0).
-               Param("@0", idCalendarioComisionesAutorizdasSemestre).
+               Param("@0", id).
                Cache().
-               Datas<Comision>();
+               Entities<Comision>();
 
-            List<PersistContext> persists = new();
             for (int i = 0; i < comisionesAutorizadasSemestre.Count(); i++)
             {
                 PersistContext persist = Context.db.Persist();
@@ -335,7 +362,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 nuevaComision.SetDefault("alta");
                 nuevaComision.Reset();
 
-                Planificacion? nuevaPlanificacion = PlanificacionDAO.PlanificacionSiguienteSql(comisionExistente.planificacion_.anio!, comisionExistente.planificacion_.semestre!, comisionExistente.planificacion_.plan_.id!).Cache().Data<Planificacion>();
+                Planificacion? nuevaPlanificacion = PlanificacionDAO.PlanificacionSiguienteSql(comisionExistente.planificacion_.anio!, comisionExistente.planificacion_.semestre!, comisionExistente.planificacion_.plan_.id!).Cache().ToEntity<Planificacion>();
 
                 if (nuevaPlanificacion == null)
                 {
@@ -351,13 +378,12 @@ namespace SqlOrganize.Sql.Fines2Model3
                     continue;
                 }
 
-                comisionExistente.comision_siguiente = (string)nuevaComision.Insert(persist);
-                comisionExistente.UpdateField(persist, "comision_siguiente");
-                persists.Add(persist);
+                persist.Insert(nuevaComision);
+                comisionExistente.comision_siguiente = nuevaComision.id;
+                
+                persist.UpdateField(comisionExistente, "comision_siguiente");
             }
 
-            return persists;
         }
     }
-}
 }

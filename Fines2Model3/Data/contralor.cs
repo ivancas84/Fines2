@@ -62,25 +62,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region planilla_docente (fk contralor.planilla_docente _ m:o planilla_docente.id)
+        #region planilla_docente (fk contralor.planilla_docente _m:o planilla_docente.id)
         protected PlanillaDocente? _planilla_docente_ = null;
         public PlanillaDocente? planilla_docente_
         {
             get { return _planilla_docente_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _planilla_docente_ != null && AutoAddToCollection)
                     _planilla_docente_!.Contralor_.Remove(this);
-                }
+
                 _planilla_docente_ = value;
 
                 if(value != null)
                 {
                     planilla_docente = value.id;
-                    if(AutoAddRef && !_planilla_docente_!.Contralor_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_planilla_docente_!.Contralor_.Contains(this))
                         _planilla_docente_!.Contralor_.Add(this);
-                    }
                 }
                 else
                 {

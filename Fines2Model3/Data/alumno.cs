@@ -260,13 +260,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region persona (fk alumno.persona _ o:o persona.id)
+        #region persona (fk alumno.persona _o:o persona.id)
         protected Persona? _persona_ = null;
         public Persona? persona_
         {
             get { return _persona_; }
             set {
+                if(_persona_ != null)
+                    _persona_!.Alumno_ = null;
+
                 _persona_ = value;
+
                 if(value != null)
                 {
                     _persona_!.Alumno_ = this;
@@ -281,25 +285,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region plan (fk alumno.plan _ m:o plan.id)
+        #region plan (fk alumno.plan _m:o plan.id)
         protected Plan? _plan_ = null;
         public Plan? plan_
         {
             get { return _plan_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _plan_ != null && AutoAddToCollection)
                     _plan_!.Alumno_.Remove(this);
-                }
+
                 _plan_ = value;
 
                 if(value != null)
                 {
                     plan = value.id;
-                    if(AutoAddRef && !_plan_!.Alumno_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_plan_!.Alumno_.Contains(this))
                         _plan_!.Alumno_.Add(this);
-                    }
                 }
                 else
                 {
@@ -310,25 +311,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region resolucion_inscripcion (fk alumno.resolucion_inscripcion _ m:o resolucion.id)
+        #region resolucion_inscripcion (fk alumno.resolucion_inscripcion _m:o resolucion.id)
         protected Resolucion? _resolucion_inscripcion_ = null;
         public Resolucion? resolucion_inscripcion_
         {
             get { return _resolucion_inscripcion_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _resolucion_inscripcion_ != null && AutoAddToCollection)
                     _resolucion_inscripcion_!.Alumno_.Remove(this);
-                }
+
                 _resolucion_inscripcion_ = value;
 
                 if(value != null)
                 {
                     resolucion_inscripcion = value.id;
-                    if(AutoAddRef && !_resolucion_inscripcion_!.Alumno_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_resolucion_inscripcion_!.Alumno_.Contains(this))
                         _resolucion_inscripcion_!.Alumno_.Add(this);
-                    }
                 }
                 else
                 {

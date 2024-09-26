@@ -80,25 +80,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region persona (fk telefono.persona _ m:o persona.id)
+        #region persona (fk telefono.persona _m:o persona.id)
         protected Persona? _persona_ = null;
         public Persona? persona_
         {
             get { return _persona_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _persona_ != null && AutoAddToCollection)
                     _persona_!.Telefono_.Remove(this);
-                }
+
                 _persona_ = value;
 
                 if(value != null)
                 {
                     persona = value.id;
-                    if(AutoAddRef && !_persona_!.Telefono_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_persona_!.Telefono_.Contains(this))
                         _persona_!.Telefono_.Add(this);
-                    }
                 }
                 else
                 {

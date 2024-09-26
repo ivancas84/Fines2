@@ -55,7 +55,7 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
 
             IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).Dicts(); //busqueda de valores a mostrar en funcion del texto
 
-            ContainerApp.db.AddDataToClearOC(list, origenOC);
+            ContainerApp.db.AddEntityToClearOC(list, origenOC);
 
             origenComboBox.SetTimerTickFinalize(origenTextBox!, text, (int)origenTextBoxPos!);
         }
@@ -84,7 +84,7 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
 
             IEnumerable<Dictionary<string, object?>> list = ContainerApp.db.PersonaSearchLikeQuery(text).Dicts(); //busqueda de valores a mostrar en funcion del texto
 
-            ContainerApp.db.AddDataToClearOC(list, destinoOC);
+            ContainerApp.db.AddEntityToClearOC(list, destinoOC);
 
             destinoComboBox.SetTimerTickFinalize(destinoTextBox!, text, (int)destinoTextBoxPos!);
         }

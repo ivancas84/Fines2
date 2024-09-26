@@ -161,25 +161,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region sede (fk comision.sede _ m:o sede.id)
+        #region sede (fk comision.sede _m:o sede.id)
         protected Sede? _sede_ = null;
         public Sede? sede_
         {
             get { return _sede_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _sede_ != null && AutoAddToCollection)
                     _sede_!.Comision_.Remove(this);
-                }
+
                 _sede_ = value;
 
                 if(value != null)
                 {
                     sede = value.id;
-                    if(AutoAddRef && !_sede_!.Comision_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_sede_!.Comision_.Contains(this))
                         _sede_!.Comision_.Add(this);
-                    }
                 }
                 else
                 {
@@ -190,25 +187,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region modalidad (fk comision.modalidad _ m:o modalidad.id)
+        #region modalidad (fk comision.modalidad _m:o modalidad.id)
         protected Modalidad? _modalidad_ = null;
         public Modalidad? modalidad_
         {
             get { return _modalidad_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _modalidad_ != null && AutoAddToCollection)
                     _modalidad_!.Comision_.Remove(this);
-                }
+
                 _modalidad_ = value;
 
                 if(value != null)
                 {
                     modalidad = value.id;
-                    if(AutoAddRef && !_modalidad_!.Comision_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_modalidad_!.Comision_.Contains(this))
                         _modalidad_!.Comision_.Add(this);
-                    }
                 }
                 else
                 {
@@ -219,25 +213,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region planificacion (fk comision.planificacion _ m:o planificacion.id)
+        #region planificacion (fk comision.planificacion _m:o planificacion.id)
         protected Planificacion? _planificacion_ = null;
         public Planificacion? planificacion_
         {
             get { return _planificacion_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _planificacion_ != null && AutoAddToCollection)
                     _planificacion_!.Comision_.Remove(this);
-                }
+
                 _planificacion_ = value;
 
                 if(value != null)
                 {
                     planificacion = value.id;
-                    if(AutoAddRef && !_planificacion_!.Comision_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_planificacion_!.Comision_.Contains(this))
                         _planificacion_!.Comision_.Add(this);
-                    }
                 }
                 else
                 {
@@ -248,25 +239,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region calendario (fk comision.calendario _ m:o calendario.id)
+        #region calendario (fk comision.calendario _m:o calendario.id)
         protected Calendario? _calendario_ = null;
         public Calendario? calendario_
         {
             get { return _calendario_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _calendario_ != null && AutoAddToCollection)
                     _calendario_!.Comision_.Remove(this);
-                }
+
                 _calendario_ = value;
 
                 if(value != null)
                 {
                     calendario = value.id;
-                    if(AutoAddRef && !_calendario_!.Comision_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_calendario_!.Comision_.Contains(this))
                         _calendario_!.Comision_.Add(this);
-                    }
                 }
                 else
                 {

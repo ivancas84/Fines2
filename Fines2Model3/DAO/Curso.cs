@@ -13,9 +13,9 @@ namespace SqlOrganize.Sql.Fines2Model3
     public static class CursoDAO
     {
 
-        public static EntitySql BusquedaAproximadaCurso(this Db db, string search)
+        public static EntitySql BusquedaAproximadaCurso(string search)
         {
-            return db.Sql("curso")
+            return Context.db.Sql("curso")
                .Fields()
                .Size(0)
                .Where(@"
@@ -29,9 +29,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                .Param("@0","%" + search + "%");
         }
 
-        public static EntitySql CursosAutorizadosPeriodoSql(this Db db, object calendarioAnio, object calendarioSemestre, object? sede = null, bool? autorizada = null)
+        public static EntitySql CursosAutorizadosPeriodoSql(object calendarioAnio, object calendarioSemestre, object? sede = null, bool? autorizada = null)
         {
-            return db.Sql("curso")
+            return Context.db.Sql("curso")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -44,9 +44,9 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         }
 
-        public static EntitySql CursosAutorizadosCalendarioSql(this Db db, object idCalendario)
+        public static EntitySql CursosAutorizadosCalendarioSql(object idCalendario)
         {
-            return db.Sql("curso")
+            return Context.db.Sql("curso")
                 .Fields()
                 .Size(0)
                 .Where(@"
@@ -57,7 +57,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         }
 
-        public static EntitySql CursoDeComisionPfidCodigoAsignaturaCalendarioSql(this Db db, object pfid, object codigo, object idCalendario)
+        public static EntitySql CursoDeComisionPfidCodigoAsignaturaCalendarioSql(object pfid, object codigo, object idCalendario)
         {
             List<object> codigos = [codigo];
 
@@ -79,7 +79,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             }
 
-            return db.Sql("curso")
+            return Context.db.Sql("curso")
                 .Fields()
                 .Size(0)
                 .Where(@"

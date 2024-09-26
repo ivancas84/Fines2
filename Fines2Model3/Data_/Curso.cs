@@ -18,7 +18,7 @@ namespace SqlOrganize.Sql.Fines2Model3
     ///     var cursosData = ContainerApp.db.Sql("curso").Equal("$comision", comision.id).Cache().Dicts();
     ///     var tomaData = ContainerApp.db.TomaAprobadaDeComisionQuery(comision.id).Cache().Dicts();
     ///     cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
-    ///     ContainerApp.db.AddDataToClearOC(cursosData, cursoOC);
+    ///     ContainerApp.db.AddEntityToClearOC(cursosData, cursoOC);
     /// </example>
     public partial class Curso : Entity
     {

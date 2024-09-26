@@ -89,25 +89,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region archivo (fk detalle_persona.archivo _ m:o file.id)
+        #region archivo (fk detalle_persona.archivo _m:o file.id)
         protected File? _archivo_ = null;
         public File? archivo_
         {
             get { return _archivo_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _archivo_ != null && AutoAddToCollection)
                     _archivo_!.DetallePersona_archivo_.Remove(this);
-                }
+
                 _archivo_ = value;
 
                 if(value != null)
                 {
                     archivo = value.id;
-                    if(AutoAddRef && !_archivo_!.DetallePersona_archivo_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_archivo_!.DetallePersona_archivo_.Contains(this))
                         _archivo_!.DetallePersona_archivo_.Add(this);
-                    }
                 }
                 else
                 {
@@ -118,25 +115,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region persona (fk detalle_persona.persona _ m:o persona.id)
+        #region persona (fk detalle_persona.persona _m:o persona.id)
         protected Persona? _persona_ = null;
         public Persona? persona_
         {
             get { return _persona_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _persona_ != null && AutoAddToCollection)
                     _persona_!.DetallePersona_.Remove(this);
-                }
+
                 _persona_ = value;
 
                 if(value != null)
                 {
                     persona = value.id;
-                    if(AutoAddRef && !_persona_!.DetallePersona_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_persona_!.DetallePersona_.Contains(this))
                         _persona_!.DetallePersona_.Add(this);
-                    }
                 }
                 else
                 {

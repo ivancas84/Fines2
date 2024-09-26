@@ -125,25 +125,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region domicilio (fk sede.domicilio _ m:o domicilio.id)
+        #region domicilio (fk sede.domicilio _m:o domicilio.id)
         protected Domicilio? _domicilio_ = null;
         public Domicilio? domicilio_
         {
             get { return _domicilio_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _domicilio_ != null && AutoAddToCollection)
                     _domicilio_!.Sede_.Remove(this);
-                }
+
                 _domicilio_ = value;
 
                 if(value != null)
                 {
                     domicilio = value.id;
-                    if(AutoAddRef && !_domicilio_!.Sede_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_domicilio_!.Sede_.Contains(this))
                         _domicilio_!.Sede_.Add(this);
-                    }
                 }
                 else
                 {
@@ -154,25 +151,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region centro_educativo (fk sede.centro_educativo _ m:o centro_educativo.id)
+        #region centro_educativo (fk sede.centro_educativo _m:o centro_educativo.id)
         protected CentroEducativo? _centro_educativo_ = null;
         public CentroEducativo? centro_educativo_
         {
             get { return _centro_educativo_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _centro_educativo_ != null && AutoAddToCollection)
                     _centro_educativo_!.Sede_.Remove(this);
-                }
+
                 _centro_educativo_ = value;
 
                 if(value != null)
                 {
                     centro_educativo = value.id;
-                    if(AutoAddRef && !_centro_educativo_!.Sede_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_centro_educativo_!.Sede_.Contains(this))
                         _centro_educativo_!.Sede_.Add(this);
-                    }
                 }
                 else
                 {

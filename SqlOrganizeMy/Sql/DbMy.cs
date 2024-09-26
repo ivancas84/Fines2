@@ -36,7 +36,9 @@ namespace SqlOrganize.Sql
 
         public override PersistContext Persist()
         {
-            return new EntityPersistMy(this);
+            var p = new PersistContextMy(this);
+            PersistQueue.Add(p);
+            return p;
         }
 
         public override EntitySql Sql(string entity_name)

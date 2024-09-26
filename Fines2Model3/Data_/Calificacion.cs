@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Calificacion : Entity
+    public partial class Calificacion
     {
         public string nota_aprobada { 
             get {
@@ -136,24 +136,26 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary> Persistencia de persona, alumno, alumno_comision y calificacion </summary>
         /// <returns> Identificador del objeto persistido </returns>
-        public object Persist1(PersistContext persist)
+        public object Persist1()
         {
+            var persist = db.Persist();
+            
             Reset();
 
-            alumno_!.persona = (string)alumno_!.persona_!.Persist(persist)!;
+            alumno_!.persona = (string)persist.Persist(alumno_!.persona_!);
             alumno_.plan = curso_!.comision_!.planificacion_!.plan;
-            alumno = (string)alumno_!.Persist(persist)!;
+            alumno = (string)persist.Persist(alumno_!); 
             
             AlumnoComision alumnoComision = new AlumnoComision();
             alumnoComision.comision_ = curso_!.comision_;
             alumnoComision.alumno_ = alumno_;
-            alumnoComision.Persist(persist);
+            persist.Persist(alumnoComision);
 
-            Calificacion? calificacionExistente = CalificacionDAO.CalificacionDisposicionAlumnosSql(curso_.disposicion!, alumno).Cache().Data<Calificacion>();
+            Calificacion? calificacionExistente = CalificacionDAO.CalificacionDisposicionAlumnosSql(curso_.disposicion!, alumno).Cache().ToEntity<Calificacion>();
 
             if (calificacionExistente.IsNoE())
             {
-                Insert(persist);
+                persist.Insert(this);
             }
             else
             {
@@ -172,14 +174,5 @@ namespace SqlOrganize.Sql.Fines2Model3
             return id;
         }
 
-        /// <summary> Crear contexto de persistencia y ejecutar persistencia de objeto </summary>
-        /// <returns> Identificador del objeto persistido </returns>
-        public object Persist1()
-        {
-            PersistContext persistContext = db.Persist();
-            var id = Persist1(persistContext);
-            persistContext.Exec().RemoveCache();
-            return id;
-        }
     }
 }

@@ -44,25 +44,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region comision (fk comision_relacionada.comision _ m:o comision.id)
+        #region comision (fk comision_relacionada.comision _m:o comision.id)
         protected Comision? _comision_ = null;
         public Comision? comision_
         {
             get { return _comision_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _comision_ != null && AutoAddToCollection)
                     _comision_!.ComisionRelacionada_.Remove(this);
-                }
+
                 _comision_ = value;
 
                 if(value != null)
                 {
                     comision = value.id;
-                    if(AutoAddRef && !_comision_!.ComisionRelacionada_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_comision_!.ComisionRelacionada_.Contains(this))
                         _comision_!.ComisionRelacionada_.Add(this);
-                    }
                 }
                 else
                 {
@@ -73,25 +70,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region relacion (fk comision_relacionada.relacion _ m:o comision.id)
+        #region relacion (fk comision_relacionada.relacion _m:o comision.id)
         protected Comision? _relacion_ = null;
         public Comision? relacion_
         {
             get { return _relacion_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _relacion_ != null && AutoAddToCollection)
                     _relacion_!.ComisionRelacionada_relacion_.Remove(this);
-                }
+
                 _relacion_ = value;
 
                 if(value != null)
                 {
                     relacion = value.id;
-                    if(AutoAddRef && !_relacion_!.ComisionRelacionada_relacion_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_relacion_!.ComisionRelacionada_relacion_.Contains(this))
                         _relacion_!.ComisionRelacionada_relacion_.Add(this);
-                    }
                 }
                 else
                 {

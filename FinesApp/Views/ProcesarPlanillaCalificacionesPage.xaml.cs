@@ -7,9 +7,9 @@ using SqlOrganize;
 using SqlOrganize.CollectionUtils;
 using System.Windows;
 using WpfUtils;
-using WpfUtils.Fines.Curso;
 using WpfUtils.Controls;
 using System.Windows.Input;
+using System.Linq;
 
 namespace FinesApp.Views;
 
@@ -123,16 +123,14 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
 
             try
             {
-                CalificacionValues calificacionVal;
+                Calificacion calificacion = new Calificacion ();
 
                 if (sourceComboBox.SelectedItem.ToString().Contains("Programa"))
-                    calificacionVal = ((CalificacionValues)ContainerApp.db.Values("calificacion")).
-                        SetFromProgramaFines(_data[j]);
+                    calificacion.SetFromProgramaFines(_data[j]);
                 else
-                    calificacionVal = ((CalificacionValues)ContainerApp.db.Values("calificacion")).
-                       SetFromPlanilla(_data[j]);
+                    calificacion.SetFromPlanilla(_data[j]);
 
-                if (dnisProcesados.Contains((string)calificacionVal.Get("persona-numero_documento")))
+                if (dnisProcesados.Contains(calificacion.alumno_.persona_.numero_documento))
                     throw new Exception("El DNI ya se encuentra procesado");
 
                 calificacionVal.PersistProcesarCurso(cursoSeleccionado.id).AddToIfSql(persists);

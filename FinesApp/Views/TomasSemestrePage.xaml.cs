@@ -42,7 +42,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         dgdResultadoGenerarContralor.ItemsSource = ocResultadoGenerarContralor;
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
         var data = ContainerApp.db.Sql("calendario").Cache().Dicts();
-        ContainerApp.db.AddDataToClearOC(data, ocCalendario);
+        ContainerApp.db.AddEntityToClearOC(data, ocCalendario);
     }
 
     #region OcToma
@@ -77,7 +77,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         }
 
         var tomaData = ContainerApp.db.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
-        ContainerApp.db.AddDataToClearOC(tomaData, ocToma);
+        ContainerApp.db.AddEntityToClearOC(tomaData, ocToma);
     }
 
     #region Pestaña principal

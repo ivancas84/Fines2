@@ -1,11 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SqlOrganize.DateTimeUtils;
+﻿using SqlOrganize.DateTimeUtils;
 using SqlOrganize.ValueTypesUtils;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
-using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql
@@ -17,7 +14,7 @@ namespace SqlOrganize.Sql
     {
 
         /// <summary>Flag para indicar que se debe realizar la doble asignacion de relaciones</summary>
-        public bool AutoAddRef { get; set; } = false;
+        public bool AutoAddToCollection { get; set; } = false;
 
         #region entityName
         protected string _entityName;
@@ -238,7 +235,7 @@ namespace SqlOrganize.Sql
             foreach (var fieldName in db.FieldNames(entityName))
             {
                 var def = GetDefault(fieldName);
-                this.Set(fieldName, def);
+                Set(fieldName, def);
             }
         }
 
@@ -251,17 +248,21 @@ namespace SqlOrganize.Sql
 
         /// <summary> Setear diccionario a propiedades simples </summary>
         /// <remarks> Para setear el arbol utilizar Db.Data() </remarks>
-        public virtual void Set(IDictionary<string, object?> dict)
+        /// <param name="dict">Diccionario de valores</param>
+        /// <param name="prefix">Opcional, valor de prefijo</param>
+        public virtual void Set(IDictionary<string, object?> dict, string prefix = "")
         {
             foreach (var fieldName in db.FieldNames(entityName))
-                this.Set(fieldName, dict[fieldName]);
+                if(dict.ContainsKey(prefix+fieldName))
+                    this.Set(fieldName, dict[prefix+fieldName]);
         }
 
+
         /// <summary> Seteo solo de valores no nulos </summary>
-        public void SetNotNull(IDictionary<string, object?> dict)
+        public void SetNotNull(IDictionary<string, object?> dict, string prefix = "")
         {
             foreach (var fieldName in db.FieldNames(entityName))
-                if (!dict[fieldName].IsNoE())
+                if (dict.ContainsKey(prefix + fieldName) && !dict[fieldName].IsNoE())
                     Set(fieldName, dict[fieldName]);
         }
 
@@ -593,35 +594,14 @@ namespace SqlOrganize.Sql
             db.Persist().UpdateField(this, fieldName);
         }
 
-        public PersistContext UpdateField(PersistContext persist, string fieldName)
+        public PersistContext InsertIfNotExists()
         {
-            return persist.UpdateField(this, fieldName);
+            return db.Persist().InsertIfNotExists(this);
         }
 
-        public object Insert(PersistContext persist)
+        public PersistContext Delete()
         {
-            persist.Insert(this);
-            return Get(db.config.id)!;
-        }
-
-        public void InsertIfNotExists(PersistContext persist)
-        {
-            persist.InsertIfNotExists(this);
-        }
-
-        public void Update(PersistContext persist)
-        {
-            persist.Update(this);
-        }
-
-        public void Delete(PersistContext persist)
-        {
-            persist.DeleteIds(entityName, Get("id"));
-        }
-
-        public void Delete()
-        {
-            db.Persist().DeleteIds(entityName, Get("id"));
+            return db.Persist().DeleteIds(entityName, Get("id"));
         }
 
         /// <summary> Crear contexto de persistencia y ejecutar persistencia de entidad </summary>

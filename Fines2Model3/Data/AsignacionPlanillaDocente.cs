@@ -71,25 +71,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region planilla_docente (fk asignacion_planilla_docente.planilla_docente _ m:o planilla_docente.id)
+        #region planilla_docente (fk asignacion_planilla_docente.planilla_docente _m:o planilla_docente.id)
         protected PlanillaDocente? _planilla_docente_ = null;
         public PlanillaDocente? planilla_docente_
         {
             get { return _planilla_docente_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _planilla_docente_ != null && AutoAddToCollection)
                     _planilla_docente_!.AsignacionPlanillaDocente_.Remove(this);
-                }
+
                 _planilla_docente_ = value;
 
                 if(value != null)
                 {
                     planilla_docente = value.id;
-                    if(AutoAddRef && !_planilla_docente_!.AsignacionPlanillaDocente_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_planilla_docente_!.AsignacionPlanillaDocente_.Contains(this))
                         _planilla_docente_!.AsignacionPlanillaDocente_.Add(this);
-                    }
                 }
                 else
                 {
@@ -100,25 +97,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region toma (fk asignacion_planilla_docente.toma _ m:o toma.id)
+        #region toma (fk asignacion_planilla_docente.toma _m:o toma.id)
         protected Toma? _toma_ = null;
         public Toma? toma_
         {
             get { return _toma_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _toma_ != null && AutoAddToCollection)
                     _toma_!.AsignacionPlanillaDocente_.Remove(this);
-                }
+
                 _toma_ = value;
 
                 if(value != null)
                 {
                     toma = value.id;
-                    if(AutoAddRef && !_toma_!.AsignacionPlanillaDocente_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_toma_!.AsignacionPlanillaDocente_.Contains(this))
                         _toma_!.AsignacionPlanillaDocente_.Add(this);
-                    }
                 }
                 else
                 {

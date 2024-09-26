@@ -11,7 +11,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 {
     public partial class Comision : Entity
     {
-        public PersistContext PersistCursos()
+        public PersistContext GenerarCursos()
         {
             if (IsNullOrEmpty("id", "planificacion"))
                 throw new Exception("No se pueden generar los cursos: No está correctamente definido el id o la planificación");
@@ -133,21 +133,21 @@ namespace SqlOrganize.Sql.Fines2Model3
                         FieldsToCompare = ["nombres", "apellidos", "numero_documento"],
                     };
 
-                    persona.PersistCompare(persist, compare);
+                    persist.PersistCompare(persona, compare);
 
                     Alumno alumno = new Alumno();
                     alumno.persona_ = persona;
                     alumno.anio_ingreso = planificacion_!.anio;
                     alumno.semestre_ingreso = Convert.ToInt16(planificacion_!.semestre);
                     alumno.plan_ = planificacion_.plan_;
-                    alumno.InsertIfNotExists(persist);
+                    persist.InsertIfNotExists(alumno);
 
                     AlumnoComision asignacion = new AlumnoComision();
                     asignacion.alumno_ = alumno;
                     asignacion.comision_ = this;
-                    asignacion.InsertIfNotExists(persist);
+                    persist.InsertIfNotExists(asignacion);
 
-                    var otrasAsignaciones = AsignacionDAO.OtrasAsignacionesDeAlumnoSql(alumno.id!, id!).Cache().Datas<AlumnoComision>();
+                    var otrasAsignaciones = AsignacionDAO.OtrasAsignacionesDeAlumnoSql(alumno.id!, id!).Cache().Entities<AlumnoComision>();
                     foreach (var oa in otrasAsignaciones)
                         persist.logging.AddLog("alumno_comision", "Asignacion existente " + oa.Label, "PersistAsignacionesComisionText", Logging.Level.Warning);
 

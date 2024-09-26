@@ -159,7 +159,7 @@ namespace SqlOrganize.Sql
         public void ExecuteQueue()
         {
             if (PersistQueue.IsNoE())
-                return;
+                throw new Exception("No existen contextos para procesar.");
 
             var query = PersistQueue.ElementAt(0).Db.Query();
             using DbConnection connection = query.OpenConnection();
@@ -182,9 +182,9 @@ namespace SqlOrganize.Sql
             }
         }
 
-        public CreateQueue CreateQueue()
+        public CreateQueue CreateQueue(Collection<PersistContext>? persists = null)
         {
-            return new CreateQueue(this);
+            return new CreateQueue(this, persists);
         }
 
         public void RemoveCache()
@@ -213,10 +213,10 @@ namespace SqlOrganize.Sql
     {
         private readonly Db _db;  // Reference to the Db instance
 
-        public CreateQueue(Db db)
+        public CreateQueue(Db db, Collection<PersistContext>? collection = null)
         {
             _db = db;
-            _db.PersistQueue = new Collection<PersistContext>();  // Initialize or reset the queue
+            _db.PersistQueue = (collection.IsNoE()) ? new Collection<PersistContext>() : collection!; // Initialize or reset the queue
         }
 
         // The Dispose method is called automatically when the 'using' block is exited

@@ -170,25 +170,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region curso (fk toma.curso _ m:o curso.id)
+        #region curso (fk toma.curso _m:o curso.id)
         protected Curso? _curso_ = null;
         public Curso? curso_
         {
             get { return _curso_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _curso_ != null && AutoAddToCollection)
                     _curso_!.Toma_.Remove(this);
-                }
+
                 _curso_ = value;
 
                 if(value != null)
                 {
                     curso = value.id;
-                    if(AutoAddRef && !_curso_!.Toma_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_curso_!.Toma_.Contains(this))
                         _curso_!.Toma_.Add(this);
-                    }
                 }
                 else
                 {
@@ -199,25 +196,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region docente (fk toma.docente _ m:o persona.id)
+        #region docente (fk toma.docente _m:o persona.id)
         protected Persona? _docente_ = null;
         public Persona? docente_
         {
             get { return _docente_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _docente_ != null && AutoAddToCollection)
                     _docente_!.Toma_docente_.Remove(this);
-                }
+
                 _docente_ = value;
 
                 if(value != null)
                 {
                     docente = value.id;
-                    if(AutoAddRef && !_docente_!.Toma_docente_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_docente_!.Toma_docente_.Contains(this))
                         _docente_!.Toma_docente_.Add(this);
-                    }
                 }
                 else
                 {
@@ -228,25 +222,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region reemplazo (fk toma.reemplazo _ m:o persona.id)
+        #region reemplazo (fk toma.reemplazo _m:o persona.id)
         protected Persona? _reemplazo_ = null;
         public Persona? reemplazo_
         {
             get { return _reemplazo_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _reemplazo_ != null && AutoAddToCollection)
                     _reemplazo_!.Toma_reemplazo_.Remove(this);
-                }
+
                 _reemplazo_ = value;
 
                 if(value != null)
                 {
                     reemplazo = value.id;
-                    if(AutoAddRef && !_reemplazo_!.Toma_reemplazo_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_reemplazo_!.Toma_reemplazo_.Contains(this))
                         _reemplazo_!.Toma_reemplazo_.Add(this);
-                    }
                 }
                 else
                 {
@@ -257,25 +248,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region planilla_docente (fk toma.planilla_docente _ m:o planilla_docente.id)
+        #region planilla_docente (fk toma.planilla_docente _m:o planilla_docente.id)
         protected PlanillaDocente? _planilla_docente_ = null;
         public PlanillaDocente? planilla_docente_
         {
             get { return _planilla_docente_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _planilla_docente_ != null && AutoAddToCollection)
                     _planilla_docente_!.Toma_.Remove(this);
-                }
+
                 _planilla_docente_ = value;
 
                 if(value != null)
                 {
                     planilla_docente = value.id;
-                    if(AutoAddRef && !_planilla_docente_!.Toma_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_planilla_docente_!.Toma_.Contains(this))
                         _planilla_docente_!.Toma_.Add(this);
-                    }
                 }
                 else
                 {

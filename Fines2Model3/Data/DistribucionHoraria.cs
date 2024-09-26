@@ -53,25 +53,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region disposicion (fk distribucion_horaria.disposicion _ m:o disposicion.id)
+        #region disposicion (fk distribucion_horaria.disposicion _m:o disposicion.id)
         protected Disposicion? _disposicion_ = null;
         public Disposicion? disposicion_
         {
             get { return _disposicion_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _disposicion_ != null && AutoAddToCollection)
                     _disposicion_!.DistribucionHoraria_.Remove(this);
-                }
+
                 _disposicion_ = value;
 
                 if(value != null)
                 {
                     disposicion = value.id;
-                    if(AutoAddRef && !_disposicion_!.DistribucionHoraria_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_disposicion_!.DistribucionHoraria_.Contains(this))
                         _disposicion_!.DistribucionHoraria_.Add(this);
-                    }
                 }
                 else
                 {

@@ -62,25 +62,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
-        #region domicilio (fk centro_educativo.domicilio _ m:o domicilio.id)
+        #region domicilio (fk centro_educativo.domicilio _m:o domicilio.id)
         protected Domicilio? _domicilio_ = null;
         public Domicilio? domicilio_
         {
             get { return _domicilio_; }
             set {
-                if(value != null && AutoAddRef)
-                {
+                if( _domicilio_ != null && AutoAddToCollection)
                     _domicilio_!.CentroEducativo_.Remove(this);
-                }
+
                 _domicilio_ = value;
 
                 if(value != null)
                 {
                     domicilio = value.id;
-                    if(AutoAddRef && !_domicilio_!.CentroEducativo_.Contains(this))
-                    {
+                    if(AutoAddToCollection && !_domicilio_!.CentroEducativo_.Contains(this))
                         _domicilio_!.CentroEducativo_.Add(this);
-                    }
                 }
                 else
                 {
