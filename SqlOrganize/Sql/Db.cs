@@ -31,31 +31,31 @@ namespace SqlOrganize.Sql
 
         public Dictionary<string, EntityMetadata> entities { get; set; }
 
-        public Dictionary<string, Dictionary<string, Field>> fields { get; set; }
 
         public IMemoryCache? cache { get; set; } = null;
 
-        public Db(Config _config, Schema schema, IMemoryCache? cache = null)
+        public Db(Config _config, ISchema schema, IMemoryCache? cache = null)
         {
             config = _config;
             this.cache = cache;
-            entities = schema.Entities();
+            entities = schema.entities;
             foreach (EntityMetadata e in entities.Values)
+            {
                 e.db = this;
 
-            fields = schema.Fields();
-            foreach (Dictionary<string, Field> df in fields.Values)
-                foreach (Field f in df.Values)
-                    f.db = this;
+                foreach (var(key, f) in e.fieldsMetadata)
+                    f.db = this;              
+            }
+
         }
 
 
         public Dictionary<string, Field> FieldsEntity(string entityName)
         {
-            if (!fields.ContainsKey(entityName))
+            if (!entities.ContainsKey(entityName))
                 throw new Exception("La entidad " + entityName + " no existe");
 
-            return fields[entityName];
+            return entities[entityName].fieldsMetadata;
         }
 
         /// <summary>
@@ -182,9 +182,9 @@ namespace SqlOrganize.Sql
             }
         }
 
-        public CreateQueue CreateQueue(Collection<PersistContext>? persists = null)
+        public CreateQueue CreateQueue()
         {
-            return new CreateQueue(this, persists);
+            return new CreateQueue(this);
         }
 
         public void RemoveCache()
@@ -213,10 +213,10 @@ namespace SqlOrganize.Sql
     {
         private readonly Db _db;  // Reference to the Db instance
 
-        public CreateQueue(Db db, Collection<PersistContext>? collection = null)
+        public CreateQueue(Db db)
         {
             _db = db;
-            _db.PersistQueue = (collection.IsNoE()) ? new Collection<PersistContext>() : collection!; // Initialize or reset the queue
+            _db.PersistQueue = new Collection<PersistContext>();  // Initialize or reset the queue
         }
 
         // The Dispose method is called automatically when the 'using' block is exited

@@ -1,12 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SqlOrganize.CollectionUtils;
-using SqlOrganize.DateTimeUtils;
-using SqlOrganize.Sql;
 using SqlOrganize.ValueTypesUtils;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 namespace SqlOrganize.Model
 {
@@ -58,8 +51,6 @@ namespace SqlOrganize.Model
             f.dataType = c.DATA_TYPE!;
             switch (c.DATA_TYPE)
             {
-
-
                 case "varbinary":
                 case "binary":
                     if (f.maxLength == 1)
@@ -157,14 +148,9 @@ namespace SqlOrganize.Model
                 f.refFieldName = c.REFERENCED_COLUMN_NAME;
 
             f.notNull = (c.IS_NULLABLE == 1) ? false : true;
-
-
         }
 
-        /// <summary>
-        /// Definir datos del esquema y arbol de relaciones
-        /// </summary>
-        /// <param name="config">Configuracion</param>
+        /// <summary> Definir datos del esquema y arbol de relaciones </summary>
         public BuildModel(Config config)
         {
             Config = config;
@@ -199,8 +185,6 @@ namespace SqlOrganize.Model
                         table.Pk.Add(col.COLUMN_NAME);
                     if (col.IS_NULLABLE == 0)
                         table.NotNull.Add(col.COLUMN_NAME);
-
-                    
                 }
 
                 Tables.Add(table);
@@ -214,13 +198,10 @@ namespace SqlOrganize.Model
 
                 foreach(var (constraintName, columnNames) in infoUnique!)
                 {
-                    if (columnNames.Count > 1) {
+                    if (columnNames.Count > 1)
                         table.UniqueMultiple.Add(columnNames);
-                    }
                     else
-                    {
                         table.Unique.Add(columnNames[0]);
-                    }
                 }
 
             }
@@ -252,7 +233,7 @@ namespace SqlOrganize.Model
             #endregion
 
             #region Redefinicion de entities en base a configuracion
-           if (File.Exists(config.configPath + "entities.json"))
+            /*if (File.Exists(config.configPath + "entities.json"))
             {
                 using (StreamReader r = new StreamReader(config.configPath + "entities.json"))
                 {
@@ -304,7 +285,7 @@ namespace SqlOrganize.Model
                         entities[e.Key].notNull = f;
                     }
                 }
-            }
+            }*/
             #endregion
 
             #region Definicion de fields
@@ -335,7 +316,7 @@ namespace SqlOrganize.Model
             #endregion
 
             #region Redefinicion de fields en base a configuracion
-            foreach (string entityName in entities.Keys)
+            /*foreach (string entityName in entities.Keys)
                 if (fields.ContainsKey(entityName))
                     if (File.Exists(config.configPath + "fields/" + entityName + ".json"))
                         using (StreamReader r = new StreamReader(config.configPath + "fields/" + entityName + ".json"))
@@ -370,7 +351,7 @@ namespace SqlOrganize.Model
                                     fields[entityName][e.Key].resets = f;
                                 }
                             }
-                        }
+                        }*/
             #endregion
 
             #region Definicion de tree y relations de entities            
@@ -387,9 +368,6 @@ namespace SqlOrganize.Model
 
             }
             #endregion
-
-
-
         }
 
         /// <summary>
@@ -451,7 +429,6 @@ namespace SqlOrganize.Model
             }
         }
 
-
         public void CreateFileEntitites()
         {
             if (!Directory.Exists(Config.docPath))
@@ -462,6 +439,232 @@ namespace SqlOrganize.Model
 
             var file = JsonConvert.SerializeObject(entities, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(Config.docPath + "entities.json", file);
+        }
+
+        public void CreateModelTree(StreamWriter sw, Dictionary<string, EntityTree> tree, string prefix = "")
+        {
+            sw.WriteLine(prefix + "                            children = new() {");
+
+            foreach (var (fieldId, tree_) in tree)
+            {
+                sw.WriteLine(prefix + "                                { \"" + fieldId + "\", new () {");
+                sw.WriteLine(prefix + "                                    fieldName = \"" + tree_.fieldName + "\",");
+                sw.WriteLine(prefix + "                                    refFieldName = \"" + tree_.refFieldName + "\",");
+                sw.WriteLine(prefix + "                                    refEntityName = \"" + tree_.refEntityName + "\",");
+
+                if (tree_.children.Any())
+                    CreateModelTree(sw, tree_.children, prefix + "        ");
+                sw.WriteLine(prefix + "                                } },");
+
+            }
+
+            sw.WriteLine(prefix + "                            },");
+
+        }
+
+        public void CreateModel()
+        {
+
+            if (!Directory.Exists(Config.schemaClassPath))
+                Directory.CreateDirectory(Config.schemaClassPath);
+
+            if (File.Exists(Config.schemaClassPath + "Schema.cs")) { 
+                Console.WriteLine("Ya existe el esquema, no será creado");
+                return;
+            }
+
+            using StreamWriter sw = File.CreateText(Config.schemaClassPath + "Schema.cs");
+            sw.WriteLine("using System.Collections.Generic;");
+            sw.WriteLine("");
+            sw.WriteLine("namespace SqlOrganize.Sql." + Config.schemaClassNamespace);
+            sw.WriteLine("{");
+            sw.WriteLine("    public class  Schema : Sql.ISchema");
+            sw.WriteLine("    {");
+            sw.WriteLine("         Dictionary<string, EntityMetadata> Sql.ISchema.entities => new() {");
+
+
+            foreach (var (entityName, entity) in entities)
+            {
+                sw.WriteLine("            #region entity " + entityName);
+                sw.WriteLine("            {");
+                sw.WriteLine("                \"" + entityName + "\", new () {");
+                sw.WriteLine("                    name = \"" + entityName + "\",");
+                sw.WriteLine("                    alias = \"" + entity.alias + "\",");
+                sw.WriteLine("                    schema = \"" + entity.schema + "\",");
+
+                if (entity.pk.Any())
+                    sw.WriteLine("                    pk = [ \"" + String.Join("\", \"", entity.pk) + "\" ],");
+
+                if (entity.fk.Any())
+                    sw.WriteLine("                    fk = [ \"" + String.Join("\", \"", entity.fk) + "\" ],");
+
+                if (entity.noAdmin.Any())
+                    sw.WriteLine("                    noAdmin = [ \"" + String.Join("\", \"", entity.noAdmin) + "\" ],");
+
+                if (entity.unique.Any())
+                    sw.WriteLine("                    unique = [ \"" + String.Join("\", \"", entity.unique) + "\" ],");
+
+                if (entity.notNull.Any())
+                    sw.WriteLine("                    notNull = [ \"" + String.Join("\", \"", entity.notNull) + "\" ],");
+
+                if (entity.tree.Any())
+                {
+                    sw.WriteLine("                    tree = {");
+
+                    foreach (var (fieldId, tree) in entity.tree)
+                    {
+                        sw.WriteLine("                        { \"" + fieldId + "\", new () {");
+                        sw.WriteLine("                            fieldName = \"" + tree.fieldName + "\",");
+                        sw.WriteLine("                            refFieldName = \"" + tree.refFieldName + "\",");
+                        sw.WriteLine("                            refEntityName = \"" + tree.refEntityName + "\",");
+
+                        if (tree.children.Any())
+                            CreateModelTree(sw, tree.children);
+
+                        sw.WriteLine("                        } },");
+
+                    }
+                    sw.WriteLine("                    },");
+                }
+
+                if (entity.relations.Any())
+                {
+                    sw.WriteLine("                    relations = {");
+
+                    foreach (var (fieldId, relation) in entity.relations)
+                    {
+                        sw.WriteLine("                        { \"" + fieldId + "\", new () {");
+                        sw.WriteLine("                            fieldName = \"" + relation.fieldName + "\",");
+                        sw.WriteLine("                            refFieldName = \"" + relation.refFieldName + "\",");
+                        sw.WriteLine("                            refEntityName = \"" + relation.refEntityName + "\",");
+                        sw.WriteLine("                            parentId = \"" + relation.parentId + "\",");
+                        sw.WriteLine("                        } },");
+                    }
+                    sw.WriteLine("                    },");
+                }
+
+                
+
+                sw.WriteLine("                    fieldsMetadata = {");
+
+                foreach (var (fieldName, field) in fields[entityName])
+                {
+                    sw.WriteLine("                        #region " + entityName + "." + fieldName);
+                    sw.WriteLine("                        {");
+                    sw.WriteLine("                            \"" + fieldName + "\", new () {");
+                    sw.WriteLine("                                entityName = \"" + entityName + "\",");
+                    sw.WriteLine("                                name = \"" + fieldName + "\",");
+                    sw.WriteLine("                                alias = \"" + field.alias + "\",");
+                    sw.WriteLine("                                refEntityName = \"" + field.refEntityName + "\",");
+                    sw.WriteLine("                                refFieldName = \"" + field.refFieldName + "\",");
+                    sw.WriteLine("                                dataType = \"" + field.dataType + "\",");
+                    sw.WriteLine("                                type = \"" + field.type + "\",");
+
+                    if (field.checks.Any())
+                    {
+                        sw.WriteLine("                                checks = new () {");
+
+                        foreach (var (key, value) in field.checks)
+                        {
+                            sw.WriteLine("                                        { \"" + key + "\", \"" + value + "\" },");
+                        }
+                        sw.WriteLine("                                },");
+                    }
+
+                    if (field.resets.Any())
+                    {
+                        sw.WriteLine("                                resets = new () {");
+
+                        foreach (var (key, value) in field.resets)
+                        {
+                            sw.WriteLine("                                        { \"" + key + "\", \"" + value + "\" },");
+                        }
+                        sw.WriteLine("                                },");
+                    }
+
+                    sw.WriteLine("                            } //end new " + fieldName);
+
+                    sw.WriteLine("                        }, //end pair");
+                    sw.WriteLine("                        #endregion");
+
+                }
+                sw.WriteLine("                    },"); //end fieldsMetadata
+                sw.WriteLine("                }"); //end new entityName
+                sw.WriteLine("            },"); //end pair)
+                sw.WriteLine("            #endregion"); //end pair)
+
+
+            }
+
+            sw.WriteLine("        };"); //end entities
+            sw.WriteLine("    }"); //end class
+            sw.WriteLine("}"); //end namespace
+
+
+
+        }
+
+        public void CreateModelFields()
+        {
+
+            if (!Directory.Exists(Config.schemaClassPath))
+                Directory.CreateDirectory(Config.schemaClassPath);
+
+            foreach (var (entityName, entity) in entities)
+            {
+                using StreamWriter sw = File.CreateText(Config.schemaClassPath + entity.name.ToCamelCase() + "Metadata.cs");
+                sw.WriteLine("using System.Collections.Generic;");
+                sw.WriteLine("");
+                sw.WriteLine("namespace SqlOrganize.Sql." + Config.schemaClassNamespace);
+                sw.WriteLine("{");
+                sw.WriteLine("    public class " + entity.name.ToCamelCase() + "Metadata");
+                sw.WriteLine("    {");
+                sw.WriteLine("        protected Dictionary<string, Field> fields = new() {");
+
+                foreach (var (fieldName, field) in fields[entityName])
+                {
+                    sw.WriteLine("            {");
+                    sw.WriteLine("                \"" + fieldName + "\", new () {");
+                    sw.WriteLine("                    entityName = \"" + entityName + "\",");
+                    sw.WriteLine("                    name = \"" + fieldName + "\",");
+                    sw.WriteLine("                    alias = \"" + field.alias + "\",");
+                    sw.WriteLine("                    refEntityName = \"" + field.refEntityName + "\",");
+                    sw.WriteLine("                    refFieldName = \"" + field.refFieldName + "\",");
+                    sw.WriteLine("                    dataType = \"" + field.dataType + "\",");
+                    sw.WriteLine("                    type = \"" + field.type + "\",");
+
+                    if (field.checks.Any())
+                    {
+                        sw.WriteLine("                    checks = new () {");
+
+                        foreach (var (key, value) in field.checks)
+                        {
+                            sw.WriteLine("                        { \"" + key + "\", \"" + value + "\" },");
+                        }
+                        sw.WriteLine("                    },");
+                    }
+
+                    if (field.resets.Any())
+                    {
+                        sw.WriteLine("                    resets = new () {");
+
+                        foreach (var (key, value) in field.resets)
+                        {
+                            sw.WriteLine("                        { \"" + key + "\", \"" + value + "\" },");
+                        }
+                        sw.WriteLine("                    },");
+                    }
+
+
+                    sw.WriteLine("                }");
+                    sw.WriteLine("            },");
+                    sw.WriteLine("");
+                }
+                
+                sw.WriteLine("        };");
+                sw.WriteLine("    }");
+                sw.WriteLine("}");
+            }
         }
 
         public void CreateClassModel()

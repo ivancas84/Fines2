@@ -257,7 +257,6 @@ namespace SqlOrganize.Sql
                     this.Set(fieldName, dict[prefix+fieldName]);
         }
 
-
         /// <summary> Seteo solo de valores no nulos </summary>
         public void SetNotNull(IDictionary<string, object?> dict, string prefix = "")
         {

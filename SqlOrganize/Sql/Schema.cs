@@ -11,7 +11,7 @@ namespace SqlOrganize.Sql
     /// <summary>
     /// Configuracion del esquema de la base de datos
     /// </summary>
-    public abstract class Schema
+    public interface ISchema
     {
         /// <summary>
         /// JSON con entidades del modelo
@@ -19,35 +19,13 @@ namespace SqlOrganize.Sql
         /// <remarks>
         /// Se genera a traves de proyecto ModelOrganize
         /// </remarks>
-        protected abstract string entities { get; }
+        /// 
+        public Dictionary<string, EntityMetadata> entities { get; }
 
-        /// <summary>
-        /// JSON con fields del modelo
-        /// </summary>
-        /// <remarks>
-        /// Se genera a traves de proyecto ModelOrganize
-        /// </remarks>
-        protected abstract Dictionary<string, string> fields { get; }
-        
         /// <summary>
         /// Procesa atributo entities para generar el diccionario de entidades que seran utilizadas durante todo el proyecto
         /// </summary>
-        public Dictionary<string, EntityMetadata> Entities()
-        {
-            return JsonConvert.DeserializeObject<Dictionary<string, EntityMetadata>>(entities)!;
-        }
 
-        /// <summary>
-        /// Procesa atributo fields para generar el diccionario de fields de entidades que seran utilizadas durante todo el proyecto
-        /// </summary>
-        public Dictionary<string, Dictionary<string, Field>> Fields()
-        {
-            Dictionary<string, Dictionary<string, Field>> response = new();
-            foreach (var (entityName, field) in fields)
-                response[entityName] = JsonConvert.DeserializeObject<Dictionary<string, Field>>(field)!;
-
-            return response;
-        }
 
     }
 }

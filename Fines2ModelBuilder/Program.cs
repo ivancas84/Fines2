@@ -28,11 +28,10 @@ foreach (var (key, field) in t.fields)
 
 }
 
-t.CreateFileEntitites();
-
-t.CreateFileFields();
+//t.CreateFileEntitites();
+//t.CreateFileFields();
+//t.CreateClassModel();
 
 t.CreateFileData();
+t.CreateModel();
 
-
-t.CreateClassModel();

@@ -80,6 +80,15 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        #region tipo_sede
+        protected string? _tipo_sede = null;
+        public string? tipo_sede
+        {
+            get { return _tipo_sede; }
+            set { if( _tipo_sede != value) { _tipo_sede = value; NotifyPropertyChanged(nameof(tipo_sede)); } }
+        }
+        #endregion
+
         #region centro_educativo
         protected string? _centro_educativo = null;
         public string? centro_educativo
@@ -147,6 +156,32 @@ namespace SqlOrganize.Sql.Fines2Model3
                     domicilio = null;
                 }
                 NotifyPropertyChanged(nameof(domicilio_));
+            }
+        }
+        #endregion
+
+        #region tipo_sede (fk sede.tipo_sede _m:o tipo_sede.id)
+        protected TipoSede? _tipo_sede_ = null;
+        public TipoSede? tipo_sede_
+        {
+            get { return _tipo_sede_; }
+            set {
+                if( _tipo_sede_ != null && AutoAddToCollection)
+                    _tipo_sede_!.Sede_.Remove(this);
+
+                _tipo_sede_ = value;
+
+                if(value != null)
+                {
+                    tipo_sede = value.id;
+                    if(AutoAddToCollection && !_tipo_sede_!.Sede_.Contains(this))
+                        _tipo_sede_!.Sede_.Add(this);
+                }
+                else
+                {
+                    tipo_sede = null;
+                }
+                NotifyPropertyChanged(nameof(tipo_sede_));
             }
         }
         #endregion

@@ -19,7 +19,7 @@ namespace SqlOrganize.Sql
         /// <example>
         ///   connectionString = "server=127.0.0.1;uid=root;pwd=12345;database=test"
         /// </example>
-        public DbMy(Config config, Schema schema, IMemoryCache? cache = null) : base(config, schema, cache)
+        public DbMy(Config config, ISchema schema, IMemoryCache? cache = null) : base(config, schema, cache)
         {
             /*
             prueba de conexion

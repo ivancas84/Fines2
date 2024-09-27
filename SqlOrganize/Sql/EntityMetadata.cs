@@ -19,7 +19,7 @@
         public string? schema { get; set;  }
 
         public List<string> pk { get; set; } = new();
-        public List<string> fields { get; set; } = new();
+        public List<string> fields => fieldsMetadata.Keys.ToList();
         public List<string> fk { get; set; } = new();
 
         protected List<Field> _ref; //ref
@@ -87,6 +87,8 @@
         */
         public List<string> id { get; set; }
 
+
+        public Dictionary<string, Field> fieldsMetadata { get; set; } = new();
 
         protected List<Field> _Fields(List<string> fieldNames)
         {

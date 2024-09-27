@@ -152,6 +152,24 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        #region estado
+        protected string? _estado = null;
+        public string? estado
+        {
+            get { return _estado; }
+            set { if( _estado != value) { _estado = value; NotifyPropertyChanged(nameof(estado)); } }
+        }
+        #endregion
+
+        #region configuracion
+        protected string? _configuracion = null;
+        public string? configuracion
+        {
+            get { return _configuracion; }
+            set { if( _configuracion != value) { _configuracion = value; NotifyPropertyChanged(nameof(configuracion)); } }
+        }
+        #endregion
+
         #region pfid
         protected string? _pfid = null;
         public string? pfid
