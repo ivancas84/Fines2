@@ -90,7 +90,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         public static EntitySql CalificacionAprobadaCursoSql(object idCurso)
         {
             var data = Context.db.Sql("curso").Cache().Id(idCurso) ?? throw new Exception("curso inexistente");
-            var curso = Context.db.ToData<Curso>(data);
+            var curso = Entity.CreateFromDict<Curso>(data);
 
             string subSql = "SELECT DISTINCT alumno FROM alumno_comision WHERE comision = @0";
 
@@ -104,7 +104,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         public static EntitySql CalificacionDesaprobadaCursoAlumnosActivosSql(object idCurso)
         {
             var data = Context.db.Sql("curso").Cache().Id(idCurso) ?? throw new Exception("curso inexistente");
-            Curso curso = Context.db.ToData<Curso>(data);
+            Curso curso = Entity.CreateFromDict<Curso>(data);
 
             string subSql = "SELECT DISTINCT alumno FROM alumno_comision WHERE estado = 'Activo' AND comision = @0";
 
@@ -119,7 +119,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             var cursoData = Context.db.Sql("curso").Cache().Id(idCurso);
 
-            var curso = Context.db.ToData<Curso>(cursoData);
+            var curso = Entity.CreateFromDict<Curso>(cursoData);
 
             var idAlumnos = curso.comision_.SqlRef("alumno_comision", "comision").Cache().Values("alumno");
 

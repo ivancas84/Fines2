@@ -18,7 +18,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public static EntitySql PersonaDniSql(this Db db, object cuilDni)
         {
-            (string cuil, string dni) = PersonaValues.CuilDni(cuilDni);
+            (string cuil, string dni) = Persona.CuilDni(cuilDni);
 
             return db.Sql("persona").
                 Where("$numero_documento = @0").

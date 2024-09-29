@@ -163,7 +163,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 {
                     Logging.AddLog("calificacion", "Existe calificacion desaprobada, se actualizara", "update", Logging.Level.Warning);
                     id = calificacionExistente.id;
-                    UpdateField(persist, "nota_final");
+                    persist.UpdateField(this, "nota_final");
                 }
                 else
                 {

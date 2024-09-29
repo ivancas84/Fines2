@@ -10,6 +10,7 @@ using WpfUtils;
 using WpfUtils.Controls;
 using System.Windows.Input;
 using System.Linq;
+using WpfUtils.Fines;
 
 namespace FinesApp.Views;
 
@@ -47,7 +48,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
     #region Autocomplete v3 - organismo
     private void CursoTimer_Tick(object sender, EventArgs e)
     {
-        ContainerApp.db.SetCursoTimerTick(cursoComboBox, cursoTypingTimer, cursoOC);
+        cursoComboBox.SetCursoTimerTick(cursoTypingTimer, cursoOC);
     }
 
     private void CursoAutocompleteComboBox_KeyUp(object sender, KeyEventArgs e)
@@ -60,15 +61,8 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
     {
         try
         {
-            if (!persists.Any())
-            {
-                ToastExtensions.Show("No existen registros para guardar");
-                return;
-            }
-
-            persists.Transaction().RemoveCache();
-
-            ContainerApp.db.ConsultarCalificacionesAprobadasAsignacionesDesaprobadas(cursoComboBox.SelectedValue, calificacionAprobadaOC, asignacionDesaprobadaOC);
+            Context.db.ProcessQueue();
+            CursoWpfUtils.ConsultarCalificacionesAprobadasAsignacionesDesaprobadas(cursoComboBox.SelectedValue, calificacionAprobadaOC, asignacionDesaprobadaOC);
 
             ToastExtensions.Show("Registro realizado exitosamente");
         } catch (Exception ex)
@@ -79,7 +73,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
 
     private void EliminarButton_Click(object sender, RoutedEventArgs e)
     {
-        var calificaciones = ContainerApp.db.CalificacionesCursoSql(cursoComboBox.SelectedValue).Cache().Dicts().ColOfVal<object>("id");
+        var calificaciones = CalificacionDAO.CalificacionesCursoSql(cursoComboBox.SelectedValue).Cache().Dicts().ColOfVal<object>("id");
 
         if (!calificaciones.Any())
         {
@@ -88,8 +82,12 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
         }
         else
         {
-            ContainerApp.db.Persist().DeleteIds("calificacion", calificaciones.ToArray()).Exec().RemoveCache();
-            ToastExtensions.Show("Calificaciones eliminadas");
+            using (Context.db.CreateQueue())
+            {
+                Context.db.Persist().DeleteIds("calificacion", calificaciones.ToArray());
+                Context.db.ProcessQueue();
+                ToastExtensions.Show("Calificaciones eliminadas");
+            }
 
         }
     }
@@ -97,6 +95,8 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
 
     private void ProcesarButton_Click(object sender, RoutedEventArgs e)
     {
+        Context.db.CreateQueue();
+
         var _data = dataTextBox.Text.Split("\r\n");
         if (_data.IsNoE())
         {
@@ -111,11 +111,10 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
             return;
         }
 
-        ContainerApp.db.ConsultarCalificacionesAprobadasAsignacionesDesaprobadas(cursoSeleccionado.id, calificacionAprobadaOC, asignacionDesaprobadaOC);
+        CursoWpfUtils.ConsultarCalificacionesAprobadasAsignacionesDesaprobadas(cursoSeleccionado.id, calificacionAprobadaOC, asignacionDesaprobadaOC);
 
         dnisProcesados.Clear();
         calificacionProcesadaOC.Clear();
-        persists.Clear();
         for (var j = 0; j < _data.Length; j++)
         {
             if (_data[j].IsNoE())
@@ -133,17 +132,17 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
                 if (dnisProcesados.Contains(calificacion.alumno_.persona_.numero_documento))
                     throw new Exception("El DNI ya se encuentra procesado");
 
-                calificacionVal.PersistProcesarCurso(cursoSeleccionado.id).AddToIfSql(persists);
+                //TODO QUE ES LO QUE HAY QUE PROCESAR ACA
+                //calificacion.PersistProcesarCurso(cursoSeleccionado.id).AddToIfSql(persists);
 
-                Calificacion calificacionObj = calificacionVal.GetData<Calificacion>();
 
-                dnisProcesados.Add(calificacionObj.alumno_.persona_.numero_documento);
+                dnisProcesados.Add(calificacion.alumno_.persona_.numero_documento);
 
-                calificacionProcesadaOC.Add(calificacionObj);
+                calificacionProcesadaOC.Add(calificacion);
             }
             catch (Exception ex)
             {
-                var calificacionError = ((CalificacionValues)ContainerApp.db.Values("calificacion")).GetCalificacionConError(j, ex.Message, _data[j]);
+                Calificacion calificacionError = Calificacion.CreateCalificacionError(j, ex.Message, _data[j]);
                 calificacionProcesadaOC.Add(calificacionError);
             }
         }

@@ -135,7 +135,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     if (!pfidComisiones.Contains(dict["comision__pfid"]))
                         continue;
 
-                    var cursoData = db.CursoDeComisionPfidCodigoAsignaturaCalendarioSql(dict["comision__pfid"], dict["asignatura__codigo"], id!).Cache().Dict();
+                    var cursoData = CursoDAO.CursoDeComisionPfidCodigoAsignaturaCalendarioSql(dict["comision__pfid"], dict["asignatura__codigo"], id!).Cache().Dict();
 
                     if (cursoData.IsNoE())
                         throw new Exception("No existe curso " + dict["comision__pfid"].ToString() + " " + dict["asignatura__codigo"].ToString());
@@ -203,7 +203,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                         try
                         {
 
-                            object idCurso = db.CursoDeComisionPfidCodigoAsignaturaCalendarioSql(cargo["comision"], cargo["codigo"], id).Cache().Dict()?["id"]!;
+                            object idCurso = CursoDAO.CursoDeComisionPfidCodigoAsignaturaCalendarioSql(cargo["comision"], cargo["codigo"], id).Cache().Dict()?["id"]!;
                             if (idCurso.IsNoE())
                                 throw new Exception("No existe curso " + cargo["comision"] + " " + cargo["codigo"]);
 
@@ -294,24 +294,25 @@ namespace SqlOrganize.Sql.Fines2Model3
                     if (idCurso.IsNoE())
                         throw new Exception("No existe curso");
 
-                    var tomaExistente = db.TomaAprobadaDeCursoQuery(idCurso!).Dict();
-                    if (tomaExistente.IsNoE())
+                    var toma = TomaDAO.TomaAprobadaDeCursoQuery(idCurso!).ToEntity<Toma>();
+                    if (toma.IsNoE())
                     {
-                        var tomaVal = db.Values("toma").
-                        Set("curso", idCurso).
-                        Set("docente", personaValues.Get("id")!).
-                        Set("fecha_toma", calendarioObj.inicio!).
-                        Set("estado", "Aprobada").
-                        Set("estado_contralor", "Pasar").
-                        Set("tipo_movimiento", "AI").Default().Reset();
-                        if (!tomaVal.Check())
-                            throw new Exception(tomaVal.Logging.ToString());
+                        toma = new Toma();
+                        toma.Set("curso", idCurso);
+                        toma.Set("docente", persona.Get("id")!);
+                        toma.Set("fecha_toma", inicio!);
+                        toma.Set("estado", "Aprobada");
+                        toma.Set("estado_contralor", "Pasar");
+                        toma.Set("tipo_movimiento", "AI");
+                        toma.Reset();
+                        if (!toma.Check())
+                            throw new Exception(toma.Logging.ToString());
 
-                        tomaVal.Insert(persist);
+                        persist.Insert(toma);
                     }
                     else
                     {
-                        if (!tomaExistente["docente"]!.Equals(personaValues.Get("id")))
+                        if (!toma.docente!.Equals(persona.Get("id")))
                             throw new Exception("Existe una toma asignada a un docente diferente");
                         else
                             throw new Exception("Ya existe la toma");
@@ -324,7 +325,6 @@ namespace SqlOrganize.Sql.Fines2Model3
                 catch (Exception ex)
                 {
                     persist.logging.AddLog("calendario", ex.Message, "persist_tomas_pf", Logging.Level.Error);
-                    persist.AddTo(persists);
                     continue;
                 }
 
@@ -332,7 +332,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         }
 
-        public IEnumerable<PersistContext> GenerarComisionesSemestreSiguiente(string idCalendarioComisionesSiguientes)
+        public void GenerarComisionesSemestreSiguiente(string idCalendarioComisionesSiguientes)
         {
             IEnumerable<Comision> comisionesAutorizadasSemestre = Context.db.Sql("comision").
                Where(@" 

@@ -6,7 +6,7 @@ namespace SqlOrganize.Sql.Fines2Model3
     {
         public static EntitySql PlanificacionSiguienteSql(object anio, object semestre, object planId)
         {
-            (string anio_, string semestre_) = PlanificacionValues.AnioSemestreSiguiente(anio, semestre);
+            (string anio_, string semestre_) = Planificacion.AnioSemestreSiguiente(anio, semestre);
 
             return Context.db.Sql("planificacion").
                 Where(@"

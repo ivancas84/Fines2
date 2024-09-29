@@ -13,6 +13,5 @@
 	
 	<ItemGroup>
 		<ProjectReference Include="..\SqlOrganizeMy\SqlOrganizeMy.csproj" />
-		<ProjectReference Include="..\SqlOrganize\SqlOrganize.csproj" />
 	</ItemGroup>
 </Project>

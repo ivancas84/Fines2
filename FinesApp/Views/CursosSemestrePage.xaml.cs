@@ -19,7 +19,7 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
     {
         InitializeComponent();
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        ContainerApp.db.Sql("calendario").Cache().AddEntityToClearOC(ocCalendario);
+        Context.db.Sql("calendario").Cache().AddEntityToClearOC(ocCalendario);
         DataContext = this;
         dgdCurso.ItemsSource = ocCurso;
     }
@@ -31,16 +31,16 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
             ocCurso.Clear();
             return;
         }
-        var data = ContainerApp.db.CursosAutorizadosCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
+        var data = CursoDAO.CursosAutorizadosCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
         var idCursos = data.ColOfVal<object>("id");
-        var dataToma = ContainerApp.db.TomaAprobadaDeCursoQuery(idCursos).Cache().Dicts().DictOfDictByKeys("curso");
+        var dataToma = TomaDAO.TomaAprobadaDeCursoQuery(idCursos).Cache().Dicts().DictOfDictByKeys("curso");
 
         ocCurso.Clear();
         foreach(var cursoData in data)
         {
-            Curso curso = ContainerApp.db.ToData<Curso>(cursoData);
+            Curso curso = Entity.CreateFromDict<Curso>(cursoData);
             if (dataToma.ContainsKey(curso.id))
-                curso.toma_activa_ = ContainerApp.db.ToData<Toma>(dataToma[curso.id]);
+                curso.toma_activa_ = Entity.CreateFromDict<Toma>(dataToma[curso.id]);
             ocCurso.Add(curso);
         }
     }

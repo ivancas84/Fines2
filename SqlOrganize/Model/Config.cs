@@ -20,11 +20,6 @@
 
 
         /// <summary>
-        /// Indica el lugar donde se tomara la configuracion para generar el modelo
-        /// </summary>
-        public virtual string configPath { get; set; } = "./Config";
-
-        /// <summary>
         /// Indica el lugar donde se almacenaran las clases de datos
         /// </summary>
         public virtual string dataClassesPath { get; set; } = "./App/Data";

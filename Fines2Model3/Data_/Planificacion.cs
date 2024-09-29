@@ -1,31 +1,45 @@
-﻿namespace SqlOrganize.Sql.Fines2Model3
-{
-    public class PlanificacionValues : EntityVal
-    {
-        public PlanificacionValues(Db _db, string _entity_name, string? _field_id) : base(_db, _entity_name, _field_id)
-        {
-        }
-        public override string ToString()
-        {
-            var s = GetStr("?", "/", "anio", "semestre");
+﻿using SqlOrganize.CollectionUtils;
+using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
+using SqlOrganize.ValueTypesUtils;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-            EntityVal? planVal = GetValuesCache("plan");
-            if (!planVal.IsNoE())
-                s += " " + planVal!.ToString();
-            
-            return s.Trim();
+namespace SqlOrganize.Sql.Fines2Model3
+{
+    public partial class Planificacion
+    {
+        public override string? Label
+        {
+            get
+            {
+                if (!_Label.IsNoE())
+                    return _Label;
+
+                return anio ?? "?" + "/" + semestre ?? "?" + " " + plan_.Label;
+            }
+            set
+            {
+                Label = value;
+                NotifyPropertyChanged(nameof(Label));
+            }
         }
 
         public static (string anio, string semestre) AnioSemestreAnterior(string anio, string semestre)
         {
-            if(semestre.Equals("1"))
+            if (semestre.Equals("1"))
             {
                 semestre = "2";
                 short anio_ = Convert.ToInt16(anio);
                 anio_--;
                 if (anio_ == 0) throw new Exception("Se esta queriendo obtener año y semestre anterior a 1/1");
                 anio = anio_.ToString();
-            } else
+            }
+            else
             {
                 semestre = "1";
             }
@@ -51,6 +65,5 @@
 
             return (anio.ToString(), semestre.ToString());
         }
-
     }
 }

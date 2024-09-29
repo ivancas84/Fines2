@@ -12,6 +12,7 @@ namespace SqlOrganize.Sql
     /// </summary>
     public class Entity : INotifyPropertyChanged, IDataErrorInfo
     {
+        public EntityMetadata Metadata { get; set; }
 
         /// <summary>Flag para indicar que se debe realizar la doble asignacion de relaciones</summary>
         public bool AutoAddToCollection { get; set; } = false;

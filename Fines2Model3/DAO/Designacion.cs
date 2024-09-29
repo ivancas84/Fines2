@@ -2,9 +2,9 @@
 {
     public static class DesignacionDAO
     {
-        public static EntitySql ReferentesDeSedeQuery(this Db db, params object[] idSedes)
+        public static EntitySql ReferentesDeSedeQuery(params object[] idSedes)
         {
-            return db.Sql("designacion")
+            return Context.db.Sql("designacion")
                 .Fields()
                 .Size(0)
                 .Where(@"

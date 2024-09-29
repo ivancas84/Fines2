@@ -106,12 +106,11 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary>Persistencia de asignaciones a partir de datos definidos en un texto</summary>
         /// <returns>persists y asignaciones persistidas</returns>
-        public IEnumerable<PersistContext> PersistAsignaciones(string text, params string[]? headers)
+        public void PersistAsignaciones(string text, params string[]? headers)
         {
             if (headers.IsNoE())
                 headers = ["apellidos", "nombres", "numero_documento", "genero", "fecha_nacimiento", "telefono", "email"];
 
-            List<PersistContext> persists = new();
 
             string[] _data = text.Split("\r\n");
             if (_data.IsNoE())
@@ -151,7 +150,6 @@ namespace SqlOrganize.Sql.Fines2Model3
                     foreach (var oa in otrasAsignaciones)
                         persist.logging.AddLog("alumno_comision", "Asignacion existente " + oa.Label, "PersistAsignacionesComisionText", Logging.Level.Warning);
 
-                    persist.AddTo(persists);
                 }
                 catch (Exception ex)
                 {
@@ -160,7 +158,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             }
 
-            return persists;
         }
 
 

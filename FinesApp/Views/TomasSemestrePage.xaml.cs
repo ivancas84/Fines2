@@ -41,8 +41,8 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         dgdResultadoGenerarTomasPDF.ItemsSource = ocResultadoGenerarTomasPDF;
         dgdResultadoGenerarContralor.ItemsSource = ocResultadoGenerarContralor;
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        var data = ContainerApp.db.Sql("calendario").Cache().Dicts();
-        ContainerApp.db.AddEntityToClearOC(data, ocCalendario);
+        var data = Context.db.Sql("calendario").Cache().Dicts();
+        Context.db.AddEntityToClearOC(data, ocCalendario);
     }
 
     #region OcToma
@@ -59,7 +59,11 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
     private void TomaItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        ContainerApp.db.Values("toma").Set(sender).Update(e.PropertyName).Exec().RemoveCache();
+        using (Context.db.CreateQueue())
+        {
+            (sender as Toma).UpdateField(e.PropertyName);
+            Context.db.ProcessQueue();
+        }
     }
     #endregion
 
@@ -76,8 +80,8 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             return;
         }
 
-        var tomaData = ContainerApp.db.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
-        ContainerApp.db.AddEntityToClearOC(tomaData, ocToma);
+        var tomaData = TomaDAO.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
+        Context.db.AddEntityToClearOC(tomaData, ocToma);
     }
 
     #region Pestaña principal
@@ -102,13 +106,13 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         /*var button = (e.OriginalSource as Button);
         var toma = (TomaQrItem)button.DataContext;
         QRCodeGenerator qrGenerator = new QRCodeGenerator();
-        QRCodeData qrCodeData = qrGenerator.CreateQrCode(ContainerApp.config.urlValidarToma + toma.id, QRCodeGenerator.ECCLevel.Q);
+        QRCodeData qrCodeData = qrGenerator.CreateQrCode(Context.config.urlValidarToma + toma.id, QRCodeGenerator.ECCLevel.Q);
         QRCode qrCode = new QRCode(qrCodeData);
         Bitmap qrCodeImage = qrCode.GetGraphic(20);
         ImageConverter converter = new ImageConverter();
         toma.qr_code = (byte[])converter.ConvertTo(qrCodeImage, typeof(byte[]));
         ConstanciaDocument document = new(toma);
-        document.GeneratePdf(ContainerApp.config.downloadPath + toma.comision__pfid + "_" + toma.asignatura__codigo + "_" + toma.docente_.numero_documento + ".pdf");
+        document.GeneratePdf(Context.config.downloadPath + toma.comision__pfid + "_" + toma.asignatura__codigo + "_" + toma.docente_.numero_documento + ".pdf");
         */
     }
 
@@ -118,8 +122,12 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         var toma = (Toma)button.DataContext;
         try
         {
-            ContainerApp.db.Persist().DeleteIds("toma", toma.id!).Exec().RemoveCache();
-            LoadTomas();
+            using (Context.db.CreateQueue())
+            {
+                Context.db.Persist().DeleteIds("toma", toma.id!);
+                Context.db.ProcessQueue();
+                LoadTomas();
+            }
             ToastExtensions.Show("Toma eliminada");
         }
         catch (Exception ex)
@@ -137,11 +145,12 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
         try
         {
+            Context.db.CreateQueue();
             if (cbxCalendario.SelectedIndex < 0)
                 throw new Exception("Verificar formulario");
 
             var calendarioObj = (Calendario)cbxCalendario.SelectedItem;
-            persists = ContainerApp.db.PersistTomasPf(calendarioObj, tbxDocentesPF.Text);
+            calendarioObj.PersistTomasPf(tbxDocentesPF.Text);
             ocData.Clear();
             for (var i = 0; i < persists.Count(); i++)
             {
@@ -162,11 +171,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     {
         try
         {
-            if (persists.IsNoE())
-                throw new Exception("No hay nada para persistir");
-
-            persists.Transaction().RemoveCache();
-            persists = null;
+            Context.db.ProcessQueue();
             ToastExtensions.Show("Registro realizado");
         }
         catch (Exception ex)
@@ -179,11 +184,12 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     {
         try
         {
+            Context.db.CreateQueue();
             if (cbxCalendario.SelectedIndex < 0)
                 throw new Exception("Verificar formulario");
 
             var calendarioObj = (Calendario)cbxCalendario.SelectedItem;
-            persists = ContainerApp.db.PersistTomasPfHtml(calendarioObj, tbxDocentesPF.Text);
+            calendarioObj.PersistTomasPfHtml(tbxDocentesPF.Text);
             ocData.Clear();
             for (var i = 0; i < persists.Count(); i++)
             {
@@ -226,33 +232,29 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
     {
         QRCodeGenerator qrGenerator = new QRCodeGenerator();
 
-        IEnumerable<Dictionary<string, object?>> tomasData = ContainerApp.db.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
+        IEnumerable<Dictionary<string, object?>> tomasData = TomaDAO.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
         
         ocResultadoGenerarTomasPDF.Clear();
         for(var i = 0; i < tomasData.Count(); i++)
         {
-            var toma = new Toma();
+            TomaQrItem toma = Entity.CreateFromDict<TomaQrItem>(tomasData.ElementAt(i));
             toma.Index = 0;
             try
             {
-                toma = new Toma();
-
-                TomaQrItem toma = ContainerApp.db.ToData<TomaQrItem>(tomasData.ElementAt(i));
-                obj.Label = toma.Label;
-                QRCodeData qrCodeData = qrGenerator.CreateQrCode(ContainerApp.config.urlValidarToma + toma.id, QRCodeGenerator.ECCLevel.Q);
+                QRCodeData qrCodeData = qrGenerator.CreateQrCode(Context.config.urlValidarToma + toma.id, QRCodeGenerator.ECCLevel.Q);
                 QRCode qrCode = new QRCode(qrCodeData);
                 Bitmap qrCodeImage = qrCode.GetGraphic(20);
                 ImageConverter converter = new ImageConverter();
                 toma.qr_code = (byte[])converter.ConvertTo(qrCodeImage, typeof(byte[]));
                 ConstanciaDocument document = new(toma);
-                document.GeneratePdf(ContainerApp.config.downloadPath + toma.curso_.comision_.pfid + "_" + toma.curso_.disposicion_.asignatura_.codigo + "_" + toma.docente_.numero_documento + ".pdf");
-                obj.Msg = "Toma generada correctamente";
+                document.GeneratePdf(Context.config.downloadPath + toma.curso_.comision_.pfid + "_" + toma.curso_.disposicion_.asignatura_.codigo + "_" + toma.docente_.numero_documento + ".pdf");
+                toma.Msg = "Toma generada correctamente";
             } catch (Exception ex)
             {
-                obj.Msg = ex.Message;
+                toma.Msg = ex.Message;
 
             }
-            ocResultadoGenerarTomasPDF.Add(obj);
+            ocResultadoGenerarTomasPDF.Add(toma);
         }
     }
     #endregion;
@@ -266,8 +268,8 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         {
             if (cbxCalendario.SelectedIndex < 0)
                 throw new Exception("No existe calendario seleccionado");
-            var idTomas = ContainerApp.db.IdTomasPasarSinPlanillaDocenteDeCalendario(cbxCalendario.SelectedValue);
-            var tomas = ContainerApp.db.Sql("toma").Where("$id IN (@0)").
+            var idTomas = TomaDAO.IdTomasPasarSinPlanillaDocenteDeCalendario(cbxCalendario.SelectedValue);
+            var tomas = Context.db.Sql("toma").Where("$id IN (@0)").
                 Order("$docente__numero_documento ASC").
                 Size(0).
                 Param("@0", idTomas).Cache().Dicts();
@@ -335,7 +337,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             {
                 row.RelativeItem(3).Height(75).AlignBottom().Column(column =>
                 {
-                    column.Item().Image(ContainerApp.config.imagePath + "logo.jpg").FitArea();
+                    column.Item().Image(Context.config.imagePath + "logo.jpg").FitArea();
                 });
 
                 row.RelativeItem().AlignRight().Column(column =>
@@ -373,12 +375,12 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
                 {
                     row.RelativeItem(2).AlignRight().AlignBottom().PaddingRight(60).Column(column =>
                     {
-                        column.Item().Image(ContainerApp.config.imagePath + "sello_cens.png").FitArea();
+                        column.Item().Image(Context.config.imagePath + "sello_cens.png").FitArea();
                     });
 
                     row.RelativeItem().AlignRight().AlignMiddle().Column(column =>
                     {
-                        column.Item().Image(ContainerApp.config.imagePath + "firma_director.png").FitArea();
+                        column.Item().Image(Context.config.imagePath + "firma_director.png").FitArea();
                     });
                 });
             });
@@ -507,12 +509,12 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
         public EmailToma(Toma model) : base()
         {
-            Host = ContainerApp.config.emailDocenteHost;
+            Host = Context.config.emailDocenteHost;
             Port = 587;
-            Credentials = new NetworkCredential(ContainerApp.config.emailDocenteUser, ContainerApp.config.emailDocentePassword);
+            Credentials = new NetworkCredential(Context.config.emailDocenteUser, Context.config.emailDocentePassword);
             EnableSsl = true;
             Model = model;
-            Attachment = $"{ContainerApp.config.downloadPath}{Model.curso_.comision_.pfid}_{Model.curso_.disposicion_.asignatura_.codigo}_{Model.docente_.numero_documento}.pdf";
+            Attachment = $"{Context.config.downloadPath}{Model.curso_.comision_.pfid}_{Model.curso_.disposicion_.asignatura_.codigo}_{Model.docente_.numero_documento}.pdf";
             if (Model.docente_.email_abc.IsNoE() && Model.docente_.email.IsNoE())
                 throw new Exception("Emails no definidos");
             if (!Model.docente_.email_abc.IsNoE())
@@ -521,7 +523,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
                 To.Add(Model.docente_.email);
             //Attachment = @"C:\Users\ivan\Downloads\10077_WQQ_36936393.pdf";
             //To = "icastaneda@abc.gob.ar";
-            Bcc = ContainerApp.config.emailDocenteBcc.Replace(" ", "");
+            Bcc = Context.config.emailDocenteBcc.Replace(" ", "");
             Subject = $"Toma de posesión: {Model.curso_.comision_.pfid} {Model.curso_.disposicion_.asignatura_.nombre}";
             Body = $@"
 <p>Hola {Model.docente_.nombres} {Model.docente_.apellidos}, usted ha recibido este email porque fue designado/a en la asignatura <strong>{Model.curso_.disposicion_.asignatura_.nombre}</strong> de sede {Model.curso_.comision_.sede_.nombre}</p>
@@ -546,7 +548,7 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
         {
             var mailMessage = new MailMessage
             {
-                From = new MailAddress(ContainerApp.config.emailDocenteFromAddress),
+                From = new MailAddress(Context.config.emailDocenteFromAddress),
                 Subject = Subject!,
                 Body = Body!,
                 IsBodyHtml = true,

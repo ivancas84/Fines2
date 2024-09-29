@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Org.BouncyCastle.Tsp;
 using SqlOrganize.Sql;
 using SqlOrganize.Sql.Fines2Model3;
 using System;
@@ -15,13 +16,29 @@ namespace SqlOrganize.Sql.Fines2Model3
     /// </summary>
     /// <example>
     ///     var comision = (Comision)comisionComboBox.SelectedItem;
-    ///     var cursosData = ContainerApp.db.Sql("curso").Equal("$comision", comision.id).Cache().Dicts();
-    ///     var tomaData = ContainerApp.db.TomaAprobadaDeComisionQuery(comision.id).Cache().Dicts();
+    ///     var cursosData = Context.db.Sql("curso").Equal("$comision", comision.id).Cache().Dicts();
+    ///     var tomaData = Context.db.TomaAprobadaDeComisionQuery(comision.id).Cache().Dicts();
     ///     cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
-    ///     ContainerApp.db.AddEntityToClearOC(cursosData, cursoOC);
+    ///     Context.db.AddEntityToClearOC(cursosData, cursoOC);
     /// </example>
-    public partial class Curso : Entity
+    public partial class Curso
     {
+
+        public override string? Label
+        {
+            get
+            {
+                if (!_Label.IsNoE())
+                    return _Label;
+
+                return comision_.Label ?? "?" + " " + disposicion_.Label ?? "?";
+            }
+            set
+            {
+                Label = value;
+                NotifyPropertyChanged(nameof(Label));
+            }
+        }
 
         //curso.asignatura _o:o asignatura.id
         protected Toma? _toma_activa_ = null;

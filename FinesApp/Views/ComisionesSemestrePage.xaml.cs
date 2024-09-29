@@ -21,7 +21,6 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     private ObservableCollection<Calendario> ocCalendarioComisionesSiguientes = new();
     private ObservableCollection<Calendario> calendarioPFOC = new();
 
-    Collection<PersistContext> persists = new();
 
     public ComisionesSemestrePage()
     {
@@ -52,16 +51,17 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 
     private void Item_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        ContainerApp.db.Persist().
-            UpdateFieldIds("comision", e.PropertyName, sender.GetPropertyValue(e.PropertyName), sender.GetPropertyValue("id")).
-            Exec().
-            RemoveCache();
+        using (Context.db.CreateQueue())
+        {
+            Context.db.Persist().UpdateFieldIds("comision", e.PropertyName, sender.GetPropertyValue(e.PropertyName), sender.GetPropertyValue("id"));
+            Context.db.ProcessQueue();
+        }
     }
     #endregion
 
     private void ComisionesSemestrePage_Loaded(object sender, RoutedEventArgs e)
     {
-        ContainerApp.db.Sql("calendario").Cache().AddEntityToClearOC(calendarioPFOC);
+        Context.db.Sql("calendario").Cache().AddEntityToClearOC(calendarioPFOC);
     }
 
     private void LoadCalendarioComisionesSiguientes()
@@ -71,23 +71,23 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 
         Calendario cal = cbxCalendario.SelectedItem as Calendario;
 
-        ContainerApp.db.Sql("calendario").Where("$anio >= @0 AND $semestre >= @1").
+        Context.db.Sql("calendario").Where("$anio >= @0 AND $semestre >= @1").
             Param("@0", cal.anio).Param("@1", cal.semestre).Cache().AddEntityToClearOC(ocCalendarioComisionesSiguientes);
     }
 
     private void BuscarButton_Click(object sender, RoutedEventArgs e)
     {
-        var dataComisiones = ContainerApp.db.ComisionesAutorizadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
+        var dataComisiones = ComisionDAO.ComisionesAutorizadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
         var idSedes = dataComisiones.ColOfVal<object>("sede");
-        var dataReferentes = ContainerApp.db.ReferentesDeSedeQuery(idSedes).Cache().Dicts().DictOfListByKeys("sede");
+        var dataReferentes = DesignacionDAO.ReferentesDeSedeQuery(idSedes).Cache().Dicts().DictOfListByKeys("sede");
         comisionOC.Clear();
         for (var i = 0; i < dataComisiones.Count(); i++)
         {
-            Comision obj = ContainerApp.db.ToData<Comision>(dataComisiones.ElementAt(i));
+            Comision obj = Entity.CreateFromDict<Comision>(dataComisiones.ElementAt(i));
 
             if (dataReferentes.ContainsKey(obj.sede))
                 foreach (var dataReferente in dataReferentes[obj.sede])
-                    ContainerApp.db.ToData<Designacion>(dataReferente).AddToOC(obj.sede_.Designacion_);
+                    Entity.CreateFromDict<Designacion>(dataReferente).AddToOC(obj.sede_.Designacion_);
                 
             obj.Index = i;
             comisionOC.Add(obj);
@@ -141,14 +141,19 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 
     private void btnProcesarInformeGlobalPF_Click(object sender, RoutedEventArgs e)
     {
+        var cq = Context.db.CreateQueue();
+        
         try
         {
             if (cbxCalendarioInformeGlobalPF.SelectedIndex < 0)
                 throw new Exception("Verificar formulario");
 
             var calendarioObj = (Calendario)cbxCalendarioInformeGlobalPF.SelectedItem;
-            persists = ContainerApp.db.PersistComisionesPf(calendarioObj, tbxInformeGlobalPF.Text);
-            ocResultadoInformeGlobal.Clear();
+            
+            calendarioObj.PersistComisionesPf(tbxInformeGlobalPF.Text);
+            
+            // TODO mostrar directamente el calendario?
+            /*ocResultadoInformeGlobal.Clear();
             for (var i = 0; i < persists.Count(); i++)
             {
                 Entity obj = new();
@@ -156,7 +161,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
                 obj.Label = persists.ElementAt(i).logging.ToString();
                 ocResultadoInformeGlobal.Add(obj);
 
-            }
+            }*/
         }
         catch (Exception ex)
         {
@@ -168,11 +173,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     {
         try
         {
-            using(Context.db.CreateQueue(persists))
-            if (persists.IsNoE())
-                throw new Exception("No hay nada para persistir");
-
-            persists.Transaction().RemoveCache();
+            Context.db.ProcessQueue();
             ToastExtensions.Show("Registro realizado");
         }
         catch (Exception ex)

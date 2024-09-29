@@ -1,11 +1,11 @@
-﻿using SqlOrganize.Model;
+﻿using MySqlX.XDevAPI;
+using SqlOrganize.Model;
 using System.Configuration;
 
 var c = new Config()
 {
     connectionString = ConfigurationManager.AppSettings.Get("connectionString"),
     docPath = ConfigurationManager.AppSettings.Get("docPath"),
-    configPath = ConfigurationManager.AppSettings.Get("configPath"),
     dbName = ConfigurationManager.AppSettings.Get("dbName"),
     dataClassesPath = ConfigurationManager.AppSettings.Get("dataClassesPath"),
     dataClassesNamespace = ConfigurationManager.AppSettings.Get("dataClassesNamespace"),
@@ -32,6 +32,7 @@ foreach (var (key, field) in t.fields)
 //t.CreateFileFields();
 //t.CreateClassModel();
 
-t.CreateFileData();
-t.CreateModel();
+SqlOrganize.Sql.Fines2Model3.Schema schema = new SqlOrganize.Sql.Fines2Model3.Schema();
+t.CreateFileData(schema);
+//t.CreateModel();
 

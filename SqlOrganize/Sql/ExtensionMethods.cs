@@ -228,7 +228,7 @@ namespace SqlOrganize.Sql
                 fields = entity.notNull;
 
             if (fields.IsNoE())
-                fields = entity.fields;
+                fields = entity.fieldNames;
 
             if (fields.Count() > 1 && fields.Contains(db.config.id))
                 fields.Remove(db.config.id);

@@ -26,8 +26,8 @@ public partial class SedesSemestrePage : Page, INotifyPropertyChanged
 
         #region cbxCalendario
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        var data = ContainerApp.db.Sql("calendario").Cache().Dicts();
-        ContainerApp.db.AddEntityToClearOC(data, ocCalendario);
+        var data = Context.db.Sql("calendario").Cache().Dicts();
+        Context.db.AddEntityToClearOC(data, ocCalendario);
         #endregion
 
         dgdSedes.ItemsSource = ocSede;
@@ -40,12 +40,12 @@ public partial class SedesSemestrePage : Page, INotifyPropertyChanged
             if(cbxCalendario.SelectedIndex == -1)
                 throw new Exception("Debe seleccionar calendario");
 
-            IEnumerable<object> idSedes = ContainerApp.db.ComisionesAutorizadasDeCalendarioSql(cbxCalendario.SelectedValue).
+            IEnumerable<object> idSedes = ComisionDAO.ComisionesAutorizadasDeCalendarioSql(cbxCalendario.SelectedValue).
                 Cache().Dicts().ColOfVal<object>("sede");
 
-            var sedeData = ContainerApp.db.Sql("sede").Where("$id IN (@0)").
+            var sedeData = Context.db.Sql("sede").Where("$id IN (@0)").
                 Order("$nombre ASC").Param("@0", idSedes).Cache().Dicts();
-            ContainerApp.db.AddEntityToClearOC(sedeData, ocSede);
+            Context.db.AddEntityToClearOC(sedeData, ocSede);
 
             ToastExtensions.Show("La consulta devolvió " + sedeData.Count() + " registros.");
         }

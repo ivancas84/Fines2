@@ -29,9 +29,8 @@ public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
     {
         asignacionRegistroOC.Clear();
 
-        IDictionary<string, AlumnoComision> asignacionesDb = ContainerApp.db.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
-            Cache().Dicts().
-            Objs<AlumnoComision>().
+        IDictionary<string, AlumnoComision> asignacionesDb = AsignacionDAO.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
+            Cache().Entities<AlumnoComision>().
             DictOfObjByPropertyNames("persona__numero_documento");
 
         IEnumerable<string> _headers = headersTextBox.Text.Split(", ").Select(s => s.Trim());
@@ -53,11 +52,11 @@ public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
             if (asignacionesDb.ContainsKey(asignacionForm.alumno_.persona_.numero_documento))
             {
                 var asignacionDb = asignacionesDb[asignacionForm.alumno_.persona_.numero_documento];
-                var personaDbVal = (PersonaValues)ContainerApp.db.Values("persona", "persona").Set(asignacionDb);
-                var personaFormVal = (PersonaValues)ContainerApp.db.Values("persona", "persona").Set(asignacionForm);
 
-                CompareParams cp = new() { Data = personaFormVal.Values(), IgnoreNull = false };
-                var comp = personaDbVal.Compare(cp);
+                var personaForm = new Persona(); //TODO ASIGNAR PERSONA DESDE ASIGNACION FORM
+
+                CompareParams cp = new() { Data = personaForm.ToDict(), IgnoreNull = false };
+                var comp = asignacionDb.alumno_.Compare(cp);
 
                 Dictionary<string, object?> updatePersonaDb = new(); //datos a actualizar de la base local
                 Dictionary<string, object?> verificarPersonaDb = new(); //datos a verificar de la base local
@@ -66,28 +65,16 @@ public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
                 {
                     if (key.Equals("nombres") || key.Equals("apellidos") || key.Equals("numero_documento"))
                     {
-                        verificarPersonaDb[key] = personaFormVal.Get(key);
+                        verificarPersonaDb[key] = personaForm.Get(key);
                     }
                     else
                     {
-                        updatePersonaDb[key] = personaFormVal.Get(key);
+                        updatePersonaDb[key] = personaForm.Get(key);
                     }
 
                     asignacionForm.Msg = "Verificar: " + verificarPersonaDb.ToString() + " - Actualizar: " + updatePersonaDb.ToString(); 
                 }
-
-
             }
-
-
-
-
-
-
-
-
-
-
         }
     }
 

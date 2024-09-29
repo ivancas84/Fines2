@@ -19,7 +19,7 @@
         public string? schema { get; set;  }
 
         public List<string> pk { get; set; } = new();
-        public List<string> fields => fieldsMetadata.Keys.ToList();
+        public List<string> fieldNames => fields.Keys.ToList();
         public List<string> fk { get; set; } = new();
 
         protected List<Field> _ref; //ref
@@ -74,6 +74,11 @@
         public Dictionary<string, EntityTree> tree { get; set; } = new();
 
         public Dictionary<string, EntityRelation> relations { get; set; } = new();
+
+        public Dictionary<string, EntityRef> oo { get; set; } = new();
+        public Dictionary<string, EntityRef> om { get; set; } = new();
+
+
         public string schema_ => String.IsNullOrEmpty(schema) ? schema : "";
         public string schemaName => schema + name;
         public string schemaNameAlias => schema + name + " AS " + alias;
@@ -88,7 +93,7 @@
         public List<string> id { get; set; }
 
 
-        public Dictionary<string, Field> fieldsMetadata { get; set; } = new();
+        public Dictionary<string, Field> fields { get; set; } = new();
 
         protected List<Field> _Fields(List<string> fieldNames)
         {
@@ -103,7 +108,7 @@
         /*
         fields no fk
         */
-        public List<Field> Fields() => _Fields(fields);
+        public List<Field> Fields() => _Fields(fieldNames);
 
         /*
         fields many to one

@@ -61,5 +61,8 @@
         public Dictionary<string, EntityTree> tree { get; set; } = new();
         public Dictionary<string, EntityRelation> relations { get; set; } = new();
 
+        public Dictionary<string, EntityRef> oo { get; set; } = new();
+        public Dictionary<string, EntityRef> om { get; set; } = new();
+
     }
 }

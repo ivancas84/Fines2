@@ -43,7 +43,7 @@ namespace SqlOrganize.Sql
             {
                 e.db = this;
 
-                foreach (var(key, f) in e.fieldsMetadata)
+                foreach (var(key, f) in e.fields)
                     f.db = this;              
             }
 
@@ -55,7 +55,7 @@ namespace SqlOrganize.Sql
             if (!entities.ContainsKey(entityName))
                 throw new Exception("La entidad " + entityName + " no existe");
 
-            return entities[entityName].fieldsMetadata;
+            return entities[entityName].fields;
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace SqlOrganize.Sql
         public List<string> FieldNamesAdmin(string entityName)
         {
             var e = Entity(entityName);
-            return e.fields.Except(e.noAdmin).ToList();
+            return e.fieldNames.Except(e.noAdmin).ToList();
         }
 
         public EntityMetadata Entity(string entityName)

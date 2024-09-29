@@ -12,12 +12,13 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class AlumnoComision : Entity
     {
         
-        public object Persist1(PersistContext persist)
+        public object Persist1()
         {
+            var persist = Context.db.Persist();
             alumno_!.plan = comision_!.planificacion_!.plan;
-            alumno_!.persona = (string)alumno_!.persona_!.Persist(persist)!;
-            alumno = (string)alumno_!.Persist(persist)!;
-            return Persist(persist);
+            alumno_!.persona = (string)persist.Persist(alumno_!.persona_!)!;
+            alumno = (string)persist.Persist(alumno_!)!;
+            return persist.Persist(this);
         }
 
         public override string? Label

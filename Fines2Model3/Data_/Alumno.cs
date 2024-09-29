@@ -75,7 +75,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             #endregion
 
             /*#region Archivar calificaciones repetidas
-            idsDisposiciones = ContainerApp.db.Sql("calificacion").
+            idsDisposiciones = Context.db.Sql("calificacion").
                 Select("COUNT(*) as cantidad").
                 Size(0).
                 Group("$disposicion").
@@ -92,7 +92,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             if (idsDisposiciones.Count() > 0)
             {
-                idsCalificaciones = ContainerApp.db.Sql("calificacion").
+                idsCalificaciones = Context.db.Sql("calificacion").
                     Select("MAX($id) AS id").
                     Group("$disposicion").
                     Size(0).
@@ -101,7 +101,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     Column<object>("id");
 
                 if (idsCalificaciones.Count() > 0)
-                    ContainerApp.db.Persist().UpdateFieldIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
+                    Context.db.Persist().UpdateFieldIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
                         AddTo(persists);
             }
             #endregion*/
@@ -200,14 +200,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             return "#fa91aa"; //red
         }
 
-        public string TramoIngreso()
-        {
-            string tramo = "";
-            tramo += GetOrNull("anio_ingreso")?.ToString() ?? "1";
-            tramo += "/";
-            tramo += GetOrNull("semestre_ingreso")?.ToString() ?? "1";
-            return tramo;
-        }
+        public string TramoIngreso => anio_ingreso ?? "1" + "/" + semestre_ingreso ?? "1"; 
 
     }
 }

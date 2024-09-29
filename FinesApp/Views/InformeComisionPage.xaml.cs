@@ -57,9 +57,9 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             if (text == null)
                 return;
 
-            var list = ContainerApp.db.BusquedaAproximadaComision(text).Dicts();
+            var list = ComisionDAO.BusquedaAproximadaComision(text).Dicts();
 
-            ContainerApp.db.AddEntityToClearOC(list, comisionOC);
+            Context.db.AddEntityToClearOC(list, comisionOC);
 
             cbxComision.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
         }
@@ -91,57 +91,57 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     {
         try
         {
-            var cursosData = ContainerApp.db.Sql("curso").Equal("$comision", comision.id).Cache().Dicts();
-            var tomaData = ContainerApp.db.TomaAprobadaDeComisionQuery(comision.id).Cache().Dicts();
+            var cursosData = Context.db.Sql("curso").Equal("$comision", comision.id).Cache().Dicts();
+            var tomaData = TomaDAO.TomaAprobadaDeComisionQuery(comision.id).Cache().Dicts();
             cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
-            ContainerApp.db.AddEntityToClearOC(cursosData, cursoOC);
+            Context.db.AddEntityToClearOC(cursosData, cursoOC);
 
             var idsAsignaturas = cursosData.ColOfVal<string>("asignatura-id").ToList();
 
-            //var disposicionesData = ContainerApp.db.Sql("disposicion").Equal("$planificacion", comision.planificacion).Cache().Dicts();
+            //var disposicionesData = Context.db.Sql("disposicion").Equal("$planificacion", comision.planificacion).Cache().Dicts();
             //var idsDisposiciones = disposicionesData.ColOfVal<string>("id").ToList();
 
 
-            var asignacionesData = ContainerApp.db.AsignacionesDeComisionesSql(comision.id).Cache().Dicts();
+            var asignacionesData = AsignacionDAO.AsignacionesDeComisionesSql(comision.id).Cache().Dicts();
 
             var idAlumnos = asignacionesData.ColOfVal<object>("alumno").ToArray();
 
-            var calificacionesData = ContainerApp.db.CalificacionesAprobadasPorAlumnoDePlanificacionSql(comision.planificacion, idAlumnos).Cache().Dicts().DictOfListByKeys("alumno");
+            var calificacionesData = CalificacionDAO.CalificacionesAprobadasPorAlumnoDePlanificacionSql(comision.planificacion, idAlumnos).Cache().Dicts().DictOfListByKeys("alumno");
 
 
 
             asignacionOC.Clear();
             foreach (var asi in asignacionesData)
             {
-                var itemObj = ContainerApp.db.ToData<AsignacionConAsignaturasItem>(asi);
+                var itemObj = Entity.CreateFromDict<AsignacionConAsignaturasItem>(asi);
                 if (calificacionesData.ContainsKey(itemObj.alumno))
                 {
                     foreach (var cal in calificacionesData[itemObj.alumno])
                     {
                         itemObj.cantidad_aprobadas++;
-                        var calificacionObj = ContainerApp.db.ToData<Calificacion>(cal);
+                        var calificacionObj = Entity.CreateFromDict<Calificacion>(cal);
 
                         int index = idsAsignaturas.IndexOf(calificacionObj.disposicion_.asignatura_.id);
                         switch (index)
                         {
                             case 0: 
-                                itemObj.asignatura0 = CalificacionValues.GetNotaAprobada(calificacionObj.nota_final, calificacionObj.crec); 
+                                itemObj.asignatura0 = calificacionObj.nota_aprobada; 
                             break;
 
                             case 1:
-                                itemObj.asignatura1 = CalificacionValues.GetNotaAprobada(calificacionObj.nota_final, calificacionObj.crec);  
+                                itemObj.asignatura1 = calificacionObj.nota_aprobada;  
                             break;
 
                             case 2:
-                                itemObj.asignatura2 = CalificacionValues.GetNotaAprobada(calificacionObj.nota_final, calificacionObj.crec);
+                                itemObj.asignatura2 = calificacionObj.nota_aprobada;
                                 break;
 
                             case 3:
-                                itemObj.asignatura3 = CalificacionValues.GetNotaAprobada(calificacionObj.nota_final, calificacionObj.crec);
+                                itemObj.asignatura3 = calificacionObj.nota_aprobada;
                                 break;
 
                             case 4:
-                                itemObj.asignatura4 = CalificacionValues.GetNotaAprobada(calificacionObj.nota_final, calificacionObj.crec);
+                                itemObj.asignatura4 = calificacionObj.nota_aprobada;
                                 break;
                         }
 
@@ -149,7 +149,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
                 }
                 asignacionOC.Add(itemObj);
             }
-            //ContainerApp.db.AddEntityToClearOC(data, alumnos3OC);
+            //Context.db.AddEntityToClearOC(data, alumnos3OC);
         
         }
         catch (Exception ex)
@@ -185,13 +185,18 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     {
         try
         {
-            persists = ContainerApp.db.PersistAsignacionesComisionText(cbxComision.SelectedValue, tbxAlumnos.Text);
-            foreach(var p in persists)
+            Context.db.CreateQueue();
+            //TODO NO SE QUE TENGO QUE PROCESAR ACA
+            //Context.db.PersistAsignacionesComisionText(cbxComision.SelectedValue, tbxAlumnos.Text);
+            Context.db.ProcessQueue();
+            //TODO NO SE QUE TENGO QUE MOSTRAR ACA
+
+            /*foreach(var p in persists)
             {
-                var resultObj = ContainerApp.db.Data<Entity>();
+                var resultObj = Context.db.Data<Entity>();
                 resultObj.Label = p.logging.ToString();
                 ocDataPersist.Add(resultObj);
-            }
+            }*/
         }
         catch (Exception ex)
         {
@@ -203,10 +208,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     {
         try
         {
-            if (!persists.Any())
-                throw new Exception("No existen datos a persistir");
-
-            persists.Transaction().RemoveCache();
+            Context.db.ProcessQueue();
             ToastExtensions.Show("Se han registrado las asignaciones");
         }
         catch (Exception ex)
@@ -238,19 +240,21 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     {
         try
         {
-
-            if (!asignacionOC.Any())
-                throw new Exception("La lista de alumnos esta vacía");
-
-            PersistContext persist = ContainerApp.db.Persist();
-
-            foreach (AsignacionConAsignaturasItem asiObj in asignacionOC)
+            using (Context.db.CreateQueue())
             {
-                string estado = (asiObj.cantidad_aprobadas < 3) ? "No activo" : "Activo"; 
-                persist.UpdateFieldIds("alumno_comision", "estado", estado, asiObj.id);
-            }
+                if (!asignacionOC.Any())
+                    throw new Exception("La lista de alumnos esta vacía");
 
-            persist.Transaction().RemoveCache();
+                PersistContext persist = Context.db.Persist();
+
+                foreach (AsignacionConAsignaturasItem asiObj in asignacionOC)
+                {
+                    string estado = (asiObj.cantidad_aprobadas < 3) ? "No activo" : "Activo";
+                    persist.UpdateFieldIds("alumno_comision", "estado", estado, asiObj.id);
+                }
+                Context.db.ProcessQueue();
+            } 
+
             Buscar((Comision)cbxComision.SelectedItem);
             ToastExtensions.Show("Se ha cambiado el estado de los alumnos");
         } catch (Exception ex) { 
@@ -260,57 +264,59 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
     private void btnTransferirAlumnos_Click(object sender, RoutedEventArgs e)
     {
-        try { 
-            if (!asignacionOC.Any())
-                throw new Exception("La lista de alumnos esta vacía");
-
-            var comObj = (Comision)cbxComision.SelectedItem;
-
-            if (comObj.IsNoE())
-                throw new Exception("No se encuentra seleccionada ninguna comision");
-
-
-            if(comObj.comision_siguiente.IsNoE())
-                throw new Exception("No se encuentra definida la comision siguiente");
-
-            var idAlumnosExistentes = ContainerApp.db.AsignacionesDeComisionesSql(comObj.comision_siguiente).Cache().Dicts().DictOfDictByKeysValue("id","alumno");
-
-
-            PersistContext persist = ContainerApp.db.Persist();
-
-            foreach (AsignacionConAsignaturasItem asiObj in asignacionOC)
+        try {
+            using (Context.db.CreateQueue())
             {
-                asiObj.Msg = "";
-                if (!asiObj.estado.Equals("Activo"))
+
+                if (!asignacionOC.Any())
+                    throw new Exception("La lista de alumnos esta vacía");
+
+                var comObj = (Comision)cbxComision.SelectedItem;
+
+                if (comObj.IsNoE())
+                    throw new Exception("No se encuentra seleccionada ninguna comision");
+
+
+                if (comObj.comision_siguiente.IsNoE())
+                    throw new Exception("No se encuentra definida la comision siguiente");
+
+                var idAlumnosExistentes = AsignacionDAO.AsignacionesDeComisionesSql(comObj.comision_siguiente).Cache().Dicts().DictOfDictByKeysValue("id", "alumno");
+
+
+                PersistContext persist = Context.db.Persist();
+
+                foreach (AsignacionConAsignaturasItem asiObj in asignacionOC)
                 {
-                    if (idAlumnosExistentes.ContainsKey(asiObj.alumno)) { 
-                        persist.DeleteIds("alumno_comision", idAlumnosExistentes[asiObj.alumno]);
-                        asiObj.Msg = "Eliminado de la comision siguiente";
+                    asiObj.Msg = "";
+                    if (!asiObj.estado.Equals("Activo"))
+                    {
+                        if (idAlumnosExistentes.ContainsKey(asiObj.alumno))
+                        {
+                            persist.DeleteIds("alumno_comision", idAlumnosExistentes[asiObj.alumno]);
+                            asiObj.Msg = "Eliminado de la comision siguiente";
+                        }
+
+                        continue;
+
+
                     }
 
-                    continue;
+                    if (idAlumnosExistentes.ContainsKey(asiObj.alumno))
+                    {
+                        asiObj.Msg = "Ya existe en la comision siguiente";
+                        continue;
+                    }
 
-
+                    var asignacion = new AlumnoComision();
+                    asignacion.comision = comObj.comision_siguiente;
+                    asignacion.alumno = asiObj.alumno;
+                    asignacion.estado = "Activo";
+                    persist.InsertIfNotExists(asignacion);
+                    asiObj.Msg = "Alumno transferido";
                 }
 
-                if (idAlumnosExistentes.ContainsKey(asiObj.alumno))
-                {
-                    asiObj.Msg = "Ya existe en la comision siguiente";
-                    continue;
-                }
-
-                
-
-                ContainerApp.db.Values("alumno_comision").
-                    Set("comision", comObj.comision_siguiente).
-                    Set("alumno", asiObj.alumno).
-                    Set("estado", "Activo").InsertIfNotExists(persist);
-
-                asiObj.Msg = "Alumno transferido";
+                Context.db.ProcessQueue();
             }
-
-            persist.Transaction().RemoveCache();
-
         }
         catch (Exception ex)
         {
