@@ -17,6 +17,9 @@ namespace SqlOrganize.Sql.Fines2Model3
             Default();
         }
 
+        #region CollectionChanged
+        #endregion
+
         #region id
         protected string? _id = null;
         public string? id

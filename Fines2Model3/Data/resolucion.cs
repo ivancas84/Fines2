@@ -15,7 +15,18 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "resolucion";
             _db = Context.db;
             Default();
+            Alumno_.CollectionChanged += Alumno_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void Alumno_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Alumno obj in e.NewItems)
+                    if(obj.resolucion_inscripcion_ != this)
+                        obj.resolucion_inscripcion_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

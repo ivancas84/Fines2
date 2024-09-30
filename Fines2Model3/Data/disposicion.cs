@@ -15,7 +15,42 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "disposicion";
             _db = Context.db;
             Default();
+            Calificacion_.CollectionChanged += Calificacion_CollectionChanged;
+            Curso_.CollectionChanged += Curso_CollectionChanged;
+            DisposicionPendiente_.CollectionChanged += DisposicionPendiente_CollectionChanged;
+            DistribucionHoraria_.CollectionChanged += DistribucionHoraria_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void Calificacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Calificacion obj in e.NewItems)
+                    if(obj.disposicion_ != this)
+                        obj.disposicion_ = this;
+        }
+        private void Curso_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Curso obj in e.NewItems)
+                    if(obj.disposicion_ != this)
+                        obj.disposicion_ = this;
+        }
+        private void DisposicionPendiente_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (DisposicionPendiente obj in e.NewItems)
+                    if(obj.disposicion_ != this)
+                        obj.disposicion_ = this;
+        }
+        private void DistribucionHoraria_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (DistribucionHoraria obj in e.NewItems)
+                    if(obj.disposicion_ != this)
+                        obj.disposicion_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

@@ -15,7 +15,18 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "file";
             _db = Context.db;
             Default();
+            DetallePersona_archivo_.CollectionChanged += DetallePersona_archivo_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void DetallePersona_archivo_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (DetallePersona obj in e.NewItems)
+                    if(obj.archivo_ != this)
+                        obj.archivo_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

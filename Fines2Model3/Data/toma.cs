@@ -15,7 +15,18 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "toma";
             _db = Context.db;
             Default();
+            AsignacionPlanillaDocente_.CollectionChanged += AsignacionPlanillaDocente_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void AsignacionPlanillaDocente_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (AsignacionPlanillaDocente obj in e.NewItems)
+                    if(obj.toma_ != this)
+                        obj.toma_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

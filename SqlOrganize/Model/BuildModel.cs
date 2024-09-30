@@ -691,7 +691,24 @@ namespace SqlOrganize.Model
                 sw.WriteLine("            _entityName = \"" + entityName + "\";");
                 sw.WriteLine("            _db = Context.db;");
                 sw.WriteLine("            Default();");
+                foreach (var (id, rref) in entity.om)
+                    sw.WriteLine("            " + id + ".CollectionChanged += " + id + "CollectionChanged;");
                 sw.WriteLine("        }");
+                sw.WriteLine("");
+
+
+                sw.WriteLine("        #region CollectionChanged");
+                foreach (var (id, rref) in entity.om)
+                {
+                    sw.WriteLine("        private void " + id + "CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)");
+                    sw.WriteLine("        {");
+                    sw.WriteLine("            if ( e.NewItems != null )");
+                    sw.WriteLine("                foreach (" + rref.entityName.ToCamelCase() + " obj in e.NewItems)");
+                    sw.WriteLine("                    if(obj." + rref.fieldName + "_ != this)");
+                    sw.WriteLine("                        obj." + rref.fieldName + "_ = this;");
+                    sw.WriteLine("        }");
+                }
+                sw.WriteLine("        #endregion");
                 sw.WriteLine("");
 
                 /*if (!_fields.ContainsKey(Config.id))

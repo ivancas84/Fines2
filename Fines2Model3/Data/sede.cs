@@ -15,7 +15,26 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "sede";
             _db = Context.db;
             Default();
+            Comision_.CollectionChanged += Comision_CollectionChanged;
+            Designacion_.CollectionChanged += Designacion_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void Comision_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Comision obj in e.NewItems)
+                    if(obj.sede_ != this)
+                        obj.sede_ = this;
+        }
+        private void Designacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Designacion obj in e.NewItems)
+                    if(obj.sede_ != this)
+                        obj.sede_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;
@@ -196,7 +215,22 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region Designacion_ (ref designacion.sede _m:o sede.id)
-        public ObservableCollection<Designacion> Designacion_ { get; set; } = new ();
+        protected ObservableCollection<Designacion> _Designacion_ = new();
+
+        public ObservableCollection<Designacion> Designacion_
+        {
+            get { return _Designacion_; }
+
+            set { 
+                if (_Designacion_ != value)
+                {
+                    _Designacion_ = value;
+                    NotifyPropertyChanged(nameof(Designacion_));
+                }
+                    
+            }
+        
+        }
         #endregion
 
     }

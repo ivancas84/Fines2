@@ -15,7 +15,18 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "dia";
             _db = Context.db;
             Default();
+            Horario_.CollectionChanged += Horario_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void Horario_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Horario obj in e.NewItems)
+                    if(obj.dia_ != this)
+                        obj.dia_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

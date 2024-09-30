@@ -15,7 +15,18 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "centro_educativo";
             _db = Context.db;
             Default();
+            Sede_.CollectionChanged += Sede_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void Sede_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Sede obj in e.NewItems)
+                    if(obj.centro_educativo_ != this)
+                        obj.centro_educativo_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

@@ -15,7 +15,34 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "curso";
             _db = Context.db;
             Default();
+            Calificacion_.CollectionChanged += Calificacion_CollectionChanged;
+            Horario_.CollectionChanged += Horario_CollectionChanged;
+            Toma_.CollectionChanged += Toma_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void Calificacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Calificacion obj in e.NewItems)
+                    if(obj.curso_ != this)
+                        obj.curso_ = this;
+        }
+        private void Horario_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Horario obj in e.NewItems)
+                    if(obj.curso_ != this)
+                        obj.curso_ = this;
+        }
+        private void Toma_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Toma obj in e.NewItems)
+                    if(obj.curso_ != this)
+                        obj.curso_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

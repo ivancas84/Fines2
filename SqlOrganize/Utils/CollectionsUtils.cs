@@ -237,6 +237,9 @@ namespace SqlOrganize.CollectionUtils
             return response;
         }
 
+        /// <summary> Enumerable de propiedades </summary>
+        /// <typeparam name="T">Tipo de retorno</typeparam>
+        /// <typeparam name="V">Tipo del key</typeparam>
         public static IEnumerable<T?> ColOfProp<T, V>(this IEnumerable<V> source, string key)
         {
             Type t = typeof(V);
@@ -311,6 +314,41 @@ namespace SqlOrganize.CollectionUtils
             return response;
         }
 
+        /// <summary> Diccionario de objetos </summary>
+        /// <typeparam name="T">Tipo de propName</typeparam>
+        /// <typeparam name="V">Tipo de source</typeparam>
+        public static IDictionary<T, List<V>> DictOfListByProperty<T, V>(this IEnumerable<V> source, string propName)
+        {
+            Dictionary<T, List<V>> response = new();
+            foreach (V obj in source)
+            {
+                var val = (T)obj.GetPropertyValue(propName);
+                if (!response.ContainsKey(val))
+                    response[val] = new(); 
+                response[val].Add(obj);
+            }
+
+            return response;
+        }
+
+
+        /// <summary> Diccionario de objetos </summary>
+        /// <typeparam name="T">Tipo de propName</typeparam>
+        /// <typeparam name="V">Tipo de source</typeparam>
+        public static IDictionary<T, V> DictOfObjByProperty<T, V>(this IEnumerable<V> source, string propName)
+        {
+            Dictionary<T, V> response = new();
+            foreach (V obj in source)
+            {
+                var val = (T)obj.GetPropertyValue(propName);
+                response[val] = obj;
+            }
+
+            return response;
+        }
+
+        /// <summary> Diccionario de objetos pero concatena varios valores </summary>
+        /// <typeparam name="T">Tipo de source</typeparam>
         public static IDictionary<string, T> DictOfObjByPropertyNames<T>(this IEnumerable<T> source, params string[] propertyNames)
         {
             Dictionary<string, T> response = new();
@@ -327,6 +365,8 @@ namespace SqlOrganize.CollectionUtils
 
             return response;
         }
+
+
 
         public static IDictionary<T, Dictionary<string, object?>> DictOfDictByKey<T>(this IEnumerable<Dictionary<string, object?>> source, string key)
         {

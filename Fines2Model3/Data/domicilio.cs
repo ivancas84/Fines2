@@ -15,7 +15,34 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "domicilio";
             _db = Context.db;
             Default();
+            CentroEducativo_.CollectionChanged += CentroEducativo_CollectionChanged;
+            Persona_.CollectionChanged += Persona_CollectionChanged;
+            Sede_.CollectionChanged += Sede_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void CentroEducativo_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (CentroEducativo obj in e.NewItems)
+                    if(obj.domicilio_ != this)
+                        obj.domicilio_ = this;
+        }
+        private void Persona_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Persona obj in e.NewItems)
+                    if(obj.domicilio_ != this)
+                        obj.domicilio_ = this;
+        }
+        private void Sede_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Sede obj in e.NewItems)
+                    if(obj.domicilio_ != this)
+                        obj.domicilio_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

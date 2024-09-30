@@ -15,7 +15,18 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "modalidad";
             _db = Context.db;
             Default();
+            Comision_.CollectionChanged += Comision_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void Comision_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Comision obj in e.NewItems)
+                    if(obj.modalidad_ != this)
+                        obj.modalidad_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

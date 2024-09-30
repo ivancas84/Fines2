@@ -15,7 +15,26 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "planificacion";
             _db = Context.db;
             Default();
+            Comision_.CollectionChanged += Comision_CollectionChanged;
+            Disposicion_.CollectionChanged += Disposicion_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void Comision_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Comision obj in e.NewItems)
+                    if(obj.planificacion_ != this)
+                        obj.planificacion_ = this;
+        }
+        private void Disposicion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Disposicion obj in e.NewItems)
+                    if(obj.planificacion_ != this)
+                        obj.planificacion_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

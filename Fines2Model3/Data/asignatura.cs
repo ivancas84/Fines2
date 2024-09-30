@@ -15,7 +15,18 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "asignatura";
             _db = Context.db;
             Default();
+            Disposicion_.CollectionChanged += Disposicion_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void Disposicion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Disposicion obj in e.NewItems)
+                    if(obj.asignatura_ != this)
+                        obj.asignatura_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

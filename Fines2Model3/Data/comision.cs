@@ -15,7 +15,42 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "comision";
             _db = Context.db;
             Default();
+            AlumnoComision_.CollectionChanged += AlumnoComision_CollectionChanged;
+            ComisionRelacionada_.CollectionChanged += ComisionRelacionada_CollectionChanged;
+            ComisionRelacionada_relacion_.CollectionChanged += ComisionRelacionada_relacion_CollectionChanged;
+            Curso_.CollectionChanged += Curso_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void AlumnoComision_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (AlumnoComision obj in e.NewItems)
+                    if(obj.comision_ != this)
+                        obj.comision_ = this;
+        }
+        private void ComisionRelacionada_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (ComisionRelacionada obj in e.NewItems)
+                    if(obj.comision_ != this)
+                        obj.comision_ = this;
+        }
+        private void ComisionRelacionada_relacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (ComisionRelacionada obj in e.NewItems)
+                    if(obj.relacion_ != this)
+                        obj.relacion_ = this;
+        }
+        private void Curso_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Curso obj in e.NewItems)
+                    if(obj.comision_ != this)
+                        obj.comision_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

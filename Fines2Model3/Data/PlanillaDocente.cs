@@ -15,7 +15,34 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "planilla_docente";
             _db = Context.db;
             Default();
+            AsignacionPlanillaDocente_.CollectionChanged += AsignacionPlanillaDocente_CollectionChanged;
+            Contralor_.CollectionChanged += Contralor_CollectionChanged;
+            Toma_.CollectionChanged += Toma_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void AsignacionPlanillaDocente_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (AsignacionPlanillaDocente obj in e.NewItems)
+                    if(obj.planilla_docente_ != this)
+                        obj.planilla_docente_ = this;
+        }
+        private void Contralor_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Contralor obj in e.NewItems)
+                    if(obj.planilla_docente_ != this)
+                        obj.planilla_docente_ = this;
+        }
+        private void Toma_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Toma obj in e.NewItems)
+                    if(obj.planilla_docente_ != this)
+                        obj.planilla_docente_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

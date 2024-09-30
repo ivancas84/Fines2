@@ -15,7 +15,34 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "alumno";
             _db = Context.db;
             Default();
+            AlumnoComision_.CollectionChanged += AlumnoComision_CollectionChanged;
+            Calificacion_.CollectionChanged += Calificacion_CollectionChanged;
+            DisposicionPendiente_.CollectionChanged += DisposicionPendiente_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void AlumnoComision_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (AlumnoComision obj in e.NewItems)
+                    if(obj.alumno_ != this)
+                        obj.alumno_ = this;
+        }
+        private void Calificacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Calificacion obj in e.NewItems)
+                    if(obj.alumno_ != this)
+                        obj.alumno_ = this;
+        }
+        private void DisposicionPendiente_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (DisposicionPendiente obj in e.NewItems)
+                    if(obj.alumno_ != this)
+                        obj.alumno_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

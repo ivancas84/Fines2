@@ -15,7 +15,58 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "persona";
             _db = Context.db;
             Default();
+            Designacion_.CollectionChanged += Designacion_CollectionChanged;
+            DetallePersona_.CollectionChanged += DetallePersona_CollectionChanged;
+            Email_.CollectionChanged += Email_CollectionChanged;
+            Telefono_.CollectionChanged += Telefono_CollectionChanged;
+            Toma_docente_.CollectionChanged += Toma_docente_CollectionChanged;
+            Toma_reemplazo_.CollectionChanged += Toma_reemplazo_CollectionChanged;
         }
+
+        #region CollectionChanged
+        private void Designacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Designacion obj in e.NewItems)
+                    if(obj.persona_ != this)
+                        obj.persona_ = this;
+        }
+        private void DetallePersona_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (DetallePersona obj in e.NewItems)
+                    if(obj.persona_ != this)
+                        obj.persona_ = this;
+        }
+        private void Email_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Email obj in e.NewItems)
+                    if(obj.persona_ != this)
+                        obj.persona_ = this;
+        }
+        private void Telefono_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Telefono obj in e.NewItems)
+                    if(obj.persona_ != this)
+                        obj.persona_ = this;
+        }
+        private void Toma_docente_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Toma obj in e.NewItems)
+                    if(obj.docente_ != this)
+                        obj.docente_ = this;
+        }
+        private void Toma_reemplazo_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Toma obj in e.NewItems)
+                    if(obj.reemplazo_ != this)
+                        obj.reemplazo_ = this;
+        }
+        #endregion
 
         #region id
         protected string? _id = null;

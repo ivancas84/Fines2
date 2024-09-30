@@ -43,11 +43,18 @@ public partial class SedesSemestrePage : Page, INotifyPropertyChanged
             IEnumerable<object> idSedes = ComisionDAO.ComisionesAutorizadasDeCalendarioSql(cbxCalendario.SelectedValue).
                 Cache().Dicts().ColOfVal<object>("sede");
 
-            var sedeData = Context.db.Sql("sede").Where("$id IN (@0)").
-                Order("$nombre ASC").Param("@0", idSedes).Cache().Dicts();
-            Context.db.AddEntityToClearOC(sedeData, ocSede);
+            Context.db.Sql("sede").Where("$id IN (@0)").
+                Order("$nombre ASC").Param("@0", idSedes).Cache().AddEntityToClearOC(ocSede);
 
-            ToastExtensions.Show("La consulta devolvió " + sedeData.Count() + " registros.");
+            IDictionary<string, List<Designacion>> designacionesPorSede = DesignacionDAO.ReferentesDeSedeQuery(idSedes.ToArray()).Cache().Entities<Designacion>().DictOfListByProperty<string, Designacion>("sede");
+
+            foreach(var sede in ocSede)
+            {
+                if (designacionesPorSede.ContainsKey(sede.id))
+                    sede.Designacion_ = new ObservableCollection<Designacion>(designacionesPorSede[sede.id]);
+            }
+            
+            ToastExtensions.Show("La consulta devolvió " + ocSede.Count() + " registros.");
         }
         catch (Exception ex)
         {
