@@ -10,49 +10,13 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Calendario : Entity
     {
 
-        public override bool EnableSynchronization
-        {
-            get => _enableSynchronization;
-            set
-            {
-                if(_enableSynchronization != value)
-                {
-                    _enableSynchronization = value;
-
-                    if(_enableSynchronization)
-                    {
-                        foreach(var obj in Comision_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.calendario_ != this)
-                                 obj.calendario_ = this;
-                        }
-
-                    }
-                }
-            }
-        }
-
         public Calendario()
         {
             _entityName = "calendario";
             _db = Context.db;
             Default();
-            Comision_.CollectionChanged += Comision_CollectionChanged;
         }
 
-        private void Comision_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (Comision obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.calendario_ != this)
-                        obj.calendario_ = this;
-                }
-            }
-        }
         #region id
         protected string? _id = null;
         public string? id

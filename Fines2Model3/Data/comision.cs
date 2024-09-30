@@ -10,137 +10,13 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Comision : Entity
     {
 
-        public override bool EnableSynchronization
-        {
-            get => _enableSynchronization;
-            set
-            {
-                if(_enableSynchronization != value)
-                {
-                    _enableSynchronization = value;
-
-                    if(_enableSynchronization)
-                    {
-                        if (_sede_ != null)
-                        {
-                            _sede_!.EnableSynchronization = true;
-                            if (!_sede_!.Comision_.Contains(this))
-                                _sede_!.Comision_.Add(this);
-                        }
-
-                        if (_modalidad_ != null)
-                        {
-                            _modalidad_!.EnableSynchronization = true;
-                            if (!_modalidad_!.Comision_.Contains(this))
-                                _modalidad_!.Comision_.Add(this);
-                        }
-
-                        if (_planificacion_ != null)
-                        {
-                            _planificacion_!.EnableSynchronization = true;
-                            if (!_planificacion_!.Comision_.Contains(this))
-                                _planificacion_!.Comision_.Add(this);
-                        }
-
-                        if (_calendario_ != null)
-                        {
-                            _calendario_!.EnableSynchronization = true;
-                            if (!_calendario_!.Comision_.Contains(this))
-                                _calendario_!.Comision_.Add(this);
-                        }
-
-                        foreach(var obj in AlumnoComision_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.comision_ != this)
-                                 obj.comision_ = this;
-                        }
-
-                        foreach(var obj in ComisionRelacionada_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.comision_ != this)
-                                 obj.comision_ = this;
-                        }
-
-                        foreach(var obj in ComisionRelacionada_relacion_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.relacion_ != this)
-                                 obj.relacion_ = this;
-                        }
-
-                        foreach(var obj in Curso_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.comision_ != this)
-                                 obj.comision_ = this;
-                        }
-
-                    }
-                }
-            }
-        }
-
         public Comision()
         {
             _entityName = "comision";
             _db = Context.db;
             Default();
-            AlumnoComision_.CollectionChanged += AlumnoComision_CollectionChanged;
-            ComisionRelacionada_.CollectionChanged += ComisionRelacionada_CollectionChanged;
-            ComisionRelacionada_relacion_.CollectionChanged += ComisionRelacionada_relacion_CollectionChanged;
-            Curso_.CollectionChanged += Curso_CollectionChanged;
         }
 
-        private void AlumnoComision_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (AlumnoComision obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.comision_ != this)
-                        obj.comision_ = this;
-                }
-            }
-        }
-        private void ComisionRelacionada_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (ComisionRelacionada obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.comision_ != this)
-                        obj.comision_ = this;
-                }
-            }
-        }
-        private void ComisionRelacionada_relacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (ComisionRelacionada obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.relacion_ != this)
-                        obj.relacion_ = this;
-                }
-            }
-        }
-        private void Curso_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (Curso obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.comision_ != this)
-                        obj.comision_ = this;
-                }
-            }
-        }
         #region id
         protected string? _id = null;
         public string? id
@@ -291,27 +167,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _sede_; }
             set {
-                if(  _sede_ != value )
+                if ( _sede_ != value)
                 {
-                    var old_sede = _sede;
                     _sede_ = value;
-
-                    if( old_sede != null && EnableSynchronization)
-                        _sede_!.Comision_.Remove(this);
-
                     if(value != null)
-                    {
                         sede = value.id;
-                        if(EnableSynchronization && !_sede_!.Comision_.Contains(this))
-                        {
-                            _sede_!.EnableSynchronization = true;
-                            _sede_!.Comision_.Add(this);
-                        }
-                    }
                     else
-                    {
                         sede = null;
-                    }
                     NotifyPropertyChanged(nameof(sede_));
                 }
             }
@@ -324,27 +186,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _modalidad_; }
             set {
-                if(  _modalidad_ != value )
+                if ( _modalidad_ != value)
                 {
-                    var old_modalidad = _modalidad;
                     _modalidad_ = value;
-
-                    if( old_modalidad != null && EnableSynchronization)
-                        _modalidad_!.Comision_.Remove(this);
-
                     if(value != null)
-                    {
                         modalidad = value.id;
-                        if(EnableSynchronization && !_modalidad_!.Comision_.Contains(this))
-                        {
-                            _modalidad_!.EnableSynchronization = true;
-                            _modalidad_!.Comision_.Add(this);
-                        }
-                    }
                     else
-                    {
                         modalidad = null;
-                    }
                     NotifyPropertyChanged(nameof(modalidad_));
                 }
             }
@@ -357,27 +205,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _planificacion_; }
             set {
-                if(  _planificacion_ != value )
+                if ( _planificacion_ != value)
                 {
-                    var old_planificacion = _planificacion;
                     _planificacion_ = value;
-
-                    if( old_planificacion != null && EnableSynchronization)
-                        _planificacion_!.Comision_.Remove(this);
-
                     if(value != null)
-                    {
                         planificacion = value.id;
-                        if(EnableSynchronization && !_planificacion_!.Comision_.Contains(this))
-                        {
-                            _planificacion_!.EnableSynchronization = true;
-                            _planificacion_!.Comision_.Add(this);
-                        }
-                    }
                     else
-                    {
                         planificacion = null;
-                    }
                     NotifyPropertyChanged(nameof(planificacion_));
                 }
             }
@@ -390,27 +224,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _calendario_; }
             set {
-                if(  _calendario_ != value )
+                if ( _calendario_ != value)
                 {
-                    var old_calendario = _calendario;
                     _calendario_ = value;
-
-                    if( old_calendario != null && EnableSynchronization)
-                        _calendario_!.Comision_.Remove(this);
-
                     if(value != null)
-                    {
                         calendario = value.id;
-                        if(EnableSynchronization && !_calendario_!.Comision_.Contains(this))
-                        {
-                            _calendario_!.EnableSynchronization = true;
-                            _calendario_!.Comision_.Add(this);
-                        }
-                    }
                     else
-                    {
                         calendario = null;
-                    }
                     NotifyPropertyChanged(nameof(calendario_));
                 }
             }

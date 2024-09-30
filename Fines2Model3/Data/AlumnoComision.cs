@@ -10,36 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class AlumnoComision : Entity
     {
 
-        public override bool EnableSynchronization
-        {
-            get => _enableSynchronization;
-            set
-            {
-                if(_enableSynchronization != value)
-                {
-                    _enableSynchronization = value;
-
-                    if(_enableSynchronization)
-                    {
-                        if (_comision_ != null)
-                        {
-                            _comision_!.EnableSynchronization = true;
-                            if (!_comision_!.AlumnoComision_.Contains(this))
-                                _comision_!.AlumnoComision_.Add(this);
-                        }
-
-                        if (_alumno_ != null)
-                        {
-                            _alumno_!.EnableSynchronization = true;
-                            if (!_alumno_!.AlumnoComision_.Contains(this))
-                                _alumno_!.AlumnoComision_.Add(this);
-                        }
-
-                    }
-                }
-            }
-        }
-
         public AlumnoComision()
         {
             _entityName = "alumno_comision";
@@ -116,27 +86,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _comision_; }
             set {
-                if(  _comision_ != value )
+                if ( _comision_ != value)
                 {
-                    var old_comision = _comision;
                     _comision_ = value;
-
-                    if( old_comision != null && EnableSynchronization)
-                        _comision_!.AlumnoComision_.Remove(this);
-
                     if(value != null)
-                    {
                         comision = value.id;
-                        if(EnableSynchronization && !_comision_!.AlumnoComision_.Contains(this))
-                        {
-                            _comision_!.EnableSynchronization = true;
-                            _comision_!.AlumnoComision_.Add(this);
-                        }
-                    }
                     else
-                    {
                         comision = null;
-                    }
                     NotifyPropertyChanged(nameof(comision_));
                 }
             }
@@ -149,27 +105,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _alumno_; }
             set {
-                if(  _alumno_ != value )
+                if ( _alumno_ != value)
                 {
-                    var old_alumno = _alumno;
                     _alumno_ = value;
-
-                    if( old_alumno != null && EnableSynchronization)
-                        _alumno_!.AlumnoComision_.Remove(this);
-
                     if(value != null)
-                    {
                         alumno = value.id;
-                        if(EnableSynchronization && !_alumno_!.AlumnoComision_.Contains(this))
-                        {
-                            _alumno_!.EnableSynchronization = true;
-                            _alumno_!.AlumnoComision_.Add(this);
-                        }
-                    }
                     else
-                    {
                         alumno = null;
-                    }
                     NotifyPropertyChanged(nameof(alumno_));
                 }
             }

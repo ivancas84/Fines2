@@ -10,36 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Horario : Entity
     {
 
-        public override bool EnableSynchronization
-        {
-            get => _enableSynchronization;
-            set
-            {
-                if(_enableSynchronization != value)
-                {
-                    _enableSynchronization = value;
-
-                    if(_enableSynchronization)
-                    {
-                        if (_curso_ != null)
-                        {
-                            _curso_!.EnableSynchronization = true;
-                            if (!_curso_!.Horario_.Contains(this))
-                                _curso_!.Horario_.Add(this);
-                        }
-
-                        if (_dia_ != null)
-                        {
-                            _dia_!.EnableSynchronization = true;
-                            if (!_dia_!.Horario_.Contains(this))
-                                _dia_!.Horario_.Add(this);
-                        }
-
-                    }
-                }
-            }
-        }
-
         public Horario()
         {
             _entityName = "horario";
@@ -98,27 +68,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _curso_; }
             set {
-                if(  _curso_ != value )
+                if ( _curso_ != value)
                 {
-                    var old_curso = _curso;
                     _curso_ = value;
-
-                    if( old_curso != null && EnableSynchronization)
-                        _curso_!.Horario_.Remove(this);
-
                     if(value != null)
-                    {
                         curso = value.id;
-                        if(EnableSynchronization && !_curso_!.Horario_.Contains(this))
-                        {
-                            _curso_!.EnableSynchronization = true;
-                            _curso_!.Horario_.Add(this);
-                        }
-                    }
                     else
-                    {
                         curso = null;
-                    }
                     NotifyPropertyChanged(nameof(curso_));
                 }
             }
@@ -131,27 +87,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _dia_; }
             set {
-                if(  _dia_ != value )
+                if ( _dia_ != value)
                 {
-                    var old_dia = _dia;
                     _dia_ = value;
-
-                    if( old_dia != null && EnableSynchronization)
-                        _dia_!.Horario_.Remove(this);
-
                     if(value != null)
-                    {
                         dia = value.id;
-                        if(EnableSynchronization && !_dia_!.Horario_.Contains(this))
-                        {
-                            _dia_!.EnableSynchronization = true;
-                            _dia_!.Horario_.Add(this);
-                        }
-                    }
                     else
-                    {
                         dia = null;
-                    }
                     NotifyPropertyChanged(nameof(dia_));
                 }
             }

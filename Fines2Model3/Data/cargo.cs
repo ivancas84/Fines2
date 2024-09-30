@@ -10,49 +10,13 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Cargo : Entity
     {
 
-        public override bool EnableSynchronization
-        {
-            get => _enableSynchronization;
-            set
-            {
-                if(_enableSynchronization != value)
-                {
-                    _enableSynchronization = value;
-
-                    if(_enableSynchronization)
-                    {
-                        foreach(var obj in Designacion_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.cargo_ != this)
-                                 obj.cargo_ = this;
-                        }
-
-                    }
-                }
-            }
-        }
-
         public Cargo()
         {
             _entityName = "cargo";
             _db = Context.db;
             Default();
-            Designacion_.CollectionChanged += Designacion_CollectionChanged;
         }
 
-        private void Designacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (Designacion obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.cargo_ != this)
-                        obj.cargo_ = this;
-                }
-            }
-        }
         #region id
         protected string? _id = null;
         public string? id

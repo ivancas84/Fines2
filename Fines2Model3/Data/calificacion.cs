@@ -10,43 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Calificacion : Entity
     {
 
-        public override bool EnableSynchronization
-        {
-            get => _enableSynchronization;
-            set
-            {
-                if(_enableSynchronization != value)
-                {
-                    _enableSynchronization = value;
-
-                    if(_enableSynchronization)
-                    {
-                        if (_curso_ != null)
-                        {
-                            _curso_!.EnableSynchronization = true;
-                            if (!_curso_!.Calificacion_.Contains(this))
-                                _curso_!.Calificacion_.Add(this);
-                        }
-
-                        if (_alumno_ != null)
-                        {
-                            _alumno_!.EnableSynchronization = true;
-                            if (!_alumno_!.Calificacion_.Contains(this))
-                                _alumno_!.Calificacion_.Add(this);
-                        }
-
-                        if (_disposicion_ != null)
-                        {
-                            _disposicion_!.EnableSynchronization = true;
-                            if (!_disposicion_!.Calificacion_.Contains(this))
-                                _disposicion_!.Calificacion_.Add(this);
-                        }
-
-                    }
-                }
-            }
-        }
-
         public Calificacion()
         {
             _entityName = "calificacion";
@@ -186,27 +149,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _curso_; }
             set {
-                if(  _curso_ != value )
+                if ( _curso_ != value)
                 {
-                    var old_curso = _curso;
                     _curso_ = value;
-
-                    if( old_curso != null && EnableSynchronization)
-                        _curso_!.Calificacion_.Remove(this);
-
                     if(value != null)
-                    {
                         curso = value.id;
-                        if(EnableSynchronization && !_curso_!.Calificacion_.Contains(this))
-                        {
-                            _curso_!.EnableSynchronization = true;
-                            _curso_!.Calificacion_.Add(this);
-                        }
-                    }
                     else
-                    {
                         curso = null;
-                    }
                     NotifyPropertyChanged(nameof(curso_));
                 }
             }
@@ -219,27 +168,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _alumno_; }
             set {
-                if(  _alumno_ != value )
+                if ( _alumno_ != value)
                 {
-                    var old_alumno = _alumno;
                     _alumno_ = value;
-
-                    if( old_alumno != null && EnableSynchronization)
-                        _alumno_!.Calificacion_.Remove(this);
-
                     if(value != null)
-                    {
                         alumno = value.id;
-                        if(EnableSynchronization && !_alumno_!.Calificacion_.Contains(this))
-                        {
-                            _alumno_!.EnableSynchronization = true;
-                            _alumno_!.Calificacion_.Add(this);
-                        }
-                    }
                     else
-                    {
                         alumno = null;
-                    }
                     NotifyPropertyChanged(nameof(alumno_));
                 }
             }
@@ -252,27 +187,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _disposicion_; }
             set {
-                if(  _disposicion_ != value )
+                if ( _disposicion_ != value)
                 {
-                    var old_disposicion = _disposicion;
                     _disposicion_ = value;
-
-                    if( old_disposicion != null && EnableSynchronization)
-                        _disposicion_!.Calificacion_.Remove(this);
-
                     if(value != null)
-                    {
                         disposicion = value.id;
-                        if(EnableSynchronization && !_disposicion_!.Calificacion_.Contains(this))
-                        {
-                            _disposicion_!.EnableSynchronization = true;
-                            _disposicion_!.Calificacion_.Add(this);
-                        }
-                    }
                     else
-                    {
                         disposicion = null;
-                    }
                     NotifyPropertyChanged(nameof(disposicion_));
                 }
             }

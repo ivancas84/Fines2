@@ -10,89 +10,13 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Domicilio : Entity
     {
 
-        public override bool EnableSynchronization
-        {
-            get => _enableSynchronization;
-            set
-            {
-                if(_enableSynchronization != value)
-                {
-                    _enableSynchronization = value;
-
-                    if(_enableSynchronization)
-                    {
-                        foreach(var obj in CentroEducativo_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.domicilio_ != this)
-                                 obj.domicilio_ = this;
-                        }
-
-                        foreach(var obj in Persona_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.domicilio_ != this)
-                                 obj.domicilio_ = this;
-                        }
-
-                        foreach(var obj in Sede_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.domicilio_ != this)
-                                 obj.domicilio_ = this;
-                        }
-
-                    }
-                }
-            }
-        }
-
         public Domicilio()
         {
             _entityName = "domicilio";
             _db = Context.db;
             Default();
-            CentroEducativo_.CollectionChanged += CentroEducativo_CollectionChanged;
-            Persona_.CollectionChanged += Persona_CollectionChanged;
-            Sede_.CollectionChanged += Sede_CollectionChanged;
         }
 
-        private void CentroEducativo_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (CentroEducativo obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.domicilio_ != this)
-                        obj.domicilio_ = this;
-                }
-            }
-        }
-        private void Persona_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (Persona obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.domicilio_ != this)
-                        obj.domicilio_ = this;
-                }
-            }
-        }
-        private void Sede_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (Sede obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.domicilio_ != this)
-                        obj.domicilio_ = this;
-                }
-            }
-        }
         #region id
         protected string? _id = null;
         public string? id

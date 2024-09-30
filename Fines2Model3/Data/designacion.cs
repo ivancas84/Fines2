@@ -10,43 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Designacion : Entity
     {
 
-        public override bool EnableSynchronization
-        {
-            get => _enableSynchronization;
-            set
-            {
-                if(_enableSynchronization != value)
-                {
-                    _enableSynchronization = value;
-
-                    if(_enableSynchronization)
-                    {
-                        if (_cargo_ != null)
-                        {
-                            _cargo_!.EnableSynchronization = true;
-                            if (!_cargo_!.Designacion_.Contains(this))
-                                _cargo_!.Designacion_.Add(this);
-                        }
-
-                        if (_sede_ != null)
-                        {
-                            _sede_!.EnableSynchronization = true;
-                            if (!_sede_!.Designacion_.Contains(this))
-                                _sede_!.Designacion_.Add(this);
-                        }
-
-                        if (_persona_ != null)
-                        {
-                            _persona_!.EnableSynchronization = true;
-                            if (!_persona_!.Designacion_.Contains(this))
-                                _persona_!.Designacion_.Add(this);
-                        }
-
-                    }
-                }
-            }
-        }
-
         public Designacion()
         {
             _entityName = "designacion";
@@ -132,27 +95,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _cargo_; }
             set {
-                if(  _cargo_ != value )
+                if ( _cargo_ != value)
                 {
-                    var old_cargo = _cargo;
                     _cargo_ = value;
-
-                    if( old_cargo != null && EnableSynchronization)
-                        _cargo_!.Designacion_.Remove(this);
-
                     if(value != null)
-                    {
                         cargo = value.id;
-                        if(EnableSynchronization && !_cargo_!.Designacion_.Contains(this))
-                        {
-                            _cargo_!.EnableSynchronization = true;
-                            _cargo_!.Designacion_.Add(this);
-                        }
-                    }
                     else
-                    {
                         cargo = null;
-                    }
                     NotifyPropertyChanged(nameof(cargo_));
                 }
             }
@@ -165,27 +114,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _sede_; }
             set {
-                if(  _sede_ != value )
+                if ( _sede_ != value)
                 {
-                    var old_sede = _sede;
                     _sede_ = value;
-
-                    if( old_sede != null && EnableSynchronization)
-                        _sede_!.Designacion_.Remove(this);
-
                     if(value != null)
-                    {
                         sede = value.id;
-                        if(EnableSynchronization && !_sede_!.Designacion_.Contains(this))
-                        {
-                            _sede_!.EnableSynchronization = true;
-                            _sede_!.Designacion_.Add(this);
-                        }
-                    }
                     else
-                    {
                         sede = null;
-                    }
                     NotifyPropertyChanged(nameof(sede_));
                 }
             }
@@ -198,27 +133,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _persona_; }
             set {
-                if(  _persona_ != value )
+                if ( _persona_ != value)
                 {
-                    var old_persona = _persona;
                     _persona_ = value;
-
-                    if( old_persona != null && EnableSynchronization)
-                        _persona_!.Designacion_.Remove(this);
-
                     if(value != null)
-                    {
                         persona = value.id;
-                        if(EnableSynchronization && !_persona_!.Designacion_.Contains(this))
-                        {
-                            _persona_!.EnableSynchronization = true;
-                            _persona_!.Designacion_.Add(this);
-                        }
-                    }
                     else
-                    {
                         persona = null;
-                    }
                     NotifyPropertyChanged(nameof(persona_));
                 }
             }

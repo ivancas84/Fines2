@@ -230,6 +230,4 @@ namespace SqlOrganize.Sql
             }
         }
     }
-
-  
 }

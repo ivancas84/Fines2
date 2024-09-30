@@ -508,7 +508,6 @@ namespace SqlOrganize.Model
 
                     foreach (var (fieldId, relation) in entity.relations)
                     {
-                        if(entity.fields.Contains(relation.fieldName))
                         sw.WriteLine("                        #region " + fieldId);
                         sw.WriteLine("                        { \"" + fieldId + "\", new () {");
                         sw.WriteLine("                            fieldName = \"" + relation.fieldName + "\",");
@@ -687,81 +686,14 @@ namespace SqlOrganize.Model
                 sw.WriteLine("    public partial class " + entityName.ToCamelCase() + " : Entity");
                 sw.WriteLine("    {");
                 sw.WriteLine("");
-                sw.WriteLine("        public override bool EnableSynchronization");
-                sw.WriteLine("        {");
-                sw.WriteLine("            get => _enableSynchronization;");
-                sw.WriteLine("            set");
-                sw.WriteLine("            {");
-                sw.WriteLine("                if(_enableSynchronization != value)");
-                sw.WriteLine("                {");
-                sw.WriteLine("                    _enableSynchronization = value;");
-                sw.WriteLine("");
-                sw.WriteLine("                    if(_enableSynchronization)");
-                sw.WriteLine("                    {");
-
-                #region atributos fk
-                foreach (var (fieldId, relation) in entity.relations)
-                {
-                    if (!relation.parentId.IsNoE() || !entity.fieldNames.Contains(relation.fieldName))
-                        continue;
-
-                    if (entity.unique.Contains(relation.fieldName)) //o
-                        continue;
-
-                    string refFieldName = (relation.fieldName.Contains(relation.refEntityName)) ? "" : relation.fieldName + "_";
-
-                    sw.WriteLine("                        if (_" + relation.fieldName + "_ != null)");
-                    sw.WriteLine("                        {");
-                    sw.WriteLine("                            _" + relation.fieldName + "_!.EnableSynchronization = true;");
-                    sw.WriteLine("                            if (!_" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + ".Contains(this))");
-                    sw.WriteLine("                                _" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + ".Add(this);");
-                    sw.WriteLine("                        }");
-                    sw.WriteLine("");
-                }
-                #endregion
-                #region atributos om
-                foreach (var (id, rref) in entity.om)
-                {
-                    sw.WriteLine("                        foreach(var obj in " + id + ")");
-                    sw.WriteLine("                        {");
-                    sw.WriteLine("                             obj.EnableSynchronization = true;");
-                    sw.WriteLine("                             if( obj." + rref.fieldName + "_ != this)" );
-                    sw.WriteLine("                                 obj." + rref.fieldName + "_ = this;");
-                    sw.WriteLine("                        }");
-                    sw.WriteLine("");
-                }
-                #endregion
-                sw.WriteLine("                    }");
-                sw.WriteLine("                }");
-                sw.WriteLine("            }");
-                sw.WriteLine("        }");
-                sw.WriteLine("");
                 sw.WriteLine("        public " + entityName.ToCamelCase() + "()");
                 sw.WriteLine("        {");                
                 sw.WriteLine("            _entityName = \"" + entityName + "\";");
                 sw.WriteLine("            _db = Context.db;");
                 sw.WriteLine("            Default();");
-                foreach (var (id, rref) in entity.om)
-                    sw.WriteLine("            " + id + ".CollectionChanged += " + id + "CollectionChanged;");
                 sw.WriteLine("        }");
                 sw.WriteLine("");
 
-                foreach (var (id, rref) in entity.om)
-                {
-                    sw.WriteLine("        private void " + id + "CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)");
-                    sw.WriteLine("        {");
-                    sw.WriteLine("            if (_enableSynchronization)");
-                    sw.WriteLine("            {");
-                    sw.WriteLine("                foreach (" + rref.entityName.ToCamelCase() + " obj in e.NewItems)");
-                    sw.WriteLine("                {");
-                    sw.WriteLine("                    obj.EnableSynchronization = true;");
-                    sw.WriteLine("                    if(obj." + rref.fieldName + "_ != this)");
-                    sw.WriteLine("                        obj." + rref.fieldName + "_ = this;");
-                    sw.WriteLine("                }");
-                    sw.WriteLine("            }");
-                    sw.WriteLine("        }");
-                }
-                    
                 /*if (!_fields.ContainsKey(Config.id))
                 {
                     Field _Id = new Field()
@@ -830,27 +762,13 @@ namespace SqlOrganize.Model
                         sw.WriteLine("        {");
                         sw.WriteLine("            get { return _" + relation.fieldName + "_; }");
                         sw.WriteLine("            set {");
-                        sw.WriteLine("                if(  _" + relation.fieldName + "_ != value )");
+                        sw.WriteLine("                if ( _" + relation.fieldName + "_ != value)");
                         sw.WriteLine("                {");
-                        sw.WriteLine("                    var old_" + relation.fieldName + " = " + "_" + relation.fieldName + ";");
                         sw.WriteLine("                    _" + relation.fieldName + "_ = value;");
-                        sw.WriteLine("");
-                        sw.WriteLine("                    if( old_" + relation.fieldName + " != null && EnableSynchronization)");
-                        sw.WriteLine("                        _" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + ".Remove(this);");
-                        sw.WriteLine("");
                         sw.WriteLine("                    if(value != null)");
-                        sw.WriteLine("                    {");
                         sw.WriteLine("                        " + relation.fieldName + " = value." + this.Config.id + ";");
-                        sw.WriteLine("                        if(EnableSynchronization && !_" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + ".Contains(this))");
-                        sw.WriteLine("                        {");
-                        sw.WriteLine("                            _" + relation.fieldName + "_!.EnableSynchronization = true;");
-                        sw.WriteLine("                            _" + relation.fieldName + "_!." + entityName.ToCamelCase() + "_" + refFieldName + ".Add(this);");
-                        sw.WriteLine("                        }");
-                        sw.WriteLine("                    }");
                         sw.WriteLine("                    else");
-                        sw.WriteLine("                    {");
                         sw.WriteLine("                        " + relation.fieldName + " = null;");
-                        sw.WriteLine("                    }");
                         sw.WriteLine("                    NotifyPropertyChanged(nameof(" + relation.fieldName + "_));");
                         sw.WriteLine("                }");
                         sw.WriteLine("            }");

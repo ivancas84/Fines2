@@ -10,103 +10,13 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Alumno : Entity
     {
 
-        public override bool EnableSynchronization
-        {
-            get => _enableSynchronization;
-            set
-            {
-                if(_enableSynchronization != value)
-                {
-                    _enableSynchronization = value;
-
-                    if(_enableSynchronization)
-                    {
-                        if (_plan_ != null)
-                        {
-                            _plan_!.EnableSynchronization = true;
-                            if (!_plan_!.Alumno_.Contains(this))
-                                _plan_!.Alumno_.Add(this);
-                        }
-
-                        if (_resolucion_inscripcion_ != null)
-                        {
-                            _resolucion_inscripcion_!.EnableSynchronization = true;
-                            if (!_resolucion_inscripcion_!.Alumno_.Contains(this))
-                                _resolucion_inscripcion_!.Alumno_.Add(this);
-                        }
-
-                        foreach(var obj in AlumnoComision_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.alumno_ != this)
-                                 obj.alumno_ = this;
-                        }
-
-                        foreach(var obj in Calificacion_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.alumno_ != this)
-                                 obj.alumno_ = this;
-                        }
-
-                        foreach(var obj in DisposicionPendiente_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.alumno_ != this)
-                                 obj.alumno_ = this;
-                        }
-
-                    }
-                }
-            }
-        }
-
         public Alumno()
         {
             _entityName = "alumno";
             _db = Context.db;
             Default();
-            AlumnoComision_.CollectionChanged += AlumnoComision_CollectionChanged;
-            Calificacion_.CollectionChanged += Calificacion_CollectionChanged;
-            DisposicionPendiente_.CollectionChanged += DisposicionPendiente_CollectionChanged;
         }
 
-        private void AlumnoComision_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (AlumnoComision obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.alumno_ != this)
-                        obj.alumno_ = this;
-                }
-            }
-        }
-        private void Calificacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (Calificacion obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.alumno_ != this)
-                        obj.alumno_ = this;
-                }
-            }
-        }
-        private void DisposicionPendiente_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (DisposicionPendiente obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.alumno_ != this)
-                        obj.alumno_ = this;
-                }
-            }
-        }
         #region id
         protected string? _id = null;
         public string? id
@@ -381,27 +291,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _plan_; }
             set {
-                if(  _plan_ != value )
+                if ( _plan_ != value)
                 {
-                    var old_plan = _plan;
                     _plan_ = value;
-
-                    if( old_plan != null && EnableSynchronization)
-                        _plan_!.Alumno_.Remove(this);
-
                     if(value != null)
-                    {
                         plan = value.id;
-                        if(EnableSynchronization && !_plan_!.Alumno_.Contains(this))
-                        {
-                            _plan_!.EnableSynchronization = true;
-                            _plan_!.Alumno_.Add(this);
-                        }
-                    }
                     else
-                    {
                         plan = null;
-                    }
                     NotifyPropertyChanged(nameof(plan_));
                 }
             }
@@ -414,27 +310,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _resolucion_inscripcion_; }
             set {
-                if(  _resolucion_inscripcion_ != value )
+                if ( _resolucion_inscripcion_ != value)
                 {
-                    var old_resolucion_inscripcion = _resolucion_inscripcion;
                     _resolucion_inscripcion_ = value;
-
-                    if( old_resolucion_inscripcion != null && EnableSynchronization)
-                        _resolucion_inscripcion_!.Alumno_.Remove(this);
-
                     if(value != null)
-                    {
                         resolucion_inscripcion = value.id;
-                        if(EnableSynchronization && !_resolucion_inscripcion_!.Alumno_.Contains(this))
-                        {
-                            _resolucion_inscripcion_!.EnableSynchronization = true;
-                            _resolucion_inscripcion_!.Alumno_.Add(this);
-                        }
-                    }
                     else
-                    {
                         resolucion_inscripcion = null;
-                    }
                     NotifyPropertyChanged(nameof(resolucion_inscripcion_));
                 }
             }

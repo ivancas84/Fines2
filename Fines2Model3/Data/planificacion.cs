@@ -10,76 +10,13 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Planificacion : Entity
     {
 
-        public override bool EnableSynchronization
-        {
-            get => _enableSynchronization;
-            set
-            {
-                if(_enableSynchronization != value)
-                {
-                    _enableSynchronization = value;
-
-                    if(_enableSynchronization)
-                    {
-                        if (_plan_ != null)
-                        {
-                            _plan_!.EnableSynchronization = true;
-                            if (!_plan_!.Planificacion_.Contains(this))
-                                _plan_!.Planificacion_.Add(this);
-                        }
-
-                        foreach(var obj in Comision_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.planificacion_ != this)
-                                 obj.planificacion_ = this;
-                        }
-
-                        foreach(var obj in Disposicion_)
-                        {
-                             obj.EnableSynchronization = true;
-                             if( obj.planificacion_ != this)
-                                 obj.planificacion_ = this;
-                        }
-
-                    }
-                }
-            }
-        }
-
         public Planificacion()
         {
             _entityName = "planificacion";
             _db = Context.db;
             Default();
-            Comision_.CollectionChanged += Comision_CollectionChanged;
-            Disposicion_.CollectionChanged += Disposicion_CollectionChanged;
         }
 
-        private void Comision_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (Comision obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.planificacion_ != this)
-                        obj.planificacion_ = this;
-                }
-            }
-        }
-        private void Disposicion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (_enableSynchronization)
-            {
-                foreach (Disposicion obj in e.NewItems)
-                {
-                    obj.EnableSynchronization = true;
-                    if(obj.planificacion_ != this)
-                        obj.planificacion_ = this;
-                }
-            }
-        }
         #region id
         protected string? _id = null;
         public string? id
@@ -131,27 +68,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _plan_; }
             set {
-                if(  _plan_ != value )
+                if ( _plan_ != value)
                 {
-                    var old_plan = _plan;
                     _plan_ = value;
-
-                    if( old_plan != null && EnableSynchronization)
-                        _plan_!.Planificacion_.Remove(this);
-
                     if(value != null)
-                    {
                         plan = value.id;
-                        if(EnableSynchronization && !_plan_!.Planificacion_.Contains(this))
-                        {
-                            _plan_!.EnableSynchronization = true;
-                            _plan_!.Planificacion_.Add(this);
-                        }
-                    }
                     else
-                    {
                         plan = null;
-                    }
                     NotifyPropertyChanged(nameof(plan_));
                 }
             }

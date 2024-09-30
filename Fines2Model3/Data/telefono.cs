@@ -10,29 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Telefono : Entity
     {
 
-        public override bool EnableSynchronization
-        {
-            get => _enableSynchronization;
-            set
-            {
-                if(_enableSynchronization != value)
-                {
-                    _enableSynchronization = value;
-
-                    if(_enableSynchronization)
-                    {
-                        if (_persona_ != null)
-                        {
-                            _persona_!.EnableSynchronization = true;
-                            if (!_persona_!.Telefono_.Contains(this))
-                                _persona_!.Telefono_.Add(this);
-                        }
-
-                    }
-                }
-            }
-        }
-
         public Telefono()
         {
             _entityName = "telefono";
@@ -109,27 +86,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _persona_; }
             set {
-                if(  _persona_ != value )
+                if ( _persona_ != value)
                 {
-                    var old_persona = _persona;
                     _persona_ = value;
-
-                    if( old_persona != null && EnableSynchronization)
-                        _persona_!.Telefono_.Remove(this);
-
                     if(value != null)
-                    {
                         persona = value.id;
-                        if(EnableSynchronization && !_persona_!.Telefono_.Contains(this))
-                        {
-                            _persona_!.EnableSynchronization = true;
-                            _persona_!.Telefono_.Add(this);
-                        }
-                    }
                     else
-                    {
                         persona = null;
-                    }
                     NotifyPropertyChanged(nameof(persona_));
                 }
             }

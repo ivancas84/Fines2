@@ -10,36 +10,6 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class DisposicionPendiente : Entity
     {
 
-        public override bool EnableSynchronization
-        {
-            get => _enableSynchronization;
-            set
-            {
-                if(_enableSynchronization != value)
-                {
-                    _enableSynchronization = value;
-
-                    if(_enableSynchronization)
-                    {
-                        if (_disposicion_ != null)
-                        {
-                            _disposicion_!.EnableSynchronization = true;
-                            if (!_disposicion_!.DisposicionPendiente_.Contains(this))
-                                _disposicion_!.DisposicionPendiente_.Add(this);
-                        }
-
-                        if (_alumno_ != null)
-                        {
-                            _alumno_!.EnableSynchronization = true;
-                            if (!_alumno_!.DisposicionPendiente_.Contains(this))
-                                _alumno_!.DisposicionPendiente_.Add(this);
-                        }
-
-                    }
-                }
-            }
-        }
-
         public DisposicionPendiente()
         {
             _entityName = "disposicion_pendiente";
@@ -89,27 +59,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _disposicion_; }
             set {
-                if(  _disposicion_ != value )
+                if ( _disposicion_ != value)
                 {
-                    var old_disposicion = _disposicion;
                     _disposicion_ = value;
-
-                    if( old_disposicion != null && EnableSynchronization)
-                        _disposicion_!.DisposicionPendiente_.Remove(this);
-
                     if(value != null)
-                    {
                         disposicion = value.id;
-                        if(EnableSynchronization && !_disposicion_!.DisposicionPendiente_.Contains(this))
-                        {
-                            _disposicion_!.EnableSynchronization = true;
-                            _disposicion_!.DisposicionPendiente_.Add(this);
-                        }
-                    }
                     else
-                    {
                         disposicion = null;
-                    }
                     NotifyPropertyChanged(nameof(disposicion_));
                 }
             }
@@ -122,27 +78,13 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _alumno_; }
             set {
-                if(  _alumno_ != value )
+                if ( _alumno_ != value)
                 {
-                    var old_alumno = _alumno;
                     _alumno_ = value;
-
-                    if( old_alumno != null && EnableSynchronization)
-                        _alumno_!.DisposicionPendiente_.Remove(this);
-
                     if(value != null)
-                    {
                         alumno = value.id;
-                        if(EnableSynchronization && !_alumno_!.DisposicionPendiente_.Contains(this))
-                        {
-                            _alumno_!.EnableSynchronization = true;
-                            _alumno_!.DisposicionPendiente_.Add(this);
-                        }
-                    }
                     else
-                    {
                         alumno = null;
-                    }
                     NotifyPropertyChanged(nameof(alumno_));
                 }
             }
