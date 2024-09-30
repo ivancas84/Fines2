@@ -10,13 +10,156 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Persona : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        if (_domicilio_ != null)
+                        {
+                            _domicilio_!.EnableSynchronization = true;
+                            if (!_domicilio_!.Persona_.Contains(this))
+                                _domicilio_!.Persona_.Add(this);
+                        }
+
+                        foreach(var obj in Designacion_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.persona_ != this)
+                                 obj.persona_ = this;
+                        }
+
+                        foreach(var obj in DetallePersona_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.persona_ != this)
+                                 obj.persona_ = this;
+                        }
+
+                        foreach(var obj in Email_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.persona_ != this)
+                                 obj.persona_ = this;
+                        }
+
+                        foreach(var obj in Telefono_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.persona_ != this)
+                                 obj.persona_ = this;
+                        }
+
+                        foreach(var obj in Toma_docente_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.docente_ != this)
+                                 obj.docente_ = this;
+                        }
+
+                        foreach(var obj in Toma_reemplazo_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.reemplazo_ != this)
+                                 obj.reemplazo_ = this;
+                        }
+
+                    }
+                }
+            }
+        }
+
         public Persona()
         {
             _entityName = "persona";
             _db = Context.db;
             Default();
+            Designacion_.CollectionChanged += Designacion_CollectionChanged;
+            DetallePersona_.CollectionChanged += DetallePersona_CollectionChanged;
+            Email_.CollectionChanged += Email_CollectionChanged;
+            Telefono_.CollectionChanged += Telefono_CollectionChanged;
+            Toma_docente_.CollectionChanged += Toma_docente_CollectionChanged;
+            Toma_reemplazo_.CollectionChanged += Toma_reemplazo_CollectionChanged;
         }
 
+        private void Designacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Designacion obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.persona_ != this)
+                        obj.persona_ = this;
+                }
+            }
+        }
+        private void DetallePersona_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (DetallePersona obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.persona_ != this)
+                        obj.persona_ = this;
+                }
+            }
+        }
+        private void Email_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Email obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.persona_ != this)
+                        obj.persona_ = this;
+                }
+            }
+        }
+        private void Telefono_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Telefono obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.persona_ != this)
+                        obj.persona_ = this;
+                }
+            }
+        }
+        private void Toma_docente_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Toma obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.docente_ != this)
+                        obj.docente_ = this;
+                }
+            }
+        }
+        private void Toma_reemplazo_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Toma obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.reemplazo_ != this)
+                        obj.reemplazo_ = this;
+                }
+            }
+        }
         #region id
         protected string? _id = null;
         public string? id
@@ -284,22 +427,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _domicilio_; }
             set {
-                if( _domicilio_ != null && AutoAddToCollection)
-                    _domicilio_!.Persona_.Remove(this);
-
-                _domicilio_ = value;
-
-                if(value != null)
+                if(  _domicilio_ != value )
                 {
-                    domicilio = value.id;
-                    if(AutoAddToCollection && !_domicilio_!.Persona_.Contains(this))
-                        _domicilio_!.Persona_.Add(this);
+                    var old_domicilio = _domicilio;
+                    _domicilio_ = value;
+
+                    if( old_domicilio != null && EnableSynchronization)
+                        _domicilio_!.Persona_.Remove(this);
+
+                    if(value != null)
+                    {
+                        domicilio = value.id;
+                        if(EnableSynchronization && !_domicilio_!.Persona_.Contains(this))
+                        {
+                            _domicilio_!.EnableSynchronization = true;
+                            _domicilio_!.Persona_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        domicilio = null;
+                    }
+                    NotifyPropertyChanged(nameof(domicilio_));
                 }
-                else
-                {
-                    domicilio = null;
-                }
-                NotifyPropertyChanged(nameof(domicilio_));
             }
         }
         #endregion

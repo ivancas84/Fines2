@@ -10,6 +10,36 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class AlumnoComision : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        if (_comision_ != null)
+                        {
+                            _comision_!.EnableSynchronization = true;
+                            if (!_comision_!.AlumnoComision_.Contains(this))
+                                _comision_!.AlumnoComision_.Add(this);
+                        }
+
+                        if (_alumno_ != null)
+                        {
+                            _alumno_!.EnableSynchronization = true;
+                            if (!_alumno_!.AlumnoComision_.Contains(this))
+                                _alumno_!.AlumnoComision_.Add(this);
+                        }
+
+                    }
+                }
+            }
+        }
+
         public AlumnoComision()
         {
             _entityName = "alumno_comision";
@@ -32,15 +62,6 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _creado; }
             set { if( _creado != value) { _creado = value; NotifyPropertyChanged(nameof(creado)); } }
-        }
-        #endregion
-
-        #region activo
-        protected bool? _activo = null;
-        public bool? activo
-        {
-            get { return _activo; }
-            set { if( _activo != value) { _activo = value; NotifyPropertyChanged(nameof(activo)); } }
         }
         #endregion
 
@@ -95,22 +116,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _comision_; }
             set {
-                if( _comision_ != null && AutoAddToCollection)
-                    _comision_!.AlumnoComision_.Remove(this);
-
-                _comision_ = value;
-
-                if(value != null)
+                if(  _comision_ != value )
                 {
-                    comision = value.id;
-                    if(AutoAddToCollection && !_comision_!.AlumnoComision_.Contains(this))
-                        _comision_!.AlumnoComision_.Add(this);
+                    var old_comision = _comision;
+                    _comision_ = value;
+
+                    if( old_comision != null && EnableSynchronization)
+                        _comision_!.AlumnoComision_.Remove(this);
+
+                    if(value != null)
+                    {
+                        comision = value.id;
+                        if(EnableSynchronization && !_comision_!.AlumnoComision_.Contains(this))
+                        {
+                            _comision_!.EnableSynchronization = true;
+                            _comision_!.AlumnoComision_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        comision = null;
+                    }
+                    NotifyPropertyChanged(nameof(comision_));
                 }
-                else
-                {
-                    comision = null;
-                }
-                NotifyPropertyChanged(nameof(comision_));
             }
         }
         #endregion
@@ -121,22 +149,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _alumno_; }
             set {
-                if( _alumno_ != null && AutoAddToCollection)
-                    _alumno_!.AlumnoComision_.Remove(this);
-
-                _alumno_ = value;
-
-                if(value != null)
+                if(  _alumno_ != value )
                 {
-                    alumno = value.id;
-                    if(AutoAddToCollection && !_alumno_!.AlumnoComision_.Contains(this))
-                        _alumno_!.AlumnoComision_.Add(this);
+                    var old_alumno = _alumno;
+                    _alumno_ = value;
+
+                    if( old_alumno != null && EnableSynchronization)
+                        _alumno_!.AlumnoComision_.Remove(this);
+
+                    if(value != null)
+                    {
+                        alumno = value.id;
+                        if(EnableSynchronization && !_alumno_!.AlumnoComision_.Contains(this))
+                        {
+                            _alumno_!.EnableSynchronization = true;
+                            _alumno_!.AlumnoComision_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        alumno = null;
+                    }
+                    NotifyPropertyChanged(nameof(alumno_));
                 }
-                else
-                {
-                    alumno = null;
-                }
-                NotifyPropertyChanged(nameof(alumno_));
             }
         }
         #endregion

@@ -10,13 +10,49 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class File : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        foreach(var obj in DetallePersona_archivo_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.archivo_ != this)
+                                 obj.archivo_ = this;
+                        }
+
+                    }
+                }
+            }
+        }
+
         public File()
         {
             _entityName = "file";
             _db = Context.db;
             Default();
+            DetallePersona_archivo_.CollectionChanged += DetallePersona_archivo_CollectionChanged;
         }
 
+        private void DetallePersona_archivo_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (DetallePersona obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.archivo_ != this)
+                        obj.archivo_ = this;
+                }
+            }
+        }
         #region id
         protected string? _id = null;
         public string? id

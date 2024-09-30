@@ -10,13 +10,56 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class CentroEducativo : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        if (_domicilio_ != null)
+                        {
+                            _domicilio_!.EnableSynchronization = true;
+                            if (!_domicilio_!.CentroEducativo_.Contains(this))
+                                _domicilio_!.CentroEducativo_.Add(this);
+                        }
+
+                        foreach(var obj in Sede_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.centro_educativo_ != this)
+                                 obj.centro_educativo_ = this;
+                        }
+
+                    }
+                }
+            }
+        }
+
         public CentroEducativo()
         {
             _entityName = "centro_educativo";
             _db = Context.db;
             Default();
+            Sede_.CollectionChanged += Sede_CollectionChanged;
         }
 
+        private void Sede_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Sede obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.centro_educativo_ != this)
+                        obj.centro_educativo_ = this;
+                }
+            }
+        }
         #region id
         protected string? _id = null;
         public string? id
@@ -68,22 +111,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _domicilio_; }
             set {
-                if( _domicilio_ != null && AutoAddToCollection)
-                    _domicilio_!.CentroEducativo_.Remove(this);
-
-                _domicilio_ = value;
-
-                if(value != null)
+                if(  _domicilio_ != value )
                 {
-                    domicilio = value.id;
-                    if(AutoAddToCollection && !_domicilio_!.CentroEducativo_.Contains(this))
-                        _domicilio_!.CentroEducativo_.Add(this);
+                    var old_domicilio = _domicilio;
+                    _domicilio_ = value;
+
+                    if( old_domicilio != null && EnableSynchronization)
+                        _domicilio_!.CentroEducativo_.Remove(this);
+
+                    if(value != null)
+                    {
+                        domicilio = value.id;
+                        if(EnableSynchronization && !_domicilio_!.CentroEducativo_.Contains(this))
+                        {
+                            _domicilio_!.EnableSynchronization = true;
+                            _domicilio_!.CentroEducativo_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        domicilio = null;
+                    }
+                    NotifyPropertyChanged(nameof(domicilio_));
                 }
-                else
-                {
-                    domicilio = null;
-                }
-                NotifyPropertyChanged(nameof(domicilio_));
             }
         }
         #endregion

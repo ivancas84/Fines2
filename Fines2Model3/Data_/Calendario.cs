@@ -15,7 +15,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if (!_Label.IsNoE())
                     return _Label;
 
-                return anio?.ToString() ?? "?" + " " + semestre ?? "?" + " " + descripcion ?? "?";
+                return (anio?.ToString() ?? "?") + "-" + (semestre?.ToString() ?? "?") + " " + (descripcion ?? "?");
             }
             set
             {

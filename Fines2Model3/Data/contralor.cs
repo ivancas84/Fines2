@@ -10,6 +10,29 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Contralor : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        if (_planilla_docente_ != null)
+                        {
+                            _planilla_docente_!.EnableSynchronization = true;
+                            if (!_planilla_docente_!.Contralor_.Contains(this))
+                                _planilla_docente_!.Contralor_.Add(this);
+                        }
+
+                    }
+                }
+            }
+        }
+
         public Contralor()
         {
             _entityName = "contralor";
@@ -68,22 +91,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _planilla_docente_; }
             set {
-                if( _planilla_docente_ != null && AutoAddToCollection)
-                    _planilla_docente_!.Contralor_.Remove(this);
-
-                _planilla_docente_ = value;
-
-                if(value != null)
+                if(  _planilla_docente_ != value )
                 {
-                    planilla_docente = value.id;
-                    if(AutoAddToCollection && !_planilla_docente_!.Contralor_.Contains(this))
-                        _planilla_docente_!.Contralor_.Add(this);
+                    var old_planilla_docente = _planilla_docente;
+                    _planilla_docente_ = value;
+
+                    if( old_planilla_docente != null && EnableSynchronization)
+                        _planilla_docente_!.Contralor_.Remove(this);
+
+                    if(value != null)
+                    {
+                        planilla_docente = value.id;
+                        if(EnableSynchronization && !_planilla_docente_!.Contralor_.Contains(this))
+                        {
+                            _planilla_docente_!.EnableSynchronization = true;
+                            _planilla_docente_!.Contralor_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        planilla_docente = null;
+                    }
+                    NotifyPropertyChanged(nameof(planilla_docente_));
                 }
-                else
-                {
-                    planilla_docente = null;
-                }
-                NotifyPropertyChanged(nameof(planilla_docente_));
             }
         }
         #endregion

@@ -10,13 +10,69 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Plan : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        foreach(var obj in Alumno_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.plan_ != this)
+                                 obj.plan_ = this;
+                        }
+
+                        foreach(var obj in Planificacion_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.plan_ != this)
+                                 obj.plan_ = this;
+                        }
+
+                    }
+                }
+            }
+        }
+
         public Plan()
         {
             _entityName = "plan";
             _db = Context.db;
             Default();
+            Alumno_.CollectionChanged += Alumno_CollectionChanged;
+            Planificacion_.CollectionChanged += Planificacion_CollectionChanged;
         }
 
+        private void Alumno_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Alumno obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.plan_ != this)
+                        obj.plan_ = this;
+                }
+            }
+        }
+        private void Planificacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Planificacion obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.plan_ != this)
+                        obj.plan_ = this;
+                }
+            }
+        }
         #region id
         protected string? _id = null;
         public string? id

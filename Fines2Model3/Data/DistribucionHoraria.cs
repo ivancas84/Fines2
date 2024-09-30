@@ -10,6 +10,29 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class DistribucionHoraria : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        if (_disposicion_ != null)
+                        {
+                            _disposicion_!.EnableSynchronization = true;
+                            if (!_disposicion_!.DistribucionHoraria_.Contains(this))
+                                _disposicion_!.DistribucionHoraria_.Add(this);
+                        }
+
+                    }
+                }
+            }
+        }
+
         public DistribucionHoraria()
         {
             _entityName = "distribucion_horaria";
@@ -59,22 +82,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _disposicion_; }
             set {
-                if( _disposicion_ != null && AutoAddToCollection)
-                    _disposicion_!.DistribucionHoraria_.Remove(this);
-
-                _disposicion_ = value;
-
-                if(value != null)
+                if(  _disposicion_ != value )
                 {
-                    disposicion = value.id;
-                    if(AutoAddToCollection && !_disposicion_!.DistribucionHoraria_.Contains(this))
-                        _disposicion_!.DistribucionHoraria_.Add(this);
+                    var old_disposicion = _disposicion;
+                    _disposicion_ = value;
+
+                    if( old_disposicion != null && EnableSynchronization)
+                        _disposicion_!.DistribucionHoraria_.Remove(this);
+
+                    if(value != null)
+                    {
+                        disposicion = value.id;
+                        if(EnableSynchronization && !_disposicion_!.DistribucionHoraria_.Contains(this))
+                        {
+                            _disposicion_!.EnableSynchronization = true;
+                            _disposicion_!.DistribucionHoraria_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        disposicion = null;
+                    }
+                    NotifyPropertyChanged(nameof(disposicion_));
                 }
-                else
-                {
-                    disposicion = null;
-                }
-                NotifyPropertyChanged(nameof(disposicion_));
             }
         }
         #endregion

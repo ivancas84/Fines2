@@ -20,7 +20,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if (!_Label.IsNoE())
                     return _Label;
 
-                return persona_.Label ?? "?" + " " + persona_.Telefono_ ?? "?";
+                return (persona_?.Label ?? "?") + " " + (persona_?.telefono ?? "?");
             }
             set
             {

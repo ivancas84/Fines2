@@ -10,13 +10,89 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class PlanillaDocente : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        foreach(var obj in AsignacionPlanillaDocente_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.planilla_docente_ != this)
+                                 obj.planilla_docente_ = this;
+                        }
+
+                        foreach(var obj in Contralor_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.planilla_docente_ != this)
+                                 obj.planilla_docente_ = this;
+                        }
+
+                        foreach(var obj in Toma_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.planilla_docente_ != this)
+                                 obj.planilla_docente_ = this;
+                        }
+
+                    }
+                }
+            }
+        }
+
         public PlanillaDocente()
         {
             _entityName = "planilla_docente";
             _db = Context.db;
             Default();
+            AsignacionPlanillaDocente_.CollectionChanged += AsignacionPlanillaDocente_CollectionChanged;
+            Contralor_.CollectionChanged += Contralor_CollectionChanged;
+            Toma_.CollectionChanged += Toma_CollectionChanged;
         }
 
+        private void AsignacionPlanillaDocente_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (AsignacionPlanillaDocente obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.planilla_docente_ != this)
+                        obj.planilla_docente_ = this;
+                }
+            }
+        }
+        private void Contralor_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Contralor obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.planilla_docente_ != this)
+                        obj.planilla_docente_ = this;
+                }
+            }
+        }
+        private void Toma_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Toma obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.planilla_docente_ != this)
+                        obj.planilla_docente_ = this;
+                }
+            }
+        }
         #region id
         protected string? _id = null;
         public string? id

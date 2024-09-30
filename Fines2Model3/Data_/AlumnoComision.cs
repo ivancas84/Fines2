@@ -27,7 +27,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if (!_Label.IsNoE())
                     return _Label;
 
-                return estado ?? "?" + " " +comision_?.Label ?? "?" + " " + alumno_?.Label ?? "?";
+                return (estado ?? "?") + " " + (comision_?.Label ?? "?") + " " + (alumno_?.Label ?? "?");
             }
             set { 
                 Label = value; 

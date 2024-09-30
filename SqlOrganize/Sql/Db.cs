@@ -43,8 +43,8 @@ namespace SqlOrganize.Sql
             {
                 e.db = this;
 
-                foreach (var(key, f) in e.fields)
-                    f.db = this;              
+                foreach (var (key, f) in e.fields)
+                    f.db = this;
             }
 
         }
@@ -230,4 +230,6 @@ namespace SqlOrganize.Sql
             }
         }
     }
+
+  
 }

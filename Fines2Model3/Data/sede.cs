@@ -10,13 +10,90 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Sede : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        if (_domicilio_ != null)
+                        {
+                            _domicilio_!.EnableSynchronization = true;
+                            if (!_domicilio_!.Sede_.Contains(this))
+                                _domicilio_!.Sede_.Add(this);
+                        }
+
+                        if (_tipo_sede_ != null)
+                        {
+                            _tipo_sede_!.EnableSynchronization = true;
+                            if (!_tipo_sede_!.Sede_.Contains(this))
+                                _tipo_sede_!.Sede_.Add(this);
+                        }
+
+                        if (_centro_educativo_ != null)
+                        {
+                            _centro_educativo_!.EnableSynchronization = true;
+                            if (!_centro_educativo_!.Sede_.Contains(this))
+                                _centro_educativo_!.Sede_.Add(this);
+                        }
+
+                        foreach(var obj in Comision_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.sede_ != this)
+                                 obj.sede_ = this;
+                        }
+
+                        foreach(var obj in Designacion_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.sede_ != this)
+                                 obj.sede_ = this;
+                        }
+
+                    }
+                }
+            }
+        }
+
         public Sede()
         {
             _entityName = "sede";
             _db = Context.db;
             Default();
+            Comision_.CollectionChanged += Comision_CollectionChanged;
+            Designacion_.CollectionChanged += Designacion_CollectionChanged;
         }
 
+        private void Comision_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Comision obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.sede_ != this)
+                        obj.sede_ = this;
+                }
+            }
+        }
+        private void Designacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Designacion obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.sede_ != this)
+                        obj.sede_ = this;
+                }
+            }
+        }
         #region id
         protected string? _id = null;
         public string? id
@@ -140,22 +217,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _domicilio_; }
             set {
-                if( _domicilio_ != null && AutoAddToCollection)
-                    _domicilio_!.Sede_.Remove(this);
-
-                _domicilio_ = value;
-
-                if(value != null)
+                if(  _domicilio_ != value )
                 {
-                    domicilio = value.id;
-                    if(AutoAddToCollection && !_domicilio_!.Sede_.Contains(this))
-                        _domicilio_!.Sede_.Add(this);
+                    var old_domicilio = _domicilio;
+                    _domicilio_ = value;
+
+                    if( old_domicilio != null && EnableSynchronization)
+                        _domicilio_!.Sede_.Remove(this);
+
+                    if(value != null)
+                    {
+                        domicilio = value.id;
+                        if(EnableSynchronization && !_domicilio_!.Sede_.Contains(this))
+                        {
+                            _domicilio_!.EnableSynchronization = true;
+                            _domicilio_!.Sede_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        domicilio = null;
+                    }
+                    NotifyPropertyChanged(nameof(domicilio_));
                 }
-                else
-                {
-                    domicilio = null;
-                }
-                NotifyPropertyChanged(nameof(domicilio_));
             }
         }
         #endregion
@@ -166,22 +250,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _tipo_sede_; }
             set {
-                if( _tipo_sede_ != null && AutoAddToCollection)
-                    _tipo_sede_!.Sede_.Remove(this);
-
-                _tipo_sede_ = value;
-
-                if(value != null)
+                if(  _tipo_sede_ != value )
                 {
-                    tipo_sede = value.id;
-                    if(AutoAddToCollection && !_tipo_sede_!.Sede_.Contains(this))
-                        _tipo_sede_!.Sede_.Add(this);
+                    var old_tipo_sede = _tipo_sede;
+                    _tipo_sede_ = value;
+
+                    if( old_tipo_sede != null && EnableSynchronization)
+                        _tipo_sede_!.Sede_.Remove(this);
+
+                    if(value != null)
+                    {
+                        tipo_sede = value.id;
+                        if(EnableSynchronization && !_tipo_sede_!.Sede_.Contains(this))
+                        {
+                            _tipo_sede_!.EnableSynchronization = true;
+                            _tipo_sede_!.Sede_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        tipo_sede = null;
+                    }
+                    NotifyPropertyChanged(nameof(tipo_sede_));
                 }
-                else
-                {
-                    tipo_sede = null;
-                }
-                NotifyPropertyChanged(nameof(tipo_sede_));
             }
         }
         #endregion
@@ -192,22 +283,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _centro_educativo_; }
             set {
-                if( _centro_educativo_ != null && AutoAddToCollection)
-                    _centro_educativo_!.Sede_.Remove(this);
-
-                _centro_educativo_ = value;
-
-                if(value != null)
+                if(  _centro_educativo_ != value )
                 {
-                    centro_educativo = value.id;
-                    if(AutoAddToCollection && !_centro_educativo_!.Sede_.Contains(this))
-                        _centro_educativo_!.Sede_.Add(this);
+                    var old_centro_educativo = _centro_educativo;
+                    _centro_educativo_ = value;
+
+                    if( old_centro_educativo != null && EnableSynchronization)
+                        _centro_educativo_!.Sede_.Remove(this);
+
+                    if(value != null)
+                    {
+                        centro_educativo = value.id;
+                        if(EnableSynchronization && !_centro_educativo_!.Sede_.Contains(this))
+                        {
+                            _centro_educativo_!.EnableSynchronization = true;
+                            _centro_educativo_!.Sede_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        centro_educativo = null;
+                    }
+                    NotifyPropertyChanged(nameof(centro_educativo_));
                 }
-                else
-                {
-                    centro_educativo = null;
-                }
-                NotifyPropertyChanged(nameof(centro_educativo_));
             }
         }
         #endregion

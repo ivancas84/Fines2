@@ -20,7 +20,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if (!_Label.IsNoE())
                     return _Label;
 
-                return apellidos?.ToUpper() ?? "?" + " " + nombres?.ToTitleCase() ?? "?" + " " + numero_documento ?? "?";
+                return (apellidos?.ToUpper() ?? "?") + " " + (nombres?.ToTitleCase() ?? "?") + " " + (numero_documento ?? "?");
             }
             set
             {

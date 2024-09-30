@@ -10,6 +10,29 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Email : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        if (_persona_ != null)
+                        {
+                            _persona_!.EnableSynchronization = true;
+                            if (!_persona_!.Email_.Contains(this))
+                                _persona_!.Email_.Add(this);
+                        }
+
+                    }
+                }
+            }
+        }
+
         public Email()
         {
             _entityName = "email";
@@ -77,22 +100,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _persona_; }
             set {
-                if( _persona_ != null && AutoAddToCollection)
-                    _persona_!.Email_.Remove(this);
-
-                _persona_ = value;
-
-                if(value != null)
+                if(  _persona_ != value )
                 {
-                    persona = value.id;
-                    if(AutoAddToCollection && !_persona_!.Email_.Contains(this))
-                        _persona_!.Email_.Add(this);
+                    var old_persona = _persona;
+                    _persona_ = value;
+
+                    if( old_persona != null && EnableSynchronization)
+                        _persona_!.Email_.Remove(this);
+
+                    if(value != null)
+                    {
+                        persona = value.id;
+                        if(EnableSynchronization && !_persona_!.Email_.Contains(this))
+                        {
+                            _persona_!.EnableSynchronization = true;
+                            _persona_!.Email_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        persona = null;
+                    }
+                    NotifyPropertyChanged(nameof(persona_));
                 }
-                else
-                {
-                    persona = null;
-                }
-                NotifyPropertyChanged(nameof(persona_));
             }
         }
         #endregion

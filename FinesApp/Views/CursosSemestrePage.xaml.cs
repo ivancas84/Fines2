@@ -38,7 +38,7 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
         ocCurso.Clear();
         foreach(var cursoData in data)
         {
-            Curso curso = Entity.CreateFromDict<Curso>(cursoData);
+            Curso curso = Entity.CreateFromDict<Curso>(cursoData);  
             if (dataToma.ContainsKey(curso.id))
                 curso.toma_activa_ = Entity.CreateFromDict<Toma>(dataToma[curso.id]);
             ocCurso.Add(curso);

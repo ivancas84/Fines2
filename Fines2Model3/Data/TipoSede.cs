@@ -10,13 +10,49 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class TipoSede : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        foreach(var obj in Sede_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.tipo_sede_ != this)
+                                 obj.tipo_sede_ = this;
+                        }
+
+                    }
+                }
+            }
+        }
+
         public TipoSede()
         {
             _entityName = "tipo_sede";
             _db = Context.db;
             Default();
+            Sede_.CollectionChanged += Sede_CollectionChanged;
         }
 
+        private void Sede_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Sede obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.tipo_sede_ != this)
+                        obj.tipo_sede_ = this;
+                }
+            }
+        }
         #region id
         protected string? _id = null;
         public string? id

@@ -10,6 +10,36 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class ComisionRelacionada : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        if (_comision_ != null)
+                        {
+                            _comision_!.EnableSynchronization = true;
+                            if (!_comision_!.ComisionRelacionada_.Contains(this))
+                                _comision_!.ComisionRelacionada_.Add(this);
+                        }
+
+                        if (_relacion_ != null)
+                        {
+                            _relacion_!.EnableSynchronization = true;
+                            if (!_relacion_!.ComisionRelacionada_relacion_.Contains(this))
+                                _relacion_!.ComisionRelacionada_relacion_.Add(this);
+                        }
+
+                    }
+                }
+            }
+        }
+
         public ComisionRelacionada()
         {
             _entityName = "comision_relacionada";
@@ -50,22 +80,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _comision_; }
             set {
-                if( _comision_ != null && AutoAddToCollection)
-                    _comision_!.ComisionRelacionada_.Remove(this);
-
-                _comision_ = value;
-
-                if(value != null)
+                if(  _comision_ != value )
                 {
-                    comision = value.id;
-                    if(AutoAddToCollection && !_comision_!.ComisionRelacionada_.Contains(this))
-                        _comision_!.ComisionRelacionada_.Add(this);
+                    var old_comision = _comision;
+                    _comision_ = value;
+
+                    if( old_comision != null && EnableSynchronization)
+                        _comision_!.ComisionRelacionada_.Remove(this);
+
+                    if(value != null)
+                    {
+                        comision = value.id;
+                        if(EnableSynchronization && !_comision_!.ComisionRelacionada_.Contains(this))
+                        {
+                            _comision_!.EnableSynchronization = true;
+                            _comision_!.ComisionRelacionada_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        comision = null;
+                    }
+                    NotifyPropertyChanged(nameof(comision_));
                 }
-                else
-                {
-                    comision = null;
-                }
-                NotifyPropertyChanged(nameof(comision_));
             }
         }
         #endregion
@@ -76,22 +113,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _relacion_; }
             set {
-                if( _relacion_ != null && AutoAddToCollection)
-                    _relacion_!.ComisionRelacionada_relacion_.Remove(this);
-
-                _relacion_ = value;
-
-                if(value != null)
+                if(  _relacion_ != value )
                 {
-                    relacion = value.id;
-                    if(AutoAddToCollection && !_relacion_!.ComisionRelacionada_relacion_.Contains(this))
-                        _relacion_!.ComisionRelacionada_relacion_.Add(this);
+                    var old_relacion = _relacion;
+                    _relacion_ = value;
+
+                    if( old_relacion != null && EnableSynchronization)
+                        _relacion_!.ComisionRelacionada_relacion_.Remove(this);
+
+                    if(value != null)
+                    {
+                        relacion = value.id;
+                        if(EnableSynchronization && !_relacion_!.ComisionRelacionada_relacion_.Contains(this))
+                        {
+                            _relacion_!.EnableSynchronization = true;
+                            _relacion_!.ComisionRelacionada_relacion_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        relacion = null;
+                    }
+                    NotifyPropertyChanged(nameof(relacion_));
                 }
-                else
-                {
-                    relacion = null;
-                }
-                NotifyPropertyChanged(nameof(relacion_));
             }
         }
         #endregion

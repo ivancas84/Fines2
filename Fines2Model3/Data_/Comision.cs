@@ -56,7 +56,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if (!_Label.IsNoE())
                     return _Label;
 
-                return pfid + " " + periodo + " " + sede_.nombre;
+                return (pfid ?? "?") + " " + (periodo ?? "?") + " " + (sede_?.nombre ?? "?");
             }
             set
             {

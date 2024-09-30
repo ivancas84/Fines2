@@ -15,7 +15,9 @@ namespace SqlOrganize.Sql
         public EntityMetadata Metadata { get; set; }
 
         /// <summary>Flag para indicar que se debe realizar la doble asignacion de relaciones</summary>
-        public bool AutoAddToCollection { get; set; } = false;
+        protected bool _enableSynchronization;
+
+        public virtual bool EnableSynchronization { get; set; } = false;
 
         #region entityName
         protected string _entityName;

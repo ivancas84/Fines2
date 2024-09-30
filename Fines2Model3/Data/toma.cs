@@ -10,13 +10,77 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Toma : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        if (_curso_ != null)
+                        {
+                            _curso_!.EnableSynchronization = true;
+                            if (!_curso_!.Toma_.Contains(this))
+                                _curso_!.Toma_.Add(this);
+                        }
+
+                        if (_docente_ != null)
+                        {
+                            _docente_!.EnableSynchronization = true;
+                            if (!_docente_!.Toma_docente_.Contains(this))
+                                _docente_!.Toma_docente_.Add(this);
+                        }
+
+                        if (_reemplazo_ != null)
+                        {
+                            _reemplazo_!.EnableSynchronization = true;
+                            if (!_reemplazo_!.Toma_reemplazo_.Contains(this))
+                                _reemplazo_!.Toma_reemplazo_.Add(this);
+                        }
+
+                        if (_planilla_docente_ != null)
+                        {
+                            _planilla_docente_!.EnableSynchronization = true;
+                            if (!_planilla_docente_!.Toma_.Contains(this))
+                                _planilla_docente_!.Toma_.Add(this);
+                        }
+
+                        foreach(var obj in AsignacionPlanillaDocente_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.toma_ != this)
+                                 obj.toma_ = this;
+                        }
+
+                    }
+                }
+            }
+        }
+
         public Toma()
         {
             _entityName = "toma";
             _db = Context.db;
             Default();
+            AsignacionPlanillaDocente_.CollectionChanged += AsignacionPlanillaDocente_CollectionChanged;
         }
 
+        private void AsignacionPlanillaDocente_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (AsignacionPlanillaDocente obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.toma_ != this)
+                        obj.toma_ = this;
+                }
+            }
+        }
         #region id
         protected string? _id = null;
         public string? id
@@ -176,22 +240,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _curso_; }
             set {
-                if( _curso_ != null && AutoAddToCollection)
-                    _curso_!.Toma_.Remove(this);
-
-                _curso_ = value;
-
-                if(value != null)
+                if(  _curso_ != value )
                 {
-                    curso = value.id;
-                    if(AutoAddToCollection && !_curso_!.Toma_.Contains(this))
-                        _curso_!.Toma_.Add(this);
+                    var old_curso = _curso;
+                    _curso_ = value;
+
+                    if( old_curso != null && EnableSynchronization)
+                        _curso_!.Toma_.Remove(this);
+
+                    if(value != null)
+                    {
+                        curso = value.id;
+                        if(EnableSynchronization && !_curso_!.Toma_.Contains(this))
+                        {
+                            _curso_!.EnableSynchronization = true;
+                            _curso_!.Toma_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        curso = null;
+                    }
+                    NotifyPropertyChanged(nameof(curso_));
                 }
-                else
-                {
-                    curso = null;
-                }
-                NotifyPropertyChanged(nameof(curso_));
             }
         }
         #endregion
@@ -202,22 +273,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _docente_; }
             set {
-                if( _docente_ != null && AutoAddToCollection)
-                    _docente_!.Toma_docente_.Remove(this);
-
-                _docente_ = value;
-
-                if(value != null)
+                if(  _docente_ != value )
                 {
-                    docente = value.id;
-                    if(AutoAddToCollection && !_docente_!.Toma_docente_.Contains(this))
-                        _docente_!.Toma_docente_.Add(this);
+                    var old_docente = _docente;
+                    _docente_ = value;
+
+                    if( old_docente != null && EnableSynchronization)
+                        _docente_!.Toma_docente_.Remove(this);
+
+                    if(value != null)
+                    {
+                        docente = value.id;
+                        if(EnableSynchronization && !_docente_!.Toma_docente_.Contains(this))
+                        {
+                            _docente_!.EnableSynchronization = true;
+                            _docente_!.Toma_docente_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        docente = null;
+                    }
+                    NotifyPropertyChanged(nameof(docente_));
                 }
-                else
-                {
-                    docente = null;
-                }
-                NotifyPropertyChanged(nameof(docente_));
             }
         }
         #endregion
@@ -228,22 +306,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _reemplazo_; }
             set {
-                if( _reemplazo_ != null && AutoAddToCollection)
-                    _reemplazo_!.Toma_reemplazo_.Remove(this);
-
-                _reemplazo_ = value;
-
-                if(value != null)
+                if(  _reemplazo_ != value )
                 {
-                    reemplazo = value.id;
-                    if(AutoAddToCollection && !_reemplazo_!.Toma_reemplazo_.Contains(this))
-                        _reemplazo_!.Toma_reemplazo_.Add(this);
+                    var old_reemplazo = _reemplazo;
+                    _reemplazo_ = value;
+
+                    if( old_reemplazo != null && EnableSynchronization)
+                        _reemplazo_!.Toma_reemplazo_.Remove(this);
+
+                    if(value != null)
+                    {
+                        reemplazo = value.id;
+                        if(EnableSynchronization && !_reemplazo_!.Toma_reemplazo_.Contains(this))
+                        {
+                            _reemplazo_!.EnableSynchronization = true;
+                            _reemplazo_!.Toma_reemplazo_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        reemplazo = null;
+                    }
+                    NotifyPropertyChanged(nameof(reemplazo_));
                 }
-                else
-                {
-                    reemplazo = null;
-                }
-                NotifyPropertyChanged(nameof(reemplazo_));
             }
         }
         #endregion
@@ -254,22 +339,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _planilla_docente_; }
             set {
-                if( _planilla_docente_ != null && AutoAddToCollection)
-                    _planilla_docente_!.Toma_.Remove(this);
-
-                _planilla_docente_ = value;
-
-                if(value != null)
+                if(  _planilla_docente_ != value )
                 {
-                    planilla_docente = value.id;
-                    if(AutoAddToCollection && !_planilla_docente_!.Toma_.Contains(this))
-                        _planilla_docente_!.Toma_.Add(this);
+                    var old_planilla_docente = _planilla_docente;
+                    _planilla_docente_ = value;
+
+                    if( old_planilla_docente != null && EnableSynchronization)
+                        _planilla_docente_!.Toma_.Remove(this);
+
+                    if(value != null)
+                    {
+                        planilla_docente = value.id;
+                        if(EnableSynchronization && !_planilla_docente_!.Toma_.Contains(this))
+                        {
+                            _planilla_docente_!.EnableSynchronization = true;
+                            _planilla_docente_!.Toma_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        planilla_docente = null;
+                    }
+                    NotifyPropertyChanged(nameof(planilla_docente_));
                 }
-                else
-                {
-                    planilla_docente = null;
-                }
-                NotifyPropertyChanged(nameof(planilla_docente_));
             }
         }
         #endregion

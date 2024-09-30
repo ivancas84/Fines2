@@ -7147,8 +7147,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             }
                         },
                         #endregion
-                        #region sede.tipo_sede (OCULTADO)
-                        /*{
+                        #region sede.tipo_sede
+                        {
                             "tipo_sede", new () {
                                 entityName = "sede",
                                 name = "tipo_sede",
@@ -7166,7 +7166,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                         { "nullIfEmpty", "True" },
                                 },
                             }
-                        },*/
+                        },
                         #endregion
                         #region sede.centro_educativo
                         {

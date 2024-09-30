@@ -10,13 +10,49 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Asignatura : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        foreach(var obj in Disposicion_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.asignatura_ != this)
+                                 obj.asignatura_ = this;
+                        }
+
+                    }
+                }
+            }
+        }
+
         public Asignatura()
         {
             _entityName = "asignatura";
             _db = Context.db;
             Default();
+            Disposicion_.CollectionChanged += Disposicion_CollectionChanged;
         }
 
+        private void Disposicion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Disposicion obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.asignatura_ != this)
+                        obj.asignatura_ = this;
+                }
+            }
+        }
         #region id
         protected string? _id = null;
         public string? id

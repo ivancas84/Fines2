@@ -200,7 +200,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             return "#fa91aa"; //red
         }
 
-        public string TramoIngreso => anio_ingreso ?? "1" + "/" + semestre_ingreso ?? "1"; 
+        public string TramoIngreso => (anio_ingreso ?? "1") + "/" + (semestre_ingreso?.ToString() ?? "1"); 
 
     }
 }

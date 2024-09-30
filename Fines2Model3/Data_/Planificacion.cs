@@ -20,7 +20,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if (!_Label.IsNoE())
                     return _Label;
 
-                return anio ?? "?" + "/" + semestre ?? "?" + " " + plan_.Label;
+                return (anio ?? "?") + "/" + (semestre ?? "?") + " " + (plan_?.Label ?? "?");
             }
             set
             {

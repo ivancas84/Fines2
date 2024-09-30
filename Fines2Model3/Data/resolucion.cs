@@ -10,13 +10,49 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Resolucion : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        foreach(var obj in Alumno_)
+                        {
+                             obj.EnableSynchronization = true;
+                             if( obj.resolucion_inscripcion_ != this)
+                                 obj.resolucion_inscripcion_ = this;
+                        }
+
+                    }
+                }
+            }
+        }
+
         public Resolucion()
         {
             _entityName = "resolucion";
             _db = Context.db;
             Default();
+            Alumno_.CollectionChanged += Alumno_CollectionChanged;
         }
 
+        private void Alumno_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (_enableSynchronization)
+            {
+                foreach (Alumno obj in e.NewItems)
+                {
+                    obj.EnableSynchronization = true;
+                    if(obj.resolucion_inscripcion_ != this)
+                        obj.resolucion_inscripcion_ = this;
+                }
+            }
+        }
         #region id
         protected string? _id = null;
         public string? id

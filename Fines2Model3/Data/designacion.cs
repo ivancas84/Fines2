@@ -10,6 +10,43 @@ namespace SqlOrganize.Sql.Fines2Model3
     public partial class Designacion : Entity
     {
 
+        public override bool EnableSynchronization
+        {
+            get => _enableSynchronization;
+            set
+            {
+                if(_enableSynchronization != value)
+                {
+                    _enableSynchronization = value;
+
+                    if(_enableSynchronization)
+                    {
+                        if (_cargo_ != null)
+                        {
+                            _cargo_!.EnableSynchronization = true;
+                            if (!_cargo_!.Designacion_.Contains(this))
+                                _cargo_!.Designacion_.Add(this);
+                        }
+
+                        if (_sede_ != null)
+                        {
+                            _sede_!.EnableSynchronization = true;
+                            if (!_sede_!.Designacion_.Contains(this))
+                                _sede_!.Designacion_.Add(this);
+                        }
+
+                        if (_persona_ != null)
+                        {
+                            _persona_!.EnableSynchronization = true;
+                            if (!_persona_!.Designacion_.Contains(this))
+                                _persona_!.Designacion_.Add(this);
+                        }
+
+                    }
+                }
+            }
+        }
+
         public Designacion()
         {
             _entityName = "designacion";
@@ -95,22 +132,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _cargo_; }
             set {
-                if( _cargo_ != null && AutoAddToCollection)
-                    _cargo_!.Designacion_.Remove(this);
-
-                _cargo_ = value;
-
-                if(value != null)
+                if(  _cargo_ != value )
                 {
-                    cargo = value.id;
-                    if(AutoAddToCollection && !_cargo_!.Designacion_.Contains(this))
-                        _cargo_!.Designacion_.Add(this);
+                    var old_cargo = _cargo;
+                    _cargo_ = value;
+
+                    if( old_cargo != null && EnableSynchronization)
+                        _cargo_!.Designacion_.Remove(this);
+
+                    if(value != null)
+                    {
+                        cargo = value.id;
+                        if(EnableSynchronization && !_cargo_!.Designacion_.Contains(this))
+                        {
+                            _cargo_!.EnableSynchronization = true;
+                            _cargo_!.Designacion_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        cargo = null;
+                    }
+                    NotifyPropertyChanged(nameof(cargo_));
                 }
-                else
-                {
-                    cargo = null;
-                }
-                NotifyPropertyChanged(nameof(cargo_));
             }
         }
         #endregion
@@ -121,22 +165,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _sede_; }
             set {
-                if( _sede_ != null && AutoAddToCollection)
-                    _sede_!.Designacion_.Remove(this);
-
-                _sede_ = value;
-
-                if(value != null)
+                if(  _sede_ != value )
                 {
-                    sede = value.id;
-                    if(AutoAddToCollection && !_sede_!.Designacion_.Contains(this))
-                        _sede_!.Designacion_.Add(this);
+                    var old_sede = _sede;
+                    _sede_ = value;
+
+                    if( old_sede != null && EnableSynchronization)
+                        _sede_!.Designacion_.Remove(this);
+
+                    if(value != null)
+                    {
+                        sede = value.id;
+                        if(EnableSynchronization && !_sede_!.Designacion_.Contains(this))
+                        {
+                            _sede_!.EnableSynchronization = true;
+                            _sede_!.Designacion_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        sede = null;
+                    }
+                    NotifyPropertyChanged(nameof(sede_));
                 }
-                else
-                {
-                    sede = null;
-                }
-                NotifyPropertyChanged(nameof(sede_));
             }
         }
         #endregion
@@ -147,22 +198,29 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _persona_; }
             set {
-                if( _persona_ != null && AutoAddToCollection)
-                    _persona_!.Designacion_.Remove(this);
-
-                _persona_ = value;
-
-                if(value != null)
+                if(  _persona_ != value )
                 {
-                    persona = value.id;
-                    if(AutoAddToCollection && !_persona_!.Designacion_.Contains(this))
-                        _persona_!.Designacion_.Add(this);
+                    var old_persona = _persona;
+                    _persona_ = value;
+
+                    if( old_persona != null && EnableSynchronization)
+                        _persona_!.Designacion_.Remove(this);
+
+                    if(value != null)
+                    {
+                        persona = value.id;
+                        if(EnableSynchronization && !_persona_!.Designacion_.Contains(this))
+                        {
+                            _persona_!.EnableSynchronization = true;
+                            _persona_!.Designacion_.Add(this);
+                        }
+                    }
+                    else
+                    {
+                        persona = null;
+                    }
+                    NotifyPropertyChanged(nameof(persona_));
                 }
-                else
-                {
-                    persona = null;
-                }
-                NotifyPropertyChanged(nameof(persona_));
             }
         }
         #endregion
