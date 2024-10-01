@@ -817,7 +817,12 @@ namespace SqlOrganize.Model
                 {
 
                     sw.WriteLine("        #region " + id + " (ref " + rref.entityName + "." + rref.fieldName + " _m:o " + entityName + ".id)");
-                    sw.WriteLine("        public ObservableCollection<" + rref.entityName.ToCamelCase() + "> " + id + " { get; set; } = new ();");
+                    sw.WriteLine("        protected ObservableCollection<" + rref.entityName.ToCamelCase() + "> _" + id + " = new ();");
+                    sw.WriteLine("        public ObservableCollection<" + rref.entityName.ToCamelCase() + "> " + id);
+                    sw.WriteLine("        {");
+                    sw.WriteLine("            get { return _" + id + "; }");
+                    sw.WriteLine("            set { if( _" + id + " != value) { _" + id + " = value; NotifyPropertyChanged(nameof(" + id + ")); } }");
+                    sw.WriteLine("        }");
                     sw.WriteLine("        #endregion");
                     sw.WriteLine("");
                 }

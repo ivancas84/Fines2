@@ -366,8 +366,6 @@ namespace SqlOrganize.CollectionUtils
             return response;
         }
 
-
-
         public static IDictionary<T, Dictionary<string, object?>> DictOfDictByKey<T>(this IEnumerable<Dictionary<string, object?>> source, string key)
         {
             Dictionary<T, Dictionary<string, object?>> response = new();

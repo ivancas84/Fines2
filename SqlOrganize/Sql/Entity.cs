@@ -654,7 +654,7 @@ namespace SqlOrganize.Sql
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
+        protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -736,8 +736,6 @@ namespace SqlOrganize.Sql
         }
         #endregion
 
-
-      
     }
 
 }
