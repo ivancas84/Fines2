@@ -17,6 +17,8 @@ using System.Net.Mail;
 using System.Net;
 using System.Collections.Specialized;
 using SqlOrganize.ValueTypesUtils;
+using Org.BouncyCastle.Utilities.Collections;
+using System.Windows.Data;
 
 namespace FinesApp.Views;
 
@@ -34,15 +36,45 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
         DataContext = this;
 
-        ocToma.CollectionChanged += OcTomaCollectionChanged;
+        //ocToma.CollectionChanged += OcTomaCollectionChanged;
+        dgdToma.CellEditEnding += DgdToma_CellEditEnding;
+
         dgdToma.ItemsSource = ocToma;
 
         dgdResultadoProcesamiento.ItemsSource = ocData;
         dgdResultadoGenerarTomasPDF.ItemsSource = ocResultadoGenerarTomasPDF;
         dgdResultadoGenerarContralor.ItemsSource = ocResultadoGenerarContralor;
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        var data = Context.db.Sql("calendario").Cache().Dicts();
-        Context.db.AddEntityToClearOC(data, ocCalendario);
+        CalendarioDAO.CalendariosSql().Cache().AddEntityToClearOC(ocCalendario);
+    }
+
+    private void DgdToma_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
+    {
+
+        string key = "";
+        object? value = null;
+
+        var columnCh = e.Column as DataGridCheckBoxColumn; //los campos checkbox se procesan de forma independiente.
+        if (columnCh != null)
+        {
+            key = ((Binding)columnCh.Binding).Path.Path;
+            value = (e.EditingElement as CheckBox)!.IsChecked;
+        }
+
+        var columnCo = e.Column as DataGridComboBoxColumn;
+        if (columnCo != null)
+        {
+            key = ((Binding)columnCo.SelectedValueBinding).Path.Path; //column's binding
+            value = (e.EditingElement as ComboBox)!.SelectedValue;
+        }
+
+        var column = e.Column as DataGridBoundColumn;
+        if (column != null)
+        {
+            key = ((Binding)column.Binding).Path.Path; //column's binding
+            value = (e.EditingElement as TextBox)!.Text;
+        }
+
     }
 
     #region OcToma
@@ -59,11 +91,18 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
     private void TomaItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        using (Context.db.CreateQueue())
+        try
         {
-            (sender as Toma).UpdateField(e.PropertyName);
-            Context.db.ProcessQueue();
+            using (Context.db.CreateQueue())
+            {
+                //(sender as Toma).UpdateField(e.PropertyName);
+                Context.db.ProcessQueue();
+            }
+        } catch (Exception ex)
+        {
+            ex.ToastException();
         }
+        
     }
     #endregion
 

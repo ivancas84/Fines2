@@ -192,6 +192,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                     _curso_ = value;
                     if(value != null)
                         curso = value.id;
+
+
                     else
                         curso = null;
                     NotifyPropertyChanged(nameof(curso_));

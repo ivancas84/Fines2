@@ -61,7 +61,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 
     private void ComisionesSemestrePage_Loaded(object sender, RoutedEventArgs e)
     {
-        Context.db.Sql("calendario").Cache().AddEntityToClearOC(calendarioPFOC);
+        CalendarioDAO.CalendariosSql().Cache().AddEntityToClearOC(ocCalendario);
     }
 
     private void LoadCalendarioComisionesSiguientes()
