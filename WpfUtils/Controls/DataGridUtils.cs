@@ -3,6 +3,7 @@ using CommunityToolkit.WinUI.Notifications;
 using SqlOrganize;
 using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql;
+using SqlOrganize.Sql.Fines2Model3;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -82,5 +83,33 @@ namespace WpfUtils.Controls
             }
         }
 
+        /// <summary>
+        /// Metodo general para editar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public static void CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
+        {
+            DataGrid grid = sender as DataGrid;
+
+            // Get the item (object) being edited
+            var editedObject = e.Row.Item;
+
+            (string key, object? value) = e.GetKeyAndValue();
+
+            if (!key.IsNoE())
+            {
+                var keys = key.Split(".");
+
+                for (var i = 0; i < (keys.Count() - 1); i++)
+                    editedObject = editedObject.GetPropertyValue<object>(keys[i]);
+
+                using (Context.db.CreateQueue())
+                {
+                    (editedObject as Entity).UpdateFieldValue(keys.Last(), value);
+                    Context.db.ProcessQueue();
+                }
+            }
+        }
     }
 }

@@ -50,32 +50,11 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
     private void DgdToma_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
     {
-
-        string key = "";
-        object? value = null;
-
-        var columnCh = e.Column as DataGridCheckBoxColumn; //los campos checkbox se procesan de forma independiente.
-        if (columnCh != null)
-        {
-            key = ((Binding)columnCh.Binding).Path.Path;
-            value = (e.EditingElement as CheckBox)!.IsChecked;
-        }
-
-        var columnCo = e.Column as DataGridComboBoxColumn;
-        if (columnCo != null)
-        {
-            key = ((Binding)columnCo.SelectedValueBinding).Path.Path; //column's binding
-            value = (e.EditingElement as ComboBox)!.SelectedValue;
-        }
-
-        var column = e.Column as DataGridBoundColumn;
-        if (column != null)
-        {
-            key = ((Binding)column.Binding).Path.Path; //column's binding
-            value = (e.EditingElement as TextBox)!.Text;
-        }
+        DataGridUtils.CellEditEnding(sender, e);
 
     }
+
+    
 
     #region OcToma
     private void OcTomaCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

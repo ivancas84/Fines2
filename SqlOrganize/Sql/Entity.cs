@@ -591,6 +591,11 @@ namespace SqlOrganize.Sql
             db.Persist().UpdateField(this, fieldName);
         }
 
+        public void UpdateFieldValue(string fieldName, object value)
+        {
+            db.Persist().UpdateField(this, fieldName, value);
+        }
+
         public PersistContext InsertIfNotExists()
         {
             return db.Persist().InsertIfNotExists(this);
