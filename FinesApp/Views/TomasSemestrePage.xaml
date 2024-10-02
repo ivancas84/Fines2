@@ -43,13 +43,55 @@
             </GroupBox>
             
             <TabControl>
-                    <TabItem 
-					Header="Tomas Semestre">
+                <TabItem 
+					Header="Tomas Activas">
+                    <DataGrid 
+							AutoGenerateColumns="False"
+                            IsReadOnly="False"
+                            CanUserAddRows="False"
+                            Name="dgdToma">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Sede" Binding="{Binding id}"></DataGridTextColumn>
+
+                            <DataGridTextColumn Header="Sede" Binding="{Binding curso_.comision_.sede_.nombre}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Horario" Binding="{Binding curso_.descripcion_horario}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="HS" Binding="{Binding curso_.horas_catedra}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Planificacion" Binding="{Binding curso_.comision_.planificacion_.Label}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
+                                <DataGridComboBoxColumn Header="Estado Contralor"  
+                                SelectedValueBinding="{Binding estado_contralor}" 
+                                ItemsSource="{Binding Source={StaticResource estadosContralor}}">
+                            </DataGridComboBoxColumn>
+                            <DataGridTextColumn Header="Comisión" Binding="{Binding curso_.comision_.pfid}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Asignatura" Binding="{Binding curso_.disposicion_.asignatura_.Label}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Docente" Binding="{Binding docente_.Label}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Docente" Binding="{Binding docente_.email}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Docente" Binding="{Binding docente_.email_abc}"></DataGridTextColumn>
+
+                            <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <WrapPanel>
+                                                <Button Click="EmailTomaButton_Click">Email Toma</Button>
+                                                <Button Click="GenerarTomaButton_Click">Generar Toma</Button>
+                                                <Button Click="EliminarTomaButton_Click">Eliminar Toma</Button>
+
+                                            </WrapPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                        </DataGrid>
+					
+
+				</TabItem>
+
+                <TabItem Header="Tomas No Activas">
                         <DataGrid 
-								AutoGenerateColumns="False"
-                                IsReadOnly="False"
-                                CanUserAddRows="False"
-                                Name="dgdToma">
+					AutoGenerateColumns="False"
+                 IsReadOnly="False"
+                 CanUserAddRows="False"
+                 Name="dgdTomaNA">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Sede" Binding="{Binding id}"></DataGridTextColumn>
 
@@ -57,9 +99,11 @@
                                 <DataGridTextColumn Header="Horario" Binding="{Binding curso_.descripcion_horario}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="HS" Binding="{Binding curso_.horas_catedra}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Planificacion" Binding="{Binding curso_.comision_.planificacion_.Label}"></DataGridTextColumn>
+                                <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
+
                                 <DataGridComboBoxColumn Header="Estado Contralor"  
-                                    SelectedValueBinding="{Binding estado_contralor}" 
-                                    ItemsSource="{Binding Source={StaticResource estadosContralor}}">
+                                     SelectedValueBinding="{Binding estado_contralor}" 
+                                     ItemsSource="{Binding Source={StaticResource estadosContralor}}">
                                 </DataGridComboBoxColumn>
                                 <DataGridTextColumn Header="Comisión" Binding="{Binding curso_.comision_.pfid}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Asignatura" Binding="{Binding curso_.disposicion_.asignatura_.Label}"></DataGridTextColumn>
@@ -68,24 +112,23 @@
                                 <DataGridTextColumn Header="Docente" Binding="{Binding docente_.email_abc}"></DataGridTextColumn>
 
                                 <DataGridTemplateColumn>
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <WrapPanel>
-                                                    <Button Click="EmailTomaButton_Click">Email Toma</Button>
-                                                    <Button Click="GenerarTomaButton_Click">Generar Toma</Button>
-                                                    <Button Click="EliminarTomaButton_Click">Eliminar Toma</Button>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <WrapPanel>
+                                                <Button Click="EmailTomaButton_Click">Email Toma</Button>
+                                                <Button Click="GenerarTomaButton_Click">Generar Toma</Button>
+                                                <Button Click="EliminarTomaButton_Click">Eliminar Toma</Button>
 
-                                                </WrapPanel>
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
+                                            </WrapPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                             </DataGrid.Columns>
-                            </DataGrid>
-					
+                        </DataGrid>
 
-				</TabItem>
-
-				<TabItem Header="Procesar Docentes PF">
+                    </TabItem>
+                
+                <TabItem Header="Procesar Docentes PF">
 
 					<Grid>
 						<Grid.RowDefinitions>

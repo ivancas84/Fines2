@@ -11,8 +11,19 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Size(0)
                 .Where(@"
                     $calendario__id = @0 
-                    AND $estado = 'Aprobada'
-                    AND $estado_contralor != 'Modificar'
+                    AND ($estado = 'Aprobada' OR $estado = 'Pendiente')
+                ")
+                .Param("@0", idCalendario);
+        }
+
+        public static EntitySql TomasNoAprobadasDeCalendarioSql(object idCalendario)
+        {
+            return Context.db.Sql("toma")
+                .Fields()
+                .Size(0)
+                .Where(@"
+                    $calendario__id = @0 
+                    AND $estado != 'Aprobada'
                 ")
                 .Param("@0", idCalendario);
         }

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
+    <data name="ShellMenuItemViewsAdministrarTomaPageHeader" xml:space="preserve">
+		    <value>AdministrarToma</value>
+    </data>
+    <data name="AdministrarTomaPageTitle" xml:space="preserve">
+		    <value>AdministrarToma</value>
+    </data>
     <data name="ShellMenuItemViewsSedesSemestrePageHeader" xml:space="preserve">
 		    <value>SedesSemestre</value>
     </data>

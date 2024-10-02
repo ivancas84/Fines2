@@ -26,8 +26,10 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 {
 
     private ObservableCollection<Calendario> ocCalendario = new();
-    private ObservableCollection<Toma> ocToma = new();
-   
+    private ObservableCollection<Toma> ocToma = new(); //tomas activas
+    private ObservableCollection<Toma> ocTomaNA = new(); //tomas no activas
+
+
     IEnumerable<PersistContext>? persists;
 
     public TomasSemestrePage()
@@ -38,8 +40,10 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
         //ocToma.CollectionChanged += OcTomaCollectionChanged;
         dgdToma.CellEditEnding += DgdToma_CellEditEnding;
-
         dgdToma.ItemsSource = ocToma;
+
+        dgdTomaNA.CellEditEnding += DgdToma_CellEditEnding;
+        dgdTomaNA.ItemsSource = ocTomaNA;
 
         dgdResultadoProcesamiento.ItemsSource = ocData;
         dgdResultadoGenerarTomasPDF.ItemsSource = ocResultadoGenerarTomasPDF;
@@ -50,40 +54,9 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
     private void DgdToma_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
     {
-        DataGridUtils.CellEditEnding(sender, e);
+        Context.db.CellEditEnding(sender, e);
 
     }
-
-    
-
-    #region OcToma
-    private void OcTomaCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.NewItems != null)
-            foreach (Toma newItem in e.NewItems)
-                newItem.PropertyChanged += TomaItem_PropertyChanged;
-
-        if (e.OldItems != null)
-            foreach (Toma oldItem in e.OldItems)
-                oldItem.PropertyChanged -= TomaItem_PropertyChanged;
-    }
-
-    private void TomaItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
-    {
-        try
-        {
-            using (Context.db.CreateQueue())
-            {
-                //(sender as Toma).UpdateField(e.PropertyName);
-                Context.db.ProcessQueue();
-            }
-        } catch (Exception ex)
-        {
-            ex.ToastException();
-        }
-        
-    }
-    #endregion
 
     private void cbxCalendario_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -98,8 +71,8 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             return;
         }
 
-        var tomaData = TomaDAO.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
-        Context.db.AddEntityToClearOC(tomaData, ocToma);
+        TomaDAO.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().AddEntityToClearOC(ocToma);
+        TomaDAO.TomasNoAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().AddEntityToClearOC(ocTomaNA);
     }
 
     #region Pestaña principal

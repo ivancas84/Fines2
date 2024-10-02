@@ -8,6 +8,7 @@ using FinesApp.Contracts.Services;
 using FinesApp.Contracts.Views;
 
 using MahApps.Metro.Controls;
+
 using QuestPDF.Infrastructure;
 
 namespace FinesApp.Views;
@@ -97,6 +98,9 @@ public partial class ShellWindow : MetroWindow, IShellWindow, INotifyPropertyCha
 
     private void OnMenuViewsSedesSemestre(object sender, RoutedEventArgs e)
         => _navigationService.NavigateTo(typeof(SedesSemestrePage), null, true);
+
+    private void OnMenuViewsAdministrarToma(object sender, RoutedEventArgs e)
+        => _navigationService.NavigateTo(typeof(AdministrarTomaPage), null, true);
 
     public event PropertyChangedEventHandler PropertyChanged;
 
