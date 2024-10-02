@@ -31,7 +31,6 @@ namespace WpfUtils.Controls
             var columnCo = e.Column as DataGridComboBoxColumn;
             if (columnCo != null)
             {
-                
                 key = ((Binding)columnCo.SelectedValueBinding).Path.Path; //column's binding
                 value = (e.EditingElement as ComboBox)!.SelectedValue;
                 return (key, value);
