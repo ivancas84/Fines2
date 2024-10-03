@@ -3,6 +3,7 @@ using SqlOrganize.ValueTypesUtils;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql
@@ -136,6 +137,14 @@ namespace SqlOrganize.Sql
             }
         }
 
+        public static T CreateFromId<T>(object id) where T : Entity, new()
+        {
+            T _obj = new T(); //crear objeto vacio para obtener el entityName
+            var data = _obj.db.Sql(_obj.entityName).Cache().Id(id);
+            if (data == null)
+                throw new Exception("El id proporcionado no retorno ningún valor");
+            return CreateFromDict<T>(data);
+        }
 
         public static T CreateFromDict<T>(IDictionary<string, object?> dict) where T : Entity, new()
         {
@@ -648,6 +657,12 @@ namespace SqlOrganize.Sql
         public T AddToOC<T>(ObservableCollection<T> oc) where T : Entity
         {
             oc.Add((T)this);
+            return (T)this;
+        }
+
+        public T InsertFirst<T>(ObservableCollection<T> oc) where T : Entity
+        {
+            oc.Insert(0, (T)this);
             return (T)this;
         }
 

@@ -29,6 +29,18 @@ namespace SqlOrganize.Sql.Fines2Model3
                .Param("@0","%" + search + "%");
         }
 
+        public static EntitySql CursosDeComisionSql(object idComision)
+        {
+            return Context.db.Sql("curso")
+                .Fields()
+                .Size(0)
+                .Where(@"
+                    $comision = @0 
+                ").
+                Param("@0", idComision);
+
+        }
+
         public static EntitySql CursosAutorizadosPeriodoSql(object calendarioAnio, object calendarioSemestre, object? sede = null, bool? autorizada = null)
         {
             return Context.db.Sql("curso")

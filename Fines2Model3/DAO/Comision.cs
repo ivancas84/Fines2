@@ -43,6 +43,21 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         }
 
+        public static EntitySql ComisionesAutorizadasDeCalendarioYSedeSql(object idCalendario, object idSede)
+        {
+            return Context.db.Sql("comision")
+                .Size(0)
+                .Where(@"
+                    $calendario = @0
+                    AND $sede = @1
+                    AND $autorizada = true
+                ")
+                .Param("@0", idCalendario)
+                .Param("@1", idSede);
+
+
+        }
+
         public static EntitySql ComisionesAutorizadasDePeriodoSql(object anio, object semestre)
         {
             return Context.db.Sql("comision")

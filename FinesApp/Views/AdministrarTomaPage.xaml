@@ -17,65 +17,274 @@
             Style="{StaticResource PageTitleStyle}"
             Margin="{StaticResource MediumLeftMargin}"
             Text="{x:Static properties:Resources.AdministrarTomaPageTitle}" />
-        <Grid
+        <ScrollViewer
+            HorizontalScrollBarVisibility="Visible"
             Grid.Row="1"
             Margin="{StaticResource MediumLeftRightMargin}"
             Background="{DynamicResource MahApps.Brushes.Gray10}">
 
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height = "Auto" />
+                    <RowDefinition Height = "Auto" />
+                    <RowDefinition Height = "Auto" />
+                </Grid.RowDefinitions>
 
-			<Grid.RowDefinitions>
-				<RowDefinition Height = "Auto" />
-				<RowDefinition Height = "Auto" />
-				<RowDefinition Height = "Auto" />
-				<RowDefinition Height = "Auto" />
-			</Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width = "*" />
+                </Grid.ColumnDefinitions>
 
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width = "Auto" />
-				<ColumnDefinition Width = "Auto" />
-				<ColumnDefinition Width = "Auto" />
-				<ColumnDefinition Width = "Auto" />
-			</Grid.ColumnDefinitions>
+                <GroupBox 
+                    Name="gbxToma"
+                    Margin="10">
+                    <GroupBox.Header>
+                        <Label Foreground="White">Toma de posesión</Label>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                        </Grid.RowDefinitions>
 
-			<Label
-				Grid.Row="0"
-				Grid.Column="0"
-				FontWeight="Bold"
-				Margin = "3, 3, 3, 0">Calendario:</Label>
-			<ComboBox
-				Grid.Row="1"
-				Grid.Column="0"
-				Name = "cbxCalendario" />
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width = "200" />
+                            <ColumnDefinition Width = "200" />
+                            <ColumnDefinition Width = "200" />
+                            <ColumnDefinition Width = "200" />
+                        </Grid.ColumnDefinitions>
 
-			<Label
-				Grid.Row="0"
-				Grid.Column="1"
-				FontWeight="Bold"
-				Margin = "3, 3, 3, 0">Sede:</Label>
-			<ComboBox
-				Grid.Row="1"
-				Grid.Column="1"
-				Name = "cbxSede" />
-			<Label
-				Grid.Row="0"
-				Grid.Column="1"
-				FontWeight="Bold"
-				Margin = "3, 3, 3, 0">Sede:</Label>
-			<ComboBox
-				Grid.Row="1"
-				Grid.Column="2"
-				Name = "cbxSede" />
+                        <Label
+	                        Grid.Row="0"
+	                        Grid.Column="0"
+	                        FontWeight="Bold"
+	                        Margin = "3, 3, 3, 0">Calendario:</Label>
+                        <ComboBox
+	                        Grid.Row="1"
+	                        Grid.Column="0"
+	                        Name = "cbxCalendario"/>
 
-			<StackPanel Grid.Row = "3" Grid.ColumnSpan = "6">
-				<Button
-					Content = "_Guardar..."
-					Click="GuardarPersonaButton_Click"
-					Margin = "20"/>
+                        <Label
+	                        Grid.Row="0"
+	                        Grid.Column="1"
+	                        FontWeight="Bold"
+	                        Margin = "3, 3, 3, 0">Sede:</Label>
+                        <ComboBox
+	                        Grid.Row="1"
+	                        Grid.Column="1"
+	                        Name = "cbxSede" />
+                        <Label
+	                        Grid.Row="0"
+	                        Grid.Column="2"
+	                        FontWeight="Bold"
+	                        Margin = "3, 3, 3, 0">Comision:</Label>
+                        <ComboBox
+	                        Grid.Row="1"
+	                        Grid.Column="2"
+	                        Name = "cbxComision" />
 
-			</StackPanel>
+                        <Label
+	                        Grid.Row="0"
+	                        Grid.Column="3"
+	                        FontWeight="Bold"
+	                        Margin = "3, 3, 3, 0"> Curso: </Label>
+                        <ComboBox
+	                        Grid.Row="1"
+	                        Grid.Column="3"
+	                        Name = "cbxCurso" 
+                            SelectedValue="{Binding curso, ValidatesOnDataErrors=True, TargetNullValue=''}" />
 
-			
-			
-		</Grid>
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0"> Fecha Toma: </Label>
+
+                        <DatePicker 
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            SelectedDate="{Binding fecha_toma, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                            Margin = "2" />
+
+
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">Estado:</Label>
+
+                        <ComboBox 
+                            Grid.Row="3"
+                            Grid.Column="1"
+                            Name="cbxEstado"
+                            SelectedValue="{Binding estado, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                            Margin = "2" />
+
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">Tipo Movimiento:</Label>
+
+                        <ComboBox 
+                            Grid.Row="3"
+                            Grid.Column="2"
+                            Name="cbxTipoMovimiento"
+                            SelectedValue="{Binding tipo_movimiento, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                            Margin = "2" />     
+
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">Estado Contralor:</Label>
+
+                        <ComboBox 
+                            Grid.Row="3"
+                            Grid.Column="3"
+                            Name="cbxEstadoContralor"
+                            SelectedValue="{Binding estado_contralor, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                            Margin = "2" />
+                        
+                   
+                    </Grid>
+                </GroupBox>
+
+                <GroupBox 
+                     Name="gbxDocente" 
+                     Grid.Row="1"
+                     Margin="10">
+                    <GroupBox.Header>
+                        <Label Foreground="White">Docente</Label>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width = "200" />
+                            <ColumnDefinition Width = "200" />
+                            <ColumnDefinition Width = "200" />
+                            <ColumnDefinition Width = "200" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">DNI:</Label>
+
+                        <TextBox
+                            Grid.Row = "1"
+                            Grid.Column = "0"
+                            Margin = "3, 0, 3, 3"
+                            Text="{Binding numero_documento, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">Nombres:</Label>
+
+                        <TextBox
+                            Grid.Row = "1"
+                            Grid.Column = "1"
+                            Margin = "3, 0, 3, 3"
+                            Text="{Binding nombres, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">Apellidos:</Label>
+
+                        <TextBox
+                            Grid.Row = "1"
+                            Grid.Column = "2"
+                            Margin = "3, 0, 3, 3"
+                            Text="{Binding apellidos, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+
+                        <Label
+                             Grid.Row="0"
+                             Grid.Column="3"
+                             FontWeight="Bold"
+                             Margin = "3, 3, 3, 0">Fecha Nacimiento:</Label>
+
+                        <DatePicker 
+                            Grid.Row="1"
+                            Grid.Column="3"
+                            SelectedDate="{Binding fecha_nacimiento, ValidatesOnDataErrors=True, TargetNullValue=''}"
+                            Margin = "2" />
+
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">CUIL:</Label>
+
+                        <TextBox
+                            Grid.Row = "3"
+                            Grid.Column = "0"
+                            Margin = "3, 0, 3, 3"
+                            Text="{Binding cuil, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">Email:</Label>
+
+                        <TextBox
+                            Grid.Row = "3"
+                            Grid.Column = "1"
+                            Margin = "3, 0, 3, 3"
+                            Text="{Binding email, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">Email ABC:</Label>
+
+                        <TextBox
+                            Grid.Row = "3"
+                            Grid.Column = "2"
+                            Margin = "3, 0, 3, 3"
+                            Text="{Binding email_abc, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+
+                        <Label
+                            Grid.Row="2"
+                            Grid.Column="3"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">Teléfono:</Label>
+
+                        <TextBox
+                            Grid.Row = "3"
+                            Grid.Column = "3"
+                            Margin = "3, 0, 3, 3"
+                            Text="{Binding telefono, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+
+
+                        <StackPanel Grid.Row = "3" Grid.ColumnSpan = "6">
+                            <Button
+		                    Content = "_Guardar..."
+		                    Click="BtnGuardarToma_Click"
+		                    Margin = "20"/>
+
+                        </StackPanel>
+                    </Grid>
+
+                </GroupBox>
+
+                
+            </Grid>
+
+
+        </ScrollViewer>
     </Grid>
 </Page>

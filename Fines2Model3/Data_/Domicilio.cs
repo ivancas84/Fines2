@@ -38,7 +38,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if (!_Label.IsNoE())
                     return _Label;
 
-                return "Calle" + (calle ?? "?") + " e/" + (entre ?? "?") + " N° " + (numero ?? "?") + " " + (barrio ?? "?") + " " + (localidad ?? "?");
+                return "Calle " + (calle ?? "?") + " e/" + (entre ?? "?") + " N° " + (numero ?? "?") + " " + (barrio ?? "?") + " " + (localidad ?? "?");
             }
             set
             {

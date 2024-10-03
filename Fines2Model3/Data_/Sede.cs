@@ -1,17 +1,12 @@
-﻿using SqlOrganize.CollectionUtils;
+﻿using SqlOrganize.Sql.Fines2Model3;
 using SqlOrganize.Sql;
-using SqlOrganize.Sql.Fines2Model3;
+using SqlOrganize.CollectionUtils;
+using Newtonsoft.Json;
 using SqlOrganize.ValueTypesUtils;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Disposicion
+    public partial class Sede
     {
         public override string? Label
         {
@@ -20,7 +15,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if (!_Label.IsNoE())
                     return _Label;
 
-                return (asignatura_?.Label ?? "?") + " " + (planificacion_?.Label ?? "?");
+                return (numero ?? "?") + " " + (nombre ?? "?") + " " + (domicilio_?.Label ?? "?");
             }
             set
             {
@@ -28,5 +23,6 @@ namespace SqlOrganize.Sql.Fines2Model3
                 NotifyPropertyChanged(nameof(Label));
             }
         }
+
     }
 }

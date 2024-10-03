@@ -138,6 +138,14 @@ namespace SqlOrganize.Sql
             Db.AddEntityToClearOC(source, oc);
         }
 
+        public void AddColumnToClearOC<T>(string columnName, ObservableCollection<T> oc)
+        {
+            var source = Dicts();
+            var data = source.ColOfVal<T>(columnName);
+            oc.Clear();
+            oc.AddRange(data);
+        }
+
         /// <summary>
         /// Consulta de datos (uso de cache para consulta y resultados)<br/>
         /// </summary>
