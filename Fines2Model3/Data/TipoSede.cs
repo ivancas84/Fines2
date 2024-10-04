@@ -47,7 +47,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region Sede_ (ref sede.tipo_sede _m:o tipo_sede.id)
-        public ObservableCollection<Sede> Sede_ { get; set; } = new ();
+        protected ObservableCollection<Sede> _Sede_ = new ();
+        public ObservableCollection<Sede> Sede_
+        {
+            get { return _Sede_; }
+            set { if( _Sede_ != value) { _Sede_ = value; NotifyPropertyChanged(nameof(Sede_)); } }
+        }
         #endregion
 
     }

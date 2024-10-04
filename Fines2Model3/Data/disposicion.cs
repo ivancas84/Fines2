@@ -127,19 +127,39 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region Calificacion_ (ref calificacion.disposicion _m:o disposicion.id)
-        public ObservableCollection<Calificacion> Calificacion_ { get; set; } = new ();
+        protected ObservableCollection<Calificacion> _Calificacion_ = new ();
+        public ObservableCollection<Calificacion> Calificacion_
+        {
+            get { return _Calificacion_; }
+            set { if( _Calificacion_ != value) { _Calificacion_ = value; NotifyPropertyChanged(nameof(Calificacion_)); } }
+        }
         #endregion
 
         #region Curso_ (ref curso.disposicion _m:o disposicion.id)
-        public ObservableCollection<Curso> Curso_ { get; set; } = new ();
+        protected ObservableCollection<Curso> _Curso_ = new ();
+        public ObservableCollection<Curso> Curso_
+        {
+            get { return _Curso_; }
+            set { if( _Curso_ != value) { _Curso_ = value; NotifyPropertyChanged(nameof(Curso_)); } }
+        }
         #endregion
 
         #region DisposicionPendiente_ (ref disposicion_pendiente.disposicion _m:o disposicion.id)
-        public ObservableCollection<DisposicionPendiente> DisposicionPendiente_ { get; set; } = new ();
+        protected ObservableCollection<DisposicionPendiente> _DisposicionPendiente_ = new ();
+        public ObservableCollection<DisposicionPendiente> DisposicionPendiente_
+        {
+            get { return _DisposicionPendiente_; }
+            set { if( _DisposicionPendiente_ != value) { _DisposicionPendiente_ = value; NotifyPropertyChanged(nameof(DisposicionPendiente_)); } }
+        }
         #endregion
 
         #region DistribucionHoraria_ (ref distribucion_horaria.disposicion _m:o disposicion.id)
-        public ObservableCollection<DistribucionHoraria> DistribucionHoraria_ { get; set; } = new ();
+        protected ObservableCollection<DistribucionHoraria> _DistribucionHoraria_ = new ();
+        public ObservableCollection<DistribucionHoraria> DistribucionHoraria_
+        {
+            get { return _DistribucionHoraria_; }
+            set { if( _DistribucionHoraria_ != value) { _DistribucionHoraria_ = value; NotifyPropertyChanged(nameof(DistribucionHoraria_)); } }
+        }
         #endregion
 
     }

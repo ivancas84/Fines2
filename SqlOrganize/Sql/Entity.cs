@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 
+
 namespace SqlOrganize.Sql
 {
     /// <summary>
@@ -107,9 +108,9 @@ namespace SqlOrganize.Sql
 
 
         #region Status (propiedad opcional para indicar estado)
-        protected string _Status = "";
+        protected object _Status;
 
-        public virtual string Status
+        public virtual object Status
         {
             get { return _Status; }
             set
@@ -144,6 +145,12 @@ namespace SqlOrganize.Sql
             if (data == null)
                 throw new Exception("El id proporcionado no retorno ningún valor");
             return CreateFromDict<T>(data);
+        }
+
+        public static T? CreateFromUnique<T>(string key, object value) where T : Entity, new()
+        {
+            T _obj = new T(); //crear objeto vacio para obtener el entityName
+            return _obj.db.Sql(_obj.entityName).Equal(key, value).Cache().ToEntity<T>();
         }
 
         public static T CreateFromDict<T>(IDictionary<string, object?> dict) where T : Entity, new()
@@ -323,6 +330,9 @@ namespace SqlOrganize.Sql
                         return DateTime.Now;
                     else
                         return field.defaultValue;
+
+                case "bool":
+                    return field.defaultValue.ToString()!.ToBool();
 
                 case "sbyte":
                     return Convert.ToSByte(GetDefaultInt(field));

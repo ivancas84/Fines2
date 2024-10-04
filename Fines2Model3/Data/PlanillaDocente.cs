@@ -99,15 +99,30 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region AsignacionPlanillaDocente_ (ref asignacion_planilla_docente.planilla_docente _m:o planilla_docente.id)
-        public ObservableCollection<AsignacionPlanillaDocente> AsignacionPlanillaDocente_ { get; set; } = new ();
+        protected ObservableCollection<AsignacionPlanillaDocente> _AsignacionPlanillaDocente_ = new ();
+        public ObservableCollection<AsignacionPlanillaDocente> AsignacionPlanillaDocente_
+        {
+            get { return _AsignacionPlanillaDocente_; }
+            set { if( _AsignacionPlanillaDocente_ != value) { _AsignacionPlanillaDocente_ = value; NotifyPropertyChanged(nameof(AsignacionPlanillaDocente_)); } }
+        }
         #endregion
 
         #region Contralor_ (ref contralor.planilla_docente _m:o planilla_docente.id)
-        public ObservableCollection<Contralor> Contralor_ { get; set; } = new ();
+        protected ObservableCollection<Contralor> _Contralor_ = new ();
+        public ObservableCollection<Contralor> Contralor_
+        {
+            get { return _Contralor_; }
+            set { if( _Contralor_ != value) { _Contralor_ = value; NotifyPropertyChanged(nameof(Contralor_)); } }
+        }
         #endregion
 
         #region Toma_ (ref toma.planilla_docente _m:o planilla_docente.id)
-        public ObservableCollection<Toma> Toma_ { get; set; } = new ();
+        protected ObservableCollection<Toma> _Toma_ = new ();
+        public ObservableCollection<Toma> Toma_
+        {
+            get { return _Toma_; }
+            set { if( _Toma_ != value) { _Toma_ = value; NotifyPropertyChanged(nameof(Toma_)); } }
+        }
         #endregion
 
     }

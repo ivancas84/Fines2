@@ -117,15 +117,30 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region CentroEducativo_ (ref centro_educativo.domicilio _m:o domicilio.id)
-        public ObservableCollection<CentroEducativo> CentroEducativo_ { get; set; } = new ();
+        protected ObservableCollection<CentroEducativo> _CentroEducativo_ = new ();
+        public ObservableCollection<CentroEducativo> CentroEducativo_
+        {
+            get { return _CentroEducativo_; }
+            set { if( _CentroEducativo_ != value) { _CentroEducativo_ = value; NotifyPropertyChanged(nameof(CentroEducativo_)); } }
+        }
         #endregion
 
         #region Persona_ (ref persona.domicilio _m:o domicilio.id)
-        public ObservableCollection<Persona> Persona_ { get; set; } = new ();
+        protected ObservableCollection<Persona> _Persona_ = new ();
+        public ObservableCollection<Persona> Persona_
+        {
+            get { return _Persona_; }
+            set { if( _Persona_ != value) { _Persona_ = value; NotifyPropertyChanged(nameof(Persona_)); } }
+        }
         #endregion
 
         #region Sede_ (ref sede.domicilio _m:o domicilio.id)
-        public ObservableCollection<Sede> Sede_ { get; set; } = new ();
+        protected ObservableCollection<Sede> _Sede_ = new ();
+        public ObservableCollection<Sede> Sede_
+        {
+            get { return _Sede_; }
+            set { if( _Sede_ != value) { _Sede_ = value; NotifyPropertyChanged(nameof(Sede_)); } }
+        }
         #endregion
 
     }

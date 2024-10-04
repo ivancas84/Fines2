@@ -108,6 +108,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -460,6 +461,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "tiene_dni",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -474,6 +476,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "tiene_constancia",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -488,6 +491,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "tiene_certificado",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -502,6 +506,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "previas_completas",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -516,6 +521,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "tiene_partida",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -530,6 +536,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "creado",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -544,6 +551,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "confirmado_direccion",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -818,6 +826,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -836,6 +845,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "creado",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -843,18 +853,19 @@ namespace SqlOrganize.Sql.Fines2Model3
                             }
                         },
                         #endregion
-                        #region alumno_comision.activo (OCULTADO)
-                        /*{
+                        #region alumno_comision.activo
+                        {
                             "activo", new () {
                                 entityName = "alumno_comision",
                                 name = "activo",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                 },
                             }
-                        },*/
+                        },
                         #endregion
                         #region alumno_comision.observaciones
                         {
@@ -923,6 +934,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "estado",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "Activo",
                                 checks = new () {
                                         { "type", "string" },
                                 },
@@ -1321,6 +1333,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -1381,6 +1394,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "insertado",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -1413,6 +1427,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "reclamo",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -1448,6 +1463,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -1576,6 +1592,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -1656,6 +1673,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "insertado",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -2093,6 +2111,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -2301,6 +2320,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "archivado",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -2336,6 +2356,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -2413,6 +2434,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -2690,6 +2712,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -2822,6 +2845,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "alta",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -2952,13 +2976,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                             }
                         },
                         #endregion
-                        #region comision.estado (OCULTADO)
-                        /*{
+                        #region comision.estado
+                        {
                             "estado", new () {
                                 entityName = "comision",
                                 name = "estado",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "Confirma",
                                 checks = new () {
                                         { "type", "string" },
                                 },
@@ -2968,15 +2993,16 @@ namespace SqlOrganize.Sql.Fines2Model3
                                         { "nullIfEmpty", "True" },
                                 },
                             }
-                        },*/
+                        },
                         #endregion
-                        #region comision.configuracion (OCULTADO)
-                        /*{
+                        #region comision.configuracion
+                        {
                             "configuracion", new () {
                                 entityName = "comision",
                                 name = "configuracion",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "Histórica",
                                 checks = new () {
                                         { "type", "string" },
                                 },
@@ -2986,8 +3012,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                                         { "nullIfEmpty", "True" },
                                 },
                             }
-                        },*/
-                        #endregion 
+                        },
+                        #endregion
                         #region comision.pfid
                         {
                             "pfid", new () {
@@ -3346,6 +3372,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -3438,6 +3465,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -3482,6 +3510,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "insertado",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -3776,6 +3805,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -3847,6 +3877,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "alta",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -4079,6 +4110,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -4186,6 +4218,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "alta",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -4282,6 +4315,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -4339,6 +4373,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "creado",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -4374,6 +4409,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "fecha",
                                 dataType = "date",
                                 type = "DateTime",
+                                defaultValue = "curdate()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                 },
@@ -4444,6 +4480,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -4584,6 +4621,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -4817,6 +4855,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -4976,6 +5015,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -5075,6 +5115,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -5268,6 +5309,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -5304,6 +5346,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "verificado",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -5318,6 +5361,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "insertado",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -5386,6 +5430,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -5472,6 +5517,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "created",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -5757,6 +5803,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -5866,6 +5913,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -5999,6 +6047,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -6192,6 +6241,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "alta",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -6245,6 +6295,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "telefono_verificado",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -6259,6 +6310,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "email_verificado",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -6273,6 +6325,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "info_verificada",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -6499,6 +6552,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -6635,6 +6689,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -6760,6 +6815,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -6796,6 +6852,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "insertado",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -6874,6 +6931,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -7034,6 +7092,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -7106,6 +7165,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "alta",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -7315,6 +7375,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -7387,6 +7448,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "insertado",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -7456,6 +7518,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -7835,6 +7898,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "id",
                                 dataType = "varchar",
                                 type = "string",
+                                defaultValue = "guid",
                                 checks = new () {
                                         { "type", "string" },
                                         { "required", "True" },
@@ -7956,6 +8020,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "alta",
                                 dataType = "timestamp",
                                 type = "DateTime",
+                                defaultValue = "current_timestamp()",
                                 checks = new () {
                                         { "type", "DateTime" },
                                         { "required", "True" },
@@ -8054,6 +8119,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "calificacion",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -8068,6 +8134,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "temas_tratados",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -8082,6 +8149,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "asistencia",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -8096,6 +8164,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "sin_planillas",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },
@@ -8110,6 +8179,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "confirmada",
                                 dataType = "tinyint",
                                 type = "bool",
+                                defaultValue = "False",
                                 checks = new () {
                                         { "type", "bool" },
                                         { "required", "True" },

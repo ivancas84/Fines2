@@ -92,7 +92,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region Comision_ (ref comision.calendario _m:o calendario.id)
-        public ObservableCollection<Comision> Comision_ { get; set; } = new ();
+        protected ObservableCollection<Comision> _Comision_ = new ();
+        public ObservableCollection<Comision> Comision_
+        {
+            get { return _Comision_; }
+            set { if( _Comision_ != value) { _Comision_ = value; NotifyPropertyChanged(nameof(Comision_)); } }
+        }
         #endregion
 
     }

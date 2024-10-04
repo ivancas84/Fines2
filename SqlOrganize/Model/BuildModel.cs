@@ -578,6 +578,9 @@ namespace SqlOrganize.Model
                     sw.WriteLine("                                name = \"" + fieldName + "\",");
                     sw.WriteLine("                                dataType = \"" + field.dataType + "\",");
                     sw.WriteLine("                                type = \"" + field.type + "\",");
+                    if (!field.defaultValue.IsNoE())
+                        sw.WriteLine("                                defaultValue = \"" + field.defaultValue + "\",");
+
                     if (!field.alias.IsNoE())
                         sw.WriteLine("                                alias = \"" + field.alias + "\",");
 

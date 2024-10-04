@@ -56,7 +56,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region Horario_ (ref horario.dia _m:o dia.id)
-        public ObservableCollection<Horario> Horario_ { get; set; } = new ();
+        protected ObservableCollection<Horario> _Horario_ = new ();
+        public ObservableCollection<Horario> Horario_
+        {
+            get { return _Horario_; }
+            set { if( _Horario_ != value) { _Horario_ = value; NotifyPropertyChanged(nameof(Horario_)); } }
+        }
         #endregion
 
     }

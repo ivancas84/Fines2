@@ -83,7 +83,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region Disposicion_ (ref disposicion.asignatura _m:o asignatura.id)
-        public ObservableCollection<Disposicion> Disposicion_ { get; set; } = new ();
+        protected ObservableCollection<Disposicion> _Disposicion_ = new ();
+        public ObservableCollection<Disposicion> Disposicion_
+        {
+            get { return _Disposicion_; }
+            set { if( _Disposicion_ != value) { _Disposicion_ = value; NotifyPropertyChanged(nameof(Disposicion_)); } }
+        }
         #endregion
 
     }

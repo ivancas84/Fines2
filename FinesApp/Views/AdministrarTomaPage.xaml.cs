@@ -12,6 +12,7 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using WpfUtils;
 using WpfUtils.Controls;
 
@@ -54,7 +55,7 @@ public partial class AdministrarTomaPage : Page, INotifyPropertyChanged, INaviga
         #endregion
 
         cbxCurso.InitComboBoxConstructor(ocCurso, "disposicion_.Label");
-        
+
         cbxEstado.ItemsSource = ocTomaEstado;
         Context.db.Sql("toma").Fields("$estado").Cache().AddColumnToClearOC("estado", ocTomaEstado);
 
@@ -122,12 +123,10 @@ public partial class AdministrarTomaPage : Page, INotifyPropertyChanged, INaviga
         Toma toma;
         if (!parameter.IsNoE())
             toma = Entity.CreateFromId<Toma>(parameter);
-            
         else
             toma = new Toma();
 
-
-        if(toma.docente_ == null)
+        if (toma.docente_ == null)
             toma.docente_ = new();
 
         gbxToma.DataContext = toma;
@@ -156,6 +155,54 @@ public partial class AdministrarTomaPage : Page, INotifyPropertyChanged, INaviga
         catch (Exception ex)
         {
             ex.ToastException();
+        }
+    }
+
+    private void tbxNumeroDocumento_LostFocus(object sender, RoutedEventArgs e)
+    {
+        LoadPersonaFromSender(sender, "numero_documento");
+    }
+
+    private void tbxNumeroDocumento_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+            LoadPersonaFromSender(sender, "numero_documento");
+    }
+
+    private void tbxCuil_LostFocus(object sender, RoutedEventArgs e)
+    {
+        LoadPersonaFromSender(sender, "cuil");
+    }
+
+    private void tbxCuil_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+            LoadPersonaFromSender(sender, "cuil");
+    }
+
+    private void LoadPersonaFromSender(object sender, string key)
+    {
+        try
+        {
+            TextBox textBox = sender as TextBox;
+
+            if (textBox.Text.IsNoE())
+                return;
+
+            Persona persona = (gbxDocente.DataContext as Persona);
+
+
+            Persona? personaDB = Context.db.Sql("persona").Equal(key, textBox.Text).Cache().ToEntity<Persona>();
+
+            if (!personaDB.IsNoE() && !persona.id.Equals(personaDB.id))
+            {
+                gbxDocente.DataContext = personaDB;
+                ToastExtensions.Show("Se recargaron los datos del docente");
+            }
+
+        } catch(Exception exception)
+        {
+            exception.ToastException();
         }
     }
 }

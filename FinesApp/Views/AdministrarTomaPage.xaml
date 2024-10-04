@@ -164,6 +164,8 @@
                             <RowDefinition Height = "Auto" />
                             <RowDefinition Height = "Auto" />
                             <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
@@ -177,13 +179,17 @@
                             Grid.Row="0"
                             Grid.Column="0"
                             FontWeight="Bold"
-                            Margin = "3, 3, 3, 0">DNI:</Label>
+                            Margin = "3, 3, 3, 0"
+                            
+                            >DNI:</Label>
 
                         <TextBox
                             Grid.Row = "1"
                             Grid.Column = "0"
                             Margin = "3, 0, 3, 3"
-                            Text="{Binding numero_documento, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+                            LostFocus="tbxNumeroDocumento_LostFocus"
+                            PreviewKeyDown="tbxNumeroDocumento_PreviewKeyDown"
+                            Text="{Binding numero_documento, ValidatesOnDataErrors=True, TargetNullValue='', Mode=TwoWay}" />
 
                         <Label
                             Grid.Row="0"
@@ -195,7 +201,7 @@
                             Grid.Row = "1"
                             Grid.Column = "1"
                             Margin = "3, 0, 3, 3"
-                            Text="{Binding nombres, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+                            Text="{Binding nombres, ValidatesOnDataErrors=True, TargetNullValue='', Mode=TwoWay}" />
 
                         <Label
                             Grid.Row="0"
@@ -231,7 +237,9 @@
                             Grid.Row = "3"
                             Grid.Column = "0"
                             Margin = "3, 0, 3, 3"
-                            Text="{Binding cuil, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+                            Text="{Binding cuil, ValidatesOnDataErrors=True, TargetNullValue=''}" 
+                            LostFocus="tbxCuil_LostFocus"
+                            PreviewKeyDown="tbxCuil_PreviewKeyDown" />
 
                         <Label
                             Grid.Row="2"
@@ -270,7 +278,7 @@
                             Text="{Binding telefono, ValidatesOnDataErrors=True, TargetNullValue=''}" />
 
 
-                        <StackPanel Grid.Row = "3" Grid.ColumnSpan = "6">
+                        <StackPanel Grid.Row = "4" Grid.ColumnSpan = "4">
                             <Button
 		                    Content = "_Guardar..."
 		                    Click="BtnGuardarToma_Click"

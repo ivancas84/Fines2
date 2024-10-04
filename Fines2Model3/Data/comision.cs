@@ -187,6 +187,24 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        #region estado
+        protected string? _estado = null;
+        public string? estado
+        {
+            get { return _estado; }
+            set { if( _estado != value) { _estado = value; NotifyPropertyChanged(nameof(estado)); } }
+        }
+        #endregion
+
+        #region configuracion
+        protected string? _configuracion = null;
+        public string? configuracion
+        {
+            get { return _configuracion; }
+            set { if( _configuracion != value) { _configuracion = value; NotifyPropertyChanged(nameof(configuracion)); } }
+        }
+        #endregion
+
         #region pfid
         protected string? _pfid = null;
         public string? pfid
@@ -273,19 +291,39 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region AlumnoComision_ (ref alumno_comision.comision _m:o comision.id)
-        public ObservableCollection<AlumnoComision> AlumnoComision_ { get; set; } = new ();
+        protected ObservableCollection<AlumnoComision> _AlumnoComision_ = new ();
+        public ObservableCollection<AlumnoComision> AlumnoComision_
+        {
+            get { return _AlumnoComision_; }
+            set { if( _AlumnoComision_ != value) { _AlumnoComision_ = value; NotifyPropertyChanged(nameof(AlumnoComision_)); } }
+        }
         #endregion
 
         #region ComisionRelacionada_ (ref comision_relacionada.comision _m:o comision.id)
-        public ObservableCollection<ComisionRelacionada> ComisionRelacionada_ { get; set; } = new ();
+        protected ObservableCollection<ComisionRelacionada> _ComisionRelacionada_ = new ();
+        public ObservableCollection<ComisionRelacionada> ComisionRelacionada_
+        {
+            get { return _ComisionRelacionada_; }
+            set { if( _ComisionRelacionada_ != value) { _ComisionRelacionada_ = value; NotifyPropertyChanged(nameof(ComisionRelacionada_)); } }
+        }
         #endregion
 
         #region ComisionRelacionada_relacion_ (ref comision_relacionada.relacion _m:o comision.id)
-        public ObservableCollection<ComisionRelacionada> ComisionRelacionada_relacion_ { get; set; } = new ();
+        protected ObservableCollection<ComisionRelacionada> _ComisionRelacionada_relacion_ = new ();
+        public ObservableCollection<ComisionRelacionada> ComisionRelacionada_relacion_
+        {
+            get { return _ComisionRelacionada_relacion_; }
+            set { if( _ComisionRelacionada_relacion_ != value) { _ComisionRelacionada_relacion_ = value; NotifyPropertyChanged(nameof(ComisionRelacionada_relacion_)); } }
+        }
         #endregion
 
         #region Curso_ (ref curso.comision _m:o comision.id)
-        public ObservableCollection<Curso> Curso_ { get; set; } = new ();
+        protected ObservableCollection<Curso> _Curso_ = new ();
+        public ObservableCollection<Curso> Curso_
+        {
+            get { return _Curso_; }
+            set { if( _Curso_ != value) { _Curso_ = value; NotifyPropertyChanged(nameof(Curso_)); } }
+        }
         #endregion
 
     }

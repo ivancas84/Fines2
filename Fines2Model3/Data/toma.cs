@@ -192,8 +192,6 @@ namespace SqlOrganize.Sql.Fines2Model3
                     _curso_ = value;
                     if(value != null)
                         curso = value.id;
-
-
                     else
                         curso = null;
                     NotifyPropertyChanged(nameof(curso_));
@@ -260,7 +258,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region AsignacionPlanillaDocente_ (ref asignacion_planilla_docente.toma _m:o toma.id)
-        public ObservableCollection<AsignacionPlanillaDocente> AsignacionPlanillaDocente_ { get; set; } = new ();
+        protected ObservableCollection<AsignacionPlanillaDocente> _AsignacionPlanillaDocente_ = new ();
+        public ObservableCollection<AsignacionPlanillaDocente> AsignacionPlanillaDocente_
+        {
+            get { return _AsignacionPlanillaDocente_; }
+            set { if( _AsignacionPlanillaDocente_ != value) { _AsignacionPlanillaDocente_ = value; NotifyPropertyChanged(nameof(AsignacionPlanillaDocente_)); } }
+        }
         #endregion
 
     }

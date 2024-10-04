@@ -82,11 +82,21 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region Alumno_ (ref alumno.plan _m:o plan.id)
-        public ObservableCollection<Alumno> Alumno_ { get; set; } = new ();
+        protected ObservableCollection<Alumno> _Alumno_ = new ();
+        public ObservableCollection<Alumno> Alumno_
+        {
+            get { return _Alumno_; }
+            set { if( _Alumno_ != value) { _Alumno_ = value; NotifyPropertyChanged(nameof(Alumno_)); } }
+        }
         #endregion
 
         #region Planificacion_ (ref planificacion.plan _m:o plan.id)
-        public ObservableCollection<Planificacion> Planificacion_ { get; set; } = new ();
+        protected ObservableCollection<Planificacion> _Planificacion_ = new ();
+        public ObservableCollection<Planificacion> Planificacion_
+        {
+            get { return _Planificacion_; }
+            set { if( _Planificacion_ != value) { _Planificacion_ = value; NotifyPropertyChanged(nameof(Planificacion_)); } }
+        }
         #endregion
 
     }

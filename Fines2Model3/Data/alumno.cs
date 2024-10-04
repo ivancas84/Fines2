@@ -351,15 +351,30 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region AlumnoComision_ (ref alumno_comision.alumno _m:o alumno.id)
-        public ObservableCollection<AlumnoComision> AlumnoComision_ { get; set; } = new ();
+        protected ObservableCollection<AlumnoComision> _AlumnoComision_ = new ();
+        public ObservableCollection<AlumnoComision> AlumnoComision_
+        {
+            get { return _AlumnoComision_; }
+            set { if( _AlumnoComision_ != value) { _AlumnoComision_ = value; NotifyPropertyChanged(nameof(AlumnoComision_)); } }
+        }
         #endregion
 
         #region Calificacion_ (ref calificacion.alumno _m:o alumno.id)
-        public ObservableCollection<Calificacion> Calificacion_ { get; set; } = new ();
+        protected ObservableCollection<Calificacion> _Calificacion_ = new ();
+        public ObservableCollection<Calificacion> Calificacion_
+        {
+            get { return _Calificacion_; }
+            set { if( _Calificacion_ != value) { _Calificacion_ = value; NotifyPropertyChanged(nameof(Calificacion_)); } }
+        }
         #endregion
 
         #region DisposicionPendiente_ (ref disposicion_pendiente.alumno _m:o alumno.id)
-        public ObservableCollection<DisposicionPendiente> DisposicionPendiente_ { get; set; } = new ();
+        protected ObservableCollection<DisposicionPendiente> _DisposicionPendiente_ = new ();
+        public ObservableCollection<DisposicionPendiente> DisposicionPendiente_
+        {
+            get { return _DisposicionPendiente_; }
+            set { if( _DisposicionPendiente_ != value) { _DisposicionPendiente_ = value; NotifyPropertyChanged(nameof(DisposicionPendiente_)); } }
+        }
         #endregion
 
     }

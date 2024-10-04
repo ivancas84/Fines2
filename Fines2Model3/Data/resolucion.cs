@@ -65,7 +65,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region Alumno_ (ref alumno.resolucion_inscripcion _m:o resolucion.id)
-        public ObservableCollection<Alumno> Alumno_ { get; set; } = new ();
+        protected ObservableCollection<Alumno> _Alumno_ = new ();
+        public ObservableCollection<Alumno> Alumno_
+        {
+            get { return _Alumno_; }
+            set { if( _Alumno_ != value) { _Alumno_ = value; NotifyPropertyChanged(nameof(Alumno_)); } }
+        }
         #endregion
 
     }

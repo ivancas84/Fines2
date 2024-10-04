@@ -101,11 +101,21 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region Comision_ (ref comision.planificacion _m:o planificacion.id)
-        public ObservableCollection<Comision> Comision_ { get; set; } = new ();
+        protected ObservableCollection<Comision> _Comision_ = new ();
+        public ObservableCollection<Comision> Comision_
+        {
+            get { return _Comision_; }
+            set { if( _Comision_ != value) { _Comision_ = value; NotifyPropertyChanged(nameof(Comision_)); } }
+        }
         #endregion
 
         #region Disposicion_ (ref disposicion.planificacion _m:o planificacion.id)
-        public ObservableCollection<Disposicion> Disposicion_ { get; set; } = new ();
+        protected ObservableCollection<Disposicion> _Disposicion_ = new ();
+        public ObservableCollection<Disposicion> Disposicion_
+        {
+            get { return _Disposicion_; }
+            set { if( _Disposicion_ != value) { _Disposicion_ = value; NotifyPropertyChanged(nameof(Disposicion_)); } }
+        }
         #endregion
 
     }

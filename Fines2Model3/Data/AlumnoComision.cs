@@ -38,6 +38,15 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        #region activo
+        protected bool? _activo = null;
+        public bool? activo
+        {
+            get { return _activo; }
+            set { if( _activo != value) { _activo = value; NotifyPropertyChanged(nameof(activo)); } }
+        }
+        #endregion
+
         #region observaciones
         protected string? _observaciones = null;
         public string? observaciones

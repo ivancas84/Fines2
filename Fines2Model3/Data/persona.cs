@@ -358,27 +358,57 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region Designacion_ (ref designacion.persona _m:o persona.id)
-        public ObservableCollection<Designacion> Designacion_ { get; set; } = new ();
+        protected ObservableCollection<Designacion> _Designacion_ = new ();
+        public ObservableCollection<Designacion> Designacion_
+        {
+            get { return _Designacion_; }
+            set { if( _Designacion_ != value) { _Designacion_ = value; NotifyPropertyChanged(nameof(Designacion_)); } }
+        }
         #endregion
 
         #region DetallePersona_ (ref detalle_persona.persona _m:o persona.id)
-        public ObservableCollection<DetallePersona> DetallePersona_ { get; set; } = new ();
+        protected ObservableCollection<DetallePersona> _DetallePersona_ = new ();
+        public ObservableCollection<DetallePersona> DetallePersona_
+        {
+            get { return _DetallePersona_; }
+            set { if( _DetallePersona_ != value) { _DetallePersona_ = value; NotifyPropertyChanged(nameof(DetallePersona_)); } }
+        }
         #endregion
 
         #region Email_ (ref email.persona _m:o persona.id)
-        public ObservableCollection<Email> Email_ { get; set; } = new ();
+        protected ObservableCollection<Email> _Email_ = new ();
+        public ObservableCollection<Email> Email_
+        {
+            get { return _Email_; }
+            set { if( _Email_ != value) { _Email_ = value; NotifyPropertyChanged(nameof(Email_)); } }
+        }
         #endregion
 
         #region Telefono_ (ref telefono.persona _m:o persona.id)
-        public ObservableCollection<Telefono> Telefono_ { get; set; } = new ();
+        protected ObservableCollection<Telefono> _Telefono_ = new ();
+        public ObservableCollection<Telefono> Telefono_
+        {
+            get { return _Telefono_; }
+            set { if( _Telefono_ != value) { _Telefono_ = value; NotifyPropertyChanged(nameof(Telefono_)); } }
+        }
         #endregion
 
         #region Toma_docente_ (ref toma.docente _m:o persona.id)
-        public ObservableCollection<Toma> Toma_docente_ { get; set; } = new ();
+        protected ObservableCollection<Toma> _Toma_docente_ = new ();
+        public ObservableCollection<Toma> Toma_docente_
+        {
+            get { return _Toma_docente_; }
+            set { if( _Toma_docente_ != value) { _Toma_docente_ = value; NotifyPropertyChanged(nameof(Toma_docente_)); } }
+        }
         #endregion
 
         #region Toma_reemplazo_ (ref toma.reemplazo _m:o persona.id)
-        public ObservableCollection<Toma> Toma_reemplazo_ { get; set; } = new ();
+        protected ObservableCollection<Toma> _Toma_reemplazo_ = new ();
+        public ObservableCollection<Toma> Toma_reemplazo_
+        {
+            get { return _Toma_reemplazo_; }
+            set { if( _Toma_reemplazo_ != value) { _Toma_reemplazo_ = value; NotifyPropertyChanged(nameof(Toma_reemplazo_)); } }
+        }
         #endregion
 
     }

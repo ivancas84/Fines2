@@ -154,8 +154,9 @@ namespace SqlOrganize.Sql
 
                     if (k == fieldName)
                     {
-                        if(value == null)
+                        if(value.IsNoE())
                         {
+                            continue; // por el momento se ignoral los campos unicos nulos!!!
                             whereUniqueList.Add("$" + k + " IS NULL");
                             break;
                         }

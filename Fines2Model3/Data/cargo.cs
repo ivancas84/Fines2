@@ -47,7 +47,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region Designacion_ (ref designacion.cargo _m:o cargo.id)
-        public ObservableCollection<Designacion> Designacion_ { get; set; } = new ();
+        protected ObservableCollection<Designacion> _Designacion_ = new ();
+        public ObservableCollection<Designacion> Designacion_
+        {
+            get { return _Designacion_; }
+            set { if( _Designacion_ != value) { _Designacion_ = value; NotifyPropertyChanged(nameof(Designacion_)); } }
+        }
         #endregion
 
     }

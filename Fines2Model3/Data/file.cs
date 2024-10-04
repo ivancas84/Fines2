@@ -83,7 +83,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         #endregion
 
         #region DetallePersona_archivo_ (ref detalle_persona.archivo _m:o file.id)
-        public ObservableCollection<DetallePersona> DetallePersona_archivo_ { get; set; } = new ();
+        protected ObservableCollection<DetallePersona> _DetallePersona_archivo_ = new ();
+        public ObservableCollection<DetallePersona> DetallePersona_archivo_
+        {
+            get { return _DetallePersona_archivo_; }
+            set { if( _DetallePersona_archivo_ != value) { _DetallePersona_archivo_ = value; NotifyPropertyChanged(nameof(DetallePersona_archivo_)); } }
+        }
         #endregion
 
     }
