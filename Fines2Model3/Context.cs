@@ -37,11 +37,15 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         internal static string pfLoginEndpointUrl = "https://www.programafines.ar/validar.php";
 
+        public static IMemoryCache CreateCache()
+        {
+            return new MemoryCache(new MemoryCacheOptions());
 
+        }
         static Context()
         {
 
-            MemoryCache cache = new MemoryCache(new MemoryCacheOptions());
+            MemoryCache cache = (MemoryCache)CreateCache();
 
             Schema model = new Schema();
             db = new DbMy(config, model, cache);

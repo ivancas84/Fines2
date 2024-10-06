@@ -93,4 +93,11 @@ public class NavigationService : INavigationService
             Navigated?.Invoke(sender, frame.Content.GetType());
         }
     }
+
+    public void Refresh()
+    {
+        var pageType = _frame.Content?.GetType();
+        var page = _serviceProvider.GetService(pageType) as Page;
+        _frame.Navigate(page, _lastParameterUsed);
+    }
 }

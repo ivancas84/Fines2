@@ -526,7 +526,7 @@ namespace SqlOrganize.Sql
                         v.Type((string)param);
                         break;
                     case "required":
-                        if ((bool)param)
+                        if (param.ToBool())
                             v.Required();
                         break;
 

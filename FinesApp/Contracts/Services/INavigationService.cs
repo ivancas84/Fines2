@@ -17,4 +17,7 @@ public interface INavigationService
     void UnsubscribeNavigation();
 
     void CleanNavigation();
+
+    void Refresh();
+
 }

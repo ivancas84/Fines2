@@ -278,13 +278,17 @@
                             Text="{Binding telefono, ValidatesOnDataErrors=True, TargetNullValue=''}" />
 
 
-                        <StackPanel Grid.Row = "4" Grid.ColumnSpan = "4">
-                            <Button
+                        <Button
+                            Grid.Row = "4" Grid.ColumnSpan = "3"
 		                    Content = "_Guardar..."
 		                    Click="BtnGuardarToma_Click"
 		                    Margin = "20"/>
+                        <Button
+                            Grid.Row = "4" Grid.Column = "3"
+		                    Content = "_Eliminar..."
+		                    Click="BtnEliminarToma_Click"
+		                    Margin = "20"/>
 
-                        </StackPanel>
                     </Grid>
 
                 </GroupBox>

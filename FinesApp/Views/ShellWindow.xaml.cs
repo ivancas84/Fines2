@@ -10,6 +10,7 @@ using FinesApp.Contracts.Views;
 using MahApps.Metro.Controls;
 
 using QuestPDF.Infrastructure;
+using SqlOrganize.Sql.Fines2Model3;
 
 namespace FinesApp.Views;
 
@@ -18,6 +19,15 @@ public partial class ShellWindow : MetroWindow, IShellWindow, INotifyPropertyCha
     private readonly INavigationService _navigationService;
     private readonly IRightPaneService _rightPaneService;
     private bool _canGoBack;
+
+
+    private void OnRefresh(object sender, RoutedEventArgs e)
+    {
+        Context.db.cache.Dispose(); //dispose cache (opcional)
+        Context.db.cache = Context.CreateCache(); //crear nueva instancia de Cache  (opcional)
+        _navigationService.Refresh();
+
+    }
 
     public bool CanGoBack
     {
@@ -116,4 +126,6 @@ public partial class ShellWindow : MetroWindow, IShellWindow, INotifyPropertyCha
     }
 
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+    
 }

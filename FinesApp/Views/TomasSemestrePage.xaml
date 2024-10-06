@@ -115,9 +115,10 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <WrapPanel>
-                                                <Button Click="EmailTomaButton_Click">Email Toma</Button>
-                                                <Button Click="GenerarTomaButton_Click">Generar Toma</Button>
-                                                <Button Click="EliminarTomaButton_Click">Eliminar Toma</Button>
+                                                <Button Click="EmailTomaButton_Click">Email</Button>
+                                                <Button Click="GenerarTomaButton_Click">Generar PDF</Button>
+                                                <Button Click="EliminarTomaButton_Click">Eliminar</Button>
+                                                <Button Click="btnAdministrarToma_Click">Administrar</Button>
 
                                             </WrapPanel>
                                         </DataTemplate>
@@ -254,12 +255,22 @@
                                 <GroupBox.Header>
                                     <Label Foreground="White">Generar Contralor</Label>
                                 </GroupBox.Header>
-
-                                <WrapPanel>
+                                <StackPanel>
+                                    <WrapPanel>
                                     <Button
-								Content = "Generar Contralor"
-								Click="btnGenerarContralor_Click" />
-                                </WrapPanel>
+                                        Content = "Generar Contralor"
+                                        Click="btnGenerarContralor_Click" />
+                                    </WrapPanel>
+                                    <WrapPanel>
+                                        <ComboBox 
+                                            Name = "cbxPlanillaDocente" />
+                                        <Button
+                                            Content = "Asignar Planilla Docente"
+                                            Click="btnAsignarPlanillaDocente_Click" />
+                                    </WrapPanel>
+                                </StackPanel>
+
+                                
                             </GroupBox>
 
                             <GroupBox

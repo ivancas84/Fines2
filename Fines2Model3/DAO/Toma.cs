@@ -67,6 +67,15 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Param("@0", idCalendario);
         }
 
+        public static EntitySql TomasPasarSinPlanillaDocenteDeCalendario(object idCalendario)
+        {
+            var idTomas = TomaDAO.IdTomasPasarSinPlanillaDocenteDeCalendario(idCalendario);
+            return Context.db.Sql("toma").Where("$id IN (@0)").
+                Order("$docente__numero_documento ASC").
+                Size(0).
+                Param("@0", idTomas);
+        }
+
         public static IEnumerable<object> IdTomasPasarSinPlanillaDocenteDeCalendario(object idCalendario)
         {
             IEnumerable<object> id_tomas = TomasPasarDeCalendarioSql(idCalendario).Cache().Dicts().ColOfVal<object>("id");

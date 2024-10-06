@@ -19,21 +19,28 @@ using System.Collections.Specialized;
 using SqlOrganize.ValueTypesUtils;
 using Org.BouncyCastle.Utilities.Collections;
 using System.Windows.Data;
+using FinesApp.Contracts.Services;
 
 namespace FinesApp.Views;
 
 public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 {
+    private readonly INavigationService _navigationService;
 
     private ObservableCollection<Calendario> ocCalendario = new();
     private ObservableCollection<Toma> ocToma = new(); //tomas activas
     private ObservableCollection<Toma> ocTomaNA = new(); //tomas no activas
+    private ObservableCollection<PlanillaDocente> ocPlanillaDocente = new();
+
+
 
 
     IEnumerable<PersistContext>? persists;
 
-    public TomasSemestrePage()
+    public TomasSemestrePage(INavigationService navigationService)
     {
+        _navigationService = navigationService;
+
         InitializeComponent();
 
         DataContext = this;
@@ -50,6 +57,10 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         dgdResultadoGenerarContralor.ItemsSource = ocResultadoGenerarContralor;
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
         CalendarioDAO.CalendariosSql().Cache().AddEntityToClearOC(ocCalendario);
+
+
+        cbxPlanillaDocente.InitComboBoxConstructor(ocPlanillaDocente, "numero");
+        PlanillaDocenteDAO.PlanillasSql().Cache().AddEntityToClearOC(ocPlanillaDocente);
     }
 
     private void DgdToma_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
@@ -259,16 +270,12 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         {
             if (cbxCalendario.SelectedIndex < 0)
                 throw new Exception("No existe calendario seleccionado");
-            var idTomas = TomaDAO.IdTomasPasarSinPlanillaDocenteDeCalendario(cbxCalendario.SelectedValue);
-            var tomas = Context.db.Sql("toma").Where("$id IN (@0)").
-                Order("$docente__numero_documento ASC").
-                Size(0).
-                Param("@0", idTomas).Cache().Dicts();
+            var tomas = TomaDAO.TomasPasarSinPlanillaDocenteDeCalendario(cbxCalendario.SelectedValue).Cache().Dicts();
 
             ocResultadoGenerarContralor.Clear();
             foreach (var item in tomas)
             {
-                TomaContralorItem tomaObj = item.Obj<TomaContralorItem>();
+                TomaContralorItem tomaObj = Entity.CreateFromDict<TomaContralorItem>(item);
                 tomaObj.docente_.numero_documento = tomaObj.docente_.numero_documento;
                 tomaObj.docente_.Label = tomaObj.docente_.apellidos!.ToUpper() + " " + tomaObj.docente_.nombres!.ToTitleCase();
                 tomaObj.curso_.disposicion_.planificacion_.plan_.Label = tomaObj.curso_.disposicion_.planificacion_.plan_.orientacion!.Acronym();
@@ -607,6 +614,44 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
 
 
 
+    }
+
+    private void btnAdministrarToma_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var button = (e.OriginalSource as Button);
+            var toma = (Toma)button.DataContext;
+
+            _navigationService.NavigateTo(typeof(AdministrarTomaPage), toma.id);
+
+
+
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
+
+    private void btnAsignarPlanillaDocente_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        
+        {
+            if (cbxCalendario.SelectedIndex < 0)
+                throw new Exception("Calendario no seleccionado");
+            if(cbxPlanillaDocente.SelectedIndex < 0)
+                throw new Exception("Planilla no seleccionada");
+
+
+
+
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
     }
 }
 

@@ -78,17 +78,39 @@ namespace SqlOrganize.ValueTypesUtils
             return @this.Remove(startindex, oldValue.Length).Insert(startindex, newValue);
         }
 
-        public static bool ToBool(this string @this)
+        public static bool ToBool(this object @this)
         {
-            string s = @this.Substring(0, 1).ToLower();
-            if (s == "t" || s == "1" || s == "s" || s == "y" || s == "o") return true;
-            return false;
+            switch (@this)
+            {
+                case string str:
+                    string s = str.Substring(0, 1).ToLower();
+                    return s == "t" || s == "1" || s == "s" || s == "y" || s == "o";
+
+                case int num:
+                case long lnum:
+                case short snum:
+                case byte bnum:
+                    return Convert.ToInt64(@this) != 0; // Non-zero is true, zero is false
+
+                case float fnum:
+                case double dnum:
+                case decimal decnum:
+                    return Convert.ToDouble(@this) != 0; // Non-zero is true, zero is false
+
+                case bool b:
+                    return b; // Boolean: return the value itself
+
+                case char c:
+                    string sc = c.ToString().ToLower();
+                    return sc == "t" || sc == "1" || sc == "s" || sc == "y" || sc == "o";
+
+                default:
+                    return false; // Default case for unsupported types
+            }
         }
 
-        public static bool ToBool(this int @this)
-        {
-            return @this.ToString().ToBool();
-        }
+
+
 
         public static char ToChar(this string @this)
         {

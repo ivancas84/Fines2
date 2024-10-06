@@ -26,6 +26,17 @@
                     FontFamily="Segoe MDL2 Assets"
                     AutomationProperties.Name="{x:Static properties:Resources.ShellGoBackButton}" />
             </Button>
+            <Button
+                Width="{Binding ElementName=hamburgerMenu, Path=CompactPaneLength}"
+                AutomationProperties.Name="Recargar"
+                ToolTip="Recargar"
+                Click="OnRefresh">
+                <TextBlock
+                    Text="&#xE72C;"
+                    FontSize="14"
+                    FontFamily="Segoe MDL2 Assets"
+                    AutomationProperties.Name="Recargar" />
+            </Button>
         </controls:WindowCommands>
     </controls:MetroWindow.LeftWindowCommands>
     <controls:MetroWindow.Content>

@@ -1,14 +1,10 @@
-﻿using CommunityToolkit.WinUI.Notifications;
-using FinesApp.Contracts.Services;
+﻿using FinesApp.Contracts.Services;
 using FinesApp.Contracts.Views;
-using Org.BouncyCastle.Asn1.Ocsp;
 using SqlOrganize;
-using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql;
 using SqlOrganize.Sql.Fines2Model3;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -122,7 +118,13 @@ public partial class AdministrarTomaPage : Page, INotifyPropertyChanged, INaviga
     {
         Toma toma;
         if (!parameter.IsNoE())
+        {
             toma = Entity.CreateFromId<Toma>(parameter);
+            cbxCalendario.SelectedValue = toma.curso_.comision_.calendario;
+            cbxSede.SelectedValue = toma.curso_.comision_.sede;
+            cbxComision.SelectedValue = toma.curso_.comision;
+            cbxCurso.SelectedValue = toma.curso;
+        }
         else
             toma = new Toma();
 
@@ -139,14 +141,20 @@ public partial class AdministrarTomaPage : Page, INotifyPropertyChanged, INaviga
     }
     #endregion
 
+    #region guardar / eliminar
+
     private void BtnGuardarToma_Click(object sender, RoutedEventArgs e)
     {
         try
         {
-            Toma toma = (Toma)DataContext;
+            Toma toma = (Toma)gbxToma.DataContext;
+            Persona persona = (Persona)gbxDocente.DataContext;
+
             using (Context.db.CreateQueue())
             {
-                toma.Persist();
+                PersistContext persist = Context.db.Persist();
+                toma.docente = (string)persist.Persist(persona);
+                persist.Persist(toma);
                 Context.db.ProcessQueue();
             }
             ToastExtensions.Show("Toma registrada");
@@ -154,9 +162,38 @@ public partial class AdministrarTomaPage : Page, INotifyPropertyChanged, INaviga
         }
         catch (Exception ex)
         {
+            ex.ToastException("Error al registrar Toma");
+        }
+    }
+
+    private void BtnEliminarToma_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (MessageBox.Show("Está seguro que desea eliminar?",
+                    "Eliminar Toma",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                // Do something here
+
+                Toma toma = (Toma)gbxToma.DataContext;
+
+                using (Context.db.CreateQueue())
+                {
+                    toma.Delete();
+                    Context.db.ProcessQueue();
+                }
+                ToastExtensions.Show("Toma eliminada");
+            }
+
+        }
+        catch (Exception ex)
+        {
             ex.ToastException();
         }
     }
+    #endregion
 
     private void tbxNumeroDocumento_LostFocus(object sender, RoutedEventArgs e)
     {
@@ -205,4 +242,6 @@ public partial class AdministrarTomaPage : Page, INotifyPropertyChanged, INaviga
             exception.ToastException();
         }
     }
+
+    
 }
