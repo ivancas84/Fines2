@@ -182,9 +182,9 @@ namespace SqlOrganize.Sql
             }
         }
 
-        public CreateQueue CreateQueue()
+        public PersistQueue CreateQueue()
         {
-            return new CreateQueue(this);
+            return new PersistQueue(this);
         }
 
         public void RemoveCache()
@@ -209,11 +209,11 @@ namespace SqlOrganize.Sql
         }
     }
 
-    public class CreateQueue : IDisposable
+    public class PersistQueue : IDisposable
     {
         private readonly Db _db;  // Reference to the Db instance
 
-        public CreateQueue(Db db)
+        public PersistQueue(Db db)
         {
             _db = db;
             _db.PersistQueue = new Collection<PersistContext>();  // Initialize or reset the queue

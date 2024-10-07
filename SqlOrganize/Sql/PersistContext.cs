@@ -110,7 +110,7 @@ DELETE " + e.alias + " FROM " + e.name + " " + e.alias + @"
 
         abstract protected IDictionary<string, object?> _Update(string _entityName, IDictionary<string, object?> row);
 
-        public PersistContext Update(string entityName, IDictionary<string, object?> row)
+        public object Update(string entityName, IDictionary<string, object?> row)
         {
             IDictionary<string, object?> _row = _Update(entityName, row!);
 
@@ -124,7 +124,7 @@ WHERE " + id + " = @update_" + i + @";
             detail.Add((entityName!, row[Db.config.id]!, "update"));
             logging.AddLog(entityName, "registro actualizado " + _row.ToStringKeyValuePair(), "update", Logging.Level.Info);
 
-            return this;
+            return row[Db.config.id];
         }
 
 
@@ -208,7 +208,7 @@ WHERE " + id + " = @update_" + i + @";
             return (ids.Count() > 0) ? UpdateIds(_entityName, row, ids) : this;
         }
 
-        public PersistContext Update(Entity data)
+        public object Update(Entity data)
         {
             return Update(data.entityName, data.ToDict()!);
         }
@@ -237,7 +237,7 @@ WHERE " + id + " = @update_" + i + @";
         }
 
 
-        public PersistContext InsertIfNotExists(Entity data)
+        public object InsertIfNotExists(Entity data)
         {
             data.Reset();
 
@@ -253,19 +253,19 @@ WHERE " + id + " = @update_" + i + @";
 
             logging.AddLog(data.entityName, "Registro existente " + data.Label, "insert_if_not_exists", Logging.Level.Info);
 
-            return this;
+            return row[Db.config.id];
         }
 
         /// <summary>Insercion de EntityVal</summary>
         /// <remarks>Define id si no existe</remarks>
-        public PersistContext Insert(Entity data)
+        public object Insert(Entity data)
         {
             return Insert(data.entityName, data.ToDict()!);
         }
 
         /// <summary>Comportamiento basico de insercion</summary>
         /// <remarks>Debe estar definido el id</remarks>
-        public PersistContext Insert(string _entityName, IDictionary<string, object?> row)
+        public object Insert(string _entityName, IDictionary<string, object?> row)
         {
             count++;
             string i = count.ToString();
@@ -293,7 +293,7 @@ VALUES (";
 
             logging.AddLog(_entityName, "registro insertado " + row_.ToStringKeyValuePair(), "insert", Logging.Level.Info);
 
-            return this;
+            return row[Db.config.id]!;
         }
 
         public string Sql()
@@ -309,11 +309,7 @@ VALUES (";
                 throw new Exception("Los campos a persistir poseen errores: " + data.Logging.ToString());
 
             IDictionary<string, object?>? row = null;
-            try
-            {
-                row = data.SqlUnique().DictOne();
-            }
-            catch (UniqueException) { }
+            row = data.SqlUnique().DictOne();
 
             if (!row.IsNoE())
             {
@@ -331,7 +327,10 @@ VALUES (";
                 };
 
                 if (!data.Compare(cmp).IsNoE())
+                {
+                    Update(data);
                     return data.Get("id");
+                }
 
                 logging.AddLog(data.entityName, "registro identico " + row.ToStringKeyValuePair(), "persist", Logging.Level.Info);
                 return data.Get("id");
@@ -342,7 +341,7 @@ VALUES (";
         }
 
 
-        public PersistContext PersistCondition(Entity data, object? condition)
+        public object PersistCondition(Entity data, object? condition)
         {
             data.Reset();
 
@@ -369,7 +368,7 @@ VALUES (";
         }
 
 
-        public PersistContext UpdateCompare(Entity dataToUpdate, Entity dataToCompare)
+        public object UpdateCompare(Entity dataToUpdate, Entity dataToCompare)
         {
             dataToUpdate.Set(Db.config.id, dataToCompare.Get(Db.config.id));
 
@@ -384,23 +383,18 @@ VALUES (";
                 return Update(dataToUpdate);
 
             logging.AddLog(dataToUpdate.entityName, "registro identico " + cmp.Data.ToStringKeyValuePair(), "persist", Logging.Level.Info);
-            return this;
+            return dataToUpdate.Get(Db.config.id);
         }
 
         /// <summary> Si la comparación es diferente, no actualiza! sino actualiza todo! </summary>
-        public PersistContext PersistCompare(Entity data, CompareParams compare)
+        public object PersistCompare(Entity data, CompareParams compare)
         {
             data.Reset();
 
             if (!data.Check())
                 throw new Exception("Los campos a persistir poseen errores: " + data.Logging.ToString());
 
-            IDictionary<string, object?> row = null;
-            try
-            {
-                row = data.SqlUnique().DictOne();
-            }
-            catch (UniqueException) { }
+            IDictionary<string, object?> row = data.SqlUnique().DictOne();
 
             if (!row.IsNoE()) //actualizar
             {

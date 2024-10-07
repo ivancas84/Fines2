@@ -300,6 +300,42 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         }
     }
 
+    private void btnAsignarPlanillaDocente_Click(object sender, RoutedEventArgs e)
+    {
+        try
+
+        {
+            if (cbxCalendario.SelectedIndex < 0)
+                throw new Exception("Calendario no seleccionado");
+            if (cbxPlanillaDocente.SelectedIndex < 0)
+                throw new Exception("Planilla no seleccionada");
+
+
+            var idTomas = TomaDAO.IdTomasPasarSinPlanillaDocenteDeCalendario(cbxCalendario.SelectedValue);
+
+            using (var queue = Context.db.CreateQueue())
+            {
+                var persist = Context.db.Persist();
+                foreach(var id in idTomas) { 
+                    AsignacionPlanillaDocente asignacion = new();
+                    asignacion.toma = (string)id;
+                    asignacion.planilla_docente = (string)cbxPlanillaDocente.SelectedValue;
+                    persist.Persist(asignacion);
+                }
+
+                Context.db.ProcessQueue();
+                ToastExtensions.Show("Se han asignado las planillas docentes");
+            }
+
+
+
+
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
     #endregion
     internal class ConstanciaDocument : IDocument
     {
@@ -634,25 +670,7 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
         }
     }
 
-    private void btnAsignarPlanillaDocente_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        
-        {
-            if (cbxCalendario.SelectedIndex < 0)
-                throw new Exception("Calendario no seleccionado");
-            if(cbxPlanillaDocente.SelectedIndex < 0)
-                throw new Exception("Planilla no seleccionada");
-
-
-
-
-        }
-        catch (Exception ex)
-        {
-            ex.ToastException();
-        }
-    }
+    
 }
 
 public class EstadoContralorData

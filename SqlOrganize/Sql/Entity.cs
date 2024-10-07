@@ -594,12 +594,12 @@ namespace SqlOrganize.Sql
         #endregion
 
         #region Persistencia
-        public PersistContext Insert()
+        public object Insert()
         {
             return db.Persist().Insert(this);
         }
 
-        public PersistContext Update()
+        public object Update()
         {
             return db.Persist().Update(this);
         }
@@ -615,7 +615,7 @@ namespace SqlOrganize.Sql
             db.Persist().UpdateField(this, fieldName, value);
         }
 
-        public PersistContext InsertIfNotExists()
+        public object InsertIfNotExists()
         {
             return db.Persist().InsertIfNotExists(this);
         }
@@ -643,7 +643,7 @@ namespace SqlOrganize.Sql
 
         /// <summary> Persistencia rapida en base a Id </summary>
         /// <remarks> Si ya existe PersistContext, utilizar PersistContext.PersistId</remarks>
-        public PersistContext PersistId()
+        public object PersistId()
         {
             Reset();
             if (!Check())

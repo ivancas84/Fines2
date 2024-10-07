@@ -43,8 +43,7 @@
             </GroupBox>
             
             <TabControl>
-                <TabItem 
-					Header="Tomas Activas">
+                <TabItem Header="Tomas Activas">
                     <DataGrid 
 							AutoGenerateColumns="False"
                             IsReadOnly="False"
@@ -75,7 +74,7 @@
                                                 <Button Click="EmailTomaButton_Click">Email Toma</Button>
                                                 <Button Click="GenerarTomaButton_Click">Generar Toma</Button>
                                                 <Button Click="EliminarTomaButton_Click">Eliminar Toma</Button>
-
+                                                <Button Click="btnAdministrarToma_Click">Administrar</Button>
                                             </WrapPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -287,20 +286,20 @@
                                     AutoGenerateColumns="False">        
                                     <DataGrid.Columns>
                                         <DataGridTextColumn Header="CUPOF" Binding="{Binding cupof}"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="#" Binding="{Binding docente__cuil1}"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="DNI" Binding="{Binding docente__numero_documento}"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="#" Binding="{Binding docente__cuil2}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="#" Binding="{Binding docente_.cuil1}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="DNI" Binding="{Binding docente_.numero_documento}"></DataGridTextColumn>
+                                        <DataGridTextColumn Header="#" Binding="{Binding docente_.cuil2}"></DataGridTextColumn>
                                         <DataGridTextColumn Header="SEC" Binding="{Binding unknown}"></DataGridTextColumn>
-                                        <DataGridTextColumn Header="Fecha Nacimiento" Binding="{Binding docente__fecha_nacimiento, StringFormat={}{0:dd/MM/yyyy}}"/>
-                                        <DataGridTextColumn Header="Apellido y nombre" Binding="{Binding docente__Label}"/>
+                                        <DataGridTextColumn Header="Fecha Nacimiento" Binding="{Binding docente_.fecha_nacimiento, StringFormat={}{0:dd/MM/yyyy}}"/>
+                                        <DataGridTextColumn Header="Apellido y nombre" Binding="{Binding docente_.Label}"/>
                                         <DataGridTextColumn Header="REV" Binding="{Binding rev}"/>
-                                        <DataGridTextColumn Header="MOD" Binding="{Binding plan__Label}"/>
-                                        <DataGridTextColumn Header="ASIG" Binding="{Binding asignatura__codigo}"/>
-                                        <DataGridTextColumn Header="HS CAT" Binding="{Binding curso__horas_catedra}"/>
+                                        <DataGridTextColumn Header="MOD" Binding="{Binding curso_.disposicion_.planificacion_.plan_.Label}"/>
+                                        <DataGridTextColumn Header="ASIG" Binding="{Binding curso_.disposicion_.asignatura_.codigo}"/>
+                                        <DataGridTextColumn Header="HS CAT" Binding="{Binding curso_.horas_catedra}"/>
                                         <DataGridTextColumn Header="FUNCION" Binding="{Binding funcion}"/>
-                                        <DataGridTextColumn Header="AÑO" Binding="{Binding planificacion__anio}"/>
-                                        <DataGridTextColumn Header="SECCION" Binding="{Binding planificacion__semestre}"/>
-                                        <DataGridTextColumn Header="TURNO" Binding="{Binding planificacion__Label}"/>
+                                        <DataGridTextColumn Header="AÑO" Binding="{Binding curso_.disposicion_.planificacion_.anio}"/>
+                                        <DataGridTextColumn Header="SECCION" Binding="{Binding curso_.disposicion_.planificacion_.semestre}"/>
+                                        <DataGridTextColumn Header="TURNO" Binding="{Binding curso_.disposicion_.planificacion_.Label}"/>
                                         <DataGridTextColumn Header="TIPO" Binding="{Binding tipo_movimiento}"/>
                                         <DataGridTextColumn Header="DIA" Binding="{Binding dia_desde}"/>
                                         <DataGridTextColumn Header="MES" Binding="{Binding mes_desde}"/>

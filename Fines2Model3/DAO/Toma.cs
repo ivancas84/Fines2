@@ -12,6 +12,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Where(@"
                     $calendario__id = @0 
                     AND ($estado = 'Aprobada' OR $estado = 'Pendiente')
+                    AND $estado_contralor != 'Modificar'
                 ")
                 .Param("@0", idCalendario);
         }
@@ -23,7 +24,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Size(0)
                 .Where(@"
                     $calendario__id = @0 
-                    AND $estado != 'Aprobada'
+                    AND ($estado != 'Aprobada' OR $estado_contralor = 'Modificar')
                 ")
                 .Param("@0", idCalendario);
         }
