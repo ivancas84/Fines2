@@ -10,7 +10,9 @@ using FinesApp.Contracts.Views;
 using MahApps.Metro.Controls;
 
 using QuestPDF.Infrastructure;
+
 using SqlOrganize.Sql.Fines2Model3;
+using WpfUtils;
 
 namespace FinesApp.Views;
 
@@ -23,10 +25,14 @@ public partial class ShellWindow : MetroWindow, IShellWindow, INotifyPropertyCha
 
     private void OnRefresh(object sender, RoutedEventArgs e)
     {
-        Context.db.cache.Dispose(); //dispose cache (opcional)
-        Context.db.cache = Context.CreateCache(); //crear nueva instancia de Cache  (opcional)
         _navigationService.Refresh();
 
+    }
+    private void OnClearCache(object sender, RoutedEventArgs e)
+    {
+        Context.db.cache.Dispose(); //dispose cache (opcional)
+        Context.db.cache = Context.CreateCache(); //crear nueva instancia de Cache  (opcional)
+        ToastExtensions.Show("Cache eliminada.");
     }
 
     public bool CanGoBack
@@ -111,6 +117,9 @@ public partial class ShellWindow : MetroWindow, IShellWindow, INotifyPropertyCha
 
     private void OnMenuViewsAdministrarToma(object sender, RoutedEventArgs e)
         => _navigationService.NavigateTo(typeof(AdministrarTomaPage), null, true);
+
+    private void OnMenuViewsAdministrarComision(object sender, RoutedEventArgs e)
+        => _navigationService.NavigateTo(typeof(AdministrarComisionPage), null, true);
 
     public event PropertyChangedEventHandler PropertyChanged;
 

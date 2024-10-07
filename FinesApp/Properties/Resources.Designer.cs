@@ -304,5 +304,27 @@ namespace FinesApp.Properties {
                 return ResourceManager.GetString("ShellMenuItemViewsAdministrarTomaPageHeader", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to AdministrarComision.
+        /// </summary>
+        public static string AdministrarComisionPageTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("AdministrarComisionPageTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to MenuItemViewsAdministrarComisionPageHeader.
+        /// </summary>
+        public static string ShellMenuItemViewsAdministrarComisionPageHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("ShellMenuItemViewsAdministrarComisionPageHeader", resourceCulture);
+            }
+        }
     }
 }

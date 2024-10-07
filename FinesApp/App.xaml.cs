@@ -118,6 +118,8 @@ public partial class App : Application
 
         services.AddTransient<AdministrarTomaPage>();
 
+        services.AddTransient<AdministrarComisionPage>();
+
         // Configuration
         services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
     }

@@ -31,8 +31,19 @@
                 AutomationProperties.Name="Recargar"
                 ToolTip="Recargar"
                 Click="OnRefresh">
-                <TextBlock
+                            <TextBlock
                     Text="&#xE72C;"
+                    FontSize="14"
+                    FontFamily="Segoe MDL2 Assets"
+                    AutomationProperties.Name="Recargar" />
+            </Button>
+            <Button
+                Width="{Binding ElementName=hamburgerMenu, Path=CompactPaneLength}"
+                AutomationProperties.Name="Recargar"
+                ToolTip="Recargar"
+                Click="OnClearCache">
+                <TextBlock
+                    Text="&#xECC9;"
                     FontSize="14"
                     FontFamily="Segoe MDL2 Assets"
                     AutomationProperties.Name="Recargar" />
@@ -79,6 +90,7 @@
                             <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsCursosSemestrePageHeader}" Click="OnMenuViewsCursosSemestre" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
                             <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsSedesSemestrePageHeader}" Click="OnMenuViewsSedesSemestre" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
                             <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsAdministrarTomaPageHeader}" Click="OnMenuViewsAdministrarToma" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
+                            <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsAdministrarComisionPageHeader}" Click="OnMenuViewsAdministrarComision" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
                         </MenuItem>
                         
                     </Menu>
