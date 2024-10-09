@@ -29,7 +29,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             IEnumerable<Dictionary<string, object?>> distribucionesHorariasData = Context.db.Sql("distribucion_horaria").
                 Select("SUM($horas_catedra) AS suma_horas_catedra").
-                Group("$disposicion__asignatura").
+                Group("$disposicion__asignatura, $disposicion__id").
                 Where("$disposicion__planificacion IN ( @0 )").
                 Param("@0", planificacion).
                 Dicts();
@@ -38,9 +38,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             {
                 Curso curso = new Curso();
                 curso.comision = id;
-                curso.disposicion = (string)dh["disposicion"]!;
-                curso.horas_catedra = (int)dh["suma_horas_catedra"]!;
-                curso.Default();
+                curso.disposicion = (string)dh["disposicion__id"]!;
+                curso.horas_catedra = Convert.ToInt32(dh["suma_horas_catedra"]!);
                 curso.Reset();
                 persist.Insert(curso);
             }

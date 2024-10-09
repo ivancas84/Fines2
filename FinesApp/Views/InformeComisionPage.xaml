@@ -75,27 +75,28 @@
                             <DataGrid Name="cursoDataGrid" AutoGenerateColumns="false" IsReadOnly="true">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="#" Binding="{Binding Index}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Asignatura" Binding="{Binding asignatura__nombre}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Código" Binding="{Binding asignatura__codigo}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Asignatura" Binding="{Binding id}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Asignatura" Binding="{Binding disposicion_.asignatura_.nombre}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Código" Binding="{Binding disposicion_.asignatura_.codigo}"></DataGridTextColumn>
                                     <DataGridTextColumn Header="Hs Cat" Binding="{Binding horas_catedra}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Apellidos" Binding="{Binding toma_docente__apellidos}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Nombres" Binding="{Binding toma_docente__nombres}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="DNI" Binding="{Binding toma_docente__numero_documento}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Telefono" Binding="{Binding toma_docente__telefono}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Email" Binding="{Binding toma_docente__email}"></DataGridTextColumn>
-                                    <DataGridTextColumn Header="Email ABC" Binding="{Binding toma_docente__email_abc}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Apellidos" Binding="{Binding toma_docente_.apellidos}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Nombres" Binding="{Binding toma_docente_.nombres}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="DNI" Binding="{Binding toma_docente_.numero_documento}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Telefono" Binding="{Binding toma_docente_.telefono}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Email" Binding="{Binding toma_docente_.email}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Email ABC" Binding="{Binding toma_docente_.email_abc}"></DataGridTextColumn>
                                     <DataGridTemplateColumn Header="WhatsApp" >
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
                                                 <TextBlock>
-											<Hyperlink Click="WhatsAppLink_Click" Tag="{Binding toma_docente__telefono}">
+											<Hyperlink Click="WhatsAppLink_Click" Tag="{Binding toma_docente_.telefono}">
 												<TextBlock Text="Mensaje" />
 											</Hyperlink>
 										</TextBlock>
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
-                                    <DataGridTextColumn Header="Teléfono" Binding="{Binding toma_docente__telefono}" Visibility="Hidden" />
+                                    <DataGridTextColumn Header="Teléfono" Binding="{Binding toma_docente_.telefono}" Visibility="Hidden" />
 
                                 </DataGrid.Columns>
 

@@ -210,14 +210,22 @@ namespace SqlOrganize.Sql
                     propertyInfo.SetValue(this, Convert.ChangeType(value, propertyInfo.PropertyType));
                     return;
 
+                case "int":
+                    if (value is decimal)
+                    {
+                        propertyInfo.SetValue(this, value);
+                        return;
+                    }
+                    propertyInfo.SetValue(this, Convert.ToInt32(value));
+                    return;
+
                 case "decimal":
                     if (value is decimal)
                     {
                         propertyInfo.SetValue(this, value);
                         return;
                     }
-                    var v = value.ToString().Replace('.', ',')!;
-                    propertyInfo.SetValue(this, Convert.ChangeType(v, propertyInfo.PropertyType));
+                    propertyInfo.SetValue(this, Convert.ToDecimal(value.ToString()!.Replace('.', ',')!));
                     return;
 
 

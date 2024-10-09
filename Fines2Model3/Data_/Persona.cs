@@ -255,19 +255,19 @@ namespace SqlOrganize.Sql.Fines2Model3
         public void ResetDiaNacimiento()
         {
             if (!fecha_nacimiento.IsNoE() && dia_nacimiento.IsNoE())
-                Set("dia_nacimiento", ((DateTime)fecha_nacimiento!).Day);
+                dia_nacimiento = Convert.ToByte(((DateTime)fecha_nacimiento!).Day);
         }
 
         public void ResetMesNacimiento()
         {
-            if (!fecha_nacimiento.IsNoE() && dia_nacimiento.IsNoE())
-                Set("mes_nacimiento", ((DateTime)fecha_nacimiento!).Month);
+            if (!fecha_nacimiento.IsNoE() && mes_nacimiento.IsNoE())
+                mes_nacimiento = Convert.ToByte(((DateTime)fecha_nacimiento!).Month);
         }
 
         public void ResetAnioNacimiento()
         {
-            if (!fecha_nacimiento.IsNoE() && dia_nacimiento.IsNoE())
-                Set("anio_nacimiento", ((DateTime)fecha_nacimiento!).Year);
+            if (!fecha_nacimiento.IsNoE() && anio_nacimiento.IsNoE())
+                anio_nacimiento = Convert.ToUInt16(((DateTime)fecha_nacimiento!).Year);
         }
 
         public void ResetNumeroDocumento()

@@ -171,7 +171,7 @@ WHERE " + id + " = @update_" + i + @";
         public PersistContext UpdateField(Entity data, string fieldName, object? newValue)
         {
             UpdateFieldIds(data.entityName, fieldName, newValue, data.GetPropertyValue(Db.config.id));
-            data.SetPropertyValue(fieldName, newValue);
+            data.Sset(fieldName, newValue);
             return this;
         }
 

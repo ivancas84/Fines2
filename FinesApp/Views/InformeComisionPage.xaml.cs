@@ -104,53 +104,54 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
             var asignacionesData = AsignacionDAO.AsignacionesDeComisionesSql(comision.id).Cache().Dicts();
 
-            var idAlumnos = asignacionesData.ColOfVal<object>("alumno").ToArray();
+            if (asignacionesData.Any()) { 
+                var idAlumnos = asignacionesData.ColOfVal<object>("alumno").ToArray();
 
-            var calificacionesData = CalificacionDAO.CalificacionesAprobadasPorAlumnoDePlanificacionSql(comision.planificacion, idAlumnos).Cache().Dicts().DictOfListByKeys("alumno");
+                var calificacionesData = CalificacionDAO.CalificacionesAprobadasPorAlumnoDePlanificacionSql(comision.planificacion, idAlumnos).Cache().Dicts().DictOfListByKeys("alumno");
 
 
-
-            asignacionOC.Clear();
-            foreach (var asi in asignacionesData)
-            {
-                var itemObj = Entity.CreateFromDict<AsignacionConAsignaturasItem>(asi);
-                if (calificacionesData.ContainsKey(itemObj.alumno))
+                asignacionOC.Clear();
+                foreach (var asi in asignacionesData)
                 {
-                    foreach (var cal in calificacionesData[itemObj.alumno])
+                    var itemObj = Entity.CreateFromDict<AsignacionConAsignaturasItem>(asi);
+                    if (calificacionesData.ContainsKey(itemObj.alumno))
                     {
-                        itemObj.cantidad_aprobadas++;
-                        var calificacionObj = Entity.CreateFromDict<Calificacion>(cal);
-
-                        int index = idsAsignaturas.IndexOf(calificacionObj.disposicion_.asignatura_.id);
-                        switch (index)
+                        foreach (var cal in calificacionesData[itemObj.alumno])
                         {
-                            case 0: 
-                                itemObj.asignatura0 = calificacionObj.nota_aprobada; 
-                            break;
+                            itemObj.cantidad_aprobadas++;
+                            var calificacionObj = Entity.CreateFromDict<Calificacion>(cal);
 
-                            case 1:
-                                itemObj.asignatura1 = calificacionObj.nota_aprobada;  
-                            break;
-
-                            case 2:
-                                itemObj.asignatura2 = calificacionObj.nota_aprobada;
+                            int index = idsAsignaturas.IndexOf(calificacionObj.disposicion_.asignatura_.id);
+                            switch (index)
+                            {
+                                case 0: 
+                                    itemObj.asignatura0 = calificacionObj.nota_aprobada; 
                                 break;
 
-                            case 3:
-                                itemObj.asignatura3 = calificacionObj.nota_aprobada;
+                                case 1:
+                                    itemObj.asignatura1 = calificacionObj.nota_aprobada;  
                                 break;
 
-                            case 4:
-                                itemObj.asignatura4 = calificacionObj.nota_aprobada;
-                                break;
+                                case 2:
+                                    itemObj.asignatura2 = calificacionObj.nota_aprobada;
+                                    break;
+
+                                case 3:
+                                    itemObj.asignatura3 = calificacionObj.nota_aprobada;
+                                    break;
+
+                                case 4:
+                                    itemObj.asignatura4 = calificacionObj.nota_aprobada;
+                                    break;
+                            }
+
                         }
-
                     }
+                    asignacionOC.Add(itemObj);
                 }
-                asignacionOC.Add(itemObj);
+                //Context.db.AddEntityToClearOC(data, alumnos3OC);
             }
-            //Context.db.AddEntityToClearOC(data, alumnos3OC);
-        
+
         }
         catch (Exception ex)
         {
