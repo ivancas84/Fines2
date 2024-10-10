@@ -276,6 +276,15 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             foreach (var item in tomas)
             {
                 TomaContralorItem tomaObj = Entity.CreateFromDict<TomaContralorItem>(item);
+                tomaObj.dia_desde = ((DateTime)tomaObj.fecha_toma).Day.ToString();
+                tomaObj.mes_desde = ((DateTime)tomaObj.fecha_toma).Month.ToString();
+                tomaObj.anio_desde = ((DateTime)tomaObj.fecha_toma).Year.ToString().Substring(2);
+
+                tomaObj.dia_hasta = ((DateTime)tomaObj.curso_.comision_.calendario_.fin).Day.ToString();
+                tomaObj.mes_hasta = ((DateTime)tomaObj.curso_.comision_.calendario_.fin).Month.ToString();
+                tomaObj.anio_hasta = ((DateTime)tomaObj.curso_.comision_.calendario_.fin).Year.ToString().Substring(2);
+
+
                 tomaObj.docente_.numero_documento = tomaObj.docente_.numero_documento;
                 tomaObj.docente_.Label = tomaObj.docente_.apellidos!.ToUpper() + " " + tomaObj.docente_.nombres!.ToTitleCase();
                 tomaObj.curso_.disposicion_.planificacion_.plan_.Label = tomaObj.curso_.disposicion_.planificacion_.plan_.orientacion!.Acronym();
@@ -617,38 +626,18 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
             get { return "PF"; }
         }
 
-        public string dia_desde
-        {
-            get { return "12"; }
-        }
+        public string dia_desde { set; get; } = "12";
+      
+        public string mes_desde { set; get; } = "08";
+       
+        public string anio_desde { set; get; } = "24";
+     
+        public string dia_hasta { set; get; } = "13";
+        
 
-        public string mes_desde
-        {
-            get { return "08"; }
-        }
-
-        public string anio_desde
-        {
-            get { return "24"; }
-        }
-
-        public string dia_hasta
-        {
-            get { return "13"; }
-        }
-
-        public string mes_hasta
-        {
-            get { return "12"; }
-        }
-
-        public string anio_hasta
-        {
-            get { return "24"; }
-        }
-
-
-
+        public string mes_hasta { set; get; } = "12";
+       
+        public string anio_hasta { set; get; } = "24";
 
     }
 
