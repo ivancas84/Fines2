@@ -1,12 +1,15 @@
 ﻿using Newtonsoft.Json;
 using Org.BouncyCastle.Tsp;
+using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql;
 using SqlOrganize.Sql.Fines2Model3;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SqlOrganize.CollectionUtils;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -48,6 +51,15 @@ namespace SqlOrganize.Sql.Fines2Model3
             set { _toma_activa_ = value; NotifyPropertyChanged(nameof(toma_activa_)); }
         }
 
+        public void ConsultarCalificacionesAprobadasAsignacionesDesaprobadas()
+        {
+            if (id.IsNoE())
+                throw new Exception("Id no definido");
 
+            CalificacionDAO.CalificacionAprobadaCursoSql(id).Cache().AddEntityToClearOC(Calificacion_);
+            var idAlumnosConCalificacionAprobada = Calificacion_.ColOfProp<object, Calificacion>("alumno");
+
+            AsignacionDAO.AsignacionesActivasRestantesComisionSql(comision!, idAlumnosConCalificacionAprobada).Cache().AddEntityToClearOC(comision_!.AlumnoComision_);
+        }
     }
 }

@@ -39,14 +39,14 @@
             </Button>
             <Button
                 Width="{Binding ElementName=hamburgerMenu, Path=CompactPaneLength}"
-                AutomationProperties.Name="Recargar"
-                ToolTip="Recargar"
+                AutomationProperties.Name="Borrar cache"
+                ToolTip="Borrar cache"
                 Click="OnClearCache">
                 <TextBlock
                     Text="&#xECC9;"
                     FontSize="14"
                     FontFamily="Segoe MDL2 Assets"
-                    AutomationProperties.Name="Recargar" />
+                    AutomationProperties.Name="Borrar cache" />
             </Button>
         </controls:WindowCommands>
     </controls:MetroWindow.LeftWindowCommands>
@@ -83,7 +83,6 @@
                         </MenuItem>
                         <MenuItem Header="{x:Static properties:Resources.ShellMenuViewsHeader}" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}">
                             <!--TODO: Review the MenuItem headers in Resources.resx file for all of your views and place '_' before the letter that you want to use for menu keyboard usage-->
-                            <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsProcesarPlanillaCalificacionesPageHeader}" Click="OnMenuViewsProcesarPlanillaCalificaciones" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
                             <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsTransferirAlumnoPageHeader}" Click="OnMenuViewsTransferirAlumno" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
                             <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsTomasSemestrePageHeader}" Click="OnMenuViewsTomasSemestre" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />
                             <MenuItem Header="{x:Static properties:Resources.ShellMenuItemViewsComisionesSemestrePageHeader}" Click="OnMenuViewsComisionesSemestre" AutomationProperties.Name="{Binding Header, RelativeSource={RelativeSource Self}}" />

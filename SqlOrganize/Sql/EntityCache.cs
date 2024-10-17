@@ -231,6 +231,14 @@ namespace SqlOrganize.Sql
             return (dict.IsNoE()) ? null : Entity.CreateFromDict<T>(dict!);
         }
 
+        public T SetEntity<T>(T entity) where T : Entity, new()
+        {
+            IDictionary<string, object?>? dict = Dict();
+            entity.Set(dict!);
+            return entity;
+
+        }
+
         /// <summary>Organiza los elementos a consultar y efectua la consulta a la base de datos.</summary>
         protected IEnumerable<Dictionary<string, object?>> BuildDicts(List<string> fields, params object[] ids)
         {

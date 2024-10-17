@@ -11,58 +11,60 @@ using WpfUtils.Controls;
 using System.Windows.Input;
 using System.Linq;
 using WpfUtils.Fines;
+using FinesApp.Contracts.Services;
+using FinesApp.Contracts.Views;
+
 
 namespace FinesApp.Views;
 
-public partial class ProcesarPlanillaCalificacionesPage : Page
+public partial class ProcesarPlanillaCalificacionesPage : Page, INavigationAware
 {
+    private readonly INavigationService _navigationService;
 
-    #region Autocomplete v3 - organismo
-    private ObservableCollection<SqlOrganize.Sql.Fines2Model3.Curso> cursoOC = new(); //datos consultados de la base de datos
-    private DispatcherTimer cursoTypingTimer; //timer para buscar
-    #endregion
+    private Curso curso;
 
     private ObservableCollection<Calificacion> calificacionProcesadaOC = new();
-    private ObservableCollection<Calificacion> calificacionAprobadaOC = new(); //calificaciones aprobadas del curso
-    private ObservableCollection<AlumnoComision> asignacionDesaprobadaOC = new(); //asignaciones activas que no figuran aprobadas del curso
 
     List<PersistContext> persists = new();
 
     private ObservableCollection<string> dnisProcesados = new();
-    public ProcesarPlanillaCalificacionesPage()
+    public ProcesarPlanillaCalificacionesPage(INavigationService navigationService)
     {
+        _navigationService = navigationService;
+
         InitializeComponent();
+
         calificacionDataGrid.ItemsSource = calificacionProcesadaOC;
-        cursoComboBox.InitComboBoxConstructor(cursoOC);
-        cursoTypingTimer = new DispatcherTimer
+
+
+    }
+
+    #region INavigationAware
+    public void OnNavigatedTo(object parameter)
+    {
+        try
         {
-            Interval = TimeSpan.FromMilliseconds(300)
-        };
-        cursoTypingTimer.Tick += CursoTimer_Tick;
+            curso = Context.db.Sql("curso").Equal("$id", parameter).Cache().ToEntity<Curso>();
+            tbxCurso.Text = curso.Label;
 
-        calificacionAprobadaDataGrid.ItemsSource = calificacionAprobadaOC;
-        asignacionDesaprobadaDataGrid.ItemsSource = asignacionDesaprobadaOC;
+            calificacionAprobadaDataGrid.ItemsSource = curso.Calificacion_;
+            asignacionDesaprobadaDataGrid.ItemsSource = curso.comision_.AlumnoComision_;
 
+        } catch(Exception ex) {
+            ex.ToastException();
+        }
     }
 
-    #region Autocomplete v3 - organismo
-    private void CursoTimer_Tick(object sender, EventArgs e)
+    public void OnNavigatedFrom()
     {
-        cursoComboBox.SetCursoTimerTick(cursoTypingTimer, cursoOC);
-    }
-
-    private void CursoAutocompleteComboBox_KeyUp(object sender, KeyEventArgs e)
-    {
-        cursoTypingTimer.SetKeyUp(e);
     }
     #endregion
-
     private void GuardarButton_Click(object sender, RoutedEventArgs e)
     {
         try
         {
             Context.db.ProcessQueue();
-            CursoWpfUtils.ConsultarCalificacionesAprobadasAsignacionesDesaprobadas(cursoComboBox.SelectedValue, calificacionAprobadaOC, asignacionDesaprobadaOC);
+            curso.ConsultarCalificacionesAprobadasAsignacionesDesaprobadas();
 
             ToastExtensions.Show("Registro realizado exitosamente");
         } catch (Exception ex)
@@ -73,7 +75,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
 
     private void EliminarButton_Click(object sender, RoutedEventArgs e)
     {
-        var calificaciones = CalificacionDAO.CalificacionesCursoSql(cursoComboBox.SelectedValue).Cache().Dicts().ColOfVal<object>("id");
+        var calificaciones = CalificacionDAO.CalificacionesCursoSql(curso.id).Cache().Dicts().ColOfVal<object>("id");
 
         if (!calificaciones.Any())
         {
@@ -104,14 +106,14 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
             return;
         }
 
-        var cursoSeleccionado = (SqlOrganize.Sql.Fines2Model3.Curso)cursoComboBox.SelectedItem;
-        if (cursoSeleccionado.IsNoE())
+        if (curso == null)
         {
             ToastExtensions.Show("Falta seleccionar el curso");
             return;
         }
 
-        CursoWpfUtils.ConsultarCalificacionesAprobadasAsignacionesDesaprobadas(cursoSeleccionado.id, calificacionAprobadaOC, asignacionDesaprobadaOC);
+
+        curso.ConsultarCalificacionesAprobadasAsignacionesDesaprobadas();
 
         dnisProcesados.Clear();
         calificacionProcesadaOC.Clear();
@@ -123,6 +125,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
             try
             {
                 Calificacion calificacion = new Calificacion ();
+                calificacion.curso_ = curso;
 
                 if (sourceComboBox.SelectedItem.ToString().Contains("Programa"))
                     calificacion.SetFromProgramaFines(_data[j]);
@@ -132,11 +135,12 @@ public partial class ProcesarPlanillaCalificacionesPage : Page
                 if (dnisProcesados.Contains(calificacion.alumno_.persona_.numero_documento))
                     throw new Exception("El DNI ya se encuentra procesado");
 
-                //TODO QUE ES LO QUE HAY QUE PROCESAR ACA
+                calificacion.Persist1();
                 //calificacion.PersistProcesarCurso(cursoSeleccionado.id).AddToIfSql(persists);
 
-
                 dnisProcesados.Add(calificacion.alumno_.persona_.numero_documento);
+
+                calificacion.Msg = calificacion.Logging.ToString();
 
                 calificacionProcesadaOC.Add(calificacion);
             }

@@ -36,7 +36,7 @@
 				</Grid.ColumnDefinitions>
 
 				<GroupBox
-					Name="formGroupBox"
+					Name="fbxSearch"
 					Margin="10">
 					<GroupBox.Header>
 						<Label Foreground="White">Formulario de Búsqueda</Label>
@@ -66,16 +66,12 @@
 							Margin = "2">
 							_Curso:
 						</Label>
-						<ComboBox
+						<TextBox
 							Margin = "3, 0, 3, 3"
 							Grid.Row="1"
 							Grid.Column="0"
-							Name="cursoComboBox"
-							IsTextSearchEnabled="False"
-							IsEditable="True"
-							StaysOpenOnEdit="True"
-							KeyUp="CursoAutocompleteComboBox_KeyUp"
-							 />
+							Name="tbxCurso"
+						/>
 
 						<Label
 							Grid.Row="0"

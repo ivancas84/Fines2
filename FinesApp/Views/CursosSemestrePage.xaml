@@ -68,8 +68,16 @@
 							<DataGridTextColumn Header="Asignatura" Binding="{Binding disposicion_.asignatura_.Label}"></DataGridTextColumn>
                             <DataGridTextColumn Header="Planificacion" Binding="{Binding disposicion_.planificacion_.Label}"></DataGridTextColumn>
 							<DataGridTextColumn Header="Horario" Binding="{Binding descripcion_horario}"></DataGridTextColumn>
-                            <DataGridTextColumn Header="Horario" Binding="{Binding toma_docente__Label}"></DataGridTextColumn>
-
+                            <DataGridTextColumn Header="Docente" Binding="{Binding toma_docente_.Label}"></DataGridTextColumn>
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <WrapPanel>
+                                            <Button Click="btnAgregarPlanilla_Click">Agregar Planilla</Button>
+                                        </WrapPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
                         </DataGrid.Columns>
 					</DataGrid>
 

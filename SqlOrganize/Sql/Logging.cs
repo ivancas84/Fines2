@@ -142,6 +142,17 @@ namespace SqlOrganize.Sql
         }
 
 
+        public void Merge(Logging logging)
+        {
+            foreach (var (key, logs) in logging.logs)
+            {
+                if (!this.logs.ContainsKey(key))
+                    this.logs[key] = new();
+
+                foreach (var log in logs)
+                    this.logs[key].Add(log);
+            }
+        }
 
     }
 }

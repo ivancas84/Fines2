@@ -23,18 +23,7 @@ namespace WpfUtils.Fines
             cursoComboBox.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
         }
 
-        public static void ConsultarCalificacionesAprobadasAsignacionesDesaprobadas(object curso, ObservableCollection<Calificacion> calificacionAprobadaOC, ObservableCollection<AlumnoComision> asignacionDesaprobadaOC)
-        {
-            var cursoData = Context.db.Sql("curso").Cache().Id(curso);
-
-            var calificacionAprobadaData = CalificacionDAO.CalificacionAprobadaCursoSql(curso).Cache().Dicts();
-            Context.db.AddEntityToClearOC(calificacionAprobadaData, calificacionAprobadaOC);
-
-            var alumnosConCalificacionAprobada = calificacionAprobadaData.ColOfVal<object>("alumno");
-            var asignacionDesaprobadaData = AsignacionDAO.AsignacionesActivasRestantesComisionSql(cursoData["comision"], alumnosConCalificacionAprobada).Cache().Dicts();
-
-            Context.db.AddEntityToClearOC(asignacionDesaprobadaData, asignacionDesaprobadaOC);
-        }
+       
 
     }
 }

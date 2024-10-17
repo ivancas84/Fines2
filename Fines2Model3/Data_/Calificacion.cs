@@ -129,6 +129,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             var calificacionError = new Calificacion();
             calificacionError.Status = "Error";
             calificacionError.Msg += "Id " + id + ": " + message;
+            calificacionError.alumno_ = new();
+            calificacionError.alumno_.persona_ = new();
             calificacionError.alumno_.persona_.nombres = nombres;
             return calificacionError;
         }
@@ -139,13 +141,19 @@ namespace SqlOrganize.Sql.Fines2Model3
         public object Persist1()
         {
             var persist = db.Persist();
-            
+
             Reset();
 
-            alumno_!.persona = (string)persist.Persist(alumno_!.persona_!);
+            CompareParams cmp = new()
+            {
+                IgnoreNull = true,
+                IgnoreNonExistent = true,
+                FieldsToCompare = new List<string>() { "nombres", "apellidos", "numero_documento" }
+            };
+            alumno_!.persona = (string)persist.PersistCompare(alumno_!.persona_!, cmp);
             alumno_.plan = curso_!.comision_!.planificacion_!.plan;
-            alumno = (string)persist.Persist(alumno_!); 
-            
+            alumno = (string)persist.Persist(alumno_!);
+
             AlumnoComision alumnoComision = new AlumnoComision();
             alumnoComision.comision_ = curso_!.comision_;
             alumnoComision.alumno_ = alumno_;
@@ -159,7 +167,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
             else
             {
-                if(calificacionExistente!.nota_aprobada.IsNoE())
+                if (calificacionExistente!.nota_aprobada.IsNoE())
                 {
                     Logging.AddLog("calificacion", "Existe calificacion desaprobada, se actualizara", "update", Logging.Level.Warning);
                     id = calificacionExistente.id;
@@ -170,6 +178,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                     Logging.AddLog("calificacion", "Ya existe calificacion aprobada con " + calificacionExistente.nota_aprobada, null, Logging.Level.Warning);
                 }
             }
+
+            Logging.Merge(Logging);
 
             return id;
         }

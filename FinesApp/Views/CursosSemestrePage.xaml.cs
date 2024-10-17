@@ -6,6 +6,8 @@ using System.Windows.Controls;
 using SqlOrganize.Sql;
 using WpfUtils.Controls;
 using SqlOrganize.CollectionUtils;
+using FinesApp.Contracts.Services;
+using WpfUtils;
 
 
 namespace FinesApp.Views;
@@ -14,9 +16,11 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
 {
     private ObservableCollection<Curso> ocCurso = new();
     private ObservableCollection<Calendario> ocCalendario = new();
+    private readonly INavigationService _navigationService;
 
-    public CursosSemestrePage()
+    public CursosSemestrePage(INavigationService navigationService)
     {
+        _navigationService = navigationService;
         InitializeComponent();
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
         Context.db.Sql("calendario").Cache().AddEntityToClearOC(ocCalendario);
@@ -67,4 +71,17 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     #endregion
 
+    private void btnAgregarPlanilla_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+        try
+        {
+            var button = (e.OriginalSource as Button);
+            var curso = (Curso)button.DataContext;
+            _navigationService.NavigateTo(typeof(ProcesarPlanillaCalificacionesPage), curso.id);
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
 }
