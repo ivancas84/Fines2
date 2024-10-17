@@ -124,7 +124,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page, INavigationAware
 
             try
             {
-                Calificacion calificacion = new Calificacion ();
+                Calificacion calificacion = new ();
                 calificacion.curso_ = curso;
 
                 if (sourceComboBox.SelectedItem.ToString().Contains("Programa"))
@@ -141,6 +141,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page, INavigationAware
                 dnisProcesados.Add(calificacion.alumno_.persona_.numero_documento);
 
                 calificacion.Msg = calificacion.Logging.ToString();
+                calificacion.Status = "Ok";
 
                 calificacionProcesadaOC.Add(calificacion);
             }

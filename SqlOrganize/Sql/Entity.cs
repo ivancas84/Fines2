@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 
-
 namespace SqlOrganize.Sql
 {
     /// <summary>
@@ -108,9 +107,9 @@ namespace SqlOrganize.Sql
 
 
         #region Status (propiedad opcional para indicar estado)
-        protected object _Status;
+        protected object? _Status;
 
-        public virtual object Status
+        public virtual object? Status
         {
             get { return _Status; }
             set
@@ -766,6 +765,17 @@ namespace SqlOrganize.Sql
                 }
             }
             return response;
+        }
+
+        public void ResetIdUnique()
+        {
+
+            IDictionary<string, object?>? row = SqlUnique().DictOne() ?? null;
+
+            if (row.IsNoE())
+                return;
+
+            Sset(db.config.id, row[db.config.id]);
         }
         #endregion
 

@@ -243,7 +243,7 @@ WHERE " + id + " = @update_" + i + @";
 
             IDictionary<string, object?>? row = data.SqlUnique().DictOne() ?? null;
 
-            if (row.IsNoE()) //actualizar
+            if (row.IsNoE()) //insertar
             {
                 if (!data.Check())
                     throw new Exception("Los campos a insertar poseen errores: " + data.Logging.ToString());
@@ -251,7 +251,50 @@ WHERE " + id + " = @update_" + i + @";
                 return Insert(data);
             }
 
+            data.Sset(Db.config.id, row[Db.config.id]);
+
             logging.AddLog(data.entityName, "Registro existente " + data.Label, "insert_if_not_exists", Logging.Level.Info);
+
+            return row[Db.config.id];
+        }
+
+        
+
+        /// <summary>
+        /// Verifica, a traves de campos unicos, si el registro existe.
+        /// Si existe, realiza una comparacion, 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="compare"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public object InsertIfNotExistsCompare(Entity data, CompareParams compare)
+        {
+            data.Reset();
+
+            IDictionary<string, object?>? row = data.SqlUnique().DictOne() ?? null;
+
+            if (row.IsNoE()) //actualizar
+            {
+                if (!data.Check())
+                    throw new Exception("Los campos a insertar poseen errores: " + data.Logging.ToString());
+
+                return Insert(data);
+            } else
+            {
+                //Se controla la existencia de id diferente? No! Se reasigna el id, dejo el codigo comentado
+                //if (v.values.ContainsKey(Db.config.id) && v.Get(Db.config.id).ToString() != rows.ElementAt(0)[Db.config.id].ToString())
+                //    throw new Exception("Los id son diferentes");
+                compare.Data = row!;
+                var response = data.Compare(compare);
+
+                if (!response.IsNoE())
+                    throw new Exception("Comparacion diferente: " + compare.Data.ToStringKeys(response.Keys.ToArray()));
+
+                data.Sset(Db.config.id, row[Db.config.id]);
+            }
+
+            logging.AddLog(data.entityName, "Registro existente " + data.Label, "insert_if_not_exists_compare", Logging.Level.Info);
 
             return row[Db.config.id];
         }
@@ -367,6 +410,8 @@ VALUES (";
             return Query(Db.Query());
         }
 
+        
+
 
         public object UpdateCompare(Entity dataToUpdate, Entity dataToCompare)
         {
@@ -425,6 +470,16 @@ VALUES (";
                     UpdateFieldIds(field.entityName, field.name, destinoId!, ids);
             }
             return this;
+        }
+
+        /// <summary>
+        /// Limpia los atributos sql 
+        /// </summary>
+        public void Clear()
+        {
+            sql = "";
+            count = 0;
+            _parameters = new();
         }
     }
 

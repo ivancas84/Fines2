@@ -145,11 +145,11 @@
 					</GroupBox.Header>
 					<DataGrid Name="calificacionDataGrid" IsReadOnly="True" AutoGenerateColumns="False">
 						<DataGrid.Columns>
-							<DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
-							<DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Nota Final" Binding="{Binding nota_final}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Error" Binding="{Binding IsError}"></DataGridTextColumn>
+							<DataGridTextColumn Header="Nombres" Binding="{Binding alumno_.persona_.nombres}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Apellidos" Binding="{Binding alumno_.persona_.apellidos}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="DNI" Binding="{Binding alumno_.persona_.numero_documento}"></DataGridTextColumn>
+							<DataGridTextColumn Header="Nota Aprobada" Binding="{Binding nota_aprobada}"></DataGridTextColumn>
+							<DataGridTextColumn Header="Estado" Binding="{Binding Status}"></DataGridTextColumn>
 							<DataGridTextColumn Header="Msg" Binding="{Binding Msg}"></DataGridTextColumn>
 
 						</DataGrid.Columns>
@@ -161,14 +161,14 @@
 					Grid.Row="2"
 					Margin="10">
 					<GroupBox.Header>
-						<Label Foreground="White">Asignaciones aprobadas</Label>
+						<Label Foreground="White">Asignaciones aprobadas existentes</Label>
 					</GroupBox.Header>
 					<DataGrid Name="calificacionAprobadaDataGrid" IsReadOnly="True" AutoGenerateColumns="False">
 						<DataGrid.Columns>
-							<DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
-							<DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Nota Final" Binding="{Binding nota_final}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Nombres" Binding="{Binding alumno_.persona_.nombres}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Apellidos" Binding="{Binding alumno_.persona_.apellidos}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="DNI" Binding="{Binding alumno_.persona_.numero_documento}"></DataGridTextColumn>
+							<DataGridTextColumn Header="Nota Aprobada" Binding="{Binding nota_aprobada}"></DataGridTextColumn>
 						</DataGrid.Columns>
 					</DataGrid>
 				</GroupBox>
@@ -178,13 +178,13 @@
 					Grid.Row="3"
 					Margin="10">
 					<GroupBox.Header>
-						<Label Foreground="White">Asignaciones desaprobadas</Label>
+						<Label Foreground="White">Asignaciones desaprobadas existentes</Label>
 					</GroupBox.Header>
 					<DataGrid Name="asignacionDesaprobadaDataGrid" IsReadOnly="True" AutoGenerateColumns="False">
 						<DataGrid.Columns>
-							<DataGridTextColumn Header="Nombres" Binding="{Binding persona__nombres}"></DataGridTextColumn>
-							<DataGridTextColumn Header="Apellidos" Binding="{Binding persona__apellidos}"></DataGridTextColumn>
-							<DataGridTextColumn Header="DNI" Binding="{Binding persona__numero_documento}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Nombres" Binding="{Binding alumno_.persona_.nombres}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Apellidos" Binding="{Binding alumno_.persona_.apellidos}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="DNI" Binding="{Binding alumno_.persona_.numero_documento}"></DataGridTextColumn>
 						</DataGrid.Columns>
 					</DataGrid>
 				</GroupBox>

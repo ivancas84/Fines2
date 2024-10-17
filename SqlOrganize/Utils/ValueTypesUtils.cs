@@ -109,9 +109,6 @@ namespace SqlOrganize.ValueTypesUtils
             }
         }
 
-
-
-
         public static char ToChar(this string @this)
         {
             return @this.ToCharArray()[0];

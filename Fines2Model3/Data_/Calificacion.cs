@@ -142,46 +142,57 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             var persist = db.Persist();
 
-            Reset();
-
-            CompareParams cmp = new()
+            try
             {
-                IgnoreNull = true,
-                IgnoreNonExistent = true,
-                FieldsToCompare = new List<string>() { "nombres", "apellidos", "numero_documento" }
-            };
-            alumno_!.persona = (string)persist.PersistCompare(alumno_!.persona_!, cmp);
-            alumno_.plan = curso_!.comision_!.planificacion_!.plan;
-            alumno = (string)persist.Persist(alumno_!);
 
-            AlumnoComision alumnoComision = new AlumnoComision();
-            alumnoComision.comision_ = curso_!.comision_;
-            alumnoComision.alumno_ = alumno_;
-            persist.Persist(alumnoComision);
+                Reset();
 
-            Calificacion? calificacionExistente = CalificacionDAO.CalificacionDisposicionAlumnosSql(curso_.disposicion!, alumno).Cache().ToEntity<Calificacion>();
-
-            if (calificacionExistente.IsNoE())
-            {
-                persist.Insert(this);
-            }
-            else
-            {
-                if (calificacionExistente!.nota_aprobada.IsNoE())
+                CompareParams cmp = new()
                 {
-                    Logging.AddLog("calificacion", "Existe calificacion desaprobada, se actualizara", "update", Logging.Level.Warning);
-                    id = calificacionExistente.id;
-                    persist.UpdateField(this, "nota_final");
+                    IgnoreNull = true,
+                    IgnoreNonExistent = true,
+                    FieldsToCompare = new List<string>() { "nombres", "apellidos", "numero_documento" }
+                };
+
+                alumno_.persona_.CompareUnique(cmp);
+                alumno_!.persona = (string)persist.InsertIfNotExistsCompare(alumno_!.persona_!, cmp);
+                alumno_.plan = curso_!.comision_!.planificacion_!.plan;
+                alumno = (string)persist.InsertIfNotExists(alumno_!);
+
+                AlumnoComision alumnoComision = new AlumnoComision();
+                alumnoComision.comision_ = curso_!.comision_;
+                alumnoComision.alumno_ = alumno_;
+                persist.InsertIfNotExists(alumnoComision);
+
+                Calificacion? calificacionExistente = CalificacionDAO.CalificacionDisposicionAlumnosSql(curso_.disposicion!, alumno).Cache().ToEntity<Calificacion>();
+
+                if (calificacionExistente.IsNoE())
+                {
+                    persist.Insert(this);
                 }
                 else
                 {
-                    Logging.AddLog("calificacion", "Ya existe calificacion aprobada con " + calificacionExistente.nota_aprobada, null, Logging.Level.Warning);
+                    if (calificacionExistente!.nota_aprobada.IsNoE())
+                    {
+                        Logging.AddLog("calificacion", "Existe calificacion desaprobada, se actualizara", "update", Logging.Level.Warning);
+                        id = calificacionExistente.id;
+                        persist.UpdateField(this, "nota_final");
+                        persist.UpdateField(this, "crec");
+                    }
+                    else
+                    {
+                        Logging.AddLog("calificacion", "Ya existe calificacion aprobada con " + calificacionExistente.nota_aprobada, null, Logging.Level.Warning);
+                    }
                 }
+
+                Logging.Merge(persist.logging);
+
+                return id!;
+            } catch (Exception)
+            {
+                persist.Clear();
+                throw;
             }
-
-            Logging.Merge(Logging);
-
-            return id;
         }
 
     }
