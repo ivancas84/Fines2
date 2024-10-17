@@ -154,7 +154,6 @@ namespace SqlOrganize.Sql.Fines2Model3
                     FieldsToCompare = new List<string>() { "nombres", "apellidos", "numero_documento" }
                 };
 
-                alumno_.persona_.CompareUnique(cmp);
                 alumno_!.persona = (string)persist.InsertIfNotExistsCompare(alumno_!.persona_!, cmp);
                 alumno_.plan = curso_!.comision_!.planificacion_!.plan;
                 alumno = (string)persist.InsertIfNotExists(alumno_!);
