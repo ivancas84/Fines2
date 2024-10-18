@@ -157,7 +157,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 alumno_!.persona = (string)persist.InsertIfNotExistsCompare(alumno_!.persona_!, cmp);
                 alumno_.plan = curso_!.comision_!.planificacion_!.plan;
                 alumno = (string)persist.InsertIfNotExists(alumno_!);
-
+                
                 AlumnoComision alumnoComision = new AlumnoComision();
                 alumnoComision.comision_ = curso_!.comision_;
                 alumnoComision.alumno_ = alumno_;

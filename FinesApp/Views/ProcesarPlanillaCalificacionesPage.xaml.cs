@@ -126,6 +126,7 @@ public partial class ProcesarPlanillaCalificacionesPage : Page, INavigationAware
             {
                 Calificacion calificacion = new ();
                 calificacion.curso_ = curso;
+                calificacion.disposicion_ = curso.disposicion_;
 
                 if (sourceComboBox.SelectedItem.ToString().Contains("Programa"))
                     calificacion.SetFromProgramaFines(_data[j]);
