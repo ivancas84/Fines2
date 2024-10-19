@@ -88,6 +88,16 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         }
 
+        public static EntitySql AsignacionesDeCalendario(object idCalendario)
+        {
+            var esql = Context.db.Sql("alumno_comision")
+               .Size(0)
+               .Where("$calendario__id = @0")
+               .Param("@0", idCalendario);
+
+            return esql;
+        }
+
     }
     
 }

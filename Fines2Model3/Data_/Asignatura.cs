@@ -17,7 +17,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
             set
             {
-                Label = value;
+                _Label = value;
                 NotifyPropertyChanged(nameof(Label));
             }
         }

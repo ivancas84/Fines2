@@ -120,6 +120,10 @@ public partial class App : Application
 
         services.AddTransient<AdministrarComisionPage>();
 
+        services.AddTransient<AdministrarAlumnoPage>();
+
+        services.AddTransient<AlumnosSemestrePage>();
+
         // Configuration
         services.Configure<AppConfig>(context.Configuration.GetSection(nameof(AppConfig)));
     }

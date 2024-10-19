@@ -58,7 +58,6 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
         CalendarioDAO.CalendariosSql().Cache().AddEntityToClearOC(ocCalendario);
 
-
         cbxPlanillaDocente.InitComboBoxConstructor(ocPlanillaDocente, "numero");
         PlanillaDocenteDAO.PlanillasSql().Cache().AddEntityToClearOC(ocPlanillaDocente);
     }

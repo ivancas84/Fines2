@@ -289,7 +289,7 @@ WHERE " + id + " = @update_" + i + @";
                 var response = data.Compare(compare);
 
                 if (!response.IsNoE())
-                    throw new Exception("Comparacion diferente: " + compare.Data.ToStringKeys(response.Keys.ToArray()));
+                    throw new Exception("Comparacion diferente: " + response.ToStringDict());
 
                 data.Sset(Db.config.id, row[Db.config.id]);
             }

@@ -12,6 +12,7 @@ using MahApps.Metro.Controls;
 using QuestPDF.Infrastructure;
 
 using SqlOrganize.Sql.Fines2Model3;
+
 using WpfUtils;
 
 namespace FinesApp.Views;
@@ -120,6 +121,12 @@ public partial class ShellWindow : MetroWindow, IShellWindow, INotifyPropertyCha
 
     private void OnMenuViewsAdministrarComision(object sender, RoutedEventArgs e)
         => _navigationService.NavigateTo(typeof(AdministrarComisionPage), null, true);
+
+    private void OnMenuViewsAdministrarAlumno(object sender, RoutedEventArgs e)
+        => _navigationService.NavigateTo(typeof(AdministrarAlumnoPage), null, true);
+
+    private void OnMenuViewsAlumnosSemestre(object sender, RoutedEventArgs e)
+        => _navigationService.NavigateTo(typeof(AlumnosSemestrePage), null, true);
 
     public event PropertyChangedEventHandler PropertyChanged;
 

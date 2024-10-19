@@ -1,5 +1,4 @@
-﻿
-using CommunityToolkit.WinUI.Notifications;
+﻿using CommunityToolkit.WinUI.Notifications;
 using Fines2Model3.DAO;
 using Microsoft.Win32;
 using MimeTypes;
