@@ -27,6 +27,7 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
         DataContext = this;
 
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
+        dgdAsignacion.ItemsSource = ocAsignacion;
 
         Loaded += Page_Loaded;
     }
@@ -67,6 +68,19 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
 
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+    private void btn_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var button = (e.OriginalSource as Button);
+            var entity = (AlumnoComision)button.DataContext;
+            _navigationService.NavigateTo(typeof(AdministrarAlumnoPage), entity.alumno);
 
 
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
 }

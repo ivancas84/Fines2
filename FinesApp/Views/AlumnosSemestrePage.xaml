@@ -85,8 +85,26 @@
 					<GroupBox.Header>
 						<Label Foreground="White">Alumnos</Label>
 					</GroupBox.Header>
-					<!-- DataGrid de asignaciones -->
-				</GroupBox>
+                    
+                    <DataGrid Name="dgdAsignacion" IsReadOnly="True" AutoGenerateColumns="False" >
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Nombres" Binding="{Binding alumno_.persona_.nombres}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Apellidos" Binding="{Binding alumno_.persona_.apellidos}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="DNI" Binding="{Binding alumno_.persona_.numero_documento}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Comisión" Binding="{Binding comision_.Label}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
+                            <DataGridTemplateColumn>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <WrapPanel>
+                                            <Button Click="btn_Click">Alumno</Button>
+                                        </WrapPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </GroupBox>
 			</Grid>
 
 

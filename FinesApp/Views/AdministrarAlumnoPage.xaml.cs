@@ -1,4 +1,7 @@
 ﻿using FinesApp.Contracts.Views;
+using SqlOrganize.Sql.Fines2Model3;
+using SqlOrganize.Sql;
+using SqlOrganize;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
@@ -31,7 +34,13 @@ public partial class AdministrarAlumnoPage : Page, INotifyPropertyChanged, INavi
     #region INavigationAware
     public void OnNavigatedTo(object parameter)
     {
-        throw new NotImplementedException();
+        if (!parameter.IsNoE())
+        {
+            gbxPrincipal.DataContext = Entity.CreateFromId<Alumno>(parameter);
+        }
+
+        else
+            gbxPrincipal.DataContext = new Alumno();
     }
 
     public void OnNavigatedFrom()
@@ -39,4 +48,9 @@ public partial class AdministrarAlumnoPage : Page, INotifyPropertyChanged, INavi
         //throw new NotImplementedException();
     }
     #endregion
+
+    private void BtnGuardarAlumno_Click(object sender, System.Windows.RoutedEventArgs e)
+    {
+
+    }
 }

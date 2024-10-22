@@ -9,7 +9,7 @@ using SqlOrganize.DateTimeUtils;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class AlumnoComision : Entity
+    public partial class AlumnoComision
     {
         
         public object Persist1()

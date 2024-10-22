@@ -124,6 +124,7 @@ WHERE " + id + " = @update_" + i + @";
             detail.Add((entityName!, row[Db.config.id]!, "update"));
             logging.AddLog(entityName, "registro actualizado " + _row.ToStringKeyValuePair(), "update", Logging.Level.Info);
 
+            count++;
             return row[Db.config.id];
         }
 
@@ -152,14 +153,14 @@ WHERE " + id + " = @update_" + i + @";
             {
                 sql += @"WHERE " + idMap + " IN (@map_id" + i + @");
 ";
-                Param("@map_id" + i, ids);
+                Param("@map_id" + i, ids.ToList());
 
                 foreach (var id in ids)
                     detail.Add((_entityName!, id, "update"));
             }
 
             logging.AddLog(_entityName, "registros actualizados " + _row.ToStringKeyValuePair(), "update", Logging.Level.Info);
-
+            count++;
             return this;
         }
 

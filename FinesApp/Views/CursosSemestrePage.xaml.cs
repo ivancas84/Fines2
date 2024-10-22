@@ -23,7 +23,7 @@ public partial class CursosSemestrePage : Page, INotifyPropertyChanged
         _navigationService = navigationService;
         InitializeComponent();
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        Context.db.Sql("calendario").Cache().AddEntityToClearOC(ocCalendario);
+        CalendarioDAO.CalendariosSql().Cache().AddEntityToClearOC(ocCalendario);
         DataContext = this;
         dgdCurso.ItemsSource = ocCurso;
     }

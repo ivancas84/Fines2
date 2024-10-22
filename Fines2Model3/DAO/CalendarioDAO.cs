@@ -7,7 +7,7 @@ namespace SqlOrganize.Sql.Fines2Model3
     
         public static EntitySql CalendariosSql()
         {
-            return Context.db.Sql("calendario").Order("$inicio DESC");
+            return Context.db.Sql("calendario").Order("$anio DESC, $semestre DESC");
         }
     }
 

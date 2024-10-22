@@ -17,14 +17,119 @@
             Style="{StaticResource PageTitleStyle}"
             Margin="{StaticResource MediumLeftMargin}"
             Text="{x:Static properties:Resources.AdministrarAlumnoPageTitle}" />
-        <Grid
+        <ScrollViewer
+            HorizontalScrollBarVisibility="Visible"
             Grid.Row="1"
             Margin="{StaticResource MediumLeftRightMargin}"
             Background="{DynamicResource MahApps.Brushes.Gray10}">
-            <!--
-            The Mahapps Gray10 color represents where you should place your content.
-            Place your content here.
-            -->
-        </Grid>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height = "Auto" />
+                    <RowDefinition Height = "Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width = "*" />
+                </Grid.ColumnDefinitions>
+
+                <GroupBox 
+                Name="gbxSearch"
+                Margin="10">
+                    <GroupBox.Header>
+                        <Label Foreground="White">Búsqueda</Label>
+                    </GroupBox.Header>
+                    <!-- Grid con formulario de búsqueda -->
+                </GroupBox>
+
+                <GroupBox 
+                    Name="gbxPrincipal" 
+                    Grid.Row="1"
+                    Margin="10">
+                    <GroupBox.Header>
+                        <Label Foreground="White">Datos principales</Label>
+                    </GroupBox.Header>
+
+                    <Grid>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                            <RowDefinition Height = "Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width = "200" />
+                            <ColumnDefinition Width = "200" />
+                            <ColumnDefinition Width = "200" />
+                            <ColumnDefinition Width = "200" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        FontWeight="Bold"
+                        Margin = "3, 3, 3, 0">Nombres:</Label>
+                        <TextBox
+                          Grid.Row = "1"
+                          Grid.Column = "0"
+                          Margin = "3, 0, 3, 3"
+                          Text="{Binding persona_.nombres, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">Apellidos:</Label>
+                        <TextBox
+                              Grid.Row = "1"
+                              Grid.Column = "1"
+                              Margin = "3, 0, 3, 3"
+                              Text="{Binding persona_.apellidos, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="2"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">DNI:</Label>
+                        <TextBox
+                          Grid.Row = "1"
+                          Grid.Column = "2"
+                          Margin = "3, 0, 3, 3"
+                          Text="{Binding persona_.numero_documento, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+
+                        <Label
+                            Grid.Row="0"
+                            Grid.Column="3"
+                            FontWeight="Bold"
+                            Margin = "3, 3, 3, 0">Nacimiento:</Label>
+                        <TextBox
+                          Grid.Row = "1"
+                          Grid.Column = "3"
+                          Margin = "3, 0, 3, 3"
+                          Text="{Binding persona_.fecha_nacimiento, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+
+
+
+                         <Button 
+                             Grid.Row = "2"
+                             Grid.ColumnSpan="4"
+                            Content = "_Guardar..." 
+                            Click="BtnGuardarAlumno_Click"                                                
+                            Margin = "20"/>
+
+
+                    </Grid>
+
+
+
+
+                
+                </GroupBox>
+            </Grid>
+
+
+        </ScrollViewer>
     </Grid>
 </Page>
