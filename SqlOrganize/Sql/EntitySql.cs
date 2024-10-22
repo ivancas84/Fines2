@@ -62,12 +62,17 @@ namespace SqlOrganize.Sql
         }
 
 
-        public EntitySql And(string w)
+        public EntitySql And(string w, bool evolve = false)
         {
-            if(where.IsNoE())
+            if (where.IsNoE())
                 where += w;
             else
-                where = "(" + where + ") AND (" + w + ")";
+            {
+                if (evolve)
+                    where = "(" + where + ") AND (" + w + ")";
+                else
+                    where += " AND (" + w + ")";
+            }
             return this;
         }
 
@@ -86,6 +91,11 @@ namespace SqlOrganize.Sql
             return this;
         }
 
+        /// <summary>
+        /// Asignar parametros
+        /// </summary>
+        /// <param name="paramName">El parametro debe indicarse con @ en el sql, y debe comenzar con @ en paramName</param>
+        /// <param name="value">Valor compatible</param>
         public EntitySql Param(string paramName, object? value)
         {
             this._parameters[paramName] = value;

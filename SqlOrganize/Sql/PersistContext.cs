@@ -411,8 +411,6 @@ VALUES (";
             return Query(Db.Query());
         }
 
-        
-
 
         public object UpdateCompare(Entity dataToUpdate, Entity dataToCompare)
         {
