@@ -354,12 +354,13 @@ namespace SqlOrganize.Sql
             List<string> queries;
             object _queries;
 
+            //Obtener o definir queries de la cache. queries se utiliza para almacenar las consultas realizadas y poder eliminarlas facilmente si se requiere.
             bool res = Db.cache!.TryGetValue("queries", out _queries);
             if (res)
             {
-                if (_queries is JArray)
+                if (_queries is JArray)  //si se utiliza cache en archivo
                     queries = (_queries as JArray).ToObject<List<string>>();
-                else
+                else // si se utiliza cache en memoria
                     queries = (List<string>)_queries;
             }
             else
@@ -374,10 +375,13 @@ namespace SqlOrganize.Sql
 
             if (res)
             {
-                if (_result is JArray)
-                    result = (_result as JArray).ToObject<IEnumerable<Dictionary<string, object>>>();
+                //si se utiliza cache en archivo
+                if (_result is JArray) 
+                    result = (_result as JArray).ToObject<IEnumerable<Dictionary<string, object?>>>();
+
+                //si se utiliza cache en memoria
                 else
-                    result = (IEnumerable<Dictionary<string, object>>)_result;
+                    result = (IEnumerable<Dictionary<string, object?>>)_result;
             }
             else
             {
@@ -393,18 +397,25 @@ namespace SqlOrganize.Sql
 
         /// <summary>Ejecuta consulta de datos (con relaciones).<br/>
         /// Verifica la cache para obtener el resultado de la consulta, si no existe en cache accede a la base de datos.</summary>
-        /// <remarks> La diferencia con Dict es que no guarda datos de entidades en cache, solo la consulta </remarks>
-        protected IDictionary<string, object?> DictQuery()
+        /// <remarks> La diferencia con Dict es que no guarda datos de entidades en cache, solo guarda la consulta </remarks>
+        protected IDictionary<string, object?>? DictQuery()
         {
+            var res = DictsQuery();
+            if (res.Any()) 
+                return res.First();
+            else 
+                return null;
+
+
             List<string> queries;
             if (!Db.cache.TryGetValue("queries", out queries))
                 queries = new();
-
+                
             IDictionary<string, object?> result;
             string queryKey = Sql!.ToString();
             if (!Db.cache.TryGetValue(queryKey, out result))
             {
-                result = Dict();
+                result = Sql.Dict();
                 Db.cache.Set(queryKey, result);
                 queries!.Add(queryKey);
                 Db.cache.Set("queries", queries);

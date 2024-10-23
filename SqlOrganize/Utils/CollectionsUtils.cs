@@ -481,6 +481,28 @@ namespace SqlOrganize.CollectionUtils
         {
             return string.Join(", ", keysToConcatenate.Where(param.ContainsKey).Select(key => param[key]?.ToString() ?? ""));
         }
+
+        public static string DictToString(this IDictionary<string, object?> dictionary)
+        {
+            var entries = new List<string>();
+
+            foreach (var kvp in dictionary)
+            {
+                // Handle null values explicitly
+                string value = kvp.Value == null ? "null" : kvp.Value.ToString();
+
+                // For lists or collections, format them as a comma-separated list
+                if (kvp.Value is IEnumerable<object> collection)
+                {
+                    value = "[" + string.Join(", ", collection) + "]";
+                }
+
+                entries.Add($"{kvp.Key}: {value}");
+            }
+
+            // Join the entries with commas and format as a dictionary-like string
+            return "{" + string.Join(", ", entries) + "}";
+        }
     }
 
 }

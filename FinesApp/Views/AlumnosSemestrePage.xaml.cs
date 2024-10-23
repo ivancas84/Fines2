@@ -44,6 +44,7 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
             if (cbxCalendario.SelectedIndex < 0)
                 throw new Exception("Seleccione calendario");
 
+            var cantidad = AsignacionDAO.AsignacionesDeCalendario(cbxCalendario.SelectedValue).Select("COUNT(*) as cantidad").Cache().Value("cantidad");
             AsignacionDAO.AsignacionesDeCalendario(cbxCalendario.SelectedValue).Cache().AddEntityToClearOC(ocAsignacion);
         }
         catch (Exception ex)

@@ -39,13 +39,13 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public static IMemoryCache CreateCache()
         {
-            return new MemoryCache(new MemoryCacheOptions());
-
+            //return new MemoryCache(new MemoryCacheOptions());
+            return new FileSystemCache("c:/cache/");
         }
         static Context()
         {
 
-            MemoryCache cache = (MemoryCache)CreateCache();
+            IMemoryCache cache = CreateCache();
 
             Schema model = new Schema();
             db = new DbMy(config, model, cache);
