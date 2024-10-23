@@ -127,7 +127,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
 
-        public static EntitySql CantidadCalificacionesAprobadasPorAlumnoDePlaniticacion(List<object> alumnosYplanes)
+        public static EntitySql CantidadCalificacionesAprobadasPorAlumnoDePlanificacion(List<object> alumnosYplanes)
         {
             return Context.db.Sql("calificacion")
                 .Select("COUNT($id) as cantidad")
@@ -175,6 +175,20 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Order("$alumno ASC, $planificacion_dis__anio ASC, $planificacion_dis__semestre ASC").
                 Param("@0", idAlumnos.ToList()).
                 Param("@1", idPlanificacion);
+        }
+
+        public static EntitySql CantidadCalificacionesAprobadasPorAlumnoAgrupadasPorAnioSemestre(params object[] idAlumnos)
+        {
+            return Context.db.Sql("calificacion")
+                .Select("COUNT($id) as cantidad")
+                .Group("$alumno, $planificacion__plan, $planificacion__anio, $planificacion__semestre")
+                .Size(0)
+                .Where(@"
+                    $alumno IN (@0)
+                    AND ($nota_final >= 7 OR $crec >= 4) 
+                ")
+                .Order("$alumno ASC, $planificacion_dis__anio ASC, $planificacion_dis__semestre ASC").
+                Param("@0", idAlumnos.ToList());
         }
 
 

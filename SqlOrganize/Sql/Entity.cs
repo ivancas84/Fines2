@@ -157,7 +157,31 @@ namespace SqlOrganize.Sql
             T _obj = new T(); //crear objeto vacio para obtener el entityName
             var valuesTree = _obj.db.ValuesTree(dict, _obj.entityName);
             return valuesTree.Obj<T>()!;
-        }    
+        }
+
+        public static T CreateFromObj<T>(object source) where T : Entity, new()
+        {
+            T obj = new T(); //crear objeto vacio para obtener el entityName
+
+            // Get properties of both source and destination
+            var sourceProperties = source.GetType().GetProperties();
+            var destinationProperties = typeof(T).GetProperties();
+
+
+            foreach (var destProp in destinationProperties)
+            {
+                // Find the matching source property by name and type
+                var sourceProp = sourceProperties.FirstOrDefault(sp => sp.Name == destProp.Name && sp.PropertyType == destProp.PropertyType);
+
+                if (sourceProp != null && sourceProp.CanRead && destProp.CanWrite)
+                {
+                    // Copy the value from the source to the destination
+                    destProp.SetValue(obj, sourceProp.GetValue(source));
+                }
+            }
+
+            return obj;
+        }
 
         public static T CreateEmpty<T>(string fieldName = "Label") where T : Entity, new()
         {

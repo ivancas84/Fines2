@@ -4,6 +4,8 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using FinesApp.Contracts.Services;
+using SqlOrganize.CollectionUtils;
+using SqlOrganize.Sql;
 using SqlOrganize.Sql.Fines2Model3;
 using WpfUtils;
 using WpfUtils.Controls;
@@ -45,7 +47,22 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
                 throw new Exception("Seleccione calendario");
 
             var cantidad = AsignacionDAO.AsignacionesDeCalendario(cbxCalendario.SelectedValue).Select("COUNT(*) as cantidad").Cache().Value("cantidad");
-            AsignacionDAO.AsignacionesDeCalendario(cbxCalendario.SelectedValue).Cache().AddEntityToClearOC(ocAsignacion);
+    
+            var source = AsignacionDAO.AsignacionesDeCalendario(cbxCalendario.SelectedValue).Cache().Dicts();
+
+            var idAlumnos = source.ColOfVal<object>("id");
+
+            var calificacionesAprobadasAgrupadas = CalificacionDAO.CantidadCalificacionesAprobadasPorAlumnoAgrupadasPorAnioSemestre(idAlumnos).Dicts();
+
+            ocAsignacion.Clear();
+
+            for (var i = 0; i < source.Count(); i++)
+            {
+                AlumnoComision obj = Entity.CreateFromDict<AlumnoComision>(source.ElementAt(i));
+                obj.Index = i;
+                ocAsignacion.Add(obj);
+            }
+
         }
         catch (Exception ex)
         {
