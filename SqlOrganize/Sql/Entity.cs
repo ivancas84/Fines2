@@ -375,7 +375,8 @@ namespace SqlOrganize.Sql
                     return Convert.ToUInt16(GetDefaultInt(field));
 
                 case "Guid":
-                    if (field.defaultValue.ToString()!.ToLower().Contains("new"))
+                    var dv = field.defaultValue.ToString()!.ToLower();
+                    if (dv.Contains("new") || dv.Contains("guid"))
                         return Guid.NewGuid();
                     else
                     {

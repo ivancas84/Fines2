@@ -173,6 +173,28 @@ namespace SqlOrganize.Sql
             return BuildDicts(_fields, ids.ToArray());
         }
 
+        public object? Value(int column = 0)
+        {
+            var dict = Dict();
+
+            List<string> keys = new List<string>(dict.Keys);
+
+            if (column >= 0 && column < keys.Count)
+            {
+                string keyAtIndex = keys[column];
+                return dict[keyAtIndex];
+            }
+
+            return null;
+
+        }
+
+        public T? Value<T>(int column = 0)
+        {
+            var response = Value(column);
+            return (response.IsNoE()) ? (T)response! : default;
+        }
+
         public object? Value(string fieldName)
         {
             var dict = Dict();
@@ -405,22 +427,6 @@ namespace SqlOrganize.Sql
                 return res.First();
             else 
                 return null;
-
-
-            List<string> queries;
-            if (!Db.cache.TryGetValue("queries", out queries))
-                queries = new();
-                
-            IDictionary<string, object?> result;
-            string queryKey = Sql!.ToString();
-            if (!Db.cache.TryGetValue(queryKey, out result))
-            {
-                result = Sql.Dict();
-                Db.cache.Set(queryKey, result);
-                queries!.Add(queryKey);
-                Db.cache.Set("queries", queries);
-            }
-            return result!;
         }
 
         /// <summary>Organizacion de Campos de la entidad para armar relaciones</summary>
