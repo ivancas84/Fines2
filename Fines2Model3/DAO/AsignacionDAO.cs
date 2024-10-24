@@ -98,6 +98,34 @@ namespace SqlOrganize.Sql.Fines2Model3
             return esql;
         }
 
+
+        public static EntitySql COUNT_AsignacionesActivasDuplicadasDeComisionesAutorizadas__BY_idCalendario__GROUP_alumno(object idCalendario)
+        {
+            return Context.db.Sql("alumno_comision")
+                .Select("COUNT($id) AS cantidad")
+                .Group("$alumno")
+                .Size(0)
+                .Where(@"
+                    $calendario__id = @0
+                    AND $estado = 'Activo'
+                    AND $comision__autorizada = true")
+                .Having("cantidad > 1")
+                .Param("@0", idCalendario);
+        }
+
+        public static EntitySql AsignacionesActivasDeComisionesAutorizadas__BY_idCalendario_idsAlumnos(object idCalendario, IEnumerable<object> idsAlumnos)
+        {
+            return Context.db.Sql("alumno_comision")
+                .Size(0)
+                .Where(@"
+                    $calendario__id = @0
+                    AND $alumno IN (@1)
+                    AND $estado = 'Activo'
+                    AND $comision__autorizada = true")
+                .Param("@0", idCalendario)
+                .Param("@1", idsAlumnos);
+        }
+
     }
     
 }

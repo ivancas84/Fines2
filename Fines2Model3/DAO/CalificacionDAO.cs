@@ -121,7 +121,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             var curso = Entity.CreateFromDict<Curso>(cursoData);
 
-            var idAlumnos = curso.comision_.SqlRef("alumno_comision", "comision").Cache().Values("alumno");
+            var idAlumnos = curso.comision_.SqlRef("alumno_comision", "comision").Cache().Column("alumno");
 
             return CalificacionDisposicionAlumnosSql(curso.disposicion!, idAlumnos.ToArray());
         }
@@ -177,18 +177,18 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Param("@1", idPlanificacion);
         }
 
-        public static EntitySql CantidadCalificacionesAprobadasPorAlumnoAgrupadasPorAnioSemestre(params object[] idAlumnos)
+        public static EntitySql COUNT_calificacionesAprobadas__BY_Concat_alumno_planDeCurso__GROUP_alumno_planDeCurso_anio_semestre(IEnumerable<object> concats_alumno_planCurso)
         {
             return Context.db.Sql("calificacion")
                 .Select("COUNT($id) as cantidad")
-                .Group("$alumno, $planificacion__plan, $planificacion__anio, $planificacion__semestre")
+                .Group("$alumno, $planificacion__plan, $planificacion_dis1__anio, $planificacion_dis1__semestre")
                 .Size(0)
                 .Where(@"
-                    $alumno IN (@0)
+                    CONCAT($alumno, '~', $planificacion__plan) IN (@0)
                     AND ($nota_final >= 7 OR $crec >= 4) 
                 ")
-                .Order("$alumno ASC, $planificacion_dis__anio ASC, $planificacion_dis__semestre ASC").
-                Param("@0", idAlumnos.ToList());
+                .Order("$alumno ASC, $planificacion_dis1__anio ASC, $planificacion_dis1__semestre ASC").
+                Param("@0", concats_alumno_planCurso);
         }
 
 

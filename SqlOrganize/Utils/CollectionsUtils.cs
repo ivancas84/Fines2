@@ -226,6 +226,33 @@ namespace SqlOrganize.CollectionUtils
         /// <param name="rows">Lista de diccionarios</param>
         /// <param name="key">Llave del diccionario</param>
         /// <returns>Lista de valores de una entrada del diccionario</returns>
+        public static IEnumerable<string> ColOfValConcat(this IEnumerable<Dictionary<string, object?>> rows, params string[] keys)
+        {
+            List<string> response = new();
+            foreach (Dictionary<string, object?> row in rows)
+            {
+                List<string> conc = new();
+
+                foreach (var (k, v) in row)
+                {
+                    if (keys.Contains(k))
+                        conc.Add(v!.ToString()!);
+                }
+
+                response.Add(string.Join("~", conc));
+            }
+
+            return response;
+        }
+
+
+        /// <summary>
+        /// Lista de valores de una entrada del diccionario
+        /// </summary>
+        /// <typeparam name="T">Tipo de retorno</typeparam>
+        /// <param name="rows">Lista de diccionarios</param>
+        /// <param name="key">Llave del diccionario</param>
+        /// <returns>Lista de valores de una entrada del diccionario</returns>
         public static IEnumerable<T> ColOfVal<T>(this IEnumerable<Dictionary<string, object?>> rows, string key)
         {
             List<T> response = new();

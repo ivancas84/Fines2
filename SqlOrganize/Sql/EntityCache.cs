@@ -207,12 +207,34 @@ namespace SqlOrganize.Sql
             return (!dict.IsNoE()) ? (T)dict[fieldName] : default(T);
         }
 
-        public IEnumerable<object> Values(string fieldName)
+        public IEnumerable<T> Column<T>(int column = 0)
+        {
+            var data = Dicts();
+            if (data.Any())
+            {
+                List<string> keys = new List<string>(data.ElementAt(0).Keys);
+
+                if (column >= 0 && column < keys.Count)
+                {
+                    string keyAtIndex = keys[column];
+                    return data.ColOfVal<T>(keyAtIndex);
+                }
+            }
+            return new List<T>();
+
+        }
+
+        public IEnumerable<object> Column(int column = 0)
+        {
+            return Column<object>(column);
+        }
+
+        public IEnumerable<object> Column(string fieldName)
         {
             return Dicts().ColOfVal<object>(fieldName);
         }
 
-        public IEnumerable<T> Values<T>(string fieldName)
+        public IEnumerable<T> Column<T>(string fieldName)
         {
             return Dicts().ColOfVal<T>(fieldName);
         }

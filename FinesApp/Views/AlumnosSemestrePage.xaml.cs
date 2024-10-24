@@ -19,24 +19,25 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
 
     private ObservableCollection<Calendario> ocCalendario = new();
     private ObservableCollection<AlumnoComision> ocAsignacion = new();
+    private ObservableCollection<AlumnoComision> ocAsignacionDuplicada = new();
+
 
 
     public AlumnosSemestrePage(INavigationService navigationService)
     {
         _navigationService = navigationService;
-
         InitializeComponent();
         DataContext = this;
-
-        cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        dgdAsignacion.ItemsSource = ocAsignacion;
-
         Loaded += Page_Loaded;
     }
 
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
+        cbxCalendario.InitComboBoxConstructor(ocCalendario);
+        dgdAsignacion.ItemsSource = ocAsignacion;
+        dgdAsignacionDuplicada.ItemsSource = ocAsignacionDuplicada;
         CalendarioDAO.CalendariosSql().Cache().AddEntityToClearOC(ocCalendario);
+
     }
 
     private void BtnBuscarAlumnos_Click(object sender, RoutedEventArgs e)
@@ -50,9 +51,9 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
     
             var source = AsignacionDAO.AsignacionesDeCalendario(cbxCalendario.SelectedValue).Cache().Dicts();
 
-            var idAlumnos = source.ColOfVal<object>("id");
+            IEnumerable<string> concats_alumno_planCurso = source.ColOfValConcat("alumno", "planificacion__plan");
 
-            var calificacionesAprobadasAgrupadas = CalificacionDAO.CantidadCalificacionesAprobadasPorAlumnoAgrupadasPorAnioSemestre(idAlumnos).Dicts();
+            var calificacionesAprobadasAgrupadas = CalificacionDAO.COUNT_calificacionesAprobadas__BY_Concat_alumno_planDeCurso__GROUP_alumno_planDeCurso_anio_semestre(concats_alumno_planCurso).Cache().Dicts().DictOfDictByKeysValue("cantidad", "alumno", "planificacion__plan", "planificacion_dis1__anio", "planificacion_dis1__semestre");
 
             ocAsignacion.Clear();
 
@@ -60,8 +61,31 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
             {
                 AlumnoComision obj = Entity.CreateFromDict<AlumnoComision>(source.ElementAt(i));
                 obj.Index = i;
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "1" + "~" + "1"))
+                    obj.CantidadAprobadas11 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "1" + "~" + "1"];
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "1" + "~" + "2"))
+                    obj.CantidadAprobadas12 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "1" + "~" + "2"];
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "2" + "~" + "1"))
+                    obj.CantidadAprobadas21 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "2" + "~" + "1"];
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "2" + "~" + "2"))
+                    obj.CantidadAprobadas22 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "2" + "~" + "2"];
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "1"))
+                    obj.CantidadAprobadas31 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "1"];
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "2"))
+                    obj.CantidadAprobadas32 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "2"];
+
                 ocAsignacion.Add(obj);
             }
+
+
+            var idsAlumnosAsignacionesDuplicadas = AsignacionDAO.COUNT_AsignacionesActivasDuplicadasDeComisionesAutorizadas__BY_idCalendario__GROUP_alumno(cbxCalendario.SelectedValue).Cache().Column("alumno");
+            AsignacionDAO.AsignacionesActivasDeComisionesAutorizadas__BY_idCalendario_idsAlumnos(cbxCalendario.SelectedValue, idsAlumnosAsignacionesDuplicadas).Cache().AddEntityToClearOC(ocAsignacionDuplicada);
 
         }
         catch (Exception ex)
@@ -70,7 +94,7 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
         }
     }
 
-
+    #region INotifyPropertyChanged
     public event PropertyChangedEventHandler PropertyChanged;
 
     private void Set<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
@@ -85,6 +109,7 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
     }
 
     private void OnPropertyChanged(string propertyName) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    #endregion
 
     private void btn_Click(object sender, RoutedEventArgs e)
     {
