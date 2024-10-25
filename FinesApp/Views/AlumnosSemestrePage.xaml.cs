@@ -37,7 +37,6 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
         dgdAsignacion.ItemsSource = ocAsignacion;
         dgdAsignacionDuplicada.ItemsSource = ocAsignacionDuplicada;
         CalendarioDAO.CalendariosSql().Cache().AddEntityToClearOC(ocCalendario);
-
     }
 
     private void BtnBuscarAlumnos_Click(object sender, RoutedEventArgs e)
@@ -47,15 +46,18 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
             if (cbxCalendario.SelectedIndex < 0)
                 throw new Exception("Seleccione calendario");
 
-    
-            var source = AsignacionDAO.AsignacionesDeCalendario(cbxCalendario.SelectedValue).Cache().Dicts();
 
-            AlumnoComision.AddDataToClearOC(source, ocAsignacion);
+            var source = AsignacionDAO.AsignacionesDeCalendario(cbxCalendario.SelectedValue).Cache().Dicts();
+            ocAsignacion.Clear();
+            AlumnoComision.AddDataToOC(source, ocAsignacion);
 
             var idsAlumnosAsignacionesDuplicadas = AsignacionDAO.COUNT_AsignacionesActivasDuplicadasDeComisionesAutorizadas__BY_idCalendario__GROUP_alumno(cbxCalendario.SelectedValue).Cache().Column("alumno");
-            source = AsignacionDAO.AsignacionesActivasDeComisionesAutorizadas__BY_idCalendario_idsAlumnos(cbxCalendario.SelectedValue, idsAlumnosAsignacionesDuplicadas).Cache().Dicts();
-
-            AlumnoComision.AddDataToClearOC(source, ocAsignacionDuplicada);
+            ocAsignacionDuplicada.Clear();
+            if (idsAlumnosAsignacionesDuplicadas.Any())
+            {
+                source = AsignacionDAO.AsignacionesActivasDeComisionesAutorizadas__BY_idCalendario_idsAlumnos(cbxCalendario.SelectedValue, idsAlumnosAsignacionesDuplicadas).Cache().Dicts();
+                AlumnoComision.AddDataToOC(source, ocAsignacionDuplicada);
+            }
         }
         catch (Exception ex)
         {
@@ -94,5 +96,41 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
         {
             ex.ToastException();
         }
+    }
+
+    private void BtnEliminarAsignacion_Click(object sender, RoutedEventArgs e)
+    {
+        e.DgdDeleteRow(ocAsignacion);
+       
+    }
+
+    private void BtnEliminarAsignacionDuplicada_Click(object sender, RoutedEventArgs e)
+    {
+        e.DgdDeleteRow(ocAsignacionDuplicada);
+
+    }
+
+    private void CbxEstado_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        Context.db.ComboBoxUpdateSelectedValue(sender, "alumno_comision", "estado");
+    }
+
+    private void Cbx_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (sender is ComboBox comboBox && comboBox.SelectedItem != null)
+        {
+            var selectedEstado = comboBox.SelectedItem.ToString();
+            var alumnoComision = (AlumnoComision)((FrameworkElement)comboBox).DataContext;
+            alumnoComision.UpdateFieldValue("estado", selectedEstado);
+        }
+    }
+}
+
+public class AsignacionEstadosData
+{
+    public ObservableCollection<string> Estados()
+    {
+        var data = AsignacionDAO.EstadosDeAsignacionesSql().Cache().Column<string>();
+        return new ObservableCollection<string>(data);
     }
 }

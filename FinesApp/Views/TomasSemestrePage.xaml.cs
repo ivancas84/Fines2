@@ -64,7 +64,7 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
 
     private void DgdToma_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
     {
-        Context.db.CellEditEnding(sender, e);
+        Context.db.DgdCellEditEnding(sender, e);
 
     }
 

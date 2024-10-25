@@ -5,9 +5,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:FinesApp.Views"
     xmlns:properties="clr-namespace:FinesApp.Properties"
     mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800">
+	<Page.Resources>
+		<ObjectDataProvider x:Key="estados" ObjectType="{x:Type local:AsignacionEstadosData}" MethodName="Estados" />
+	</Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
@@ -84,13 +88,28 @@
                                         <Label Foreground="White">Alumnos</Label>
                                     </GroupBox.Header>
 
-                                    <DataGrid Name="dgdAsignacion" IsReadOnly="True" AutoGenerateColumns="False" >
+                                    <DataGrid 
+										Name="dgdAsignacion"  
+										AutoGenerateColumns="False" 
+										CanUserAddRows="False"
+										>
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="Nombres" Binding="{Binding alumno_.persona_.nombres}"></DataGridTextColumn>
                                             <DataGridTextColumn Header="Apellidos" Binding="{Binding alumno_.persona_.apellidos}"></DataGridTextColumn>
                                             <DataGridTextColumn Header="DNI" Binding="{Binding alumno_.persona_.numero_documento}"></DataGridTextColumn>
                                             <DataGridTextColumn Header="Comisión" Binding="{Binding comision_.Label}"></DataGridTextColumn>
-                                            <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
+
+											<DataGridComboBoxColumn Header="Estado"
+                                                SelectedValueBinding="{Binding estado}"
+                                                ItemsSource="{Binding Source={StaticResource estados}}">
+												<DataGridComboBoxColumn.EditingElementStyle>
+													<Style TargetType="{x:Type ComboBox}">
+														<EventSetter Event="SelectionChanged" Handler="CbxEstado_SelectionChanged" />
+													</Style>
+												</DataGridComboBoxColumn.EditingElementStyle>
+											</DataGridComboBoxColumn>
+											
+											
                                             <DataGridTextColumn Header="1/1" Binding="{Binding CantidadAprobadas11}"></DataGridTextColumn>
                                             <DataGridTextColumn Header="1/2" Binding="{Binding CantidadAprobadas12}"></DataGridTextColumn>
                                             <DataGridTextColumn Header="2/1" Binding="{Binding CantidadAprobadas21}"></DataGridTextColumn>
@@ -103,7 +122,9 @@
                                                     <DataTemplate>
                                                         <WrapPanel>
                                                             <Button Click="btn_Click">Alumno</Button>
-                                                        </WrapPanel>
+															<Button Click="BtnEliminarAsignacion_Click">Eliminar</Button>
+
+														</WrapPanel>
                                                     </DataTemplate>
                                                 </DataGridTemplateColumn.CellTemplate>
                                             </DataGridTemplateColumn>
@@ -114,14 +135,27 @@
                             <TabItem Header="Duplicados">
 
 
-                        <DataGrid Name="dgdAsignacionDuplicada" IsReadOnly="True" AutoGenerateColumns="False" >
+                        <DataGrid 
+							Name="dgdAsignacionDuplicada"
+							AutoGenerateColumns="False"
+							CanUserAddRows="False">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Nombres" Binding="{Binding alumno_.persona_.nombres}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Apellidos" Binding="{Binding alumno_.persona_.apellidos}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="DNI" Binding="{Binding alumno_.persona_.numero_documento}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="Comisión" Binding="{Binding comision_.Label}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="Estado" Binding="{Binding estado}"></DataGridTextColumn>
-                                <DataGridTextColumn Header="1/1" Binding="{Binding CantidadAprobadas11}"></DataGridTextColumn>
+
+								<DataGridComboBoxColumn Header="Estado"
+									SelectedValueBinding="{Binding estado}"
+									ItemsSource="{Binding Source={StaticResource estados}}">
+									<DataGridComboBoxColumn.EditingElementStyle>
+										<Style TargetType="{x:Type ComboBox}">
+											<EventSetter Event="SelectionChanged" Handler="CbxEstado_SelectionChanged" />
+										</Style>
+									</DataGridComboBoxColumn.EditingElementStyle>
+								</DataGridComboBoxColumn>
+								
+								<DataGridTextColumn Header="1/1" Binding="{Binding CantidadAprobadas11}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="1/2" Binding="{Binding CantidadAprobadas12}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="2/1" Binding="{Binding CantidadAprobadas21}"></DataGridTextColumn>
                                 <DataGridTextColumn Header="2/2" Binding="{Binding CantidadAprobadas22}"></DataGridTextColumn>
@@ -133,7 +167,9 @@
                                         <DataTemplate>
                                             <WrapPanel>
                                                 <Button Click="btn_Click">Alumno</Button>
-                                            </WrapPanel>
+												<Button Click="BtnEliminarAsignacionDuplicada_Click">Eliminar</Button>
+
+											</WrapPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>

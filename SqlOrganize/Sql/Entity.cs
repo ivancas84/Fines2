@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SqlOrganize.Sql
 {
@@ -625,51 +626,88 @@ namespace SqlOrganize.Sql
         }
         #endregion
 
-        #region Persistencia
+        #region Persistencia directa
         public object Insert()
         {
-            return db.Persist().Insert(this);
+            using (db.CreateQueue())
+            {
+                var id = db.Persist().Insert(this);
+                db.ProcessQueue();
+                return id;
+            }
         }
 
         public object Update()
         {
-            return db.Persist().Update(this);
+            using (db.CreateQueue())
+            {
+                var id = db.Persist().Update(this);
+                db.ProcessQueue();
+                return id;
+            }
         }
 
         /// <summary> Crea contexto de persistencia y actualiza campo </summary>
         public void UpdateField(string fieldName)
         {
-            db.Persist().UpdateField(this, fieldName);
+            using (db.CreateQueue())
+            {
+                db.Persist().UpdateField(this, fieldName);
+                db.ProcessQueue();
+            }
         }
 
-        public void UpdateFieldValue(string fieldName, object value)
+        public void UpdateFieldValue(string fieldName, object? value)
         {
-            db.Persist().UpdateField(this, fieldName, value);
+            using (db.CreateQueue())
+            {
+                db.Persist().UpdateField(this, fieldName, value);
+                db.ProcessQueue();
+            }
         }
 
         public object InsertIfNotExists()
         {
-            return db.Persist().InsertIfNotExists(this);
+            using (db.CreateQueue())
+            {
+                var id = db.Persist().InsertIfNotExists(this);
+                db.ProcessQueue();
+                return id;
+            }
+
         }
 
-        public PersistContext Delete()
+        public void Delete()
         {
-            return db.Persist().DeleteIds(entityName, Get("id"));
+            using (db.CreateQueue())
+            {
+                db.Persist().DeleteIds(entityName, Get("id")!);
+                db.ProcessQueue();
+            }
         }
 
         /// <summary> Crear contexto de persistencia y ejecutar persistencia de entidad </summary>
         /// <returns> Identificador del objeto persistido </returns>
         public object Persist()
         {
-            db!.Persist().Persist(this);
-            return Get(db.config.id);
+            using (db.CreateQueue())
+            {
+                db!.Persist().Persist(this);
+                db.ProcessQueue();
+            }
+            
+            return Get(db.config.id)!;
         }
 
         /// <summary> Persistencia rapida en base a condicion </summary>
         /// <remarks> Si ya existe PersistContext, utilizar PersistContext.PersistCondition</remarks>
         public object PersistCondition(object? condition)
         {
-            db.Persist().PersistCondition(this, condition);
+            using (db.CreateQueue())
+            {
+                db.Persist().PersistCondition(this, condition);
+                db.ProcessQueue();
+            }
             return Get(db.config.id)!;
         }
 
@@ -691,8 +729,27 @@ namespace SqlOrganize.Sql
         /// <remarks> Si ya existe PersistContext, utilizar PersistContext.PersistCompare</remarks>
         public object PersistCompare(CompareParams compare)
         {
-            db.Persist().PersistCompare(this, compare);
+            using (db.CreateQueue())
+            {
+                db.Persist().PersistCompare(this, compare);
+                db.ProcessQueue();
+            }
             return Get(db.config.id)!;
+        }
+
+        /// <summary> Codigo general para eliminar una fila en un datagrid v2 </summary>        
+        /// <remarks> Se podría optimizar utilizando status para determinar si se encuentra o no en la base de datos </remarks>
+        public void DeleteFromOC<T>(ObservableCollection<T> oc) where T : Entity
+        {
+            if (!this.GetPropertyValue("id").IsNoE())
+            {
+                using (db.CreateQueue())
+                {
+                    db.Persist().DeleteIds(entityName, this.GetPropertyValue("id")!);
+                    db.ProcessQueue();
+                }
+            }
+            oc.Remove((this as T)!);
         }
         #endregion
 

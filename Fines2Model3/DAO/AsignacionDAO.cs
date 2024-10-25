@@ -126,6 +126,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Param("@1", idsAlumnos);
         }
 
+        public static EntitySql EstadosDeAsignacionesSql()
+        {
+            return Context.db.Sql("alumno_comision")
+               .Fields("$estado")
+               .Where("$estado IS NOT NULL")
+               .Size(0);
+        }
+
     }
     
 }

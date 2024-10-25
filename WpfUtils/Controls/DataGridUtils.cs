@@ -1,9 +1,8 @@
 ﻿#nullable enable
-using CommunityToolkit.WinUI.Notifications;
 using SqlOrganize;
-using SqlOrganize.CollectionUtils;
 using SqlOrganize.Sql;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
@@ -12,10 +11,44 @@ namespace WpfUtils.Controls
     //Comportamiento general para DataGrid
     public static class DataGridUtils
     {
+        #region CellEditEnding
+        /// <summary>
+        /// Metodo general para editar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public static void DgdCellEditEnding(this Db db, object? sender, DataGridCellEditEndingEventArgs e)
+        {
+            (string key, object? value) = e.DgdGetKeyAndValue();
+
+            db.DgdUpdateKeyAndValue(sender, e, key, value);
+        }
+
+        public static void DgdUpdateKeyAndValue(this Db db, object? sender, DataGridCellEditEndingEventArgs e, string key, object? value)
+        {
+            DataGrid grid = (sender as DataGrid)!;
+
+            // Get the item (object) being edited
+            var editedObject = e.Row.Item;
+
+            if (!key.IsNoE())
+            {
+                var keys = key.Split(".");
+
+                for (var i = 0; i < (keys.Count() - 1); i++)
+                    editedObject = editedObject!.GetPropertyValue<object>(keys[i]);
+
+                using (db.CreateQueue())
+                {
+                    (editedObject as Entity)!.UpdateFieldValue(keys.Last(), value);
+                    db.ProcessQueue();
+                }
+            }
+        }
 
         /// <summary>Obtener key and value, en el procesamiento de columnas</summary>
         /// <remarks>No utilizado, se deja como referencia</remarks>
-        public static (string key, object? value) GetKeyAndValue(this DataGridCellEditEndingEventArgs e)
+        public static (string key, object? value) DgdGetKeyAndValue(this DataGridCellEditEndingEventArgs e)
         {
             string key = "";
             object? value = null;
@@ -46,78 +79,53 @@ namespace WpfUtils.Controls
 
             return (key, value);
         }
+        #endregion
 
-      
-
-        /// <summary>Codigo general para eliminar una fila en un datagrid v2</summary>        
-        public static void DeleteRowFromDataGrid<T>(this Db db, string entityName, ObservableCollection<T> oc, T data, string title = "")
+        #region botones Eliminar, Guardar y Agregar
+        public static void DgdDeleteRow<T>(this RoutedEventArgs e, ObservableCollection<T> oc) where T : Entity
         {
-            try
+            if (MessageBox.Show("¿Está seguro que desea eliminar?",
+                "Eliminar",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                if (!data.GetPropertyValue("id").IsNoE())
+                try
                 {
-                    using (db.CreateQueue())
-                    {
-                        db.Persist().DeleteIds(entityName, data.GetPropertyValue("id")!);
-                        db.ProcessQueue();
-                    }
+                    var button = (e.OriginalSource as Button);
+                    var entity = (T)button!.DataContext;
+                    entity.DeleteFromOC(oc);
+                    ToastExtensions.Show("Item eliminado");
                 }
-                oc.Remove(data);
-            }
-            catch (Exception ex)
-            {
-                ToastExtensions.ShowExceptionMessageWithFileNameAndLineNumber(ex, title);
-            }
-        }
-
-        public static void SaveRowFromDataGrid(this Db db, Entity data, string title = "")
-        {
-            try
-            {
-                data.Persist();
-                new ToastContentBuilder()
-                 .AddText(title)
-                 .AddText("Registro realizado")
-                 .Show();
-            }
-            catch (Exception ex)
-            {
-                ToastExtensions.ShowExceptionMessageWithFileNameAndLineNumber(ex, title);
-            }
-        }
-
-        /// <summary>
-        /// Metodo general para editar
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public static void CellEditEnding(this Db db, object? sender, DataGridCellEditEndingEventArgs e)
-        {
-            (string key, object? value) = e.GetKeyAndValue();
-
-            db.UpdateKeyAndValue(sender, e, key, value);
-        }
-
-        public static void UpdateKeyAndValue(this Db db, object? sender, DataGridCellEditEndingEventArgs e, string key, object? value)
-        {
-            DataGrid grid = sender as DataGrid;
-
-            // Get the item (object) being edited
-            var editedObject = e.Row.Item;
-
-            if (!key.IsNoE())
-            {
-                var keys = key.Split(".");
-
-                for (var i = 0; i < (keys.Count() - 1); i++)
-                    editedObject = editedObject.GetPropertyValue<object>(keys[i]);
-
-                using (db.CreateQueue())
+                catch (Exception ex)
                 {
-                    (editedObject as Entity).UpdateFieldValue(keys.Last(), value);
-                    db.ProcessQueue();
+                    ex.ToastException();
                 }
             }
         }
+
+        public static void DgdAddRow<T>(this ObservableCollection<T> oc) where T : Entity, new()
+        {
+            var entity = new T();
+            oc.Add(entity);
+        }
+
+        public static void DgdPersistRow<T>(this RoutedEventArgs e) where T : Entity
+        {
+            try
+            {
+                var button = (e.OriginalSource as Button);
+                var entity = (T)button!.DataContext;
+                entity.Persist();
+                ToastExtensions.Show("Item agregado");
+
+            }
+            catch (Exception ex)
+            {
+                ex.ToastException();
+            }
+        }
+        #endregion
+
+
     }
 }

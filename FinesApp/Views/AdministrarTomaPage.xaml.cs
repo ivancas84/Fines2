@@ -178,12 +178,9 @@ public partial class AdministrarTomaPage : Page, INotifyPropertyChanged, INaviga
                 // Do something here
 
                 Toma toma = (Toma)gbxToma.DataContext;
+                toma.Delete();
 
-                using (Context.db.CreateQueue())
-                {
-                    toma.Delete();
-                    Context.db.ProcessQueue();
-                }
+                
                 ToastExtensions.Show("Toma eliminada");
             }
 

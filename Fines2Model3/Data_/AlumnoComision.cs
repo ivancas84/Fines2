@@ -133,13 +133,12 @@ namespace SqlOrganize.Sql.Fines2Model3
 
 
         /// <summary> Procesar un conjunto de datos de alumno comision y agregarlos a un ObservableCollection </summary>
-        public static void AddDataToClearOC(IEnumerable<Dictionary<string, object?>> source, ObservableCollection<AlumnoComision> oc)
+        public static void AddDataToOC(IEnumerable<Dictionary<string, object?>> source, ObservableCollection<AlumnoComision> oc)
         {
             IEnumerable<string> concats_alumno_planCurso = source!.ColOfValConcat("alumno", "planificacion__plan");
 
             var calificacionesAprobadasAgrupadas = CalificacionDAO.COUNT_calificacionesAprobadas__BY_Concat_alumno_planDeCurso__GROUP_alumno_planDeCurso_anio_semestre(concats_alumno_planCurso).Cache().Dicts().DictOfDictByKeysValue("cantidad", "alumno", "planificacion__plan", "planificacion_dis1__anio", "planificacion_dis1__semestre");
 
-            oc.Clear();
 
             for (var i = 0; i < source.Count(); i++)
             {
