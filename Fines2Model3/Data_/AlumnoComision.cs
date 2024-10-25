@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SqlOrganize.DateTimeUtils;
 using SqlOrganize.CollectionUtils;
+using System.Collections.ObjectModel;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -129,6 +130,49 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             }
         }
+
+
+        /// <summary> Procesar un conjunto de datos de alumno comision y agregarlos a un ObservableCollection </summary>
+        public static void AddDataToClearOC(IEnumerable<Dictionary<string, object?>> source, ObservableCollection<AlumnoComision> oc)
+        {
+            IEnumerable<string> concats_alumno_planCurso = source!.ColOfValConcat("alumno", "planificacion__plan");
+
+            var calificacionesAprobadasAgrupadas = CalificacionDAO.COUNT_calificacionesAprobadas__BY_Concat_alumno_planDeCurso__GROUP_alumno_planDeCurso_anio_semestre(concats_alumno_planCurso).Cache().Dicts().DictOfDictByKeysValue("cantidad", "alumno", "planificacion__plan", "planificacion_dis1__anio", "planificacion_dis1__semestre");
+
+            oc.Clear();
+
+            for (var i = 0; i < source.Count(); i++)
+            {
+                AlumnoComision obj = Entity.CreateFromDict<AlumnoComision>(source.ElementAt(i));
+                obj.Index = i;
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "1" + "~" + "1"))
+                    obj.CantidadAprobadas11 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "1" + "~" + "1"];
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "1" + "~" + "2"))
+                    obj.CantidadAprobadas12 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "1" + "~" + "2"];
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "2" + "~" + "1"))
+                    obj.CantidadAprobadas21 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "2" + "~" + "1"];
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "2" + "~" + "2"))
+                    obj.CantidadAprobadas22 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "2" + "~" + "2"];
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "1"))
+                    obj.CantidadAprobadas31 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "1"];
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "2"))
+                    obj.CantidadAprobadas32 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "2"];
+
+                oc.Add(obj);
+            }
+
+
+        }
+
+
+
+
 
 
     }
