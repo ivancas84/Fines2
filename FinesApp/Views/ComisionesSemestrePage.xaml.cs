@@ -34,7 +34,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         cbxCalendarioComisionesSiguientes.InitComboBoxConstructor(ocCalendarioComisionesSiguientes);
         cbxCalendarioInformeGlobalPF.InitComboBoxConstructor(calendarioPFOC);
 
-        Loaded += ComisionesSemestrePage_Loaded;
+        Loaded += Page_Loaded;
     }
 
     #region checkbox datagrid
@@ -59,7 +59,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     }
     #endregion
 
-    private void ComisionesSemestrePage_Loaded(object sender, RoutedEventArgs e)
+    private void Page_Loaded(object sender, RoutedEventArgs e)
     {
         CalendarioDAO.CalendariosSql().Cache().AddEntityToClearOC(ocCalendario);
     }
@@ -78,17 +78,24 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     private void BuscarButton_Click(object sender, RoutedEventArgs e)
     {
         var dataComisiones = ComisionDAO.ComisionesAutorizadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().Dicts();
+
+        var idComisionesSiguientes = dataComisiones.ColOfVal<object>("comision_siguiente");
+        var dictComisionesSiguientes = Context.db.Sql("comision").Cache().Ids(idComisionesSiguientes.ToArray()).DictOfDictByKey<string>("id");
         var idSedes = dataComisiones.ColOfVal<object>("sede");
-        var dataReferentes = DesignacionDAO.ReferentesDeSedeQuery(idSedes).Cache().Dicts().DictOfListByKeys("sede");
+        var dictReferentes = DesignacionDAO.ReferentesDeSedeQuery(idSedes).Cache().Dicts().DictOfListByKeys("sede");
         comisionOC.Clear();
         for (var i = 0; i < dataComisiones.Count(); i++)
         {
             Comision obj = Entity.CreateFromDict<Comision>(dataComisiones.ElementAt(i));
 
-            if (dataReferentes.ContainsKey(obj.sede))
-                foreach (var dataReferente in dataReferentes[obj.sede])
-                    Entity.CreateFromDict<Designacion>(dataReferente).AddToOC(obj.sede_.Designacion_);
-                
+            if (dictReferentes.ContainsKey(obj.sede))
+                foreach (var referente in dictReferentes[obj.sede])
+                    Entity.CreateFromDict<Designacion>(referente).AddToOC(obj.sede_.Designacion_);
+
+
+            if (!obj.comision_siguiente.IsNoE() && dictComisionesSiguientes.ContainsKey(obj.comision_siguiente))
+                obj.comision_siguiente_ = Entity.CreateFromDict<Comision>(dictComisionesSiguientes[obj.comision_siguiente]);
+            
             obj.Index = i;
             comisionOC.Add(obj);
         }

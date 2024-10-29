@@ -9,7 +9,7 @@ using SqlOrganize.CollectionUtils;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public partial class Comision : Entity
+    public partial class Comision
     {
         public PersistContext GenerarCursos()
         {
@@ -75,7 +75,27 @@ namespace SqlOrganize.Sql.Fines2Model3
                 return ""; 
             
             } }
-            
+
+        #region comision_siguiente (fk comision.calendario _m:o calendario.id)
+        protected Comision? _comision_siguiente_ = null;
+        public Comision? comision_siguiente_
+        {
+            get { return _comision_siguiente_; }
+            set
+            {
+                if (_comision_siguiente_ != value)
+                {
+                    _comision_siguiente_ = value;
+                    if (value != null)
+                        comision_siguiente = value.id;
+                    else
+                        comision_siguiente = null;
+                    NotifyPropertyChanged(nameof(comision_siguiente_));
+                }
+            }
+        }
+        #endregion
+
 
         /// <summary>
         /// Horario de la comision

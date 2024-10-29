@@ -58,6 +58,9 @@
                                     <Button
 									    Content = "_Buscar..."
 									    Click="BuscarButton_Click" />
+                                    <Button
+                                        Content = "Transferir alumnos activos..."
+                                        Click="BtnTransferirAlumnosActivos_Click" />
                                 </WrapPanel>
 
                                 <WrapPanel Margin="0,25,0,0">
@@ -120,7 +123,11 @@
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>
+                                    <DataGridTextColumn Header="Siguiente" Binding="{Binding comision_siguiente_.Label}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Siguiente id" Binding="{Binding comision_siguiente_.id}"></DataGridTextColumn>
+
                                 </DataGrid.Columns>
+
                             </DataGrid>
 
                         </GroupBox>
