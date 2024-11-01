@@ -214,4 +214,83 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
     {
         LoadCalendarioComisionesSiguientes();
     }
+
+    private void BtnTransferirAlumnosActivos_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            Context.db.CreateQueue();
+
+            if (cbxCalendario.SelectedIndex < 0)
+                return;
+
+            Calendario cal = cbxCalendario.SelectedItem as Calendario;
+
+            var ocAsignacion = AsignacionDAO.AsignacionesActivas__WITH_ComisionSiguiente__BY_idCalendario(cal.id).Cache().Entities<AlumnoComision>();
+
+            if (!ocAsignacion.Any())
+                return;
+
+            PersistContext persist = Context.db.Persist();
+
+            int cantidad = 0;
+
+            foreach (var asignacion in ocAsignacion)
+            {
+                var nuevaAsignacion = new AlumnoComision();
+                nuevaAsignacion.Set("comision", asignacion.comision_.comision_siguiente);
+                nuevaAsignacion.Set("alumno", asignacion.alumno);
+                nuevaAsignacion.Set("estado", "Activo");
+                persist.InsertIfNotExists(nuevaAsignacion);
+                cantidad++;
+            }
+
+            ToastExtensions.Show("Se han transferido " +  cantidad + " de asignaciones.");
+        } catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+
+
+
+
+    }
+
+    private void BtnCambiarEstadoAlumnos_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            Context.db.CreateQueue();
+
+            if (cbxCalendario.SelectedIndex < 0)
+                return;
+
+            Calendario cal = cbxCalendario.SelectedItem as Calendario;
+
+            var ocAsignacion = AsignacionDAO.AsignacionesActivas__WITH_ComisionSiguiente__BY_idCalendario(cal.id).Cache().Entities<AlumnoComision>();
+
+            if (!ocAsignacion.Any())
+                return;
+
+            PersistContext persist = Context.db.Persist();
+
+            int cantidad = 0;
+
+            foreach (var asignacion in ocAsignacion)
+            {
+                var nuevaAsignacion = new AlumnoComision();
+                nuevaAsignacion.Set("comision", asignacion.comision_.comision_siguiente);
+                nuevaAsignacion.Set("alumno", asignacion.alumno);
+                nuevaAsignacion.Set("estado", "Activo");
+                persist.InsertIfNotExists(nuevaAsignacion);
+                cantidad++;
+            }
+
+            ToastExtensions.Show("Se han transferido " + cantidad + " de asignaciones.");
+        }
+        catch (Exception ex)
+        {
+            ex.ToastException();
+        }
+    }
 }

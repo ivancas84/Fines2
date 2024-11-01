@@ -132,8 +132,44 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
 
 
+        public long? _CantidadAprobadasComision;
+
+        public long? CantidadAprobadasComision
+        {
+            get { return _CantidadAprobadasComision; }
+
+            set
+            {
+                if (_CantidadAprobadasComision != value)
+                {
+                    _CantidadAprobadasComision = value; NotifyPropertyChanged(nameof(CantidadAprobadas32));
+                }
+
+            }
+        }
+
+
+        public static void AddDataToOC__WITH_CantidadAprobadasPlanificacion(IEnumerable<Dictionary<string, object?>> source, ObservableCollection<AlumnoComision> oc)
+        {
+            IEnumerable<string> concats_alumno_planificacion = source!.ColOfValConcat("alumno", "comision__planificacion");
+
+            var calificacionesAprobadasAgrupadas = CalificacionDAO.COUNT_calificacionesAprobadas__BY_Concat_alumno_planificacion__GROUP_alumno_planificacion(concats_alumno_planificacion).Cache().Dicts().DictOfDictByKeysValue("cantidad", "alumno", "comision__planificacion");
+
+
+            for (var i = 0; i < source.Count(); i++)
+            {
+                AlumnoComision obj = Entity.CreateFromDict<AlumnoComision>(source.ElementAt(i));
+                obj.Index = i;
+
+                if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion))
+                    obj.CantidadAprobadasComision = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion];
+
+                oc.Add(obj);
+            }
+        }
+
         /// <summary> Procesar un conjunto de datos de alumno comision y agregarlos a un ObservableCollection </summary>
-        public static void AddDataToOC(IEnumerable<Dictionary<string, object?>> source, ObservableCollection<AlumnoComision> oc)
+        public static void AddDataToOC__WITH_CantidadAprobadasPlan(IEnumerable<Dictionary<string, object?>> source, ObservableCollection<AlumnoComision> oc)
         {
             IEnumerable<string> concats_alumno_planCurso = source!.ColOfValConcat("alumno", "planificacion__plan");
 
@@ -162,6 +198,50 @@ namespace SqlOrganize.Sql.Fines2Model3
 
                 if (calificacionesAprobadasAgrupadas.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "2"))
                     obj.CantidadAprobadas32 = (long)calificacionesAprobadasAgrupadas[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "2"];
+
+                oc.Add(obj);
+            }
+
+
+        }
+
+
+        /// <summary> Procesar un conjunto de datos de alumno comision y agregarlos a un ObservableCollection </summary>
+        public static void AddDataToOC__WITH_Cantidades(IEnumerable<Dictionary<string, object?>> source, ObservableCollection<AlumnoComision> oc)
+        {
+            IEnumerable<string> concats_alumno_planCurso = source!.ColOfValConcat("alumno", "planificacion__plan");
+            IEnumerable<string> concats_alumno_planificacion = source!.ColOfValConcat("alumno", "comision__planificacion");
+
+            var calificacionesAprobadasAgrupadasPlan = CalificacionDAO.COUNT_calificacionesAprobadas__BY_Concat_alumno_planDeCurso__GROUP_alumno_planDeCurso_anio_semestre(concats_alumno_planCurso).Cache().Dicts().DictOfDictByKeysValue("cantidad", "alumno", "planificacion__plan", "planificacion_dis1__anio", "planificacion_dis1__semestre");
+            var calificacionesAprobadasAgrupadasPlanificacion = CalificacionDAO.COUNT_calificacionesAprobadas__BY_Concat_alumno_planificacion__GROUP_alumno_planificacion(concats_alumno_planificacion).Cache().Dicts().DictOfDictByKeysValue("cantidad", "alumno", "comision__planificacion");
+
+
+            for (var i = 0; i < source.Count(); i++)
+            {
+                AlumnoComision obj = Entity.CreateFromDict<AlumnoComision>(source.ElementAt(i));
+                obj.Index = i;
+
+                if (calificacionesAprobadasAgrupadasPlanificacion.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion))
+                    obj.CantidadAprobadasComision = (long)calificacionesAprobadasAgrupadasPlanificacion[obj.alumno + "~" + obj.comision_.planificacion];
+
+
+                if (calificacionesAprobadasAgrupadasPlan.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "1" + "~" + "1"))
+                    obj.CantidadAprobadas11 = (long)calificacionesAprobadasAgrupadasPlan[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "1" + "~" + "1"];
+
+                if (calificacionesAprobadasAgrupadasPlan.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "1" + "~" + "2"))
+                    obj.CantidadAprobadas12 = (long)calificacionesAprobadasAgrupadasPlan[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "1" + "~" + "2"];
+
+                if (calificacionesAprobadasAgrupadasPlan.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "2" + "~" + "1"))
+                    obj.CantidadAprobadas21 = (long)calificacionesAprobadasAgrupadasPlan[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "2" + "~" + "1"];
+
+                if (calificacionesAprobadasAgrupadasPlan.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "2" + "~" + "2"))
+                    obj.CantidadAprobadas22 = (long)calificacionesAprobadasAgrupadasPlan[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "2" + "~" + "2"];
+
+                if (calificacionesAprobadasAgrupadasPlan.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "1"))
+                    obj.CantidadAprobadas31 = (long)calificacionesAprobadasAgrupadasPlan[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "1"];
+
+                if (calificacionesAprobadasAgrupadasPlan.ContainsKey(obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "2"))
+                    obj.CantidadAprobadas32 = (long)calificacionesAprobadasAgrupadasPlan[obj.alumno + "~" + obj.comision_.planificacion_.plan + "~" + "3" + "~" + "2"];
 
                 oc.Add(obj);
             }

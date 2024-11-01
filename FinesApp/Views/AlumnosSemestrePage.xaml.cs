@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using FinesApp.Contracts.Services;
-using SqlOrganize.CollectionUtils;
+using SqlOrganize;
 using SqlOrganize.Sql;
 using SqlOrganize.Sql.Fines2Model3;
 using WpfUtils;
@@ -47,21 +47,83 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
                 throw new Exception("Seleccione calendario");
 
 
-            var source = AsignacionDAO.AsignacionesDeCalendario(cbxCalendario.SelectedValue).Cache().Dicts();
+            var source = AsignacionDAO.Asignaciones__BY_idCalendario(cbxCalendario.SelectedValue).Cache().Dicts();
             ocAsignacion.Clear();
-            AlumnoComision.AddDataToOC(source, ocAsignacion);
+            AlumnoComision.AddDataToOC__WITH_Cantidades(source, ocAsignacion);
 
-            var idsAlumnosAsignacionesDuplicadas = AsignacionDAO.COUNT_AsignacionesActivasDuplicadasDeComisionesAutorizadas__BY_idCalendario__GROUP_alumno(cbxCalendario.SelectedValue).Cache().Column("alumno");
+            var idsAlumnosAsignacionesDuplicadas = AsignacionDAO.COUNT_AsignacionesActivasDuplicadas__BY_idCalendario__GROUP_alumno(cbxCalendario.SelectedValue).Cache().Column("alumno");
             ocAsignacionDuplicada.Clear();
             if (idsAlumnosAsignacionesDuplicadas.Any())
             {
-                source = AsignacionDAO.AsignacionesActivasDeComisionesAutorizadas__BY_idCalendario_idsAlumnos(cbxCalendario.SelectedValue, idsAlumnosAsignacionesDuplicadas).Cache().Dicts();
-                AlumnoComision.AddDataToOC(source, ocAsignacionDuplicada);
+                source = AsignacionDAO.AsignacionesActivas__BY_idCalendario_idsAlumnos(cbxCalendario.SelectedValue, idsAlumnosAsignacionesDuplicadas).Cache().Dicts();
+                AlumnoComision.AddDataToOC__WITH_CantidadAprobadasPlan(source, ocAsignacionDuplicada);
             }
         }
         catch (Exception ex)
         {
             ex.ToastException();
+        }
+    }
+
+    private void BtnCambiarEstado_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (!ocAsignacion.Any())
+                throw new Exception("No se encontraron asignaciones");
+
+            using (Context.db.CreateQueue())
+            {
+                PersistContext persist = Context.db.Persist();
+                foreach (var asignacion in ocAsignacion)
+                {
+                    if (asignacion.CantidadAprobadasComision.IsNoE() || asignacion.CantidadAprobadasComision < 3)
+                        asignacion.estado = "No activo";
+
+                    else
+                        asignacion.estado = "Activo";
+
+                    persist.UpdateField(asignacion, "estado");
+                }
+                Context.db.ProcessQueue();
+            }
+
+        } catch(Exception exception)
+        {
+            exception.ToastException();
+        }
+
+    }
+
+    private void BtnTransferirActivos_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (!ocAsignacion.Any())
+                throw new Exception("No se encontraron asignaciones");
+
+            using (Context.db.CreateQueue())
+            {
+                PersistContext persist = Context.db.Persist();
+                foreach (var asignacion in ocAsignacion)
+                {
+                    if (asignacion.estado.Equals("Activo") && !asignacion.comision_.comision_siguiente.IsNoE())
+                    {
+                        var asignacion_ = new AlumnoComision();
+                        asignacion_.alumno = asignacion.alumno;
+                        asignacion_.comision = asignacion.comision_.comision_siguiente;
+                        asignacion_.estado = "Activo";
+                        persist.InsertIfNotExists(asignacion_);
+                    }
+
+                }
+                Context.db.ProcessQueue();
+            }
+
+        }
+        catch (Exception exception)
+        {
+            exception.ToastException();
         }
     }
 
@@ -124,6 +186,8 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
             alumnoComision.UpdateFieldValue("estado", selectedEstado);
         }
     }
+
+    
 }
 
 public class AsignacionEstadosData

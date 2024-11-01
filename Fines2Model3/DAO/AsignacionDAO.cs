@@ -88,7 +88,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         }
 
-        public static EntitySql AsignacionesDeCalendario(object idCalendario)
+        public static EntitySql Asignaciones__BY_idCalendario(object idCalendario)
         {
             var esql = Context.db.Sql("alumno_comision")
                .Size(0)
@@ -98,8 +98,32 @@ namespace SqlOrganize.Sql.Fines2Model3
             return esql;
         }
 
+        public static EntitySql Asignaciones__WITH_ComisionSiguiente__BY_idCalendario(object idCalendario)
+        {
+            var esql = Context.db.Sql("alumno_comision")
+               .Size(0)
+               .Where("$calendario__id = @0 AND $comision__comision_siguiente IS NOT NULL")
+               .Param("@0", idCalendario);
 
-        public static EntitySql COUNT_AsignacionesActivasDuplicadasDeComisionesAutorizadas__BY_idCalendario__GROUP_alumno(object idCalendario)
+            return esql;
+        }
+
+
+        public static EntitySql AsignacionesActivas__WITH_ComisionSiguiente__BY_idCalendario(object idCalendario)
+        {
+            var esql = Context.db.Sql("alumno_comision")
+               .Size(0)
+               .Where("$calendario__id = @0 AND $estado = 'Activo' AND $comision__comision_siguiente IS NOT NULL")
+               .Param("@0", idCalendario);
+
+            return esql;
+        }
+
+
+
+
+
+        public static EntitySql COUNT_AsignacionesActivasDuplicadas__BY_idCalendario__GROUP_alumno(object idCalendario)
         {
             return Context.db.Sql("alumno_comision")
                 .Select("COUNT($id) AS cantidad")
@@ -113,7 +137,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Param("@0", idCalendario);
         }
 
-        public static EntitySql AsignacionesActivasDeComisionesAutorizadas__BY_idCalendario_idsAlumnos(object idCalendario, IEnumerable<object> idsAlumnos)
+        public static EntitySql AsignacionesActivas__BY_idCalendario_idsAlumnos(object idCalendario, IEnumerable<object> idsAlumnos)
         {
             return Context.db.Sql("alumno_comision")
                 .Size(0)
@@ -125,6 +149,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 .Param("@0", idCalendario)
                 .Param("@1", idsAlumnos);
         }
+
 
         public static EntitySql EstadosDeAsignacionesSql()
         {

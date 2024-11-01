@@ -55,6 +55,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width = "200" />
                                     <ColumnDefinition Width = "200" />
+                                    <ColumnDefinition Width = "200" />
 
                                 </Grid.ColumnDefinitions>
 
@@ -72,11 +73,24 @@
 
                                 <Button
 							        Grid.Row = "1"
-							        Grid.ColumnSpan = "2"
 							        Content = "Buscar..."
 							        Click="BtnBuscarAlumnos_Click"
 							        Margin = "20"/>
-                            </Grid>
+
+                                <Button
+                                    Grid.Row = "1"
+                                    Grid.Column="1"
+                                    Content = "Cambiar Estado..."
+                                    Click="BtnCambiarEstado_Click"
+                                    Margin = "20"/>
+
+                                                    <Button
+                                    Grid.Row = "1"
+                                    Grid.Column="2"
+                                    Content = "Transferir Activos..."
+                                    Click="BtnTransferirActivos_Click"
+                                    Margin = "20"/> 
+                    </Grid>
                         </GroupBox>
 
                         <TabControl Grid.Row="2">
@@ -108,8 +122,8 @@
 													</Style>
 												</DataGridComboBoxColumn.EditingElementStyle>
 											</DataGridComboBoxColumn>
-											
-											
+
+                                            <DataGridTextColumn Header="Aprobadas Comisión" Binding="{Binding CantidadAprobadasComision}"></DataGridTextColumn>
                                             <DataGridTextColumn Header="1/1" Binding="{Binding CantidadAprobadas11}"></DataGridTextColumn>
                                             <DataGridTextColumn Header="1/2" Binding="{Binding CantidadAprobadas12}"></DataGridTextColumn>
                                             <DataGridTextColumn Header="2/1" Binding="{Binding CantidadAprobadas21}"></DataGridTextColumn>

@@ -59,6 +59,9 @@
 									    Content = "_Buscar..."
 									    Click="BuscarButton_Click" />
                                     <Button
+                                        Content = "Cambiar estado alumnos..."
+                                        Click="BtnCambiarEstadoAlumnos_Click" />
+                                    <Button
                                         Content = "Transferir alumnos activos..."
                                         Click="BtnTransferirAlumnosActivos_Click" />
                                 </WrapPanel>

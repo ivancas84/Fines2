@@ -71,6 +71,7 @@ namespace SqlOrganize.Sql
             return query.Value<T>(columnNumber);
         }
 
+        /// <summary> Retorna Dict, pero realiza chequeos adicionales para asegurarse de que el resultado es uno y solo uno </summary>
         public static IDictionary<string, object?>? DictOne(this EntitySql entitySql)
         {
             IEnumerable<Dictionary<string, object?>> rows = entitySql.Dicts();

@@ -191,6 +191,19 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Param("@0", concats_alumno_planCurso);
         }
 
+        public static EntitySql COUNT_calificacionesAprobadas__BY_Concat_alumno_planificacion__GROUP_alumno_planificacion(IEnumerable<object> concats_alumno_planificacion)
+        {
+            return Context.db.Sql("calificacion")
+                .Select("COUNT($id) as cantidad")
+                .Group("$alumno, $comision__planificacion")
+                .Size(0)
+                .Where(@"
+                    CONCAT($alumno, '~', $comision__planificacion) IN (@0)
+                    AND ($nota_final >= 7 OR $crec >= 4) 
+                ").
+                Param("@0", concats_alumno_planificacion);
+        }
+
 
     }
 }
