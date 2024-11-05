@@ -202,6 +202,12 @@ namespace SqlOrganize.Sql
             return propertyInfo.GetValue(this, null);
         }
 
+        //se mantiene para compatibilidad
+        public virtual object? GetOrNull(string fieldName)
+        {
+            return Get(fieldName);
+        }
+
         public virtual void Set(string fieldName, object? value)
         {
             PropertyInfo propertyInfo = GetType().GetProperty(fieldName);

@@ -33,10 +33,6 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public static HttpClientHandler pfHandler;
 
-        internal static string pfLoginPageUrl = "https://www.programafines.ar/index.php";
-
-        internal static string pfLoginEndpointUrl = "https://www.programafines.ar/validar.php";
-
         public static IMemoryCache CreateCache()
         {
             //return new MemoryCache(new MemoryCacheOptions());
