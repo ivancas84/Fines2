@@ -40,7 +40,7 @@
             "oo": Clave foranea uno a uno
         */
 
-        /* valor por defecto */
+        /// <summary> Valor por defecto </summary>
         public object defaultValue { get; set; }
 
 
