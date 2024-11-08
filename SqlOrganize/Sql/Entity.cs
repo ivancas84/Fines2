@@ -2,6 +2,7 @@
 using SqlOrganize.ValueTypesUtils;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
@@ -23,28 +24,18 @@ namespace SqlOrganize.Sql
 
         #region Logging
         protected Logging _Logging = new Logging();
-        public Logging Logging { get { return _Logging; } }
+        public Logging Logging => _Logging;
         #endregion
-
-        /// <summary>Flag opcional para indicar que debe ejecutarse la validacion</summary>
-        public bool _Validate = false;
 
         #region db
         protected Db _db;
-        public Db db { get { return _db; } }
+        public Db db => _db;
         #endregion
 
-        public string this[string columnName]
-        {
-            get
-            {
-                if (!_Validate)
-                    return "";
+        #region Errores WPF
+        public bool ValidateEnabled { get; set; } = false;
 
-                // If there's no error, empty string gets returned
-                return ValidateField(columnName);
-            }
-        }
+        public string this[string columnName] => ValidateEnabled ? ValidateField(columnName) : string.Empty;
 
 
         /// <summary>
@@ -54,39 +45,33 @@ namespace SqlOrganize.Sql
         /// <remarks>
         /// Devuelve un string con la concatenacion de todos los errores.
         /// </remarks>
-        public string Error
+        public string Error => GetErrorMessages();
+
+        private string GetErrorMessages()
         {
-            get
+            var properties = GetType().GetProperties();
+            List<string> errors = new();
+
+            foreach (var property in properties)
             {
-                PropertyInfo[] properties = this.GetType().GetProperties();
-
-                List<string> errors = new();
-                foreach (PropertyInfo property in properties)
-                    if (this[property.Name] != "")
-                    {
-                        NotifyPropertyChanged(property.Name);
-                        errors.Add(this[property.Name]);
-                    }
-
-                if (errors.Count > 0)
-                    return String.Join(" - ", errors.ToArray());
-
-                return "";
+                string error = this[property.Name];
+                if (!string.IsNullOrEmpty(error))
+                {
+                    NotifyPropertyChanged(property.Name);
+                    errors.Add(error);
+                }
             }
+
+            return string.Join(" - ", errors);
         }
+        #endregion
 
         protected string _Msg = "";
         public string Msg
         {
             get { return _Msg; }
-            set
-            {
-                if (_Msg != value)
-                {
-                    _Msg = value;
-                    NotifyPropertyChanged(nameof(Msg));
-                }
-            }
+            set => SetProperty(ref _Msg, value, nameof(Msg));
+
         }
 
         #region Label
@@ -95,14 +80,7 @@ namespace SqlOrganize.Sql
         public virtual string Label
         {
             get { return _Label; }
-            set
-            {
-                if (_Label != value)
-                {
-                    _Label = value;
-                    NotifyPropertyChanged(nameof(Label));
-                }
-            }
+            set => SetProperty(ref _Label, value, nameof(Label));
         }
         #endregion
 
@@ -113,14 +91,7 @@ namespace SqlOrganize.Sql
         public virtual object? Status
         {
             get { return _Status; }
-            set
-            {
-                if (_Status != value)
-                {
-                    _Status = value;
-                    NotifyPropertyChanged(nameof(Status));
-                }
-            }
+            set => SetProperty(ref _Status, value, nameof(Status));
         }
         #endregion
 
@@ -132,18 +103,14 @@ namespace SqlOrganize.Sql
         public int Index
         {
             get { return index; }
-            set
-            {
-                index = value; //por el momento no ejecuta NotifyPropertyChanged
-            }
+            set => SetProperty(ref index, value, nameof(Index));
         }
 
         public static T CreateFromId<T>(object id) where T : Entity, new()
         {
             T _obj = new T(); //crear objeto vacio para obtener el entityName
             var data = _obj.db.Sql(_obj.entityName).Cache().Id(id);
-            if (data == null)
-                throw new Exception("El id proporcionado no retorno ningún valor");
+            if (data == null) throw new Exception("El id proporcionado no retorno ningún valor");
             return CreateFromDict<T>(data);
         }
 
@@ -156,8 +123,7 @@ namespace SqlOrganize.Sql
         public static T CreateFromDict<T>(IDictionary<string, object?> dict) where T : Entity, new()
         {
             T _obj = new T(); //crear objeto vacio para obtener el entityName
-            var valuesTree = _obj.db.ValuesTree(dict, _obj.entityName);
-            return valuesTree.Obj<T>()!;
+            return _obj.db.ValuesTree(dict, _obj.entityName).Obj<T>()!;
         }
 
         public static T CreateFromObj<T>(object source) where T : Entity, new()
@@ -195,11 +161,8 @@ namespace SqlOrganize.Sql
         #region set or get properties particulares
         public virtual object? Get(string fieldName)
         {
-            PropertyInfo propertyInfo = GetType().GetProperty(fieldName);
-            if (propertyInfo == null)
-                throw new Exception("No existe " + entityName + "." + fieldName);
-
-            return propertyInfo.GetValue(this, null);
+            PropertyInfo? property = GetType().GetProperty(fieldName);
+            return property?.GetValue(this) ?? throw new Exception($"Propiedad {entityName}.{fieldName} no encontrada.");
         }
 
         //se mantiene para compatibilidad
@@ -210,7 +173,7 @@ namespace SqlOrganize.Sql
 
         public virtual void Set(string fieldName, object? value)
         {
-            PropertyInfo propertyInfo = GetType().GetProperty(fieldName);
+            PropertyInfo? propertyInfo = GetType().GetProperty(fieldName);
             if (propertyInfo == null || !propertyInfo.CanWrite)
                 throw new Exception(entityName + "." + fieldName + " no existe o no tiene permisos de esctritura");
 
@@ -772,6 +735,16 @@ namespace SqlOrganize.Sql
         }
 
         #region INotifyPropertyChanged
+        protected void SetProperty<T>(ref T field, T value, string propertyName)
+        {
+            if (!Equals(field, value))
+            {
+                field = value;
+                NotifyPropertyChanged(propertyName);
+            }
+        }
+
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void NotifyPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] String propertyName = "")
