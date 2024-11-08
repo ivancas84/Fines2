@@ -424,6 +424,9 @@ namespace SqlOrganize.Sql
 
         public abstract EntitySql SelectMaxValue(string fieldName);
 
+        public abstract EntitySql SelectNextValue(string fieldName);
+
+
         protected string SqlJoin()
         {
             string sql = "";

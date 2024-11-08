@@ -2,16 +2,8 @@
 {
     public class EntityMetadata
     {
-        /**
-        Propiedades con sufijo "add" o "sub" existen para facilitar la configuracion
-        Seran agregadas o quitadas de su atributo asociado en la inicializacion
-        */
         public Db db { get; set; }
 
-        /*
-        Es necesario que se defina como propiedad con get y set, para poder 
-        invocar dinamicamente al atributo mediante this!.GetType().GetProperty(name);
-        */
         public string name { get; set; }
         
         public string alias { get; set; }
@@ -28,47 +20,32 @@
 
         protected List<Field> _om; //one to many
 
-        /* 
-        array dinamico para identificar univocamente a una entidad en un momento determinado
-        @example
-        identifier = ["fecha_anio", "fecha_semestre","persona__numero_documento"]
-        */
+        /// <summary> Array dinamico para identificar a la entidad en un momento determinado </summary>
+        /// <example> ["fecha_anio", "fecha_semestre","persona__numero_documento"] </example>
         public List<string> identifier { get; set; } = new();
 
-        /*
-        Valores por defecto para ordenamiento
-        @example ["field1"=>"asc","field2"=>"desc",...];
-        */
+        /// <summary> Valores por defecto para ordenamiento </summary>
+        /// <example> ["field1"=>"asc","field2"=>"desc",...]; </example>
         public Dictionary<string, string> orderDefault { get; set; } = new();
 
-        /*
-        Valores no administrables
-        @example ["field1","field2",...]
-        */
+        /// <summary> nombres de campos no administrables </summary>
+        /// <remarks> los campos no insertables son aquellos que reciben se asignan directamente desde el servidor sql </remarks>
         public List<string> noAdmin { get; set; } = new();
 
-        /*
-        Valores principales
-        @example ["field1","field2",...]
-        */
+
+        /// <summary> Valores principales </summary>
         public List<string> main { get; set; } = new();
 
-        /*
-        Valores unicos
-        Una entidad puede tener varios campos que determinen un valor unico
-        @example ["field1","field2",...]
-        */
+        /// <summary> Valores unicos </summary>
+        /// <remarks> Una entidad puede tener varios campos que determinen un valor único </remarks>
+        /// <example> field1, field2, field3, ... </example>
         public List<string> unique { get; set; } = new();
 
-        /*
-        Valores no nulos        
-        */
+        /// <summary> Valores no nulos </summary>
         public List<string> notNull { get; set; } = new();
 
-        /*
-        Valores unicos multiples
-        Cada juego de valores unicos multiples se define como una Lista
-        */
+        /// <summary> Valores unicos multiples </summary>
+        /// <remarks> Cada juego de valores unicos multiples se define como una Lista </remarks>
         public List<List<string>> uniqueMultiple { get; set; } = new();
 
         public Dictionary<string, EntityTree> tree { get; set; } = new();

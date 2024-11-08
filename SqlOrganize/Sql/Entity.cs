@@ -6,7 +6,6 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace SqlOrganize.Sql
 {
