@@ -170,7 +170,7 @@ namespace SqlOrganize.Sql
                 {
                     if (persist.Sql().IsNoE())
                         continue;
-                    persist.Query(query).ExecTransaction();
+                    persist.Query(query).Exec();
                 }
 
                 query.CommitTransaction();

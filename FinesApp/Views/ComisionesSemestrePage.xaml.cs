@@ -61,7 +61,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
 
     private void Page_Loaded(object sender, RoutedEventArgs e)
     {
-        CalendarioDAO.CalendariosSql().Cache().AddEntityToClearOC(ocCalendario);
+        CalendarioDAO.CalendariosSql().Cache().AddEntitiesToClearOC(ocCalendario);
     }
 
     private void LoadCalendarioComisionesSiguientes()
@@ -72,7 +72,7 @@ public partial class ComisionesSemestrePage : Page, INotifyPropertyChanged
         Calendario cal = cbxCalendario.SelectedItem as Calendario;
 
         Context.db.Sql("calendario").Where("$anio >= @0 AND $semestre >= @1").
-            Param("@0", cal.anio).Param("@1", cal.semestre).Cache().AddEntityToClearOC(ocCalendarioComisionesSiguientes);
+            Param("@0", cal.anio).Param("@1", cal.semestre).Cache().AddEntitiesToClearOC(ocCalendarioComisionesSiguientes);
     }
 
     private void BuscarButton_Click(object sender, RoutedEventArgs e)

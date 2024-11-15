@@ -36,7 +36,7 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
         dgdAsignacion.ItemsSource = ocAsignacion;
         dgdAsignacionDuplicada.ItemsSource = ocAsignacionDuplicada;
-        CalendarioDAO.CalendariosSql().Cache().AddEntityToClearOC(ocCalendario);
+        CalendarioDAO.CalendariosSql().Cache().AddEntitiesToClearOC(ocCalendario);
     }
 
     private void BtnBuscarAlumnos_Click(object sender, RoutedEventArgs e)
@@ -162,13 +162,13 @@ public partial class AlumnosSemestrePage : Page, INotifyPropertyChanged
 
     private void BtnEliminarAsignacion_Click(object sender, RoutedEventArgs e)
     {
-        e.DgdDeleteRow(ocAsignacion);
+        ocAsignacion.DgdDeleteRow(sender);
        
     }
 
     private void BtnEliminarAsignacionDuplicada_Click(object sender, RoutedEventArgs e)
     {
-        e.DgdDeleteRow(ocAsignacionDuplicada);
+        ocAsignacionDuplicada.DgdDeleteRow(sender);
 
     }
 

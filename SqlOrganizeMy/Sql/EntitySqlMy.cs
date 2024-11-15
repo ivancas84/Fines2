@@ -47,14 +47,7 @@
             return this;
         } 
 		
-		 public override EntitySql SelectNextValue(string fieldName)
-		{
-			select += @"
-				SELECT auto_increment 
-				FROM INFORMATION_SCHEMA.TABLES 
-				WHERE TABLE_NAME = '" + entityName + "'";				
-			return this;
-		}
+		 
     }   
 
 }

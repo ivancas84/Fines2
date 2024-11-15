@@ -22,7 +22,7 @@ namespace SqlOrganize.Sql.Fines2Model3
     ///     var cursosData = Context.db.Sql("curso").Equal("$comision", comision.id).Cache().Dicts();
     ///     var tomaData = Context.db.TomaAprobadaDeComisionQuery(comision.id).Cache().Dicts();
     ///     cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
-    ///     Context.db.AddEntityToClearOC(cursosData, cursoOC);
+    ///     Context.db.AddEntitiesToClearOC(cursosData, cursoOC);
     /// </example>
     public partial class Curso
     {
@@ -56,10 +56,10 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (id.IsNoE())
                 throw new Exception("Id no definido");
 
-            CalificacionDAO.CalificacionAprobadaCursoSql(id).Cache().AddEntityToClearOC(Calificacion_);
+            CalificacionDAO.CalificacionAprobadaCursoSql(id).Cache().AddEntitiesToClearOC(Calificacion_);
             var idAlumnosConCalificacionAprobada = Calificacion_.ColOfProp<object, Calificacion>("alumno");
 
-            AsignacionDAO.AsignacionesActivasRestantesComisionSql(comision!, idAlumnosConCalificacionAprobada).Cache().AddEntityToClearOC(comision_!.AlumnoComision_);
+            AsignacionDAO.AsignacionesActivasRestantesComisionSql(comision!, idAlumnosConCalificacionAprobada).Cache().AddEntitiesToClearOC(comision_!.AlumnoComision_);
         }
     }
 }

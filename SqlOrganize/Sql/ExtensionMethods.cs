@@ -14,17 +14,22 @@ namespace SqlOrganize.Sql
         /// <summary>Ejecucion rapida de EntitySql</summary>
         public static IEnumerable<Dictionary<string, object?>> Dicts(this EntitySql esql)
         {
-            using Query query = esql.Query();
-            using DbConnection connection = query.OpenConnection();
-            return query.Dicts();
+            Query query = esql.Query();
+            using (DbConnection connection = query.OpenConnection())
+            {
+                return query.Dicts();
+            }
+            
         }
 
         /// <summary>Ejecucion rapida de EntitySql</summary>
         public static IDictionary<string, object?>? Dict(this EntitySql esql)
         {
             using Query query = esql.Query();
-            using DbConnection connection = query.OpenConnection();
-            return query.Dict();
+            using (DbConnection connection = query.OpenConnection())
+            {
+                return query.Dict();
+            }
         }
 
         public static T? Obj<T>(this EntitySql esql) where T : class, new()
@@ -138,7 +143,7 @@ namespace SqlOrganize.Sql
         }
 
 
-        public static void AddEntityToClearOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : Entity, new()
+        public static void AddEntitiesToClearOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : Entity, new()
         {
             oc.Clear();
             db.AddEntityToOC(source, oc);

@@ -40,9 +40,31 @@ namespace SqlOrganize.CollectionUtils
             oc.AddRange(data);
         }
 
-        public static void ClearAndAddRangeToOC<T>(this IEnumerable<T> data, ObservableCollection<T> oc)
+        public static void AddRangeToClearOC<T>(this IEnumerable<T> data, ObservableCollection<T> oc)
         {
             oc.ClearAndAddRange(data);
+        }
+
+        public static void AddIfNotExists<T>(this ObservableCollection<T> collection, T item)
+        {
+            if (!collection.Contains(item))
+                collection.Add(item);
+        }
+
+        public static void InsertIfNotExists<T>(this ObservableCollection<T> collection, int index, T item)
+        {
+            if (!collection.Contains(item))
+            {
+                // Ensure the index is within the valid range
+                if (index >= 0 && index <= collection.Count)
+                {
+                    collection.Insert(index, item);
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+                }
+            }
         }
 
         /// <summary>

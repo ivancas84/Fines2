@@ -69,7 +69,6 @@ namespace SqlOrganize
             return JsonConvert.DeserializeObject<Dictionary<string, T?>>(json);
         }
 
-
         public static IEnumerable<T> Objs<T>(this IEnumerable<Dictionary<string, object?>> rows) where T : class, new()
         {
             var results = new List<T>();
@@ -80,12 +79,8 @@ namespace SqlOrganize
             return results;
         }
 
-
-
-
-        /*
-        https://stackoverflow.com/questions/41040189/fastest-way-to-map-result-of-sqldatareader-to-object
-        */
+        /// <summary> Transformar a objeto </summary>
+        /// <remarks> https://stackoverflow.com/questions/41040189/fastest-way-to-map-result-of-sqldatareader-to-object </remarks>
         public static T? Obj<T>(this DbDataReader rd) where T : class, new()
         {
             return rd.SerializeRow()?.Obj<T>() ?? null;
@@ -108,9 +103,8 @@ namespace SqlOrganize
             return results;
         }
 
-        /*
-        https://stackoverflow.com/questions/5083709/convert-from-sqldatareader-to-json 
-        */
+        /// <summary> Serializar </summary>
+        /// <remarks> https://stackoverflow.com/questions/5083709/convert-from-sqldatareader-to-json  </remarks>
         public static IEnumerable<Dictionary<string, object?>> Serialize(this DbDataReader reader)
         {
             var cols = reader.ColumnNames();
@@ -121,14 +115,12 @@ namespace SqlOrganize
 
             return results;
         }
+
         public static Dictionary<string, object?>? SerializeRow(this DbDataReader reader)
         {
-            var result = new Dictionary<string, object?>();
             if (!reader.Read()) return null;
             var cols = reader.ColumnNames();
-            foreach (var col in cols)
-                result.Add(col, reader[col]);
-            return result;
+            return SerializeRowCols(reader, cols);
         }
 
         public static Dictionary<string, object?> SerializeRowCols(this DbDataReader reader, List<string> cols)
@@ -160,11 +152,6 @@ namespace SqlOrganize
             return result;
         }
 
-        public static bool IsDbNull(this object? value)
-        {
-            return (value == System.DBNull.Value);
-        }
-
         /// <summary>A T extension method that sets property value.</summary>
         public static T SetPropertyValue<T>(this T @this, string propertyName, object? value)
         {
@@ -174,6 +161,7 @@ namespace SqlOrganize
             return @this;
         }
 
+        /// <summary>A T extension method that gets property value.</summary>
         public static object? GetPropertyValue<T>(this T @this, string propertyName)
         {
             Type type = @this!.GetType();

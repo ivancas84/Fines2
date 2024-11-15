@@ -2,7 +2,6 @@
 using SqlOrganize.ValueTypesUtils;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
@@ -105,6 +104,8 @@ namespace SqlOrganize.Sql
             set => SetProperty(ref index, value, nameof(Index));
         }
 
+        /// <summary> Crear instancia de T utilizando serializacion a partir del id </summary>
+
         public static T CreateFromId<T>(object id) where T : Entity, new()
         {
             T _obj = new T(); //crear objeto vacio para obtener el entityName
@@ -113,19 +114,30 @@ namespace SqlOrganize.Sql
             return CreateFromDict<T>(data);
         }
 
+        /// <summary> Crear instancia de T utilizando serializacion a partir de key > value unicos </summary>
+
         public static T? CreateFromUnique<T>(string key, object value) where T : Entity, new()
         {
             T _obj = new T(); //crear objeto vacio para obtener el entityName
             return _obj.db.Sql(_obj.entityName).Equal(key, value).Cache().ToEntity<T>();
         }
 
+        /// <summary> Crear instancia de T utilizando serializacion a partir de IDictionary </summary>
         public static T CreateFromDict<T>(IDictionary<string, object?> dict) where T : Entity, new()
         {
             T _obj = new T(); //crear objeto vacio para obtener el entityName
             return _obj.db.ValuesTree(dict, _obj.entityName).Obj<T>()!;
         }
 
+        /// <summary> Asignar propiedades utilizando serializacion </summary>
+
         public static T CreateFromObj<T>(object source) where T : Entity, new()
+        {
+            return CreateFromDict<T>(source.Dict());
+        }
+
+        /// <summary> Asignar propiedades sin utilizar serializacion </summary>
+        public static T CreateFromObj_<T>(object source) where T : Entity, new()
         {
             T obj = new T(); //crear objeto vacio para obtener el entityName
 
@@ -203,7 +215,7 @@ namespace SqlOrganize.Sql
                     return;
 
                 case "int":
-                    if (value is decimal)
+                    if (value is int)
                     {
                         propertyInfo.SetValue(this, value);
                         return;
@@ -420,7 +432,7 @@ namespace SqlOrganize.Sql
             foreach (var (resetKey, resetValue) in field.resets)
             {
                 var rk = resetKey.ToLower();
-                var val = this.Get(fieldName);
+                var val = Get(fieldName);
                 switch (rk)
                 {
                     case "trim":
@@ -441,6 +453,15 @@ namespace SqlOrganize.Sql
                     case "defaultifnull":
                         if (val.IsNoE())
                             this.Set(fieldName, GetDefault(fieldName));
+                        break;
+
+                    case "nextifnull":
+                        if (val.IsNoE())
+                        {
+                            var val_ = db.Query().GetNextValue(entityName, field.name);
+                            Sset(fieldName, val_);
+                        }
+
                         break;
 
                     case "setdefault":
@@ -464,20 +485,12 @@ namespace SqlOrganize.Sql
         protected object? GetDefaultInt(Field field)
         {
             if (field.defaultValue.ToString()!.ToLower().Contains("next"))
-            {
-                ulong next = (ulong)db.Query().GetNextValue(field.entityName);
-                return next;
-            }
-            else if (field.defaultValue.ToString()!.ToLower().Contains("max"))
-            {
-                object max_ = db.Query().GetMaxValue(field.entityName, field.name);
-                long max = Convert.ToInt64(max_);
-                return max + 1;
-            }
-            else
-            {
-                return field.defaultValue.ToString().CleanStringOfNonDigits();
-            }
+                return db.Query().GetNextValue(field.entityName, field.name);
+            
+            if (field.defaultValue.ToString()!.ToLower().Contains("max"))
+                return db.Sql(entityName).SelectMaxValue(field.name).Value<long>() + 1;
+            
+            return field.defaultValue.ToString().CleanStringOfNonDigits();            
         }
 
         /// <summary> Validacion de campos para WPF </summary>

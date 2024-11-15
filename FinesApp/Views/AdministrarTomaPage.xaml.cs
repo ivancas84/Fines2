@@ -34,7 +34,7 @@ public partial class AdministrarTomaPage : Page, INotifyPropertyChanged, INaviga
 
         #region cbxCalendario
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        CalendarioDAO.CalendariosSql().Cache().AddEntityToClearOC(ocCalendario);
+        CalendarioDAO.CalendariosSql().Cache().AddEntitiesToClearOC(ocCalendario);
         Entity.CreateEmpty<Calendario>().InsertFirst(ocCalendario);
         cbxCalendario.SelectedIndex = 0;
         cbxCalendario.SelectionChanged += CbxCalendario_SelectionChanged;
@@ -68,7 +68,7 @@ public partial class AdministrarTomaPage : Page, INotifyPropertyChanged, INaviga
         if (cbxComision.SelectedIndex < 1)
             return;
 
-        CursoDAO.CursosDeComisionSql(cbxComision.SelectedValue).Cache().AddEntityToClearOC(ocCurso);
+        CursoDAO.CursosDeComisionSql(cbxComision.SelectedValue).Cache().AddEntitiesToClearOC(ocCurso);
         var curso = Entity.CreateEmpty<Curso>();
         curso.disposicion_ = new();
         curso.disposicion_.Label = "-Seleccione curso-";
@@ -81,7 +81,7 @@ public partial class AdministrarTomaPage : Page, INotifyPropertyChanged, INaviga
         if (cbxSede.SelectedIndex < 1)
             return;
 
-        ComisionDAO.ComisionesAutorizadasDeCalendarioYSedeSql(cbxCalendario.SelectedValue, cbxSede.SelectedValue).Cache().AddEntityToClearOC(ocComision);
+        ComisionDAO.ComisionesAutorizadasDeCalendarioYSedeSql(cbxCalendario.SelectedValue, cbxSede.SelectedValue).Cache().AddEntitiesToClearOC(ocComision);
         Entity.CreateEmpty<Comision>("pfid").InsertFirst(ocComision);
         cbxComision.SelectedIndex = 0;
     }
@@ -91,7 +91,7 @@ public partial class AdministrarTomaPage : Page, INotifyPropertyChanged, INaviga
         if (cbxCalendario.SelectedIndex < 1)
             return;
 
-        SedeDAO.SedesDeCalendarioSql(cbxCalendario.SelectedValue).Cache().AddEntityToClearOC(ocSede);
+        SedeDAO.SedesDeCalendarioSql(cbxCalendario.SelectedValue).Cache().AddEntitiesToClearOC(ocSede);
         Entity.CreateEmpty<Sede>("nombre").InsertFirst(ocSede);
         cbxSede.SelectedIndex = 0;
     }

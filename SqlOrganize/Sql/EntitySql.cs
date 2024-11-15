@@ -424,8 +424,6 @@ namespace SqlOrganize.Sql
 
         public abstract EntitySql SelectMaxValue(string fieldName);
 
-        public abstract EntitySql SelectNextValue(string fieldName);
-
 
         protected string SqlJoin()
         {
@@ -572,7 +570,7 @@ namespace SqlOrganize.Sql
         {
             string sql = Sql();
             q.sql = sql;
-            q._parameters = _parameters;
+            q.Parameters = _parameters;
             return q;
         }
 

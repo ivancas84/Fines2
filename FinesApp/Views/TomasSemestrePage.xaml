@@ -51,7 +51,6 @@
                             Name="dgdToma">
                         <DataGrid.Columns>
                                 <DataGridTextColumn Header="Sede" Binding="{Binding fecha_toma}"></DataGridTextColumn>
-
                                 <DataGridTextColumn Header="Sede" Binding="{Binding id}"></DataGridTextColumn>
 
                             <DataGridTextColumn Header="Sede" Binding="{Binding curso_.comision_.sede_.nombre}"></DataGridTextColumn>

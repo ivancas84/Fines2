@@ -59,7 +59,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
             var list = ComisionDAO.BusquedaAproximadaComision(text).Dicts();
 
-            Context.db.AddEntityToClearOC(list, comisionOC);
+            Context.db.AddEntitiesToClearOC(list, comisionOC);
 
             cbxComision.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
         }
@@ -94,7 +94,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             var cursosData = Context.db.Sql("curso").Equal("$comision", comision.id).Cache().Dicts();
             var tomaData = TomaDAO.TomaAprobadaDeComisionQuery(comision.id).Cache().Dicts();
             cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
-            Context.db.AddEntityToClearOC(cursosData, cursoOC);
+            Context.db.AddEntitiesToClearOC(cursosData, cursoOC);
 
             var idsAsignaturas = cursosData.ColOfVal<string>("asignatura-id").ToList();
 
@@ -149,7 +149,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
                     }
                     asignacionOC.Add(itemObj);
                 }
-                //Context.db.AddEntityToClearOC(data, alumnos3OC);
+                //Context.db.AddEntitiesToClearOC(data, alumnos3OC);
             }
 
         }

@@ -33,13 +33,14 @@
                     <ColumnDefinition Width = "*" />
                 </Grid.ColumnDefinitions>
 
-                <GroupBox 
-                Name="gbxSearch"
-                Margin="10">
+                <GroupBox Name="gbxSearch" Margin="10">
                     <GroupBox.Header>
                         <Label Foreground="White">Búsqueda</Label>
                     </GroupBox.Header>
-                    <!-- Grid con formulario de búsqueda -->
+
+                    <ComboBox Grid.Row="3" Grid.Column="0" Margin = "3, 0, 3, 3" IsTextSearchEnabled="False" IsEditable="True" StaysOpenOnEdit="True"
+                              Name="cbxPersona" KeyUp="CbxPersona_KeyUp" SelectionChanged="CbxPersona_SelectionChanged" />
+
                 </GroupBox>
 
                 <GroupBox 
@@ -75,7 +76,7 @@
                           Grid.Row = "1"
                           Grid.Column = "0"
                           Margin = "3, 0, 3, 3"
-                          Text="{Binding persona_.nombres, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+                          Text="{Binding nombres, ValidatesOnDataErrors=True, TargetNullValue=''}" />
 
                         <Label
                             Grid.Row="0"
@@ -86,7 +87,7 @@
                               Grid.Row = "1"
                               Grid.Column = "1"
                               Margin = "3, 0, 3, 3"
-                              Text="{Binding persona_.apellidos, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+                              Text="{Binding apellidos, ValidatesOnDataErrors=True, TargetNullValue=''}" />
 
                         <Label
                             Grid.Row="0"
@@ -97,7 +98,7 @@
                           Grid.Row = "1"
                           Grid.Column = "2"
                           Margin = "3, 0, 3, 3"
-                          Text="{Binding persona_.numero_documento, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+                          Text="{Binding numero_documento, ValidatesOnDataErrors=True, TargetNullValue=''}" />
 
                         <Label
                             Grid.Row="0"
@@ -108,7 +109,7 @@
                           Grid.Row = "1"
                           Grid.Column = "3"
                           Margin = "3, 0, 3, 3"
-                          Text="{Binding persona_.fecha_nacimiento, ValidatesOnDataErrors=True, TargetNullValue=''}" />
+                          Text="{Binding fecha_nacimiento, ValidatesOnDataErrors=True, TargetNullValue=''}" />
 
 
 
@@ -116,7 +117,7 @@
                              Grid.Row = "2"
                              Grid.ColumnSpan="4"
                             Content = "_Guardar..." 
-                            Click="BtnGuardarAlumno_Click"                                                
+                            Click="BtnGuardarPersona_Click"                                                
                             Margin = "20"/>
 
 

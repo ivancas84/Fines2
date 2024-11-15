@@ -18,7 +18,7 @@ namespace WpfUtils.Fines
 
             IEnumerable<Dictionary<string, object?>> list = CursoDAO.BusquedaAproximadaCurso(text).Size(30).Dicts(); //busqueda de valores a mostrar en funcion del texto
 
-            Context.db.AddEntityToClearOC(list, cursoOC);
+            Context.db.AddEntitiesToClearOC(list, cursoOC);
             
             cursoComboBox.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
         }

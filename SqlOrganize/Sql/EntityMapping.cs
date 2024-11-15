@@ -38,10 +38,8 @@ namespace SqlOrganize.Sql
             return _Map(fieldName);
         }
 
-        /*
-        Para sql server se debe aplicar trim porque agrega espacios adicionales
-        cuidado de no generar strings mayores a 255 
-        */
+        /// <summary> Valor de identificador (el identificador puede ser la pk y si no existe pk lo define a partir de sus campos) </summary>
+        /// <remarks>  Para sql server se debe aplicar trim porque agrega espacios adicionales. Cuidado de no generar strings mayores a 255! </remarks>
         public string _Id()
         {
             List<string> map_ = new();
@@ -59,12 +57,8 @@ namespace SqlOrganize.Sql
         }
 
 
-        /// <summary>
-        /// Aplicar sql para hacer un cast a string, dependiendo del tipo
-        /// </summary>
-        /// <remarks>Esta implementada para sql server, cada motor debe tener su propio CastString</remarks>
-        /// <param name="fieldName"></param>
-        /// <returns></returns>
+        /// <summary> Aplicar sql para hacer un cast a string, dependiendo del tipo. </summary>
+        /// <remarks> Esta implementada para sql server, cada motor debe tener su propio CastString. </remarks>
         protected string CastString(string dataType, string fieldName)
         {
             switch (dataType.ToLower())
@@ -105,24 +99,6 @@ namespace SqlOrganize.Sql
         protected string _Map(string fieldName)
         {
             return Pt() + "." + fieldName;
-
-            /*
-            if (!fieldName.Contains(".")) //chequeo de funciones especiales
-                return Pt() + "." + fieldName;
-
-            int lastIndex = fieldName.LastIndexOf('.');
-
-            string func = fieldName.Substring(lastIndex + 1).ToLower();
-            string fn = fieldName.Substring(0, lastIndex);
-
-            //por el momento la unica sintaxis general es str
-            if (!func.Contains("str"))
-                throw new Exception(fieldName + " posee una sintaxis general que no coincide con ningun patron: " + func);
-
-            Field field = db.Field(entityName, fn);
-
-            return CastString(field.dataType, Pt() + "." + fn);
-            */
         }
 
     }

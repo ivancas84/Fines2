@@ -9,31 +9,15 @@ namespace SqlOrganize.Sql
     /// </summary>    
     public abstract class Query : IDisposable
     {
-        private bool disposed = false;
+        protected DbConnection connection;
+        protected DbTransaction? transaction;
 
-        /// <summary>conexion</summary>
-        public DbConnection connection;
-
-        /// <summary>transaccion</summary>
-        public DbTransaction? transaction;
-
-        /// <summary>Contenedor principal del proyecto</summary>
         public Db db { get; }
 
-        /// <summary>Parametros de las consultas</summary>
-        /// <remarks>Las consulas sql definidas con Query, pueden utilizar parametros que deben ser identificados con un número entero secuencial. <br/>
-        /// Cada parametro dentro de la lista de parameters será asociado al número entero definido en el sql</remarks>
-        /// <example>
-        ///     sql = "SELECT .. WHERE something = @0 AND $something_else = @1<br/> //la sintaxis debe ser compatible con el motor de base de datos
-        ///     parameters = [value0, value1] //los valores pueden ser de cualquier tipo, que será reformateado para adaptarlo a las necesidades
-        /// </example>
-        public Dictionary<string, object?> _parameters { get; set; } = new();
-        
-        /// <summary>Consultas en SQL</summary>
         public string sql { get; set; } = "";
 
-        /// <summary>Constructor</summary>
-        /// <param name="_db">Contenedor principal del proyecto</param>
+        public Dictionary<string, object?> Parameters { get; set; } = new();
+
         public Query(Db _db)
         {
             db = _db;
@@ -44,9 +28,9 @@ namespace SqlOrganize.Sql
             Dispose();
         }
 
-        public Query Param(string key, object? value)
+        public Query SetParam(string key, object? value)
         {
-            _parameters[key] = value;
+            Parameters[key] = value;
             return this;
         }
 
@@ -54,25 +38,29 @@ namespace SqlOrganize.Sql
         public void Dispose()
         {
             CloseConnection();
-            if (connection != null)
-            {
-                connection.Dispose();
-                connection = null;
-            }
+            transaction?.Dispose();
+            connection?.Dispose();
             GC.SuppressFinalize(this);
         }
 
-              
 
         /// <summary>
-        /// Ejecutar sql y devolver resultado
+        /// Centralized execution for all commands, with optional transaction.
         /// </summary>
-        /// <returns>Resultado como List -Dictionary -string, object- -</returns>
-        /// <remarks>Convert the result to json with "JsonConvert.SerializeObject(data, Formatting.Indented)"</remarks>
+        private void ExecuteCommand(DbCommand command)
+        {
+            command.Connection = OpenConnection();
+            command.Transaction = transaction;
+            AddParameters(command);
+            command.CommandText = sql;
+            command.ExecuteNonQuery();
+        }
+
+        /// <summary> Ejecutar sql y devolver resultado </summary>
         public IEnumerable<Dictionary<string, object?>> Dicts()
         {
-            using DbCommand command = NewCommand();
-            Exec(connection!, command);
+            using DbCommand command = CreateCommand();
+            ExecuteCommand(command);
             using DbDataReader reader = command.ExecuteReader();
             return reader.Serialize();
             
@@ -80,40 +68,40 @@ namespace SqlOrganize.Sql
 
         public IEnumerable<T> Objs<T>() where T : class, new()
         {
-            using DbCommand command = NewCommand();
-            Exec(connection!, command);
+            using DbCommand command = CreateCommand();
+            ExecuteCommand(command);
             using DbDataReader reader = command.ExecuteReader();
             return reader.Objs<T>();
         }
 
         public IDictionary<string, object?>? Dict()
         {
-            using DbCommand command = NewCommand();
-            Exec(connection!, command);
+            using DbCommand command = CreateCommand();
+            ExecuteCommand(command);
             using DbDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.SingleResult);
             return reader.SerializeRow();
         }
 
         public T? Obj<T>() where T : class, new()
         {
-            using DbCommand command = NewCommand();
-            Exec(connection!, command);
+            using DbCommand command = CreateCommand();
+            ExecuteCommand(command);
             using DbDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.SingleResult);
             return reader.Obj<T>();
         }
 
         public IEnumerable<T> Column<T>(string columnName)
         {
-            using DbCommand command = NewCommand();
-            Exec(connection!, command);
+            using DbCommand command = CreateCommand();
+            ExecuteCommand(command);
             using DbDataReader reader = command.ExecuteReader();
             return reader.ColumnValues<T>(columnName);
         }
 
         public IEnumerable<T> Column<T>(int columnNumber = 0)
         {
-            using DbCommand command = NewCommand();
-            Exec(connection!, command);
+            using DbCommand command = CreateCommand();
+            ExecuteCommand(command);
             using DbDataReader reader = command.ExecuteReader();
             return reader.ColumnValues<T>(columnNumber);
         }
@@ -122,8 +110,8 @@ namespace SqlOrganize.Sql
         /// <remarks>La consulta debe retornar 1 o mas valores</remarks>
         public T? Value<T>(string columnName)
         {
-            using DbCommand command = NewCommand();
-            Exec(connection!, command);
+            using DbCommand command = CreateCommand();
+            ExecuteCommand(command);
             using DbDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.SingleResult);
             return reader.Read() ? (T)reader[columnName] : default(T);
         }
@@ -132,8 +120,8 @@ namespace SqlOrganize.Sql
         /// <remarks>La consulta debe retornar 1 o mas valores</remarks>
         public T? Value<T>(int columnNumber = 0)
         {
-            using DbCommand command = NewCommand();
-            Exec(connection!, command);
+            using DbCommand command = CreateCommand();
+            ExecuteCommand(command);
             using DbDataReader reader = command.ExecuteReader(System.Data.CommandBehavior.SingleResult);
             return (reader.Read()) ? (T)reader.GetValue(columnNumber) : default(T);
         }
@@ -143,22 +131,15 @@ namespace SqlOrganize.Sql
         /// </summary>
         public void Exec()
         {
-            using var command = NewCommand();
-            Exec(connection!, command);
+            using var command = CreateCommand();
+            ExecuteCommand(command);
         }
 
-        public void ExecTransaction()
-        {
-            using var command = NewCommand();
-            Exec(connection!, transaction!, command);
-        }
-
-        public abstract DbConnection NewConnection();
+        public abstract DbConnection CreateConnection();
 
         public DbConnection OpenConnection()
         {
-            if (connection == null)
-                connection = NewConnection();
+            connection ??= CreateConnection();
 
             if (connection.State == ConnectionState.Closed)
                 connection.Open();
@@ -166,18 +147,15 @@ namespace SqlOrganize.Sql
             return connection;
         }
 
-        // Method to close the connection
         public void CloseConnection()
         {
-            if (connection != null)
-            { 
-                if (connection.State == ConnectionState.Open)
-                    connection.Close();
-            }
+            if (connection?.State == ConnectionState.Open)
+                connection.Close();
         }
 
         public void BeginTransaction()
         {
+            OpenConnection();
             transaction = connection!.BeginTransaction();
         }
 
@@ -191,32 +169,19 @@ namespace SqlOrganize.Sql
             transaction!.Rollback();
         }
 
-        public abstract DbCommand NewCommand();
+        public abstract DbCommand CreateCommand();
 
         protected abstract void AddWithValue(DbCommand command, string columnName, object value);
 
-        /// <summary>Ejecutar command con transaction</summary>
-        /// <param name="connection">Conexión abierta</param>
-        /// <param name="command">Comando</param>
-        protected void Exec(DbConnection connection, DbTransaction transaction, DbCommand command)
+        /// <summary> Redefinir parametros y asignarlos a command </summary>
+        protected void AddParameters(DbCommand command)
         {
-            command.Transaction = transaction;
-            Exec(connection, command);
-        }
-
-        /// <summary>Ejecutar command</summary>
-        /// <param name="connection">Conexión abierta</param>
-        /// <param name="command">Comando</param>
-        protected void Exec(DbConnection connection, DbCommand command)
-        {
-            command.Connection = connection;
-
-            var keys = _parameters.Keys.ToList();
+            var keys = Parameters.Keys.ToList();
             var sortedKeys = keys.OrderByDescending(key => key.Length).ToList(); //recorremos los keys ordenados en forma descendiente para evitar renombrar keys similares
 
             foreach (var key in sortedKeys)
             {
-                object? value = this._parameters[key];
+                object? value = this.Parameters[key];
 
                 if (!sql.Contains(key)) //control de que el sql posea el parametro
                     continue;
@@ -247,30 +212,17 @@ namespace SqlOrganize.Sql
                     AddWithValue(command, "@_" + k, p);
                 }
             }
-
-            command.CommandText = sql;
-            command.ExecuteNonQuery();
         }
 
-        public abstract IEnumerable<string> GetTableNames();
-     
 
         #region metodos especiales que generan sql y devuelven directamente el valor
+        public abstract IEnumerable<string> GetTableNames();
+
         /// <summary>
         /// Cada motor debe tener su propia forma de definir Next Value!!! Derivar metodo a subclase
         /// </summary>
         /// <returns></returns>
-        public object GetNextValue(string entityName)
-        {
-            var q = db.Query();
-            q.connection = connection;
-            q.sql = @"
-                            SELECT auto_increment 
-                            FROM INFORMATION_SCHEMA.TABLES 
-                            WHERE TABLE_NAME = @table_name";
-            q.Param("@table_name", entityName);
-            return q.Value<ulong>();
-        }
+        public abstract object GetNextValue(string entityName, string fieldName);
 
         /// <summary>Cada motor debe tener su propia forma de definir Max Value!!! Derivar metodo a subclase</summary>
         /// <remarks>Connection must be opened!</remarks>
@@ -288,7 +240,6 @@ namespace SqlOrganize.Sql
                     FROM AuditLog 
                     WHERE ChangeDateTime > '" + lastChecked + "';";
             return q.Dicts();
-
         }
         #endregion
     }

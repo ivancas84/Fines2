@@ -27,7 +27,7 @@ public partial class SedesSemestrePage : Page, INotifyPropertyChanged
         #region cbxCalendario
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
         var data = Context.db.Sql("calendario").Cache().Dicts();
-        Context.db.AddEntityToClearOC(data, ocCalendario);
+        Context.db.AddEntitiesToClearOC(data, ocCalendario);
         #endregion
 
         dgdSedes.ItemsSource = ocSede;
@@ -44,7 +44,7 @@ public partial class SedesSemestrePage : Page, INotifyPropertyChanged
                 Cache().Dicts().ColOfVal<object>("sede");
 
             Context.db.Sql("sede").Where("$id IN (@0)").
-                Order("$nombre ASC").Param("@0", idSedes).Cache().AddEntityToClearOC(ocSede);
+                Order("$nombre ASC").Param("@0", idSedes).Cache().AddEntitiesToClearOC(ocSede);
 
             IDictionary<string, List<Designacion>> designacionesPorSede = DesignacionDAO.ReferentesDeSedeQuery(idSedes.ToArray()).Cache().Entities<Designacion>().DictOfListByProperty<string, Designacion>("sede");
 

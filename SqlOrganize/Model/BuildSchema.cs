@@ -71,7 +71,21 @@ namespace SqlOrganize.Model
                     sw.WriteLine("        public " + field.type + "? " + fieldName);
                     sw.WriteLine("        {");
                     sw.WriteLine("            get { return _" + fieldName + "; }");
-                    sw.WriteLine("            set { if( _" + fieldName + " != value) { _" + fieldName + " = value; NotifyPropertyChanged(nameof(" + fieldName + ")); } }");
+                    sw.WriteLine("            set {");
+                    sw.WriteLine("                if( _" + fieldName + " != value)");
+                    sw.WriteLine("                {");
+                    sw.WriteLine("                    _" + fieldName + " = value; NotifyPropertyChanged(nameof(" + fieldName + "));");
+                    if (entity.fk.Contains(fieldName))
+                    {
+                        Sql.Field fk = entity.fields[fieldName];
+
+                        sw.WriteLine("                    if (_" + fieldName + ".HasValue && (" + fieldName + "_.IsNoE() || !" + fieldName + "_!.Get(db.config.id).ToString()!.Equals(_" + fieldName + ".Value.ToString())))");
+                        sw.WriteLine("                        " + fieldName + "_ = CreateFromId<" + fk.refEntityName!.ToCamelCase() + ">(_" + fieldName + ");");
+                        sw.WriteLine("                    else if(_" + fieldName + ".IsNoE())");
+                        sw.WriteLine("                        " + fieldName + "_ = null;");
+                    }
+                    sw.WriteLine("                }");
+                    sw.WriteLine("            }");
                     sw.WriteLine("        }");
                     sw.WriteLine("        #endregion");
                     sw.WriteLine("");

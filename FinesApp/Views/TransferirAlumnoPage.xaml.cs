@@ -53,9 +53,9 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
             if (text == null)
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = Context.db.PersonaSearchLikeQuery(text).Dicts(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = PersonaDAO.SqlPersonas__SearchLike(text).Dicts(); //busqueda de valores a mostrar en funcion del texto
 
-            Context.db.AddEntityToClearOC(list, origenOC);
+            Context.db.AddEntitiesToClearOC(list, origenOC);
 
             origenComboBox.SetTimerTickFinalize(origenTextBox!, text, (int)origenTextBoxPos!);
         }
@@ -82,9 +82,9 @@ public partial class TransferirAlumnoPage : Page, INotifyPropertyChanged
 
             var textBox = (TextBox)destinoComboBox.Template.FindName("PART_EditableTextBox", destinoComboBox);
 
-            IEnumerable<Dictionary<string, object?>> list = Context.db.PersonaSearchLikeQuery(text).Dicts(); //busqueda de valores a mostrar en funcion del texto
+            IEnumerable<Dictionary<string, object?>> list = PersonaDAO.SqlPersonas__SearchLike(text).Dicts(); //busqueda de valores a mostrar en funcion del texto
 
-            Context.db.AddEntityToClearOC(list, destinoOC);
+            Context.db.AddEntitiesToClearOC(list, destinoOC);
 
             destinoComboBox.SetTimerTickFinalize(destinoTextBox!, text, (int)destinoTextBoxPos!);
         }

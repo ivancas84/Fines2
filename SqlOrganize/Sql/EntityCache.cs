@@ -132,10 +132,10 @@ namespace SqlOrganize.Sql
         }
 
 
-        public void AddEntityToClearOC<T>(ObservableCollection<T> oc) where T : Entity, new()
+        public void AddEntitiesToClearOC<T>(ObservableCollection<T> oc) where T : Entity, new()
         {
             var source = Dicts();
-            Db.AddEntityToClearOC(source, oc);
+            Db.AddEntitiesToClearOC(source, oc);
         }
 
         public void AddColumnToClearOC<T>(string columnName, ObservableCollection<T> oc)

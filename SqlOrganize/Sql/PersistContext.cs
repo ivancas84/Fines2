@@ -402,7 +402,7 @@ VALUES (";
         public Query Query(Query q)
         {
             q.sql = Sql();
-            q._parameters = _parameters;
+            q.Parameters = _parameters;
             return q;
         }
 

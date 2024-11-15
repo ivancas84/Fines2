@@ -56,10 +56,10 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
         dgdResultadoGenerarTomasPDF.ItemsSource = ocResultadoGenerarTomasPDF;
         dgdResultadoGenerarContralor.ItemsSource = ocResultadoGenerarContralor;
         cbxCalendario.InitComboBoxConstructor(ocCalendario);
-        CalendarioDAO.CalendariosSql().Cache().AddEntityToClearOC(ocCalendario);
+        CalendarioDAO.CalendariosSql().Cache().AddEntitiesToClearOC(ocCalendario);
 
         cbxPlanillaDocente.InitComboBoxConstructor(ocPlanillaDocente, "numero");
-        PlanillaDocenteDAO.PlanillasSql().Cache().AddEntityToClearOC(ocPlanillaDocente);
+        PlanillaDocenteDAO.PlanillasSql().Cache().AddEntitiesToClearOC(ocPlanillaDocente);
     }
 
     private void DgdToma_CellEditEnding(object? sender, DataGridCellEditEndingEventArgs e)
@@ -81,8 +81,8 @@ public partial class TomasSemestrePage : Page, INotifyPropertyChanged
             return;
         }
 
-        TomaDAO.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().AddEntityToClearOC(ocToma);
-        TomaDAO.TomasNoAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().AddEntityToClearOC(ocTomaNA);
+        TomaDAO.TomasAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().AddEntitiesToClearOC(ocToma);
+        TomaDAO.TomasNoAprobadasDeCalendarioSql(cbxCalendario.SelectedValue).Cache().AddEntitiesToClearOC(ocTomaNA);
     }
 
     #region Pestaña principal

@@ -16,9 +16,9 @@ namespace SqlOrganize.Model
 
         protected void defineField(Column c, Field f)
         {
-            if (!c.CHARACTER_MAXIMUM_LENGTH.IsNoE() && !c.CHARACTER_MAXIMUM_LENGTH.IsDbNull() && Convert.ToInt64(c.CHARACTER_MAXIMUM_LENGTH) > 0)
+            if (!c.CHARACTER_MAXIMUM_LENGTH.IsNoE() && !c.CHARACTER_MAXIMUM_LENGTH.IsNoE() && Convert.ToInt64(c.CHARACTER_MAXIMUM_LENGTH) > 0)
                 f.maxLength = Convert.ToUInt64(c.CHARACTER_MAXIMUM_LENGTH)!;
-            else if (!c.MAX_LENGTH.IsNoE() && !c.MAX_LENGTH.IsDbNull())
+            else if (!c.MAX_LENGTH.IsNoE() && !c.MAX_LENGTH.IsNoE())
                 f.maxLength = Convert.ToUInt64(c.MAX_LENGTH)!;
 
             f.dataType = c.DATA_TYPE!;
@@ -111,7 +111,7 @@ namespace SqlOrganize.Model
                     break;
             }
 
-            if (!c.COLUMN_DEFAULT.IsNoE() && !c.COLUMN_DEFAULT.IsDbNull() && (c.COLUMN_DEFAULT as string) != "NULL")
+            if (!c.COLUMN_DEFAULT.IsNoE() && !c.COLUMN_DEFAULT.IsNoE() && (c.COLUMN_DEFAULT as string) != "NULL")
                 f.defaultValue = c.COLUMN_DEFAULT;
 
             if (!c.REFERENCED_TABLE_NAME.IsNoE())

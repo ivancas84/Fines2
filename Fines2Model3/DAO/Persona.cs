@@ -4,9 +4,9 @@ namespace SqlOrganize.Sql.Fines2Model3
 {
     public static class PersonaDAO
     {
-        public static EntitySql PersonaSearchLikeQuery(this Db db, string search)
+        public static EntitySql SqlPersonas__SearchLike(string search)
         {
-            return db.Sql("persona").
+            return Context.db.Sql("persona").
                 Where("$nombres LIKE @0 ").
                 Where("OR $apellidos LIKE @0 ").
                 Where("OR $numero_documento LIKE @0 ").
@@ -16,11 +16,11 @@ namespace SqlOrganize.Sql.Fines2Model3
                 Param("@0", "%" + search + "%");
         }
 
-        public static EntitySql PersonaDniSql(this Db db, object cuilDni)
+        public static EntitySql SqlPersona__BY_dni(object cuilDni)
         {
             (string cuil, string dni) = Persona.CuilDni(cuilDni);
 
-            return db.Sql("persona").
+            return Context.db.Sql("persona").
                 Where("$numero_documento = @0").
                 Param("@0", dni);
         }

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using SqlOrganize;
 using SqlOrganize.Sql;
+using SqlOrganize.ValueTypesUtils;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -82,7 +83,7 @@ namespace WpfUtils.Controls
         #endregion
 
         #region botones Eliminar, Guardar y Agregar
-        public static void DgdDeleteRow<T>(this RoutedEventArgs e, ObservableCollection<T> oc) where T : Entity
+        public static void DgdDeleteRow<T>(this ObservableCollection<T> oc, object sender) where T : Entity
         {
             if (MessageBox.Show("¿Está seguro que desea eliminar?",
                 "Eliminar",
@@ -91,10 +92,11 @@ namespace WpfUtils.Controls
             {
                 try
                 {
-                    var button = (e.OriginalSource as Button);
-                    var entity = (T)button!.DataContext;
-                    entity.DeleteFromOC(oc);
-                    ToastExtensions.Show("Item eliminado");
+                    if (sender is FrameworkElement element && element.DataContext is Entity entity)
+                    {
+                        entity.DeleteFromOC(oc);
+                        ToastExtensions.Show("Registro eliminado: " + entity.entityName.ToTitleCase());
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -109,15 +111,17 @@ namespace WpfUtils.Controls
             oc.Add(entity);
         }
 
-        public static void DgdPersistRow<T>(this RoutedEventArgs e) where T : Entity
+        public static void DgdPersistRow(this DataGrid dgd, object sender)
         {
             try
             {
-                var button = (e.OriginalSource as Button);
-                var entity = (T)button!.DataContext;
-                entity.Persist();
-                ToastExtensions.Show("Item agregado");
+                dgd.CommitEdit(DataGridEditingUnit.Row, true);
 
+                if (sender is FrameworkElement element && element.DataContext is Entity entity)
+                {
+                    entity.Persist();
+                    ToastExtensions.Show("Registro agregado: " + entity.entityName.ToTitleCase());
+                }
             }
             catch (Exception ex)
             {
