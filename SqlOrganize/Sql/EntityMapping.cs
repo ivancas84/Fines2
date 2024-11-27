@@ -17,27 +17,7 @@ namespace SqlOrganize.Sql
         {
         }
 
-        /// <summary>
-        /// Mapeo de un fieldName
-        /// </summary>
-        /// <example>
-        /// Db.mapping("persona").map("nombre") //correcto se mapea sin fieldId       
-        /// Db.mapping("persona", "persona").map("nombre") //correcto se mapea con fieldId
-        /// Db.mapping("persona", "persona").map("fecha_nacimiento.str") //correcto utiliza funcion especial para aplicar cast a str
-        /// Db.mapping("alumno").map("persona__nombre") //error, la traduccion de fieldId se hace en otro nivel
-        /// </example>
-        public string Map(string fieldName)
-        {
-            //invocar metodo local, si existe
-            Type thisType = this.GetType();
-            MethodInfo m = thisType.GetMethod(fieldName);
-            if (!m.IsNoE())
-                return (string)m!.Invoke(this, Array.Empty<object>())!;
-
-            //invocar metodo general
-            return _Map(fieldName);
-        }
-
+        
         /// <summary> Valor de identificador (el identificador puede ser la pk y si no existe pk lo define a partir de sus campos) </summary>
         /// <remarks>  Para sql server se debe aplicar trim porque agrega espacios adicionales. Cuidado de no generar strings mayores a 255! </remarks>
         public string _Id()
@@ -96,7 +76,16 @@ namespace SqlOrganize.Sql
             }
         }
 
-        protected string _Map(string fieldName)
+        /// <summary>
+        /// Mapeo de un fieldName
+        /// </summary>
+        /// <example>
+        /// Db.mapping("persona").map("nombre") //correcto se mapea sin fieldId       
+        /// Db.mapping("persona", "persona").map("nombre") //correcto se mapea con fieldId
+        /// Db.mapping("persona", "persona").map("fecha_nacimiento.str") //correcto utiliza funcion especial para aplicar cast a str
+        /// Db.mapping("alumno").map("persona__nombre") //error, la traduccion de fieldId se hace en otro nivel
+        /// </example>
+        public string Map(string fieldName)
         {
             return Pt() + "." + fieldName;
         }

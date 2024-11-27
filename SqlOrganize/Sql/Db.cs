@@ -17,12 +17,6 @@ namespace SqlOrganize.Sql
     /// </remarks>
     public abstract class Db
     {
-        /// <summary>
-        /// Contextos de persistencia
-        /// </summary>
-        /// <remarks> Los contextos de persistencia son almacenados en la coleccion para ser ejecutados posteriormente </remarks>
-        public Collection<PersistContext> PersistQueue { get; set; }
-
         public virtual Config config { get; }
 
         //public Dictionary<string, Dictionary<string, EntityTree>> tree { get; set; } = new();
@@ -87,21 +81,30 @@ namespace SqlOrganize.Sql
             return l;
         }
 
+        public List<string> FieldNamesWithoutId(string entityName)
+        {
+            var l = FieldsEntity(entityName).Keys.ToList();
+            if (l.Contains(config.id))
+                l.Remove(config.id); //Importante!! id debe ser incluido,
+            return l;
+        }
 
-        /// <summary>
-        /// Lista de campos de la entidad y sus relaciones
-        /// </summary>
-        /// <param name="entityName">Nombre de la entidad de la cual se retornaran el campo principal y sus relaciones</param>
-        /// <returns></returns>
+
+
+
+        /// <summary> Lista de campos de la entidad y sus relaciones de la forma fieldId__fieldName </summary>
+        /// <remarks> La inclusion del caracter de separacion ayuda a determinar la relacion correspondiente </remarks>
         public List<string> FieldNamesRel(string entityName)
         {
             List<string> fieldNamesR = new();
 
             if (!Entity(entityName).relations.IsNoE())
                 foreach ((string fieldId, EntityRelation er) in Entity(entityName).relations)
-                    foreach (string fieldName in FieldNames(er.refEntityName))
+                {
+                    fieldNamesR.Add(fieldId + config.separator + config.id); //conviene colocar primero el id para facilitar la division en dapper
+                    foreach (string fieldName in FieldNamesWithoutId(er.refEntityName))
                         fieldNamesR.Add(fieldId + config.separator + fieldName);
-
+                }
             return FieldNames(entityName).Concat(fieldNamesR).ToList();
         }
 
@@ -119,20 +122,14 @@ namespace SqlOrganize.Sql
             return entities[entityName];
         }
 
-        /// <summary>
-        /// Instancia de Query para simplificar la ejecucion de consultas a la base de datos
-        /// </summary>
-        /// <returns>Instancia de Query</returns>
-        public abstract Query Query();
+        /// <summary> Conexion con la base de datos </summary> 
+        public abstract Connection Connection();
 
-        public abstract EntitySql Sql(string entity_name);
+        /// <summary> Definir SQL de persistencia </summary> 
+        public abstract PersistSql PersistSql();
 
-        public EntityCache Cache(EntitySql sql) {
-            return new EntityCache(this, sql);
-        }
-
-        /// <summary> Crear contexto de persistencia </summary>
-        public abstract PersistContext Persist();
+        /// <summary> Definir SQL de consulta </summary> 
+        public abstract SelectSql Sql();
 
         public virtual EntityMapping Mapping(string entityName, string? fieldId = null)
         {
@@ -153,81 +150,6 @@ namespace SqlOrganize.Sql
             string refEntityName = Entity(entityName!).relations[fieldId].refEntityName;
             string fieldName = key.Substring(i + config.separator.Length);
             return (fieldId, fieldName, refEntityName);
-        }
-
-
-        public void ExecuteQueue()
-        {
-            if (PersistQueue.IsNoE())
-                throw new Exception("No existen contextos para procesar.");
-
-            var query = PersistQueue.ElementAt(0).Db.Query();
-            using DbConnection connection = query.OpenConnection();
-            query.BeginTransaction();
-            try
-            {
-                foreach (PersistContext persist in PersistQueue)
-                {
-                    if (persist.Sql().IsNoE())
-                        continue;
-                    persist.Query(query).Exec();
-                }
-
-                query.CommitTransaction();
-            }
-            catch (Exception ex)
-            {
-                query.RollbackTransaction();
-                throw ex;
-            }
-        }
-
-        public PersistQueue CreateQueue()
-        {
-            return new PersistQueue(this);
-        }
-
-        public void RemoveCache()
-        {
-            cache!.RemoveCacheQueries();
-
-            foreach (PersistContext context in PersistQueue)
-                foreach (var d in context.detail)
-                    context.Db.cache!.Remove(d.entityName + d.id);
-        }
-
-        public void ClearQueue()
-        {
-            PersistQueue?.Clear();
-        }
-
-        public void ProcessQueue()
-        {
-            ExecuteQueue();
-            RemoveCache();
-            ClearQueue();
-        }
-    }
-
-    public class PersistQueue : IDisposable
-    {
-        private readonly Db _db;  // Reference to the Db instance
-
-        public PersistQueue(Db db)
-        {
-            _db = db;
-            _db.PersistQueue = new Collection<PersistContext>();  // Initialize or reset the queue
-        }
-
-        // The Dispose method is called automatically when the 'using' block is exited
-        public void Dispose()
-        {
-            // Clear the queue and free resources
-            if (_db.PersistQueue != null)
-            {
-                _db.PersistQueue.Clear();
-                _db.PersistQueue = null;  // Set it to null to free up resources
-            }
         }
     }
 }

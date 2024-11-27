@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using Dapper;
 using SqlOrganize;
 using SqlOrganize.Sql;
 using SqlOrganize.ValueTypesUtils;
@@ -38,11 +39,12 @@ namespace WpfUtils.Controls
 
                 for (var i = 0; i < (keys.Count() - 1); i++)
                     editedObject = editedObject!.GetPropertyValue<object>(keys[i]);
-
-                using (db.CreateQueue())
+               
+                using (var connection = db.Connection().Open())
                 {
-                    (editedObject as Entity)!.UpdateFieldValue(keys.Last(), value);
-                    db.ProcessQueue();
+                    Entity entity = (editedObject as Entity)!;
+                    string sql = entity.UpdateKeyIdSql(keys.Last());
+                    connection.Execute(sql, new { Key = value, Id = entity.Get(db.config.id) });
                 }
             }
         }
@@ -94,7 +96,15 @@ namespace WpfUtils.Controls
                 {
                     if (sender is FrameworkElement element && element.DataContext is Entity entity)
                     {
-                        entity.DeleteFromOC(oc);
+                        if (!entity.Get("id").IsNoE())
+                        {
+                            using (var connection = entity.db.Connection().Open())
+                            {
+                                var sql = entity.db.PersistSql().DeleteId(entity.entityName);
+                                connection.Execute(sql, new { Id = entity.Get("id")! });
+                            }
+                        }
+                        oc.Remove((entity as T)!);
                         ToastExtensions.Show("Registro eliminado: " + entity.entityName.ToTitleCase());
                     }
                 }
@@ -111,7 +121,7 @@ namespace WpfUtils.Controls
             oc.Add(entity);
         }
 
-        public static void DgdPersistRow(this DataGrid dgd, object sender)
+        public static void DgdPersistRow<T>(this DataGrid dgd, object sender) where T : Entity, new()
         {
             try
             {
@@ -119,7 +129,7 @@ namespace WpfUtils.Controls
 
                 if (sender is FrameworkElement element && element.DataContext is Entity entity)
                 {
-                    entity.Persist();
+                    entity.Persist<T>();
                     ToastExtensions.Show("Registro agregado: " + entity.entityName.ToTitleCase());
                 }
             }

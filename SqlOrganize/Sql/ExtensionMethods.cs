@@ -5,162 +5,15 @@ using SqlOrganize.Sql.Exceptions;
 using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Net;
+using Dapper;
 
 namespace SqlOrganize.Sql
 {
     public static class ExtensionMethods
     {
-        #region EntitySql + Query
-        /// <summary>Ejecucion rapida de EntitySql</summary>
-        public static IEnumerable<Dictionary<string, object?>> Dicts(this EntitySql esql)
-        {
-            Query query = esql.Query();
-            using (DbConnection connection = query.OpenConnection())
-            {
-                return query.Dicts();
-            }
-            
-        }
 
-        /// <summary>Ejecucion rapida de EntitySql</summary>
-        public static IDictionary<string, object?>? Dict(this EntitySql esql)
-        {
-            using Query query = esql.Query();
-            using (DbConnection connection = query.OpenConnection())
-            {
-                return query.Dict();
-            }
-        }
-
-        public static T? Obj<T>(this EntitySql esql) where T : class, new()
-        {
-            using Query query = esql.Query();
-            using DbConnection connection = query.OpenConnection();
-            return query.Obj<T>();
-        }
-
-        public static T? ToEntity<T>(this EntitySql esql) where T : Entity, new()
-        {
-            var data = esql.Dict();
-            if (data.IsNoE())
-                return null;
-            return Entity.CreateFromDict<T>(data!);
-        }
-
-        public static IEnumerable<T> Column<T>(this EntitySql esql, string columnName)
-        {
-            using Query query = esql.Query();
-            using DbConnection connection = query.OpenConnection();
-            return query.Column<T>(columnName);
-        }
-
-        public static IEnumerable<T> Column<T>(this EntitySql esql, int columnNumber = 0)
-        {
-            using Query query = esql.Query();
-            using DbConnection connection = query.OpenConnection();
-            return query.Column<T>(columnNumber);
-        }
-
-
-        public static T? Value<T>(this EntitySql esql, string columnName)
-        {
-            using Query query = esql.Query();
-            using DbConnection connection = query.OpenConnection();
-            return query.Value<T>(columnName);
-        }
-
-        public static T? Value<T>(this EntitySql esql, int columnNumber = 0)
-        {
-            using Query query = esql.Query();
-            using DbConnection connection = query.OpenConnection();
-            return query.Value<T>(columnNumber);
-        }
-
-        /// <summary> Retorna Dict, pero realiza chequeos adicionales para asegurarse de que el resultado es uno y solo uno </summary>
-        public static IDictionary<string, object?>? DictOne(this EntitySql entitySql)
-        {
-            IEnumerable<Dictionary<string, object?>> rows = entitySql.Dicts();
-
-            if (rows.Count() > 1)
-                throw new Exception("La consulta de uno retorno mas de un resultado para " + entitySql.entityName);
-
-            if (rows.Count() == 1)
-                return rows.ElementAt(0);
-
-            else
-                return null;
-        }
-        #endregion
-
-     
-        #region Cache
-        public static IMemoryCache RemoveCacheQueries(this IMemoryCache cache)
-        {
-            List<string> queries;
-            object _queries;
-
-            bool res = cache!.TryGetValue("queries", out _queries);
-            if (res)
-            {
-                if (_queries is JArray)
-                    queries = (_queries as JArray).ToObject<List<string>>();
-                else
-                    queries = (List<string>)_queries;
-
-                foreach (string q in (queries as List<string>)!)
-                    cache.Remove(q);
-            }
-
-            return cache;
-        }
-        #endregion
-
-        #region EntitySql + EntityVal
-        public static IDictionary<string, object?>? DictUniqueFieldOrValues(this Entity data, string fieldName)
-        {
-            try
-            {
-                return data.SqlUniqueFieldsOrValues(fieldName).Dict();
-            }
-            catch (UniqueException ex)
-            {
-                return null;
-            }
-        }
-        #endregion
-
-        #region Data + EntityVal
-        public static IEnumerable<T> Entities<T>(this Db db, IEnumerable<Dictionary<string, object?>> rows) where T : Entity, new()
-        {
-            var results = new List<T>();
-
-            foreach (var item in rows)
-            {
-                T obj = Entity.CreateFromDict<T>(item);
-                results.Add(obj);
-            }
-            return results;
-        }
-
-
-        public static void AddEntitiesToClearOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : Entity, new()
-        {
-            oc.Clear();
-            db.AddEntityToOC(source, oc);
-        }
-
-        public static void AddEntityToOC<T>(this Db db, IEnumerable<Dictionary<string, object?>> source, ObservableCollection<T> oc) where T : Entity, new()
-        {
-            for (var i = 0; i < source.Count(); i++) {
-                T obj = Entity.CreateFromDict<T>(source.ElementAt(i));
-                obj.Index = i;
-                oc.Add(obj);
-            }
-        }        
-        #endregion
-
-
-        #region EntityVal
+        /// <summary> Armar arbol de valores a partir del resultado de una consulta </summary>
+        /// <remarks> Los campos deben estar organizados de la forma fieldId__fieldName para poder identificar las ramas </remarks>
         public static IDictionary<string, object?> ValuesTree(this Db db, IDictionary<string, object?> values, string entityName)
         {
             Dictionary<string, object?> response = new();
@@ -180,6 +33,8 @@ namespace SqlOrganize.Sql
             return response;
         }
 
+        /// <summary> Metodo recursivo para armar arbol de valores a partir del resultado de una consulta </summary>
+        /// <remarks> Los campos deben estar organizados de la forma fieldId__fieldName para poder identificar las ramas </remarks>
         public static void ValuesTreeRecursive(this Db db, IDictionary<string, object?> values, IDictionary<string, EntityTree> tree, IDictionary<string, object?> response)
         {
             foreach (var (fieldId, et) in tree)
@@ -203,8 +58,7 @@ namespace SqlOrganize.Sql
             }
         }
 
-        /// <summary>Retorna una lista de los fields principales</summary>
-        /// <remarks>Utilizados principalmente para Label</remarks>
+        /// <summary>Retorna una lista de los campos principales</summary>
         public static List<string> MainKeys(this Db db, string entityName)
         {
             var entity = db.Entity(entityName);
@@ -242,7 +96,7 @@ namespace SqlOrganize.Sql
             return fields;
         }
 
-
+        //
         public static (string? fieldId, string fieldName, string entityName, object? value) ParentVariables(this Db db, string mainEntityName, IDictionary<string, object?> values, string fieldId)
         {
             object? value;
@@ -301,7 +155,6 @@ namespace SqlOrganize.Sql
 
             values["_Id"] = String.Join(db.config.concatString, valuesId);
         }
-        #endregion
 
 
         /// <summary>Formato SQL</summary>

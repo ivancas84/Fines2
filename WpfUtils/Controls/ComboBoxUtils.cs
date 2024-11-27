@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.ComponentModel;
+using Dapper;
 
 namespace WpfUtils.Controls
 {
@@ -124,10 +125,11 @@ namespace WpfUtils.Controls
             string actualValue = cb.DataContext.GetPropertyValue(fieldName).ToString();
             if (cb.SelectedIndex < 0 && cb.SelectedValue.ToString().Equals(actualValue))
                 return;
-            using (db.CreateQueue())
+
+            using (var connection = db.Connection().Open())
             {
-                db.Persist().UpdateFieldIds(entityName, fieldName, cb.SelectedValue, cb.DataContext.GetPropertyValue("id")!);
-                db.ProcessQueue();
+                string sql = db.PersistSql().UpdateKeyId(entityName, fieldName);
+                connection.Execute(sql, new { Key = cb.SelectedValue, Id = cb.DataContext.GetPropertyValue("id") });
             }
         }
 

@@ -384,7 +384,7 @@ namespace SqlOrganize.CollectionUtils
         /// <summary> Diccionario de objetos </summary>
         /// <typeparam name="T">Tipo de propName</typeparam>
         /// <typeparam name="V">Tipo de source</typeparam>
-        public static IDictionary<T, V> DictOfObjByProperty<T, V>(this IEnumerable<V> source, string propName)
+        public static IDictionary<T, V> DictOfObjByPropName<T, V>(this IEnumerable<V> source, string propName)
         {
             Dictionary<T, V> response = new();
             foreach (V obj in source)

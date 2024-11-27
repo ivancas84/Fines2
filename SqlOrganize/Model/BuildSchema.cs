@@ -22,6 +22,8 @@ namespace SqlOrganize.Model
                 sw.WriteLine("using System.Collections.Generic;");
                 sw.WriteLine("using System.Collections.ObjectModel;");
                 sw.WriteLine("using System.Text.RegularExpressions;");
+                sw.WriteLine("using Dapper;");
+                sw.WriteLine("using System.Data;");
                 sw.WriteLine("");
                 sw.WriteLine("namespace SqlOrganize.Sql." + config.dataClassesNamespace);
                 sw.WriteLine("{");
@@ -182,6 +184,72 @@ namespace SqlOrganize.Model
                     sw.WriteLine("        #endregion");
                     sw.WriteLine("");
                 }
+                #endregion
+
+                #region Metodo QueryDapper
+                List<string> classes = new();
+                classes.Add(entityName.ToCamelCase());
+                int i = 0;
+                foreach (var (fieldId, relation) in entity.relations)
+                {
+                    if (i == 6)
+                        break;
+                    classes.Add(relation.refEntityName.ToCamelCase());
+                    i++;
+                }
+
+                List<string> _classes = new(classes);
+                if(classes.Count() > 1)
+                    _classes.Add(entityName.ToCamelCase());
+
+                List<string> instances = new();
+                instances.Add("main");
+                i = 0;
+                foreach (var (fieldId, relation) in entity.relations)
+                {
+                    if (i == 6)
+                        break;
+                    instances.Add(fieldId);
+                    i++;
+                }
+
+
+
+                sw.WriteLine("        public static IEnumerable<" + entityName.ToCamelCase() + "> QueryDapper(IDbConnection connection, string sql, object? parameters)");
+                sw.WriteLine("        {");
+                sw.WriteLine("            return connection.Query<" + String.Join(", ", _classes) + ">(");
+                sw.WriteLine("                sql,");
+                if(classes.Count() > 1)
+                { 
+                    sw.WriteLine("                (" + String.Join(", ", instances) + ") =>");
+                    sw.WriteLine("                {");
+                    i = 0;
+                    foreach (var (fieldId, relation) in entity.relations)
+                    {
+                        if (i == 6)
+                            break;
+
+                        if (relation.parentId.IsNoE())
+                            sw.WriteLine("                    main." + relation.fieldName + "_ = " + fieldId + ";");
+
+                        else
+                            sw.WriteLine("                    " + relation.parentId + "." + relation.fieldName + "_ = " + fieldId + ";");
+
+                        i++;
+
+                    }
+
+                    sw.WriteLine("                    return main;");
+                    sw.WriteLine("                },");
+                    sw.WriteLine("                parameters,");
+                    sw.WriteLine("                splitOn:Context.db.Sql().SplitOn(\"" + entityName + "\")");
+                }
+                else
+                {
+                    sw.WriteLine("                parameters");
+                }
+                sw.WriteLine("            );");
+                sw.WriteLine("        }");
                 #endregion
 
                 #region fin clase, fin namespace

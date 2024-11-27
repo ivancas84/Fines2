@@ -1,9 +1,13 @@
-﻿using SqlOrganize.DateTimeUtils;
+﻿using Dapper;
+using Newtonsoft.Json.Linq;
+using SqlOrganize.DateTimeUtils;
 using SqlOrganize.ValueTypesUtils;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Reflection;
 using System.Reflection.Metadata;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SqlOrganize.Sql
@@ -64,14 +68,6 @@ namespace SqlOrganize.Sql
         }
         #endregion
 
-        protected string _Msg = "";
-        public string Msg
-        {
-            get { return _Msg; }
-            set => SetProperty(ref _Msg, value, nameof(Msg));
-
-        }
-
         #region Label
         protected string _Label = "";
 
@@ -82,10 +78,8 @@ namespace SqlOrganize.Sql
         }
         #endregion
 
-
         #region Status (propiedad opcional para indicar estado)
         protected object? _Status;
-
         public virtual object? Status
         {
             get { return _Status; }
@@ -109,9 +103,16 @@ namespace SqlOrganize.Sql
         public static T CreateFromId<T>(object id) where T : Entity, new()
         {
             T _obj = new T(); //crear objeto vacio para obtener el entityName
-            var data = _obj.db.Sql(_obj.entityName).Cache().Id(id);
-            if (data == null) throw new Exception("El id proporcionado no retorno ningún valor");
-            return CreateFromDict<T>(data);
+
+            using (var connection = _obj.db.Connection().Open())
+            {
+                string sql = _obj.db.Sql().ById(_obj.entityName);
+
+                return connection.QueryFirst<T>(
+                    sql, 
+                    new { Id = id }
+                );
+            }
         }
 
         /// <summary> Crear instancia de T utilizando serializacion a partir de key > value unicos </summary>
@@ -119,27 +120,22 @@ namespace SqlOrganize.Sql
         public static T? CreateFromUnique<T>(string key, object value) where T : Entity, new()
         {
             T _obj = new T(); //crear objeto vacio para obtener el entityName
-            return _obj.db.Sql(_obj.entityName).Equal(key, value).Cache().ToEntity<T>();
-        }
 
-        /// <summary> Crear instancia de T utilizando serializacion a partir de IDictionary </summary>
-        public static T CreateFromDict<T>(IDictionary<string, object?> dict) where T : Entity, new()
-        {
-            T _obj = new T(); //crear objeto vacio para obtener el entityName
-            return _obj.db.ValuesTree(dict, _obj.entityName).Obj<T>()!;
-        }
+            using (var connection = _obj.db.Connection().Open())
+            {
+                string sql = _obj.db.Sql().ByKey(_obj.entityName, key);
 
-        /// <summary> Asignar propiedades utilizando serializacion </summary>
-
-        public static T CreateFromObj<T>(object source) where T : Entity, new()
-        {
-            return CreateFromDict<T>(source.Dict());
+                return connection.QueryFirst<T>(
+                    sql,
+                    new { Key = value }
+                );
+            }
         }
 
         /// <summary> Asignar propiedades sin utilizar serializacion </summary>
-        public static T CreateFromObj_<T>(object source) where T : Entity, new()
+        public static T CreateFromObj<T>(object source) where T : Entity, new()
         {
-            T obj = new T(); //crear objeto vacio para obtener el entityName
+            T obj = new T(); 
 
             // Get properties of both source and destination
             var sourceProperties = source.GetType().GetProperties();
@@ -149,7 +145,7 @@ namespace SqlOrganize.Sql
             foreach (var destProp in destinationProperties)
             {
                 // Find the matching source property by name and type
-                var sourceProp = sourceProperties.FirstOrDefault(sp => sp.Name == destProp.Name && sp.PropertyType == destProp.PropertyType);
+                var sourceProp = sourceProperties.FirstOrDefault(sp => sp.Name == destProp.Name);
 
                 if (sourceProp != null && sourceProp.CanRead && destProp.CanWrite)
                 {
@@ -160,7 +156,7 @@ namespace SqlOrganize.Sql
 
             return obj;
         }
-
+        
         public static T CreateEmpty<T>(string fieldName = "Label") where T : Entity, new()
         {
             T obj = new();
@@ -173,7 +169,8 @@ namespace SqlOrganize.Sql
         public virtual object? Get(string fieldName)
         {
             PropertyInfo? property = GetType().GetProperty(fieldName);
-            return property?.GetValue(this) ?? throw new Exception($"Propiedad {entityName}.{fieldName} no encontrada.");
+            if(property == null) throw new Exception($"Propiedad {entityName}.{fieldName} no encontrada.");
+            return property!.GetValue(this) ?? null;
         }
 
         //se mantiene para compatibilidad
@@ -186,7 +183,7 @@ namespace SqlOrganize.Sql
         {
             PropertyInfo? propertyInfo = GetType().GetProperty(fieldName);
             if (propertyInfo == null || !propertyInfo.CanWrite)
-                throw new Exception(entityName + "." + fieldName + " no existe o no tiene permisos de esctritura");
+                throw new Exception(entityName + "." + fieldName + " no existe o no tiene permisos de escritura");
 
             propertyInfo.SetValue(this, value);
 
@@ -419,12 +416,11 @@ namespace SqlOrganize.Sql
         {
             Dictionary<string, object?> response = new();
             foreach (var fieldName in db.FieldNames(entityName))
-                response[fieldName] = this.Get(fieldName);
+                response[fieldName] = Get(fieldName);
             return response;
         }
 
         /// <summary> Resetear un determinado field </summary>
-        
         public virtual void Reset(string fieldName)
         {
             Field field = db.Field(entityName, fieldName);
@@ -458,7 +454,7 @@ namespace SqlOrganize.Sql
                     case "nextifnull":
                         if (val.IsNoE())
                         {
-                            var val_ = db.Query().GetNextValue(entityName, field.name);
+                            var val_ = db.Sql().GetNextValue(entityName, field.name);
                             Sset(fieldName, val_);
                         }
 
@@ -485,11 +481,18 @@ namespace SqlOrganize.Sql
         protected object? GetDefaultInt(Field field)
         {
             if (field.defaultValue.ToString()!.ToLower().Contains("next"))
-                return db.Query().GetNextValue(field.entityName, field.name);
+                return db.Sql().GetNextValue(field.entityName, field.name);
             
             if (field.defaultValue.ToString()!.ToLower().Contains("max"))
-                return db.Sql(entityName).SelectMaxValue(field.name).Value<long>() + 1;
-            
+            {
+                using (var connection = db.Connection().Open())
+                {
+                    string sql = db.Sql().MaxValue(entityName, field.name);
+
+                    return connection.ExecuteScalar<long>(sql) + 1;
+                }
+            }
+
             return field.defaultValue.ToString().CleanStringOfNonDigits();            
         }
 
@@ -498,15 +501,26 @@ namespace SqlOrganize.Sql
         {
             Field field = db.Field(entityName, fieldName);
             if (field.IsRequired())
-                if(this.IsNullOrEmpty(fieldName))
+                if(IsNullOrEmpty(fieldName))
                     return "Debe completar valor.";
 
             if (field.IsUnique())
-                if (this.IsNullOrEmpty(fieldName))
+                if (IsNullOrEmpty(fieldName))
                 {
-                    var row = db.Sql(entityName).Equal("$" + fieldName, this.Get(fieldName)).Cache().Dict();
-                    if (!row.IsNoE() && !this.Get(db.config.id).Equals(row[db.config.id]))
-                        return "Valor existente.";
+                    using (var connection = db.Connection().Open())
+                    {
+                        string sql = db.Sql().IdKey(entityName, fieldName);
+                        var value = Get(fieldName);
+                        var id = connection.QuerySingleOrDefault<object>(
+                            sql,
+                            new { Key = value }
+                        );
+
+                        if (!id.IsNoE() && !Get(db.config.id)!.Equals(id))
+                            return "Valor existente.";
+                    }
+
+                    
                 }
 
             return "";
@@ -553,17 +567,17 @@ namespace SqlOrganize.Sql
             return !v.HasErrors();
         }
 
-       
+
 
         /// <summary> Recargar valores particulares </summary>
-        public void Reload()
+        public void Reload<T>() where T : Entity, new()
         {
-            var id = this.Get("id");
+            var id = Get("id");
 
-            if (id.IsNoE())
+            if (!id.IsNoE())
             {
-                var data = db.Sql(entityName).Equal("id", id).Dict();
-                Set(data);
+                T entity = CreateFromId<T>(id);
+                Set(entity);
             }
         }
 
@@ -578,173 +592,69 @@ namespace SqlOrganize.Sql
 
         #endregion
 
-        #region Sql
-        public EntitySql SqlField(string fieldName)
+
+        #region SQL
+        public string InsertSql()
         {
-            return db.Sql(entityName).Equal(fieldName, this.Get(fieldName));
+            return db.PersistSql().Insert(this);
         }
 
-        public EntitySql SqlUniqueWithoutIdIfExists()
+        public string UpdateSql()
         {
-            return db.Sql(entityName).UniqueWithoutIdIfExists(ToDict());
-        }
+            return db.PersistSql().Update(this);
 
-        public EntitySql SqlUnique()
-        {
-            return db.Sql(entityName).Unique(ToDict());
-        }
-        public EntitySql SqlUniqueFieldsOrValues(string fieldName)
-        {
-            if (db.Field(entityName, fieldName).IsUnique())
-                return SqlField(fieldName);
-            else
-                return SqlUniqueWithoutIdIfExists();
-        }
-
-        public EntitySql SqlRef(string entityName, string fkName)
-        {
-            return db.Sql(entityName).Equal(fkName, this.Get("id"));
-        }
-        #endregion
-
-        #region Persistencia directa
-        public object Insert()
-        {
-            using (db.CreateQueue())
-            {
-                var id = db.Persist().Insert(this);
-                db.ProcessQueue();
-                return id;
-            }
-        }
-
-        public object Update()
-        {
-            using (db.CreateQueue())
-            {
-                var id = db.Persist().Update(this);
-                db.ProcessQueue();
-                return id;
-            }
         }
 
         /// <summary> Crea contexto de persistencia y actualiza campo </summary>
-        public void UpdateField(string fieldName)
+        public string UpdateKeyIdSql(string fieldName)
         {
-            using (db.CreateQueue())
-            {
-                db.Persist().UpdateField(this, fieldName);
-                db.ProcessQueue();
-            }
+            return db.PersistSql().UpdateKeyId(this, fieldName);
         }
 
-        public void UpdateFieldValue(string fieldName, object? value)
+        public string DeleteIdSql()
         {
-            using (db.CreateQueue())
-            {
-                db.Persist().UpdateField(this, fieldName, value);
-                db.ProcessQueue();
-            }
+            return db.PersistSql().DeleteId(this);
         }
 
-        public object InsertIfNotExists()
+        public string DeleteIdsSql()
         {
-            using (db.CreateQueue())
-            {
-                var id = db.Persist().InsertIfNotExists(this);
-                db.ProcessQueue();
-                return id;
-            }
-
-        }
-
-        public void Delete()
-        {
-            using (db.CreateQueue())
-            {
-                db.Persist().DeleteIds(entityName, Get("id")!);
-                db.ProcessQueue();
-            }
+            return db.PersistSql().DeleteIds(this);
         }
 
         /// <summary> Crear contexto de persistencia y ejecutar persistencia de entidad </summary>
         /// <returns> Identificador del objeto persistido </returns>
-        public object Persist()
+        public string PersistSql<T>() where T: Entity
         {
-            using (db.CreateQueue())
-            {
-                db!.Persist().Persist(this);
-                db.ProcessQueue();
-            }
-            
-            return Get(db.config.id)!;
+            return db.PersistSql().Persist((T)this);
         }
-
-        /// <summary> Persistencia rapida en base a condicion </summary>
-        /// <remarks> Si ya existe PersistContext, utilizar PersistContext.PersistCondition</remarks>
-        public object PersistCondition(object? condition)
-        {
-            using (db.CreateQueue())
-            {
-                db.Persist().PersistCondition(this, condition);
-                db.ProcessQueue();
-            }
-            return Get(db.config.id)!;
-        }
-
+      
         /// <summary> Persistencia rapida en base a Id </summary>
-        /// <remarks> Si ya existe PersistContext, utilizar PersistContext.PersistId</remarks>
-        public object PersistId()
+        public object PersistIdSql()
         {
             Reset();
             if (!Check())
                 throw new Exception("Error al verificar " + Logging.ToString());
 
             if (this.Get(db.config.id).IsNoE())
-                return Insert();
+                return InsertSql();
             else
-                return Update();
-        }
-
-        /// <summary> Persistencia rapida en base a comparacion </summary>
-        /// <remarks> Si ya existe PersistContext, utilizar PersistContext.PersistCompare</remarks>
-        public object PersistCompare(CompareParams compare)
-        {
-            using (db.CreateQueue())
-            {
-                db.Persist().PersistCompare(this, compare);
-                db.ProcessQueue();
-            }
-            return Get(db.config.id)!;
-        }
-
-        /// <summary> Codigo general para eliminar una fila en un datagrid v2 </summary>        
-        /// <remarks> Se podría optimizar utilizando status para determinar si se encuentra o no en la base de datos </remarks>
-        public void DeleteFromOC<T>(ObservableCollection<T> oc) where T : Entity
-        {
-            if (!this.GetPropertyValue("id").IsNoE())
-            {
-                using (db.CreateQueue())
-                {
-                    db.Persist().DeleteIds(entityName, this.GetPropertyValue("id")!);
-                    db.ProcessQueue();
-                }
-            }
-            oc.Remove((this as T)!);
+                return UpdateSql();
         }
         #endregion
 
+        #region OC
         public T AddToOC<T>(ObservableCollection<T> oc) where T : Entity
         {
             oc.Add((T)this);
             return (T)this;
         }
 
-        public T InsertFirst<T>(ObservableCollection<T> oc) where T : Entity
+        public T InsertFirstToOC<T>(ObservableCollection<T> oc) where T : Entity
         {
             oc.Insert(0, (T)this);
             return (T)this;
         }
+        #endregion
 
         #region INotifyPropertyChanged
         protected void SetProperty<T>(ref T field, T value, string propertyName)
@@ -765,7 +675,7 @@ namespace SqlOrganize.Sql
         }
         #endregion
 
-        #region Otros metodos
+        #region Compare
         /// <summary>
         /// Comparacion de diccionarios
         /// </summary>
@@ -839,18 +749,46 @@ namespace SqlOrganize.Sql
             }
             return response;
         }
+        #endregion
 
-        public void ResetIdUnique()
+        #region dapper
+        public object Persist<T>() where T : Entity
+        {
+            using (var connection = db.Connection().Open())
+            {
+                var sql = PersistSql<T>();
+                connection.Execute(sql, this);
+                return Get(db.config.id);
+            }
+        }
+
+        public T? Unique<T>() where T : Entity
         {
 
-            IDictionary<string, object?>? row = SqlUnique().DictOne() ?? null;
+            string sql = this.db.Sql().Unique(this);
 
-            if (row.IsNoE())
-                return;
+            using (var connection = db.Connection().Open())
+            {
+                // Pass the Customer instance as the parameters
+                return connection.QuerySingleOrDefault<T>(sql, this);
+            }
 
-            Sset(db.config.id, row[db.config.id]);
+        }
+        
+        public dynamic? Unique()
+        {
+            string sql = this.db.Sql().Unique(this);
+
+            using (var connection = db.Connection().Open())
+            {
+                // Pass the Customer instance as the parameters
+                return connection.QuerySingleOrDefault(sql, this);
+            }
+
         }
         #endregion
+
+   
 
     }
 
