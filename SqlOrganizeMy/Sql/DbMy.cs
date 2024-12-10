@@ -34,21 +34,19 @@ namespace SqlOrganize.Sql
             */
         }
 
-        public override PersistContext Persist()
+        public override SelectSql Sql()
         {
-            var p = new PersistContextMy(this);
-            PersistQueue.Add(p);
-            return p;
+            return new SelectSqlMy(this);
         }
 
-        public override EntitySql Sql(string entity_name)
+        public override PersistSql PersistSql()
         {
-            return new EntitySqlMy(this, entity_name);
+            return new PersistSqlMy(this);
         }
 
-        public override Query Query()
+        public override Connection Connection()
         {
-            return new QueryMy(this);
+            return new ConnectionMy(this.config.connectionString);
         }
 
     }

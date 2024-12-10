@@ -6,23 +6,30 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection.Emit;
 using SqlOrganize.CollectionUtils;
+using System.Data;
+using Dapper;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
     public partial class Comision
     {
-        public PersistContext GenerarCursos()
+        public void GenerarCursos(IDbConnection connection, IDbTransaction transaction)
         {
             if (IsNullOrEmpty("id", "planificacion"))
                 throw new Exception("No se pueden generar los cursos: No está correctamente definido el id o la planificación");
 
-            PersistContext persist = Context.db.Persist();
 
-            IEnumerable<object> idsCursos = Context.db.Sql("curso").
-                Where("$comision = @0").
-                Param("@0", id).
-                Dicts().
-                ColOfVal<object>("id");
+            using (var conn = Context.db.Connection().Open())
+            {
+                string sql = Context.db.Sql().SelectDapper("curso") + @"
+                WHERE curs.comision = @Comision;               
+";
+                Curso.QueryDapper(conn, sql, new { Comision = id });
+            }
+            
+
+
+            /*
 
             if (idsCursos.Count() > 0)
                 persist.DeleteIds("curso", idsCursos.ToArray());
@@ -44,7 +51,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 persist.Insert(curso);
             }
 
-            return persist;
+            return persist;*/
         }
 
         public string numero => sede_!.numero + division + "/" + planificacion_!.anio + planificacion_.semestre;

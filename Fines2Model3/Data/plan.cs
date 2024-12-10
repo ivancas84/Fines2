@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -41,7 +43,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -50,7 +57,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? orientacion
         {
             get { return _orientacion; }
-            set { if( _orientacion != value) { _orientacion = value; NotifyPropertyChanged(nameof(orientacion)); } }
+            set {
+                if( _orientacion != value)
+                {
+                    _orientacion = value; NotifyPropertyChanged(nameof(orientacion));
+                }
+            }
         }
         #endregion
 
@@ -59,7 +71,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? resolucion
         {
             get { return _resolucion; }
-            set { if( _resolucion != value) { _resolucion = value; NotifyPropertyChanged(nameof(resolucion)); } }
+            set {
+                if( _resolucion != value)
+                {
+                    _resolucion = value; NotifyPropertyChanged(nameof(resolucion));
+                }
+            }
         }
         #endregion
 
@@ -68,7 +85,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? distribucion_horaria
         {
             get { return _distribucion_horaria; }
-            set { if( _distribucion_horaria != value) { _distribucion_horaria = value; NotifyPropertyChanged(nameof(distribucion_horaria)); } }
+            set {
+                if( _distribucion_horaria != value)
+                {
+                    _distribucion_horaria = value; NotifyPropertyChanged(nameof(distribucion_horaria));
+                }
+            }
         }
         #endregion
 
@@ -77,7 +99,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? pfid
         {
             get { return _pfid; }
-            set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
+            set {
+                if( _pfid != value)
+                {
+                    _pfid = value; NotifyPropertyChanged(nameof(pfid));
+                }
+            }
         }
         #endregion
 
@@ -99,5 +126,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Plan> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Plan>(
+                sql,
+                parameters
+            );
+        }
     }
 }

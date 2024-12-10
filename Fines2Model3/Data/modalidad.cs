@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -33,7 +35,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -42,7 +49,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? nombre
         {
             get { return _nombre; }
-            set { if( _nombre != value) { _nombre = value; NotifyPropertyChanged(nameof(nombre)); } }
+            set {
+                if( _nombre != value)
+                {
+                    _nombre = value; NotifyPropertyChanged(nameof(nombre));
+                }
+            }
         }
         #endregion
 
@@ -51,7 +63,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? pfid
         {
             get { return _pfid; }
-            set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
+            set {
+                if( _pfid != value)
+                {
+                    _pfid = value; NotifyPropertyChanged(nameof(pfid));
+                }
+            }
         }
         #endregion
 
@@ -64,5 +81,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Modalidad> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Modalidad>(
+                sql,
+                parameters
+            );
+        }
     }
 }

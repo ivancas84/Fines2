@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -33,7 +35,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -42,7 +49,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? numero
         {
             get { return _numero; }
-            set { if( _numero != value) { _numero = value; NotifyPropertyChanged(nameof(numero)); } }
+            set {
+                if( _numero != value)
+                {
+                    _numero = value; NotifyPropertyChanged(nameof(numero));
+                }
+            }
         }
         #endregion
 
@@ -51,7 +63,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public short? anio
         {
             get { return _anio; }
-            set { if( _anio != value) { _anio = value; NotifyPropertyChanged(nameof(anio)); } }
+            set {
+                if( _anio != value)
+                {
+                    _anio = value; NotifyPropertyChanged(nameof(anio));
+                }
+            }
         }
         #endregion
 
@@ -60,7 +77,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? tipo
         {
             get { return _tipo; }
-            set { if( _tipo != value) { _tipo = value; NotifyPropertyChanged(nameof(tipo)); } }
+            set {
+                if( _tipo != value)
+                {
+                    _tipo = value; NotifyPropertyChanged(nameof(tipo));
+                }
+            }
         }
         #endregion
 
@@ -73,5 +95,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Resolucion> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Resolucion>(
+                sql,
+                parameters
+            );
+        }
     }
 }

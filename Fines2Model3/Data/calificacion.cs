@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -25,7 +27,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -34,7 +41,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public decimal? nota1
         {
             get { return _nota1; }
-            set { if( _nota1 != value) { _nota1 = value; NotifyPropertyChanged(nameof(nota1)); } }
+            set {
+                if( _nota1 != value)
+                {
+                    _nota1 = value; NotifyPropertyChanged(nameof(nota1));
+                }
+            }
         }
         #endregion
 
@@ -43,7 +55,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public decimal? nota2
         {
             get { return _nota2; }
-            set { if( _nota2 != value) { _nota2 = value; NotifyPropertyChanged(nameof(nota2)); } }
+            set {
+                if( _nota2 != value)
+                {
+                    _nota2 = value; NotifyPropertyChanged(nameof(nota2));
+                }
+            }
         }
         #endregion
 
@@ -52,7 +69,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public decimal? nota3
         {
             get { return _nota3; }
-            set { if( _nota3 != value) { _nota3 = value; NotifyPropertyChanged(nameof(nota3)); } }
+            set {
+                if( _nota3 != value)
+                {
+                    _nota3 = value; NotifyPropertyChanged(nameof(nota3));
+                }
+            }
         }
         #endregion
 
@@ -61,7 +83,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public decimal? nota_final
         {
             get { return _nota_final; }
-            set { if( _nota_final != value) { _nota_final = value; NotifyPropertyChanged(nameof(nota_final)); } }
+            set {
+                if( _nota_final != value)
+                {
+                    _nota_final = value; NotifyPropertyChanged(nameof(nota_final));
+                }
+            }
         }
         #endregion
 
@@ -70,7 +97,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public decimal? crec
         {
             get { return _crec; }
-            set { if( _crec != value) { _crec = value; NotifyPropertyChanged(nameof(crec)); } }
+            set {
+                if( _crec != value)
+                {
+                    _crec = value; NotifyPropertyChanged(nameof(crec));
+                }
+            }
         }
         #endregion
 
@@ -79,7 +111,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? curso
         {
             get { return _curso; }
-            set { if( _curso != value) { _curso = value; NotifyPropertyChanged(nameof(curso)); } }
+            set {
+                if( _curso != value)
+                {
+                    _curso = value; NotifyPropertyChanged(nameof(curso));
+                    //desactivado hasta implementar cache
+                    //if (_curso.HasValue && (curso_.IsNoE() || !curso_!.Get(db.config.id).ToString()!.Equals(_curso.Value.ToString())))
+                    //    curso_ = CreateFromId<Curso>(_curso);
+                    //else if(_curso.IsNoE())
+                    //    curso_ = null;
+                }
+            }
         }
         #endregion
 
@@ -88,7 +130,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public int? porcentaje_asistencia
         {
             get { return _porcentaje_asistencia; }
-            set { if( _porcentaje_asistencia != value) { _porcentaje_asistencia = value; NotifyPropertyChanged(nameof(porcentaje_asistencia)); } }
+            set {
+                if( _porcentaje_asistencia != value)
+                {
+                    _porcentaje_asistencia = value; NotifyPropertyChanged(nameof(porcentaje_asistencia));
+                }
+            }
         }
         #endregion
 
@@ -97,7 +144,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? observaciones
         {
             get { return _observaciones; }
-            set { if( _observaciones != value) { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); } }
+            set {
+                if( _observaciones != value)
+                {
+                    _observaciones = value; NotifyPropertyChanged(nameof(observaciones));
+                }
+            }
         }
         #endregion
 
@@ -106,7 +158,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? division
         {
             get { return _division; }
-            set { if( _division != value) { _division = value; NotifyPropertyChanged(nameof(division)); } }
+            set {
+                if( _division != value)
+                {
+                    _division = value; NotifyPropertyChanged(nameof(division));
+                }
+            }
         }
         #endregion
 
@@ -115,7 +172,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? alumno
         {
             get { return _alumno; }
-            set { if( _alumno != value) { _alumno = value; NotifyPropertyChanged(nameof(alumno)); } }
+            set {
+                if( _alumno != value)
+                {
+                    _alumno = value; NotifyPropertyChanged(nameof(alumno));
+                    //desactivado hasta implementar cache
+                    //if (_alumno.HasValue && (alumno_.IsNoE() || !alumno_!.Get(db.config.id).ToString()!.Equals(_alumno.Value.ToString())))
+                    //    alumno_ = CreateFromId<Alumno>(_alumno);
+                    //else if(_alumno.IsNoE())
+                    //    alumno_ = null;
+                }
+            }
         }
         #endregion
 
@@ -124,7 +191,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? disposicion
         {
             get { return _disposicion; }
-            set { if( _disposicion != value) { _disposicion = value; NotifyPropertyChanged(nameof(disposicion)); } }
+            set {
+                if( _disposicion != value)
+                {
+                    _disposicion = value; NotifyPropertyChanged(nameof(disposicion));
+                    //desactivado hasta implementar cache
+                    //if (_disposicion.HasValue && (disposicion_.IsNoE() || !disposicion_!.Get(db.config.id).ToString()!.Equals(_disposicion.Value.ToString())))
+                    //    disposicion_ = CreateFromId<Disposicion>(_disposicion);
+                    //else if(_disposicion.IsNoE())
+                    //    disposicion_ = null;
+                }
+            }
         }
         #endregion
 
@@ -133,7 +210,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? fecha
         {
             get { return _fecha; }
-            set { if( _fecha != value) { _fecha = value; NotifyPropertyChanged(nameof(fecha)); } }
+            set {
+                if( _fecha != value)
+                {
+                    _fecha = value; NotifyPropertyChanged(nameof(fecha));
+                }
+            }
         }
         #endregion
 
@@ -142,7 +224,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public bool? archivado
         {
             get { return _archivado; }
-            set { if( _archivado != value) { _archivado = value; NotifyPropertyChanged(nameof(archivado)); } }
+            set {
+                if( _archivado != value)
+                {
+                    _archivado = value; NotifyPropertyChanged(nameof(archivado));
+                }
+            }
         }
         #endregion
 
@@ -203,5 +290,23 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Calificacion> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Calificacion, Curso, Comision, Sede, Domicilio, TipoSede, CentroEducativo, Calificacion>(
+                sql,
+                (main, curso, comision, sede, domicilio, tipo_sede, centro_educativo) =>
+                {
+                    main.curso_ = curso;
+                    if(!comision.IsNoE()) curso.comision_ = comision;
+                    if(!sede.IsNoE()) comision.sede_ = sede;
+                    if(!domicilio.IsNoE()) sede.domicilio_ = domicilio;
+                    if(!tipo_sede.IsNoE()) sede.tipo_sede_ = tipo_sede;
+                    if(!centro_educativo.IsNoE()) sede.centro_educativo_ = centro_educativo;
+                    return main;
+                },
+                parameters,
+                splitOn:Context.db.Sql().SplitOn("calificacion")
+            );
+        }
     }
 }

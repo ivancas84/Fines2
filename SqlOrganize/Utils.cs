@@ -161,11 +161,17 @@ namespace SqlOrganize
             return @this;
         }
 
+        public static object GetDynamicPropertyValue(dynamic obj, string propertyName)
+        {
+            // Dapper results are often anonymous objects
+            return obj?.GetType().GetProperty(propertyName)?.GetValue(obj);
+        }
+
         /// <summary>A T extension method that gets property value.</summary>
-        public static object? GetPropertyValue<T>(this T @this, string propertyName)
+        public static object? GetPropertyValue(this object @this, string propertyName)
         {
             Type type = @this!.GetType();
-            PropertyInfo? property = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+            PropertyInfo? property = type.GetProperty(propertyName);
             return property?.GetValue(@this) ?? null;
         }
     }

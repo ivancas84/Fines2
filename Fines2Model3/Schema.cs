@@ -270,6 +270,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                         #region alumno.semestre_inscripcion
                         {
                             "semestre_inscripcion", new () {
+                                #region configuracion manual
+                                defaultValue = 1,
+                                #endregion
+
                                 entityName = "alumno",
                                 name = "semestre_inscripcion",
                                 dataType = "smallint",
@@ -283,10 +287,6 @@ namespace SqlOrganize.Sql.Fines2Model3
                         #region alumno.semestre_ingreso
                         {
                             "semestre_ingreso", new () {
-                                #region configuracion manual
-                                defaultValue = 1,
-                                #endregion
-
                                 entityName = "alumno",
                                 name = "semestre_ingreso",
                                 dataType = "smallint",
@@ -1075,8 +1075,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                                             refFieldName = "id",
                                             refEntityName = "disposicion",
                                             children = new() {
-                                                #region asignatura
-                                                { "asignatura", new () {
+                                                #region asignatura_dis
+                                                { "asignatura_dis", new () {
                                                     fieldName = "asignatura",
                                                     refFieldName = "id",
                                                     refEntityName = "asignatura",
@@ -1099,6 +1099,13 @@ namespace SqlOrganize.Sql.Fines2Model3
                                                 } },
                                                 #endregion
                                             },
+                                        } },
+                                        #endregion
+                                        #region asignatura
+                                        { "asignatura", new () {
+                                            fieldName = "asignatura",
+                                            refFieldName = "id",
+                                            refEntityName = "asignatura",
                                         } },
                                         #endregion
                                     },
@@ -1260,8 +1267,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "curso",
                         } },
                         #endregion
-                        #region asignatura
-                        { "asignatura", new () {
+                        #region asignatura_dis
+                        { "asignatura_dis", new () {
                             fieldName = "asignatura",
                             refFieldName = "id",
                             refEntityName = "asignatura",
@@ -1282,6 +1289,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion_dis",
+                        } },
+                        #endregion
+                        #region asignatura
+                        { "asignatura", new () {
+                            fieldName = "asignatura",
+                            refFieldName = "id",
+                            refEntityName = "asignatura",
+                            parentId = "curso",
                         } },
                         #endregion
                         #region docente
@@ -1448,6 +1463,12 @@ namespace SqlOrganize.Sql.Fines2Model3
                     unique = [ "nombre" ],
                     notNull = [ "id", "nombre" ],
                     om = {
+                        #region Curso_
+                        { "Curso_", new () {
+                            fieldName = "asignatura",
+                            entityName = "curso",
+                        } },
+                        #endregion
                         #region Disposicion_
                         { "Disposicion_", new () {
                             fieldName = "asignatura",
@@ -1711,7 +1732,6 @@ namespace SqlOrganize.Sql.Fines2Model3
                       [ "disposicion", "alumno" ]
                     ],
                     #endregion
-
                     name = "calificacion",
                     alias = "cali",
                     pk = [ "id" ],
@@ -1808,8 +1828,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                                     refFieldName = "id",
                                     refEntityName = "disposicion",
                                     children = new() {
-                                        #region asignatura
-                                        { "asignatura", new () {
+                                        #region asignatura_dis
+                                        { "asignatura_dis", new () {
                                             fieldName = "asignatura",
                                             refFieldName = "id",
                                             refEntityName = "asignatura",
@@ -1832,6 +1852,13 @@ namespace SqlOrganize.Sql.Fines2Model3
                                         } },
                                         #endregion
                                     },
+                                } },
+                                #endregion
+                                #region asignatura
+                                { "asignatura", new () {
+                                    fieldName = "asignatura",
+                                    refFieldName = "id",
+                                    refEntityName = "asignatura",
                                 } },
                                 #endregion
                             },
@@ -1882,8 +1909,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "disposicion",
                             children = new() {
-                                #region asignatura_dis
-                                { "asignatura_dis", new () {
+                                #region asignatura_dis1
+                                { "asignatura_dis1", new () {
                                     fieldName = "asignatura",
                                     refFieldName = "id",
                                     refEntityName = "asignatura",
@@ -2006,8 +2033,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "curso",
                         } },
                         #endregion
-                        #region asignatura
-                        { "asignatura", new () {
+                        #region asignatura_dis
+                        { "asignatura_dis", new () {
                             fieldName = "asignatura",
                             refFieldName = "id",
                             refEntityName = "asignatura",
@@ -2028,6 +2055,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion_dis",
+                        } },
+                        #endregion
+                        #region asignatura
+                        { "asignatura", new () {
+                            fieldName = "asignatura",
+                            refFieldName = "id",
+                            refEntityName = "asignatura",
+                            parentId = "curso",
                         } },
                         #endregion
                         #region alumno
@@ -2078,8 +2113,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "",
                         } },
                         #endregion
-                        #region asignatura_dis
-                        { "asignatura_dis", new () {
+                        #region asignatura_dis1
+                        { "asignatura_dis1", new () {
                             fieldName = "asignatura",
                             refFieldName = "id",
                             refEntityName = "asignatura",
@@ -3549,7 +3584,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     name = "curso",
                     alias = "curs",
                     pk = [ "id" ],
-                    fk = [ "comision", "disposicion" ],
+                    fk = [ "comision", "disposicion", "asignatura" ],
                     notNull = [ "id", "horas_catedra", "comision", "alta" ],
                     tree = {
                         #region comision
@@ -3636,8 +3671,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "disposicion",
                             children = new() {
-                                #region asignatura
-                                { "asignatura", new () {
+                                #region asignatura_dis
+                                { "asignatura_dis", new () {
                                     fieldName = "asignatura",
                                     refFieldName = "id",
                                     refEntityName = "asignatura",
@@ -3660,6 +3695,13 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 } },
                                 #endregion
                             },
+                        } },
+                        #endregion
+                        #region asignatura
+                        { "asignatura", new () {
+                            fieldName = "asignatura",
+                            refFieldName = "id",
+                            refEntityName = "asignatura",
                         } },
                         #endregion
                     },
@@ -3752,8 +3794,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "",
                         } },
                         #endregion
-                        #region asignatura
-                        { "asignatura", new () {
+                        #region asignatura_dis
+                        { "asignatura_dis", new () {
                             fieldName = "asignatura",
                             refFieldName = "id",
                             refEntityName = "asignatura",
@@ -3774,6 +3816,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion_dis",
+                        } },
+                        #endregion
+                        #region asignatura
+                        { "asignatura", new () {
+                            fieldName = "asignatura",
+                            refFieldName = "id",
+                            refEntityName = "asignatura",
+                            parentId = "",
                         } },
                         #endregion
                     },
@@ -3949,6 +3999,27 @@ namespace SqlOrganize.Sql.Fines2Model3
                                 name = "observaciones",
                                 dataType = "varchar",
                                 type = "string",
+                                checks = new () {
+                                        { "type", "string" },
+                                },
+                                resets = new () {
+                                        { "trim", " " },
+                                        { "removeMultipleSpaces", "True" },
+                                        { "nullIfEmpty", "True" },
+                                },
+                            }
+                        },
+                        #endregion
+                        #region curso.asignatura
+                        {
+                            "asignatura", new () {
+                                entityName = "curso",
+                                name = "asignatura",
+                                dataType = "varchar",
+                                type = "string",
+                                alias = "asi",
+                                refEntityName = "asignatura",
+                                refFieldName = "id",
                                 checks = new () {
                                         { "type", "string" },
                                 },
@@ -5628,8 +5699,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                                     refFieldName = "id",
                                     refEntityName = "disposicion",
                                     children = new() {
-                                        #region asignatura
-                                        { "asignatura", new () {
+                                        #region asignatura_dis
+                                        { "asignatura_dis", new () {
                                             fieldName = "asignatura",
                                             refFieldName = "id",
                                             refEntityName = "asignatura",
@@ -5652,6 +5723,13 @@ namespace SqlOrganize.Sql.Fines2Model3
                                         } },
                                         #endregion
                                     },
+                                } },
+                                #endregion
+                                #region asignatura
+                                { "asignatura", new () {
+                                    fieldName = "asignatura",
+                                    refFieldName = "id",
+                                    refEntityName = "asignatura",
                                 } },
                                 #endregion
                             },
@@ -5762,8 +5840,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "curso",
                         } },
                         #endregion
-                        #region asignatura
-                        { "asignatura", new () {
+                        #region asignatura_dis
+                        { "asignatura_dis", new () {
                             fieldName = "asignatura",
                             refFieldName = "id",
                             refEntityName = "asignatura",
@@ -5784,6 +5862,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion_dis",
+                        } },
+                        #endregion
+                        #region asignatura
+                        { "asignatura", new () {
+                            fieldName = "asignatura",
+                            refFieldName = "id",
+                            refEntityName = "asignatura",
+                            parentId = "curso",
                         } },
                         #endregion
                         #region dia
@@ -7651,8 +7737,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                                     refFieldName = "id",
                                     refEntityName = "disposicion",
                                     children = new() {
-                                        #region asignatura
-                                        { "asignatura", new () {
+                                        #region asignatura_dis
+                                        { "asignatura_dis", new () {
                                             fieldName = "asignatura",
                                             refFieldName = "id",
                                             refEntityName = "asignatura",
@@ -7675,6 +7761,13 @@ namespace SqlOrganize.Sql.Fines2Model3
                                         } },
                                         #endregion
                                     },
+                                } },
+                                #endregion
+                                #region asignatura
+                                { "asignatura", new () {
+                                    fieldName = "asignatura",
+                                    refFieldName = "id",
+                                    refEntityName = "asignatura",
                                 } },
                                 #endregion
                             },
@@ -7817,8 +7910,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "curso",
                         } },
                         #endregion
-                        #region asignatura
-                        { "asignatura", new () {
+                        #region asignatura_dis
+                        { "asignatura_dis", new () {
                             fieldName = "asignatura",
                             refFieldName = "id",
                             refEntityName = "asignatura",
@@ -7839,6 +7932,14 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion_dis",
+                        } },
+                        #endregion
+                        #region asignatura
+                        { "asignatura", new () {
+                            fieldName = "asignatura",
+                            refFieldName = "id",
+                            refEntityName = "asignatura",
+                            parentId = "curso",
                         } },
                         #endregion
                         #region docente

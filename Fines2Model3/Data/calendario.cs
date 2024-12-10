@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -33,7 +35,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -42,7 +49,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? inicio
         {
             get { return _inicio; }
-            set { if( _inicio != value) { _inicio = value; NotifyPropertyChanged(nameof(inicio)); } }
+            set {
+                if( _inicio != value)
+                {
+                    _inicio = value; NotifyPropertyChanged(nameof(inicio));
+                }
+            }
         }
         #endregion
 
@@ -51,7 +63,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? fin
         {
             get { return _fin; }
-            set { if( _fin != value) { _fin = value; NotifyPropertyChanged(nameof(fin)); } }
+            set {
+                if( _fin != value)
+                {
+                    _fin = value; NotifyPropertyChanged(nameof(fin));
+                }
+            }
         }
         #endregion
 
@@ -60,7 +77,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public short? anio
         {
             get { return _anio; }
-            set { if( _anio != value) { _anio = value; NotifyPropertyChanged(nameof(anio)); } }
+            set {
+                if( _anio != value)
+                {
+                    _anio = value; NotifyPropertyChanged(nameof(anio));
+                }
+            }
         }
         #endregion
 
@@ -69,7 +91,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public short? semestre
         {
             get { return _semestre; }
-            set { if( _semestre != value) { _semestre = value; NotifyPropertyChanged(nameof(semestre)); } }
+            set {
+                if( _semestre != value)
+                {
+                    _semestre = value; NotifyPropertyChanged(nameof(semestre));
+                }
+            }
         }
         #endregion
 
@@ -78,7 +105,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? insertado
         {
             get { return _insertado; }
-            set { if( _insertado != value) { _insertado = value; NotifyPropertyChanged(nameof(insertado)); } }
+            set {
+                if( _insertado != value)
+                {
+                    _insertado = value; NotifyPropertyChanged(nameof(insertado));
+                }
+            }
         }
         #endregion
 
@@ -87,7 +119,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? descripcion
         {
             get { return _descripcion; }
-            set { if( _descripcion != value) { _descripcion = value; NotifyPropertyChanged(nameof(descripcion)); } }
+            set {
+                if( _descripcion != value)
+                {
+                    _descripcion = value; NotifyPropertyChanged(nameof(descripcion));
+                }
+            }
         }
         #endregion
 
@@ -100,5 +137,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Calendario> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Calendario>(
+                sql,
+                parameters
+            );
+        }
     }
 }

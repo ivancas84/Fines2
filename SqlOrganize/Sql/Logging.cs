@@ -11,9 +11,15 @@ namespace SqlOrganize.Sql
     /// </summary>
     public class Logging
     {
+        public enum Level
+        {
+            Success,
+            Info,
+            Warning,
+            Error,
+        }
 
-
-        /// <summary>Atributo para registrar errores</summary>
+        /// <summary> Dictionary to store logs grouped by key. </summary>
         /// <example>
         /// [
         ///   "asignatura": [  {"level": LEVEL_ERROR, "msg": "No puede estar vacío", type: "required"}  ]
@@ -24,135 +30,78 @@ namespace SqlOrganize.Sql
         ///   ]
         /// ]
         /// </example>
-        public Dictionary<string, List<(Level level, string msg, string? type)>> logs { get; } = new ();
+        public Dictionary<string, List<(Level Level, string Message, string? Type)>> Logs { get; } = new ();
 
-        public enum Level
+
+        /// <summary> Get logs for a specific key. </summary>
+        public List<(Level Level, string Message, string? Type)>? GetLogsByKey(string key) =>
+            Logs.TryGetValue(key, out var logs) ? logs : null;
+
+        /// <summary>  Clears logs for a specific key. </summary>
+        public void ClearByKey(string key) => Logs.Remove(key);
+
+        /// <summary> Clears all logs. </summary>
+        public void Clear() => Logs.Clear();
+
+        /// <summary> Adds a new log entry. </summary>
+        public void AddLog(string key, string message, string? type = null, Level level = Level.Info)
         {
-            Success,
-            Info,
-            Warning,
-            Error,
+            if (!Logs.ContainsKey(key))
+                Logs[key] = new();
+
+            Logs[key].Add((level, message, type));
+            // Sorting logs by level
+            Logs[key] = Logs[key].OrderBy(log => log.Level).ToList();
         }
 
-        /// <summary>Logs de una determinada llave</summary>
-        public List<(Level level, string msg, string? type)>? LogsByKey(string key)
+        /// <summary>  Merges logs from another Logging instance. </summary>
+        public void Merge(Logging other)
         {
-            return logs.ContainsKey(key) ? logs[key] : null;
-        }
-
-        /// <summary>Vaciar logs de una determinada llave y reasignar level</summary>
-        public void ClearByKey(string key)
-        {
-            if (logs.ContainsKey(key))
+            foreach (var (key, otherLogs) in other.Logs)
             {
-                logs.Remove(key);
+                if (!Logs.ContainsKey(key))
+                    Logs[key] = new();
+
+                Logs[key].AddRange(otherLogs);
+                Logs[key] = Logs[key].OrderBy(log => log.Level).ToList();
             }
         }
 
-        public void Clear()
-        {
-            logs.Clear();
-        }
-            
-        public void AddLog(string key, string msg, string type = null, Level level = 0)
-        {
-            if (!logs.ContainsKey(key))
-                logs[key] = new List<(Level level, string msg, string? type)> { };
+        /// <summary> Adds an error log entry. </summary>
+        public void AddErrorLog(string key, string message, string? type = null) =>
+            AddLog(key, message, type, Level.Error);
 
-            logs[key].Add((level, msg, type));
-            logs[key].Sort((x, y) => {
-                return x.level.CompareTo(y.level);
-            });
-        }
+        /// <summary> Retrieves the highest log level for a specific key. </summary>
+        public Level? GetHighestLevelForKey(string key) =>
+            Logs.TryGetValue(key, out var logs) ? logs.Max(log => log.Level) : null;
 
-        public void AddLogging(Logging logging)
-        {
-            foreach(var (key, value) in logging.logs)
-            {
-                foreach(var info in value)
-                    AddLog(key, info.msg, info.type, info.level);
-            }
-        }
+        /// <summary> Checks if any logs exist. </summary>
+        public bool HasLogs() => Logs.Any();
 
-        public void AddErrorLog(string key, string msg, string type = null)
-        {
-            AddLog(key, msg, type, Level.Error);
-        }
+        /// <summary>  Checks if any error logs exist. </summary>
+        public bool HasErrors() =>
+            Logs.Values.Any(logList => logList.Any(log => log.Level == Level.Error));
 
-        public Level? LevelFromKey(string key)
-        {
-            if (!logs.ContainsKey(key))
-                return null;
+        /// <summary> Retrieves logs filtered by a specific level. </summary>
+        public Dictionary<string, List<(Level Level, string Message, string? Type)>> GetLogsByLevel(Level level) =>
+            Logs
+                .Where(entry => entry.Value.Any(log => log.Level == level))
+                .ToDictionary(
+                    entry => entry.Key,
+                    entry => entry.Value.Where(log => log.Level == level).ToList()
+                );
 
-            Level level = Level.Info;
-            foreach (var log in logs[key])
-            {
-                if (log.level > level)
+
+        /// <summary> Converts logs to a JSON string representation. </summary>
+        public override string ToString() =>
+            JsonConvert.SerializeObject(
+                Logs.SelectMany(entry => entry.Value.Select(log => new
                 {
-                    level = log.level;
-                }
-            }
-
-            return level;
-        }
-
-        public bool HasLogs()
-        {
-            return !logs.IsNoE();
-        }
-
-        public bool HasErrors()
-        {
-            foreach(var (key, logsEntity) in logs)
-                foreach(var log in logsEntity)
-                    if (log.level == Level.Error) return true;
-
-            return false;
-        }
-
-        public Dictionary<string, List<(Level level, string msg, string? type)>> LogsByLevel(Level level)
-        {
-            Dictionary<string, List<(Level level, string msg, string? type)>> response = new();
-
-            foreach (var (key, logskey) in logs)
-            {
-                List < (Level level, string msg, string? type)> logsResponse = new();
-
-                foreach (var log in logskey)
-                    if (log.level == Level.Error)
-                        logsResponse.Add(log);
-
-                if (logsResponse.Count > 0)
-                    response[key] = logsResponse;
-            }
-            return new();
-        }
-
-        public override string ToString() {
-            List<string> r = new();
-            foreach (var (key, log) in logs)
-            {
-                foreach (var l in log)
-                {
-                    r.Add(key + ": "+l.msg);
-                }
-
-            }
-            return JsonConvert.SerializeObject(r, Formatting.Indented);
-        }
-
-
-        public void Merge(Logging logging)
-        {
-            foreach (var (key, logs) in logging.logs)
-            {
-                if (!this.logs.ContainsKey(key))
-                    this.logs[key] = new();
-
-                foreach (var log in logs)
-                    this.logs[key].Add(log);
-            }
-        }
+                    Key = entry.Key,
+                    log.Message
+                })),
+                Formatting.Indented
+            );
 
     }
 }

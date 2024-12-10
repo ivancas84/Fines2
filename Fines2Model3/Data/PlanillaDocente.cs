@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -49,7 +51,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -58,7 +65,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? numero
         {
             get { return _numero; }
-            set { if( _numero != value) { _numero = value; NotifyPropertyChanged(nameof(numero)); } }
+            set {
+                if( _numero != value)
+                {
+                    _numero = value; NotifyPropertyChanged(nameof(numero));
+                }
+            }
         }
         #endregion
 
@@ -67,7 +79,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? insertado
         {
             get { return _insertado; }
-            set { if( _insertado != value) { _insertado = value; NotifyPropertyChanged(nameof(insertado)); } }
+            set {
+                if( _insertado != value)
+                {
+                    _insertado = value; NotifyPropertyChanged(nameof(insertado));
+                }
+            }
         }
         #endregion
 
@@ -76,7 +93,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? fecha_contralor
         {
             get { return _fecha_contralor; }
-            set { if( _fecha_contralor != value) { _fecha_contralor = value; NotifyPropertyChanged(nameof(fecha_contralor)); } }
+            set {
+                if( _fecha_contralor != value)
+                {
+                    _fecha_contralor = value; NotifyPropertyChanged(nameof(fecha_contralor));
+                }
+            }
         }
         #endregion
 
@@ -85,7 +107,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? fecha_consejo
         {
             get { return _fecha_consejo; }
-            set { if( _fecha_consejo != value) { _fecha_consejo = value; NotifyPropertyChanged(nameof(fecha_consejo)); } }
+            set {
+                if( _fecha_consejo != value)
+                {
+                    _fecha_consejo = value; NotifyPropertyChanged(nameof(fecha_consejo));
+                }
+            }
         }
         #endregion
 
@@ -94,7 +121,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? observaciones
         {
             get { return _observaciones; }
-            set { if( _observaciones != value) { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); } }
+            set {
+                if( _observaciones != value)
+                {
+                    _observaciones = value; NotifyPropertyChanged(nameof(observaciones));
+                }
+            }
         }
         #endregion
 
@@ -125,5 +157,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<PlanillaDocente> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<PlanillaDocente>(
+                sql,
+                parameters
+            );
+        }
     }
 }

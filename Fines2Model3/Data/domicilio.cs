@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -49,7 +51,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -58,7 +65,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? calle
         {
             get { return _calle; }
-            set { if( _calle != value) { _calle = value; NotifyPropertyChanged(nameof(calle)); } }
+            set {
+                if( _calle != value)
+                {
+                    _calle = value; NotifyPropertyChanged(nameof(calle));
+                }
+            }
         }
         #endregion
 
@@ -67,7 +79,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? entre
         {
             get { return _entre; }
-            set { if( _entre != value) { _entre = value; NotifyPropertyChanged(nameof(entre)); } }
+            set {
+                if( _entre != value)
+                {
+                    _entre = value; NotifyPropertyChanged(nameof(entre));
+                }
+            }
         }
         #endregion
 
@@ -76,7 +93,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? numero
         {
             get { return _numero; }
-            set { if( _numero != value) { _numero = value; NotifyPropertyChanged(nameof(numero)); } }
+            set {
+                if( _numero != value)
+                {
+                    _numero = value; NotifyPropertyChanged(nameof(numero));
+                }
+            }
         }
         #endregion
 
@@ -85,7 +107,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? piso
         {
             get { return _piso; }
-            set { if( _piso != value) { _piso = value; NotifyPropertyChanged(nameof(piso)); } }
+            set {
+                if( _piso != value)
+                {
+                    _piso = value; NotifyPropertyChanged(nameof(piso));
+                }
+            }
         }
         #endregion
 
@@ -94,7 +121,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? departamento
         {
             get { return _departamento; }
-            set { if( _departamento != value) { _departamento = value; NotifyPropertyChanged(nameof(departamento)); } }
+            set {
+                if( _departamento != value)
+                {
+                    _departamento = value; NotifyPropertyChanged(nameof(departamento));
+                }
+            }
         }
         #endregion
 
@@ -103,7 +135,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? barrio
         {
             get { return _barrio; }
-            set { if( _barrio != value) { _barrio = value; NotifyPropertyChanged(nameof(barrio)); } }
+            set {
+                if( _barrio != value)
+                {
+                    _barrio = value; NotifyPropertyChanged(nameof(barrio));
+                }
+            }
         }
         #endregion
 
@@ -112,7 +149,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? localidad
         {
             get { return _localidad; }
-            set { if( _localidad != value) { _localidad = value; NotifyPropertyChanged(nameof(localidad)); } }
+            set {
+                if( _localidad != value)
+                {
+                    _localidad = value; NotifyPropertyChanged(nameof(localidad));
+                }
+            }
         }
         #endregion
 
@@ -143,5 +185,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Domicilio> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Domicilio>(
+                sql,
+                parameters
+            );
+        }
     }
 }

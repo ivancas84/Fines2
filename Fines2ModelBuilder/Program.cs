@@ -15,6 +15,7 @@ var c = new Config()
     id = "id",
 };
 
+/*
 BuildModelMy t = new(c);
 foreach (var (key, field) in t.fields)
 {
@@ -33,6 +34,13 @@ foreach (var (key, field) in t.fields)
 //t.CreateClassModel();
 
 SqlOrganize.Sql.Fines2Model3.Schema schema = new SqlOrganize.Sql.Fines2Model3.Schema();
-t.CreateFileData(schema);
+t.CreateModel();
+*/
+
+SqlOrganize.Sql.Fines2Model3.Schema schema = new();
+BuildSchema s = new(c, schema);
+
+
+
 //t.CreateModel();
 

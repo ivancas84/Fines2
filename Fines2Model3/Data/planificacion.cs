@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -41,7 +43,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -50,7 +57,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? anio
         {
             get { return _anio; }
-            set { if( _anio != value) { _anio = value; NotifyPropertyChanged(nameof(anio)); } }
+            set {
+                if( _anio != value)
+                {
+                    _anio = value; NotifyPropertyChanged(nameof(anio));
+                }
+            }
         }
         #endregion
 
@@ -59,7 +71,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? semestre
         {
             get { return _semestre; }
-            set { if( _semestre != value) { _semestre = value; NotifyPropertyChanged(nameof(semestre)); } }
+            set {
+                if( _semestre != value)
+                {
+                    _semestre = value; NotifyPropertyChanged(nameof(semestre));
+                }
+            }
         }
         #endregion
 
@@ -68,7 +85,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? plan
         {
             get { return _plan; }
-            set { if( _plan != value) { _plan = value; NotifyPropertyChanged(nameof(plan)); } }
+            set {
+                if( _plan != value)
+                {
+                    _plan = value; NotifyPropertyChanged(nameof(plan));
+                    //desactivado hasta implementar cache
+                    //if (_plan.HasValue && (plan_.IsNoE() || !plan_!.Get(db.config.id).ToString()!.Equals(_plan.Value.ToString())))
+                    //    plan_ = CreateFromId<Plan>(_plan);
+                    //else if(_plan.IsNoE())
+                    //    plan_ = null;
+                }
+            }
         }
         #endregion
 
@@ -77,7 +104,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? pfid
         {
             get { return _pfid; }
-            set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
+            set {
+                if( _pfid != value)
+                {
+                    _pfid = value; NotifyPropertyChanged(nameof(pfid));
+                }
+            }
         }
         #endregion
 
@@ -118,5 +150,18 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Planificacion> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Planificacion, Plan, Planificacion>(
+                sql,
+                (main, plan) =>
+                {
+                    main.plan_ = plan;
+                    return main;
+                },
+                parameters,
+                splitOn:Context.db.Sql().SplitOn("planificacion")
+            );
+        }
     }
 }

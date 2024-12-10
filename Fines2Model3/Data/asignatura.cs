@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -15,10 +17,18 @@ namespace SqlOrganize.Sql.Fines2Model3
             _entityName = "asignatura";
             _db = Context.db;
             Default();
+            Curso_.CollectionChanged += Curso_CollectionChanged;
             Disposicion_.CollectionChanged += Disposicion_CollectionChanged;
         }
 
         #region CollectionChanged
+        private void Curso_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Curso obj in e.NewItems)
+                    if(obj.asignatura_ != this)
+                        obj.asignatura_ = this;
+        }
         private void Disposicion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if ( e.NewItems != null )
@@ -33,7 +43,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -42,7 +57,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? nombre
         {
             get { return _nombre; }
-            set { if( _nombre != value) { _nombre = value; NotifyPropertyChanged(nameof(nombre)); } }
+            set {
+                if( _nombre != value)
+                {
+                    _nombre = value; NotifyPropertyChanged(nameof(nombre));
+                }
+            }
         }
         #endregion
 
@@ -51,7 +71,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? formacion
         {
             get { return _formacion; }
-            set { if( _formacion != value) { _formacion = value; NotifyPropertyChanged(nameof(formacion)); } }
+            set {
+                if( _formacion != value)
+                {
+                    _formacion = value; NotifyPropertyChanged(nameof(formacion));
+                }
+            }
         }
         #endregion
 
@@ -60,7 +85,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? clasificacion
         {
             get { return _clasificacion; }
-            set { if( _clasificacion != value) { _clasificacion = value; NotifyPropertyChanged(nameof(clasificacion)); } }
+            set {
+                if( _clasificacion != value)
+                {
+                    _clasificacion = value; NotifyPropertyChanged(nameof(clasificacion));
+                }
+            }
         }
         #endregion
 
@@ -69,7 +99,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? codigo
         {
             get { return _codigo; }
-            set { if( _codigo != value) { _codigo = value; NotifyPropertyChanged(nameof(codigo)); } }
+            set {
+                if( _codigo != value)
+                {
+                    _codigo = value; NotifyPropertyChanged(nameof(codigo));
+                }
+            }
         }
         #endregion
 
@@ -78,7 +113,21 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? perfil
         {
             get { return _perfil; }
-            set { if( _perfil != value) { _perfil = value; NotifyPropertyChanged(nameof(perfil)); } }
+            set {
+                if( _perfil != value)
+                {
+                    _perfil = value; NotifyPropertyChanged(nameof(perfil));
+                }
+            }
+        }
+        #endregion
+
+        #region Curso_ (ref curso.asignatura _m:o asignatura.id)
+        protected ObservableCollection<Curso> _Curso_ = new ();
+        public ObservableCollection<Curso> Curso_
+        {
+            get { return _Curso_; }
+            set { if( _Curso_ != value) { _Curso_ = value; NotifyPropertyChanged(nameof(Curso_)); } }
         }
         #endregion
 
@@ -91,5 +140,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Asignatura> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Asignatura>(
+                sql,
+                parameters
+            );
+        }
     }
 }

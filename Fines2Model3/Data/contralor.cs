@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -25,7 +27,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -34,7 +41,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? fecha_contralor
         {
             get { return _fecha_contralor; }
-            set { if( _fecha_contralor != value) { _fecha_contralor = value; NotifyPropertyChanged(nameof(fecha_contralor)); } }
+            set {
+                if( _fecha_contralor != value)
+                {
+                    _fecha_contralor = value; NotifyPropertyChanged(nameof(fecha_contralor));
+                }
+            }
         }
         #endregion
 
@@ -43,7 +55,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? fecha_consejo
         {
             get { return _fecha_consejo; }
-            set { if( _fecha_consejo != value) { _fecha_consejo = value; NotifyPropertyChanged(nameof(fecha_consejo)); } }
+            set {
+                if( _fecha_consejo != value)
+                {
+                    _fecha_consejo = value; NotifyPropertyChanged(nameof(fecha_consejo));
+                }
+            }
         }
         #endregion
 
@@ -52,7 +69,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? insertado
         {
             get { return _insertado; }
-            set { if( _insertado != value) { _insertado = value; NotifyPropertyChanged(nameof(insertado)); } }
+            set {
+                if( _insertado != value)
+                {
+                    _insertado = value; NotifyPropertyChanged(nameof(insertado));
+                }
+            }
         }
         #endregion
 
@@ -61,7 +83,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? planilla_docente
         {
             get { return _planilla_docente; }
-            set { if( _planilla_docente != value) { _planilla_docente = value; NotifyPropertyChanged(nameof(planilla_docente)); } }
+            set {
+                if( _planilla_docente != value)
+                {
+                    _planilla_docente = value; NotifyPropertyChanged(nameof(planilla_docente));
+                    //desactivado hasta implementar cache
+                    //if (_planilla_docente.HasValue && (planilla_docente_.IsNoE() || !planilla_docente_!.Get(db.config.id).ToString()!.Equals(_planilla_docente.Value.ToString())))
+                    //    planilla_docente_ = CreateFromId<PlanillaDocente>(_planilla_docente);
+                    //else if(_planilla_docente.IsNoE())
+                    //    planilla_docente_ = null;
+                }
+            }
         }
         #endregion
 
@@ -84,5 +116,18 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Contralor> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Contralor, PlanillaDocente, Contralor>(
+                sql,
+                (main, planilla_docente) =>
+                {
+                    main.planilla_docente_ = planilla_docente;
+                    return main;
+                },
+                parameters,
+                splitOn:Context.db.Sql().SplitOn("contralor")
+            );
+        }
     }
 }

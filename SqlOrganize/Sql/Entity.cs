@@ -98,7 +98,7 @@ namespace SqlOrganize.Sql
             set => SetProperty(ref index, value, nameof(Index));
         }
 
-        /// <summary> Crear instancia de T utilizando serializacion a partir del id </summary>
+        /// <summary> Crear instancia de T simple (sin relaciones) a partir del id </summary>
 
         public static T CreateFromId<T>(object id) where T : Entity, new()
         {
@@ -562,7 +562,7 @@ namespace SqlOrganize.Sql
             }
 
             foreach (var error in v.errors)
-                Logging.AddErrorLog(key: fieldName, type: error.type, msg: error.msg);
+                Logging.AddErrorLog(key: fieldName, type: error.type, message: error.msg);
 
             return !v.HasErrors();
         }

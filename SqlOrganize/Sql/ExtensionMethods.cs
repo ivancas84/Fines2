@@ -6,57 +6,14 @@ using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Net;
 using Dapper;
+using SqlOrganize.CollectionUtils;
 
 namespace SqlOrganize.Sql
 {
     public static class ExtensionMethods
     {
 
-        /// <summary> Armar arbol de valores a partir del resultado de una consulta </summary>
-        /// <remarks> Los campos deben estar organizados de la forma fieldId__fieldName para poder identificar las ramas </remarks>
-        public static IDictionary<string, object?> ValuesTree(this Db db, IDictionary<string, object?> values, string entityName)
-        {
-            Dictionary<string, object?> response = new();
-
-            if (values.ContainsKey("Label"))
-                response["Label"] = values["Label"];
-
-            foreach (string fieldName in db.FieldNames(entityName))
-            {
-                if (values.ContainsKey(fieldName))
-                    response[fieldName] = values[fieldName];
-
-            }
-
-            db.ValuesTreeRecursive(values, db.Entity(entityName).tree, response);
-
-            return response;
-        }
-
-        /// <summary> Metodo recursivo para armar arbol de valores a partir del resultado de una consulta </summary>
-        /// <remarks> Los campos deben estar organizados de la forma fieldId__fieldName para poder identificar las ramas </remarks>
-        public static void ValuesTreeRecursive(this Db db, IDictionary<string, object?> values, IDictionary<string, EntityTree> tree, IDictionary<string, object?> response)
-        {
-            foreach (var (fieldId, et) in tree)
-            {
-                if (response.ContainsKey(et.fieldName) && !response[et.fieldName].IsNoE())
-                {
-                    response[et.fieldName + "_"] = new Dictionary<string, object?>();
-
-                    if (values.ContainsKey(fieldId + db.config.separator + "Label"))
-                        (response[et.fieldName + "_"] as Dictionary<string, object?>)!["Label"] = values[fieldId + db.config.separator + "Label"];
-
-                    foreach (string fieldName in db.FieldNames(et.refEntityName))
-                    {
-                        if (values.ContainsKey(fieldId + db.config.separator + fieldName))
-                            (response[et.fieldName + "_"] as Dictionary<string, object?>)![fieldName] = values[fieldId + db.config.separator + fieldName];
-                    }
-
-                    if (!et.children.IsNoE())
-                        db.ValuesTreeRecursive(values, et.children, (response[et.fieldName + "_"] as Dictionary<string, object?>)!);
-                }
-            }
-        }
+        
 
         /// <summary>Retorna una lista de los campos principales</summary>
         public static List<string> MainKeys(this Db db, string entityName)
@@ -181,5 +138,22 @@ namespace SqlOrganize.Sql
 
         }
 
+        public static void AddEntitiesToClearOC<T>(this IEnumerable<T> data, ObservableCollection<T> oc) where T : Entity
+        {
+
+            oc.ClearAndAddRange(data);
+        }
+
+        public static void ClearAndAddEntities<T>(this ObservableCollection<T> oc, IEnumerable<T> items) where T : Entity
+        {
+            oc.Clear();
+            for(var i = 0; i < items.Count(); i++)
+            {
+                var item = items.ElementAt(i);
+                item.Index = i;
+                oc.Add(item);
+
+            }
+        }
     }
 }

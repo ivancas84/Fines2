@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -33,7 +35,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -42,7 +49,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? descripcion
         {
             get { return _descripcion; }
-            set { if( _descripcion != value) { _descripcion = value; NotifyPropertyChanged(nameof(descripcion)); } }
+            set {
+                if( _descripcion != value)
+                {
+                    _descripcion = value; NotifyPropertyChanged(nameof(descripcion));
+                }
+            }
         }
         #endregion
 
@@ -55,5 +67,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Cargo> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Cargo>(
+                sql,
+                parameters
+            );
+        }
     }
 }

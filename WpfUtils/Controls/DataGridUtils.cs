@@ -38,7 +38,7 @@ namespace WpfUtils.Controls
                 var keys = key.Split(".");
 
                 for (var i = 0; i < (keys.Count() - 1); i++)
-                    editedObject = editedObject!.GetPropertyValue<object>(keys[i]);
+                    editedObject = editedObject!.GetPropertyValue(keys[i]);
                
                 using (var connection = db.Connection().Open())
                 {

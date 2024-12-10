@@ -1,10 +1,12 @@
 ﻿using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json;
 
 namespace SqlOrganize.Sql
 {
+
+    ///<summary> Cache en archivos compatible con IMemoryCache </summary>
+    ///<remarks> Almacenar solamente strings </remarks>
     public class FileSystemCache : IMemoryCache
     {
         private readonly string _cacheDirectory;
@@ -58,8 +60,7 @@ namespace SqlOrganize.Sql
             string cacheFilePath = GetCacheFilePath(key.ToString());
             if (File.Exists(cacheFilePath))
             {
-                string json = File.ReadAllText(cacheFilePath);
-                value = JsonConvert.DeserializeObject(json);
+                value = File.ReadAllText(cacheFilePath);
                 return true;
             }
 
@@ -125,8 +126,7 @@ namespace SqlOrganize.Sql
             {
                 if (Value != null && _cacheFilePath.Length <= 260)
                 {
-                    string json = JsonConvert.SerializeObject(Value);
-                    File.WriteAllText(_cacheFilePath, json);
+                    File.WriteAllText(_cacheFilePath, (string)Value);
                 }
             }
 

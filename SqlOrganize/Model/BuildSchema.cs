@@ -81,10 +81,11 @@ namespace SqlOrganize.Model
                     {
                         Sql.Field fk = entity.fields[fieldName];
 
-                        sw.WriteLine("                    if (_" + fieldName + ".HasValue && (" + fieldName + "_.IsNoE() || !" + fieldName + "_!.Get(db.config.id).ToString()!.Equals(_" + fieldName + ".Value.ToString())))");
-                        sw.WriteLine("                        " + fieldName + "_ = CreateFromId<" + fk.refEntityName!.ToCamelCase() + ">(_" + fieldName + ");");
-                        sw.WriteLine("                    else if(_" + fieldName + ".IsNoE())");
-                        sw.WriteLine("                        " + fieldName + "_ = null;");
+                        sw.WriteLine("                    //desactivado hasta implementar cache");
+                        sw.WriteLine("                    //if (_" + fieldName + ".HasValue && (" + fieldName + "_.IsNoE() || !" + fieldName + "_!.Get(db.config.id).ToString()!.Equals(_" + fieldName + ".Value.ToString())))");
+                        sw.WriteLine("                    //    " + fieldName + "_ = CreateFromId<" + fk.refEntityName!.ToCamelCase() + ">(_" + fieldName + ");");
+                        sw.WriteLine("                    //else if(_" + fieldName + ".IsNoE())");
+                        sw.WriteLine("                    //    " + fieldName + "_ = null;");
                     }
                     sw.WriteLine("                }");
                     sw.WriteLine("            }");
@@ -215,7 +216,7 @@ namespace SqlOrganize.Model
 
 
 
-                sw.WriteLine("        public static IEnumerable<" + entityName.ToCamelCase() + "> QueryDapper(IDbConnection connection, string sql, object? parameters)");
+                sw.WriteLine("        public static IEnumerable<" + entityName.ToCamelCase() + "> QueryDapper(IDbConnection connection, string sql, object? parameters = null)");
                 sw.WriteLine("        {");
                 sw.WriteLine("            return connection.Query<" + String.Join(", ", _classes) + ">(");
                 sw.WriteLine("                sql,");
@@ -233,7 +234,7 @@ namespace SqlOrganize.Model
                             sw.WriteLine("                    main." + relation.fieldName + "_ = " + fieldId + ";");
 
                         else
-                            sw.WriteLine("                    " + relation.parentId + "." + relation.fieldName + "_ = " + fieldId + ";");
+                            sw.WriteLine("                    if(!" + fieldId + ".IsNoE()) " + relation.parentId + "." + relation.fieldName + "_ = " + fieldId + ";");
 
                         i++;
 
@@ -242,13 +243,23 @@ namespace SqlOrganize.Model
                     sw.WriteLine("                    return main;");
                     sw.WriteLine("                },");
                     sw.WriteLine("                parameters,");
-                    sw.WriteLine("                splitOn:Context.db.Sql().SplitOn(\"" + entityName + "\")");
+                    sw.WriteLine("                splitOn:\"id\"");
                 }
                 else
                 {
                     sw.WriteLine("                parameters");
                 }
                 sw.WriteLine("            );");
+                sw.WriteLine("        }");
+                sw.WriteLine("");
+                sw.WriteLine("        public static " + entityName.ToCamelCase() + " CreateFromId_(object id)");
+                sw.WriteLine("        {");
+                sw.WriteLine("            using (var connection = Context.db.Connection().Open())");
+                sw.WriteLine("            {");
+                sw.WriteLine("                string sql = Context.db.Sql().ByIdDapper(\"" + entityName + "\");");
+                sw.WriteLine("                IEnumerable<" + entityName.ToCamelCase() + "> elements = QueryDapper(connection, sql, new { Id = id });");
+                sw.WriteLine("                return elements.ElementAt(0);");
+                sw.WriteLine("            }");
                 sw.WriteLine("        }");
                 #endregion
 

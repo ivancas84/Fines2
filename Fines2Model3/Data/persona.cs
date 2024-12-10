@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -73,7 +75,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -82,7 +89,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? nombres
         {
             get { return _nombres; }
-            set { if( _nombres != value) { _nombres = value; NotifyPropertyChanged(nameof(nombres)); } }
+            set {
+                if( _nombres != value)
+                {
+                    _nombres = value; NotifyPropertyChanged(nameof(nombres));
+                }
+            }
         }
         #endregion
 
@@ -91,7 +103,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? apellidos
         {
             get { return _apellidos; }
-            set { if( _apellidos != value) { _apellidos = value; NotifyPropertyChanged(nameof(apellidos)); } }
+            set {
+                if( _apellidos != value)
+                {
+                    _apellidos = value; NotifyPropertyChanged(nameof(apellidos));
+                }
+            }
         }
         #endregion
 
@@ -100,7 +117,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? fecha_nacimiento
         {
             get { return _fecha_nacimiento; }
-            set { if( _fecha_nacimiento != value) { _fecha_nacimiento = value; NotifyPropertyChanged(nameof(fecha_nacimiento)); } }
+            set {
+                if( _fecha_nacimiento != value)
+                {
+                    _fecha_nacimiento = value; NotifyPropertyChanged(nameof(fecha_nacimiento));
+                }
+            }
         }
         #endregion
 
@@ -109,7 +131,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? numero_documento
         {
             get { return _numero_documento; }
-            set { if( _numero_documento != value) { _numero_documento = value; NotifyPropertyChanged(nameof(numero_documento)); } }
+            set {
+                if( _numero_documento != value)
+                {
+                    _numero_documento = value; NotifyPropertyChanged(nameof(numero_documento));
+                }
+            }
         }
         #endregion
 
@@ -118,7 +145,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? cuil
         {
             get { return _cuil; }
-            set { if( _cuil != value) { _cuil = value; NotifyPropertyChanged(nameof(cuil)); } }
+            set {
+                if( _cuil != value)
+                {
+                    _cuil = value; NotifyPropertyChanged(nameof(cuil));
+                }
+            }
         }
         #endregion
 
@@ -127,7 +159,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? genero
         {
             get { return _genero; }
-            set { if( _genero != value) { _genero = value; NotifyPropertyChanged(nameof(genero)); } }
+            set {
+                if( _genero != value)
+                {
+                    _genero = value; NotifyPropertyChanged(nameof(genero));
+                }
+            }
         }
         #endregion
 
@@ -136,7 +173,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? apodo
         {
             get { return _apodo; }
-            set { if( _apodo != value) { _apodo = value; NotifyPropertyChanged(nameof(apodo)); } }
+            set {
+                if( _apodo != value)
+                {
+                    _apodo = value; NotifyPropertyChanged(nameof(apodo));
+                }
+            }
         }
         #endregion
 
@@ -145,7 +187,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? telefono
         {
             get { return _telefono; }
-            set { if( _telefono != value) { _telefono = value; NotifyPropertyChanged(nameof(telefono)); } }
+            set {
+                if( _telefono != value)
+                {
+                    _telefono = value; NotifyPropertyChanged(nameof(telefono));
+                }
+            }
         }
         #endregion
 
@@ -154,7 +201,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? email
         {
             get { return _email; }
-            set { if( _email != value) { _email = value; NotifyPropertyChanged(nameof(email)); } }
+            set {
+                if( _email != value)
+                {
+                    _email = value; NotifyPropertyChanged(nameof(email));
+                }
+            }
         }
         #endregion
 
@@ -163,7 +215,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? email_abc
         {
             get { return _email_abc; }
-            set { if( _email_abc != value) { _email_abc = value; NotifyPropertyChanged(nameof(email_abc)); } }
+            set {
+                if( _email_abc != value)
+                {
+                    _email_abc = value; NotifyPropertyChanged(nameof(email_abc));
+                }
+            }
         }
         #endregion
 
@@ -172,7 +229,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? alta
         {
             get { return _alta; }
-            set { if( _alta != value) { _alta = value; NotifyPropertyChanged(nameof(alta)); } }
+            set {
+                if( _alta != value)
+                {
+                    _alta = value; NotifyPropertyChanged(nameof(alta));
+                }
+            }
         }
         #endregion
 
@@ -181,7 +243,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? domicilio
         {
             get { return _domicilio; }
-            set { if( _domicilio != value) { _domicilio = value; NotifyPropertyChanged(nameof(domicilio)); } }
+            set {
+                if( _domicilio != value)
+                {
+                    _domicilio = value; NotifyPropertyChanged(nameof(domicilio));
+                    //desactivado hasta implementar cache
+                    //if (_domicilio.HasValue && (domicilio_.IsNoE() || !domicilio_!.Get(db.config.id).ToString()!.Equals(_domicilio.Value.ToString())))
+                    //    domicilio_ = CreateFromId<Domicilio>(_domicilio);
+                    //else if(_domicilio.IsNoE())
+                    //    domicilio_ = null;
+                }
+            }
         }
         #endregion
 
@@ -190,7 +262,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? lugar_nacimiento
         {
             get { return _lugar_nacimiento; }
-            set { if( _lugar_nacimiento != value) { _lugar_nacimiento = value; NotifyPropertyChanged(nameof(lugar_nacimiento)); } }
+            set {
+                if( _lugar_nacimiento != value)
+                {
+                    _lugar_nacimiento = value; NotifyPropertyChanged(nameof(lugar_nacimiento));
+                }
+            }
         }
         #endregion
 
@@ -199,7 +276,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public bool? telefono_verificado
         {
             get { return _telefono_verificado; }
-            set { if( _telefono_verificado != value) { _telefono_verificado = value; NotifyPropertyChanged(nameof(telefono_verificado)); } }
+            set {
+                if( _telefono_verificado != value)
+                {
+                    _telefono_verificado = value; NotifyPropertyChanged(nameof(telefono_verificado));
+                }
+            }
         }
         #endregion
 
@@ -208,7 +290,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public bool? email_verificado
         {
             get { return _email_verificado; }
-            set { if( _email_verificado != value) { _email_verificado = value; NotifyPropertyChanged(nameof(email_verificado)); } }
+            set {
+                if( _email_verificado != value)
+                {
+                    _email_verificado = value; NotifyPropertyChanged(nameof(email_verificado));
+                }
+            }
         }
         #endregion
 
@@ -217,7 +304,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public bool? info_verificada
         {
             get { return _info_verificada; }
-            set { if( _info_verificada != value) { _info_verificada = value; NotifyPropertyChanged(nameof(info_verificada)); } }
+            set {
+                if( _info_verificada != value)
+                {
+                    _info_verificada = value; NotifyPropertyChanged(nameof(info_verificada));
+                }
+            }
         }
         #endregion
 
@@ -226,7 +318,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? descripcion_domicilio
         {
             get { return _descripcion_domicilio; }
-            set { if( _descripcion_domicilio != value) { _descripcion_domicilio = value; NotifyPropertyChanged(nameof(descripcion_domicilio)); } }
+            set {
+                if( _descripcion_domicilio != value)
+                {
+                    _descripcion_domicilio = value; NotifyPropertyChanged(nameof(descripcion_domicilio));
+                }
+            }
         }
         #endregion
 
@@ -235,7 +332,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public byte? cuil1
         {
             get { return _cuil1; }
-            set { if( _cuil1 != value) { _cuil1 = value; NotifyPropertyChanged(nameof(cuil1)); } }
+            set {
+                if( _cuil1 != value)
+                {
+                    _cuil1 = value; NotifyPropertyChanged(nameof(cuil1));
+                }
+            }
         }
         #endregion
 
@@ -244,7 +346,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public byte? cuil2
         {
             get { return _cuil2; }
-            set { if( _cuil2 != value) { _cuil2 = value; NotifyPropertyChanged(nameof(cuil2)); } }
+            set {
+                if( _cuil2 != value)
+                {
+                    _cuil2 = value; NotifyPropertyChanged(nameof(cuil2));
+                }
+            }
         }
         #endregion
 
@@ -253,7 +360,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? departamento
         {
             get { return _departamento; }
-            set { if( _departamento != value) { _departamento = value; NotifyPropertyChanged(nameof(departamento)); } }
+            set {
+                if( _departamento != value)
+                {
+                    _departamento = value; NotifyPropertyChanged(nameof(departamento));
+                }
+            }
         }
         #endregion
 
@@ -262,7 +374,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? localidad
         {
             get { return _localidad; }
-            set { if( _localidad != value) { _localidad = value; NotifyPropertyChanged(nameof(localidad)); } }
+            set {
+                if( _localidad != value)
+                {
+                    _localidad = value; NotifyPropertyChanged(nameof(localidad));
+                }
+            }
         }
         #endregion
 
@@ -271,7 +388,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? partido
         {
             get { return _partido; }
-            set { if( _partido != value) { _partido = value; NotifyPropertyChanged(nameof(partido)); } }
+            set {
+                if( _partido != value)
+                {
+                    _partido = value; NotifyPropertyChanged(nameof(partido));
+                }
+            }
         }
         #endregion
 
@@ -280,7 +402,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? codigo_area
         {
             get { return _codigo_area; }
-            set { if( _codigo_area != value) { _codigo_area = value; NotifyPropertyChanged(nameof(codigo_area)); } }
+            set {
+                if( _codigo_area != value)
+                {
+                    _codigo_area = value; NotifyPropertyChanged(nameof(codigo_area));
+                }
+            }
         }
         #endregion
 
@@ -289,7 +416,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? nacionalidad
         {
             get { return _nacionalidad; }
-            set { if( _nacionalidad != value) { _nacionalidad = value; NotifyPropertyChanged(nameof(nacionalidad)); } }
+            set {
+                if( _nacionalidad != value)
+                {
+                    _nacionalidad = value; NotifyPropertyChanged(nameof(nacionalidad));
+                }
+            }
         }
         #endregion
 
@@ -298,7 +430,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public byte? sexo
         {
             get { return _sexo; }
-            set { if( _sexo != value) { _sexo = value; NotifyPropertyChanged(nameof(sexo)); } }
+            set {
+                if( _sexo != value)
+                {
+                    _sexo = value; NotifyPropertyChanged(nameof(sexo));
+                }
+            }
         }
         #endregion
 
@@ -307,7 +444,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public byte? dia_nacimiento
         {
             get { return _dia_nacimiento; }
-            set { if( _dia_nacimiento != value) { _dia_nacimiento = value; NotifyPropertyChanged(nameof(dia_nacimiento)); } }
+            set {
+                if( _dia_nacimiento != value)
+                {
+                    _dia_nacimiento = value; NotifyPropertyChanged(nameof(dia_nacimiento));
+                }
+            }
         }
         #endregion
 
@@ -316,7 +458,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public byte? mes_nacimiento
         {
             get { return _mes_nacimiento; }
-            set { if( _mes_nacimiento != value) { _mes_nacimiento = value; NotifyPropertyChanged(nameof(mes_nacimiento)); } }
+            set {
+                if( _mes_nacimiento != value)
+                {
+                    _mes_nacimiento = value; NotifyPropertyChanged(nameof(mes_nacimiento));
+                }
+            }
         }
         #endregion
 
@@ -325,7 +472,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public ushort? anio_nacimiento
         {
             get { return _anio_nacimiento; }
-            set { if( _anio_nacimiento != value) { _anio_nacimiento = value; NotifyPropertyChanged(nameof(anio_nacimiento)); } }
+            set {
+                if( _anio_nacimiento != value)
+                {
+                    _anio_nacimiento = value; NotifyPropertyChanged(nameof(anio_nacimiento));
+                }
+            }
         }
         #endregion
 
@@ -411,5 +563,18 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Persona> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Persona, Domicilio, Persona>(
+                sql,
+                (main, domicilio) =>
+                {
+                    main.domicilio_ = domicilio;
+                    return main;
+                },
+                parameters,
+                splitOn:Context.db.Sql().SplitOn("persona")
+            );
+        }
     }
 }

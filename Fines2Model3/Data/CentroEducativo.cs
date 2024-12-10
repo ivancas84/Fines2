@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -33,7 +35,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -42,7 +49,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? nombre
         {
             get { return _nombre; }
-            set { if( _nombre != value) { _nombre = value; NotifyPropertyChanged(nameof(nombre)); } }
+            set {
+                if( _nombre != value)
+                {
+                    _nombre = value; NotifyPropertyChanged(nameof(nombre));
+                }
+            }
         }
         #endregion
 
@@ -51,7 +63,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? cue
         {
             get { return _cue; }
-            set { if( _cue != value) { _cue = value; NotifyPropertyChanged(nameof(cue)); } }
+            set {
+                if( _cue != value)
+                {
+                    _cue = value; NotifyPropertyChanged(nameof(cue));
+                }
+            }
         }
         #endregion
 
@@ -60,7 +77,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? domicilio
         {
             get { return _domicilio; }
-            set { if( _domicilio != value) { _domicilio = value; NotifyPropertyChanged(nameof(domicilio)); } }
+            set {
+                if( _domicilio != value)
+                {
+                    _domicilio = value; NotifyPropertyChanged(nameof(domicilio));
+                    //desactivado hasta implementar cache
+                    //if (_domicilio.HasValue && (domicilio_.IsNoE() || !domicilio_!.Get(db.config.id).ToString()!.Equals(_domicilio.Value.ToString())))
+                    //    domicilio_ = CreateFromId<Domicilio>(_domicilio);
+                    //else if(_domicilio.IsNoE())
+                    //    domicilio_ = null;
+                }
+            }
         }
         #endregion
 
@@ -69,7 +96,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? observaciones
         {
             get { return _observaciones; }
-            set { if( _observaciones != value) { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); } }
+            set {
+                if( _observaciones != value)
+                {
+                    _observaciones = value; NotifyPropertyChanged(nameof(observaciones));
+                }
+            }
         }
         #endregion
 
@@ -101,5 +133,18 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<CentroEducativo> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<CentroEducativo, Domicilio, CentroEducativo>(
+                sql,
+                (main, domicilio) =>
+                {
+                    main.domicilio_ = domicilio;
+                    return main;
+                },
+                parameters,
+                splitOn:Context.db.Sql().SplitOn("centro_educativo")
+            );
+        }
     }
 }

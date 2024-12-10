@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -41,7 +43,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -50,7 +57,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? numero
         {
             get { return _numero; }
-            set { if( _numero != value) { _numero = value; NotifyPropertyChanged(nameof(numero)); } }
+            set {
+                if( _numero != value)
+                {
+                    _numero = value; NotifyPropertyChanged(nameof(numero));
+                }
+            }
         }
         #endregion
 
@@ -59,7 +71,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? nombre
         {
             get { return _nombre; }
-            set { if( _nombre != value) { _nombre = value; NotifyPropertyChanged(nameof(nombre)); } }
+            set {
+                if( _nombre != value)
+                {
+                    _nombre = value; NotifyPropertyChanged(nameof(nombre));
+                }
+            }
         }
         #endregion
 
@@ -68,7 +85,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? observaciones
         {
             get { return _observaciones; }
-            set { if( _observaciones != value) { _observaciones = value; NotifyPropertyChanged(nameof(observaciones)); } }
+            set {
+                if( _observaciones != value)
+                {
+                    _observaciones = value; NotifyPropertyChanged(nameof(observaciones));
+                }
+            }
         }
         #endregion
 
@@ -77,7 +99,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? alta
         {
             get { return _alta; }
-            set { if( _alta != value) { _alta = value; NotifyPropertyChanged(nameof(alta)); } }
+            set {
+                if( _alta != value)
+                {
+                    _alta = value; NotifyPropertyChanged(nameof(alta));
+                }
+            }
         }
         #endregion
 
@@ -86,7 +113,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? baja
         {
             get { return _baja; }
-            set { if( _baja != value) { _baja = value; NotifyPropertyChanged(nameof(baja)); } }
+            set {
+                if( _baja != value)
+                {
+                    _baja = value; NotifyPropertyChanged(nameof(baja));
+                }
+            }
         }
         #endregion
 
@@ -95,7 +127,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? domicilio
         {
             get { return _domicilio; }
-            set { if( _domicilio != value) { _domicilio = value; NotifyPropertyChanged(nameof(domicilio)); } }
+            set {
+                if( _domicilio != value)
+                {
+                    _domicilio = value; NotifyPropertyChanged(nameof(domicilio));
+                    //desactivado hasta implementar cache
+                    //if (_domicilio.HasValue && (domicilio_.IsNoE() || !domicilio_!.Get(db.config.id).ToString()!.Equals(_domicilio.Value.ToString())))
+                    //    domicilio_ = CreateFromId<Domicilio>(_domicilio);
+                    //else if(_domicilio.IsNoE())
+                    //    domicilio_ = null;
+                }
+            }
         }
         #endregion
 
@@ -104,7 +146,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? tipo_sede
         {
             get { return _tipo_sede; }
-            set { if( _tipo_sede != value) { _tipo_sede = value; NotifyPropertyChanged(nameof(tipo_sede)); } }
+            set {
+                if( _tipo_sede != value)
+                {
+                    _tipo_sede = value; NotifyPropertyChanged(nameof(tipo_sede));
+                    //desactivado hasta implementar cache
+                    //if (_tipo_sede.HasValue && (tipo_sede_.IsNoE() || !tipo_sede_!.Get(db.config.id).ToString()!.Equals(_tipo_sede.Value.ToString())))
+                    //    tipo_sede_ = CreateFromId<TipoSede>(_tipo_sede);
+                    //else if(_tipo_sede.IsNoE())
+                    //    tipo_sede_ = null;
+                }
+            }
         }
         #endregion
 
@@ -113,7 +165,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? centro_educativo
         {
             get { return _centro_educativo; }
-            set { if( _centro_educativo != value) { _centro_educativo = value; NotifyPropertyChanged(nameof(centro_educativo)); } }
+            set {
+                if( _centro_educativo != value)
+                {
+                    _centro_educativo = value; NotifyPropertyChanged(nameof(centro_educativo));
+                    //desactivado hasta implementar cache
+                    //if (_centro_educativo.HasValue && (centro_educativo_.IsNoE() || !centro_educativo_!.Get(db.config.id).ToString()!.Equals(_centro_educativo.Value.ToString())))
+                    //    centro_educativo_ = CreateFromId<CentroEducativo>(_centro_educativo);
+                    //else if(_centro_educativo.IsNoE())
+                    //    centro_educativo_ = null;
+                }
+            }
         }
         #endregion
 
@@ -122,7 +184,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public DateTime? fecha_traspaso
         {
             get { return _fecha_traspaso; }
-            set { if( _fecha_traspaso != value) { _fecha_traspaso = value; NotifyPropertyChanged(nameof(fecha_traspaso)); } }
+            set {
+                if( _fecha_traspaso != value)
+                {
+                    _fecha_traspaso = value; NotifyPropertyChanged(nameof(fecha_traspaso));
+                }
+            }
         }
         #endregion
 
@@ -131,7 +198,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? organizacion
         {
             get { return _organizacion; }
-            set { if( _organizacion != value) { _organizacion = value; NotifyPropertyChanged(nameof(organizacion)); } }
+            set {
+                if( _organizacion != value)
+                {
+                    _organizacion = value; NotifyPropertyChanged(nameof(organizacion));
+                    //desactivado hasta implementar cache
+                    //if (_organizacion.HasValue && (organizacion_.IsNoE() || !organizacion_!.Get(db.config.id).ToString()!.Equals(_organizacion.Value.ToString())))
+                    //    organizacion_ = CreateFromId<Sede>(_organizacion);
+                    //else if(_organizacion.IsNoE())
+                    //    organizacion_ = null;
+                }
+            }
         }
         #endregion
 
@@ -140,7 +217,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? pfid
         {
             get { return _pfid; }
-            set { if( _pfid != value) { _pfid = value; NotifyPropertyChanged(nameof(pfid)); } }
+            set {
+                if( _pfid != value)
+                {
+                    _pfid = value; NotifyPropertyChanged(nameof(pfid));
+                }
+            }
         }
         #endregion
 
@@ -149,7 +231,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? pfid_organizacion
         {
             get { return _pfid_organizacion; }
-            set { if( _pfid_organizacion != value) { _pfid_organizacion = value; NotifyPropertyChanged(nameof(pfid_organizacion)); } }
+            set {
+                if( _pfid_organizacion != value)
+                {
+                    _pfid_organizacion = value; NotifyPropertyChanged(nameof(pfid_organizacion));
+                }
+            }
         }
         #endregion
 
@@ -228,5 +315,21 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Sede> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Sede, Domicilio, TipoSede, CentroEducativo, Domicilio, Sede>(
+                sql,
+                (main, domicilio, tipo_sede, centro_educativo, domicilio_cen) =>
+                {
+                    main.domicilio_ = domicilio;
+                    main.tipo_sede_ = tipo_sede;
+                    main.centro_educativo_ = centro_educativo;
+                    if(!domicilio_cen.IsNoE()) centro_educativo.domicilio_ = domicilio_cen;
+                    return main;
+                },
+                parameters,
+                splitOn:Context.db.Sql().SplitOn("sede")
+            );
+        }
     }
 }

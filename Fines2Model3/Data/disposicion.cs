@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using Dapper;
+using System.Data;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -57,7 +59,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? id
         {
             get { return _id; }
-            set { if( _id != value) { _id = value; NotifyPropertyChanged(nameof(id)); } }
+            set {
+                if( _id != value)
+                {
+                    _id = value; NotifyPropertyChanged(nameof(id));
+                }
+            }
         }
         #endregion
 
@@ -66,7 +73,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? asignatura
         {
             get { return _asignatura; }
-            set { if( _asignatura != value) { _asignatura = value; NotifyPropertyChanged(nameof(asignatura)); } }
+            set {
+                if( _asignatura != value)
+                {
+                    _asignatura = value; NotifyPropertyChanged(nameof(asignatura));
+                    //desactivado hasta implementar cache
+                    //if (_asignatura.HasValue && (asignatura_.IsNoE() || !asignatura_!.Get(db.config.id).ToString()!.Equals(_asignatura.Value.ToString())))
+                    //    asignatura_ = CreateFromId<Asignatura>(_asignatura);
+                    //else if(_asignatura.IsNoE())
+                    //    asignatura_ = null;
+                }
+            }
         }
         #endregion
 
@@ -75,7 +92,17 @@ namespace SqlOrganize.Sql.Fines2Model3
         public string? planificacion
         {
             get { return _planificacion; }
-            set { if( _planificacion != value) { _planificacion = value; NotifyPropertyChanged(nameof(planificacion)); } }
+            set {
+                if( _planificacion != value)
+                {
+                    _planificacion = value; NotifyPropertyChanged(nameof(planificacion));
+                    //desactivado hasta implementar cache
+                    //if (_planificacion.HasValue && (planificacion_.IsNoE() || !planificacion_!.Get(db.config.id).ToString()!.Equals(_planificacion.Value.ToString())))
+                    //    planificacion_ = CreateFromId<Planificacion>(_planificacion);
+                    //else if(_planificacion.IsNoE())
+                    //    planificacion_ = null;
+                }
+            }
         }
         #endregion
 
@@ -84,7 +111,12 @@ namespace SqlOrganize.Sql.Fines2Model3
         public int? orden_informe_coordinacion_distrital
         {
             get { return _orden_informe_coordinacion_distrital; }
-            set { if( _orden_informe_coordinacion_distrital != value) { _orden_informe_coordinacion_distrital = value; NotifyPropertyChanged(nameof(orden_informe_coordinacion_distrital)); } }
+            set {
+                if( _orden_informe_coordinacion_distrital != value)
+                {
+                    _orden_informe_coordinacion_distrital = value; NotifyPropertyChanged(nameof(orden_informe_coordinacion_distrital));
+                }
+            }
         }
         #endregion
 
@@ -162,5 +194,20 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        public static IEnumerable<Disposicion> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
+        {
+            return connection.Query<Disposicion, Asignatura, Planificacion, Plan, Disposicion>(
+                sql,
+                (main, asignatura, planificacion, plan) =>
+                {
+                    main.asignatura_ = asignatura;
+                    main.planificacion_ = planificacion;
+                    if(!plan.IsNoE()) planificacion.plan_ = plan;
+                    return main;
+                },
+                parameters,
+                splitOn:Context.db.Sql().SplitOn("disposicion")
+            );
+        }
     }
 }

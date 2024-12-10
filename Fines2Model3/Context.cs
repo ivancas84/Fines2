@@ -43,7 +43,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             IMemoryCache cache = CreateCache();
 
-            Schema model = new Schema();
+            Schema1 model = new Schema1();
             db = new DbMy(config, model, cache);
 
             SqlOrganize.Sql.Config configPedidos = new()

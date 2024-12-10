@@ -26,12 +26,12 @@ namespace SqlOrganize.Sql
         public Dictionary<string, EntityMetadata> entities { get; set; }
 
 
-        public IMemoryCache? cache { get; set; } = null;
+        public IMemoryCache? Cache { get; set; } = null;
 
         public Db(Config _config, ISchema schema, IMemoryCache? cache = null)
         {
             config = _config;
-            this.cache = cache;
+            this.Cache = cache;
             entities = schema.entities;
             foreach (EntityMetadata e in entities.Values)
             {
@@ -94,6 +94,11 @@ namespace SqlOrganize.Sql
 
         /// <summary> Lista de campos de la entidad y sus relaciones de la forma fieldId__fieldName </summary>
         /// <remarks> La inclusion del caracter de separacion ayuda a determinar la relacion correspondiente </remarks>
+        public List<string> FieldNamesAll(string entityName)
+        {
+            return FieldNames(entityName).Concat(FieldNamesRel(entityName)).ToList();
+        }
+
         public List<string> FieldNamesRel(string entityName)
         {
             List<string> fieldNamesR = new();
@@ -105,8 +110,9 @@ namespace SqlOrganize.Sql
                     foreach (string fieldName in FieldNamesWithoutId(er.refEntityName))
                         fieldNamesR.Add(fieldId + config.separator + fieldName);
                 }
-            return FieldNames(entityName).Concat(fieldNamesR).ToList();
+            return fieldNamesR;
         }
+
 
         public List<string> FieldNamesAdmin(string entityName)
         {
@@ -130,6 +136,11 @@ namespace SqlOrganize.Sql
 
         /// <summary> Definir SQL de consulta </summary> 
         public abstract SelectSql Sql();
+
+        public CacheSql CacheSql()
+        {
+            return new CacheSql(this);
+        }
 
         public virtual EntityMapping Mapping(string entityName, string? fieldId = null)
         {

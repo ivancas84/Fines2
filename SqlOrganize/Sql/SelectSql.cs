@@ -156,6 +156,51 @@ namespace SqlOrganize.Sql
             return sql;
         }
 
+        public string ByIdDapper(string entityName)
+        {
+            EntityMetadata metadata = this.Db.Entity(entityName);
+            string sql = SelectDapper(entityName);
+            sql += " WHERE " + metadata.alias + "." + Db.config.id + " = @Id";
+
+            return sql;
+        }
+
+        public string ByIdsDapper(string entityName)
+        {
+            EntityMetadata metadata = this.Db.Entity(entityName);
+            string sql = SelectDapper(entityName);
+            sql += " WHERE " + metadata.alias + "." + Db.config.id + " IN (@Ids)";
+
+            return sql;
+        }
+
+        public string ByIds(string entityName)
+        {
+            EntityMetadata metadata = this.Db.Entity(entityName);
+
+            var sql = "SELECT DISTINCT ";
+            sql += SqlFieldsSimple(entityName);
+            sql += SqlFrom(entityName);
+            sql += " WHERE " + metadata.alias + "." + Db.config.id + " IN @Ids";
+
+            return sql;
+        }
+
+        public string ByIdsAll(string entityName)
+        {
+            EntityMetadata metadata = Db.Entity(entityName);
+            var sql = "SELECT DISTINCT ";
+            sql += SqlFields(entityName);
+            sql += SqlFrom(entityName);
+            sql += SqlJoin(entityName);
+            sql += " WHERE " + metadata.alias + "." + Db.config.id + " IN @Ids";
+
+            return sql;
+        }
+
+
+
+
         public string ByKey(string entityName, string key)
         {
             var sql = "SELECT DISTINCT ";
@@ -195,7 +240,15 @@ namespace SqlOrganize.Sql
             ";
         }
 
+        public string SelectAll(string entityName)
+        {
+            var sql = "SELECT DISTINCT ";
+            sql += SqlFields(entityName);
+            sql += SqlFrom(entityName);
+            sql += SqlJoin(entityName);
 
+            return sql;
+        }
 
         public string SelectDapper(string entityName)
         {
@@ -207,9 +260,10 @@ namespace SqlOrganize.Sql
             return sql;
         }
 
-        public string SelectIdDapper(string entityName)
+        public string SelectId(string entityName)
         {
-            var sql = "SELECT DISTINCT " + Db.config.id + @"
+            EntityMetadata metadata = Db.Entity(entityName);
+            var sql = "SELECT DISTINCT " + metadata.alias + "." + Db.config.id + @"
 ";
             sql += SqlFrom(entityName);
             sql += SqlJoin(entityName);
@@ -217,19 +271,36 @@ namespace SqlOrganize.Sql
             return sql;
         }
 
-        public string SplitOn(string entityName)
+      
+        /// <summary> Definir campos a consultar </summary>
+        protected  string SqlFields(string entityName)
         {
-            List<string> fieldSplitOn = new();
-            if (!Db.Entity(entityName).tree.IsNoE())
-                foreach ((string fieldId, EntityRelation er) in Db.Entity(entityName).relations)
-                    fieldSplitOn.Add(fieldId + Db.config.separator + Db.config.id);
+            List<string> fields = Db.FieldNamesAll(entityName);
 
-            return String.Join(",", fieldSplitOn);
+            string sql = "";
+
+            foreach (var fieldName in fields)
+            {
+                if (fieldName.Contains(Db.config.separator))
+                {
+                    List<string> ff = fieldName.Split(Db.config.separator).ToList();
+                    string refEntityName = Db.Entity(entityName).relations[ff[0]].refEntityName;
+                    sql += Db.Mapping(refEntityName, ff[0]).Map(ff[1]) + " AS '" + fieldName + "', ";
+                }
+                else
+                    sql += Db.Mapping(entityName).Map(fieldName) + ", ";
+            }
+            sql = sql.RemoveLastChar(',');
+
+            return sql + @"
+";
         }
+
+    
 
         protected string SqlFieldsDapper(string entityName)
         {
-            List<string> fields = Db.FieldNamesRel(entityName);
+            List<string> fields = Db.FieldNamesAll(entityName);
 
 
             string sql = "";
@@ -242,8 +313,8 @@ namespace SqlOrganize.Sql
                     string refEntityName = Db.Entity(entityName).relations[ff[0]].refEntityName;
                     sql += Db.Mapping(refEntityName, ff[0]).Map(ff[1]);
 
-                    if (ff[1].Equals(Db.config.id))
-                        sql += " AS '" + fieldName + "'";
+                    //if (ff[1].Equals(Db.config.id))
+                    //    sql += " AS '" + fieldName + "'";
                     sql += ", ";
                 }
                 else

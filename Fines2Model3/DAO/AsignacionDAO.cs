@@ -5,8 +5,17 @@ namespace SqlOrganize.Sql.Fines2Model3
     public static class AsignacionDAO
     {
     
-        public static EntitySql OtrasAsignacionesDeAlumnoSql(object idAlumno, object idComision)
+        public static IEnumerable<AlumnoComision> OtrasAsignaciones__BY_alumno_AND_comision(object idAlumno, object idComision)
         {
+            using (var connection = Context.db.Connection().Open())
+            {
+                var sql = Context.db.Sql().SelectDapper("alumno_comision") + @"
+                    WHERE alumno = @Alumno AND comision = @Comision;
+                ";
+
+                return AlumnoComision.QueryDapper(connection, sql, new { Alumno = idAlumno, Comision = idComision });
+            }
+
             return Context.db.Sql("alumno_comision").Where("$alumno = @0 AND $comision != @1").
                        Param("@0", idAlumno).Param("@1", idComision);
         }
