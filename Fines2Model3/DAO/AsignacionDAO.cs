@@ -15,18 +15,19 @@ namespace SqlOrganize.Sql.Fines2Model3
 
                 return AlumnoComision.QueryDapper(connection, sql, new { Alumno = idAlumno, Comision = idComision });
             }
-
-            return Context.db.Sql("alumno_comision").Where("$alumno = @0 AND $comision != @1").
-                       Param("@0", idAlumno).Param("@1", idComision);
         }
-        public static EntitySql AsignacionCursoDniSql(object curso, object dni)
-        {
-            string subSql = "SELECT comision FROM curso WHERE id = @0";
 
-            return Context.db.Sql("alumno_comision")
-               .Join("INNER JOIN (" + subSql + ") AS sub ON (sub.comision = $comision)")
-               .Where("$persona__numero_documento = @1")
-               .Param("@0", curso).Param("@1", dni);
+        public static AlumnoComision AsignacionCursoDniSql(object curso, object dni)
+        {
+            string sql = @"
+                SELECT * FROM id FROM alumno_comision 
+                INNER JOIN alumno ON (alumno.id = alumno_comision.alumno)
+                INNER JOIN persona ON (alumno.persona = persona.id)
+                INNER JOIN (
+                    SELECT comision FROM curso WHERE id = @IdCurso
+                ) AS sub ON (sub.comision = alumno_comision.id)
+                WHERE persona.numero_documento = @Dni
+            ";
         }
 
         public static EntitySql AsignacionComisionDniSql(object comision, object dni)

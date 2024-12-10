@@ -137,9 +137,9 @@ namespace SqlOrganize.Sql
         /// <summary> Definir SQL de consulta </summary> 
         public abstract SelectSql Sql();
 
-        public CacheSql CacheSql()
+        public Cache CacheSql()
         {
-            return new CacheSql(this);
+            return new Cache(this);
         }
 
         public virtual EntityMapping Mapping(string entityName, string? fieldId = null)

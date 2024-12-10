@@ -16,11 +16,11 @@ using System.ComponentModel;
 namespace SqlOrganize.Sql
 
 {
-    public class CacheSql
+    public class Cache
     {
         public Db Db { get; }
 
-        public CacheSql(Db db)
+        public Cache(Db db)
         {
             Db = db;
         }
@@ -28,21 +28,12 @@ namespace SqlOrganize.Sql
         /// <summary>
         /// Consulta de datos (uso de cache para consulta y resultados)<br/>
         /// </summary>
-        /// <param name="query">Consulta</param>
-        public IEnumerable<T> SelectCache<T>(string entityName, string sufix) where T : Entity, new()
+        /// <param name="sql">Consulta (solo se obtendra columna id)</param>
+        public IEnumerable<T> QueryIds<T>(string entityName, string sql, object parameters) where T : Entity, new()
         {
-            
-            var sql = Db.Sql().SelectId(entityName) + sufix;
+            IEnumerable<object> ids = Query(sql, parameters).ColOfVal<object>(Db.config.id);
 
-            string sqlFiltered = string.Join(Environment.NewLine,
-                sql
-                .Split(new[] { Environment.NewLine }, StringSplitOptions.None)
-                .Where(line => !line.Contains("ORDER BY"))
-            );
-
-            IEnumerable<object> ids = SqlCache(sqlFiltered).ColOfVal<object>(Db.config.id);
-
-            List<Dictionary<string, object?>> response = _Ids(entityName, ids.ToArray());
+            List<Dictionary<string, object?>> response = Ids(entityName, ids.ToArray());
 
             for (var i = 0; i < response.Count; i++)
             {
@@ -50,7 +41,7 @@ namespace SqlOrganize.Sql
                     response[i][fieldName] = null;
             }
 
-            CacheRecursive(entityName, Db.Entity(entityName).tree, response);
+            TreeRecursive(entityName, Db.Entity(entityName).tree, response);
 
             for (var j = 0; j < response.Count(); j++)
             {
@@ -58,16 +49,16 @@ namespace SqlOrganize.Sql
             }
 
             string json = JsonConvert.SerializeObject(response);
-            return  JsonConvert.DeserializeObject<IEnumerable<T>>(json);
+            return JsonConvert.DeserializeObject<IEnumerable<T>>(json);
 
-            
 
-             
+
+
         }
 
         /// <summary> Armar arbol de valores a partir del resultado de una consulta </summary>
         /// <remarks> Los campos deben estar organizados de la forma fieldId__fieldName para poder identificar las ramas </remarks>
-        public Dictionary<string, object?> ValuesTree(string entityName, Dictionary<string, object?> values)
+        protected Dictionary<string, object?> ValuesTree(string entityName, Dictionary<string, object?> values)
         {
             Dictionary<string, object?> response = new();
 
@@ -88,7 +79,7 @@ namespace SqlOrganize.Sql
 
         /// <summary> Metodo recursivo para armar arbol de valores a partir del resultado de una consulta </summary>
         /// <remarks> Los campos deben estar organizados de la forma fieldId__fieldName para poder identificar las ramas </remarks>
-        public  void ValuesTreeRecursive(IDictionary<string, object?> values, IDictionary<string, EntityTree> tree, IDictionary<string, object?> response)
+        protected void ValuesTreeRecursive(IDictionary<string, object?> values, IDictionary<string, EntityTree> tree, IDictionary<string, object?> response)
         {
             foreach (var (fieldId, et) in tree)
             {
@@ -111,7 +102,7 @@ namespace SqlOrganize.Sql
             }
         }
 
-        public IEnumerable<Dictionary<string, object?>> SqlCache(string sql)
+        public IEnumerable<Dictionary<string, object?>> Query(string sql, object parameters)
         {
             List<string> queries;
             string _queries;
@@ -127,16 +118,18 @@ namespace SqlOrganize.Sql
                 queries = new();
             }
 
+            string sql_ = sql + JsonConvert.SerializeObject(parameters);
+
             IEnumerable<Dictionary<string, object?>> result;
             string _result;
-            res = Db.Cache!.TryGetValue(sql, out _result);
+            res = Db.Cache!.TryGetValue(sql_, out _result);
 
             if (!res)
             {
                 #region acceso a la base de datos (no se encontro en cache)
                 using (var connection = this.Db.Connection().Open())
                 {
-                    var resu = connection.Query<dynamic>(sql);
+                    var resu = connection.Query<dynamic>(sql, parameters);
                     _result = JsonConvert.SerializeObject(resu);
                     Db.Cache!.Set(sql, _result);
                     queries!.Add(sql);
@@ -148,35 +141,8 @@ namespace SqlOrganize.Sql
             return JsonConvert.DeserializeObject<IEnumerable<Dictionary<string, object?>>>(_result);
         }
 
-
-        /// <summary>Organiza los elementos a consultar y efectua la consulta a la base de datos.</summary>
-        protected IEnumerable<Dictionary<string, object?>> BuildDicts(string entityName, params object[] ids)
-        {
-            List<Dictionary<string, object?>> data = _Ids(entityName, ids); //recorre todas las relaciones pero solo devuelve el que corrseponde a la entidad, esto es porque a medida que recorre va eliminando para no confundir
-
-            List<Dictionary<string, object?>> response = new();
-
-
-            List<string> fieldNamesMain = Db.FieldNames(entityName);
-            for (var i = 0; i < data.Count; i++)
-            {
-
-                response.Add(new());
-   
-                foreach (string fieldName in Db.FieldNamesRel(entityName))
-                    response[i][fieldName] = null;
-
-                foreach (string fieldName in Db.FieldNames(entityName))
-                    response[i][fieldName] = data[i][fieldName];
-                    
-            }
-
-            return CacheRecursive(entityName, Db.Entity(entityName).tree, response);
-
-        }
-
         /// <summary>Analiza la respuesta de una consulta y re organiza los elementos para armar el resultado </summary>
-        protected IEnumerable<Dictionary<string, object?>> CacheRecursive(string entityName, Dictionary<string, EntityTree> tree, IEnumerable<Dictionary<string, object?>> response)
+        protected IEnumerable<Dictionary<string, object?>> TreeRecursive(string entityName, Dictionary<string, EntityTree> tree, IEnumerable<Dictionary<string, object?>> response)
         {
 
             if (response.Count() == 0) return response; 
@@ -198,7 +164,7 @@ namespace SqlOrganize.Sql
                 else
                 {
                     
-                    data = _Ids(refEntityName, ids.ToArray());
+                    data = Ids(refEntityName, ids.ToArray());
                 }
 
                 for (var i = 0; i < response.Count(); i++)
@@ -217,16 +183,16 @@ namespace SqlOrganize.Sql
                 }
 
                 if (!et.children.IsNoE())
-                    CacheRecursive(entityName, et.children, response);
+                    TreeRecursive(entityName, et.children, response);
             }
 
             return response;
         }
 
-        /// <summary> Obtener campos de una entidad (sin relaciones) <br/>
+        /// <summary> Consulta datos de una entidad los almacena en cache y los devuelve sin relaciones <br/>
         /// Si no encuentra valores en el Cache, realiza una consulta a la base de datos y lo almacena en Db.Cache.</summary>
         /// <remarks>A diferencia de Ids(), NO devuelve relaciones!!!</remarks>
-        public List<Dictionary<string, object?>> _Ids(string entityName, params object[] ids)
+        public List<Dictionary<string, object?>> Ids(string entityName, params object[] ids)
         {
             
             ids.Distinct();
