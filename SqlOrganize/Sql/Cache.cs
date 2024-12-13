@@ -1,17 +1,8 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using SqlOrganize.CollectionUtils;
-using SqlOrganize.Model;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Data;
-using System.ComponentModel;
 
 namespace SqlOrganize.Sql
 
@@ -22,39 +13,45 @@ namespace SqlOrganize.Sql
 
         public Cache(Db db)
         {
-            Db = db;
+            Db = db ?? throw new ArgumentNullException(nameof(db));
         }
 
         /// <summary>
-        /// Consulta de datos (uso de cache para consulta y resultados)<br/>
+        /// Queries entity IDs and resolves them into entities using caching and relationships.
         /// </summary>
-        /// <param name="sql">Consulta (solo se obtendra columna id)</param>
-        public IEnumerable<T> QueryIds<T>(string entityName, string sql, object parameters) where T : Entity, new()
+        public IEnumerable<T> QueryIds<T>(string entityName, string sql, object? parameters = null) where T : Entity, new()
         {
-            IEnumerable<object> ids = Query(sql, parameters).ColOfVal<object>(Db.config.id);
-
-            List<Dictionary<string, object?>> response = Ids(entityName, ids.ToArray());
-
-            for (var i = 0; i < response.Count; i++)
-            {
-                foreach (string fieldName in Db.FieldNamesRel(entityName))
-                    response[i][fieldName] = null;
-            }
-
-            TreeRecursive(entityName, Db.Entity(entityName).tree, response);
-
-            for (var j = 0; j < response.Count(); j++)
-            {
-                response[j] = ValuesTree(entityName, response[j]);
-            }
-
-            string json = JsonConvert.SerializeObject(response);
-            return JsonConvert.DeserializeObject<IEnumerable<T>>(json);
-
-
-
-
+            var ids = Query(sql, parameters).ColOfVal<object>(Db.config.id).ToArray();
+            return ByIds<T>(entityName, ids);
         }
+
+        public IEnumerable<T> ByIds<T>(string entityName, params object[] ids)
+        {
+            List<Dictionary<string, object?>> rawEntities = Ids(entityName, ids);
+
+            foreach (var entity in rawEntities)
+                ClearRelationships(entityName, entity);
+
+            TreeRecursive(entityName, Db.Entity(entityName).tree, rawEntities);
+
+            for (var j = 0; j < rawEntities.Count(); j++)
+            {
+                rawEntities[j] = ValuesTree(entityName, rawEntities[j]);
+            }
+
+            string json = JsonConvert.SerializeObject(rawEntities);
+            return JsonConvert.DeserializeObject<IEnumerable<T>>(json);
+        }
+
+        /// <summary>
+        /// Clears related fields for relationships in an entity.
+        /// </summary>
+        private void ClearRelationships(string entityName, Dictionary<string, object?> entity)
+        {
+            foreach (var fieldName in Db.FieldNamesRel(entityName))
+                entity[fieldName] = null;
+        }
+
 
         /// <summary> Armar arbol de valores a partir del resultado de una consulta </summary>
         /// <remarks> Los campos deben estar organizados de la forma fieldId__fieldName para poder identificar las ramas </remarks>
@@ -102,7 +99,14 @@ namespace SqlOrganize.Sql
             }
         }
 
-        public IEnumerable<Dictionary<string, object?>> Query(string sql, object parameters)
+
+        /// <summary>
+        /// Verifica si el resultado de la consulta no esta en cache, si esta la devuelve, si no esta consulta y almacena en cache
+        /// </summary>
+        /// <param name="sql"> Cualquier tipo de consulta </param>
+        /// <param name="parameters"> Parametros opcionales </param>
+        /// <returns></returns>
+        public IEnumerable<Dictionary<string, object?>> Query(string sql, object? parameters = null)
         {
             List<string> queries;
             string _queries;
@@ -141,19 +145,27 @@ namespace SqlOrganize.Sql
             return JsonConvert.DeserializeObject<IEnumerable<Dictionary<string, object?>>>(_result);
         }
 
-        /// <summary>Analiza la respuesta de una consulta y re organiza los elementos para armar el resultado </summary>
+        /// <summary>
+        /// Analyzes the query response and reorganizes the elements to build the result.
+        /// </summary>
         protected IEnumerable<Dictionary<string, object?>> TreeRecursive(string entityName, Dictionary<string, EntityTree> tree, IEnumerable<Dictionary<string, object?>> response)
         {
 
-            if (response.Count() == 0) return response; 
+            if (!response.Any())
+                return response;
 
+            var entity = Db.Entity(entityName);
+            var relations = entity.relations;
 
             foreach (var (fieldId, et) in tree)
             {
-                string refEntityName = Db.Entity(entityName).relations[fieldId].refEntityName;
-                string? parentId = Db.Entity(entityName).relations[fieldId].parentId;
-                string fieldName = Db.Entity(entityName).relations[fieldId].fieldName;
-                string refFieldName = Db.Entity(entityName).relations[fieldId].refFieldName;
+                if (!relations.TryGetValue(fieldId, out var relation))
+                    continue;
+
+                string refEntityName = relation.refEntityName;
+                string? parentId = relation.parentId;
+                string fieldName = relation.fieldName;
+                string refFieldName = relation.refFieldName;
                 string fkName = (!parentId.IsNoE()) ? parentId + Db.config.separator + fieldName : fieldName;
 
                 List<object> ids = response.ColOfVal<object>(fkName).Distinct().ToList();
@@ -190,8 +202,7 @@ namespace SqlOrganize.Sql
         }
 
         /// <summary> Consulta datos de una entidad los almacena en cache y los devuelve sin relaciones <br/>
-        /// Si no encuentra valores en el Cache, realiza una consulta a la base de datos y lo almacena en Db.Cache.</summary>
-        /// <remarks>A diferencia de Ids(), NO devuelve relaciones!!!</remarks>
+        /// Si no encuentra valores en el Cache, realiza una consulta a la base de datos y lo almacena en cache.</summary>
         public List<Dictionary<string, object?>> Ids(string entityName, params object[] ids)
         {
             
@@ -283,6 +294,7 @@ namespace SqlOrganize.Sql
                 }
             }
         }
+
 
 
     }

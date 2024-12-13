@@ -98,9 +98,17 @@ namespace SqlOrganize.Sql
             set => SetProperty(ref index, value, nameof(Index));
         }
 
-        /// <summary> Crear instancia de T simple (sin relaciones) a partir del id </summary>
+        /// <summary> Crear instancia de T a partir del id </summary>
 
         public static T CreateFromId<T>(object id) where T : Entity, new()
+        {
+            T _obj = new T(); //crear objeto vacio para obtener el entityName
+
+            return _obj.db.CacheSql().ByIds<T>(_obj.entityName, id).ElementAt(0);
+        }
+
+
+        public static T QueryFromId<T>(object id) where T : Entity, new()
         {
             T _obj = new T(); //crear objeto vacio para obtener el entityName
 
@@ -109,7 +117,7 @@ namespace SqlOrganize.Sql
                 string sql = _obj.db.Sql().ById(_obj.entityName);
 
                 return connection.QueryFirst<T>(
-                    sql, 
+                    sql,
                     new { Id = id }
                 );
             }

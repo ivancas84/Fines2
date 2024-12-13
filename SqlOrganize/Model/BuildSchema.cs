@@ -81,11 +81,10 @@ namespace SqlOrganize.Model
                     {
                         Sql.Field fk = entity.fields[fieldName];
 
-                        sw.WriteLine("                    //desactivado hasta implementar cache");
-                        sw.WriteLine("                    //if (_" + fieldName + ".HasValue && (" + fieldName + "_.IsNoE() || !" + fieldName + "_!.Get(db.config.id).ToString()!.Equals(_" + fieldName + ".Value.ToString())))");
-                        sw.WriteLine("                    //    " + fieldName + "_ = CreateFromId<" + fk.refEntityName!.ToCamelCase() + ">(_" + fieldName + ");");
-                        sw.WriteLine("                    //else if(_" + fieldName + ".IsNoE())");
-                        sw.WriteLine("                    //    " + fieldName + "_ = null;");
+                        sw.WriteLine("                    if (_" + fieldName + ".HasValue && (" + fieldName + "_.IsNoE() || !" + fieldName + "_!.Get(db.config.id).ToString()!.Equals(_" + fieldName + ".Value.ToString())))");
+                        sw.WriteLine("                        " + fieldName + "_ = CreateFromId<" + fk.refEntityName!.ToCamelCase() + ">(_" + fieldName + ");");
+                        sw.WriteLine("                    else if(_" + fieldName + ".IsNoE())");
+                        sw.WriteLine("                        " + fieldName + "_ = null;");
                     }
                     sw.WriteLine("                }");
                     sw.WriteLine("            }");
@@ -252,15 +251,17 @@ namespace SqlOrganize.Model
                 sw.WriteLine("            );");
                 sw.WriteLine("        }");
                 sw.WriteLine("");
-                sw.WriteLine("        public static " + entityName.ToCamelCase() + " CreateFromId_(object id)");
+                /*sw.WriteLine("        public static " + entityName.ToCamelCase() + " CreateFromId_(object id)");
                 sw.WriteLine("        {");
+                sw.WriteLine("            if (id.IsNoE()) throw new Exception("id es nulo");
+
                 sw.WriteLine("            using (var connection = Context.db.Connection().Open())");
                 sw.WriteLine("            {");
                 sw.WriteLine("                string sql = Context.db.Sql().ByIdDapper(\"" + entityName + "\");");
                 sw.WriteLine("                IEnumerable<" + entityName.ToCamelCase() + "> elements = QueryDapper(connection, sql, new { Id = id });");
                 sw.WriteLine("                return elements.ElementAt(0);");
                 sw.WriteLine("            }");
-                sw.WriteLine("        }");
+                sw.WriteLine("        }");*/
                 #endregion
 
                 #region fin clase, fin namespace

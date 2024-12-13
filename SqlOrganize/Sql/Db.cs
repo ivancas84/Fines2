@@ -76,8 +76,10 @@ namespace SqlOrganize.Sql
         /// <returns>Nombres de campos de la entidad</returns>
         public List<string> FieldNames(string entityName) {
             var l = FieldsEntity(entityName).Keys.ToList();
-            if (!l.Contains(config.id))
-                l.Insert(0, config.id); //Importante!! id debe ser incluido,
+            if (l.Contains(config.id))
+                l.Remove(config.id);
+
+            l.Insert(0, config.id);
             return l;
         }
 
@@ -85,7 +87,7 @@ namespace SqlOrganize.Sql
         {
             var l = FieldsEntity(entityName).Keys.ToList();
             if (l.Contains(config.id))
-                l.Remove(config.id); //Importante!! id debe ser incluido,
+                l.Remove(config.id);
             return l;
         }
 

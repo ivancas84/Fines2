@@ -128,7 +128,7 @@ namespace WpfUtils.Controls
 
             using (var connection = db.Connection().Open())
             {
-                string sql = db.PersistSql().UpdateKeyId(entityName, fieldName);
+                string sql = db.PersistSql().UpdateKeyId(entityName, fieldName, cb.DataContext.GetPropertyValue("id"));
                 connection.Execute(sql, new { Key = cb.SelectedValue, Id = cb.DataContext.GetPropertyValue("id") });
             }
         }

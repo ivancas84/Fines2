@@ -1,4 +1,6 @@
-﻿using SqlOrganize.CollectionUtils;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json.Linq;
+using SqlOrganize.CollectionUtils;
 using SqlOrganize.ValueTypesUtils;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,11 @@ namespace SqlOrganize.Sql
 {
     public abstract class PersistSql
     {
+        /// <summary> Detalle de elementos persistidos </summary>
+        /// <remarks> Para poder identificar rapidamente todas las entidades que se modificaron de la base de datosc</remarks>
+        public List<(string entityName, object id, string action)> detail = new();
+
+
         public Db Db { get; }
 
         public PersistSql(Db db)
@@ -111,6 +118,8 @@ namespace SqlOrganize.Sql
 WHERE " + id + " = @" + Db.config.id + @";
 ";
 
+            detail.Add((entityName!, row[Db.config.id]!, "update"));
+
             return sql;
         }
 
@@ -134,13 +143,12 @@ WHERE " + id + " = @" + Db.config.id + @";
             return ""; //registro identico
         }
 
-
-        public string UpdateKeyId(Entity entity, string key)
+        public string UpdateKeyId(Entity entity, string key, object? id = null)
         {
-            return UpdateKeyId(entity.entityName, key);
+            return UpdateKeyId(entity.entityName, key, id);
         }
 
-        public string UpdateKeyId(string entityName, string key)
+        public string UpdateKeyId(string entityName, string key, object? id = null)
         {
             EntityMetadata e = Db.Entity(entityName);
             string idMap = Db.Mapping(entityName!).Map(Db.config.id);
@@ -150,6 +158,9 @@ WHERE " + id + " = @" + Db.config.id + @";
                 FROM " + e.schemaNameAlias + @";
                 WHERE " + idMap + " = @Id;";
 
+            if(!id.IsNoE())
+                detail.Add((entityName!, id, "update"));
+
             return sql;
         }
 
@@ -158,7 +169,7 @@ WHERE " + id + " = @" + Db.config.id + @";
             return UpdateKeyIds(entity.entityName, key);
         }
 
-        public string UpdateKeyIds(string entityName, string key)
+        public string UpdateKeyIds(string entityName, string key, params object[] ids)
         {
             EntityMetadata e = Db.Entity(entityName);
             string idMap = Db.Mapping(entityName!).Map(Db.config.id);
@@ -168,26 +179,30 @@ WHERE " + id + " = @" + Db.config.id + @";
                 FROM " + e.schemaNameAlias + @";
                 WHERE " + idMap + " IN (@Ids);";
 
+            foreach(var id in ids)
+                detail.Add((entityName!, id, "update"));
+
             return sql;
         }
 
 
         /// <summary> Actualizar sin parametros </summary>
         /// <remarks> Transforma los ids y actualiza sin utilizar parametros. Recomendado cuando el sql tiene mas de 2600 parametros </remarks>
-        public string UpdateRowIds(string _entityName, Dictionary<string, object?> row, params object[] ids)
+        public string UpdateRowIds(string entityName, Dictionary<string, object?> row, params object[] ids)
         {
-            string sql = _Update(_entityName, row);
+            string sql = _Update(entityName, row);
 
-            string idMap = Db.Mapping(_entityName!).Map(Db.config.id);
+            string idMap = Db.Mapping(entityName!).Map(Db.config.id);
 
-                List<object> ids_ = new();
-                foreach (var id in ids)
-                {
-                    var id_ = Db.SqlValue(_entityName, Db.config.id, id);
-                    ids_.Add(id_);
+            List<object> ids_ = new();
+            foreach (var id in ids)
+            {
+                var id_ = Db.SqlValue(entityName, Db.config.id, id);
+                ids_.Add(id_);
+                detail.Add((entityName!, id, "update"));
 
-                }
-                sql += @"WHERE " + idMap + " IN (" + String.Join(", ", ids_) + @");
+            }
+            sql += @"WHERE " + idMap + " IN (" + String.Join(", ", ids_) + @");
 ";
 
             return sql;
@@ -214,6 +229,8 @@ VALUES (";
             sql = sql.RemoveLastChar(',');
             sql += @");
 ";
+
+            detail.Add((data.entityName!, data.Get(Db.config.id)!, "insert"));
 
             return sql;
         }
@@ -258,30 +275,61 @@ VALUES (";
             return DeleteIds(entity.entityName);
         }
 
-        public string DeleteIds(string entityName)
+        /// <summary>
+        /// Eliminar
+        /// </summary>
+        /// <param name="entityName"> nombre de la entidad </param>
+        /// <param name="ids"> opcional para registrar el detalle y actualizar cache posteriormente </param>
+        /// <returns> sql para eliminar con parametro Ids para asignar </returns>
+        public string DeleteIds(string entityName, params object[] ids)
         {
             EntityMetadata e = Db.Entity(entityName);
             string idMap = Db.Mapping(entityName!).Map(Db.config.id);
+
+            foreach(var id in ids)
+                detail.Add((entityName!, id, "delete"));
 
             return @"
                 DELETE " + e.alias + " FROM " + e.name + " " + e.alias + @"
                 WHERE " + idMap + @" IN (@Ids);
 ";
         }
-        public string DeleteId(Entity entity)
+
+        /// <summary>
+        /// Eliminar
+        /// </summary>
+        /// <param name="entity"> Entidad </param>
+        /// <param name="id"> opcional para registrar el detalle y actualizar cache posteriormente </param>
+        /// <returns> sql para eliminar con parametro Id para asignar </returns>
+        public string DeleteId(Entity entity, object? id = null)
         {
-            return DeleteId(entity.entityName);
+            return DeleteId(entity.entityName, id);
         }
 
-        public string DeleteId(string entityName)
+        public string DeleteId(string entityName, object? id = null)
         {
             EntityMetadata e = Db.Entity(entityName);
             string idMap = Db.Mapping(entityName!).Map(Db.config.id);
+
+            if (!id.IsNoE())
+                detail.Add((entityName!, id, "delete"));
 
             return @"
                 DELETE " + e.alias + " FROM " + e.name + " " + e.alias + @"
                 WHERE " + idMap + @" = (@Id);
 ";
         }
+
+        public void RemoveCache()
+        {
+            if(detail.Any())
+                Db.Cache!.Remove("queries");
+
+            foreach (var d in detail)
+                Db.Cache!.Remove(d.entityName + d.id);
+
+        }
+
+        
     }
 }

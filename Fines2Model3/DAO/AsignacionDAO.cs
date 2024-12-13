@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Dapper;
+using System.Net;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
@@ -17,134 +18,139 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-        public static AlumnoComision AsignacionCursoDniSql(object curso, object dni)
+        public static AlumnoComision? Asignacion__By_IdCurso_NumeroDocumento(object id_curso, object numero_documento)
         {
             string sql = @"
-                SELECT * FROM id FROM alumno_comision 
+                SELECT id FROM alumno_comision 
                 INNER JOIN alumno ON (alumno.id = alumno_comision.alumno)
                 INNER JOIN persona ON (alumno.persona = persona.id)
                 INNER JOIN (
                     SELECT comision FROM curso WHERE id = @IdCurso
-                ) AS sub ON (sub.comision = alumno_comision.id)
-                WHERE persona.numero_documento = @Dni
+                ) AS sub ON (sub.comision = alumno_comision.comision)
+                WHERE persona.numero_documento = @NumeroDocumento
             ";
+
+            var response = Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdCurso = id_curso, NumeroDocumento = numero_documento });
+
+            return (response.Any()) ? response.ElementAt(0) : null;
         }
 
-        public static EntitySql AsignacionComisionDniSql(object comision, object dni)
+        public static AlumnoComision? Asignacion__By_IdComision_NumeroDocumento(object id_comision, object numero_documento)
         {
+            string sql = @"
+                SELECT id FROM alumno_comision 
+                INNER JOIN alumno ON (alumno.id = alumno_comision.alumno)
+                INNER JOIN persona ON (alumno.persona = persona.id)
+                WHERE persona.numero_documento = @NumeroDocumento
+                AND alumno_comision.comision = @IdComision
+            ";
 
-            return Context.db.Sql("alumno_comision")
-               .Where("$comision = @0 AND $persona__numero_documento = @1")
-               .Param("@0",comision).Param("@1", dni);
+            var response = Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdComision = id_comision, NumeroDocumento = numero_documento });
+
+            return (response.Any()) ? response.ElementAt(0) : null;
         }
 
-        public static EntitySql AsignacionesDeComisionesSql(params object[] id_comisiones)
+        public static IEnumerable<AlumnoComision> Asignaciones__By_IdComisiones(params object[] idComisiones)
         {
-            return Context.db.Sql("alumno_comision")
-               .Size(0)
-               .Where(@"
-                    $comision IN ( @0 )
-                "
-            )
-               .Param("@0", id_comisiones);
+            string sql = @"
+                SELECT id FROM alumno_comision 
+                WHERE alumno_comision.comision IN ( @IdComisiones )
+            ";
+
+            return Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdComisiones = idComisiones});
         }
 
-        public static EntitySql AsignacionesDeComisionesAutorizadasDelPeriodoSql(object anio, object semestre)
+        public static IEnumerable<AlumnoComision> AsignacionesDeComisionesAutorizadas__By_Periodo(object anio, object semestre)
         {
-            return Context.db.Sql("alumno_comision")
-               .Size(0)
-               .Where(@"
-                    $calendario__anio = @0 
-                    AND $calendario__semestre = @1 
-                    AND $comision__autorizada = true
-                "
-                )
-               .Param("@0", anio).Param("@1", semestre);
-        }
+            string sql = @"
+                SELECT id FROM alumno_comision 
+                INNER JOIN comision ON (alumno_comision.comision = comision.id)
+                INNER JOIN calendario ON comision.calendario = calendario.id
+                WHERE calendario.anio = @Anio 
+                AND calendario.semestre = @Semestre
+                AND comision.autorizada = true
+            ";
 
-
-        public static EntitySql AsignacionesActivasDeComisionesAutorizadasDelPeriodoSinGeneroSql(object anio, object semestre)
-        {
-            var subSql = Context.db.Sql("alumno_comision")
-                .Fields("$alumno")
-                .Size(0)
-                .Where(@"
-                    $calendario__anio = @0
-                    AND $calendario__semestre = @1 
-                    AND $comision__autorizada = true
-                    AND $estado = 'Activo'
-                    AND $persona__genero IS NULL
-                ");
-
-            return Context.db.Sql("alumno").
-                Join("INNER JOIN (" + subSql + ") AS sub ON (sub.alumno = alumno.id)").
-                Param("@0", anio).Param("@1", semestre);
-        }
-
-        public static EntitySql AsignacionesActivasRestantesComisionSql(object comision, IEnumerable<object> alumnos)
-        {
-            var esql = Context.db.Sql("alumno_comision")
-               .Size(0)
-               .Where(@"
-                    $estado = 'Activo'
-                    AND $comision = @0                    
-                ")
-               .Param("@0", comision);
-
-            if (alumnos.Any())
-                esql.And("$alumno NOT IN(@1)").Param("@1", alumnos);
- 
-            return esql;
+            return Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { Anio = anio, Semestre = semestre });
 
         }
 
-        public static EntitySql Asignaciones__BY_idCalendario(object idCalendario)
-        {
-            var esql = Context.db.Sql("alumno_comision")
-               .Size(0)
-               .Where("$calendario__id = @0")
-               .Param("@0", idCalendario);
 
-            return esql;
+        public static IEnumerable<AlumnoComision> AsignacionesActivas__By_IdComision__NotIn_IdAlumnos(object idComision, params object[] idAlumnos)
+        {
+            string sql = @"
+                SELECT id FROM alumno_comision 
+                WHERE alumno_comision.comision = @IdComision 
+                AND estado = 'Activo'
+            ";
+
+            if (idAlumnos.Any())
+                sql += @"
+                    AND alumno_comision.alumno NOT IN ( @IdAlumnos )
+                ";
+
+
+            return Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdComision = idComision, IdAlumnos = idAlumnos });
         }
 
-        public static EntitySql Asignaciones__WITH_ComisionSiguiente__BY_idCalendario(object idCalendario)
+        public static IEnumerable<AlumnoComision> Asignaciones__By_IdCalendario(object idCalendario)
         {
-            var esql = Context.db.Sql("alumno_comision")
-               .Size(0)
-               .Where("$calendario__id = @0 AND $comision__comision_siguiente IS NOT NULL")
-               .Param("@0", idCalendario);
+            string sql = @"
+                SELECT id FROM alumno_comision 
+                INNER JOIN comision ON (alumno_comision.comision = comision.id)
+                WHERE comision.calendario = @IdCalendario
+            ";
 
-            return esql;
+            return Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdCalendario = idCalendario });
+
+
+        }
+
+        public static IEnumerable<AlumnoComision> Asignaciones__With_ComisionSiguiente__By_IdCalendario(object idCalendario)
+        {
+            string sql = @"
+                SELECT id FROM alumno_comision 
+                INNER JOIN comision ON (alumno_comision.comision = comision.id)
+                WHERE comision.calendario = @IdCalendario
+                AND comision.comision_siguiente IS NOT NULL
+            ";
+
+            return Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdCalendario = idCalendario });
+        }
+
+        public static IEnumerable<AlumnoComision> AsignacionesActivas__With_ComisionSiguiente__By_IdCalendario(object idCalendario)
+        {
+            string sql = @"
+                SELECT id FROM alumno_comision 
+                INNER JOIN comision ON (alumno_comision.comision = comision.id)
+                WHERE comision.calendario = @IdCalendario
+                AND comision.estado = 'Activo'
+                AND comision.comision_siguiente IS NOT NULL
+            ";
+
+
+            return Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdCalendario = idCalendario });
         }
 
 
-        public static EntitySql AsignacionesActivas__WITH_ComisionSiguiente__BY_idCalendario(object idCalendario)
+        public static IEnumerable<dynamic> Count_AsignacionesActivasDuplicadas__By_IdCalendario__Group_IdAumno(object idCalendario)
         {
-            var esql = Context.db.Sql("alumno_comision")
-               .Size(0)
-               .Where("$calendario__id = @0 AND $estado = 'Activo' AND $comision__comision_siguiente IS NOT NULL")
-               .Param("@0", idCalendario);
+            string sql = @"
+                SELECT alumno, COUNT(id) AS cantidad
+                FROM alumno_comision 
+                INNER JOIN comision ON (alumno_comision.comision = comision.id)
+                WHERE comision.calendario = @IdCalendario
+                AND comision.estado = 'Activo'
+                AND comision.autorizada = true
+                GROUP BY alumno
+                HAVING cantidad > 1
+            ";
 
-            return esql;
-        }
 
-
-
-
-
-        public static EntitySql COUNT_AsignacionesActivasDuplicadas__BY_idCalendario__GROUP_alumno(object idCalendario)
-        {
-            return Context.db.Sql("alumno_comision")
-                .Select("COUNT($id) AS cantidad")
-                .Group("$alumno")
-                .Size(0)
-                .Where(@"
-                    $calendario__id = @0
-                    AND $estado = 'Activo'
-                    AND $comision__autorizada = true")
-                .Having("cantidad > 1")
-                .Param("@0", idCalendario);
+            using(var connection = Context.db.Connection().Open())
+            {
+                return connection.Query(sql, new { IdCalendario = idCalendario });
+            }
         }
 
         public static EntitySql AsignacionesActivas__BY_idCalendario_idsAlumnos(object idCalendario, IEnumerable<object> idsAlumnos)
