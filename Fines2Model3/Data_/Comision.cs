@@ -83,25 +83,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             
             } }
 
-        #region comision_siguiente (fk comision.calendario _m:o calendario.id)
-        protected Comision? _comision_siguiente_ = null;
-        public Comision? comision_siguiente_
-        {
-            get { return _comision_siguiente_; }
-            set
-            {
-                if (_comision_siguiente_ != value)
-                {
-                    _comision_siguiente_ = value;
-                    if (value != null)
-                        comision_siguiente = value.id;
-                    else
-                        comision_siguiente = null;
-                    NotifyPropertyChanged(nameof(comision_siguiente_));
-                }
-            }
-        }
-        #endregion
+        
 
 
         /// <summary>
@@ -132,7 +114,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary>Persistencia de asignaciones a partir de datos definidos en un texto</summary>
         /// <returns>persists y asignaciones persistidas</returns>
-        public void PersistAsignaciones(string text, params string[]? headers)
+        /*public void PersistAsignaciones(string text, params string[]? headers)
         {
             if (headers.IsNoE())
                 headers = ["apellidos", "nombres", "numero_documento", "genero", "fecha_nacimiento", "telefono", "email"];
@@ -186,7 +168,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         }
 
-
+        */
 
 
 

@@ -56,10 +56,10 @@ namespace SqlOrganize.Sql.Fines2Model3
             if (id.IsNoE())
                 throw new Exception("Id no definido");
 
-            CalificacionDAO.CalificacionAprobadaCursoSql(id).Cache().AddEntitiesToClearOC(Calificacion_);
+            CalificacionDAO.CalificacionesAprobadas__By_IdCurso(id).AddEntitiesToClearOC(Calificacion_);
             var idAlumnosConCalificacionAprobada = Calificacion_.ColOfProp<object, Calificacion>("alumno");
 
-            AsignacionDAO.AsignacionesActivasRestantesComisionSql(comision!, idAlumnosConCalificacionAprobada).Cache().AddEntitiesToClearOC(comision_!.AlumnoComision_);
+            AsignacionDAO.AsignacionesActivas__By_IdComision__NotIn_IdAlumnos(comision, idAlumnosConCalificacionAprobada.ToArray()).AddEntitiesToClearOC(comision_.AlumnoComision_);
         }
     }
 }

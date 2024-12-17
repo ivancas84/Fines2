@@ -13,64 +13,86 @@ namespace SqlOrganize.Sql.Fines2Model3
     public static class CursoDAO
     {
 
-        public static EntitySql BusquedaAproximadaCurso(string search)
+        public static IEnumerable<Curso> Cursos__By_Search(string search)
         {
-            return Context.db.Sql("curso")
-               .Fields()
-               .Size(0)
-               .Where(@"
-                    (CONCAT($sede__numero, $comision__division, '/', $planificacion__anio, $planificacion__semestre, ' ', $calendario__anio, '__', $calendario__semestre) LIKE @0)
-                    OR ($sede__nombre LIKE @0)
-                    OR (CONCAT($comision__pfid, '/', $planificacion__anio, $planificacion__semestre, ' ', $calendario__anio, '__', $calendario__semestre) LIKE @0)
-                    OR (CONCAT($comision__pfid, '/', $calendario__anio, '__', $calendario__semestre) LIKE @0)
+            string sql = @"
+                SELECT id FROM curso
+                INNER JOIN comision ON curso.comision = comision.id
+                INNER JOIN sede ON comision.sede = sede.id
+                INNER JOIN calendario ON comision.calendario = calendario.id
+                INNER JOIN planificacion ON comision.planificacion = planificacion.id
+                WHERE
+                    CONCAT(sede.numero, comision.division, '/', planificacion.anio, planificacion.semestre, ' ', calendario.anio, '-', $calendario.semestre) LIKE @Search)
+                    OR (sede.nombre LIKE @Search)
+                    OR (CONCAT(comision.pfid, '/', planificacion.anio, planificacion.semestre, ' ', $calendario.anio, '-', $calendario.semestre) LIKE @Search)
+                    OR (CONCAT(comision.pfid, '/', calendario.anio, '-', $calendario.semestre) LIKE @Search)
+                ORDER BY sede.numero ASC, comision.division ASC, planificacion.anio ASC, planificacion.semestre ASC
+                ";
 
-                ")
-               .Order("$sede__numero ASC, $comision__division ASC, $planificacion__anio ASC, $planificacion__semestre ASC")
-               .Param("@0","%" + search + "%");
+            return Context.db.CacheSql().QueryIds<Curso>(sql, new { Search = search });
         }
 
-        public static EntitySql CursosDeComisionSql(object idComision)
+        public static IEnumerable<Curso> Cursos__By_IdComision(object idComision)
         {
-            return Context.db.Sql("curso")
-                .Fields()
-                .Size(0)
-                .Where(@"
-                    $comision = @0 
-                ").
-                Param("@0", idComision);
+            string sql = @"
+                SELECT id FROM curso
+                INNER JOIN comision ON curso.comision = comision.id
+                INNER JOIN sede ON comision.sede = sede.id
+                INNER JOIN planificacion ON comision.planificacion = planificacion.id
+                WHERE comision.id = @IdComision
+                ORDER BY sede.numero ASC, comision.division ASC, planificacion.anio ASC, planificacion.semestre ASC
+                ";
 
+            return Context.db.CacheSql().QueryIds<Curso>(sql, new { IdComision = idComision });
         }
 
-        public static EntitySql CursosAutorizadosPeriodoSql(object calendarioAnio, object calendarioSemestre, object? sede = null, bool? autorizada = null)
+        public static IEnumerable<Curso> CursosAutorizados__By_Periodo(object anio, object semestre)
         {
-            return Context.db.Sql("curso")
-                .Fields()
-                .Size(0)
-                .Where(@"
-                    $calendario__anio = @0 
-                    AND $calendario__semestre = @1 
-                    AND $comision__autorizada = true 
-                ").
-                Param("@0", calendarioAnio).
-                Param("@1", calendarioSemestre);
+            string sql = @"
+                SELECT id FROM curso
+                INNER JOIN comision ON curso.comision = comision.id
+                INNER JOIN sede ON comision.sede = sede.id
+                INNER JOIN planificacion ON comision.planificacion = planificacion.id
+                INNER JOIN calendario ON comision.calendario = calendario.id
+                WHERE planificacion.anio = @Anio AND planificacion.semestre = @Semestre
+                ORDER BY sede.numero ASC, comision.division ASC, planificacion.anio ASC, planificacion.semestre ASC
+                ";
 
+            return Context.db.CacheSql().QueryIds<Curso>(sql, new { Anio = anio, Semestre = semestre });
         }
 
-        public static EntitySql CursosAutorizadosCalendarioSql(object idCalendario)
+        public static IEnumerable<Curso> CursosAutorizados__By_IdCalendario(object idCalendario)
         {
-            return Context.db.Sql("curso")
-                .Fields()
-                .Size(0)
-                .Where(@"
-                    $calendario__id = @0 
-                    AND $comision__autorizada = true 
-                ").
-                Param("@0", idCalendario);
+            string sql = @"
+                SELECT id FROM curso
+                INNER JOIN comision ON curso.comision = comision.id
+                INNER JOIN sede ON comision.sede = sede.id
+                INNER JOIN planificacion ON comision.planificacion = planificacion.id
+                INNER JOIN calendario ON comision.calendario = calendario.id
+                WHERE calendario.id = @IdCalendario
+                AND comision.autorizada = true
+                ORDER BY sede.numero ASC, comision.division ASC, planificacion.anio ASC, planificacion.semestre ASC
+                ";
 
+            return Context.db.CacheSql().QueryIds<Curso>(sql, new { IdCalendario = idCalendario });
         }
 
-        public static EntitySql CursoDeComisionPfidCodigoAsignaturaCalendarioSql(object pfid, object codigo, object idCalendario)
+        public static Curso? CursosAutorizados__By_Pfid_Codigo_IdCalendario(object pfid, object codigo, object idCalendario)
         {
+            string sql = @"
+                SELECT id FROM curso
+                INNER JOIN comision ON curso.comision = comision.id
+                INNER JOIN sede ON comision.sede = sede.id
+                INNER JOIN planificacion ON comision.planificacion = planificacion.id
+                INNER JOIN calendario ON comision.calendario = calendario.id
+                INNER JOIN disposicion ON comision.disposicion = disposicion.id
+                WHERE comision.pfid = @Pfid
+                AND comision.codigo IN @Codigos
+                AND calendario.id = @IdCalendario
+                AND comision.autorizada = true
+                ORDER BY sede.numero ASC, comision.division ASC, planificacion.anio ASC, planificacion.semestre ASC
+                ";
+
             List<object> codigos = [codigo];
 
             switch (codigo)
@@ -91,17 +113,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             }
 
-            return Context.db.Sql("curso")
-                .Fields()
-                .Size(0)
-                .Where(@"
-                    $calendario__id = @0 
-                    AND $comision__pfid = @1
-                    AND $asignatura__codigo IN ( @2 )
-                ").
-                Param("@0", idCalendario).
-                Param("@1", pfid).
-                Param("@2", codigos);
+            return Context.db.CacheSql().QueryIds<Curso>(sql, new { Codigos = codigos, IdCalendario = idCalendario, Pfid = pfid}).FirstOrDefault();
         }
 
     }

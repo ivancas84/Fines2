@@ -101,11 +101,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _persona != value)
                 {
                     _persona = value; NotifyPropertyChanged(nameof(persona));
-                    //desactivado hasta implementar cache
-                    //if (_persona.HasValue && (persona_.IsNoE() || !persona_!.Get(db.config.id).ToString()!.Equals(_persona.Value.ToString())))
-                    //    persona_ = CreateFromId<Persona>(_persona);
-                    //else if(_persona.IsNoE())
-                    //    persona_ = null;
+                    if (!_persona.IsNoE() && (persona_.IsNoE() || !persona_!.Get(db.config.id).ToString()!.Equals(_persona.ToString())))
+                        persona_ = CreateFromId<Persona>(_persona);
+                    else if(_persona.IsNoE())
+                        persona_ = null;
                 }
             }
         }
@@ -141,8 +140,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("email")
+                splitOn:"id"
             );
         }
+
     }
 }

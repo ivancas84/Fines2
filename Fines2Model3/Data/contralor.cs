@@ -87,11 +87,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _planilla_docente != value)
                 {
                     _planilla_docente = value; NotifyPropertyChanged(nameof(planilla_docente));
-                    //desactivado hasta implementar cache
-                    //if (_planilla_docente.HasValue && (planilla_docente_.IsNoE() || !planilla_docente_!.Get(db.config.id).ToString()!.Equals(_planilla_docente.Value.ToString())))
-                    //    planilla_docente_ = CreateFromId<PlanillaDocente>(_planilla_docente);
-                    //else if(_planilla_docente.IsNoE())
-                    //    planilla_docente_ = null;
+                    if (!_planilla_docente.IsNoE() && (planilla_docente_.IsNoE() || !planilla_docente_!.Get(db.config.id).ToString()!.Equals(_planilla_docente.ToString())))
+                        planilla_docente_ = CreateFromId<PlanillaDocente>(_planilla_docente);
+                    else if(_planilla_docente.IsNoE())
+                        planilla_docente_ = null;
                 }
             }
         }
@@ -126,8 +125,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("contralor")
+                splitOn:"id"
             );
         }
+
     }
 }

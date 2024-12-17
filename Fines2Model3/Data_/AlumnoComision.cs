@@ -13,7 +13,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 {
     public partial class AlumnoComision
     {
-
+        /*
         public object Persist1()
         {
             var persist = Context.db.Persist();
@@ -21,7 +21,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             alumno_!.persona = (string)persist.Persist(alumno_!.persona_!)!;
             alumno = (string)persist.Persist(alumno_!)!;
             return persist.Persist(this);
-        }
+        }*/
 
         public override string? Label
         {
@@ -148,7 +148,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
         }
 
-
+        /*
         public static void AddDataToOC__WITH_CantidadAprobadasPlanificacion(IEnumerable<Dictionary<string, object?>> source, ObservableCollection<AlumnoComision> oc)
         {
             IEnumerable<string> concats_alumno_planificacion = source!.ColOfValConcat("alumno", "comision__planificacion");
@@ -167,9 +167,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                 oc.Add(obj);
             }
         }
-
+        */
         /// <summary> Procesar un conjunto de datos de alumno comision y agregarlos a un ObservableCollection </summary>
-        public static void AddDataToOC__WITH_CantidadAprobadasPlan(IEnumerable<Dictionary<string, object?>> source, ObservableCollection<AlumnoComision> oc)
+        /*public static void AddDataToOC__WITH_CantidadAprobadasPlan(IEnumerable<Dictionary<string, object?>> source, ObservableCollection<AlumnoComision> oc)
         {
             IEnumerable<string> concats_alumno_planCurso = source!.ColOfValConcat("alumno", "planificacion__plan");
 
@@ -204,10 +204,10 @@ namespace SqlOrganize.Sql.Fines2Model3
 
 
         }
-
+        */
 
         /// <summary> Procesar un conjunto de datos de alumno comision y agregarlos a un ObservableCollection </summary>
-        public static void AddDataToOC__WITH_Cantidades(IEnumerable<Dictionary<string, object?>> source, ObservableCollection<AlumnoComision> oc)
+        /*public static void AddDataToOC__WITH_Cantidades(IEnumerable<Dictionary<string, object?>> source, ObservableCollection<AlumnoComision> oc)
         {
             IEnumerable<string> concats_alumno_planCurso = source!.ColOfValConcat("alumno", "planificacion__plan");
             IEnumerable<string> concats_alumno_planificacion = source!.ColOfValConcat("alumno", "comision__planificacion");
@@ -249,7 +249,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         }
 
-
+        */
 
 
 

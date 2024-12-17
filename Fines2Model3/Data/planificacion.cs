@@ -89,11 +89,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _plan != value)
                 {
                     _plan = value; NotifyPropertyChanged(nameof(plan));
-                    //desactivado hasta implementar cache
-                    //if (_plan.HasValue && (plan_.IsNoE() || !plan_!.Get(db.config.id).ToString()!.Equals(_plan.Value.ToString())))
-                    //    plan_ = CreateFromId<Plan>(_plan);
-                    //else if(_plan.IsNoE())
-                    //    plan_ = null;
+                    if (!_plan.IsNoE() && (plan_.IsNoE() || !plan_!.Get(db.config.id).ToString()!.Equals(_plan.ToString())))
+                        plan_ = CreateFromId<Plan>(_plan);
+                    else if(_plan.IsNoE())
+                        plan_ = null;
                 }
             }
         }
@@ -160,8 +159,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("planificacion")
+                splitOn:"id"
             );
         }
+
     }
 }

@@ -60,8 +60,8 @@ namespace SqlOrganize.Model
 
         protected Dictionary<string, EntityTree> Fk(EntityMetadata entity, List<string> entitiesVisited, string? alias = null)
         {
-            entitiesVisited.Add(entity.name!);
             List<Field> fk = FieldsFkNotReferenced(entity, entitiesVisited);
+            entitiesVisited.Add(entity.name!);
             Dictionary<string, EntityTree> dict = new();
 
             foreach (Field field in fk)

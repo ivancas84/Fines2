@@ -33,14 +33,10 @@ foreach (var (key, field) in t.fields)
 //t.CreateFileFields();
 //t.CreateClassModel();
 
-SqlOrganize.Sql.Fines2Model3.Schema schema = new SqlOrganize.Sql.Fines2Model3.Schema();
 t.CreateModel();
-*/
 
+*/
 SqlOrganize.Sql.Fines2Model3.Schema schema = new();
 BuildSchema s = new(c, schema);
 
-
-
-//t.CreateModel();
 

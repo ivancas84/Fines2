@@ -73,11 +73,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _curso != value)
                 {
                     _curso = value; NotifyPropertyChanged(nameof(curso));
-                    //desactivado hasta implementar cache
-                    //if (_curso.HasValue && (curso_.IsNoE() || !curso_!.Get(db.config.id).ToString()!.Equals(_curso.Value.ToString())))
-                    //    curso_ = CreateFromId<Curso>(_curso);
-                    //else if(_curso.IsNoE())
-                    //    curso_ = null;
+                    if (!_curso.IsNoE() && (curso_.IsNoE() || !curso_!.Get(db.config.id).ToString()!.Equals(_curso.ToString())))
+                        curso_ = CreateFromId<Curso>(_curso);
+                    else if(_curso.IsNoE())
+                        curso_ = null;
                 }
             }
         }
@@ -92,11 +91,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _dia != value)
                 {
                     _dia = value; NotifyPropertyChanged(nameof(dia));
-                    //desactivado hasta implementar cache
-                    //if (_dia.HasValue && (dia_.IsNoE() || !dia_!.Get(db.config.id).ToString()!.Equals(_dia.Value.ToString())))
-                    //    dia_ = CreateFromId<Dia>(_dia);
-                    //else if(_dia.IsNoE())
-                    //    dia_ = null;
+                    if (!_dia.IsNoE() && (dia_.IsNoE() || !dia_!.Get(db.config.id).ToString()!.Equals(_dia.ToString())))
+                        dia_ = CreateFromId<Dia>(_dia);
+                    else if(_dia.IsNoE())
+                        dia_ = null;
                 }
             }
         }
@@ -155,8 +153,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("horario")
+                splitOn:"id"
             );
         }
+
     }
 }

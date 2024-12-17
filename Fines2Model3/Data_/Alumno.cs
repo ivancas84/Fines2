@@ -5,7 +5,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 {
     public partial class Alumno
     {
-        public PersistContext GenerarCalificaciones()
+        /*public PersistContext GenerarCalificaciones()
         {
 
             if (IsNullOrEmpty("id", "plan", "anio_ingreso", "semestre_ingreso"))
@@ -104,9 +104,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     Context.db.Persist().UpdateFieldIds("calificacion", "archivado", false, idsCalificaciones.ToArray()).
                         AddTo(persists);
             }
-            #endregion*/
+            #endregion
             return persist;
-        }
+        }*/
 
         // TODO CREO QUE ES UNA PROPIEDAD
         public static string ColorEstadoInscripcion(string? estadoInscripcion)

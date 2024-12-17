@@ -97,11 +97,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _comision != value)
                 {
                     _comision = value; NotifyPropertyChanged(nameof(comision));
-                    //desactivado hasta implementar cache
-                    //if (_comision.HasValue && (comision_.IsNoE() || !comision_!.Get(db.config.id).ToString()!.Equals(_comision.Value.ToString())))
-                    //    comision_ = CreateFromId<Comision>(_comision);
-                    //else if(_comision.IsNoE())
-                    //    comision_ = null;
+                    if (!_comision.IsNoE() && (comision_.IsNoE() || !comision_!.Get(db.config.id).ToString()!.Equals(_comision.ToString())))
+                        comision_ = CreateFromId<Comision>(_comision);
+                    else if(_comision.IsNoE())
+                        comision_ = null;
                 }
             }
         }
@@ -158,11 +157,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _disposicion != value)
                 {
                     _disposicion = value; NotifyPropertyChanged(nameof(disposicion));
-                    //desactivado hasta implementar cache
-                    //if (_disposicion.HasValue && (disposicion_.IsNoE() || !disposicion_!.Get(db.config.id).ToString()!.Equals(_disposicion.Value.ToString())))
-                    //    disposicion_ = CreateFromId<Disposicion>(_disposicion);
-                    //else if(_disposicion.IsNoE())
-                    //    disposicion_ = null;
+                    if (!_disposicion.IsNoE() && (disposicion_.IsNoE() || !disposicion_!.Get(db.config.id).ToString()!.Equals(_disposicion.ToString())))
+                        disposicion_ = CreateFromId<Disposicion>(_disposicion);
+                    else if(_disposicion.IsNoE())
+                        disposicion_ = null;
                 }
             }
         }
@@ -191,11 +189,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _asignatura != value)
                 {
                     _asignatura = value; NotifyPropertyChanged(nameof(asignatura));
-                    //desactivado hasta implementar cache
-                    //if (_asignatura.HasValue && (asignatura_.IsNoE() || !asignatura_!.Get(db.config.id).ToString()!.Equals(_asignatura.Value.ToString())))
-                    //    asignatura_ = CreateFromId<Asignatura>(_asignatura);
-                    //else if(_asignatura.IsNoE())
-                    //    asignatura_ = null;
+                    if (!_asignatura.IsNoE() && (asignatura_.IsNoE() || !asignatura_!.Get(db.config.id).ToString()!.Equals(_asignatura.ToString())))
+                        asignatura_ = CreateFromId<Asignatura>(_asignatura);
+                    else if(_asignatura.IsNoE())
+                        asignatura_ = null;
                 }
             }
         }
@@ -300,8 +297,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("curso")
+                splitOn:"id"
             );
         }
+
     }
 }

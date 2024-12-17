@@ -5,14 +5,14 @@ namespace SqlOrganize.Sql.Fines2Model3
     public static class SedeDAO
     {
     
-        public static EntitySql SedesDeCalendarioSql(object idCalendario)
+        public static IEnumerable<Sede> Sedes__By_IdCalendario(object idCalendario)
         {
-            var subSql = "SELECT sede FROM comision WHERE calendario = @0 AND autorizada = true";
+            string sql = @"SELECT DISTINCT sede.id FROM sede 
+                INNER JOIN comision ON comision.sede = sede.id 
+                WHERE calendario = @IdCalendario
+            ";
 
-            return Context.db.Sql("sede")
-                .Join("INNER JOIN (" + subSql + ") AS sub ON (sub.sede = $id)")
-                .Order("$nombre ASC")
-                .Param("@0", idCalendario);
+            return Context.db.CacheSql().QueryIds<Sede>(sql, new { IdCalendario = idCalendario});
         }
     }
 

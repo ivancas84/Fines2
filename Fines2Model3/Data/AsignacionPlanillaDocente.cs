@@ -45,11 +45,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _planilla_docente != value)
                 {
                     _planilla_docente = value; NotifyPropertyChanged(nameof(planilla_docente));
-                    //desactivado hasta implementar cache
-                    //if (_planilla_docente.HasValue && (planilla_docente_.IsNoE() || !planilla_docente_!.Get(db.config.id).ToString()!.Equals(_planilla_docente.Value.ToString())))
-                    //    planilla_docente_ = CreateFromId<PlanillaDocente>(_planilla_docente);
-                    //else if(_planilla_docente.IsNoE())
-                    //    planilla_docente_ = null;
+                    if (!_planilla_docente.IsNoE() && (planilla_docente_.IsNoE() || !planilla_docente_!.Get(db.config.id).ToString()!.Equals(_planilla_docente.ToString())))
+                        planilla_docente_ = CreateFromId<PlanillaDocente>(_planilla_docente);
+                    else if(_planilla_docente.IsNoE())
+                        planilla_docente_ = null;
                 }
             }
         }
@@ -64,11 +63,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _toma != value)
                 {
                     _toma = value; NotifyPropertyChanged(nameof(toma));
-                    //desactivado hasta implementar cache
-                    //if (_toma.HasValue && (toma_.IsNoE() || !toma_!.Get(db.config.id).ToString()!.Equals(_toma.Value.ToString())))
-                    //    toma_ = CreateFromId<Toma>(_toma);
-                    //else if(_toma.IsNoE())
-                    //    toma_ = null;
+                    if (!_toma.IsNoE() && (toma_.IsNoE() || !toma_!.Get(db.config.id).ToString()!.Equals(_toma.ToString())))
+                        toma_ = CreateFromId<Toma>(_toma);
+                    else if(_toma.IsNoE())
+                        toma_ = null;
                 }
             }
         }
@@ -169,8 +167,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("asignacion_planilla_docente")
+                splitOn:"id"
             );
         }
+
     }
 }

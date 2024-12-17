@@ -2,17 +2,18 @@
 {
     public static class DesignacionDAO
     {
-        public static EntitySql ReferentesDeSedeQuery(params object[] idSedes)
+        public static IEnumerable<Designacion> Referentes__By_IdsSedes(params object[] idsSedes)
         {
-            return Context.db.Sql("designacion")
-                .Fields()
-                .Size(0)
-                .Where(@"
-                    $sede IN ( @0 ) 
-                    AND $cargo = '1'
-                    AND $hasta IS NULL
-                ")
-                .Param("@0", idSedes);
+
+            string sql = @"
+                SELECT id FROM designacion
+                INNER JOIN sede ON (designacion.sede = sede.id)
+                WHERE designacion.cargo = '1'
+                AND designacion.hasta IS NULL
+                AND designacion.sede IN ( @IdsSede )
+            ";
+
+            return Context.db.CacheSql().QueryIds<Designacion>(sql, new { IdsSedes = idsSedes });
         }
     }
 }

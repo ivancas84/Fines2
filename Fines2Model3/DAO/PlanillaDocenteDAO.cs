@@ -4,9 +4,10 @@ namespace SqlOrganize.Sql.Fines2Model3
 {
     public static class PlanillaDocenteDAO
     {
-        public static EntitySql PlanillasSql()
+        public static IEnumerable<PlanillaDocente> Planillas()
         {
-            return Context.db.Sql("planilla_docente").Order("fecha_contralor DESC");
+            string sql = "SELECT DISTINCT id FROM planilla_docente";
+            return Context.db.CacheSql().QueryIds<PlanillaDocente>(sql);
         }
 
    

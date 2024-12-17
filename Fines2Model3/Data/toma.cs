@@ -151,11 +151,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _curso != value)
                 {
                     _curso = value; NotifyPropertyChanged(nameof(curso));
-                    //desactivado hasta implementar cache
-                    //if (_curso.HasValue && (curso_.IsNoE() || !curso_!.Get(db.config.id).ToString()!.Equals(_curso.Value.ToString())))
-                    //    curso_ = CreateFromId<Curso>(_curso);
-                    //else if(_curso.IsNoE())
-                    //    curso_ = null;
+                    if (!_curso.IsNoE() && (curso_.IsNoE() || !curso_!.Get(db.config.id).ToString()!.Equals(_curso.ToString())))
+                        curso_ = CreateFromId<Curso>(_curso);
+                    else if(_curso.IsNoE())
+                        curso_ = null;
                 }
             }
         }
@@ -170,11 +169,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _docente != value)
                 {
                     _docente = value; NotifyPropertyChanged(nameof(docente));
-                    //desactivado hasta implementar cache
-                    //if (_docente.HasValue && (docente_.IsNoE() || !docente_!.Get(db.config.id).ToString()!.Equals(_docente.Value.ToString())))
-                    //    docente_ = CreateFromId<Persona>(_docente);
-                    //else if(_docente.IsNoE())
-                    //    docente_ = null;
+                    if (!_docente.IsNoE() && (docente_.IsNoE() || !docente_!.Get(db.config.id).ToString()!.Equals(_docente.ToString())))
+                        docente_ = CreateFromId<Persona>(_docente);
+                    else if(_docente.IsNoE())
+                        docente_ = null;
                 }
             }
         }
@@ -189,11 +187,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _reemplazo != value)
                 {
                     _reemplazo = value; NotifyPropertyChanged(nameof(reemplazo));
-                    //desactivado hasta implementar cache
-                    //if (_reemplazo.HasValue && (reemplazo_.IsNoE() || !reemplazo_!.Get(db.config.id).ToString()!.Equals(_reemplazo.Value.ToString())))
-                    //    reemplazo_ = CreateFromId<Persona>(_reemplazo);
-                    //else if(_reemplazo.IsNoE())
-                    //    reemplazo_ = null;
+                    if (!_reemplazo.IsNoE() && (reemplazo_.IsNoE() || !reemplazo_!.Get(db.config.id).ToString()!.Equals(_reemplazo.ToString())))
+                        reemplazo_ = CreateFromId<Persona>(_reemplazo);
+                    else if(_reemplazo.IsNoE())
+                        reemplazo_ = null;
                 }
             }
         }
@@ -208,11 +205,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _planilla_docente != value)
                 {
                     _planilla_docente = value; NotifyPropertyChanged(nameof(planilla_docente));
-                    //desactivado hasta implementar cache
-                    //if (_planilla_docente.HasValue && (planilla_docente_.IsNoE() || !planilla_docente_!.Get(db.config.id).ToString()!.Equals(_planilla_docente.Value.ToString())))
-                    //    planilla_docente_ = CreateFromId<PlanillaDocente>(_planilla_docente);
-                    //else if(_planilla_docente.IsNoE())
-                    //    planilla_docente_ = null;
+                    if (!_planilla_docente.IsNoE() && (planilla_docente_.IsNoE() || !planilla_docente_!.Get(db.config.id).ToString()!.Equals(_planilla_docente.ToString())))
+                        planilla_docente_ = CreateFromId<PlanillaDocente>(_planilla_docente);
+                    else if(_planilla_docente.IsNoE())
+                        planilla_docente_ = null;
                 }
             }
         }
@@ -388,8 +384,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("toma")
+                splitOn:"id"
             );
         }
+
     }
 }

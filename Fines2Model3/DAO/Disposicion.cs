@@ -1,20 +1,21 @@
-﻿using System.Numerics;
-
+﻿
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public static class DisposicionDAO
+    public class DisposicionDAO
     {
 
         /// <summary> Todas las calificaciones del alumno para un determinado plan </summary>
-        public static EntitySql DisposicionesPlanAnioSemestre(this Db db, object plan, object anio, object semestre)
+        public static IEnumerable<Disposicion> Disposiciones__By_IdPlan_Anio_Semestre(object idPlan, object anio, object semestre)
         {
-            return db.Sql("disposicion").
-                Size(0).
-                Where(@"
-                        $planificacion__plan = @0 
-                        AND $planificacion__anio >= @1 
-                        AND $planificacion__semestre >= @2").
-                Param("@0", plan!).Param("@1", anio!).Param("@2", semestre!);
+            string sql = @"
+                SELECT id 
+                FROM disposicion 
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                WHERE planificacion.plan = @IdPlan
+                AND planificacion.anio = @Anio
+                AND planificacion.semestre = @Semestre";
+
+            return Context.db.CacheSql().QueryIds<Disposicion>(sql, new { IdPlan = idPlan, Anio = anio, Semestre = semestre });
         }
 
         

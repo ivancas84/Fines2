@@ -57,9 +57,9 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             if (text == null)
                 return;
 
-            var list = ComisionDAO.BusquedaAproximadaComision(text).Dicts();
+            var list = ComisionDAO.Comisiones__By_Search(text);
 
-            Context.db.AddEntitiesToClearOC(list, comisionOC);
+            list.AddEntitiesToClearOC(comisionOC);
 
             cbxComision.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
         }
@@ -91,12 +91,12 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
     {
         try
         {
-            var cursosData = Context.db.Sql("curso").Equal("$comision", comision.id).Cache().Dicts();
-            var tomaData = TomaDAO.TomaAprobadaDeComisionQuery(comision.id).Cache().Dicts();
-            cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
-            Context.db.AddEntitiesToClearOC(cursosData, cursoOC);
+            var cursosData = CursoDAO.Cursos__By_IdComision(comision.id);
+            var tomaData = TomaDAO.TomasAprobadas__By_IdsComisiones(comision.id);
+            //cursosData.MergeByKeys(tomaData, "id", "curso", "toma_");
+            cursosData.AddEntitiesToClearOC(cursoOC);
 
-            var idsAsignaturas = cursosData.ColOfVal<string>("asignatura-id").ToList();
+            //var idsAsignaturas = cursosData.ColOfVal<string>("asignatura-id").ToList();
 
             //var disposicionesData = Context.db.Sql("disposicion").Equal("$planificacion", comision.planificacion).Cache().Dicts();
             //var idsDisposiciones = disposicionesData.ColOfVal<string>("id").ToList();
@@ -179,12 +179,12 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
 
     #region tab registro alumnos
-    private IEnumerable<PersistContext> persists;
+    /*private IEnumerable<PersistContext> persists;
     private ObservableCollection<Entity> ocDataPersist = new();
-
+    */
     private void btnProcesarAlumnos_Click(object sender, RoutedEventArgs e)
     {
-        try
+        /*try
         {
             Context.db.CreateQueue();
             //TODO NO SE QUE TENGO QUE PROCESAR ACA
@@ -197,17 +197,17 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
                 var resultObj = Context.db.Data<Entity>();
                 resultObj.Label = p.logging.ToString();
                 ocDataPersist.Add(resultObj);
-            }*/
+            }
         }
         catch (Exception ex)
         {
             ex.ToastException();
-        }
+        }*/
     }
 
     private void btnGuardarAlumnos_Click(object sender, RoutedEventArgs e)
     {
-        try
+        /*try
         {
             Context.db.ProcessQueue();
             ToastExtensions.Show("Se han registrado las asignaciones");
@@ -215,7 +215,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
         catch (Exception ex)
         {
             ex.ToastException();
-        }
+        }*/
     }
     #endregion
 
@@ -239,7 +239,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
 
     private void btnCambiarEstado_Click(object sender, RoutedEventArgs e)
     {
-        try
+        /*try
         {
             using (Context.db.CreateQueue())
             {
@@ -260,7 +260,7 @@ public partial class InformeComisionPage : Page, INotifyPropertyChanged
             ToastExtensions.Show("Se ha cambiado el estado de los alumnos");
         } catch (Exception ex) { 
             ex.ToastException();
-        }
+        }*/
     }
 
     private void btnTransferirAlumnos_Click(object sender, RoutedEventArgs e)

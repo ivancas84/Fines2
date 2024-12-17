@@ -33,7 +33,7 @@
                 WHERE persona.genero IS NULL;
             ";
 
-            return Context.db.CacheSql().QueryIds<Alumno>("alumno", sql, new { Anio = anio, Semestre = semestre });
+            return Context.db.CacheSql().QueryIds<Alumno>(sql, new { Anio = anio, Semestre = semestre });
         }
     }
 }

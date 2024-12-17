@@ -5,9 +5,11 @@ namespace SqlOrganize.Sql.Fines2Model3
     public static class CalendarioDAO
     {
     
-        public static EntitySql CalendariosSql()
+        public static IEnumerable<Calendario> Calendarios()
         {
-            return Context.db.Sql("calendario").Order("$anio DESC, $semestre DESC");
+            string sql = "SELECT id FROM calendario ORDER BY anio DESC, semestre DESC";
+
+            return Context.db.CacheSql().QueryIds<Calendario>("calendario", sql);
         }
     }
 

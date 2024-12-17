@@ -81,7 +81,7 @@ namespace SqlOrganize.Model
                     {
                         Sql.Field fk = entity.fields[fieldName];
 
-                        sw.WriteLine("                    if (_" + fieldName + ".HasValue && (" + fieldName + "_.IsNoE() || !" + fieldName + "_!.Get(db.config.id).ToString()!.Equals(_" + fieldName + ".Value.ToString())))");
+                        sw.WriteLine("                    if (!_" + fieldName + ".IsNoE() && (" + fieldName + "_.IsNoE() || !" + fieldName + "_!.Get(db.config.id).ToString()!.Equals(_" + fieldName + ".ToString())))");
                         sw.WriteLine("                        " + fieldName + "_ = CreateFromId<" + fk.refEntityName!.ToCamelCase() + ">(_" + fieldName + ");");
                         sw.WriteLine("                    else if(_" + fieldName + ".IsNoE())");
                         sw.WriteLine("                        " + fieldName + "_ = null;");

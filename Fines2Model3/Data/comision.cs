@@ -18,6 +18,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             _db = Context.db;
             Default();
             AlumnoComision_.CollectionChanged += AlumnoComision_CollectionChanged;
+            Comision_.CollectionChanged += Comision_CollectionChanged;
             ComisionRelacionada_.CollectionChanged += ComisionRelacionada_CollectionChanged;
             ComisionRelacionada_relacion_.CollectionChanged += ComisionRelacionada_relacion_CollectionChanged;
             Curso_.CollectionChanged += Curso_CollectionChanged;
@@ -30,6 +31,13 @@ namespace SqlOrganize.Sql.Fines2Model3
                 foreach (AlumnoComision obj in e.NewItems)
                     if(obj.comision_ != this)
                         obj.comision_ = this;
+        }
+        private void Comision_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Comision obj in e.NewItems)
+                    if(obj.comision_siguiente_ != this)
+                        obj.comision_siguiente_ = this;
         }
         private void ComisionRelacionada_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -189,11 +197,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _sede != value)
                 {
                     _sede = value; NotifyPropertyChanged(nameof(sede));
-                    //desactivado hasta implementar cache
-                    //if (_sede.HasValue && (sede_.IsNoE() || !sede_!.Get(db.config.id).ToString()!.Equals(_sede.Value.ToString())))
-                    //    sede_ = CreateFromId<Sede>(_sede);
-                    //else if(_sede.IsNoE())
-                    //    sede_ = null;
+                    if (!_sede.IsNoE() && (sede_.IsNoE() || !sede_!.Get(db.config.id).ToString()!.Equals(_sede.ToString())))
+                        sede_ = CreateFromId<Sede>(_sede);
+                    else if(_sede.IsNoE())
+                        sede_ = null;
                 }
             }
         }
@@ -208,11 +215,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _modalidad != value)
                 {
                     _modalidad = value; NotifyPropertyChanged(nameof(modalidad));
-                    //desactivado hasta implementar cache
-                    //if (_modalidad.HasValue && (modalidad_.IsNoE() || !modalidad_!.Get(db.config.id).ToString()!.Equals(_modalidad.Value.ToString())))
-                    //    modalidad_ = CreateFromId<Modalidad>(_modalidad);
-                    //else if(_modalidad.IsNoE())
-                    //    modalidad_ = null;
+                    if (!_modalidad.IsNoE() && (modalidad_.IsNoE() || !modalidad_!.Get(db.config.id).ToString()!.Equals(_modalidad.ToString())))
+                        modalidad_ = CreateFromId<Modalidad>(_modalidad);
+                    else if(_modalidad.IsNoE())
+                        modalidad_ = null;
                 }
             }
         }
@@ -227,11 +233,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _planificacion != value)
                 {
                     _planificacion = value; NotifyPropertyChanged(nameof(planificacion));
-                    //desactivado hasta implementar cache
-                    //if (_planificacion.HasValue && (planificacion_.IsNoE() || !planificacion_!.Get(db.config.id).ToString()!.Equals(_planificacion.Value.ToString())))
-                    //    planificacion_ = CreateFromId<Planificacion>(_planificacion);
-                    //else if(_planificacion.IsNoE())
-                    //    planificacion_ = null;
+                    if (!_planificacion.IsNoE() && (planificacion_.IsNoE() || !planificacion_!.Get(db.config.id).ToString()!.Equals(_planificacion.ToString())))
+                        planificacion_ = CreateFromId<Planificacion>(_planificacion);
+                    else if(_planificacion.IsNoE())
+                        planificacion_ = null;
                 }
             }
         }
@@ -246,11 +251,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _comision_siguiente != value)
                 {
                     _comision_siguiente = value; NotifyPropertyChanged(nameof(comision_siguiente));
-                    //desactivado hasta implementar cache
-                    //if (_comision_siguiente.HasValue && (comision_siguiente_.IsNoE() || !comision_siguiente_!.Get(db.config.id).ToString()!.Equals(_comision_siguiente.Value.ToString())))
-                    //    comision_siguiente_ = CreateFromId<Comision>(_comision_siguiente);
-                    //else if(_comision_siguiente.IsNoE())
-                    //    comision_siguiente_ = null;
+                    if (!_comision_siguiente.IsNoE() && (comision_siguiente_.IsNoE() || !comision_siguiente_!.Get(db.config.id).ToString()!.Equals(_comision_siguiente.ToString())))
+                        comision_siguiente_ = CreateFromId<Comision>(_comision_siguiente);
+                    else if(_comision_siguiente.IsNoE())
+                        comision_siguiente_ = null;
                 }
             }
         }
@@ -265,11 +269,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _calendario != value)
                 {
                     _calendario = value; NotifyPropertyChanged(nameof(calendario));
-                    //desactivado hasta implementar cache
-                    //if (_calendario.HasValue && (calendario_.IsNoE() || !calendario_!.Get(db.config.id).ToString()!.Equals(_calendario.Value.ToString())))
-                    //    calendario_ = CreateFromId<Calendario>(_calendario);
-                    //else if(_calendario.IsNoE())
-                    //    calendario_ = null;
+                    if (!_calendario.IsNoE() && (calendario_.IsNoE() || !calendario_!.Get(db.config.id).ToString()!.Equals(_calendario.ToString())))
+                        calendario_ = CreateFromId<Calendario>(_calendario);
+                    else if(_calendario.IsNoE())
+                        calendario_ = null;
                 }
             }
         }
@@ -388,6 +391,25 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        #region comision_siguiente (fk comision.comision_siguiente _m:o comision.id)
+        protected Comision? _comision_siguiente_ = null;
+        public Comision? comision_siguiente_
+        {
+            get { return _comision_siguiente_; }
+            set {
+                if ( _comision_siguiente_ != value)
+                {
+                    _comision_siguiente_ = value;
+                    if(value != null)
+                        comision_siguiente = value.id;
+                    else
+                        comision_siguiente = null;
+                    NotifyPropertyChanged(nameof(comision_siguiente_));
+                }
+            }
+        }
+        #endregion
+
         #region calendario (fk comision.calendario _m:o calendario.id)
         protected Calendario? _calendario_ = null;
         public Calendario? calendario_
@@ -413,6 +435,15 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             get { return _AlumnoComision_; }
             set { if( _AlumnoComision_ != value) { _AlumnoComision_ = value; NotifyPropertyChanged(nameof(AlumnoComision_)); } }
+        }
+        #endregion
+
+        #region Comision_ (ref comision.comision_siguiente _m:o comision.id)
+        protected ObservableCollection<Comision> _Comision_ = new ();
+        public ObservableCollection<Comision> Comision_
+        {
+            get { return _Comision_; }
+            set { if( _Comision_ != value) { _Comision_ = value; NotifyPropertyChanged(nameof(Comision_)); } }
         }
         #endregion
 
@@ -445,21 +476,22 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         public static IEnumerable<Comision> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
         {
-            return connection.Query<Comision, Sede, Domicilio, TipoSede, CentroEducativo, Domicilio, Modalidad, Comision>(
+            return connection.Query<Comision, Sede, Domicilio, TipoSede, CentroEducativo, Domicilio, Sede, Comision>(
                 sql,
-                (main, sede, domicilio, tipo_sede, centro_educativo, domicilio_cen, modalidad) =>
+                (main, sede, domicilio, tipo_sede, centro_educativo, domicilio_cen, organizacion) =>
                 {
                     main.sede_ = sede;
                     if(!domicilio.IsNoE()) sede.domicilio_ = domicilio;
                     if(!tipo_sede.IsNoE()) sede.tipo_sede_ = tipo_sede;
                     if(!centro_educativo.IsNoE()) sede.centro_educativo_ = centro_educativo;
                     if(!domicilio_cen.IsNoE()) centro_educativo.domicilio_ = domicilio_cen;
-                    main.modalidad_ = modalidad;
+                    if(!organizacion.IsNoE()) sede.organizacion_ = organizacion;
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("comision")
+                splitOn:"id"
             );
         }
+
     }
 }

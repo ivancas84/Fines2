@@ -16,9 +16,8 @@ namespace WpfUtils.Fines
             if (text == null)
                 return;
 
-            IEnumerable<Dictionary<string, object?>> list = CursoDAO.BusquedaAproximadaCurso(text).Size(30).Dicts(); //busqueda de valores a mostrar en funcion del texto
-
-            Context.db.AddEntitiesToClearOC(list, cursoOC);
+            var list = CursoDAO.Cursos__By_Search(text);
+            list.AddEntitiesToClearOC(cursoOC);
             
             cursoComboBox.SetTimerTickFinalize(textBox!, text, (int)textBoxPos!);
         }

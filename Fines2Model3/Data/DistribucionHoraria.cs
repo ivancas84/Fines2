@@ -73,11 +73,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _disposicion != value)
                 {
                     _disposicion = value; NotifyPropertyChanged(nameof(disposicion));
-                    //desactivado hasta implementar cache
-                    //if (_disposicion.HasValue && (disposicion_.IsNoE() || !disposicion_!.Get(db.config.id).ToString()!.Equals(_disposicion.Value.ToString())))
-                    //    disposicion_ = CreateFromId<Disposicion>(_disposicion);
-                    //else if(_disposicion.IsNoE())
-                    //    disposicion_ = null;
+                    if (!_disposicion.IsNoE() && (disposicion_.IsNoE() || !disposicion_!.Get(db.config.id).ToString()!.Equals(_disposicion.ToString())))
+                        disposicion_ = CreateFromId<Disposicion>(_disposicion);
+                    else if(_disposicion.IsNoE())
+                        disposicion_ = null;
                 }
             }
         }
@@ -115,8 +114,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("distribucion_horaria")
+                splitOn:"id"
             );
         }
+
     }
 }

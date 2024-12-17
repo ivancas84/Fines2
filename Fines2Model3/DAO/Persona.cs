@@ -2,27 +2,50 @@
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public static class PersonaDAO
+    public class PersonaDAO
     {
-        public static EntitySql SqlPersonas__SearchLike(string search)
+        public static IEnumerable<Persona> Personas__By_Search(string search)
         {
-            return Context.db.Sql("persona").
-                Where("$nombres LIKE @0 ").
-                Where("OR $apellidos LIKE @0 ").
-                Where("OR $numero_documento LIKE @0 ").
-                Where("OR $email LIKE @0 ").
-                Where("OR $telefono LIKE @0 ").
-                Order("$nombres ASC, $apellidos ASC").
-                Param("@0", "%" + search + "%");
+            string sql = @"SELECT DISTINCT id FROM persona
+                WHERE nombres LIKE @Search
+                OR apellidos LIKE @Search
+                OR numero_documento LIKE @Search
+                OR email LIKE @Search
+                OR telefono LIKE @Search
+                ORDER BY nombres ASC, apellidos ASC
+                ";
+
+            search = "%" + search+ "%";
+
+            return Context.db.CacheSql().QueryIds<Persona>(sql, new { Search = search });
         }
 
-        public static EntitySql SqlPersona__BY_dni(object cuilDni)
+        public static IEnumerable<Persona> Personas__BY_CuilDni(object cuilDni)
         {
             (string cuil, string dni) = Persona.CuilDni(cuilDni);
 
-            return Context.db.Sql("persona").
-                Where("$numero_documento = @0").
-                Param("@0", dni);
+            string sql = @"SELECT DISTINCT id FROM persona WHERE
+";
+            bool existsDni = false;
+
+            if (!dni.IsNoE())
+            {
+                sql += @"numero_documento = @Dni
+";
+                existsDni = true;
+            }
+
+            if (!cuil.IsNoE())
+            {
+                if (existsDni)
+                    sql += " AND ";
+                sql += @"cuil = @Cuil
+";
+            }
+
+            sql += "ORDER BY nombres ASC, apellidos ASC";
+
+            return Context.db.CacheSql().QueryIds<Persona>(sql, new { Cuil = cuil, Dni = dni});
         }
 
 

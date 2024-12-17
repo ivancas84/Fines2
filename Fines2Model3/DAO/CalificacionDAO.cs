@@ -1,207 +1,255 @@
-﻿using SqlOrganize.CollectionUtils;
+﻿using Dapper;
+using SqlOrganize.CollectionUtils;
 using System.Numerics;
 
 namespace SqlOrganize.Sql.Fines2Model3
 {
-    public static class CalificacionDAO
+    public class CalificacionDAO
     {
 
         /// <summary> Todas las calificaciones del alumno para un determinado plan </summary>
-        public static EntitySql CalificacionesDeAlumnoPlanQuery( object idAlumno, object idPlan, bool archivado = false)
+        public static IEnumerable<Calificacion> Calificaciones__By_IdAlumno_IdPlan( object idAlumno, object idPlan)
         {
-            return Context.db.Sql("calificacion")
-               .Size(0)
-               .Where(@"
-                    $alumno = @0
-                    AND $planificacion_dis__plan = @1
-                ")
-                .Order("$planificacion_dis__anio ASC, $planificacion_dis__semestre ASC, $asignatura__nombre")
-               .Param("@0", idAlumno).Param("@1", idPlan);
+            string sql = @"
+                SELECT DISTINCT id FROM calificacion
+                INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+                WHERE planificacion.plan = @IdPlan
+                AND calificacion.alumno = @IdAlumno
+                ORDER BY planificacion.anio ASC, planificacion.semestre ASC, asignatura.nombre ASC
+            ";
+
+            return Context.db.CacheSql().QueryIds<Calificacion>(sql, new { IdAlumno = idAlumno, IdPlan = idPlan });
         }
 
-        public static EntitySql CalificacionesDesaprobadasDeAlumnoSql(object alumno)
+        public static IEnumerable<Calificacion> CalificacionesDesaprobadas__By_IdAlumno(object idAlumno)
         {
-            return Context.db.Sql("calificacion").
-                Size(0).
-                Where(@"
-                        $alumno = @0
-                        AND (
-                            ($nota_final < 7 AND $crec < 4)
-                            OR ($nota_final < 7 AND $crec IS NULL)
-                            OR ($nota_final IS NULL AND $crec < 4)
-                            OR ($nota_final IS NULL AND $crec IS NULL)
-                        )
-                    ").
-                Param("@0", alumno);
+            string sql = @"
+                SELECT DISTINCT id FROM calificacion
+                WHERE calificacion.alumno = @IdAlumno
+                AND (
+                    (nota_final < 7 AND crec < 4)
+                    OR (nota_final < 7 AND crec IS NULL)
+                    OR (nota_final IS NULL AND crec < 4)
+                    OR (nota_final IS NULL AND crec IS NULL)
+                )
+            ";
+
+            return Context.db.CacheSql().QueryIds<Calificacion>(sql, new { IdAlumno = idAlumno });
+
         }
 
-        public static EntitySql CalificacionesAprobadasAnterioresDeAlumnoPlanConAnioSemestreIngresoSql(object plan, object alumno, object anio_actual, object semestre_actual)
+        public static IEnumerable<Calificacion> CalificacionesAprobadasAnteriores__By_IdAlumno_IdPlan_Anio_Semestre(object idAlumno, object idPlan, object anio, object semestre)
         {
-            return Context.db.Sql("calificacion").
-                    Size(0).
-                    Where(@"
-                        $planificacion_dis__plan = @0
-                        AND $planificacion_dis__anio < @1 AND $planificacion_dis__semestre < @2 
-                        AND $alumno = @3
-                        AND ($nota_final >= 7 OR $crec >= 4)").
-                    Param("@0", plan).
-                    Param("@1", anio_actual).
-                    Param("@2", semestre_actual).
-                    Param("@3", alumno);
+            string sql = @"
+                SELECT DISTINCT id FROM calificacion
+                INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+                WHERE planificacion.plan = @IdPlan
+                AND planificacion.anio < @Anio AND planificacion.semestre < @Semestre 
+                AND calificacion.alumno = @IdAlumno
+                AND (nota_final >= 7 OR crec >= 4)
+                ORDER BY planificacion.anio ASC, planificacion.semestre ASC, asignatura.nombre ASC
+            ";
+
+            return Context.db.CacheSql().QueryIds<Calificacion>(sql, new { IdAlumno = idAlumno, IdPlan = idPlan, Anio = anio, Semestre = semestre });
+
         }
 
-        public static EntitySql CalificacionesAprobadasDeAlumnoPlanConAnioSemestreIngresoSql(object plan, object alumno, object anio, object semestre)
+        public static IEnumerable<Calificacion> CalificacionesAprobadas__By_IdAlumno_IdPlan_Anio_Semestre(object idAlumno, object idPlan, object anio, object semestre)
         {
-            return Context.db.Sql("calificacion").
-                    Size(0).
-                    Where(@"
-                        $planificacion_dis__plan = @0
-                        AND $planificacion_dis__anio >= @1 AND $planificacion_dis__semestre >= @2 
-                        AND $alumno = @3
-                        AND ($nota_final >= 7 OR $crec >= 4)").
-                        Param("@0", plan).
-                        Param("@1", anio).
-                        Param("@2", semestre).
-                        Param("@3", alumno);
+            string sql = @"
+                SELECT DISTINCT id FROM calificacion
+                INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+                WHERE planificacion.plan = @IdPlan
+                AND planificacion.anio >= @Anio AND planificacion.semestre >= @Semestre 
+                AND calificacion.alumno = @IdAlumno
+                AND (nota_final >= 7 OR crec >= 4)
+                ORDER BY planificacion.anio ASC, planificacion.semestre ASC, asignatura.nombre ASC
+            ";
+
+            return Context.db.CacheSql().QueryIds<Calificacion>(sql, new { IdAlumno = idAlumno, IdPlan = idPlan, Anio = anio, Semestre = semestre });
         }
 
-        public static EntitySql CalificacionesAprobadasDeAlumnoPlanDistintoSql(object alumno, object plan)
+        public static IEnumerable<Calificacion> CalificacionesAprobadas__By_IdAlumno_DiffIdPlan(object idAlumno, object idPlan)
         {
-            return Context.db.Sql("calificacion").
-                    Size(0).
-                    Where(@"
-                        $planificacion_dis__plan != @0
-                        AND $alumno = @1
-                        AND ($nota_final >= 7 OR $crec >= 4)").
-                        Param("@0", plan).
-                        Param("@1", alumno);
+            string sql = @"
+                SELECT DISTINCT id FROM calificacion
+                INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+                WHERE planificacion.plan != @IdPlan
+                AND calificacion.alumno = @IdAlumno
+                AND (nota_final >= 7 OR crec >= 4)
+                ORDER BY planificacion.plan ASC, planificacion.anio ASC, planificacion.semestre ASC, asignatura.nombre ASC
+            ";
+
+            return Context.db.CacheSql().QueryIds<Calificacion>(sql, new { IdAlumno = idAlumno, IdPlan = idPlan, });
         }
 
-        public static EntitySql CalificacionDisposicionAlumnosSql(object disposicion, params object[] alumnos)
+        public static IEnumerable<Calificacion> Calificaciones__By_IdDisposicion_IdsAlumnos(object idDisposicion, params object[] idsAlumnos)
         {
-            return Context.db.Sql("calificacion").
-                    Size(0).
-                    Where("$disposicion = @0 AND $alumno IN (@1)").
-                    Param("@0", disposicion).
-                    Param("@1", alumnos);
+            string sql = @"
+                SELECT DISTINCT id FROM calificacion
+                WHERE calificacion.disposicion = @IdDisposicion
+                AND calificacion.alumno IN ( @IdsAlumnos )
+                ORDER BY planificacion.plan ASC, planificacion.anio ASC, planificacion.semestre ASC, asignatura.nombre ASC
+            ";
+
+            return Context.db.CacheSql().QueryIds<Calificacion>(sql, new { IdsAlumnos = idsAlumnos, IdDisposicion = idDisposicion });
         }
 
-
-        public static EntitySql CalificacionAprobadaCursoSql(object idCurso)
+        /// <summary> Calificaciones aprobadas de curso </summary>
+        /// <remarks> No se realiza join directamente a curso, porque puede darse que el curso sea null </remarks>
+        public static IEnumerable<Calificacion> CalificacionesAprobadas__By_IdCurso(object idCurso)
         {
-            var data = Context.db.Sql("curso").Cache().Id(idCurso) ?? throw new Exception("curso inexistente");
-            var curso = Entity.CreateFromDict<Curso>(data);
+            string sql = @"
+                SELECT DISTINCT id FROM calificacion
+                INNER JOIN alumno ON calificacion.alumno = alumno.id
+                INNER JOIN (
+                    SELECT DISTINCT alumno_comision.alumno, curso.disposicion
+                    FROM alumno_comision
+                    INNER JOIN comision ON alumno_comision.comision = comision.id
+                    INNER JOIN curso ON curso.comision = comision.id
+                    WHERE curso.id = @IdCurso
+                ) AS sub ON (sub.alumno = alumno.id AND sub.disposicion = calificacion.disposicion)
+                INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+                WHERE (nota_final >= 7 OR crec >= 4)
+                ORDER BY planificacion.plan ASC, planificacion.anio ASC, planificacion.semestre ASC, asignatura.nombre ASC
+            ";
 
-            string subSql = "SELECT DISTINCT alumno FROM alumno_comision WHERE comision = @0";
-
-            return Context.db.Sql("calificacion").
-                    Size(0).
-                    Where("$alumno IN (" + subSql + ") AND $disposicion = @1 AND (nota_final >= 7 OR crec >= 4)").
-                    Param("@0", curso.comision!).
-                    Param("@1", curso.disposicion!);
+            return Context.db.CacheSql().QueryIds<Calificacion>(sql, new { IdCurso = idCurso });
         }
 
-        public static EntitySql CalificacionDesaprobadaCursoAlumnosActivosSql(object idCurso)
+        /// <summary> Calificaciones desaprobadas de curso </summary>
+        /// <remarks> No se realiza join directamente a curso, porque puede darse que el curso sea null </remarks>
+        public static IEnumerable<Calificacion> CalificacionesDesaprobadas__By_IdCurso(object idCurso)
         {
-            var data = Context.db.Sql("curso").Cache().Id(idCurso) ?? throw new Exception("curso inexistente");
-            Curso curso = Entity.CreateFromDict<Curso>(data);
+            string sql = @"
+                SELECT DISTINCT id FROM calificacion
+                INNER JOIN alumno ON calificacion.alumno = alumno.id
+                INNER JOIN (
+                    SELECT DISTINCT alumno_comision.alumno, curso.disposicion
+                    FROM alumno_comision
+                    INNER JOIN comision ON alumno_comision.comision = comision.id
+                    INNER JOIN curso ON curso.comision = comision.id
+                    WHERE curso.id = @IdCurso
+                ) AS sub ON (sub.alumno = alumno.id AND sub.disposicion = calificacion.disposicion)
+                INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+                WHERE 
+                    (nota_final < 7 AND crec < 4)
+                    OR (nota_final < 7 AND crec IS NULL)
+                    OR (nota_final IS NULL AND crec < 4)
+                    OR (nota_final IS NULL AND crec IS NULL)
+                ORDER BY planificacion.plan ASC, planificacion.anio ASC, planificacion.semestre ASC, asignatura.nombre ASC
+            ";
 
-            string subSql = "SELECT DISTINCT alumno FROM alumno_comision WHERE estado = 'Activo' AND comision = @0";
+            return Context.db.CacheSql().QueryIds<Calificacion>(sql, new { IdCurso = idCurso });
 
-            return Context.db.Sql("calificacion").
-                    Size(0).
-                    Where(@"$alumno IN (" + subSql + ") AND $disposicion = @1 AND nota_final < 7 AND crec < 4").
-                    Param("@0", curso.comision!).
-                    Param("@1", curso.disposicion!);
         }
 
-        public static EntitySql CalificacionesCursoSql(object idCurso)
+        public static IEnumerable<dynamic> CountCalificacionesAprobadas__By_ConcatAlumnoPlan_Group_IdAlumno_IdPlan(List<object> concatAlumnoPlan)
         {
-            var cursoData = Context.db.Sql("curso").Cache().Id(idCurso);
+            string sql = @"
+                SELECT DISTINCT calificacion.alumno, planificacion.plan AS alumno_plan, COUNT(id) AS cantidad 
+                FROM calificacion
+                INNER JOIN alumno ON calificacion.alumno = alumno.id
+                INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                WHERE  (nota_final > 7 OR crec > 4)
+                AND CONCAT(alumno, disposicion.plan) in ( @ConcatAlumnoPlan )
+                GROUP BY alumno, planificacion.plan
+            ";
 
-            var curso = Entity.CreateFromDict<Curso>(cursoData);
-
-            var idAlumnos = curso.comision_.SqlRef("alumno_comision", "comision").Cache().Column("alumno");
-
-            return CalificacionDisposicionAlumnosSql(curso.disposicion!, idAlumnos.ToArray());
-        }
-
-
-        public static EntitySql CantidadCalificacionesAprobadasPorAlumnoDePlanificacion(List<object> alumnosYplanes)
-        {
-            return Context.db.Sql("calificacion")
-                .Select("COUNT($id) as cantidad")
-                .Group("$alumno, $planificacion_dis__anio, $planificacion_dis__semestre")
-                .Size(0)
-                .Where(@"
-                    CONCAT($alumno, $planificacion_dis__plan) IN (@0)
-                    AND ($nota_final >= 7 OR $crec >= 4) 
-                ")
-                .Order("$alumno ASC, $planificacion_dis__anio ASC, $planificacion_dis__semestre ASC").
-                Param("@0", alumnosYplanes);
+            using (var connection = Context.db.Connection().Open())
+            {
+                return connection.Query(sql, new { ConcatAlumnoPlan = concatAlumnoPlan });
+            }
         }
 
 
         /// <summary> Calificaciones aprobadas de alumno para una determinada planificacion </summary>
         /// <remarks> Recordar que una planificacion es la combinacion entre anio, semestre y plan</remarks>
-        public static EntitySql CalificacionesAprobadasPorAlumnoDePlanificacionSql(object idPlanificacion, params object[] idAlumnos)
+        public static IEnumerable<Calificacion> CalificacionesAprobadas_By_IdPlanificacion_IdsAlumnos(object idPlanificacion, params object[] idsAlumnos)
         {
-            return Context.db.Sql("calificacion")
-                .Size(0)
-                .Where(@"
-                    $alumno IN (@0)
-                    AND $planificacion_dis__id = @1
-                    AND ($nota_final >= 7 OR $crec >= 4) 
-                ")
-                .Order("$alumno ASC, $planificacion_dis__anio ASC, $planificacion_dis__semestre ASC").
-                Param("@0", idAlumnos.ToList()).
-                Param("@0", idPlanificacion);
+            string sql = @"
+                SELECT DISTINCT id FROM calificacion
+                INNER JOIN alumno ON calificacion.alumno = alumno.id
+                INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+                WHERE (nota_final > 7 OR crec > 4)
+                AND disposicion.planificacion = @IdPlanificacion AND calificacion.alumno IN ( @IdsAlumnos )
+                ORDER BY planificacion.plan ASC, planificacion.anio ASC, planificacion.semestre ASC, asignatura.nombre ASC
+            ";
+
+            return Context.db.CacheSql().QueryIds<Calificacion>(sql, new { IdPlanificacion = idPlanificacion, IdsAlumnos = idsAlumnos });
         }
 
 
         /// <summary> Cantidad de calificaciones de alumno para una determinada planificacion </summary>
         /// <remarks> Recordar que una planificacion es la combinacion entre anio, semestre y plan</remarks>
-        public static EntitySql CantidadCalificacionesAprobadasPorAlumnoDePlanificacionSql(object idPlanificacion, params object[] idAlumnos)
+        public static IEnumerable<Calificacion> Count_CalificacionesAprobadas__By_IdPlanificacion_IdsAlumnos__Group_idAlumno(object idPlanificacion, params object[] idsAlumnos)
         {
-            return Context.db.Sql("calificacion")
-                .Select("COUNT($id) as cantidad")
-                .Group("$alumno")
-                .Size(0)
-                .Where(@"
-                    $alumno IN (@0)
-                    AND $planificacion_dis__id = @1
-                    AND ($nota_final >= 7 OR $crec >= 4) 
-                ")
-                .Order("$alumno ASC, $planificacion_dis__anio ASC, $planificacion_dis__semestre ASC").
-                Param("@0", idAlumnos.ToList()).
-                Param("@1", idPlanificacion);
+            string sql = @"
+                SELECT alumno, COUNT(id) FROM calificacion
+                INNER JOIN alumno ON calificacion.alumno = alumno.id
+                INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+                WHERE (nota_final > 7 OR crec > 4)
+                AND disposicion.planificacion = @IdPlanificacion AND calificacion.alumno IN ( @IdsAlumnos )
+                GROUP BY alumno
+            ";
+                
+            return Context.db.CacheSql().QueryIds<Calificacion>(sql, new { IdPlanificacion = idPlanificacion, IdsAlumnos = idsAlumnos });
+
         }
 
-        public static EntitySql COUNT_calificacionesAprobadas__BY_Concat_alumno_planDeCurso__GROUP_alumno_planDeCurso_anio_semestre(IEnumerable<object> concats_alumno_planCurso)
+        public static IEnumerable<dynamic> Count_CalificacionesAprobadas__BY_Concat_IdAlumno_IdPlan__GROUP_IdAlumno_IdPlan_Anio_Semestre(IEnumerable<object> concatsAlumnoPlan)
         {
-            return Context.db.Sql("calificacion")
-                .Select("COUNT($id) as cantidad")
-                .Group("$alumno, $planificacion__plan, $planificacion_dis1__anio, $planificacion_dis1__semestre")
-                .Size(0)
-                .Where(@"
-                    CONCAT($alumno, '~', $planificacion__plan) IN (@0)
-                    AND ($nota_final >= 7 OR $crec >= 4) 
-                ")
-                .Order("$alumno ASC, $planificacion_dis1__anio ASC, $planificacion_dis1__semestre ASC").
-                Param("@0", concats_alumno_planCurso);
+            string sql = @"
+                SELECT DISTINCT calificacion.alumno, planificacion.plan, anio, semestre AS alumno_plan, COUNT(id) AS cantidad 
+                FROM calificacion
+                INNER JOIN alumno ON calificacion.alumno = alumno.id
+                INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                WHERE  (nota_final > 7 OR crec > 4)
+                AND CONCAT(alumno, disposicion.plan) in ( @ConcatsAlumnoPlan )
+                GROUP BY alumno, planificacion.plan, planificacion.anio, planificacion.semestre
+            ";
+
+            using (var connection = Context.db.Connection().Open())
+            {
+                return connection.Query(sql, new { ConcatsAlumnoPlan = concatsAlumnoPlan });
+            }
         }
 
-        public static EntitySql COUNT_calificacionesAprobadas__BY_Concat_alumno_planificacion__GROUP_alumno_planificacion(IEnumerable<object> concats_alumno_planificacion)
+        public static  IEnumerable<dynamic> Count_CalificacionesAprobadas__By_Concat_IdAlumno_IdPlanificacion__Group_IdAlumno_IdPlanificacion(IEnumerable<object> concatsAlumnoPlanificacion)
         {
-            return Context.db.Sql("calificacion")
-                .Select("COUNT($id) as cantidad")
-                .Group("$alumno, $comision__planificacion")
-                .Size(0)
-                .Where(@"
-                    CONCAT($alumno, '~', $comision__planificacion) IN (@0)
-                    AND ($nota_final >= 7 OR $crec >= 4) 
-                ").
-                Param("@0", concats_alumno_planificacion);
+            string sql = @"
+                SELECT DISTINCT calificacion.alumno, disposicion.planificacion, COUNT(id) AS cantidad 
+                FROM calificacion
+                INNER JOIN alumno ON calificacion.alumno = alumno.id
+                INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                WHERE  (nota_final > 7 OR crec > 4)
+                AND CONCAT(alumno, disposicion.planificacion) in ( @ConcatsAlumnoPlanificacion )
+                GROUP BY calificacion.alumno, disposicion.planificacion
+            ";
+
+            using (var connection = Context.db.Connection().Open())
+            {
+                return connection.Query(sql, new { ConcatsAlumnoPlanificacion = concatsAlumnoPlanificacion });
+            }
         }
 
 

@@ -19,6 +19,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             Default();
             Comision_.CollectionChanged += Comision_CollectionChanged;
             Designacion_.CollectionChanged += Designacion_CollectionChanged;
+            Sede_organizacion_.CollectionChanged += Sede_organizacion_CollectionChanged;
         }
 
         #region CollectionChanged
@@ -35,6 +36,13 @@ namespace SqlOrganize.Sql.Fines2Model3
                 foreach (Designacion obj in e.NewItems)
                     if(obj.sede_ != this)
                         obj.sede_ = this;
+        }
+        private void Sede_organizacion_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if ( e.NewItems != null )
+                foreach (Sede obj in e.NewItems)
+                    if(obj.organizacion_ != this)
+                        obj.organizacion_ = this;
         }
         #endregion
 
@@ -131,11 +139,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _domicilio != value)
                 {
                     _domicilio = value; NotifyPropertyChanged(nameof(domicilio));
-                    //desactivado hasta implementar cache
-                    //if (_domicilio.HasValue && (domicilio_.IsNoE() || !domicilio_!.Get(db.config.id).ToString()!.Equals(_domicilio.Value.ToString())))
-                    //    domicilio_ = CreateFromId<Domicilio>(_domicilio);
-                    //else if(_domicilio.IsNoE())
-                    //    domicilio_ = null;
+                    if (!_domicilio.IsNoE() && (domicilio_.IsNoE() || !domicilio_!.Get(db.config.id).ToString()!.Equals(_domicilio.ToString())))
+                        domicilio_ = CreateFromId<Domicilio>(_domicilio);
+                    else if(_domicilio.IsNoE())
+                        domicilio_ = null;
                 }
             }
         }
@@ -150,11 +157,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _tipo_sede != value)
                 {
                     _tipo_sede = value; NotifyPropertyChanged(nameof(tipo_sede));
-                    //desactivado hasta implementar cache
-                    //if (_tipo_sede.HasValue && (tipo_sede_.IsNoE() || !tipo_sede_!.Get(db.config.id).ToString()!.Equals(_tipo_sede.Value.ToString())))
-                    //    tipo_sede_ = CreateFromId<TipoSede>(_tipo_sede);
-                    //else if(_tipo_sede.IsNoE())
-                    //    tipo_sede_ = null;
+                    if (!_tipo_sede.IsNoE() && (tipo_sede_.IsNoE() || !tipo_sede_!.Get(db.config.id).ToString()!.Equals(_tipo_sede.ToString())))
+                        tipo_sede_ = CreateFromId<TipoSede>(_tipo_sede);
+                    else if(_tipo_sede.IsNoE())
+                        tipo_sede_ = null;
                 }
             }
         }
@@ -169,11 +175,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _centro_educativo != value)
                 {
                     _centro_educativo = value; NotifyPropertyChanged(nameof(centro_educativo));
-                    //desactivado hasta implementar cache
-                    //if (_centro_educativo.HasValue && (centro_educativo_.IsNoE() || !centro_educativo_!.Get(db.config.id).ToString()!.Equals(_centro_educativo.Value.ToString())))
-                    //    centro_educativo_ = CreateFromId<CentroEducativo>(_centro_educativo);
-                    //else if(_centro_educativo.IsNoE())
-                    //    centro_educativo_ = null;
+                    if (!_centro_educativo.IsNoE() && (centro_educativo_.IsNoE() || !centro_educativo_!.Get(db.config.id).ToString()!.Equals(_centro_educativo.ToString())))
+                        centro_educativo_ = CreateFromId<CentroEducativo>(_centro_educativo);
+                    else if(_centro_educativo.IsNoE())
+                        centro_educativo_ = null;
                 }
             }
         }
@@ -202,11 +207,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _organizacion != value)
                 {
                     _organizacion = value; NotifyPropertyChanged(nameof(organizacion));
-                    //desactivado hasta implementar cache
-                    //if (_organizacion.HasValue && (organizacion_.IsNoE() || !organizacion_!.Get(db.config.id).ToString()!.Equals(_organizacion.Value.ToString())))
-                    //    organizacion_ = CreateFromId<Sede>(_organizacion);
-                    //else if(_organizacion.IsNoE())
-                    //    organizacion_ = null;
+                    if (!_organizacion.IsNoE() && (organizacion_.IsNoE() || !organizacion_!.Get(db.config.id).ToString()!.Equals(_organizacion.ToString())))
+                        organizacion_ = CreateFromId<Sede>(_organizacion);
+                    else if(_organizacion.IsNoE())
+                        organizacion_ = null;
                 }
             }
         }
@@ -297,6 +301,25 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        #region organizacion (fk sede.organizacion _m:o sede.id)
+        protected Sede? _organizacion_ = null;
+        public Sede? organizacion_
+        {
+            get { return _organizacion_; }
+            set {
+                if ( _organizacion_ != value)
+                {
+                    _organizacion_ = value;
+                    if(value != null)
+                        organizacion = value.id;
+                    else
+                        organizacion = null;
+                    NotifyPropertyChanged(nameof(organizacion_));
+                }
+            }
+        }
+        #endregion
+
         #region Comision_ (ref comision.sede _m:o sede.id)
         protected ObservableCollection<Comision> _Comision_ = new ();
         public ObservableCollection<Comision> Comision_
@@ -315,21 +338,33 @@ namespace SqlOrganize.Sql.Fines2Model3
         }
         #endregion
 
+        #region Sede_organizacion_ (ref sede.organizacion _m:o sede.id)
+        protected ObservableCollection<Sede> _Sede_organizacion_ = new ();
+        public ObservableCollection<Sede> Sede_organizacion_
+        {
+            get { return _Sede_organizacion_; }
+            set { if( _Sede_organizacion_ != value) { _Sede_organizacion_ = value; NotifyPropertyChanged(nameof(Sede_organizacion_)); } }
+        }
+        #endregion
+
         public static IEnumerable<Sede> QueryDapper(IDbConnection connection, string sql, object? parameters = null)
         {
-            return connection.Query<Sede, Domicilio, TipoSede, CentroEducativo, Domicilio, Sede>(
+            return connection.Query<Sede, Domicilio, TipoSede, CentroEducativo, Domicilio, Sede, Domicilio, Sede>(
                 sql,
-                (main, domicilio, tipo_sede, centro_educativo, domicilio_cen) =>
+                (main, domicilio, tipo_sede, centro_educativo, domicilio_cen, organizacion, domicilio_org) =>
                 {
                     main.domicilio_ = domicilio;
                     main.tipo_sede_ = tipo_sede;
                     main.centro_educativo_ = centro_educativo;
                     if(!domicilio_cen.IsNoE()) centro_educativo.domicilio_ = domicilio_cen;
+                    main.organizacion_ = organizacion;
+                    if(!domicilio_org.IsNoE()) organizacion.domicilio_ = domicilio_org;
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("sede")
+                splitOn:"id"
             );
         }
+
     }
 }

@@ -56,7 +56,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>
         /// <remarks> Los datos se obtienen desde un xlsx de https://programafines.ar/inicial/index4.php?a=46</remarks>
-        public void PersistComisionesPf(string data)
+        /*public void PersistComisionesPf(string data)
         {
 
             var pfidComisiones = ComisionDAO.ComisionesAutorizadasDeCalendarioSql(id!).Cache().Dicts().ColOfVal<string>("pfid");
@@ -153,11 +153,11 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
 
         }
-
+        */
 
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>
         /// <remarks> Los datos se obtienen desde el html procesado con pagemanipulator de https://programafines.ar/inicial/index4.php?a=46</remarks>
-        public void PersistTomasPfHtml(string data)
+        /*public void PersistTomasPfHtml(string data)
         {
 
             var pfidComisiones = ComisionDAO.ComisionesAutorizadasDeCalendarioSql(id).Cache().Dicts().ColOfVal<string>("pfid");
@@ -245,10 +245,10 @@ namespace SqlOrganize.Sql.Fines2Model3
 
             }
         }
-
+        */
         /// <summary> Persistencia de tomas obtenidas desde PF </summary>
         /// <remarks> Los datos se obtienen desde un xlsx de https://programafines.ar/inicial/index4.php?a=46</remarks>
-        public void PersistTomasPf(string data)
+        /*public void PersistTomasPf(string data)
         {
 
             string[] headers = { "persona__apellidos", "persona__nombres", "persona__numero_documento", "persona__descripcion_domicilio", "persona__localidad", "persona__fecha_nacimiento", "persona__telefono", "persona__email_abc", "comision__pfid", "descripcion_asignatura", "CENS" };
@@ -290,7 +290,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                     object pfid = dict["comision__pfid"]!;
                     string codigo = dict["descripcion_asignatura"]!.ToString()!.SubstringBetween("(", ")");
 
-                    object? idCurso = CursoDAO.CursoDeComisionPfidCodigoAsignaturaCalendarioSql(pfid, codigo, id!).Value<object>("id");
+                    object? idCursoAux = CursoDAO.CursosAutorizados__By_Pfid_Codigo_IdCalendario(pfid, codigo, id)?.id ?? null;
                     if (idCurso.IsNoE())
                         throw new Exception("No existe curso");
 
@@ -331,8 +331,8 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
 
         }
-
-        public void GenerarComisionesSemestreSiguiente(string idCalendarioComisionesSiguientes)
+        */
+        /*public void GenerarComisionesSemestreSiguiente(string idCalendarioComisionesSiguientes)
         {
             IEnumerable<Comision> comisionesAutorizadasSemestre = Context.db.Sql("comision").
                Where(@" 
@@ -385,6 +385,6 @@ namespace SqlOrganize.Sql.Fines2Model3
             }
 
         }
-
+        */
     }
 }

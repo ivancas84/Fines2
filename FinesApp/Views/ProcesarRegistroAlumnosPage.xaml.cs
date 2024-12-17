@@ -29,9 +29,7 @@ public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
     {
         asignacionRegistroOC.Clear();
 
-        IDictionary<string, AlumnoComision> asignacionesDb = AsignacionDAO.AsignacionesDeComisionesAutorizadasDelPeriodoSql(DateTime.Now.Year, 1).
-            Cache().Entities<AlumnoComision>().
-            DictOfObjByPropertyNames("persona__numero_documento");
+        IDictionary<string, AlumnoComision> asignacionesDb = AsignacionDAO.AsignacionesDeComisionesAutorizadas__By_Periodo(DateTime.Now.Year, 1).DictOfObjByPropertyNames("persona");
 
         IEnumerable<string> _headers = headersTextBox.Text.Split(", ").Select(s => s.Trim());
 
@@ -72,7 +70,7 @@ public partial class ProcesarRegistroAlumnosPage : Page, INotifyPropertyChanged
                         updatePersonaDb[key] = personaForm.Get(key);
                     }
 
-                    asignacionForm.Msg = "Verificar: " + verificarPersonaDb.ToString() + " - Actualizar: " + updatePersonaDb.ToString(); 
+                    asignacionForm.Label = "Verificar: " + verificarPersonaDb.ToString() + " - Actualizar: " + updatePersonaDb.ToString(); 
                 }
             }
         }

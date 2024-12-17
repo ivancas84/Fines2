@@ -247,11 +247,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _domicilio != value)
                 {
                     _domicilio = value; NotifyPropertyChanged(nameof(domicilio));
-                    //desactivado hasta implementar cache
-                    //if (_domicilio.HasValue && (domicilio_.IsNoE() || !domicilio_!.Get(db.config.id).ToString()!.Equals(_domicilio.Value.ToString())))
-                    //    domicilio_ = CreateFromId<Domicilio>(_domicilio);
-                    //else if(_domicilio.IsNoE())
-                    //    domicilio_ = null;
+                    if (!_domicilio.IsNoE() && (domicilio_.IsNoE() || !domicilio_!.Get(db.config.id).ToString()!.Equals(_domicilio.ToString())))
+                        domicilio_ = CreateFromId<Domicilio>(_domicilio);
+                    else if(_domicilio.IsNoE())
+                        domicilio_ = null;
                 }
             }
         }
@@ -573,8 +572,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("persona")
+                splitOn:"id"
             );
         }
+
     }
 }

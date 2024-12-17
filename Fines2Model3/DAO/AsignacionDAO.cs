@@ -6,16 +6,15 @@ namespace SqlOrganize.Sql.Fines2Model3
     public static class AsignacionDAO
     {
     
-        public static IEnumerable<AlumnoComision> OtrasAsignaciones__BY_alumno_AND_comision(object idAlumno, object idComision)
+        public static IEnumerable<AlumnoComision> Asignaciones__By_IdAlumno__NotIn_IdComision(object idAlumno, object idComision)
         {
-            using (var connection = Context.db.Connection().Open())
-            {
-                var sql = Context.db.Sql().SelectDapper("alumno_comision") + @"
-                    WHERE alumno = @Alumno AND comision = @Comision;
-                ";
+            string sql = @"
+                SELECT id FROM alumno_comision 
+                WHERE alumno.comision.alumno = @IdAlumno
+                AND alumno_comision.comision != @IdComision
+            ";
 
-                return AlumnoComision.QueryDapper(connection, sql, new { Alumno = idAlumno, Comision = idComision });
-            }
+            return Context.db.CacheSql().QueryIds<AlumnoComision>(sql, new { IdComision = idComision, IdAlumno = idAlumno });
         }
 
         public static AlumnoComision? Asignacion__By_IdCurso_NumeroDocumento(object id_curso, object numero_documento)
@@ -30,7 +29,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 WHERE persona.numero_documento = @NumeroDocumento
             ";
 
-            var response = Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdCurso = id_curso, NumeroDocumento = numero_documento });
+            var response = Context.db.CacheSql().QueryIds<AlumnoComision>(sql, new { IdCurso = id_curso, NumeroDocumento = numero_documento });
 
             return (response.Any()) ? response.ElementAt(0) : null;
         }
@@ -45,7 +44,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 AND alumno_comision.comision = @IdComision
             ";
 
-            var response = Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdComision = id_comision, NumeroDocumento = numero_documento });
+            var response = Context.db.CacheSql().QueryIds<AlumnoComision>(sql, new { IdComision = id_comision, NumeroDocumento = numero_documento });
 
             return (response.Any()) ? response.ElementAt(0) : null;
         }
@@ -57,7 +56,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 WHERE alumno_comision.comision IN ( @IdComisiones )
             ";
 
-            return Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdComisiones = idComisiones});
+            return Context.db.CacheSql().QueryIds<AlumnoComision>(sql, new { IdComisiones = idComisiones});
         }
 
         public static IEnumerable<AlumnoComision> AsignacionesDeComisionesAutorizadas__By_Periodo(object anio, object semestre)
@@ -71,7 +70,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 AND comision.autorizada = true
             ";
 
-            return Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { Anio = anio, Semestre = semestre });
+            return Context.db.CacheSql().QueryIds<AlumnoComision>(sql, new { Anio = anio, Semestre = semestre });
 
         }
 
@@ -90,7 +89,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 ";
 
 
-            return Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdComision = idComision, IdAlumnos = idAlumnos });
+            return Context.db.CacheSql().QueryIds<AlumnoComision>(sql, new { IdComision = idComision, IdAlumnos = idAlumnos });
         }
 
         public static IEnumerable<AlumnoComision> Asignaciones__By_IdCalendario(object idCalendario)
@@ -101,7 +100,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 WHERE comision.calendario = @IdCalendario
             ";
 
-            return Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdCalendario = idCalendario });
+            return Context.db.CacheSql().QueryIds<AlumnoComision>(sql, new { IdCalendario = idCalendario });
 
 
         }
@@ -115,7 +114,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                 AND comision.comision_siguiente IS NOT NULL
             ";
 
-            return Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdCalendario = idCalendario });
+            return Context.db.CacheSql().QueryIds<AlumnoComision>(sql, new { IdCalendario = idCalendario });
         }
 
         public static IEnumerable<AlumnoComision> AsignacionesActivas__With_ComisionSiguiente__By_IdCalendario(object idCalendario)
@@ -129,7 +128,7 @@ namespace SqlOrganize.Sql.Fines2Model3
             ";
 
 
-            return Context.db.CacheSql().QueryIds<AlumnoComision>("alumno_comision", sql, new { IdCalendario = idCalendario });
+            return Context.db.CacheSql().QueryIds<AlumnoComision>(sql, new { IdCalendario = idCalendario });
         }
 
 
@@ -146,33 +145,43 @@ namespace SqlOrganize.Sql.Fines2Model3
                 HAVING cantidad > 1
             ";
 
-
             using(var connection = Context.db.Connection().Open())
             {
                 return connection.Query(sql, new { IdCalendario = idCalendario });
             }
         }
 
-        public static EntitySql AsignacionesActivas__BY_idCalendario_idsAlumnos(object idCalendario, IEnumerable<object> idsAlumnos)
+        public static IEnumerable<AlumnoComision> AsignacionesActivas__BY_IdCalendario_IdsAlumnos(object idCalendario, IEnumerable<object> idsAlumnos)
         {
-            return Context.db.Sql("alumno_comision")
-                .Size(0)
-                .Where(@"
-                    $calendario__id = @0
-                    AND $alumno IN (@1)
-                    AND $estado = 'Activo'
-                    AND $comision__autorizada = true")
-                .Param("@0", idCalendario)
-                .Param("@1", idsAlumnos);
+            string sql = @"
+                SELECT id
+                FROM alumno_comision 
+                INNER JOIN comision ON (alumno_comision.comision = comision.id)
+                WHERE comision.calendario = @IdCalendario
+                AND alumno_comision.alumno IN ( @IdsAlumnos )
+                AND alumno_comision.estado = 'Activo'
+                AND comision.autorizada = true
+                GROUP BY alumno
+                HAVING cantidad > 1
+            ";
+
+
+            return Context.db.CacheSql().QueryIds<AlumnoComision>(sql, new { IdCalendario = idCalendario, IdsAlumnos = idsAlumnos });
         }
 
 
-        public static EntitySql EstadosDeAsignacionesSql()
+        public static IEnumerable<string> EstadosDeAsignaciones()
         {
-            return Context.db.Sql("alumno_comision")
-               .Fields("$estado")
-               .Where("$estado IS NOT NULL")
-               .Size(0);
+            string sql = @"
+                SELECT DISTINCT estado
+                FROM alumno_comision 
+            ";
+
+
+            using (var connection = Context.db.Connection().Open())
+            {
+                return connection.Query<string>(sql);
+            }
         }
 
     }

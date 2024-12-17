@@ -59,11 +59,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _archivo != value)
                 {
                     _archivo = value; NotifyPropertyChanged(nameof(archivo));
-                    //desactivado hasta implementar cache
-                    //if (_archivo.HasValue && (archivo_.IsNoE() || !archivo_!.Get(db.config.id).ToString()!.Equals(_archivo.Value.ToString())))
-                    //    archivo_ = CreateFromId<File>(_archivo);
-                    //else if(_archivo.IsNoE())
-                    //    archivo_ = null;
+                    if (!_archivo.IsNoE() && (archivo_.IsNoE() || !archivo_!.Get(db.config.id).ToString()!.Equals(_archivo.ToString())))
+                        archivo_ = CreateFromId<File>(_archivo);
+                    else if(_archivo.IsNoE())
+                        archivo_ = null;
                 }
             }
         }
@@ -92,11 +91,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _persona != value)
                 {
                     _persona = value; NotifyPropertyChanged(nameof(persona));
-                    //desactivado hasta implementar cache
-                    //if (_persona.HasValue && (persona_.IsNoE() || !persona_!.Get(db.config.id).ToString()!.Equals(_persona.Value.ToString())))
-                    //    persona_ = CreateFromId<Persona>(_persona);
-                    //else if(_persona.IsNoE())
-                    //    persona_ = null;
+                    if (!_persona.IsNoE() && (persona_.IsNoE() || !persona_!.Get(db.config.id).ToString()!.Equals(_persona.ToString())))
+                        persona_ = CreateFromId<Persona>(_persona);
+                    else if(_persona.IsNoE())
+                        persona_ = null;
                 }
             }
         }
@@ -194,8 +192,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("detalle_persona")
+                splitOn:"id"
             );
         }
+
     }
 }

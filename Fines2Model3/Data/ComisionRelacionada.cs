@@ -45,11 +45,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _comision != value)
                 {
                     _comision = value; NotifyPropertyChanged(nameof(comision));
-                    //desactivado hasta implementar cache
-                    //if (_comision.HasValue && (comision_.IsNoE() || !comision_!.Get(db.config.id).ToString()!.Equals(_comision.Value.ToString())))
-                    //    comision_ = CreateFromId<Comision>(_comision);
-                    //else if(_comision.IsNoE())
-                    //    comision_ = null;
+                    if (!_comision.IsNoE() && (comision_.IsNoE() || !comision_!.Get(db.config.id).ToString()!.Equals(_comision.ToString())))
+                        comision_ = CreateFromId<Comision>(_comision);
+                    else if(_comision.IsNoE())
+                        comision_ = null;
                 }
             }
         }
@@ -64,11 +63,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _relacion != value)
                 {
                     _relacion = value; NotifyPropertyChanged(nameof(relacion));
-                    //desactivado hasta implementar cache
-                    //if (_relacion.HasValue && (relacion_.IsNoE() || !relacion_!.Get(db.config.id).ToString()!.Equals(_relacion.Value.ToString())))
-                    //    relacion_ = CreateFromId<Comision>(_relacion);
-                    //else if(_relacion.IsNoE())
-                    //    relacion_ = null;
+                    if (!_relacion.IsNoE() && (relacion_.IsNoE() || !relacion_!.Get(db.config.id).ToString()!.Equals(_relacion.ToString())))
+                        relacion_ = CreateFromId<Comision>(_relacion);
+                    else if(_relacion.IsNoE())
+                        relacion_ = null;
                 }
             }
         }
@@ -127,8 +125,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("comision_relacionada")
+                splitOn:"id"
             );
         }
+
     }
 }

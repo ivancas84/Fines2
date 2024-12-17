@@ -19,10 +19,11 @@ namespace SqlOrganize.Sql
         /// <summary>
         /// Queries entity IDs and resolves them into entities using caching and relationships.
         /// </summary>
-        public IEnumerable<T> QueryIds<T>(string entityName, string sql, object? parameters = null) where T : Entity, new()
+        public IEnumerable<T> QueryIds<T>(string sql, object? parameters = null) where T : Entity, new()
         {
+            T emptyClass = Entity.CreateEmpty<T>(); //empty class to get entityName 
             var ids = Query(sql, parameters).ColOfVal<object>(Db.config.id).ToArray();
-            return ByIds<T>(entityName, ids);
+            return ByIds<T>(emptyClass.entityName, ids);
         }
 
         public IEnumerable<T> ByIds<T>(string entityName, params object[] ids)

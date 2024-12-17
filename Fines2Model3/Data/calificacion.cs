@@ -115,11 +115,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _curso != value)
                 {
                     _curso = value; NotifyPropertyChanged(nameof(curso));
-                    //desactivado hasta implementar cache
-                    //if (_curso.HasValue && (curso_.IsNoE() || !curso_!.Get(db.config.id).ToString()!.Equals(_curso.Value.ToString())))
-                    //    curso_ = CreateFromId<Curso>(_curso);
-                    //else if(_curso.IsNoE())
-                    //    curso_ = null;
+                    if (!_curso.IsNoE() && (curso_.IsNoE() || !curso_!.Get(db.config.id).ToString()!.Equals(_curso.ToString())))
+                        curso_ = CreateFromId<Curso>(_curso);
+                    else if(_curso.IsNoE())
+                        curso_ = null;
                 }
             }
         }
@@ -176,11 +175,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _alumno != value)
                 {
                     _alumno = value; NotifyPropertyChanged(nameof(alumno));
-                    //desactivado hasta implementar cache
-                    //if (_alumno.HasValue && (alumno_.IsNoE() || !alumno_!.Get(db.config.id).ToString()!.Equals(_alumno.Value.ToString())))
-                    //    alumno_ = CreateFromId<Alumno>(_alumno);
-                    //else if(_alumno.IsNoE())
-                    //    alumno_ = null;
+                    if (!_alumno.IsNoE() && (alumno_.IsNoE() || !alumno_!.Get(db.config.id).ToString()!.Equals(_alumno.ToString())))
+                        alumno_ = CreateFromId<Alumno>(_alumno);
+                    else if(_alumno.IsNoE())
+                        alumno_ = null;
                 }
             }
         }
@@ -195,11 +193,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _disposicion != value)
                 {
                     _disposicion = value; NotifyPropertyChanged(nameof(disposicion));
-                    //desactivado hasta implementar cache
-                    //if (_disposicion.HasValue && (disposicion_.IsNoE() || !disposicion_!.Get(db.config.id).ToString()!.Equals(_disposicion.Value.ToString())))
-                    //    disposicion_ = CreateFromId<Disposicion>(_disposicion);
-                    //else if(_disposicion.IsNoE())
-                    //    disposicion_ = null;
+                    if (!_disposicion.IsNoE() && (disposicion_.IsNoE() || !disposicion_!.Get(db.config.id).ToString()!.Equals(_disposicion.ToString())))
+                        disposicion_ = CreateFromId<Disposicion>(_disposicion);
+                    else if(_disposicion.IsNoE())
+                        disposicion_ = null;
                 }
             }
         }
@@ -305,8 +302,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("calificacion")
+                splitOn:"id"
             );
         }
+
     }
 }

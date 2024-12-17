@@ -77,11 +77,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _asignatura != value)
                 {
                     _asignatura = value; NotifyPropertyChanged(nameof(asignatura));
-                    //desactivado hasta implementar cache
-                    //if (_asignatura.HasValue && (asignatura_.IsNoE() || !asignatura_!.Get(db.config.id).ToString()!.Equals(_asignatura.Value.ToString())))
-                    //    asignatura_ = CreateFromId<Asignatura>(_asignatura);
-                    //else if(_asignatura.IsNoE())
-                    //    asignatura_ = null;
+                    if (!_asignatura.IsNoE() && (asignatura_.IsNoE() || !asignatura_!.Get(db.config.id).ToString()!.Equals(_asignatura.ToString())))
+                        asignatura_ = CreateFromId<Asignatura>(_asignatura);
+                    else if(_asignatura.IsNoE())
+                        asignatura_ = null;
                 }
             }
         }
@@ -96,11 +95,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _planificacion != value)
                 {
                     _planificacion = value; NotifyPropertyChanged(nameof(planificacion));
-                    //desactivado hasta implementar cache
-                    //if (_planificacion.HasValue && (planificacion_.IsNoE() || !planificacion_!.Get(db.config.id).ToString()!.Equals(_planificacion.Value.ToString())))
-                    //    planificacion_ = CreateFromId<Planificacion>(_planificacion);
-                    //else if(_planificacion.IsNoE())
-                    //    planificacion_ = null;
+                    if (!_planificacion.IsNoE() && (planificacion_.IsNoE() || !planificacion_!.Get(db.config.id).ToString()!.Equals(_planificacion.ToString())))
+                        planificacion_ = CreateFromId<Planificacion>(_planificacion);
+                    else if(_planificacion.IsNoE())
+                        planificacion_ = null;
                 }
             }
         }
@@ -206,8 +204,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("disposicion")
+                splitOn:"id"
             );
         }
+
     }
 }

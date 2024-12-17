@@ -97,11 +97,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _persona != value)
                 {
                     _persona = value; NotifyPropertyChanged(nameof(persona));
-                    //desactivado hasta implementar cache
-                    //if (_persona.HasValue && (persona_.IsNoE() || !persona_!.Get(db.config.id).ToString()!.Equals(_persona.Value.ToString())))
-                    //    persona_ = CreateFromId<Persona>(_persona);
-                    //else if(_persona.IsNoE())
-                    //    persona_ = null;
+                    if (!_persona.IsNoE() && (persona_.IsNoE() || !persona_!.Get(db.config.id).ToString()!.Equals(_persona.ToString())))
+                        persona_ = CreateFromId<Persona>(_persona);
+                    else if(_persona.IsNoE())
+                        persona_ = null;
                 }
             }
         }
@@ -144,11 +143,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _plan != value)
                 {
                     _plan = value; NotifyPropertyChanged(nameof(plan));
-                    //desactivado hasta implementar cache
-                    //if (_plan.HasValue && (plan_.IsNoE() || !plan_!.Get(db.config.id).ToString()!.Equals(_plan.Value.ToString())))
-                    //    plan_ = CreateFromId<Plan>(_plan);
-                    //else if(_plan.IsNoE())
-                    //    plan_ = null;
+                    if (!_plan.IsNoE() && (plan_.IsNoE() || !plan_!.Get(db.config.id).ToString()!.Equals(_plan.ToString())))
+                        plan_ = CreateFromId<Plan>(_plan);
+                    else if(_plan.IsNoE())
+                        plan_ = null;
                 }
             }
         }
@@ -163,11 +161,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _resolucion_inscripcion != value)
                 {
                     _resolucion_inscripcion = value; NotifyPropertyChanged(nameof(resolucion_inscripcion));
-                    //desactivado hasta implementar cache
-                    //if (_resolucion_inscripcion.HasValue && (resolucion_inscripcion_.IsNoE() || !resolucion_inscripcion_!.Get(db.config.id).ToString()!.Equals(_resolucion_inscripcion.Value.ToString())))
-                    //    resolucion_inscripcion_ = CreateFromId<Resolucion>(_resolucion_inscripcion);
-                    //else if(_resolucion_inscripcion.IsNoE())
-                    //    resolucion_inscripcion_ = null;
+                    if (!_resolucion_inscripcion.IsNoE() && (resolucion_inscripcion_.IsNoE() || !resolucion_inscripcion_!.Get(db.config.id).ToString()!.Equals(_resolucion_inscripcion.ToString())))
+                        resolucion_inscripcion_ = CreateFromId<Resolucion>(_resolucion_inscripcion);
+                    else if(_resolucion_inscripcion.IsNoE())
+                        resolucion_inscripcion_ = null;
                 }
             }
         }
@@ -542,8 +539,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("alumno")
+                splitOn:"id"
             );
         }
+
     }
 }

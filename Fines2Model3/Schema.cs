@@ -620,6 +620,45 @@ namespace SqlOrganize.Sql.Fines2Model3
                                             },
                                         } },
                                         #endregion
+                                        #region organizacion
+                                        { "organizacion", new () {
+                                            fieldName = "organizacion",
+                                            refFieldName = "id",
+                                            refEntityName = "sede",
+                                            children = new() {
+                                                #region domicilio_org
+                                                { "domicilio_org", new () {
+                                                    fieldName = "domicilio",
+                                                    refFieldName = "id",
+                                                    refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                                #region tipo_sede_org
+                                                { "tipo_sede_org", new () {
+                                                    fieldName = "tipo_sede",
+                                                    refFieldName = "id",
+                                                    refEntityName = "tipo_sede",
+                                                } },
+                                                #endregion
+                                                #region centro_educativo_org
+                                                { "centro_educativo_org", new () {
+                                                    fieldName = "centro_educativo",
+                                                    refFieldName = "id",
+                                                    refEntityName = "centro_educativo",
+                                                    children = new() {
+                                                        #region domicilio_cen1
+                                                        { "domicilio_cen1", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
                                     },
                                 } },
                                 #endregion
@@ -641,6 +680,123 @@ namespace SqlOrganize.Sql.Fines2Model3
                                             fieldName = "plan",
                                             refFieldName = "id",
                                             refEntityName = "plan",
+                                        } },
+                                        #endregion
+                                    },
+                                } },
+                                #endregion
+                                #region comision_siguiente
+                                { "comision_siguiente", new () {
+                                    fieldName = "comision_siguiente",
+                                    refFieldName = "id",
+                                    refEntityName = "comision",
+                                    children = new() {
+                                        #region sede_com
+                                        { "sede_com", new () {
+                                            fieldName = "sede",
+                                            refFieldName = "id",
+                                            refEntityName = "sede",
+                                            children = new() {
+                                                #region domicilio_sed
+                                                { "domicilio_sed", new () {
+                                                    fieldName = "domicilio",
+                                                    refFieldName = "id",
+                                                    refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                                #region tipo_sede_sed
+                                                { "tipo_sede_sed", new () {
+                                                    fieldName = "tipo_sede",
+                                                    refFieldName = "id",
+                                                    refEntityName = "tipo_sede",
+                                                } },
+                                                #endregion
+                                                #region centro_educativo_sed
+                                                { "centro_educativo_sed", new () {
+                                                    fieldName = "centro_educativo",
+                                                    refFieldName = "id",
+                                                    refEntityName = "centro_educativo",
+                                                    children = new() {
+                                                        #region domicilio_cen2
+                                                        { "domicilio_cen2", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                                #region organizacion_sed
+                                                { "organizacion_sed", new () {
+                                                    fieldName = "organizacion",
+                                                    refFieldName = "id",
+                                                    refEntityName = "sede",
+                                                    children = new() {
+                                                        #region domicilio_org1
+                                                        { "domicilio_org1", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                        #region tipo_sede_org1
+                                                        { "tipo_sede_org1", new () {
+                                                            fieldName = "tipo_sede",
+                                                            refFieldName = "id",
+                                                            refEntityName = "tipo_sede",
+                                                        } },
+                                                        #endregion
+                                                        #region centro_educativo_org1
+                                                        { "centro_educativo_org1", new () {
+                                                            fieldName = "centro_educativo",
+                                                            refFieldName = "id",
+                                                            refEntityName = "centro_educativo",
+                                                            children = new() {
+                                                                #region domicilio_cen3
+                                                                { "domicilio_cen3", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region modalidad_com
+                                        { "modalidad_com", new () {
+                                            fieldName = "modalidad",
+                                            refFieldName = "id",
+                                            refEntityName = "modalidad",
+                                        } },
+                                        #endregion
+                                        #region planificacion_com
+                                        { "planificacion_com", new () {
+                                            fieldName = "planificacion",
+                                            refFieldName = "id",
+                                            refEntityName = "planificacion",
+                                            children = new() {
+                                                #region plan_pla
+                                                { "plan_pla", new () {
+                                                    fieldName = "plan",
+                                                    refFieldName = "id",
+                                                    refEntityName = "plan",
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region calendario_com
+                                        { "calendario_com", new () {
+                                            fieldName = "calendario",
+                                            refFieldName = "id",
+                                            refEntityName = "calendario",
                                         } },
                                         #endregion
                                     },
@@ -745,6 +901,46 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "centro_educativo",
                         } },
                         #endregion
+                        #region organizacion
+                        { "organizacion", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede",
+                        } },
+                        #endregion
+                        #region domicilio_org
+                        { "domicilio_org", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region tipo_sede_org
+                        { "tipo_sede_org", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region centro_educativo_org
+                        { "centro_educativo_org", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region domicilio_cen1
+                        { "domicilio_cen1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org",
+                        } },
+                        #endregion
                         #region modalidad
                         { "modalidad", new () {
                             fieldName = "modalidad",
@@ -767,6 +963,126 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion",
+                        } },
+                        #endregion
+                        #region comision_siguiente
+                        { "comision_siguiente", new () {
+                            fieldName = "comision_siguiente",
+                            refFieldName = "id",
+                            refEntityName = "comision",
+                            parentId = "comision",
+                        } },
+                        #endregion
+                        #region sede_com
+                        { "sede_com", new () {
+                            fieldName = "sede",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region domicilio_sed
+                        { "domicilio_sed", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region tipo_sede_sed
+                        { "tipo_sede_sed", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region centro_educativo_sed
+                        { "centro_educativo_sed", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_cen2
+                        { "domicilio_cen2", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_sed",
+                        } },
+                        #endregion
+                        #region organizacion_sed
+                        { "organizacion_sed", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_org1
+                        { "domicilio_org1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region tipo_sede_org1
+                        { "tipo_sede_org1", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region centro_educativo_org1
+                        { "centro_educativo_org1", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region domicilio_cen3
+                        { "domicilio_cen3", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org1",
+                        } },
+                        #endregion
+                        #region modalidad_com
+                        { "modalidad_com", new () {
+                            fieldName = "modalidad",
+                            refFieldName = "id",
+                            refEntityName = "modalidad",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region planificacion_com
+                        { "planificacion_com", new () {
+                            fieldName = "planificacion",
+                            refFieldName = "id",
+                            refEntityName = "planificacion",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region plan_pla
+                        { "plan_pla", new () {
+                            fieldName = "plan",
+                            refFieldName = "id",
+                            refEntityName = "plan",
+                            parentId = "planificacion_com",
+                        } },
+                        #endregion
+                        #region calendario_com
+                        { "calendario_com", new () {
+                            fieldName = "calendario",
+                            refFieldName = "id",
+                            refEntityName = "calendario",
+                            parentId = "comision_siguiente",
                         } },
                         #endregion
                         #region calendario
@@ -1033,6 +1349,45 @@ namespace SqlOrganize.Sql.Fines2Model3
                                                             },
                                                         } },
                                                         #endregion
+                                                        #region organizacion
+                                                        { "organizacion", new () {
+                                                            fieldName = "organizacion",
+                                                            refFieldName = "id",
+                                                            refEntityName = "sede",
+                                                            children = new() {
+                                                                #region domicilio_org
+                                                                { "domicilio_org", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                                #region tipo_sede_org
+                                                                { "tipo_sede_org", new () {
+                                                                    fieldName = "tipo_sede",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "tipo_sede",
+                                                                } },
+                                                                #endregion
+                                                                #region centro_educativo_org
+                                                                { "centro_educativo_org", new () {
+                                                                    fieldName = "centro_educativo",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "centro_educativo",
+                                                                    children = new() {
+                                                                        #region domicilio_cen1
+                                                                        { "domicilio_cen1", new () {
+                                                                            fieldName = "domicilio",
+                                                                            refFieldName = "id",
+                                                                            refEntityName = "domicilio",
+                                                                        } },
+                                                                        #endregion
+                                                                    },
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
                                                     },
                                                 } },
                                                 #endregion
@@ -1054,6 +1409,123 @@ namespace SqlOrganize.Sql.Fines2Model3
                                                             fieldName = "plan",
                                                             refFieldName = "id",
                                                             refEntityName = "plan",
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                                #region comision_siguiente
+                                                { "comision_siguiente", new () {
+                                                    fieldName = "comision_siguiente",
+                                                    refFieldName = "id",
+                                                    refEntityName = "comision",
+                                                    children = new() {
+                                                        #region sede_com
+                                                        { "sede_com", new () {
+                                                            fieldName = "sede",
+                                                            refFieldName = "id",
+                                                            refEntityName = "sede",
+                                                            children = new() {
+                                                                #region domicilio_sed
+                                                                { "domicilio_sed", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                                #region tipo_sede_sed
+                                                                { "tipo_sede_sed", new () {
+                                                                    fieldName = "tipo_sede",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "tipo_sede",
+                                                                } },
+                                                                #endregion
+                                                                #region centro_educativo_sed
+                                                                { "centro_educativo_sed", new () {
+                                                                    fieldName = "centro_educativo",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "centro_educativo",
+                                                                    children = new() {
+                                                                        #region domicilio_cen2
+                                                                        { "domicilio_cen2", new () {
+                                                                            fieldName = "domicilio",
+                                                                            refFieldName = "id",
+                                                                            refEntityName = "domicilio",
+                                                                        } },
+                                                                        #endregion
+                                                                    },
+                                                                } },
+                                                                #endregion
+                                                                #region organizacion_sed
+                                                                { "organizacion_sed", new () {
+                                                                    fieldName = "organizacion",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "sede",
+                                                                    children = new() {
+                                                                        #region domicilio_org1
+                                                                        { "domicilio_org1", new () {
+                                                                            fieldName = "domicilio",
+                                                                            refFieldName = "id",
+                                                                            refEntityName = "domicilio",
+                                                                        } },
+                                                                        #endregion
+                                                                        #region tipo_sede_org1
+                                                                        { "tipo_sede_org1", new () {
+                                                                            fieldName = "tipo_sede",
+                                                                            refFieldName = "id",
+                                                                            refEntityName = "tipo_sede",
+                                                                        } },
+                                                                        #endregion
+                                                                        #region centro_educativo_org1
+                                                                        { "centro_educativo_org1", new () {
+                                                                            fieldName = "centro_educativo",
+                                                                            refFieldName = "id",
+                                                                            refEntityName = "centro_educativo",
+                                                                            children = new() {
+                                                                                #region domicilio_cen3
+                                                                                { "domicilio_cen3", new () {
+                                                                                    fieldName = "domicilio",
+                                                                                    refFieldName = "id",
+                                                                                    refEntityName = "domicilio",
+                                                                                } },
+                                                                                #endregion
+                                                                            },
+                                                                        } },
+                                                                        #endregion
+                                                                    },
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                        #region modalidad_com
+                                                        { "modalidad_com", new () {
+                                                            fieldName = "modalidad",
+                                                            refFieldName = "id",
+                                                            refEntityName = "modalidad",
+                                                        } },
+                                                        #endregion
+                                                        #region planificacion_com
+                                                        { "planificacion_com", new () {
+                                                            fieldName = "planificacion",
+                                                            refFieldName = "id",
+                                                            refEntityName = "planificacion",
+                                                            children = new() {
+                                                                #region plan_pla
+                                                                { "plan_pla", new () {
+                                                                    fieldName = "plan",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "plan",
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                        #region calendario_com
+                                                        { "calendario_com", new () {
+                                                            fieldName = "calendario",
+                                                            refFieldName = "id",
+                                                            refEntityName = "calendario",
                                                         } },
                                                         #endregion
                                                     },
@@ -1088,8 +1560,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                                                     refFieldName = "id",
                                                     refEntityName = "planificacion",
                                                     children = new() {
-                                                        #region plan_pla
-                                                        { "plan_pla", new () {
+                                                        #region plan_pla1
+                                                        { "plan_pla1", new () {
                                                             fieldName = "plan",
                                                             refFieldName = "id",
                                                             refEntityName = "plan",
@@ -1227,6 +1699,46 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "centro_educativo",
                         } },
                         #endregion
+                        #region organizacion
+                        { "organizacion", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede",
+                        } },
+                        #endregion
+                        #region domicilio_org
+                        { "domicilio_org", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region tipo_sede_org
+                        { "tipo_sede_org", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region centro_educativo_org
+                        { "centro_educativo_org", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region domicilio_cen1
+                        { "domicilio_cen1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org",
+                        } },
+                        #endregion
                         #region modalidad
                         { "modalidad", new () {
                             fieldName = "modalidad",
@@ -1249,6 +1761,126 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion",
+                        } },
+                        #endregion
+                        #region comision_siguiente
+                        { "comision_siguiente", new () {
+                            fieldName = "comision_siguiente",
+                            refFieldName = "id",
+                            refEntityName = "comision",
+                            parentId = "comision",
+                        } },
+                        #endregion
+                        #region sede_com
+                        { "sede_com", new () {
+                            fieldName = "sede",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region domicilio_sed
+                        { "domicilio_sed", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region tipo_sede_sed
+                        { "tipo_sede_sed", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region centro_educativo_sed
+                        { "centro_educativo_sed", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_cen2
+                        { "domicilio_cen2", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_sed",
+                        } },
+                        #endregion
+                        #region organizacion_sed
+                        { "organizacion_sed", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_org1
+                        { "domicilio_org1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region tipo_sede_org1
+                        { "tipo_sede_org1", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region centro_educativo_org1
+                        { "centro_educativo_org1", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region domicilio_cen3
+                        { "domicilio_cen3", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org1",
+                        } },
+                        #endregion
+                        #region modalidad_com
+                        { "modalidad_com", new () {
+                            fieldName = "modalidad",
+                            refFieldName = "id",
+                            refEntityName = "modalidad",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region planificacion_com
+                        { "planificacion_com", new () {
+                            fieldName = "planificacion",
+                            refFieldName = "id",
+                            refEntityName = "planificacion",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region plan_pla
+                        { "plan_pla", new () {
+                            fieldName = "plan",
+                            refFieldName = "id",
+                            refEntityName = "plan",
+                            parentId = "planificacion_com",
+                        } },
+                        #endregion
+                        #region calendario_com
+                        { "calendario_com", new () {
+                            fieldName = "calendario",
+                            refFieldName = "id",
+                            refEntityName = "calendario",
+                            parentId = "comision_siguiente",
                         } },
                         #endregion
                         #region calendario
@@ -1283,8 +1915,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "disposicion",
                         } },
                         #endregion
-                        #region plan_pla
-                        { "plan_pla", new () {
+                        #region plan_pla1
+                        { "plan_pla1", new () {
                             fieldName = "plan",
                             refFieldName = "id",
                             refEntityName = "plan",
@@ -1732,6 +2364,7 @@ namespace SqlOrganize.Sql.Fines2Model3
                       [ "disposicion", "alumno" ]
                     ],
                     #endregion
+
                     name = "calificacion",
                     alias = "cali",
                     pk = [ "id" ],
@@ -1786,6 +2419,45 @@ namespace SqlOrganize.Sql.Fines2Model3
                                                     },
                                                 } },
                                                 #endregion
+                                                #region organizacion
+                                                { "organizacion", new () {
+                                                    fieldName = "organizacion",
+                                                    refFieldName = "id",
+                                                    refEntityName = "sede",
+                                                    children = new() {
+                                                        #region domicilio_org
+                                                        { "domicilio_org", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                        #region tipo_sede_org
+                                                        { "tipo_sede_org", new () {
+                                                            fieldName = "tipo_sede",
+                                                            refFieldName = "id",
+                                                            refEntityName = "tipo_sede",
+                                                        } },
+                                                        #endregion
+                                                        #region centro_educativo_org
+                                                        { "centro_educativo_org", new () {
+                                                            fieldName = "centro_educativo",
+                                                            refFieldName = "id",
+                                                            refEntityName = "centro_educativo",
+                                                            children = new() {
+                                                                #region domicilio_cen1
+                                                                { "domicilio_cen1", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
                                             },
                                         } },
                                         #endregion
@@ -1807,6 +2479,123 @@ namespace SqlOrganize.Sql.Fines2Model3
                                                     fieldName = "plan",
                                                     refFieldName = "id",
                                                     refEntityName = "plan",
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region comision_siguiente
+                                        { "comision_siguiente", new () {
+                                            fieldName = "comision_siguiente",
+                                            refFieldName = "id",
+                                            refEntityName = "comision",
+                                            children = new() {
+                                                #region sede_com
+                                                { "sede_com", new () {
+                                                    fieldName = "sede",
+                                                    refFieldName = "id",
+                                                    refEntityName = "sede",
+                                                    children = new() {
+                                                        #region domicilio_sed
+                                                        { "domicilio_sed", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                        #region tipo_sede_sed
+                                                        { "tipo_sede_sed", new () {
+                                                            fieldName = "tipo_sede",
+                                                            refFieldName = "id",
+                                                            refEntityName = "tipo_sede",
+                                                        } },
+                                                        #endregion
+                                                        #region centro_educativo_sed
+                                                        { "centro_educativo_sed", new () {
+                                                            fieldName = "centro_educativo",
+                                                            refFieldName = "id",
+                                                            refEntityName = "centro_educativo",
+                                                            children = new() {
+                                                                #region domicilio_cen2
+                                                                { "domicilio_cen2", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                        #region organizacion_sed
+                                                        { "organizacion_sed", new () {
+                                                            fieldName = "organizacion",
+                                                            refFieldName = "id",
+                                                            refEntityName = "sede",
+                                                            children = new() {
+                                                                #region domicilio_org1
+                                                                { "domicilio_org1", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                                #region tipo_sede_org1
+                                                                { "tipo_sede_org1", new () {
+                                                                    fieldName = "tipo_sede",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "tipo_sede",
+                                                                } },
+                                                                #endregion
+                                                                #region centro_educativo_org1
+                                                                { "centro_educativo_org1", new () {
+                                                                    fieldName = "centro_educativo",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "centro_educativo",
+                                                                    children = new() {
+                                                                        #region domicilio_cen3
+                                                                        { "domicilio_cen3", new () {
+                                                                            fieldName = "domicilio",
+                                                                            refFieldName = "id",
+                                                                            refEntityName = "domicilio",
+                                                                        } },
+                                                                        #endregion
+                                                                    },
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                                #region modalidad_com
+                                                { "modalidad_com", new () {
+                                                    fieldName = "modalidad",
+                                                    refFieldName = "id",
+                                                    refEntityName = "modalidad",
+                                                } },
+                                                #endregion
+                                                #region planificacion_com
+                                                { "planificacion_com", new () {
+                                                    fieldName = "planificacion",
+                                                    refFieldName = "id",
+                                                    refEntityName = "planificacion",
+                                                    children = new() {
+                                                        #region plan_pla
+                                                        { "plan_pla", new () {
+                                                            fieldName = "plan",
+                                                            refFieldName = "id",
+                                                            refEntityName = "plan",
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                                #region calendario_com
+                                                { "calendario_com", new () {
+                                                    fieldName = "calendario",
+                                                    refFieldName = "id",
+                                                    refEntityName = "calendario",
                                                 } },
                                                 #endregion
                                             },
@@ -1841,8 +2630,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                                             refFieldName = "id",
                                             refEntityName = "planificacion",
                                             children = new() {
-                                                #region plan_pla
-                                                { "plan_pla", new () {
+                                                #region plan_pla1
+                                                { "plan_pla1", new () {
                                                     fieldName = "plan",
                                                     refFieldName = "id",
                                                     refEntityName = "plan",
@@ -1922,8 +2711,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                                     refFieldName = "id",
                                     refEntityName = "planificacion",
                                     children = new() {
-                                        #region plan_pla1
-                                        { "plan_pla1", new () {
+                                        #region plan_pla2
+                                        { "plan_pla2", new () {
                                             fieldName = "plan",
                                             refFieldName = "id",
                                             refEntityName = "plan",
@@ -1993,6 +2782,46 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "centro_educativo",
                         } },
                         #endregion
+                        #region organizacion
+                        { "organizacion", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede",
+                        } },
+                        #endregion
+                        #region domicilio_org
+                        { "domicilio_org", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region tipo_sede_org
+                        { "tipo_sede_org", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region centro_educativo_org
+                        { "centro_educativo_org", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region domicilio_cen1
+                        { "domicilio_cen1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org",
+                        } },
+                        #endregion
                         #region modalidad
                         { "modalidad", new () {
                             fieldName = "modalidad",
@@ -2015,6 +2844,126 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion",
+                        } },
+                        #endregion
+                        #region comision_siguiente
+                        { "comision_siguiente", new () {
+                            fieldName = "comision_siguiente",
+                            refFieldName = "id",
+                            refEntityName = "comision",
+                            parentId = "comision",
+                        } },
+                        #endregion
+                        #region sede_com
+                        { "sede_com", new () {
+                            fieldName = "sede",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region domicilio_sed
+                        { "domicilio_sed", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region tipo_sede_sed
+                        { "tipo_sede_sed", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region centro_educativo_sed
+                        { "centro_educativo_sed", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_cen2
+                        { "domicilio_cen2", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_sed",
+                        } },
+                        #endregion
+                        #region organizacion_sed
+                        { "organizacion_sed", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_org1
+                        { "domicilio_org1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region tipo_sede_org1
+                        { "tipo_sede_org1", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region centro_educativo_org1
+                        { "centro_educativo_org1", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region domicilio_cen3
+                        { "domicilio_cen3", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org1",
+                        } },
+                        #endregion
+                        #region modalidad_com
+                        { "modalidad_com", new () {
+                            fieldName = "modalidad",
+                            refFieldName = "id",
+                            refEntityName = "modalidad",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region planificacion_com
+                        { "planificacion_com", new () {
+                            fieldName = "planificacion",
+                            refFieldName = "id",
+                            refEntityName = "planificacion",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region plan_pla
+                        { "plan_pla", new () {
+                            fieldName = "plan",
+                            refFieldName = "id",
+                            refEntityName = "plan",
+                            parentId = "planificacion_com",
+                        } },
+                        #endregion
+                        #region calendario_com
+                        { "calendario_com", new () {
+                            fieldName = "calendario",
+                            refFieldName = "id",
+                            refEntityName = "calendario",
+                            parentId = "comision_siguiente",
                         } },
                         #endregion
                         #region calendario
@@ -2049,8 +2998,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "disposicion_cur",
                         } },
                         #endregion
-                        #region plan_pla
-                        { "plan_pla", new () {
+                        #region plan_pla1
+                        { "plan_pla1", new () {
                             fieldName = "plan",
                             refFieldName = "id",
                             refEntityName = "plan",
@@ -2129,8 +3078,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "disposicion",
                         } },
                         #endregion
-                        #region plan_pla1
-                        { "plan_pla1", new () {
+                        #region plan_pla2
+                        { "plan_pla2", new () {
                             fieldName = "plan",
                             refFieldName = "id",
                             refEntityName = "plan",
@@ -2605,6 +3554,45 @@ namespace SqlOrganize.Sql.Fines2Model3
                                     },
                                 } },
                                 #endregion
+                                #region organizacion
+                                { "organizacion", new () {
+                                    fieldName = "organizacion",
+                                    refFieldName = "id",
+                                    refEntityName = "sede",
+                                    children = new() {
+                                        #region domicilio_org
+                                        { "domicilio_org", new () {
+                                            fieldName = "domicilio",
+                                            refFieldName = "id",
+                                            refEntityName = "domicilio",
+                                        } },
+                                        #endregion
+                                        #region tipo_sede_org
+                                        { "tipo_sede_org", new () {
+                                            fieldName = "tipo_sede",
+                                            refFieldName = "id",
+                                            refEntityName = "tipo_sede",
+                                        } },
+                                        #endregion
+                                        #region centro_educativo_org
+                                        { "centro_educativo_org", new () {
+                                            fieldName = "centro_educativo",
+                                            refFieldName = "id",
+                                            refEntityName = "centro_educativo",
+                                            children = new() {
+                                                #region domicilio_cen1
+                                                { "domicilio_cen1", new () {
+                                                    fieldName = "domicilio",
+                                                    refFieldName = "id",
+                                                    refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                    },
+                                } },
+                                #endregion
                             },
                         } },
                         #endregion
@@ -2626,6 +3614,123 @@ namespace SqlOrganize.Sql.Fines2Model3
                                     fieldName = "plan",
                                     refFieldName = "id",
                                     refEntityName = "plan",
+                                } },
+                                #endregion
+                            },
+                        } },
+                        #endregion
+                        #region comision_siguiente
+                        { "comision_siguiente", new () {
+                            fieldName = "comision_siguiente",
+                            refFieldName = "id",
+                            refEntityName = "comision",
+                            children = new() {
+                                #region sede_com
+                                { "sede_com", new () {
+                                    fieldName = "sede",
+                                    refFieldName = "id",
+                                    refEntityName = "sede",
+                                    children = new() {
+                                        #region domicilio_sed
+                                        { "domicilio_sed", new () {
+                                            fieldName = "domicilio",
+                                            refFieldName = "id",
+                                            refEntityName = "domicilio",
+                                        } },
+                                        #endregion
+                                        #region tipo_sede_sed
+                                        { "tipo_sede_sed", new () {
+                                            fieldName = "tipo_sede",
+                                            refFieldName = "id",
+                                            refEntityName = "tipo_sede",
+                                        } },
+                                        #endregion
+                                        #region centro_educativo_sed
+                                        { "centro_educativo_sed", new () {
+                                            fieldName = "centro_educativo",
+                                            refFieldName = "id",
+                                            refEntityName = "centro_educativo",
+                                            children = new() {
+                                                #region domicilio_cen2
+                                                { "domicilio_cen2", new () {
+                                                    fieldName = "domicilio",
+                                                    refFieldName = "id",
+                                                    refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region organizacion_sed
+                                        { "organizacion_sed", new () {
+                                            fieldName = "organizacion",
+                                            refFieldName = "id",
+                                            refEntityName = "sede",
+                                            children = new() {
+                                                #region domicilio_org1
+                                                { "domicilio_org1", new () {
+                                                    fieldName = "domicilio",
+                                                    refFieldName = "id",
+                                                    refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                                #region tipo_sede_org1
+                                                { "tipo_sede_org1", new () {
+                                                    fieldName = "tipo_sede",
+                                                    refFieldName = "id",
+                                                    refEntityName = "tipo_sede",
+                                                } },
+                                                #endregion
+                                                #region centro_educativo_org1
+                                                { "centro_educativo_org1", new () {
+                                                    fieldName = "centro_educativo",
+                                                    refFieldName = "id",
+                                                    refEntityName = "centro_educativo",
+                                                    children = new() {
+                                                        #region domicilio_cen3
+                                                        { "domicilio_cen3", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                    },
+                                } },
+                                #endregion
+                                #region modalidad_com
+                                { "modalidad_com", new () {
+                                    fieldName = "modalidad",
+                                    refFieldName = "id",
+                                    refEntityName = "modalidad",
+                                } },
+                                #endregion
+                                #region planificacion_com
+                                { "planificacion_com", new () {
+                                    fieldName = "planificacion",
+                                    refFieldName = "id",
+                                    refEntityName = "planificacion",
+                                    children = new() {
+                                        #region plan_pla
+                                        { "plan_pla", new () {
+                                            fieldName = "plan",
+                                            refFieldName = "id",
+                                            refEntityName = "plan",
+                                        } },
+                                        #endregion
+                                    },
+                                } },
+                                #endregion
+                                #region calendario_com
+                                { "calendario_com", new () {
+                                    fieldName = "calendario",
+                                    refFieldName = "id",
+                                    refEntityName = "calendario",
                                 } },
                                 #endregion
                             },
@@ -2680,6 +3785,46 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "centro_educativo",
                         } },
                         #endregion
+                        #region organizacion
+                        { "organizacion", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede",
+                        } },
+                        #endregion
+                        #region domicilio_org
+                        { "domicilio_org", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region tipo_sede_org
+                        { "tipo_sede_org", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region centro_educativo_org
+                        { "centro_educativo_org", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region domicilio_cen1
+                        { "domicilio_cen1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org",
+                        } },
+                        #endregion
                         #region modalidad
                         { "modalidad", new () {
                             fieldName = "modalidad",
@@ -2704,6 +3849,126 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "planificacion",
                         } },
                         #endregion
+                        #region comision_siguiente
+                        { "comision_siguiente", new () {
+                            fieldName = "comision_siguiente",
+                            refFieldName = "id",
+                            refEntityName = "comision",
+                            parentId = "",
+                        } },
+                        #endregion
+                        #region sede_com
+                        { "sede_com", new () {
+                            fieldName = "sede",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region domicilio_sed
+                        { "domicilio_sed", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region tipo_sede_sed
+                        { "tipo_sede_sed", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region centro_educativo_sed
+                        { "centro_educativo_sed", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_cen2
+                        { "domicilio_cen2", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_sed",
+                        } },
+                        #endregion
+                        #region organizacion_sed
+                        { "organizacion_sed", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_org1
+                        { "domicilio_org1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region tipo_sede_org1
+                        { "tipo_sede_org1", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region centro_educativo_org1
+                        { "centro_educativo_org1", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region domicilio_cen3
+                        { "domicilio_cen3", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org1",
+                        } },
+                        #endregion
+                        #region modalidad_com
+                        { "modalidad_com", new () {
+                            fieldName = "modalidad",
+                            refFieldName = "id",
+                            refEntityName = "modalidad",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region planificacion_com
+                        { "planificacion_com", new () {
+                            fieldName = "planificacion",
+                            refFieldName = "id",
+                            refEntityName = "planificacion",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region plan_pla
+                        { "plan_pla", new () {
+                            fieldName = "plan",
+                            refFieldName = "id",
+                            refEntityName = "plan",
+                            parentId = "planificacion_com",
+                        } },
+                        #endregion
+                        #region calendario_com
+                        { "calendario_com", new () {
+                            fieldName = "calendario",
+                            refFieldName = "id",
+                            refEntityName = "calendario",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
                         #region calendario
                         { "calendario", new () {
                             fieldName = "calendario",
@@ -2718,6 +3983,12 @@ namespace SqlOrganize.Sql.Fines2Model3
                         { "AlumnoComision_", new () {
                             fieldName = "comision",
                             entityName = "alumno_comision",
+                        } },
+                        #endregion
+                        #region Comision_
+                        { "Comision_", new () {
+                            fieldName = "comision_siguiente",
+                            entityName = "comision",
                         } },
                         #endregion
                         #region ComisionRelacionada_
@@ -3122,6 +4393,45 @@ namespace SqlOrganize.Sql.Fines2Model3
                                             },
                                         } },
                                         #endregion
+                                        #region organizacion
+                                        { "organizacion", new () {
+                                            fieldName = "organizacion",
+                                            refFieldName = "id",
+                                            refEntityName = "sede",
+                                            children = new() {
+                                                #region domicilio_org
+                                                { "domicilio_org", new () {
+                                                    fieldName = "domicilio",
+                                                    refFieldName = "id",
+                                                    refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                                #region tipo_sede_org
+                                                { "tipo_sede_org", new () {
+                                                    fieldName = "tipo_sede",
+                                                    refFieldName = "id",
+                                                    refEntityName = "tipo_sede",
+                                                } },
+                                                #endregion
+                                                #region centro_educativo_org
+                                                { "centro_educativo_org", new () {
+                                                    fieldName = "centro_educativo",
+                                                    refFieldName = "id",
+                                                    refEntityName = "centro_educativo",
+                                                    children = new() {
+                                                        #region domicilio_cen1
+                                                        { "domicilio_cen1", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
                                     },
                                 } },
                                 #endregion
@@ -3143,6 +4453,123 @@ namespace SqlOrganize.Sql.Fines2Model3
                                             fieldName = "plan",
                                             refFieldName = "id",
                                             refEntityName = "plan",
+                                        } },
+                                        #endregion
+                                    },
+                                } },
+                                #endregion
+                                #region comision_siguiente
+                                { "comision_siguiente", new () {
+                                    fieldName = "comision_siguiente",
+                                    refFieldName = "id",
+                                    refEntityName = "comision",
+                                    children = new() {
+                                        #region sede_com
+                                        { "sede_com", new () {
+                                            fieldName = "sede",
+                                            refFieldName = "id",
+                                            refEntityName = "sede",
+                                            children = new() {
+                                                #region domicilio_sed
+                                                { "domicilio_sed", new () {
+                                                    fieldName = "domicilio",
+                                                    refFieldName = "id",
+                                                    refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                                #region tipo_sede_sed
+                                                { "tipo_sede_sed", new () {
+                                                    fieldName = "tipo_sede",
+                                                    refFieldName = "id",
+                                                    refEntityName = "tipo_sede",
+                                                } },
+                                                #endregion
+                                                #region centro_educativo_sed
+                                                { "centro_educativo_sed", new () {
+                                                    fieldName = "centro_educativo",
+                                                    refFieldName = "id",
+                                                    refEntityName = "centro_educativo",
+                                                    children = new() {
+                                                        #region domicilio_cen2
+                                                        { "domicilio_cen2", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                                #region organizacion_sed
+                                                { "organizacion_sed", new () {
+                                                    fieldName = "organizacion",
+                                                    refFieldName = "id",
+                                                    refEntityName = "sede",
+                                                    children = new() {
+                                                        #region domicilio_org1
+                                                        { "domicilio_org1", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                        #region tipo_sede_org1
+                                                        { "tipo_sede_org1", new () {
+                                                            fieldName = "tipo_sede",
+                                                            refFieldName = "id",
+                                                            refEntityName = "tipo_sede",
+                                                        } },
+                                                        #endregion
+                                                        #region centro_educativo_org1
+                                                        { "centro_educativo_org1", new () {
+                                                            fieldName = "centro_educativo",
+                                                            refFieldName = "id",
+                                                            refEntityName = "centro_educativo",
+                                                            children = new() {
+                                                                #region domicilio_cen3
+                                                                { "domicilio_cen3", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region modalidad_com
+                                        { "modalidad_com", new () {
+                                            fieldName = "modalidad",
+                                            refFieldName = "id",
+                                            refEntityName = "modalidad",
+                                        } },
+                                        #endregion
+                                        #region planificacion_com
+                                        { "planificacion_com", new () {
+                                            fieldName = "planificacion",
+                                            refFieldName = "id",
+                                            refEntityName = "planificacion",
+                                            children = new() {
+                                                #region plan_pla
+                                                { "plan_pla", new () {
+                                                    fieldName = "plan",
+                                                    refFieldName = "id",
+                                                    refEntityName = "plan",
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region calendario_com
+                                        { "calendario_com", new () {
+                                            fieldName = "calendario",
+                                            refFieldName = "id",
+                                            refEntityName = "calendario",
                                         } },
                                         #endregion
                                     },
@@ -3170,31 +4597,70 @@ namespace SqlOrganize.Sql.Fines2Model3
                                     refFieldName = "id",
                                     refEntityName = "sede",
                                     children = new() {
-                                        #region domicilio_sed
-                                        { "domicilio_sed", new () {
+                                        #region domicilio_sed1
+                                        { "domicilio_sed1", new () {
                                             fieldName = "domicilio",
                                             refFieldName = "id",
                                             refEntityName = "domicilio",
                                         } },
                                         #endregion
-                                        #region tipo_sede_sed
-                                        { "tipo_sede_sed", new () {
+                                        #region tipo_sede_sed1
+                                        { "tipo_sede_sed1", new () {
                                             fieldName = "tipo_sede",
                                             refFieldName = "id",
                                             refEntityName = "tipo_sede",
                                         } },
                                         #endregion
-                                        #region centro_educativo_sed
-                                        { "centro_educativo_sed", new () {
+                                        #region centro_educativo_sed1
+                                        { "centro_educativo_sed1", new () {
                                             fieldName = "centro_educativo",
                                             refFieldName = "id",
                                             refEntityName = "centro_educativo",
                                             children = new() {
-                                                #region domicilio_cen1
-                                                { "domicilio_cen1", new () {
+                                                #region domicilio_cen4
+                                                { "domicilio_cen4", new () {
                                                     fieldName = "domicilio",
                                                     refFieldName = "id",
                                                     refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region organizacion_sed1
+                                        { "organizacion_sed1", new () {
+                                            fieldName = "organizacion",
+                                            refFieldName = "id",
+                                            refEntityName = "sede",
+                                            children = new() {
+                                                #region domicilio_org2
+                                                { "domicilio_org2", new () {
+                                                    fieldName = "domicilio",
+                                                    refFieldName = "id",
+                                                    refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                                #region tipo_sede_org2
+                                                { "tipo_sede_org2", new () {
+                                                    fieldName = "tipo_sede",
+                                                    refFieldName = "id",
+                                                    refEntityName = "tipo_sede",
+                                                } },
+                                                #endregion
+                                                #region centro_educativo_org2
+                                                { "centro_educativo_org2", new () {
+                                                    fieldName = "centro_educativo",
+                                                    refFieldName = "id",
+                                                    refEntityName = "centro_educativo",
+                                                    children = new() {
+                                                        #region domicilio_cen5
+                                                        { "domicilio_cen5", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                    },
                                                 } },
                                                 #endregion
                                             },
@@ -3216,11 +4682,128 @@ namespace SqlOrganize.Sql.Fines2Model3
                                     refFieldName = "id",
                                     refEntityName = "planificacion",
                                     children = new() {
-                                        #region plan_pla
-                                        { "plan_pla", new () {
+                                        #region plan_pla1
+                                        { "plan_pla1", new () {
                                             fieldName = "plan",
                                             refFieldName = "id",
                                             refEntityName = "plan",
+                                        } },
+                                        #endregion
+                                    },
+                                } },
+                                #endregion
+                                #region comision_siguiente_rel
+                                { "comision_siguiente_rel", new () {
+                                    fieldName = "comision_siguiente",
+                                    refFieldName = "id",
+                                    refEntityName = "comision",
+                                    children = new() {
+                                        #region sede_com1
+                                        { "sede_com1", new () {
+                                            fieldName = "sede",
+                                            refFieldName = "id",
+                                            refEntityName = "sede",
+                                            children = new() {
+                                                #region domicilio_sed2
+                                                { "domicilio_sed2", new () {
+                                                    fieldName = "domicilio",
+                                                    refFieldName = "id",
+                                                    refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                                #region tipo_sede_sed2
+                                                { "tipo_sede_sed2", new () {
+                                                    fieldName = "tipo_sede",
+                                                    refFieldName = "id",
+                                                    refEntityName = "tipo_sede",
+                                                } },
+                                                #endregion
+                                                #region centro_educativo_sed2
+                                                { "centro_educativo_sed2", new () {
+                                                    fieldName = "centro_educativo",
+                                                    refFieldName = "id",
+                                                    refEntityName = "centro_educativo",
+                                                    children = new() {
+                                                        #region domicilio_cen6
+                                                        { "domicilio_cen6", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                                #region organizacion_sed2
+                                                { "organizacion_sed2", new () {
+                                                    fieldName = "organizacion",
+                                                    refFieldName = "id",
+                                                    refEntityName = "sede",
+                                                    children = new() {
+                                                        #region domicilio_org3
+                                                        { "domicilio_org3", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                        #region tipo_sede_org3
+                                                        { "tipo_sede_org3", new () {
+                                                            fieldName = "tipo_sede",
+                                                            refFieldName = "id",
+                                                            refEntityName = "tipo_sede",
+                                                        } },
+                                                        #endregion
+                                                        #region centro_educativo_org3
+                                                        { "centro_educativo_org3", new () {
+                                                            fieldName = "centro_educativo",
+                                                            refFieldName = "id",
+                                                            refEntityName = "centro_educativo",
+                                                            children = new() {
+                                                                #region domicilio_cen7
+                                                                { "domicilio_cen7", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region modalidad_com1
+                                        { "modalidad_com1", new () {
+                                            fieldName = "modalidad",
+                                            refFieldName = "id",
+                                            refEntityName = "modalidad",
+                                        } },
+                                        #endregion
+                                        #region planificacion_com1
+                                        { "planificacion_com1", new () {
+                                            fieldName = "planificacion",
+                                            refFieldName = "id",
+                                            refEntityName = "planificacion",
+                                            children = new() {
+                                                #region plan_pla2
+                                                { "plan_pla2", new () {
+                                                    fieldName = "plan",
+                                                    refFieldName = "id",
+                                                    refEntityName = "plan",
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region calendario_com1
+                                        { "calendario_com1", new () {
+                                            fieldName = "calendario",
+                                            refFieldName = "id",
+                                            refEntityName = "calendario",
                                         } },
                                         #endregion
                                     },
@@ -3286,6 +4869,46 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "centro_educativo",
                         } },
                         #endregion
+                        #region organizacion
+                        { "organizacion", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede",
+                        } },
+                        #endregion
+                        #region domicilio_org
+                        { "domicilio_org", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region tipo_sede_org
+                        { "tipo_sede_org", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region centro_educativo_org
+                        { "centro_educativo_org", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region domicilio_cen1
+                        { "domicilio_cen1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org",
+                        } },
+                        #endregion
                         #region modalidad
                         { "modalidad", new () {
                             fieldName = "modalidad",
@@ -3308,6 +4931,126 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion",
+                        } },
+                        #endregion
+                        #region comision_siguiente
+                        { "comision_siguiente", new () {
+                            fieldName = "comision_siguiente",
+                            refFieldName = "id",
+                            refEntityName = "comision",
+                            parentId = "comision",
+                        } },
+                        #endregion
+                        #region sede_com
+                        { "sede_com", new () {
+                            fieldName = "sede",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region domicilio_sed
+                        { "domicilio_sed", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region tipo_sede_sed
+                        { "tipo_sede_sed", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region centro_educativo_sed
+                        { "centro_educativo_sed", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_cen2
+                        { "domicilio_cen2", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_sed",
+                        } },
+                        #endregion
+                        #region organizacion_sed
+                        { "organizacion_sed", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_org1
+                        { "domicilio_org1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region tipo_sede_org1
+                        { "tipo_sede_org1", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region centro_educativo_org1
+                        { "centro_educativo_org1", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region domicilio_cen3
+                        { "domicilio_cen3", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org1",
+                        } },
+                        #endregion
+                        #region modalidad_com
+                        { "modalidad_com", new () {
+                            fieldName = "modalidad",
+                            refFieldName = "id",
+                            refEntityName = "modalidad",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region planificacion_com
+                        { "planificacion_com", new () {
+                            fieldName = "planificacion",
+                            refFieldName = "id",
+                            refEntityName = "planificacion",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region plan_pla
+                        { "plan_pla", new () {
+                            fieldName = "plan",
+                            refFieldName = "id",
+                            refEntityName = "plan",
+                            parentId = "planificacion_com",
+                        } },
+                        #endregion
+                        #region calendario_com
+                        { "calendario_com", new () {
+                            fieldName = "calendario",
+                            refFieldName = "id",
+                            refEntityName = "calendario",
+                            parentId = "comision_siguiente",
                         } },
                         #endregion
                         #region calendario
@@ -3334,36 +5077,76 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "relacion",
                         } },
                         #endregion
-                        #region domicilio_sed
-                        { "domicilio_sed", new () {
+                        #region domicilio_sed1
+                        { "domicilio_sed1", new () {
                             fieldName = "domicilio",
                             refFieldName = "id",
                             refEntityName = "domicilio",
                             parentId = "sede_rel",
                         } },
                         #endregion
-                        #region tipo_sede_sed
-                        { "tipo_sede_sed", new () {
+                        #region tipo_sede_sed1
+                        { "tipo_sede_sed1", new () {
                             fieldName = "tipo_sede",
                             refFieldName = "id",
                             refEntityName = "tipo_sede",
                             parentId = "sede_rel",
                         } },
                         #endregion
-                        #region centro_educativo_sed
-                        { "centro_educativo_sed", new () {
+                        #region centro_educativo_sed1
+                        { "centro_educativo_sed1", new () {
                             fieldName = "centro_educativo",
                             refFieldName = "id",
                             refEntityName = "centro_educativo",
                             parentId = "sede_rel",
                         } },
                         #endregion
-                        #region domicilio_cen1
-                        { "domicilio_cen1", new () {
+                        #region domicilio_cen4
+                        { "domicilio_cen4", new () {
                             fieldName = "domicilio",
                             refFieldName = "id",
                             refEntityName = "domicilio",
-                            parentId = "centro_educativo_sed",
+                            parentId = "centro_educativo_sed1",
+                        } },
+                        #endregion
+                        #region organizacion_sed1
+                        { "organizacion_sed1", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede_rel",
+                        } },
+                        #endregion
+                        #region domicilio_org2
+                        { "domicilio_org2", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion_sed1",
+                        } },
+                        #endregion
+                        #region tipo_sede_org2
+                        { "tipo_sede_org2", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion_sed1",
+                        } },
+                        #endregion
+                        #region centro_educativo_org2
+                        { "centro_educativo_org2", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion_sed1",
+                        } },
+                        #endregion
+                        #region domicilio_cen5
+                        { "domicilio_cen5", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org2",
                         } },
                         #endregion
                         #region modalidad_rel
@@ -3382,12 +5165,132 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "relacion",
                         } },
                         #endregion
-                        #region plan_pla
-                        { "plan_pla", new () {
+                        #region plan_pla1
+                        { "plan_pla1", new () {
                             fieldName = "plan",
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion_rel",
+                        } },
+                        #endregion
+                        #region comision_siguiente_rel
+                        { "comision_siguiente_rel", new () {
+                            fieldName = "comision_siguiente",
+                            refFieldName = "id",
+                            refEntityName = "comision",
+                            parentId = "relacion",
+                        } },
+                        #endregion
+                        #region sede_com1
+                        { "sede_com1", new () {
+                            fieldName = "sede",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "comision_siguiente_rel",
+                        } },
+                        #endregion
+                        #region domicilio_sed2
+                        { "domicilio_sed2", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "sede_com1",
+                        } },
+                        #endregion
+                        #region tipo_sede_sed2
+                        { "tipo_sede_sed2", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "sede_com1",
+                        } },
+                        #endregion
+                        #region centro_educativo_sed2
+                        { "centro_educativo_sed2", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "sede_com1",
+                        } },
+                        #endregion
+                        #region domicilio_cen6
+                        { "domicilio_cen6", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_sed2",
+                        } },
+                        #endregion
+                        #region organizacion_sed2
+                        { "organizacion_sed2", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede_com1",
+                        } },
+                        #endregion
+                        #region domicilio_org3
+                        { "domicilio_org3", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion_sed2",
+                        } },
+                        #endregion
+                        #region tipo_sede_org3
+                        { "tipo_sede_org3", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion_sed2",
+                        } },
+                        #endregion
+                        #region centro_educativo_org3
+                        { "centro_educativo_org3", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion_sed2",
+                        } },
+                        #endregion
+                        #region domicilio_cen7
+                        { "domicilio_cen7", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org3",
+                        } },
+                        #endregion
+                        #region modalidad_com1
+                        { "modalidad_com1", new () {
+                            fieldName = "modalidad",
+                            refFieldName = "id",
+                            refEntityName = "modalidad",
+                            parentId = "comision_siguiente_rel",
+                        } },
+                        #endregion
+                        #region planificacion_com1
+                        { "planificacion_com1", new () {
+                            fieldName = "planificacion",
+                            refFieldName = "id",
+                            refEntityName = "planificacion",
+                            parentId = "comision_siguiente_rel",
+                        } },
+                        #endregion
+                        #region plan_pla2
+                        { "plan_pla2", new () {
+                            fieldName = "plan",
+                            refFieldName = "id",
+                            refEntityName = "plan",
+                            parentId = "planificacion_com1",
+                        } },
+                        #endregion
+                        #region calendario_com1
+                        { "calendario_com1", new () {
+                            fieldName = "calendario",
+                            refFieldName = "id",
+                            refEntityName = "calendario",
+                            parentId = "comision_siguiente_rel",
                         } },
                         #endregion
                         #region calendario_rel
@@ -3629,6 +5532,45 @@ namespace SqlOrganize.Sql.Fines2Model3
                                             },
                                         } },
                                         #endregion
+                                        #region organizacion
+                                        { "organizacion", new () {
+                                            fieldName = "organizacion",
+                                            refFieldName = "id",
+                                            refEntityName = "sede",
+                                            children = new() {
+                                                #region domicilio_org
+                                                { "domicilio_org", new () {
+                                                    fieldName = "domicilio",
+                                                    refFieldName = "id",
+                                                    refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                                #region tipo_sede_org
+                                                { "tipo_sede_org", new () {
+                                                    fieldName = "tipo_sede",
+                                                    refFieldName = "id",
+                                                    refEntityName = "tipo_sede",
+                                                } },
+                                                #endregion
+                                                #region centro_educativo_org
+                                                { "centro_educativo_org", new () {
+                                                    fieldName = "centro_educativo",
+                                                    refFieldName = "id",
+                                                    refEntityName = "centro_educativo",
+                                                    children = new() {
+                                                        #region domicilio_cen1
+                                                        { "domicilio_cen1", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
                                     },
                                 } },
                                 #endregion
@@ -3650,6 +5592,123 @@ namespace SqlOrganize.Sql.Fines2Model3
                                             fieldName = "plan",
                                             refFieldName = "id",
                                             refEntityName = "plan",
+                                        } },
+                                        #endregion
+                                    },
+                                } },
+                                #endregion
+                                #region comision_siguiente
+                                { "comision_siguiente", new () {
+                                    fieldName = "comision_siguiente",
+                                    refFieldName = "id",
+                                    refEntityName = "comision",
+                                    children = new() {
+                                        #region sede_com
+                                        { "sede_com", new () {
+                                            fieldName = "sede",
+                                            refFieldName = "id",
+                                            refEntityName = "sede",
+                                            children = new() {
+                                                #region domicilio_sed
+                                                { "domicilio_sed", new () {
+                                                    fieldName = "domicilio",
+                                                    refFieldName = "id",
+                                                    refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                                #region tipo_sede_sed
+                                                { "tipo_sede_sed", new () {
+                                                    fieldName = "tipo_sede",
+                                                    refFieldName = "id",
+                                                    refEntityName = "tipo_sede",
+                                                } },
+                                                #endregion
+                                                #region centro_educativo_sed
+                                                { "centro_educativo_sed", new () {
+                                                    fieldName = "centro_educativo",
+                                                    refFieldName = "id",
+                                                    refEntityName = "centro_educativo",
+                                                    children = new() {
+                                                        #region domicilio_cen2
+                                                        { "domicilio_cen2", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                                #region organizacion_sed
+                                                { "organizacion_sed", new () {
+                                                    fieldName = "organizacion",
+                                                    refFieldName = "id",
+                                                    refEntityName = "sede",
+                                                    children = new() {
+                                                        #region domicilio_org1
+                                                        { "domicilio_org1", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                        #region tipo_sede_org1
+                                                        { "tipo_sede_org1", new () {
+                                                            fieldName = "tipo_sede",
+                                                            refFieldName = "id",
+                                                            refEntityName = "tipo_sede",
+                                                        } },
+                                                        #endregion
+                                                        #region centro_educativo_org1
+                                                        { "centro_educativo_org1", new () {
+                                                            fieldName = "centro_educativo",
+                                                            refFieldName = "id",
+                                                            refEntityName = "centro_educativo",
+                                                            children = new() {
+                                                                #region domicilio_cen3
+                                                                { "domicilio_cen3", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region modalidad_com
+                                        { "modalidad_com", new () {
+                                            fieldName = "modalidad",
+                                            refFieldName = "id",
+                                            refEntityName = "modalidad",
+                                        } },
+                                        #endregion
+                                        #region planificacion_com
+                                        { "planificacion_com", new () {
+                                            fieldName = "planificacion",
+                                            refFieldName = "id",
+                                            refEntityName = "planificacion",
+                                            children = new() {
+                                                #region plan_pla
+                                                { "plan_pla", new () {
+                                                    fieldName = "plan",
+                                                    refFieldName = "id",
+                                                    refEntityName = "plan",
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region calendario_com
+                                        { "calendario_com", new () {
+                                            fieldName = "calendario",
+                                            refFieldName = "id",
+                                            refEntityName = "calendario",
                                         } },
                                         #endregion
                                     },
@@ -3684,8 +5743,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                                     refFieldName = "id",
                                     refEntityName = "planificacion",
                                     children = new() {
-                                        #region plan_pla
-                                        { "plan_pla", new () {
+                                        #region plan_pla1
+                                        { "plan_pla1", new () {
                                             fieldName = "plan",
                                             refFieldName = "id",
                                             refEntityName = "plan",
@@ -3754,6 +5813,46 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "centro_educativo",
                         } },
                         #endregion
+                        #region organizacion
+                        { "organizacion", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede",
+                        } },
+                        #endregion
+                        #region domicilio_org
+                        { "domicilio_org", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region tipo_sede_org
+                        { "tipo_sede_org", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region centro_educativo_org
+                        { "centro_educativo_org", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region domicilio_cen1
+                        { "domicilio_cen1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org",
+                        } },
+                        #endregion
                         #region modalidad
                         { "modalidad", new () {
                             fieldName = "modalidad",
@@ -3776,6 +5875,126 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion",
+                        } },
+                        #endregion
+                        #region comision_siguiente
+                        { "comision_siguiente", new () {
+                            fieldName = "comision_siguiente",
+                            refFieldName = "id",
+                            refEntityName = "comision",
+                            parentId = "comision",
+                        } },
+                        #endregion
+                        #region sede_com
+                        { "sede_com", new () {
+                            fieldName = "sede",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region domicilio_sed
+                        { "domicilio_sed", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region tipo_sede_sed
+                        { "tipo_sede_sed", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region centro_educativo_sed
+                        { "centro_educativo_sed", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_cen2
+                        { "domicilio_cen2", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_sed",
+                        } },
+                        #endregion
+                        #region organizacion_sed
+                        { "organizacion_sed", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_org1
+                        { "domicilio_org1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region tipo_sede_org1
+                        { "tipo_sede_org1", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region centro_educativo_org1
+                        { "centro_educativo_org1", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region domicilio_cen3
+                        { "domicilio_cen3", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org1",
+                        } },
+                        #endregion
+                        #region modalidad_com
+                        { "modalidad_com", new () {
+                            fieldName = "modalidad",
+                            refFieldName = "id",
+                            refEntityName = "modalidad",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region planificacion_com
+                        { "planificacion_com", new () {
+                            fieldName = "planificacion",
+                            refFieldName = "id",
+                            refEntityName = "planificacion",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region plan_pla
+                        { "plan_pla", new () {
+                            fieldName = "plan",
+                            refFieldName = "id",
+                            refEntityName = "plan",
+                            parentId = "planificacion_com",
+                        } },
+                        #endregion
+                        #region calendario_com
+                        { "calendario_com", new () {
+                            fieldName = "calendario",
+                            refFieldName = "id",
+                            refEntityName = "calendario",
+                            parentId = "comision_siguiente",
                         } },
                         #endregion
                         #region calendario
@@ -3810,8 +6029,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "disposicion",
                         } },
                         #endregion
-                        #region plan_pla
-                        { "plan_pla", new () {
+                        #region plan_pla1
+                        { "plan_pla1", new () {
                             fieldName = "plan",
                             refFieldName = "id",
                             refEntityName = "plan",
@@ -4087,6 +6306,45 @@ namespace SqlOrganize.Sql.Fines2Model3
                                     },
                                 } },
                                 #endregion
+                                #region organizacion
+                                { "organizacion", new () {
+                                    fieldName = "organizacion",
+                                    refFieldName = "id",
+                                    refEntityName = "sede",
+                                    children = new() {
+                                        #region domicilio_org
+                                        { "domicilio_org", new () {
+                                            fieldName = "domicilio",
+                                            refFieldName = "id",
+                                            refEntityName = "domicilio",
+                                        } },
+                                        #endregion
+                                        #region tipo_sede_org
+                                        { "tipo_sede_org", new () {
+                                            fieldName = "tipo_sede",
+                                            refFieldName = "id",
+                                            refEntityName = "tipo_sede",
+                                        } },
+                                        #endregion
+                                        #region centro_educativo_org
+                                        { "centro_educativo_org", new () {
+                                            fieldName = "centro_educativo",
+                                            refFieldName = "id",
+                                            refEntityName = "centro_educativo",
+                                            children = new() {
+                                                #region domicilio_cen1
+                                                { "domicilio_cen1", new () {
+                                                    fieldName = "domicilio",
+                                                    refFieldName = "id",
+                                                    refEntityName = "domicilio",
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                    },
+                                } },
+                                #endregion
                             },
                         } },
                         #endregion
@@ -4154,6 +6412,46 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "domicilio",
                             parentId = "centro_educativo",
+                        } },
+                        #endregion
+                        #region organizacion
+                        { "organizacion", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede",
+                        } },
+                        #endregion
+                        #region domicilio_org
+                        { "domicilio_org", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region tipo_sede_org
+                        { "tipo_sede_org", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region centro_educativo_org
+                        { "centro_educativo_org", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region domicilio_cen1
+                        { "domicilio_cen1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org",
                         } },
                         #endregion
                         #region persona
@@ -5657,6 +7955,45 @@ namespace SqlOrganize.Sql.Fines2Model3
                                                     },
                                                 } },
                                                 #endregion
+                                                #region organizacion
+                                                { "organizacion", new () {
+                                                    fieldName = "organizacion",
+                                                    refFieldName = "id",
+                                                    refEntityName = "sede",
+                                                    children = new() {
+                                                        #region domicilio_org
+                                                        { "domicilio_org", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                        #region tipo_sede_org
+                                                        { "tipo_sede_org", new () {
+                                                            fieldName = "tipo_sede",
+                                                            refFieldName = "id",
+                                                            refEntityName = "tipo_sede",
+                                                        } },
+                                                        #endregion
+                                                        #region centro_educativo_org
+                                                        { "centro_educativo_org", new () {
+                                                            fieldName = "centro_educativo",
+                                                            refFieldName = "id",
+                                                            refEntityName = "centro_educativo",
+                                                            children = new() {
+                                                                #region domicilio_cen1
+                                                                { "domicilio_cen1", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
                                             },
                                         } },
                                         #endregion
@@ -5678,6 +8015,123 @@ namespace SqlOrganize.Sql.Fines2Model3
                                                     fieldName = "plan",
                                                     refFieldName = "id",
                                                     refEntityName = "plan",
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region comision_siguiente
+                                        { "comision_siguiente", new () {
+                                            fieldName = "comision_siguiente",
+                                            refFieldName = "id",
+                                            refEntityName = "comision",
+                                            children = new() {
+                                                #region sede_com
+                                                { "sede_com", new () {
+                                                    fieldName = "sede",
+                                                    refFieldName = "id",
+                                                    refEntityName = "sede",
+                                                    children = new() {
+                                                        #region domicilio_sed
+                                                        { "domicilio_sed", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                        #region tipo_sede_sed
+                                                        { "tipo_sede_sed", new () {
+                                                            fieldName = "tipo_sede",
+                                                            refFieldName = "id",
+                                                            refEntityName = "tipo_sede",
+                                                        } },
+                                                        #endregion
+                                                        #region centro_educativo_sed
+                                                        { "centro_educativo_sed", new () {
+                                                            fieldName = "centro_educativo",
+                                                            refFieldName = "id",
+                                                            refEntityName = "centro_educativo",
+                                                            children = new() {
+                                                                #region domicilio_cen2
+                                                                { "domicilio_cen2", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                        #region organizacion_sed
+                                                        { "organizacion_sed", new () {
+                                                            fieldName = "organizacion",
+                                                            refFieldName = "id",
+                                                            refEntityName = "sede",
+                                                            children = new() {
+                                                                #region domicilio_org1
+                                                                { "domicilio_org1", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                                #region tipo_sede_org1
+                                                                { "tipo_sede_org1", new () {
+                                                                    fieldName = "tipo_sede",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "tipo_sede",
+                                                                } },
+                                                                #endregion
+                                                                #region centro_educativo_org1
+                                                                { "centro_educativo_org1", new () {
+                                                                    fieldName = "centro_educativo",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "centro_educativo",
+                                                                    children = new() {
+                                                                        #region domicilio_cen3
+                                                                        { "domicilio_cen3", new () {
+                                                                            fieldName = "domicilio",
+                                                                            refFieldName = "id",
+                                                                            refEntityName = "domicilio",
+                                                                        } },
+                                                                        #endregion
+                                                                    },
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                                #region modalidad_com
+                                                { "modalidad_com", new () {
+                                                    fieldName = "modalidad",
+                                                    refFieldName = "id",
+                                                    refEntityName = "modalidad",
+                                                } },
+                                                #endregion
+                                                #region planificacion_com
+                                                { "planificacion_com", new () {
+                                                    fieldName = "planificacion",
+                                                    refFieldName = "id",
+                                                    refEntityName = "planificacion",
+                                                    children = new() {
+                                                        #region plan_pla
+                                                        { "plan_pla", new () {
+                                                            fieldName = "plan",
+                                                            refFieldName = "id",
+                                                            refEntityName = "plan",
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                                #region calendario_com
+                                                { "calendario_com", new () {
+                                                    fieldName = "calendario",
+                                                    refFieldName = "id",
+                                                    refEntityName = "calendario",
                                                 } },
                                                 #endregion
                                             },
@@ -5712,8 +8166,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                                             refFieldName = "id",
                                             refEntityName = "planificacion",
                                             children = new() {
-                                                #region plan_pla
-                                                { "plan_pla", new () {
+                                                #region plan_pla1
+                                                { "plan_pla1", new () {
                                                     fieldName = "plan",
                                                     refFieldName = "id",
                                                     refEntityName = "plan",
@@ -5800,6 +8254,46 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "centro_educativo",
                         } },
                         #endregion
+                        #region organizacion
+                        { "organizacion", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede",
+                        } },
+                        #endregion
+                        #region domicilio_org
+                        { "domicilio_org", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region tipo_sede_org
+                        { "tipo_sede_org", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region centro_educativo_org
+                        { "centro_educativo_org", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region domicilio_cen1
+                        { "domicilio_cen1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org",
+                        } },
+                        #endregion
                         #region modalidad
                         { "modalidad", new () {
                             fieldName = "modalidad",
@@ -5822,6 +8316,126 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion",
+                        } },
+                        #endregion
+                        #region comision_siguiente
+                        { "comision_siguiente", new () {
+                            fieldName = "comision_siguiente",
+                            refFieldName = "id",
+                            refEntityName = "comision",
+                            parentId = "comision",
+                        } },
+                        #endregion
+                        #region sede_com
+                        { "sede_com", new () {
+                            fieldName = "sede",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region domicilio_sed
+                        { "domicilio_sed", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region tipo_sede_sed
+                        { "tipo_sede_sed", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region centro_educativo_sed
+                        { "centro_educativo_sed", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_cen2
+                        { "domicilio_cen2", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_sed",
+                        } },
+                        #endregion
+                        #region organizacion_sed
+                        { "organizacion_sed", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_org1
+                        { "domicilio_org1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region tipo_sede_org1
+                        { "tipo_sede_org1", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region centro_educativo_org1
+                        { "centro_educativo_org1", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region domicilio_cen3
+                        { "domicilio_cen3", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org1",
+                        } },
+                        #endregion
+                        #region modalidad_com
+                        { "modalidad_com", new () {
+                            fieldName = "modalidad",
+                            refFieldName = "id",
+                            refEntityName = "modalidad",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region planificacion_com
+                        { "planificacion_com", new () {
+                            fieldName = "planificacion",
+                            refFieldName = "id",
+                            refEntityName = "planificacion",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region plan_pla
+                        { "plan_pla", new () {
+                            fieldName = "plan",
+                            refFieldName = "id",
+                            refEntityName = "plan",
+                            parentId = "planificacion_com",
+                        } },
+                        #endregion
+                        #region calendario_com
+                        { "calendario_com", new () {
+                            fieldName = "calendario",
+                            refFieldName = "id",
+                            refEntityName = "calendario",
+                            parentId = "comision_siguiente",
                         } },
                         #endregion
                         #region calendario
@@ -5856,8 +8470,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "disposicion",
                         } },
                         #endregion
-                        #region plan_pla
-                        { "plan_pla", new () {
+                        #region plan_pla1
+                        { "plan_pla1", new () {
                             fieldName = "plan",
                             refFieldName = "id",
                             refEntityName = "plan",
@@ -7121,6 +9735,45 @@ namespace SqlOrganize.Sql.Fines2Model3
                             },
                         } },
                         #endregion
+                        #region organizacion
+                        { "organizacion", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            children = new() {
+                                #region domicilio_org
+                                { "domicilio_org", new () {
+                                    fieldName = "domicilio",
+                                    refFieldName = "id",
+                                    refEntityName = "domicilio",
+                                } },
+                                #endregion
+                                #region tipo_sede_org
+                                { "tipo_sede_org", new () {
+                                    fieldName = "tipo_sede",
+                                    refFieldName = "id",
+                                    refEntityName = "tipo_sede",
+                                } },
+                                #endregion
+                                #region centro_educativo_org
+                                { "centro_educativo_org", new () {
+                                    fieldName = "centro_educativo",
+                                    refFieldName = "id",
+                                    refEntityName = "centro_educativo",
+                                    children = new() {
+                                        #region domicilio_cen1
+                                        { "domicilio_cen1", new () {
+                                            fieldName = "domicilio",
+                                            refFieldName = "id",
+                                            refEntityName = "domicilio",
+                                        } },
+                                        #endregion
+                                    },
+                                } },
+                                #endregion
+                            },
+                        } },
+                        #endregion
                     },
                     relations = {
                         #region domicilio
@@ -7155,6 +9808,46 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "centro_educativo",
                         } },
                         #endregion
+                        #region organizacion
+                        { "organizacion", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "",
+                        } },
+                        #endregion
+                        #region domicilio_org
+                        { "domicilio_org", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region tipo_sede_org
+                        { "tipo_sede_org", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region centro_educativo_org
+                        { "centro_educativo_org", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region domicilio_cen1
+                        { "domicilio_cen1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org",
+                        } },
+                        #endregion
                     },
                     om = {
                         #region Comision_
@@ -7167,6 +9860,12 @@ namespace SqlOrganize.Sql.Fines2Model3
                         { "Designacion_", new () {
                             fieldName = "sede",
                             entityName = "designacion",
+                        } },
+                        #endregion
+                        #region Sede_organizacion_
+                        { "Sede_organizacion_", new () {
+                            fieldName = "organizacion",
+                            entityName = "sede",
                         } },
                         #endregion
                     },
@@ -7695,6 +10394,45 @@ namespace SqlOrganize.Sql.Fines2Model3
                                                     },
                                                 } },
                                                 #endregion
+                                                #region organizacion
+                                                { "organizacion", new () {
+                                                    fieldName = "organizacion",
+                                                    refFieldName = "id",
+                                                    refEntityName = "sede",
+                                                    children = new() {
+                                                        #region domicilio_org
+                                                        { "domicilio_org", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                        #region tipo_sede_org
+                                                        { "tipo_sede_org", new () {
+                                                            fieldName = "tipo_sede",
+                                                            refFieldName = "id",
+                                                            refEntityName = "tipo_sede",
+                                                        } },
+                                                        #endregion
+                                                        #region centro_educativo_org
+                                                        { "centro_educativo_org", new () {
+                                                            fieldName = "centro_educativo",
+                                                            refFieldName = "id",
+                                                            refEntityName = "centro_educativo",
+                                                            children = new() {
+                                                                #region domicilio_cen1
+                                                                { "domicilio_cen1", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
                                             },
                                         } },
                                         #endregion
@@ -7716,6 +10454,123 @@ namespace SqlOrganize.Sql.Fines2Model3
                                                     fieldName = "plan",
                                                     refFieldName = "id",
                                                     refEntityName = "plan",
+                                                } },
+                                                #endregion
+                                            },
+                                        } },
+                                        #endregion
+                                        #region comision_siguiente
+                                        { "comision_siguiente", new () {
+                                            fieldName = "comision_siguiente",
+                                            refFieldName = "id",
+                                            refEntityName = "comision",
+                                            children = new() {
+                                                #region sede_com
+                                                { "sede_com", new () {
+                                                    fieldName = "sede",
+                                                    refFieldName = "id",
+                                                    refEntityName = "sede",
+                                                    children = new() {
+                                                        #region domicilio_sed
+                                                        { "domicilio_sed", new () {
+                                                            fieldName = "domicilio",
+                                                            refFieldName = "id",
+                                                            refEntityName = "domicilio",
+                                                        } },
+                                                        #endregion
+                                                        #region tipo_sede_sed
+                                                        { "tipo_sede_sed", new () {
+                                                            fieldName = "tipo_sede",
+                                                            refFieldName = "id",
+                                                            refEntityName = "tipo_sede",
+                                                        } },
+                                                        #endregion
+                                                        #region centro_educativo_sed
+                                                        { "centro_educativo_sed", new () {
+                                                            fieldName = "centro_educativo",
+                                                            refFieldName = "id",
+                                                            refEntityName = "centro_educativo",
+                                                            children = new() {
+                                                                #region domicilio_cen2
+                                                                { "domicilio_cen2", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                        #region organizacion_sed
+                                                        { "organizacion_sed", new () {
+                                                            fieldName = "organizacion",
+                                                            refFieldName = "id",
+                                                            refEntityName = "sede",
+                                                            children = new() {
+                                                                #region domicilio_org1
+                                                                { "domicilio_org1", new () {
+                                                                    fieldName = "domicilio",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "domicilio",
+                                                                } },
+                                                                #endregion
+                                                                #region tipo_sede_org1
+                                                                { "tipo_sede_org1", new () {
+                                                                    fieldName = "tipo_sede",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "tipo_sede",
+                                                                } },
+                                                                #endregion
+                                                                #region centro_educativo_org1
+                                                                { "centro_educativo_org1", new () {
+                                                                    fieldName = "centro_educativo",
+                                                                    refFieldName = "id",
+                                                                    refEntityName = "centro_educativo",
+                                                                    children = new() {
+                                                                        #region domicilio_cen3
+                                                                        { "domicilio_cen3", new () {
+                                                                            fieldName = "domicilio",
+                                                                            refFieldName = "id",
+                                                                            refEntityName = "domicilio",
+                                                                        } },
+                                                                        #endregion
+                                                                    },
+                                                                } },
+                                                                #endregion
+                                                            },
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                                #region modalidad_com
+                                                { "modalidad_com", new () {
+                                                    fieldName = "modalidad",
+                                                    refFieldName = "id",
+                                                    refEntityName = "modalidad",
+                                                } },
+                                                #endregion
+                                                #region planificacion_com
+                                                { "planificacion_com", new () {
+                                                    fieldName = "planificacion",
+                                                    refFieldName = "id",
+                                                    refEntityName = "planificacion",
+                                                    children = new() {
+                                                        #region plan_pla
+                                                        { "plan_pla", new () {
+                                                            fieldName = "plan",
+                                                            refFieldName = "id",
+                                                            refEntityName = "plan",
+                                                        } },
+                                                        #endregion
+                                                    },
+                                                } },
+                                                #endregion
+                                                #region calendario_com
+                                                { "calendario_com", new () {
+                                                    fieldName = "calendario",
+                                                    refFieldName = "id",
+                                                    refEntityName = "calendario",
                                                 } },
                                                 #endregion
                                             },
@@ -7750,8 +10605,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                                             refFieldName = "id",
                                             refEntityName = "planificacion",
                                             children = new() {
-                                                #region plan_pla
-                                                { "plan_pla", new () {
+                                                #region plan_pla1
+                                                { "plan_pla1", new () {
                                                     fieldName = "plan",
                                                     refFieldName = "id",
                                                     refEntityName = "plan",
@@ -7870,6 +10725,46 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "centro_educativo",
                         } },
                         #endregion
+                        #region organizacion
+                        { "organizacion", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede",
+                        } },
+                        #endregion
+                        #region domicilio_org
+                        { "domicilio_org", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region tipo_sede_org
+                        { "tipo_sede_org", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region centro_educativo_org
+                        { "centro_educativo_org", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion",
+                        } },
+                        #endregion
+                        #region domicilio_cen1
+                        { "domicilio_cen1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org",
+                        } },
+                        #endregion
                         #region modalidad
                         { "modalidad", new () {
                             fieldName = "modalidad",
@@ -7892,6 +10787,126 @@ namespace SqlOrganize.Sql.Fines2Model3
                             refFieldName = "id",
                             refEntityName = "plan",
                             parentId = "planificacion",
+                        } },
+                        #endregion
+                        #region comision_siguiente
+                        { "comision_siguiente", new () {
+                            fieldName = "comision_siguiente",
+                            refFieldName = "id",
+                            refEntityName = "comision",
+                            parentId = "comision",
+                        } },
+                        #endregion
+                        #region sede_com
+                        { "sede_com", new () {
+                            fieldName = "sede",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region domicilio_sed
+                        { "domicilio_sed", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region tipo_sede_sed
+                        { "tipo_sede_sed", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region centro_educativo_sed
+                        { "centro_educativo_sed", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_cen2
+                        { "domicilio_cen2", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_sed",
+                        } },
+                        #endregion
+                        #region organizacion_sed
+                        { "organizacion_sed", new () {
+                            fieldName = "organizacion",
+                            refFieldName = "id",
+                            refEntityName = "sede",
+                            parentId = "sede_com",
+                        } },
+                        #endregion
+                        #region domicilio_org1
+                        { "domicilio_org1", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region tipo_sede_org1
+                        { "tipo_sede_org1", new () {
+                            fieldName = "tipo_sede",
+                            refFieldName = "id",
+                            refEntityName = "tipo_sede",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region centro_educativo_org1
+                        { "centro_educativo_org1", new () {
+                            fieldName = "centro_educativo",
+                            refFieldName = "id",
+                            refEntityName = "centro_educativo",
+                            parentId = "organizacion_sed",
+                        } },
+                        #endregion
+                        #region domicilio_cen3
+                        { "domicilio_cen3", new () {
+                            fieldName = "domicilio",
+                            refFieldName = "id",
+                            refEntityName = "domicilio",
+                            parentId = "centro_educativo_org1",
+                        } },
+                        #endregion
+                        #region modalidad_com
+                        { "modalidad_com", new () {
+                            fieldName = "modalidad",
+                            refFieldName = "id",
+                            refEntityName = "modalidad",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region planificacion_com
+                        { "planificacion_com", new () {
+                            fieldName = "planificacion",
+                            refFieldName = "id",
+                            refEntityName = "planificacion",
+                            parentId = "comision_siguiente",
+                        } },
+                        #endregion
+                        #region plan_pla
+                        { "plan_pla", new () {
+                            fieldName = "plan",
+                            refFieldName = "id",
+                            refEntityName = "plan",
+                            parentId = "planificacion_com",
+                        } },
+                        #endregion
+                        #region calendario_com
+                        { "calendario_com", new () {
+                            fieldName = "calendario",
+                            refFieldName = "id",
+                            refEntityName = "calendario",
+                            parentId = "comision_siguiente",
                         } },
                         #endregion
                         #region calendario
@@ -7926,8 +10941,8 @@ namespace SqlOrganize.Sql.Fines2Model3
                             parentId = "disposicion",
                         } },
                         #endregion
-                        #region plan_pla
-                        { "plan_pla", new () {
+                        #region plan_pla1
+                        { "plan_pla1", new () {
                             fieldName = "plan",
                             refFieldName = "id",
                             refEntityName = "plan",

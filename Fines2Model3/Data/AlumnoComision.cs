@@ -87,11 +87,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _comision != value)
                 {
                     _comision = value; NotifyPropertyChanged(nameof(comision));
-                    //desactivado hasta implementar cache
-                    //if (_comision.HasValue && (comision_.IsNoE() || !comision_!.Get(db.config.id).ToString()!.Equals(_comision.Value.ToString())))
-                    //    comision_ = CreateFromId<Comision>(_comision);
-                    //else if(_comision.IsNoE())
-                    //    comision_ = null;
+                    if (!_comision.IsNoE() && (comision_.IsNoE() || !comision_!.Get(db.config.id).ToString()!.Equals(_comision.ToString())))
+                        comision_ = CreateFromId<Comision>(_comision);
+                    else if(_comision.IsNoE())
+                        comision_ = null;
                 }
             }
         }
@@ -106,11 +105,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _alumno != value)
                 {
                     _alumno = value; NotifyPropertyChanged(nameof(alumno));
-                    //desactivado hasta implementar cache
-                    //if (_alumno.HasValue && (alumno_.IsNoE() || !alumno_!.Get(db.config.id).ToString()!.Equals(_alumno.Value.ToString())))
-                    //    alumno_ = CreateFromId<Alumno>(_alumno);
-                    //else if(_alumno.IsNoE())
-                    //    alumno_ = null;
+                    if (!_alumno.IsNoE() && (alumno_.IsNoE() || !alumno_!.Get(db.config.id).ToString()!.Equals(_alumno.ToString())))
+                        alumno_ = CreateFromId<Alumno>(_alumno);
+                    else if(_alumno.IsNoE())
+                        alumno_ = null;
                 }
             }
         }
@@ -197,8 +195,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("alumno_comision")
+                splitOn:"id"
             );
         }
+
     }
 }

@@ -73,11 +73,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _cargo != value)
                 {
                     _cargo = value; NotifyPropertyChanged(nameof(cargo));
-                    //desactivado hasta implementar cache
-                    //if (_cargo.HasValue && (cargo_.IsNoE() || !cargo_!.Get(db.config.id).ToString()!.Equals(_cargo.Value.ToString())))
-                    //    cargo_ = CreateFromId<Cargo>(_cargo);
-                    //else if(_cargo.IsNoE())
-                    //    cargo_ = null;
+                    if (!_cargo.IsNoE() && (cargo_.IsNoE() || !cargo_!.Get(db.config.id).ToString()!.Equals(_cargo.ToString())))
+                        cargo_ = CreateFromId<Cargo>(_cargo);
+                    else if(_cargo.IsNoE())
+                        cargo_ = null;
                 }
             }
         }
@@ -92,11 +91,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _sede != value)
                 {
                     _sede = value; NotifyPropertyChanged(nameof(sede));
-                    //desactivado hasta implementar cache
-                    //if (_sede.HasValue && (sede_.IsNoE() || !sede_!.Get(db.config.id).ToString()!.Equals(_sede.Value.ToString())))
-                    //    sede_ = CreateFromId<Sede>(_sede);
-                    //else if(_sede.IsNoE())
-                    //    sede_ = null;
+                    if (!_sede.IsNoE() && (sede_.IsNoE() || !sede_!.Get(db.config.id).ToString()!.Equals(_sede.ToString())))
+                        sede_ = CreateFromId<Sede>(_sede);
+                    else if(_sede.IsNoE())
+                        sede_ = null;
                 }
             }
         }
@@ -111,11 +109,10 @@ namespace SqlOrganize.Sql.Fines2Model3
                 if( _persona != value)
                 {
                     _persona = value; NotifyPropertyChanged(nameof(persona));
-                    //desactivado hasta implementar cache
-                    //if (_persona.HasValue && (persona_.IsNoE() || !persona_!.Get(db.config.id).ToString()!.Equals(_persona.Value.ToString())))
-                    //    persona_ = CreateFromId<Persona>(_persona);
-                    //else if(_persona.IsNoE())
-                    //    persona_ = null;
+                    if (!_persona.IsNoE() && (persona_.IsNoE() || !persona_!.Get(db.config.id).ToString()!.Equals(_persona.ToString())))
+                        persona_ = CreateFromId<Persona>(_persona);
+                    else if(_persona.IsNoE())
+                        persona_ = null;
                 }
             }
         }
@@ -221,8 +218,9 @@ namespace SqlOrganize.Sql.Fines2Model3
                     return main;
                 },
                 parameters,
-                splitOn:Context.db.Sql().SplitOn("designacion")
+                splitOn:"id"
             );
         }
+
     }
 }

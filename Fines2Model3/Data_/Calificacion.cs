@@ -128,7 +128,7 @@ namespace SqlOrganize.Sql.Fines2Model3
         {
             var calificacionError = new Calificacion();
             calificacionError.Status = "Error";
-            calificacionError.Msg += "Id " + id + ": " + message;
+            calificacionError.Label += "Id " + id + ": " + message;
             calificacionError.alumno_ = new();
             calificacionError.alumno_.persona_ = new();
             calificacionError.alumno_.persona_.nombres = nombres;
@@ -138,7 +138,7 @@ namespace SqlOrganize.Sql.Fines2Model3
 
         /// <summary> Persistencia de persona, alumno, alumno_comision y calificacion </summary>
         /// <returns> Identificador del objeto persistido </returns>
-        public object Persist1()
+        /*public object Persist1()
         {
             var persist = db.Persist();
 
@@ -193,6 +193,6 @@ namespace SqlOrganize.Sql.Fines2Model3
                 throw;
             }
         }
-
+        */
     }
 }
