@@ -28,29 +28,25 @@ namespace SqlOrganize.Sql
 
         public IEnumerable<T> ByIds<T>(string entityName, params object[] ids)
         {
+            //Definir rawEntities con valores de la entidad actual sin relaciones
             List<Dictionary<string, object?>> rawEntities = Ids(entityName, ids);
 
+            //Inicializar campos de relaciones en rawEntities (en null)
+            var fieldNamesRel = Db.FieldNamesRel(entityName); 
             foreach (var entity in rawEntities)
-                ClearRelationships(entityName, entity);
+                foreach (var fieldName in fieldNamesRel)
+                    entity[fieldName] = null;
 
+            //Recorrer rawEntities y definir el valor de las relaciones
             TreeRecursive(entityName, Db.Entity(entityName).tree, rawEntities);
 
+            //Recorrer rawEntities y reorganizar el resultado como arbol
             for (var j = 0; j < rawEntities.Count(); j++)
-            {
                 rawEntities[j] = ValuesTree(entityName, rawEntities[j]);
-            }
 
+            //Serializar y deserealizar para asignar atributos en la clase de retorno T
             string json = JsonConvert.SerializeObject(rawEntities);
             return JsonConvert.DeserializeObject<IEnumerable<T>>(json);
-        }
-
-        /// <summary>
-        /// Clears related fields for relationships in an entity.
-        /// </summary>
-        private void ClearRelationships(string entityName, Dictionary<string, object?> entity)
-        {
-            foreach (var fieldName in Db.FieldNamesRel(entityName))
-                entity[fieldName] = null;
         }
 
 
@@ -202,8 +198,8 @@ namespace SqlOrganize.Sql
             return response;
         }
 
-        /// <summary> Consulta datos de una entidad los almacena en cache y los devuelve sin relaciones <br/>
-        /// Si no encuentra valores en el Cache, realiza una consulta a la base de datos y lo almacena en cache.</summary>
+        /// <summary> Consultar datos de una entidad, almacenarlos en cache </summary>
+        /// <remarks> A medida que almacena datos en cache elimina del resultado, el resultado final no tiene relaciones. </remarks>
         public List<Dictionary<string, object?>> Ids(string entityName, params object[] ids)
         {
             

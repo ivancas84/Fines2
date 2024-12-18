@@ -18,14 +18,17 @@ namespace WpfUtils.Windows
 
         public void UpdateProgress(int percentage)
         {
-            // When progress is reported, update the progress bar control.
-            pbLoad.Value = percentage;
-
-            // When progress reaches 100%, close the progress bar window.
-            if (percentage == 100)
+            // Ensure the UI update runs on the UI thread
+            Dispatcher.Invoke(() =>
             {
-                Close();
-            }
+                pbLoad.Value = percentage;
+
+                // Optionally close the window if progress is complete
+                if (percentage >= 100)
+                {
+                    Close();
+                }
+            });
         }
     }
 }

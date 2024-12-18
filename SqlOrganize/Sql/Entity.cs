@@ -165,13 +165,21 @@ namespace SqlOrganize.Sql
             return obj;
         }
         
-        public static T CreateEmpty<T>(string fieldName = "Label") where T : Entity, new()
+        public static T CreateNull<T>(string fieldName = "Label") where T : Entity, new()
         {
             T obj = new();
             obj.Set("id", null);
             obj.Set(fieldName, "-Seleccione " + obj.entityName.ToTitleCase() + "-");
             return obj;
         }
+
+        public static T CreateEmpty<T>(object? status = null) where T : Entity, new()
+        {
+            T obj = new();
+            obj.Status = status;
+            return obj;
+        }
+
 
         #region set or get properties particulares
         public virtual object? Get(string fieldName)

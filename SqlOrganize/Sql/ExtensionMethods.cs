@@ -144,6 +144,17 @@ namespace SqlOrganize.Sql
             oc.ClearAndAddRange(data);
         }
 
+        public static void AddEntitiesWithStatusToClearOC<T>(this IEnumerable<T> data, ObservableCollection<T> oc, object status) where T : Entity
+        {
+            oc.Clear();
+            foreach (var item in data)
+            {
+                item.Status = status;
+                oc.Add(item);
+            }
+        }
+
+
         public static void ClearAndAddEntities<T>(this ObservableCollection<T> oc, IEnumerable<T> items) where T : Entity
         {
             oc.Clear();
