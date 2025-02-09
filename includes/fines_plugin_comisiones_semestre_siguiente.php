@@ -18,11 +18,14 @@ function fines_plugin_comisiones_semestre_siguiente() {
     
     include plugin_dir_path(__FILE__) . '../html/fines_plugin_comisiones_semestre_siguiente_formulario.php';
 
+    die();
     if (isset($_GET['submit']) && !empty($_GET['calendario']) && !empty($_GET['calendario_siguiente'])) {
-            $calendario_id = intval($_GET['calendario']);
+          
+        
+        $calendario_id = intval($_GET['calendario']);
             
              // Build SQL query
-            $sql = sqlSelectComision__With_referentes() . "
+            $sql = sqlSelectComision_autorizada__By_calendario__Without_tramo32() . "
                 WHERE calendario = '$calendario_id'";
 
             $sql .= " AND comision.autorizada = true";

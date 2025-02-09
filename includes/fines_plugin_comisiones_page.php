@@ -21,7 +21,7 @@ function fines_plugin_comisiones_page() {
             $calendario_id = intval($_GET['calendario']);
             
              // Build SQL query
-            $sql = sqlSelectComision() . "
+            $sql = sqlSelectComision__With_referentes() . "
                 WHERE calendario = '$calendario_id'";
 
             // Add 'autorizada' filter if checkbox is checked

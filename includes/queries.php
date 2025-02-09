@@ -37,7 +37,7 @@ function sqlSelectComision__With_referentes(){
                 LEFT JOIN persona ON designacion.persona = persona.id";
 }
 
-function sqlSelectComision_Autorizada__By_calendario__Without_tramo32(){
+function sqlSelectComision_autorizada__By_calendario__Without_tramo32(){
 	return "SELECT
                 comision.*
                 CONCAT(planificacion.anio,planificacion.semestre) AS tramo
