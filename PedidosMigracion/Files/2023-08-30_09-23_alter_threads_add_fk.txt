@@ -1,4 +1,0 @@
-﻿ update wpwt_psmsc_threads set seen = null where seen = '0000-00-00 00:00:00';
-
- ALTER TABLE wpwt_psmsc_threads
- ADD FOREIGN KEY (ticket) REFERENCES wpwt_psmsc_tickets (id);  
