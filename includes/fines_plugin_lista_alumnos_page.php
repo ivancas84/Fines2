@@ -11,7 +11,7 @@ function fines_plugin_lista_alumnos_page() {
 
     // Fetch commission details
 	$comision = $wpdb->get_row(
-		$wpdb->prepare(sqlSelectComision__With_referentes() . " WHERE comision.id = '$comision_id'")
+		$wpdb->prepare(sqlSelectComision() . " WHERE comision.id = '$comision_id'")
 	);
 
  

@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-function sqlSelectComision__With_referentes(){
+function sqlSelectComision(){
 	return "SELECT
 					comision.id as comision_id,
 					sede.id as sede_id,
@@ -35,17 +35,5 @@ function sqlSelectComision__With_referentes(){
                 INNER JOIN plan ON planificacion.plan = plan.id
                 LEFT JOIN designacion ON comision.sede = designacion.sede AND designacion.cargo = 1 AND designacion.hasta IS NULL
                 LEFT JOIN persona ON designacion.persona = persona.id";
-}
-
-function sqlSelectComision_autorizada__By_calendario__Without_tramo32(){
-	return "SELECT
-                comision.*
-                CONCAT(planificacion.anio,planificacion.semestre) AS tramo
-                
-            FROM comision     
-            INNER JOIN planificacion ON comision.planificacion = planificacion.id
-            INNER JOIN plan ON planificacion.plan = plan.id
-            WHERE tramo != '32' AND autorizada = true
-    ";
 }
 ?>
