@@ -17,4 +17,10 @@ function getAcronym($string) {
 function boolToSiNo($value) {
     return $value ? 'Si' : 'No';
 }
+
+function tramoSiguiente($tramo){
+	
+		switch($tramo){
+		}
+}
 ?>

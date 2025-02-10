@@ -25,13 +25,16 @@ function fines_plugin_comisiones_siguientes_semestre() {
         $calendario_id = intval($_GET['calendario']);
             
              // Build SQL query
-            $sql = sqlSelectComision_autorizada__By_idCalendario__Without_tramo32__Without_siguiente($calendario_id);
+            $sql = sqlSelectComision_autorizada__By_calendario__Without_tramo32_and_siguiente($calendario_id);
                
             // Execute query
             $comisiones = $wpdb->get_results($wpdb->prepare($sql));
-			
-			
+	
 
+			foreach($comisiones as $comision){
+				
+			}
+			
             if ($comisiones) {
                 include plugin_dir_path(__FILE__) . '../html/fines_plugin_comisiones_page_tabla.php';
             } else {
