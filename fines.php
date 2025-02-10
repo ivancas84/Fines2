@@ -61,6 +61,14 @@ function fines_plugin_menu() {
 		'edit_posts', 
 		'fines-plugin-detalle-persona', 
 		'fines_plugin_persona_form_page');
+
+    add_submenu_page(
+      null, 
+      'Generar Comisiones Siguientes del Semestre',
+      'Generar Comisiones Siguientes del Semestre', 
+      'edit_posts', 
+      'fines-plugin-comisiones-siguientes-semestre', 
+      'fines_plugin_comisiones_siguientes_semestre');
 }
 
 include_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
@@ -78,6 +86,8 @@ include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_persona_form_pag
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_persona_form_page_handle_persona_form.php';
 
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_persona_form_page_handle_alumno_form.php';
+
+include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_comisiones_siguientes_semestre.php';
 
 
 

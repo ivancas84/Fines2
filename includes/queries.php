@@ -36,4 +36,19 @@ function sqlSelectComision(){
                 LEFT JOIN designacion ON comision.sede = designacion.sede AND designacion.cargo = 1 AND designacion.hasta IS NULL
                 LEFT JOIN persona ON designacion.persona = persona.id";
 }
+
+function sqlSelectComision_autorizada__By_calendario__Without_tramo32_and_siguiente($idCalendario){
+	return "SELECT
+				comision.* 
+			FROM comision     
+			INNER JOIN planificacion ON comision.planificacion = planificacion.id
+			WHERE comision.calendario = '$idCalendario'
+			AND comision.autorizada = true
+			AND CONCAT(planificacion.anio,planificacion.semestre) != '32'
+			AND siguiente IS NULL
+			";
+}
+	
+
+
 ?>
