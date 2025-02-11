@@ -45,7 +45,7 @@ function fines_plugin_comisiones_siguientes_semestre() {
                     $planificacion = $wpdb->get_row($wpdb->prepare($sql));
                     
                     if (!$planificacion) {
-                        echo "<p style='color: orange;'>No se encontró planificación para el plan: {$comision->plan} y tramo: {$tramo_siguiente}.</p>";
+                        echo "<p style='color: orange;'>No se encontró planificación de la comision {$comision->pfid} para el plan: {$comision->plan} y tramo: {$tramo_siguiente}.</p>";
                         continue;
                     }
 
