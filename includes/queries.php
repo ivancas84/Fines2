@@ -39,16 +39,23 @@ function sqlSelectComision(){
 
 function sqlSelectComision_autorizada__By_calendario__Without_tramo32_and_siguiente($idCalendario){
 	return "SELECT
-				comision.* 
+				comision.*, CONCAT(planificacion.anio,planificacion.semestre) as tramo, planificacion.plan
 			FROM comision     
 			INNER JOIN planificacion ON comision.planificacion = planificacion.id
 			WHERE comision.calendario = '$idCalendario'
 			AND comision.autorizada = true
 			AND CONCAT(planificacion.anio,planificacion.semestre) != '32'
-			AND siguiente IS NULL
+			AND comision_siguiente IS NULL
 			";
 }
-	
+
+function sqlSelectPlanificacion__By_plan_And_tramo($idPlan, $idTramo){
+	return "SELECT
+				planificacion.*
+			FROM planificacion
+			WHERE planificacion.plan = '$idPlan'
+			AND CONCAT(planificacion.anio,planificacion.semestre) = '$idTramo'";
+}
 
 
 ?>
