@@ -1,7 +1,7 @@
 <?php
 
 
-function fines_plugin_detalle_comision_page() {
+function ac_administrar_comision_page() {
     $comision_id = isset($_GET['comision_id']) ? $_GET['comision_id'] : null;
     $wpdb = fines_plugin_db_connection();
 
@@ -23,9 +23,9 @@ function fines_plugin_detalle_comision_page() {
     }
 
 
-    include plugin_dir_path(__FILE__) . '../html/fines_plugin_detalle_comision_page_form_comision.php';
+    include plugin_dir_path(__FILE__) . 'ac_comision_form_html.php';
 
-
-	
 }
+
+include plugin_dir_path(__FILE__) . 'ac_comision_form_handle.php';
 

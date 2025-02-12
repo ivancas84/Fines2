@@ -39,11 +39,11 @@ function fines_plugin_menu() {
 
     add_submenu_page(
       'fines-plugin', //debe coincidir con el slug del menu
-      'Detalle Comisión', // Título de la página
-      'Detalle Comisión', //Título del menú
+      'Administrar Comisión', // Título de la página
+      'Administrar Comisión', //Título del menú
       'edit_posts', // Permisos
-      'fines-plugin-detalle-comision-page',  // Slug del submenú
-      'fines_plugin_detalle_comision_page' // Función que muestra la página del submenu
+      'fines-plugin-administrar-comision-page',  // Slug del submenú
+      'ac_administrar_comision_page' // Función que muestra la página del submenu
   );
 
 	add_submenu_page(
@@ -98,7 +98,7 @@ include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_detalle_persona_
 
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_comisiones_siguientes_semestre.php';
 
-include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_detalle_comision_page.php';
+include_once plugin_dir_path(__FILE__) . 'ac_administrar_comision_page/ac_administrar_comision_page.php';
 
 
 
