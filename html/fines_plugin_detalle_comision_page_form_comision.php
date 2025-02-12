@@ -1,7 +1,7 @@
 <h1>Editar Persona</h1>
 <form id="comision-form" method="POST">
 <?php wp_nonce_field("comision_form_action", "comision_form_nonce"); ?>
-<input type="hidden" name="comision_id" id="comision_id" value="<?=$comision_id?>" />
+<input type="hidden" name="comision_id" id="comision_id" value="<?=$comision_id ?? '' ?>" />
 <p>
 <label for="calendario">Calendario:</label>
         <select name="calendario" id="calendario">
