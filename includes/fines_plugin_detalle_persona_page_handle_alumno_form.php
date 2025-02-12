@@ -4,7 +4,7 @@ add_action('wp_ajax_handle_alumno_form', 'handle_alumno_form');
 add_action('wp_ajax_nopriv_handle_alumno_form', 'handle_alumno_form');
 
 function handle_alumno_form() {
-    if (!isset($_POST['custom_alumno_form_nonce']) || !wp_verify_nonce($_POST['custom_alumno_form_nonce'], "custom_alumno_form_action")) {
+    if (!isset($_POST['alumno_form_nonce']) || !wp_verify_nonce($_POST['alumno_form_nonce'], "alumno_form_action")) {
         echo json_encode(["success" => false, "message" => "Nonce verification failed."]);
         wp_die();
     }

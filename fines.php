@@ -37,13 +37,22 @@ function fines_plugin_menu() {
         'fines_plugin_comisiones_page' // Función que muestra la página del submenu
     );
 
+    add_submenu_page(
+      'fines-plugin', //debe coincidir con el slug del menu
+      'Detalle Comisión', // Título de la página
+      'Detalle Comisión', //Título del menú
+      'edit_posts', // Permisos
+      'fines-plugin-detalle-comision-page',  // Slug del submenú
+      'fines_plugin_detalle_comision_page' // Función que muestra la página del submenu
+  );
+
 	add_submenu_page(
         null, //debe coincidir con el slug del menu
         'Prueba Validación', // Título de la página
         'Prueba Validación', //Título del menú
         'edit_posts', // Permisos
-        'fines-plugin-persona-form',  // Slug del submenú
-        'fines_plugin_persona_form_page' // Función que muestra la página del submenu
+        'fines-plugin-detalle-persona',  // Slug del submenú
+        'fines_plugin_detalle_persona_page' // Función que muestra la página del submenu
     );
 
     add_submenu_page(
@@ -60,7 +69,7 @@ function fines_plugin_menu() {
 		'Detalle de Alumno', 
 		'edit_posts', 
 		'fines-plugin-detalle-persona', 
-		'fines_plugin_persona_form_page');
+		'fines_plugin_detalle_persona_page');
 
     add_submenu_page(
       null, 
@@ -81,13 +90,15 @@ include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_comisiones_page.
 
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_lista_alumnos_page.php';
 
-include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_persona_form_page.php';
+include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_detalle_persona_page.php';
 
-include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_persona_form_page_handle_persona_form.php';
+include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_detalle_persona_page_handle_persona_form.php';
 
-include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_persona_form_page_handle_alumno_form.php';
+include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_detalle_persona_page_handle_alumno_form.php';
 
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_comisiones_siguientes_semestre.php';
+
+include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_detalle_comision_page.php';
 
 
 

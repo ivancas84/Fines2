@@ -4,7 +4,7 @@ add_action('wp_ajax_nopriv_handle_persona_form', 'handle_persona_form'); //permi
 
 // Procesar el formulario en el backend
 function handle_persona_form() {
-    if (!isset($_POST['custom_form_nonce']) || !wp_verify_nonce($_POST['custom_form_nonce'], 'custom_form_action')) {
+    if (!isset($_POST['persona_form_nonce']) || !wp_verify_nonce($_POST['persona_form_nonce'], 'persona_form_action')) {
         echo json_encode(['success' => false, 'message' => 'Error de seguridad.']);
         die();
     }
@@ -18,6 +18,8 @@ function handle_persona_form() {
     $email = sanitize_email($_POST['apellidos']);
     $message = sanitize_text_field($_POST['numero_documento']);
 
+    echo json_encode(['success' => false, 'message' => $name.$email.$message]);
+    die();
 
     if (empty($name) || empty($email) || empty($message)) {
         echo json_encode(['success' => false, 'message' => 'Todos los campos son obligatorios.']);
