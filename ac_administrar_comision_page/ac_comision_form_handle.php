@@ -1,24 +1,21 @@
 <?php
 
-add_action('wp_ajax_ac_comision_form_handle', 'ac_comision_form_handle'); // procesar formulario para usuarios autenticados
-add_action('wp_ajax_nopriv_ac_comision_form_handle', 'ac_comision_form_handle'); // procesar formulario para usuarios no autenticados
+add_action('wp_ajax_ac_comision_form_handle', 'ac_comision_form_handle');
+add_action('wp_ajax_nopriv_ac_comision_form_handle', 'ac_comision_form_handle');
 
 function ac_comision_form_handle() {
     $wpdb = fines_plugin_db_connection();
-
-    // Verificación de nonce de seguridad
+    
     if (!isset($_POST['ac_comision_form_nonce']) || !wp_verify_nonce($_POST['ac_comision_form_nonce'], 'ac_comision_form_action')) {
         echo json_encode(['success' => false, 'message' => 'Error de seguridad.']);
         die();
     }
-
-    // Verificación del honeypot para detección de spam
+    
     if (!empty($_POST['honeypot'])) {
         echo json_encode(['success' => false, 'message' => 'Detección de spam.']);
         die();
     }
-
-    // Capturar los datos del formulario
+    
     $calendario_id = sanitize_text_field($_POST['calendario']);
     $sede_id = sanitize_text_field($_POST['sede']);
     $modalidad_id = sanitize_text_field($_POST['modalidad']);
@@ -32,11 +29,12 @@ function ac_comision_form_handle() {
     $observaciones = sanitize_textarea_field($_POST['observaciones']);
     $comision_id = !empty($_POST['comision_id']) ? sanitize_text_field($_POST['comision_id']) : null;
 
-    // Si $comision_id está vacío, insertar nueva comisión
+    $proceso = "";
     if (empty($comision_id)) {
+        $proceso = "Inserción";
         $comision_id = uniqid();
         $insert_result = $wpdb->insert(
-            'comision', // Nombre de la tabla
+            'comision',
             [
                 'id' => $comision_id,
                 'calendario' => $calendario_id,
@@ -51,26 +49,14 @@ function ac_comision_form_handle() {
                 'publicada' => $publicada,
                 'observaciones' => $observaciones,
             ],
-            [
-                '%s', // ID de la comisión
-                '%s', '%s', '%s', '%s', // Calendario, sede, modalidad y planificación son cadenas
-                '%s', '%s', '%s',       // Turno, división y pfid son cadenas
-                '%d', '%d', '%d',       // Campos booleanos como enteros
-                '%s',                   // Observaciones como texto
-            ]
+            ['%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%s']
         );
-
-        if ($insert_result !== false) {
-            echo json_encode([
-                'success' => true, 
-                'message' => 'Comisión creada con éxito.',
-                'comision_id' => $comision_id 
-            ]); // Enviar el ID al front-end]);
-        } else {
+        if(!$insert_result) {
             echo json_encode(['success' => false, 'message' => 'Error al crear la comisión: ' .  $wpdb->last_error]);
+            die();
         }
     } else {
-        // Actualizar la comisión existente si se proporciona un ID
+        $proceso = "Actualización";
         $update_result = $wpdb->update(
             'comision',
             [
@@ -87,28 +73,56 @@ function ac_comision_form_handle() {
                 'observaciones' => $observaciones,
             ],
             ['id' => $comision_id],
-            [
-                '%s', '%s', '%s', '%s',
-                '%s', '%s', '%s',
-                '%d', '%d', '%d',
-                '%s'
-            ],
-            ['%d'] // Tipo de dato para el ID de la comisión
+            ['%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%s'],
+            ['%s']
         );
-
-        if ($update_result !== false) {
-            echo json_encode([
-                'success' => true, 
-                'message' => 'Comisión actualizada con éxito.',
-                'comision_id' => $comision_id // Enviar el ID al front-end
-            ]);
-        } else {
-            echo json_encode([
-                'success' => false, 
-                'message' => 'Error al actualizar la comisión: ' . $wpdb->last_error,
-            ]);
+        
+        if(!$update_result) {
+            if(!empty($wpdb->last_error)){
+                echo json_encode(['success' => false, 'message' => 'Error al actualizar la comisión: ' .  $wpdb->last_error]);
+                die();
+            }
         }
     }
 
-    die(); // Finalizar la ejecución para evitar cualquier salida adicional
+    // Insertar curso si no existe
+    $disposiciones = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT id, asignatura, horas_catedra FROM disposicion WHERE planificacion = %s",
+            $planificacion_id
+        ),
+        ARRAY_A
+    );
+    
+    foreach ($disposiciones as $disposicion) {
+        $curso_existente = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(*) FROM curso WHERE comision = %s AND disposicion = %s",
+                $comision_id,
+                $disposicion['id']
+            )
+        );
+
+        if ($curso_existente == 0) {
+            $curso_id = uniqid();
+            $insert_result = $wpdb->insert(
+                'curso',
+                [
+                    'id' => $curso_id,
+                    'horas_catedra' => $disposicion['horas_catedra'],
+                    'comision' => $comision_id,
+                    'disposicion' => $disposicion['id'],
+                    'asignatura' => $disposicion['asignatura'],
+                ],
+                ['%s', '%d', '%s', '%s', '%s']
+            );
+            if(!$insert_result) {
+                echo json_encode(['success' => false, 'message' => 'Error al crear cursos: ' .  $wpdb->last_error]);
+                die();
+            }
+        }
+    }
+
+    echo json_encode([ 'success' => true, 'message' => $proceso . ' completa.', 'comision_id' => $comision_id ]);
+    die();
 }
