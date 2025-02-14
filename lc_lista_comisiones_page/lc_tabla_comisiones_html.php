@@ -17,6 +17,8 @@
     <tbody>
         <?php foreach ($comisiones as $comision): ?>
             <?php $lista_alumnos_url = admin_url('admin.php?page=fines-plugin-lista-alumnos&comision_id=' . $comision->comision_id); ?>
+            <?php $rindex_url = admin_url('admin.php?page=fines-plugin-rindex-division-page&comision_pfid=' . $comision->pfid); ?>
+
             <tr>
                 <td><?= esc_html($comision->nombre); ?></td>
                 <td><?= esc_html($comision->domicilio); ?></td>
@@ -27,7 +29,7 @@
                 <td><?= esc_html(boolToSiNo($comision->autorizada)); ?></td>
                 <td><?= esc_html(boolToSiNo($comision->apertura)); ?></td>
                 <td><?= $comision->referentes ?: 'Sin referentes' ?></td>
-                <td><a href="<?= esc_url($lista_alumnos_url); ?>" class="button">Alumnos</a></td>
+                <td><a href="<?= esc_url($rindex_url); ?>" class="button">Rindex</a> <a href="<?= esc_url($lista_alumnos_url); ?>" class="button">Alumnos</a></td>
             </tr>
         <?php endforeach; ?>
     </tbody>

@@ -1,6 +1,6 @@
 <h1>Editar Persona</h1>
-<form id="persona-form" method="POST">
-<?php wp_nonce_field("persona_form_action", "persona_form_nonce"); ?>
+<form id="dp-persona-form" method="POST">
+<?php wp_nonce_field("dp_persona_form_action", "dp_persona_form_nonce"); ?>
 <input type="hidden" name="persona_id" id="persona_id" value="<?=$persona_id?>" />
 <p><label for="nombres"><strong>Nombres:</strong></label><br />
 <input type="text" name="nombres" id="nombres" value="<?=$persona->nombres?>"  /></p>
@@ -18,12 +18,12 @@
 </form>
 
 <script>
-    document.getElementById("persona-form").addEventListener("submit", function(event) {
+    document.getElementById("dp-persona-form").addEventListener("submit", function(event) {
         event.preventDefault();
         
         let form = this;
         let formData = new FormData(form);
-        formData.append("action", "handle_persona_form");
+        formData.append("action", "dp_persona_form_handle");
         let messageBox = document.getElementById("form-message");
 
         fetch("<?php echo admin_url('admin-ajax.php'); ?>", {

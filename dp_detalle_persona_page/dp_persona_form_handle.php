@@ -1,10 +1,10 @@
 <?php
-add_action('wp_ajax_handle_persona_form', 'handle_persona_form'); //procesar formulario en el backend
-add_action('wp_ajax_nopriv_handle_persona_form', 'handle_persona_form'); //permitir el envío desde usuarios no autenticados
+add_action('wp_ajax_dp_persona_form_handle', 'dp_persona_form_handle'); //procesar formulario en el backend
+add_action('wp_ajax_nopriv_dp_persona_form_handle', 'dp_persona_form_handle'); //permitir el envío desde usuarios no autenticados
 
 // Procesar el formulario en el backend
-function handle_persona_form() {
-    if (!isset($_POST['persona_form_nonce']) || !wp_verify_nonce($_POST['persona_form_nonce'], 'persona_form_action')) {
+function dp_persona_form_handle() {
+    if (!isset($_POST['dp_persona_form_nonce']) || !wp_verify_nonce($_POST['dp_persona_form_nonce'], 'dp_persona_form_action')) {
         echo json_encode(['success' => false, 'message' => 'Error de seguridad.']);
         die();
     }

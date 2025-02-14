@@ -1,6 +1,6 @@
 <h1>Editar Alumno</h1>
-        <form id="alumno-form" method="POST">
-            <?php wp_nonce_field("alumno_form_action", "alumno_form_nonce"); ?>
+        <form id="dp-alumno-form" method="POST">
+            <?php wp_nonce_field("dp_alumno_form_action", "dp_alumno_form_nonce"); ?>
             <input type="hidden" name="alumno_id" id="alumno_id" value="<?=$alumno->id?>" />
             
             <p><label for="anio_ingreso"><strong>Año de Ingreso:</strong></label><br />
@@ -23,12 +23,12 @@
         </form>
 
         <script>
-            document.getElementById("alumno-form").addEventListener("submit", function(event) {
+            document.getElementById("dp-alumno-form").addEventListener("submit", function(event) {
                 event.preventDefault();
                 
                 let form = this;
                 let formData = new FormData(form);
-                formData.append("action", "handle_alumno_form");
+                formData.append("action", "dp_alumno_form_handle");
                 let messageBox = document.getElementById("alumno-form-message");
 
                 fetch("<?php echo admin_url('admin-ajax.php'); ?>", {

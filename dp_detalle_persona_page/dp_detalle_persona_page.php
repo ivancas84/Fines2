@@ -1,7 +1,7 @@
 <?php
 
 
-function fines_plugin_detalle_persona_page() {
+function dp_detalle_persona_page() {
     if (!isset($_GET['persona_id']) || empty($_GET['persona_id'])) {
         echo "<p>Error: No se especificó el ID de la persona.</p>";
         return;
@@ -22,12 +22,12 @@ function fines_plugin_detalle_persona_page() {
     );
 
 
-    include plugin_dir_path(__FILE__) . '../html/fines_plugin_detalle_persona_page_form_persona.php';
+    include plugin_dir_path(__FILE__) . 'dp_persona_form_html.php';
 
 
 
   if ($alumno){ 
-    include plugin_dir_path(__FILE__) . '../html/fines_plugin_detalle_persona_page_form_alumno.php';
+    include plugin_dir_path(__FILE__) . 'dp_alumno_form_html.php';
 
   }
  else { 
@@ -37,11 +37,23 @@ function fines_plugin_detalle_persona_page() {
     if ($alumno) {
         $calificaciones = $wpdb->get_results(
             $wpdb->prepare("
-                SELECT calificacion.nota_final, calificacion.crec, planificacion.anio, planificacion.semestre, plan.orientacion, asignatura.nombre FROM calificacion 
+                SELECT 
+                    calificacion.nota_final, 
+                    calificacion.crec, 
+                    planificacion.anio, 
+                    planificacion.semestre, 
+                    plan.orientacion, 
+                    asignatura.nombre,
+                    calendario.anio,
+                    calendario.semestre 
+                FROM calificacion 
                 INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
                 INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
                 INNER JOIN plan ON (planificacion.plan = plan.id)
                 INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id)
+                LEFT JOIN curso ON (calificacion.curso = curso.id)
+                LEFT JOIN comision ON (curso.comision = comision.id)
+                LEFT JOIN calendario ON (comision.calendario = calendario.id)
                 WHERE alumno = '$alumno->id'
                 ORDER BY planificacion.anio, planificacion.semestre
 				LIMIT 100;
@@ -49,26 +61,8 @@ function fines_plugin_detalle_persona_page() {
         );
 
         if ($calificaciones) {
-            echo "<h2>Calificaciones</h2>";
-            echo "<table border='1' cellpadding='5' cellspacing='0'>";
-            echo "<tr>
-                    <th>Asignatura</th>
-                    <th>Año</th>
-                    <th>Semestre</th>
-                    <th>Nota Final</th>
-                    <th>CREC</th>
-                  </tr>";
+            include plugin_dir_path(__FILE__) . 'dp_calificaciones_table_html.php';
 
-            foreach ($calificaciones as $cal) {
-                echo "<tr>
-                        <td>{$cal->nombre}</td>
-                        <td>{$cal->anio}</td>
-                        <td>{$cal->semestre}</td>
-                        <td>{$cal->nota_final}</td>
-                        <td>{$cal->crec}</td>
-                      </tr>";
-            }
-            echo "</table>";
         } else {
             echo "<p>No se encontraron calificaciones para este alumno.</p>";
         }
@@ -78,3 +72,5 @@ function fines_plugin_detalle_persona_page() {
 	
 }
 
+include plugin_dir_path(__FILE__) . 'dp_persona_form_handle.php';
+include plugin_dir_path(__FILE__) . 'dp_alumno_form_handle.php';

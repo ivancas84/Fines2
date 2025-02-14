@@ -52,7 +52,7 @@ function fines_plugin_menu() {
         'Prueba Validación', //Título del menú
         'edit_posts', // Permisos
         'fines-plugin-detalle-persona',  // Slug del submenú
-        'fines_plugin_detalle_persona_page' // Función que muestra la página del submenu
+        'dp_detalle_persona_page' // Función que muestra la página del submenu
     );
 
     add_submenu_page(
@@ -69,7 +69,7 @@ function fines_plugin_menu() {
 		'Detalle de Alumno', 
 		'edit_posts', 
 		'fines-plugin-detalle-persona', 
-		'fines_plugin_detalle_persona_page');
+		'dp_detalle_persona_page');
 
     add_submenu_page(
       null, 
@@ -98,13 +98,9 @@ include_once plugin_dir_path(__FILE__) . 'lc_lista_comisiones_page/lc_lista_comi
 
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_lista_alumnos_page.php';
 
-include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_detalle_persona_page.php';
-
-include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_detalle_persona_page_handle_persona_form.php';
-
-include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_detalle_persona_page_handle_alumno_form.php';
-
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_comisiones_siguientes_semestre.php';
+
+include_once plugin_dir_path(__FILE__) . 'dp_detalle_persona_page/dp_detalle_persona_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'ac_administrar_comision_page/ac_administrar_comision_page.php';
 
