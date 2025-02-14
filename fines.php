@@ -22,7 +22,7 @@ function fines_plugin_menu() {
         'Fines', // Título del menú
         'edit_posts', // Permisos
         'fines-plugin', // Slug del menú
-        'fines_plugin_comisiones_page', // Función que muestra la página principal del plugin
+        'lc_lista_comisiones_page', // Función que muestra la página principal del plugin
         'dashicons-admin-generic', // Icono del menú
 		2 // Posición en el menú
 
@@ -34,7 +34,7 @@ function fines_plugin_menu() {
         'Comisiones', //Título del menú
         'edit_posts', // Permisos
         'fines-plugin-comisiones',  // Slug del submenú
-        'fines_plugin_comisiones_page' // Función que muestra la página del submenu
+        'lc_lista_comisiones_page' // Función que muestra la página del submenu
     );
 
     add_submenu_page(
@@ -77,8 +77,16 @@ function fines_plugin_menu() {
       'Generar Comisiones Siguientes del Semestre', 
       'edit_posts', 
       'fines-plugin-comisiones-siguientes-semestre', 
-      'fines_plugin_comisiones_siguientes_semestre');
-}
+        'fines_plugin_comisiones_siguientes_semestre');
+
+      add_submenu_page(
+        null, 
+        'Rindex división',
+        'Rindex división', 
+        'edit_posts', 
+        'fines-plugin-rindex-division-page', 
+        'rd_rindex_division_page');
+  }
 
 include_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
 
@@ -86,7 +94,7 @@ include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_db_connection.ph
 
 include_once plugin_dir_path(__FILE__) . 'includes/queries.php';
 
-include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_comisiones_page.php';
+include_once plugin_dir_path(__FILE__) . 'lc_lista_comisiones_page/lc_lista_comisiones_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_lista_alumnos_page.php';
 
@@ -100,5 +108,6 @@ include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_comisiones_sigui
 
 include_once plugin_dir_path(__FILE__) . 'ac_administrar_comision_page/ac_administrar_comision_page.php';
 
+include_once plugin_dir_path(__FILE__) . 'rd_rindex_division_page/rd_rindex_division_page.php';
 
 

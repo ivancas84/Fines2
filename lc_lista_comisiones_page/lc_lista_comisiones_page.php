@@ -1,6 +1,6 @@
 <?php
 
-function fines_plugin_comisiones_page() {
+function lc_lista_comisiones_page() {
     $wpdb = fines_plugin_db_connection();
 
     if (!$wpdb) {
@@ -15,7 +15,7 @@ function fines_plugin_comisiones_page() {
 
     echo "<div class=\"wrap\">";
     
-    include plugin_dir_path(__FILE__) . '../html/fines_plugin_comisiones_page_formulario.php';
+    include plugin_dir_path(__FILE__) . 'lc_formulario_busqueda_html.php';
 
     if (isset($_GET['submit']) && !empty($_GET['calendario'])) {
             $calendario_id = intval($_GET['calendario']);
@@ -38,7 +38,7 @@ function fines_plugin_comisiones_page() {
             $comisiones = $wpdb->get_results($wpdb->prepare($sql));
 
             if ($comisiones) {
-                include plugin_dir_path(__FILE__) . '../html/fines_plugin_comisiones_page_tabla.php';
+                include plugin_dir_path(__FILE__) . 'lc_tabla_comisiones_html.php';
             } else {
                 echo "<p>No se encontraron comisiones para este calendario.</p>";
             }

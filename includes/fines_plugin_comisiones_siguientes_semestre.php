@@ -64,7 +64,7 @@ function fines_plugin_comisiones_siguientes_semestre() {
                     'modalidad' => $comision->modalidad,
                     'turno' => $comision->turno,
                     'division'=>$comision->division,
-                    'identificacion' => $comision->identificacion,
+                    'identificacion' => $comision->identificacion,|
                     'pfid' => $comision->pfid,
                 ),
                 array('%s', '%s', '%s', '%s', '%d', '%d', '%d', '%s')
