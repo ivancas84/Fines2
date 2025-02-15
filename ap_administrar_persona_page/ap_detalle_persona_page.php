@@ -27,7 +27,7 @@ function dp_detalle_persona_page() {
 
 
   if ($alumno){ 
-    include plugin_dir_path(__FILE__) . 'dp_alumno_form_html.php';
+    include plugin_dir_path(__FILE__) . 'ap_alumno_form.html';
 
   }
  else { 

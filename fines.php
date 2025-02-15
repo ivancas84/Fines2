@@ -46,14 +46,15 @@ function fines_plugin_menu() {
       'ac_administrar_comision_page' // Función que muestra la página del submenu
   );
 
-	add_submenu_page(
-        null, //debe coincidir con el slug del menu
-        'Prueba Validación', // Título de la página
-        'Prueba Validación', //Título del menú
-        'edit_posts', // Permisos
-        'fines-plugin-detalle-persona',  // Slug del submenú
-        'dp_detalle_persona_page' // Función que muestra la página del submenu
-    );
+  add_submenu_page(
+    'fines-plugin', //debe coincidir con el slug del menu
+    'Buscar Personas', // Título de la página
+    'Buscar Personas', //Título del menú
+    'edit_posts', // Permisos
+    'fines-plugin-buscar-personas-page',  // Slug del submenú
+    'bp_buscar_personas_page' // Función que muestra la página del submenu
+  );
+
 
     add_submenu_page(
 		null, 
@@ -68,7 +69,7 @@ function fines_plugin_menu() {
 		'Detalle de Alumno',
 		'Detalle de Alumno', 
 		'edit_posts', 
-		'fines-plugin-detalle-persona', 
+		'fines-plugin-detalle-persona-page', 
 		'dp_detalle_persona_page');
 
     add_submenu_page(
@@ -116,3 +117,4 @@ include_once plugin_dir_path(__FILE__) . 'rd_rindex_division_page/rd_rindex_divi
 
 include_once plugin_dir_path(__FILE__) . 'dpd_detalle_persona_division_page/dpd_detalle_persona_division_page.php';
 
+include_once plugin_dir_path(__FILE__) . 'bp_buscar_personas_page/bp_buscar_personas_page.php';

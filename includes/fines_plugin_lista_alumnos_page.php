@@ -93,7 +93,7 @@ function fines_plugin_lista_alumnos_page() {
                     <td>{$student['tramos']['2°2C']}</td>
                     <td>{$student['tramos']['3°1C']}</td>
                     <td>{$student['tramos']['3°2C']}</td>
-                    <td><a href='" . admin_url("admin.php?page=fines-plugin-detalle-persona&persona_id={$student['persona_id']}") . "' class='button'>Detalle</a></td>
+                    <td><a href='" . admin_url("admin.php?page=fines-plugin-detalle-persona-page&persona_id={$student['persona_id']}") . "' class='button'>Detalle</a></td>
                   </tr>";
         }
 
