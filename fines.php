@@ -86,6 +86,14 @@ function fines_plugin_menu() {
         'edit_posts', 
         'fines-plugin-rindex-division-page', 
         'rd_rindex_division_page');
+
+        add_submenu_page(
+          null, 
+          'Informe alumnos división',
+          'Informe alumnos división', 
+          'edit_posts', 
+          'fines-plugin-detalle-persona-division-page', 
+          'dpd_detalle_persona_division_page');
   }
 
 include_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
@@ -106,4 +114,5 @@ include_once plugin_dir_path(__FILE__) . 'ac_administrar_comision_page/ac_admini
 
 include_once plugin_dir_path(__FILE__) . 'rd_rindex_division_page/rd_rindex_division_page.php';
 
+include_once plugin_dir_path(__FILE__) . 'dpd_detalle_persona_division_page/dpd_detalle_persona_division_page.php';
 
