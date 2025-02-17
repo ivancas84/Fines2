@@ -22,8 +22,8 @@ function dp_calificaciones_table_html($calificaciones, $title) {
             <tr>
                 <td><?= $cal->nombre ?></td>
                 <td><?= $cal->tramo ?></td>
-                <td><?= $cal->nota_final ?></td>
-                <td><?= $cal->crec ?></td>
+                <td><?= round($cal->nota_final) ?></td>
+                <td><?= round($cal->crec) ?></td>
                 <td><?= $cal->pfid ?></td>
                 <td><?= $cal->periodo ?></td>
                 <td><?= $cal->docente ?></td>

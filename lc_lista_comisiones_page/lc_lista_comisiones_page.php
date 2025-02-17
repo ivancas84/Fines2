@@ -38,7 +38,7 @@ function lc_lista_comisiones_page() {
             $comisiones = $wpdb->get_results($wpdb->prepare($sql));
 
             if ($comisiones) {
-                include plugin_dir_path(__FILE__) . 'lc_tabla_comisiones_html.php';
+                include plugin_dir_path(__FILE__) . 'lc_tabla_comisiones.html';
             } else {
                 echo "<p>No se encontraron comisiones para este calendario.</p>";
             }
