@@ -4,7 +4,7 @@ add_action('wp_ajax_ac_comision_form_handle', 'ac_comision_form_handle');
 add_action('wp_ajax_nopriv_ac_comision_form_handle', 'ac_comision_form_handle');
 
 function ac_comision_form_handle() {
-    $wpdb = fines_plugin_db_connection();
+    $wpdb = fines_plugin_db_connect();
     
     if (!isset($_POST['ac_comision_form_nonce']) || !wp_verify_nonce($_POST['ac_comision_form_nonce'], 'ac_comision_form_action')) {
         echo json_encode(['success' => false, 'message' => 'Error de seguridad.']);

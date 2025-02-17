@@ -4,7 +4,7 @@
  * Generar comisiones del semestre siguiente
  */
 function fines_plugin_comisiones_siguientes_semestre() {
-    $wpdb = fines_plugin_db_connection();
+    $wpdb = fines_plugin_db_connect();
 
     if (!$wpdb) {
         echo "<p style='color: red;'>Error de conexión a la base de datos.</p>";

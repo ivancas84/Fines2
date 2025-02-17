@@ -8,7 +8,7 @@ function dp_detalle_persona_page() {
     }
 
     $persona_id = $_GET['persona_id'];
-    $wpdb = fines_plugin_db_connection();
+    $wpdb = fines_plugin_db_connect();
 
     // Fetch student details from the database
     $persona = $wpdb->get_row(

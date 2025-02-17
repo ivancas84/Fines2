@@ -10,7 +10,7 @@ function rd_rindex_division_page() {
 
     $pfid = $_GET['comision_pfid'];
 
-    $wpdb = fines_plugin_db_connection();
+    $wpdb = fines_plugin_db_connect();
 
     // Step 1: Get the dynamic headers (detalle_asignatura)
     $query_headers = "
@@ -79,7 +79,7 @@ function rd_rindex_division_page() {
     $output = '<table border="1" cellpadding="5" cellspacing="0">';
     $output .= '<thead><tr>';
     $output .= '<th>Datos Alumno</th>';
-    foreach ($extra_headers as $extra_header) {
+    foreach ($extra_headers as $index => $extra_header) {
         $border_style = ($index == count($extra_headers) - 1) ? 'border-right: 3px solid black;' : '';
         $output .= '<th style="' . $border_style . '">' . esc_html($extra_header) . '</th>';
     }

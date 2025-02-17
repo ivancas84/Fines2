@@ -1,6 +1,6 @@
 <?php
 function fines_plugin_lista_alumnos_page() {
-	$wpdb = fines_plugin_db_connection();
+	$wpdb = fines_plugin_db_connect();
 
     if (!isset($_GET['comision_id']) || empty($_GET['comision_id'])) {
         echo "<p>Error: No se especificó la comisión.</p>";

@@ -99,7 +99,7 @@ function fines_plugin_menu() {
 
 include_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
 
-include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_db_connection.php';
+include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_db_connect.php';
 
 include_once plugin_dir_path(__FILE__) . 'includes/queries.php';
 

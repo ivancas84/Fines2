@@ -3,7 +3,7 @@
 
 function administrar_comision_page() {
     $comision_id = isset($_GET['comision_id']) ? $_GET['comision_id'] : null;
-    $wpdb = fines_plugin_db_connection();
+    $wpdb = fines_plugin_db_connect();
 
 
     

@@ -11,7 +11,7 @@ function dpd_detalle_persona_division_page() {
 
     $pfid = $_GET['comision_pfid'];
 
-    $wpdb = fines_plugin_db_connection();
+    $wpdb = fines_plugin_db_connect();
 
     // Step 2: Get student data and grades
     $sql = "

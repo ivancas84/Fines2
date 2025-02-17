@@ -1,7 +1,7 @@
 <?php
 
 function bp_buscar_personas_page() {
-    $wpdb = fines_plugin_db_connection();
+    $wpdb = fines_plugin_db_connect();
 
     if (!$wpdb) {
 		echo "error de conexión";

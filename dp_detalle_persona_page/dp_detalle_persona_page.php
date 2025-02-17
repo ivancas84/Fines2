@@ -10,7 +10,7 @@ function dp_detalle_persona_page() {
     }
 
     $persona_id = $_GET['persona_id'];
-    $wpdb = fines_plugin_db_connection();
+    $wpdb = fines_plugin_db_connect();
 
     dp_detalle_persona($persona_id, $wpdb);
 
