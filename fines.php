@@ -81,6 +81,14 @@ function fines_plugin_menu() {
 
     add_submenu_page(
       null, 
+      'Administrar Persona',
+      'Administrar Persona', 
+      'edit_posts', 
+      'fines-plugin-administrar-persona-page', 
+      'ap_administrar_persona_page');
+
+    add_submenu_page(
+      null, 
       'Generar Comisiones Siguientes del Semestre',
       'Generar Comisiones Siguientes del Semestre', 
       'edit_posts', 
@@ -120,6 +128,8 @@ include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_lista_alumnos_pa
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_comisiones_siguientes_semestre.php';
 
 include_once plugin_dir_path(__FILE__) . 'dp_detalle_persona_page/dp_detalle_persona_page.php';
+
+include_once plugin_dir_path(__FILE__) . 'ap_administrar_persona_page/ap_administrar_persona_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'ac_administrar_comision_page/ac_administrar_comision_page.php';
 

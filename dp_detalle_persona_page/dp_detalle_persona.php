@@ -6,11 +6,7 @@ include_once plugin_dir_path(__FILE__) . 'dp_calificaciones_table_html.php';
 function dp_detalle_persona($persona_id, $wpdb) {
 
     // Fetch student details from the database
-    $persona = $wpdb->get_row(
-        $wpdb->prepare("SELECT persona.nombres, persona.apellidos, persona.numero_documento, persona.telefono, persona.email
-                        FROM persona                        
-                        WHERE persona.id = '{$persona_id}'")
-    );
+    $persona = wpdbPersona__By_id($wpdb, $persona_id);
 
     if(!$persona){
         echo "<p>No se encontró una persona asociada a ese id.</p>";
@@ -23,20 +19,7 @@ function dp_detalle_persona($persona_id, $wpdb) {
         ")
     );
 
-    
-
-    $alumno = $wpdb->get_row(
-        $wpdb->prepare("
-            SELECT alumno.id, alumno.estado_inscripcion, alumno.tiene_dni, 
-            alumno.tiene_certificado, alumno.tiene_constancia, alumno.tiene_partida,
-             alumno.previas_completas, alumno.confirmado_direccion, alumno.anio_ingreso,
-            CONCAT(plan.orientacion, ' ', plan.resolucion) AS detalle_plan
-            FROM alumno 
-            INNER JOIN plan ON (alumno.plan = plan.id)
-            WHERE persona = '$persona_id'
-        ")
-    );
-
+    $alumno = wpdbAlumno__By_idPersona($wpdb, $persona_id);
 
     include plugin_dir_path(__FILE__) . 'dp_detalle_persona_html.php';
 

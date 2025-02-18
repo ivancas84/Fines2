@@ -1,15 +1,17 @@
-<h2>Calificaciones</h2>
+
+<h2>Calificaciones Aprobadas</h2>
 <table border="1" cellpadding="5" cellspacing="0">
     <thead>
         <tr>
             <th>Asignatura</th>
-            <th>Año</th>
-            <th>Semestre</th>
+            <th>Tramo</th>
             <th>Nota Final</th>
             <th>Crec</th>
             <th>Pfid</th>
             <th>Período</th>
             <th>Docente</th>
+            <th>Orientacion</th>
+            <th>Resolución</th>
 
         </tr>
     </thead>
@@ -17,13 +19,15 @@
         <?php foreach ($calificaciones as $cal): ?>
             <tr>
                 <td><?= $cal->nombre ?></td>
-                <td><?= $cal->anio ?></td>
-                <td><?= $cal->semestre ?></td>
-                <td><?= $cal->nota_final ?></td>
-                <td><?= $cal->crec ?></td>
+                <td><?= $cal->tramo ?></td>
+                <td><?= round($cal->nota_final) ?></td>
+                <td><?= round($cal->crec) ?></td>
                 <td><?= $cal->pfid ?></td>
                 <td><?= $cal->periodo ?></td>
                 <td><?= $cal->docente ?></td>
+                <td><?= $cal->orientacion ?></td>
+                <td><?= $cal->resolucion ?></td>
+
             </tr>
         <?php endforeach; ?>
     </tbody>

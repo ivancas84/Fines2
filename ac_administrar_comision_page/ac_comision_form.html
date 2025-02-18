@@ -135,7 +135,7 @@
         .then(data => {
             messageBox.innerHTML = data.message;
             messageBox.style.color = data.success ? "green" : "red";
-
+            
             if (data.success && data.comision_id) {
                 // Redirigir a la misma página con el ID de la comisión
                 window.location.href = "<? echo admin_url('admin.php?page=fines-plugin-administrar-comision-page&comision_id='); ?>" + data.comision_id;
