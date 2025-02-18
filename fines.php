@@ -13,8 +13,15 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
-add_action('admin_menu', 'fines_plugin_menu'); //function fines_plugin_menu to display the menu
 
+function register_fines_shortcodes() {
+  add_shortcode('fines_lista_comisiones', 'lcd_lista_comisiones_direccion_page');
+  add_shortcode('fines_rindex_division', 'rdd_rindex_division_direccion_page');
+
+}
+add_action('init', 'register_fines_shortcodes');
+
+add_action('admin_menu', 'fines_plugin_menu'); //function fines_plugin_menu to display the menu
 
 function fines_plugin_menu() {
 	add_menu_page(
@@ -97,6 +104,7 @@ function fines_plugin_menu() {
           'dpd_detalle_persona_division_page');
   }
 
+
 include_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
 
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_db_connect.php';
@@ -104,6 +112,8 @@ include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_db_connect.php';
 include_once plugin_dir_path(__FILE__) . 'includes/queries.php';
 
 include_once plugin_dir_path(__FILE__) . 'lc_lista_comisiones_page/lc_lista_comisiones_page.php';
+
+include_once plugin_dir_path(__FILE__) . 'lcd_lista_comisiones_direccion_page/lcd_lista_comisiones_direccion_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_lista_alumnos_page.php';
 
@@ -114,6 +124,8 @@ include_once plugin_dir_path(__FILE__) . 'dp_detalle_persona_page/dp_detalle_per
 include_once plugin_dir_path(__FILE__) . 'ac_administrar_comision_page/ac_administrar_comision_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'rd_rindex_division_page/rd_rindex_division_page.php';
+
+include_once plugin_dir_path(__FILE__) . 'rdd_rindex_division_direccion_page/rdd_rindex_division_direccion_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'dpd_detalle_persona_division_page/dpd_detalle_persona_division_page.php';
 

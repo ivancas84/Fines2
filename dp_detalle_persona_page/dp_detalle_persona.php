@@ -12,6 +12,19 @@ function dp_detalle_persona($persona_id, $wpdb) {
                         WHERE persona.id = '{$persona_id}'")
     );
 
+    if(!$persona){
+        echo "<p>No se encontró una persona asociada a ese id.</p>";
+        die();
+    }
+
+    $detalles = $wpdb->get_results(
+        $wpdb->prepare("
+            SELECT * FROM detalle_persona WHERE persona  = '$persona_id'
+        ")
+    );
+
+    
+
     $alumno = $wpdb->get_row(
         $wpdb->prepare("
             SELECT alumno.id, alumno.estado_inscripcion, alumno.tiene_dni, 
@@ -108,6 +121,12 @@ function dp_detalle_persona($persona_id, $wpdb) {
 
     } else {
         echo "<p>No se encontró un alumno asociado con esta persona.</p>";
+    }
+
+    if ($detalles) {
+        include plugin_dir_path(__FILE__) . 'dp_detalles_table.html';
+    } else {
+        echo "<p>No se encontraron detalles para esta persona.</p>";
     }
 	
 }

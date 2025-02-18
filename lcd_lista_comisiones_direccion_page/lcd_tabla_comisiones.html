@@ -1,0 +1,38 @@
+<h2>Comisiones Consultadas</h2>
+
+<table class="wp-list-table widefat striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Domicilio</th>
+            <th>PFID</th>
+            <th>Tramo</th>
+            <th>Orientación</th>
+            <th>Resolución</th>
+            <th>Autorizada</th>
+            <th>Apertura</th>
+            <th>Referentes</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <? foreach ($comisiones as $comision): ?>
+            <? $rindex_url = site_url('/rindex-division/') . '?comision_pfid=' . $comision->pfid;  ?>
+
+            <tr>
+                <td><?= esc_html($comision->nombre); ?></td>
+                <td><?= esc_html($comision->domicilio); ?></td>
+                <td><?= esc_html($comision->pfid); ?></td>
+                <td><?= esc_html($comision->tramo); ?></td>
+                <td><?= esc_html(getAcronym($comision->orientacion)); ?></td>
+                <td><?= esc_html($comision->resolucion); ?></td>
+                <td><?= esc_html(boolToSiNo($comision->autorizada)); ?></td>
+                <td><?= esc_html(boolToSiNo($comision->apertura)); ?></td>
+                <td><?= $comision->referentes ?: 'Sin referentes' ?></td>
+                <td>
+                    <a href="<?= esc_url($rindex_url); ?>" class="button">Rindex</a> 
+                </td>
+            </tr>
+        <? endforeach; ?>
+    </tbody>
+</table>

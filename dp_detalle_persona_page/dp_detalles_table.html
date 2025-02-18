@@ -1,0 +1,17 @@
+<h2>Detalle</h2>
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Descripción</th>
+            
+
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($detalles as $detalle): ?>
+            <tr>
+                <td><?= $detalle->descripcion ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
