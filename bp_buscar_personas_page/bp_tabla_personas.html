@@ -13,7 +13,7 @@
     </thead>
     <tbody>
         <?php foreach ($personas as $persona): ?>
-            <?php $detalle_persona_url = admin_url('admin.php?page=fines-plugin-detalle-persona-page&persona_id=' . $persona->id); ?>
+            <?php $detalle_persona_url = admin_url('admin.php?page=fines-plugin-administrar-persona-page&persona_id=' . $persona->id); ?>
 
             <tr>
                 <td><?= esc_html($persona->nombres); ?></td>

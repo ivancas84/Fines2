@@ -59,7 +59,7 @@ function analizarDirectorio($ruta) {
     }
 
     // Verificar si el alumno existe
-    $stmt = $pdo->prepare("SELECT id, anio_ingreso FROM alumno WHERE persona = ?");
+    $stmt = $pdo->prepare("SELECT * FROM alumno WHERE persona = ?");
     $stmt->execute([$personaId]);
     $alumno = $stmt->fetch();
 
@@ -74,29 +74,43 @@ function analizarDirectorio($ruta) {
 
         echo "🆕 Alumno agregado para $numero ( " .  $alumno["id"] . " ) \n";
         $anioIngresoExistente = null; // No existe aún, no hay valor previo
+        $confirmadoDireccionExistente = null; // No existe aún, no hay valor previo
+        $estadoInscripcionExistente = null; // No existe aún, no hay valor previo
     } else {
         $anioIngresoExistente = $alumno['anio_ingreso']; // Guardar el valor existente
+        $confirmadoDireccionExistente = $alumno['confirmado_direccion']; // No existe aún, no hay valor previo
+        $estadoInscripcionExistente = $alumno['estado_inscripcion']; // No existe aún, no hay valor previo
         echo "✅ Alumno encontrado para $numero ( " .  $alumno["id"] . " ) \n";
     }
 
     // Determinar el valor de anio_ingreso
     if (stripos($ultimoDirectorio, 'primero') !== false) {
         echo "📄 Año ingreso definido: primero \n";
+        $confirmadoDireccion = 1;
         $anioIngreso = 1;
+        $estadoInscripcion = "Correcto";
     } elseif (stripos($ultimoDirectorio, 'segundo') !== false) {
         echo "📄 Año ingreso definido: segundo \n";
+        $confirmadoDireccion = 1;
         $anioIngreso = 2;
+        $estadoInscripcion = "Correcto";
     } elseif (stripos($ultimoDirectorio, 'tercero') !== false) {
         echo "📄 Año ingreso definido: tercero \n";
+        $confirmadoDireccion = 1;
         $anioIngreso = 3;
+        $estadoInscripcion = "Correcto";
+
     } else {
         echo "📄 Año ingreso no definido, manteniendo valor existente: $anioIngresoExistente \n";
+        $confirmadoDireccion = $confirmadoDireccionExistente;
         $anioIngreso = $anioIngresoExistente; // Mantiene el valor en la DB si ya existía
+        $estadoInscripcion = $estadoInscripcionExistente; // Mantiene el valor en la DB si ya existía
+
     }
 
 // Determinar el valor de previas_completas
-    $previasCompletas = (stripos($ultimoDirectorio, 'deudores') !== false) ? 0 : 1;
-	echo "📄 Previas completas: " . ($previasCompletas ? "Sí" : "No (debe ir a deudores)") . "\n";
+    $previasCompletas = (stripos($ultimoDirectorio, 'pendiente') !== false) ? 0 : 1;
+	echo "📄 Previas completas: " . ($previasCompletas ? "Sí" : "No (debe completar materias pendiente)") . "\n";
 
     // Actualizar datos del alumno con documentos encontrados
     if ($alumno || isset($personaId)) {
@@ -106,7 +120,9 @@ function analizarDirectorio($ruta) {
             tiene_certificado = ?, 
             tiene_constancia = ?,
             anio_ingreso = ?,
-            previas_completas = ?
+            previas_completas = ?,
+            confirmado_direccion = ?,
+            estado_inscripcion = ?
             WHERE persona = ?");
         
         // Actualizar los documentos, considerando "ana" como sinónimo de "cert"
@@ -117,6 +133,8 @@ function analizarDirectorio($ruta) {
             isset($archivosFiltrados['cons']) ? 1 : 0,
             $anioIngreso, // Mantiene el valor si no se pudo determinar uno nuevo
             $previasCompletas,
+            $confirmadoDireccion,
+            $estadoInscripcion,
 			$personaId
         ]);
         echo "📄 Documentos actualizados para $numero: " . implode(", ", array_keys($archivosFiltrados)) . "\n";

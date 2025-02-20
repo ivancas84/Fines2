@@ -59,18 +59,25 @@ function sqlSelectPlanificacion__By_plan_And_tramo($idPlan, $idTramo){
 
 function wpdbPersona__By_id($wpdb, $persona_id){
     return $wpdb->get_row(
-        $wpdb->prepare("SELECT persona.nombres, persona.apellidos, persona.numero_documento, persona.telefono, persona.email
+        $wpdb->prepare("SELECT *
                         FROM persona                        
                         WHERE persona.id = '{$persona_id}'")
     );
 }
 
+function wpdbDetalles__By_idPersona($wpdb, $persona_id){
+    return $wpdb->get_results(
+        $wpdb->prepare("
+            SELECT * FROM detalle_persona 
+            INNER JOIN file ON (detalle_persona.archivo = file.id)
+            WHERE persona  = '$persona_id'
+        ")
+    );
+}
 function wpdbAlumno__By_idPersona($wpdb, $persona_id){
     return $wpdb->get_row(
         $wpdb->prepare("
-            SELECT alumno.id, alumno.estado_inscripcion, alumno.tiene_dni, 
-            alumno.tiene_certificado, alumno.tiene_constancia, alumno.tiene_partida,
-             alumno.previas_completas, alumno.confirmado_direccion, alumno.anio_ingreso,
+            SELECT alumno.*,
             CONCAT(plan.orientacion, ' ', plan.resolucion) AS detalle_plan
             FROM alumno 
             LEFT JOIN plan ON (alumno.plan = plan.id)

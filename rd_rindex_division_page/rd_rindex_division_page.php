@@ -92,7 +92,7 @@ function rd_rindex_division_page() {
 $output .= '<tbody>';
 $student_data = [];
 foreach ($students as $student) {
-    $student_link = admin_url('admin.php?page=fines-plugin-detalle-persona-page&persona_id=' . $student->persona_id);
+    $student_link = admin_url('admin.php?page=fines-plugin-administrar-persona-page&persona_id=' . $student->persona_id);
     $key = '<a href="' . esc_url($student_link) . '">' . esc_html($student->nombres . ' ' . $student->apellidos . ' (' . $student->numero_documento . ')') . '</a>';
 
     if (!isset($student_data[$key])) {

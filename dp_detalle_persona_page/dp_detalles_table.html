@@ -10,7 +10,9 @@
     <tbody>
         <?php foreach ($detalles as $detalle): ?>
             <tr>
-                <td><?= $detalle->descripcion ?></td>
+                <td>
+                    <a href="https://planfines2.com.ar/upload/<?=$detalle->content?>" download="<?=$detalle->descripcion?>"><?= $detalle->descripcion ?></a>
+                </td>
             </tr>
         <?php endforeach; ?>
     </tbody>

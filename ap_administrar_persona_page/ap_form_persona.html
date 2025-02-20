@@ -1,0 +1,137 @@
+<h1>Informe <?=$persona->apellidos?>, <?=$persona->nombres?> <?=$persona->numero_documento?></h1>
+
+<form id="ap-persona-form" method="POST">
+    <?php wp_nonce_field("ap_persona_form_action", "ap_persona_form_nonce"); ?>
+
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="nombres">Nombres:</label>
+            <input type="text" id="nombres" name="nombres" value="<?=$persona->nombres?>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="apellidos">Apellidos:</label>
+            <input type="text" id="apellidos" name="apellidos" value="<?=$persona->apellidos?>">
+        </div>
+
+        <div class="form-group">
+            <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="<?=$persona->fecha_nacimiento?>">
+        </div>
+
+        <div class="form-group">
+            <label for="numero_documento">Número de Documento:</label>
+            <input type="text" id="numero_documento" name="numero_documento" value="<?=$persona->numero_documento?>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="cuil">CUIL:</label>
+            <input type="text" id="cuil" name="cuil" value="<?=$persona->cuil?>">
+        </div>
+
+        <div class="form-group">
+            <label for="genero">Género:</label>
+            <input type="text" id="genero" name="genero" value="<?=$persona->genero?>">
+        </div>
+
+        <div class="form-group">
+            <label for="telefono">Teléfono:</label>
+            <input type="text" id="telefono" name="telefono" value="<?=$persona->telefono?>">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" value="<?=$persona->email?>">
+        </div>
+
+        <div class="form-group">
+            <label for="email_abc">Email ABC:</label>
+            <input type="email" id="email_abc" name="email_abc" value="<?=$persona->email_abc?>">
+        </div>
+
+        <div class="form-group">
+            <label for="lugar_nacimiento">Lugar de Nacimiento:</label>
+            <input type="text" id="lugar_nacimiento" name="lugar_nacimiento" value="<?=$persona->lugar_nacimiento?>">
+        </div>
+    </div>
+
+    <input type="hidden" name="persona_id" value="<?=$persona_id?>">
+    <input type="text" name="honeypot" style="display: none;">
+
+    <button type="submit" class="submit-btn">Guardar Cambios</button>
+
+    <div id="ap-persona-form-message"></div>
+</form>
+
+<style>
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        max-width: 800px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    input {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .submit-btn {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        background-color: #0073aa;
+        color: white;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .submit-btn:hover {
+        background-color: #005177;
+    }
+
+    #ap-persona-form-message {
+        margin-top: 10px;
+        text-align: center;
+        font-weight: bold;
+    }
+</style>
+
+<script>
+    document.getElementById("ap-persona-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        
+        let form = this;
+        let formData = new FormData(form);
+        formData.append("action", "ap_persona_form_handle");
+        let messageBox = document.getElementById("ap-persona-form-message");
+
+        fetch("<?php echo admin_url('admin-ajax.php'); ?>", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            messageBox.innerHTML = data.message;
+            messageBox.style.color = data.success ? "green" : "red";
+            if (data.success && data.persona_id) { 
+                window.location.href = "<?php echo admin_url('admin.php?page=fines-plugin-administrar-persona-page&persona_id='); ?>" + data.persona_id;
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+</script>
