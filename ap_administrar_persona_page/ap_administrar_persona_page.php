@@ -8,7 +8,7 @@ function ap_administrar_persona_page() {
     // Fetch student details from the database
     $persona = wpdbPersona__By_id($wpdb, $persona_id);
 
-    include plugin_dir_path(__FILE__) . 'ap_form_persona.html';
+    include plugin_dir_path(__FILE__) . 'ap_persona_form.html';
 
     if($persona){
 
@@ -23,33 +23,35 @@ function ap_administrar_persona_page() {
         $selected_estado = null;
 
         $alumno = wpdbAlumno__By_idPersona($wpdb, $persona_id);
-
-        if ($alumno){ 
+        
+        if ($alumno){
+            $alumno_id = $alumno->id;
             $selected_plan = $alumno->plan;
             $selected_resolucion = $alumno->resolucion_inscripcion;
             $selected_estado = $alumno->estado_inscripcion;
-            
-            include plugin_dir_path(__FILE__) . 'ap_form_alumno.html';
-    
             $comisiones = wpdbComisiones__By_idAlumno($wpdb, $alumno->id);
-
             $calificaciones = wpdbCalificaciones__By_idAlumno($wpdb, $alumno->id);
+        }
 
-            if ($comisiones) {
-                include plugin_dir_path(__FILE__) . 'ap_comisiones_table.html';
-            } else {
-                echo "<p>No se encontraron comisiones para este alumno.</p>";
-            }
-
-            if ($calificaciones) {
-                include plugin_dir_path(__FILE__) . 'ap_calificaciones_table.html';
-
-            } else {
-                echo "<p>No se encontraron calificaciones para este alumno.</p>";
-            }
-
-        } else {
+        else {
             echo "<p>No se encontró un alumno asociado con esta persona.</p>";
+            $alumno_id = null;
+            $comisiones = null;
+            $calificaciones = null;
+        }
+
+        include plugin_dir_path(__FILE__) . 'ap_alumno_form.html';
+    
+        if ($comisiones) {
+            include plugin_dir_path(__FILE__) . 'ap_comisiones_table.html';
+        } else {
+            echo "<p>No se encontraron comisiones para este alumno.</p>";
+        }
+
+        if ($calificaciones) {
+            include plugin_dir_path(__FILE__) . 'ap_calificaciones_table.html';
+        } else {
+            echo "<p>No se encontraron calificaciones para este alumno.</p>";
         }
 
         $detalles = wpdbDetalles__By_idPersona($wpdb, $persona_id);
@@ -67,3 +69,5 @@ function ap_administrar_persona_page() {
 }
 
 include plugin_dir_path(__FILE__) . 'ap_persona_form_handle.php';
+
+include plugin_dir_path(__FILE__) . 'ap_alumno_form_handle.php';

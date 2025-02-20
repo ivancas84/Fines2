@@ -16,6 +16,7 @@ function ap_persona_form_handle() {
         die();
     }
     
+    // Sanitize all inputs
     $nombres = sanitize_text_field($_POST['nombres']);
     $apellidos = sanitize_text_field($_POST['apellidos']);
     $fecha_nacimiento = sanitize_text_field($_POST['fecha_nacimiento']);
@@ -27,6 +28,18 @@ function ap_persona_form_handle() {
     $email_abc = sanitize_email($_POST['email_abc']);
     $lugar_nacimiento = sanitize_text_field($_POST['lugar_nacimiento']);
     $persona_id = !empty($_POST['persona_id']) ? sanitize_text_field($_POST['persona_id']) : null;
+
+    // Handle empty fields by converting them to null
+    $nombres = !empty($nombres) ? $nombres : null;
+    $apellidos = !empty($apellidos) ? $apellidos : null;
+    $fecha_nacimiento = !empty($fecha_nacimiento) ? $fecha_nacimiento : null;
+    $numero_documento = !empty($numero_documento) ? $numero_documento : null;
+    $cuil = !empty($cuil) ? $cuil : null;
+    $genero = !empty($genero) ? $genero : null;
+    $telefono = !empty($telefono) ? $telefono : null;
+    $email = !empty($email) ? $email : null;
+    $email_abc = !empty($email_abc) ? $email_abc : null;
+    $lugar_nacimiento = !empty($lugar_nacimiento) ? $lugar_nacimiento : null;
 
     $proceso = "";
     if (empty($persona_id)) {

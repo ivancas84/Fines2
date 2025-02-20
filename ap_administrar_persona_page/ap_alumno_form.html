@@ -1,7 +1,7 @@
 <h1>Actualizar Información del Alumno</h1>
 
-<form id="alumno-form" method="POST">
-    <?php wp_nonce_field("alumno_form_action", "alumno_form_nonce"); ?>
+<form id="ap-alumno-form" method="POST">
+    <?php wp_nonce_field("ap_alumno_form_action", "ap_alumno_form_nonce"); ?>
 
     <div class="form-grid">
         <div class="form-group">
@@ -69,7 +69,8 @@
         </div>
     </div>
 
-    <h3>Documentación</h3>
+    <h3>Legajo</h3>
+    <p> El legajo se actualiza desde el drive según la estructura establecida.</p>
     <div class="checkbox-grid">
         <label><input type="checkbox" name="tiene_dni" value="1" <?= $alumno->tiene_dni ? 'checked' : '' ?>> Tiene DNI</label>
         <label><input type="checkbox" name="tiene_constancia" value="1" <?= $alumno->tiene_constancia ? 'checked' : '' ?>> Tiene Constancia</label>
@@ -79,12 +80,13 @@
         <label><input type="checkbox" name="confirmado_direccion" value="1" <?= $alumno->confirmado_direccion ? 'checked' : '' ?>> Confirmado por Dirección</label>
     </div>
 
-    <input type="hidden" name="alumno_id" value="<?=$alumno->id?>">
+    <input type="hidden" name="persona" value="<?=$persona_id?>">
+    <input type="hidden" name="alumno_id" value="<?=$alumno_id?>">
     <input type="text" name="honeypot" style="display: none;">
 
     <button type="submit" class="submit-btn">Guardar Cambios</button>
 
-    <div id="alumno-form-message"></div>
+    <div id="ap-alumno-form-message"></div>
 </form>
 
 <style>
@@ -143,13 +145,13 @@
 </style>
 
 <script>
-    document.getElementById("alumno-form").addEventListener("submit", function(event) {
+    document.getElementById("ap-alumno-form").addEventListener("submit", function(event) {
         event.preventDefault();
         
         let form = this;
         let formData = new FormData(form);
-        formData.append("action", "alumno_form_handle");
-        let messageBox = document.getElementById("alumno-form-message");
+        formData.append("action", "ap_alumno_form_handle");
+        let messageBox = document.getElementById("ap-alumno-form-message");
 
         fetch("<?php echo admin_url('admin-ajax.php'); ?>", {
             method: "POST",
@@ -159,8 +161,8 @@
         .then(data => {
             messageBox.innerHTML = data.message;
             messageBox.style.color = data.success ? "green" : "red";
-            if (data.success && data.alumno_id) { 
-                window.location.href = "<?php echo admin_url('admin.php?page=fines-plugin-administrar-alumno-page&alumno_id='); ?>" + data.alumno_id;
+            if (data.success && data.persona_id) { 
+                window.location.href = "<?php echo admin_url('admin.php?page=fines-plugin-administrar-persona-page&persona_id='); ?>" + data.persona_id;
             }
         })
         .catch(error => console.error("Error:", error));
