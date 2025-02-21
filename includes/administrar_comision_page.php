@@ -5,8 +5,6 @@ function administrar_comision_page() {
     $comision_id = isset($_GET['comision_id']) ? $_GET['comision_id'] : null;
     $wpdb = fines_plugin_db_connect();
 
-
-    
     $calendarios = $wpdb->get_results("SELECT id, anio, semestre, descripcion FROM calendario ORDER BY anio DESC, semestre DESC");
 	$selected_calendario = isset($_GET['calendario']) ? $_GET['calendario'] : '';
 

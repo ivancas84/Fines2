@@ -86,6 +86,18 @@ function wpdbAlumno__By_idPersona($wpdb, $persona_id){
     );
 }
 
+function wpdbDisposiciones__By_idPlan_tramo($wpdb, $plan_id, $tramo){
+    return $wpdb->get_results(
+        $wpdb->prepare("
+            SELECT DISTINCT disposicion.*,  CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura
+            FROM disposicion
+            INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+            INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+            WHERE planificacion.plan = %s AND CONCAT(planificacion.anio, planificacion.semestre) >= %s
+        ", $plan_id, $tramo)
+    );
+}
+
 function wpdbComisiones__By_idAlumno($wpdb, $alumno_id){
     return $wpdb->get_results(
         $wpdb->prepare("
@@ -110,10 +122,29 @@ function wpdbComisiones__By_idAlumno($wpdb, $alumno_id){
     );
 }
 
-function wpdbCalificaciones__by_idAlumno($wpdb, $alumno_id){
+/****** calificacion *****/
+function wpdbIdsCalificacionesDesaprobadas__By_idAlumno($wpdb, $alumno_id){
+    return $wpdb->get_col(
+        $wpdb->prepare("
+            SELECT DISTINCT id FROM calificacion CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
+            WHERE nota_final < 7 AND crec < 4 AND alumno = '%s'
+        ", $alumno_id)
+    );;
+}
+
+function wpdbDeleteCalificaciones__By_ids($wpdb, $ids){
+    $ids = implode("','", $ids);
+    return $wpdb->query(
+        $wpdb->prepare("
+            DELETE FROM calificacion WHERE id IN ('$ids')
+        ")
+    );
+}
+
+function wpdbCalificacionesAprobadas__by_idAlumno($wpdb, $alumno_id){
     return $wpdb->get_results(
         $wpdb->prepare("
-        SELECT 
+        SELECT DISTINCT CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
             calificacion.nota_final, 
             calificacion.crec, 
             CONCAT(planificacion.anio, planificacion.semestre) AS tramo, 
@@ -123,7 +154,6 @@ function wpdbCalificaciones__by_idAlumno($wpdb, $alumno_id){
             comision.pfid,
             CONCAT(calendario.anio, '-', calendario.semestre) AS periodo,
             CONCAT(toma_activa.nombres, ' ', toma_activa.apellidos, ' ', toma_activa.numero_documento) AS docente                    
-            
         FROM calificacion 
         INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
         INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
@@ -139,7 +169,115 @@ function wpdbCalificaciones__by_idAlumno($wpdb, $alumno_id){
             WHERE estado = 'Aprobada' 
             AND estado_contralor != 'Modificar'
         ) AS toma_activa ON (toma_activa.curso = curso.id)
-        WHERE alumno = '$alumno_id'
+        WHERE alumno = '$alumno_id' AND (nota_final >= 7 OR crec >= 4)
+        ORDER BY planificacion.anio, planificacion.semestre
+        LIMIT 100
+        ")
+    );
+}
+
+function wpdbCalificacionesAprobadas__By_idAlumno_idPlan_tramo($wpdb, $alumno_id, $plan_id, $tramo){
+    return $wpdb->get_results(
+        $wpdb->prepare("
+        SELECT DISTINCT CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
+            calificacion.disposicion,
+            calificacion.nota_final, 
+            calificacion.crec, 
+            CONCAT(planificacion.anio, planificacion.semestre) AS tramo, 
+            plan.orientacion, 
+            plan.resolucion,
+            asignatura.nombre,
+            comision.pfid,
+            CONCAT(calendario.anio, '-', calendario.semestre) AS periodo,
+            CONCAT(toma_activa.nombres, ' ', toma_activa.apellidos, ' ', toma_activa.numero_documento) AS docente                    
+        FROM calificacion 
+        INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+        INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
+        INNER JOIN plan ON (planificacion.plan = plan.id)
+        INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id)
+        LEFT JOIN curso ON (calificacion.curso = curso.id)
+        LEFT JOIN comision ON (curso.comision = comision.id)				
+        LEFT JOIN calendario ON (comision.calendario = calendario.id)			
+        LEFT JOIN (
+            SELECT toma.curso, persona.nombres, persona.apellidos, persona.numero_documento 
+            FROM toma 
+            INNER JOIN persona ON (toma.docente = persona.id)
+            WHERE estado = 'Aprobada' 
+            AND estado_contralor != 'Modificar'
+        ) AS toma_activa ON (toma_activa.curso = curso.id)
+        WHERE alumno = '$alumno_id' AND plan.id = '$plan_id' 
+        AND CONCAT(planificacion.anio, planificacion.semestre) >= '$tramo'
+        AND (nota_final >= 7 OR crec >= 4)
+        ORDER BY planificacion.anio, planificacion.semestre
+        LIMIT 100
+        ")
+    );
+}
+
+function wpdbCalificaciones__By_idAlumno_idPlan_tramo($wpdb, $alumno_id, $plan_id, $tramo){
+    return $wpdb->get_results(
+        $wpdb->prepare("
+        SELECT DISTINCT CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
+            calificacion.nota_final, 
+            calificacion.crec, 
+            CONCAT(planificacion.anio, planificacion.semestre) AS tramo, 
+            plan.orientacion, 
+            plan.resolucion,
+            asignatura.nombre,
+            comision.pfid,
+            CONCAT(calendario.anio, '-', calendario.semestre) AS periodo,
+            CONCAT(toma_activa.nombres, ' ', toma_activa.apellidos, ' ', toma_activa.numero_documento) AS docente                    
+        FROM calificacion 
+        INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+        INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
+        INNER JOIN plan ON (planificacion.plan = plan.id)
+        INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id)
+        LEFT JOIN curso ON (calificacion.curso = curso.id)
+        LEFT JOIN comision ON (curso.comision = comision.id)				
+        LEFT JOIN calendario ON (comision.calendario = calendario.id)			
+        LEFT JOIN (
+            SELECT toma.curso, persona.nombres, persona.apellidos, persona.numero_documento 
+            FROM toma 
+            INNER JOIN persona ON (toma.docente = persona.id)
+            WHERE estado = 'Aprobada' 
+            AND estado_contralor != 'Modificar'
+        ) AS toma_activa ON (toma_activa.curso = curso.id)
+        WHERE alumno = '$alumno_id' AND plan.id = '$plan_id' AND CONCAT(planificacion.anio, planificacion.semestre) >= '$tramo'
+        ORDER BY planificacion.anio, planificacion.semestre
+        LIMIT 100
+        ")
+    );
+}
+
+function wpdbCalificacionesAprobadas__by_idAlumno_notIdPlan($wpdb, $alumno_id, $plan_id){
+    return $wpdb->get_results(
+        $wpdb->prepare("
+        SELECT DISTINCT CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
+            calificacion.nota_final, 
+            calificacion.crec, 
+            CONCAT(planificacion.anio, planificacion.semestre) AS tramo, 
+            plan.orientacion, 
+            plan.resolucion,
+            asignatura.nombre,
+            comision.pfid,
+            CONCAT(calendario.anio, '-', calendario.semestre) AS periodo,
+            CONCAT(toma_activa.nombres, ' ', toma_activa.apellidos, ' ', toma_activa.numero_documento) AS docente                    
+        FROM calificacion 
+        INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+        INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
+        INNER JOIN plan ON (planificacion.plan = plan.id)
+        INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id)
+        LEFT JOIN curso ON (calificacion.curso = curso.id)
+        LEFT JOIN comision ON (curso.comision = comision.id)				
+        LEFT JOIN calendario ON (comision.calendario = calendario.id)			
+        LEFT JOIN (
+            SELECT toma.curso, persona.nombres, persona.apellidos, persona.numero_documento 
+            FROM toma 
+            INNER JOIN persona ON (toma.docente = persona.id)
+            WHERE estado = 'Aprobada' 
+            AND estado_contralor != 'Modificar'
+        ) AS toma_activa ON (toma_activa.curso = curso.id)
+        WHERE alumno = '$alumno_id' AND plan.id != '$plan_id' AND (nota_final >= 7 OR crec >= 4)
         ORDER BY planificacion.anio, planificacion.semestre
         LIMIT 100
         ")
