@@ -1,8 +1,7 @@
-
-<h2>Calificaciones Aprobadas</h2>
 <table border="1" cellpadding="5" cellspacing="0">
     <thead>
         <tr>
+            <th>id</th>
             <th>Asignatura</th>
             <th>Tramo</th>
             <th>Nota Final</th>
@@ -12,23 +11,64 @@
             <th>Docente</th>
             <th>Orientacion</th>
             <th>Resolución</th>
-
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($calificaciones as $cal): ?>
-            <tr>
-                <td><?= $cal->nombre ?></td>
-                <td><?= $cal->tramo ?></td>
-                <td><?= round($cal->nota_final) ?></td>
-                <td><?= round($cal->crec) ?></td>
-                <td><?= $cal->pfid ?></td>
-                <td><?= $cal->periodo ?></td>
-                <td><?= $cal->docente ?></td>
-                <td><?= $cal->orientacion ?></td>
-                <td><?= $cal->resolucion ?></td>
-
+        <?php foreach ($calificaciones as $cal): 
+            // Determine row color based on conditions
+            $rowColor = ($cal->nota_final < 7 && $cal->crec < 4) ? "background-color: #FFDDDD;" // Red pastel
+                        : "background-color: #DDFFDD;"; // Green pastel
+        ?>
+            <tr style="<?= $rowColor ?>">
+                <td><?= esc_html($cal->id) ?></td>
+                <td><?= esc_html($cal->nombre) ?></td>
+                <td><?= esc_html($cal->tramo) ?></td>
+                <td>
+                    <input type="number" step="0.1" value="<?= round($cal->nota_final) ?>" 
+                           data-id="<?= esc_attr($cal->id) ?>" data-field="nota_final" class="editable-field">
+                </td>
+                <td>
+                    <input type="number" step="0.1" value="<?= round($cal->crec) ?>" 
+                           data-id="<?= esc_attr($cal->id) ?>" data-field="crec" class="editable-field">
+                </td>
+                <td><?= esc_html($cal->pfid) ?></td>
+                <td><?= esc_html($cal->periodo) ?></td>
+                <td><?= esc_html($cal->docente) ?></td>
+                <td><?= esc_html($cal->orientacion) ?></td>
+                <td><?= esc_html($cal->resolucion) ?></td>
             </tr>
         <?php endforeach; ?>
     </tbody>
 </table>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".editable-field").forEach(function (input) {
+        input.addEventListener("change", function () {
+            let calificacionId = this.getAttribute("data-id");
+            let field = this.getAttribute("data-field");
+            let newValue = this.value;
+
+            let data = new FormData();
+            data.append("action", "update_calificacion_handle");
+            data.append("id", calificacionId);
+            data.append("field", field);
+            data.append("value", newValue);
+
+            fetch("<?php echo admin_url('admin-ajax.php'); ?>", {
+                method: "POST",
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log("Updated:", data.message);
+                } else {
+                    console.error("Error:", data.message);
+                }
+            })
+            .catch(error => console.error("Fetch error:", error));
+        });
+    });
+});
+</script>

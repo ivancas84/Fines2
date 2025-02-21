@@ -1,3 +1,5 @@
+<h1>Actualizar Información del Alumno</h1>
+
 <form id="ap-alumno-form" method="POST">
     <?php wp_nonce_field("ap_alumno_form_action", "ap_alumno_form_nonce"); ?>
 
@@ -32,53 +34,51 @@
         <div class="form-group">
             <label for="anio_ingreso">Año de Ingreso:</label>
             <select id="anio_ingreso" name="anio_ingreso">
-                <option value="1" <?= $anio_ingreso == 1 ? 'selected' : '' ?>>1</option>
-                <option value="2" <?= $anio_ingreso == 2 ? 'selected' : '' ?>>2</option>
-                <option value="3" <?= $anio_ingreso == 3 ? 'selected' : '' ?>>3</option>
+                <option value="1" <?= $alumno->anio_ingreso == 1 ? 'selected' : '' ?>>1</option>
+                <option value="2" <?= $alumno->anio_ingreso == 2 ? 'selected' : '' ?>>2</option>
+                <option value="3" <?= $alumno->anio_ingreso == 3 ? 'selected' : '' ?>>3</option>
             </select>
         </div>
         <div class="form-group">
             <label for="semestre_ingreso">Semestre de Ingreso:</label>
             <select id="semestre_ingreso" name="semestre_ingreso">
-                <option value="1" <?= $semestre_ingreso == 1 ? 'selected' : '' ?>>1</option>
-                <option value="2" <?= $semestre_ingreso == 2 ? 'selected' : '' ?>>2</option>
+                <option value="1" <?= $alumno->semestre_ingreso == 1 ? 'selected' : '' ?>>1</option>
+                <option value="2" <?= $alumno->semestre_ingreso == 2 ? 'selected' : '' ?>>2</option>
             </select>
         </div>
         
 
         <div class="form-group">
             <label for="anio_inscripcion">Año de Inscripción:</label>
-            <input type="number" id="anio_inscripcion" name="anio_inscripcion" value="<?=$anio_inscripcion?>">
+            <input type="number" id="anio_inscripcion" name="anio_inscripcion" value="<?=$alumno->anio_inscripcion?>">
         </div>
 
         <div class="form-group">
             <label for="semestre_inscripcion">Semestre de Inscripción:</label>
-            <input type="number" id="semestre_inscripcion" name="semestre_inscripcion" value="<?=$semestre_inscripcion?>">
+            <input type="number" id="semestre_inscripcion" name="semestre_inscripcion" value="<?=$alumno->semestre_inscripcion?>">
         </div>
 
         <div class="form-group">
             <label for="establecimiento_inscripcion">Establecimiento:</label>
-            <input type="text" id="establecimiento_inscripcion" name="establecimiento_inscripcion" value="<?=$establecimiento_inscripcion?>">
+            <input type="text" id="establecimiento_inscripcion" name="establecimiento_inscripcion" value="<?=$alumno->establecimiento_inscripcion?>">
         </div>
 
         <div class="form-group">
             <label for="observaciones">Observaciones:</label>
-            <textarea id="observaciones" name="observaciones"><?=$observaciones?></textarea>
+            <textarea id="observaciones" name="observaciones"><?=$alumno->observaciones?></textarea>
         </div>
     </div>
 
-    <h3>Legajo</h3>
-    <p> El legajo se actualiza desde el drive según la estructura establecida.</p>
+    <h3>Documentación</h3>
     <div class="checkbox-grid">
-        <label><input type="checkbox" name="tiene_dni" value="1" <?= $tiene_dni ? 'checked' : '' ?>> Tiene DNI</label>
-        <label><input type="checkbox" name="tiene_constancia" value="1" <?= $tiene_constancia ? 'checked' : '' ?>> Tiene Constancia</label>
-        <label><input type="checkbox" name="tiene_certificado" value="1" <?= $tiene_certificado ? 'checked' : '' ?>> Tiene Certificado</label>
-        <label><input type="checkbox" name="previas_completas" value="1" <?= $previas_completas ? 'checked' : '' ?>> Previas Completas</label>
-        <label><input type="checkbox" name="tiene_partida" value="1" <?= $tiene_partida ? 'checked' : '' ?>> Tiene Partida</label>
-        <label><input type="checkbox" name="confirmado_direccion" value="1" <?= $confirmado_direccion ? 'checked' : '' ?>> Confirmado por Dirección</label>
+        <label><input type="checkbox" name="tiene_dni" value="1" <?= $alumno->tiene_dni ? 'checked' : '' ?>> Tiene DNI</label>
+        <label><input type="checkbox" name="tiene_constancia" value="1" <?= $alumno->tiene_constancia ? 'checked' : '' ?>> Tiene Constancia</label>
+        <label><input type="checkbox" name="tiene_certificado" value="1" <?= $alumno->tiene_certificado ? 'checked' : '' ?>> Tiene Certificado</label>
+        <label><input type="checkbox" name="previas_completas" value="1" <?= $alumno->previas_completas ? 'checked' : '' ?>> Previas Completas</label>
+        <label><input type="checkbox" name="tiene_partida" value="1" <?= $alumno->tiene_partida ? 'checked' : '' ?>> Tiene Partida</label>
+        <label><input type="checkbox" name="confirmado_direccion" value="1" <?= $alumno->confirmado_direccion ? 'checked' : '' ?>> Confirmado por Dirección</label>
     </div>
 
-    <input type="hidden" name="persona" value="<?=$persona_id?>">
     <input type="hidden" name="alumno_id" value="<?=$alumno_id?>">
     <input type="text" name="honeypot" style="display: none;">
 
@@ -143,13 +143,13 @@
 </style>
 
 <script>
-    document.getElementById("ap-alumno-form").addEventListener("submit", function(event) {
+    document.getElementById("alumno-form").addEventListener("submit", function(event) {
         event.preventDefault();
         
         let form = this;
         let formData = new FormData(form);
-        formData.append("action", "ap_alumno_form_handle");
-        let messageBox = document.getElementById("ap-alumno-form-message");
+        formData.append("action", "alumno_form_handle");
+        let messageBox = document.getElementById("alumno-form-message");
 
         fetch("<?php echo admin_url('admin-ajax.php'); ?>", {
             method: "POST",
@@ -159,8 +159,8 @@
         .then(data => {
             messageBox.innerHTML = data.message;
             messageBox.style.color = data.success ? "green" : "red";
-            if (data.success && data.persona_id) { 
-                window.location.href = "<?php echo admin_url('admin.php?page=fines-plugin-administrar-persona-page&persona_id='); ?>" + data.persona_id;
+            if (data.success && data.alumno_id) { 
+                window.location.href = "<?php echo admin_url('admin.php?page=fines-plugin-administrar-alumno-page&alumno_id='); ?>" + data.alumno_id;
             }
         })
         .catch(error => console.error("Error:", error));

@@ -10,7 +10,7 @@ function lcd_lista_comisiones_direccion_page() {
     }
 
 	$calendarios = $wpdb->get_results("SELECT id, anio, semestre, descripcion FROM calendario ORDER BY anio DESC, semestre DESC");
-	$selected_calendario = isset($_GET['calendario']) ? intval($_GET['calendario']) : '';
+	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : '';
     $selected_order = isset($_GET['order_by']) ? sanitize_text_field($_GET['order_by']) : 'tramo';
     $filter_autorizada = isset($_GET['autorizada']) ? true : false;
 
@@ -19,7 +19,7 @@ function lcd_lista_comisiones_direccion_page() {
     include plugin_dir_path(__FILE__) . 'lcd_formulario_busqueda_html.php';
 
     if (isset($_GET['submit']) && !empty($_GET['calendario'])) {
-            $calendario_id = intval($_GET['calendario']);
+            $calendario_id = sanitize_text_field($_GET['calendario']);
             
              // Build SQL query
             $sql = sqlSelectComision() . "

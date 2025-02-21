@@ -126,18 +126,18 @@ function wpdbComisiones__By_idAlumno($wpdb, $alumno_id){
 function wpdbIdsCalificacionesDesaprobadas__By_idAlumno($wpdb, $alumno_id){
     return $wpdb->get_col(
         $wpdb->prepare("
-            SELECT DISTINCT id FROM calificacion CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
-            WHERE nota_final < 7 AND crec < 4 AND alumno = '%s'
+            SELECT DISTINCT id 
+            FROM calificacion
+            WHERE (nota_final < 7 OR nota_final IS NULL) AND (crec < 4 OR crec IS NULL) AND alumno = %s
         ", $alumno_id)
     );;
 }
 
 function wpdbDeleteCalificaciones__By_ids($wpdb, $ids){
     $ids = implode("','", $ids);
+    $sql = "DELETE FROM calificacion WHERE id IN ('$ids')";
     return $wpdb->query(
-        $wpdb->prepare("
-            DELETE FROM calificacion WHERE id IN ('$ids')
-        ")
+        $wpdb->prepare($sql)
     );
 }
 
@@ -180,6 +180,7 @@ function wpdbCalificacionesAprobadas__By_idAlumno_idPlan_tramo($wpdb, $alumno_id
     return $wpdb->get_results(
         $wpdb->prepare("
         SELECT DISTINCT CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
+            calificacion.id,
             calificacion.disposicion,
             calificacion.nota_final, 
             calificacion.crec, 
@@ -218,6 +219,8 @@ function wpdbCalificaciones__By_idAlumno_idPlan_tramo($wpdb, $alumno_id, $plan_i
     return $wpdb->get_results(
         $wpdb->prepare("
         SELECT DISTINCT CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
+            calificacion.id,
+            calificacion.disposicion,
             calificacion.nota_final, 
             calificacion.crec, 
             CONCAT(planificacion.anio, planificacion.semestre) AS tramo, 

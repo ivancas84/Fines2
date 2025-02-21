@@ -32,6 +32,8 @@ function analizarDirectorio($ruta) {
         }
     }
     
+    $idComisionActual = $_GET['comision_id'] ?? null;
+
     // Verificar si la persona existe
     $stmt = $pdo->prepare("SELECT id FROM persona WHERE numero_documento = ?");
     $stmt->execute([$numero]);
@@ -108,7 +110,7 @@ function analizarDirectorio($ruta) {
 
     }
 
-// Determinar el valor de previas_completas
+    // Determinar el valor de previas_completas
     $previasCompletas = (stripos($ultimoDirectorio, 'pendiente') !== false) ? 0 : 1;
 	echo "📄 Previas completas: " . ($previasCompletas ? "Sí" : "No (debe completar materias pendiente)") . "\n";
 
@@ -140,6 +142,14 @@ function analizarDirectorio($ruta) {
         echo "📄 Documentos actualizados para $numero: " . implode(", ", array_keys($archivosFiltrados)) . "\n";
 		echo "<br>";
     }
+
+    if($alumno){
+        procesar_comisiones($pdo, $alumno["id"], $idComisionActual);
+    }
+    echo "<br><br><br>";
+
+
+    
 }
 
 function recorrerEstructura($rutaBase) {
@@ -156,4 +166,60 @@ function recorrerEstructura($rutaBase) {
 recorrerEstructura($rutaBase);
 
 
+function procesar_comisiones($pdo, $alumnoId, $idComisionActual) {
+    // Fetch and display data from alumno_comision
+    try {
+        $stmt = $pdo->query("
+        SELECT comision.id, comision.pfid, alumno_comision.estado, sede.nombre,
+        CONCAT (calendario.anio, '/', calendario.semestre) AS periodo,
+        CONCAT (planificacion.anio, '-', planificacion.semestre) AS tramo
+        FROM alumno_comision 
+        INNER JOIN comision ON alumno_comision.comision = comision.id
+        INNER JOIN sede ON comision.sede = sede.id
+        INNER JOIN calendario ON comision.calendario = calendario.id
+        INNER JOIN planificacion ON comision.planificacion = planificacion.id
+        INNER JOIN plan ON planificacion.plan = plan.id
+        WHERE alumno = '$alumnoId'
+        ORDER BY calendario.anio DESC, calendario.semestre DESC"
+        );
+    $alumnoComisionData = $stmt->fetchAll();
+
+    $existeComisionActual = false;
+    if ($alumnoComisionData) {
+        echo "📋 Comisiones del alumno:<br/>";
+        foreach ($alumnoComisionData as $row) {
+            echo $row['nombre'] . " " . ($row['pfid'] ?? 'N/A') . " Tramo: " . $row["tramo"] . " Estado: " . $row['estado'] . " Período: " . $row['periodo'];
+            if($idComisionActual && strtolower($row["id"]) == strtolower($idComisionActual)){
+                echo " <strong>COMISION ACTUAL!</strong>.";
+                $existeComisionActual = true;
+            }
+            echo "<br/>";
+        }
+    } else {
+        echo "⚠️ No se encuentra registrado en ninguna comision.\n";
+    }
+
+    if (!$existeComisionActual && $idComisionActual) {
+        $stmt = $pdo->prepare("SELECT pfid FROM comision WHERE id = ?");
+        $stmt->execute([$idComisionActual]);
+        $comision = $stmt->fetch();
+
+        if ($comision) {
+            try {
+                $stmt = $pdo->prepare("INSERT INTO alumno_comision (id, alumno, comision, estado) VALUES (UUID(), ?, ?, 'Activo')");
+                $stmt->execute([$alumnoId, $idComisionActual]);
+
+                echo "✅ Nueva comisión registrada para el alumno " . $comision["pfid"] . " <br/>";
+            } catch (PDOException $e) {
+                echo "⛔ Error al insertar en 'alumno_comision': " . $e->getMessage();
+            }
+        } else {
+            echo "⚠️ La comisión con ID $idComisionActual no existe en la base de datos. No se realizará la inscripción.<br/>";
+        }
+    }
+
+    } catch (PDOException $e) {
+        echo "⛔ Error al consultar la tabla: " . $e->getMessage();
+    }
+}
 ?>

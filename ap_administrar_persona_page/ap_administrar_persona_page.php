@@ -60,7 +60,8 @@ function ap_administrar_persona_page() {
         $alumno = wpdbAlumno__By_idPersona($wpdb, $persona_id);
         
 
-        
+        echo "<h2>Alumno</h2>";
+
 
         if ($alumno){
             
@@ -85,9 +86,23 @@ function ap_administrar_persona_page() {
 
             $comisiones = wpdbComisiones__By_idAlumno($wpdb, $alumno->id);
 
+
+            include plugin_dir_path(__FILE__) . 'ap_alumno_form.html';
+
+
+            echo "<h2>Comisiones</h2>";
+
+            if ($comisiones) {
+                include plugin_dir_path(__FILE__) . 'ap_comisiones_table.html';
+            } else {
+                echo "<p>No se encontraron comisiones para este alumno.</p>";
+            }
+
+            echo "<h2>Calificaciones</h2>";
+
             $idsCalificacionesDesaprobadas = wpdbIdsCalificacionesDesaprobadas__By_idAlumno($wpdb, $alumno->id);
             if($idsCalificacionesDesaprobadas){
-                echo "<p>Se van a eliminar " + count($idsCalificacionesDesaprobadas) + " calificaciones desaprobadas.</p>";
+                echo "<p>Se van a eliminar " . count($idsCalificacionesDesaprobadas) . " calificaciones desaprobadas.</p>";
                 wpdbDeleteCalificaciones__By_ids($wpdb, $idsCalificacionesDesaprobadas);
 
             }
@@ -101,10 +116,10 @@ function ap_administrar_persona_page() {
                     $tramo = "11";
                 }
 
-                echo "<p> Se muestran calificaciones en base al plan del alumno y tramo " . $tramo;
                 $calificacionesAprobadas = wpdbCalificacionesAprobadas__By_idAlumno_idPlan_tramo($wpdb, $alumno->id, $alumno->plan, $tramo);
                 $disposiciones = wpdbDisposiciones__By_idPlan_tramo($wpdb, $alumno->plan, $tramo);
 
+                $count = 0;
                 foreach($disposiciones as $disposicion){
                     $existe = false;
                     foreach($calificacionesAprobadas as $calificacion){
@@ -115,6 +130,7 @@ function ap_administrar_persona_page() {
                         }   
                     }
                     if(!$existe){
+                        $count++;
                         $wpdb->insert('calificacion', array(
                             'id' => uniqid(),
                             'disposicion' => $disposicion->id,
@@ -125,11 +141,32 @@ function ap_administrar_persona_page() {
                 }
                 
                 $calificaciones = wpdbCalificaciones__By_idAlumno_idPlan_tramo($wpdb, $alumno->id, $alumno->plan, $tramo);
-                $calificacionesAprobadasOtroPlan = wpdbCalificacionesAprobadas__By_idAlumno_notIdPlan($wpdb, $alumno->id, $alumno->plan);
+                $calificaciones_ = wpdbCalificacionesAprobadas__By_idAlumno_notIdPlan($wpdb, $alumno->id, $alumno->plan);
                 
+                echo "<p><strong> El alumno tiene plan asignado, se van a consultar todas las calificaciones aprobadas para el plan y tramo " . $tramo . "</strong></p>";
+                if($count) echo "<p>Se cargaron " . $count . " calificaciones que faltan del alumno</p>";
+                if ($calificaciones) {
+                    include plugin_dir_path(__FILE__) . 'ap_calificaciones_table.html';
+                } else {
+                    echo "<p>No se encontraron calificaciones para este alumno.</p>";
+                }
+
+                echo "<h2>Calificaciones aprobadas de otro plan</h2>";
+                if ($calificaciones_) {
+
+                    include plugin_dir_path(__FILE__) . 'ap_calificaciones_aux_table.html';
+                } else {
+                    echo "<p>No se encontraron calificaciones aprobadas de otro plan para este alumno.</p>";
+                }
             } else {
-                echo "<p> El alumno no tiene plan asignado, se muestran todas las calificaciones aprobadas ";
+
+                echo "<p><strong> El alumno no tiene plan asignado, se van a consultar todas las calificaciones aprobadas </strong></p>";
                 $calificaciones = wpdbCalificacionesAprobadas__By_idAlumno($wpdb, $alumno->id);
+                if ($calificaciones) {
+                    include plugin_dir_path(__FILE__) . 'ap_calificaciones_aux_table.html';
+                } else {
+                    echo "<p>No se encontraron calificaciones aprobadas para este alumno.</p>";
+                }
 
             }
             
@@ -137,25 +174,18 @@ function ap_administrar_persona_page() {
         }
 
         else {
-            echo "<p>No se encontró un alumno asociado con esta persona.</p>";
+            echo "<strong>No se encontró un alumno asociado con esta persona.</strong>";
             $alumno_id = null;
             $comisiones = null;
             $calificaciones = null;
-        }
 
-        include plugin_dir_path(__FILE__) . 'ap_alumno_form.html';
-    
-        if ($comisiones) {
-            include plugin_dir_path(__FILE__) . 'ap_comisiones_table.html';
-        } else {
-            echo "<p>No se encontraron comisiones para este alumno.</p>";
-        }
+            include plugin_dir_path(__FILE__) . 'ap_alumno_form.html';
 
-        if ($calificaciones) {
-            include plugin_dir_path(__FILE__) . 'ap_calificaciones_table.html';
-        } else {
-            echo "<p>No se encontraron calificaciones para este alumno.</p>";
         }
+        
+
+        echo "<h2>Detalles</h2>";
+
 
         $detalles = wpdbDetalles__By_idPersona($wpdb, $persona_id);
 
@@ -176,3 +206,5 @@ function ap_administrar_persona_page() {
 include plugin_dir_path(__FILE__) . 'ap_persona_form_handle.php';
 
 include plugin_dir_path(__FILE__) . 'ap_alumno_form_handle.php';
+
+include plugin_dir_path(__FILE__) . 'update_calificacion_handle.php';

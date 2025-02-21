@@ -1,0 +1,67 @@
+<h1>Informe <?=$persona->apellidos?>, <?=$persona->nombres?> <?=$persona->numero_documento?></h1>
+
+<form id="ap-persona-form" method="POST">
+  <?php wp_nonce_field("ap_persona_form_action", "ap_persona_form_nonce"); ?>
+
+  <label for="nombres">Nombres:</label>
+  <input type="text" id="nombres" name="nombres" value="<?=$persona->nombres?>" required><br><br>
+
+  <label for="apellidos">Apellidos:</label>
+  <input type="text" id="apellidos" name="apellidos" value="<?=$persona->apellidos?>" required><br><br>
+
+  <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+  <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="<?=$persona->fecha_nacimiento?>" required><br><br>
+
+  <label for="numero_documento">Número de Documento:</label>
+  <input type="text" id="numero_documento" name="numero_documento" value="<?=$persona->numero_documento?>" required><br><br>
+
+  <label for="cuil">CUIL:</label>
+  <input type="text" id="cuil" name="cuil" value="<?=$persona->cuil?>"><br><br>
+
+  <label for="genero">Género:</label>
+  <input type="text" id="genero" name="genero" value="<?=$persona->genero?>"><br><br>
+
+  <label for="telefono">Teléfono:</label>
+  <input type="text" id="telefono" name="telefono" value="<?=$persona->telefono?>" required><br><br>
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" value="<?=$persona->email?>" required><br><br>
+
+  <label for="email_abc">Email ABC:</label>
+  <input type="email" id="email_abc" name="email_abc" value="<?=$persona->email_abc?>"><br><br>
+
+  <label for="lugar_nacimiento">Lugar de Nacimiento:</label>
+  <input type="text" id="lugar_nacimiento" name="lugar_nacimiento" value="<?=$persona->lugar_nacimiento?>"><br><br>
+
+  <input type="hidden" name="persona_id" value="<?=$persona_id?>">
+
+  <input type="text" name="honeypot" style="display: none;">
+
+  <button type="submit">Guardar Cambios</button>
+
+  <div id="ap-persona-form-message"></div>
+</form>
+<script>
+  document.getElementById("ap-persona-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      
+      let form = this;
+      let formData = new FormData(form);
+      formData.append("action", "ap_persona_form_handle");
+      let messageBox = document.getElementById("ap-persona-form-message");
+
+      fetch("<?php echo admin_url('admin-ajax.php'); ?>", {
+          method: "POST",
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+          messageBox.innerHTML = data.message;
+          messageBox.style.color = data.success ? "green" : "red";
+          if (data.success && data.persona_id) { 
+              window.location.href = "<? echo admin_url('admin.php?page=fines-plugin-administrar-persona-page&persona_id='); ?>" + data.persona_id;
+          }
+      })
+      .catch(error => console.error("Error:", error));
+  });
+</script>
