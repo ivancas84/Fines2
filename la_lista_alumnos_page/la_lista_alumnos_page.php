@@ -1,5 +1,5 @@
 <?php
-function fines_plugin_lista_alumnos_page() {
+function la_lista_alumnos_page() {
 	$wpdb = fines_plugin_db_connect();
 
     if (!isset($_GET['comision_id']) || empty($_GET['comision_id'])) {
@@ -18,7 +18,8 @@ function fines_plugin_lista_alumnos_page() {
     // Query to fetch students associated with the given commission
     $alumnos = $wpdb->get_results(
         $wpdb->prepare("
-            SELECT alumno.id, persona.id AS persona_id, persona.nombres, persona.apellidos, persona.numero_documento, 
+            SELECT alumno.id, alumno.anio_ingreso, alumno.tiene_dni, alumno.tiene_certificado, alumno.tiene_constancia, alumno.previas_completas, alumno.confirmado_direccion, alumno.tiene_partida, 
+            persona.id AS persona_id, persona.nombres, persona.apellidos, persona.numero_documento, 
 			calificacion_aprobada.tramo, calificacion_aprobada.cantidad_aprobadas
 			FROM alumno
             INNER JOIN persona ON (alumno.persona = persona.id)
@@ -45,8 +46,27 @@ function fines_plugin_lista_alumnos_page() {
         $student_id = $alumno->id;
 
         if (!isset($student_data[$student_id])) {
+
+            $ingreso_color = '#FFFFFF'; // Default white
+            if ($alumno->anio_ingreso == 1) {
+                $ingreso_color = '#A3DAFF'; // Light blue pastel
+            } elseif ($alumno->anio_ingreso == 2) {
+                $ingreso_color = '#74BBFB'; // Blue pastel
+            } elseif ($alumno->anio_ingreso == 3) {
+                $ingreso_color = '#5A91E2'; // Dark blue pastel
+            }
+
+
             $student_data[$student_id] = [
+                'anio_ingreso' => $alumno->anio_ingreso,
                 'persona_id' => $alumno->persona_id,
+                'ingreso' => '<td style="background-color: ' . $ingreso_color . ';">' . esc_html($alumno->anio_ingreso) . '</td>',
+                'tiene_dni' => $alumno->tiene_dni ? '✔' : '✘',
+                'tiene_certificado' => $alumno->tiene_certificado ? '✔' : '✘',
+                'tiene_constancia' => $alumno->tiene_constancia ? '✔' : '✘',
+                'previas_completas' => $alumno->previas_completas ? '✔' : '✘',
+                'confirmado_direccion' => $alumno->confirmado_direccion ? '✔' : '✘',
+                'tiene_partida' => $alumno->tiene_partida ? '✔' : '✘',
                 'nombres' => $alumno->nombres,
                 'apellidos' => $alumno->apellidos,
                 'numero_documento' => $alumno->numero_documento,
@@ -65,43 +85,34 @@ function fines_plugin_lista_alumnos_page() {
     echo "<h3>{$comision->nombre} {$comision->tramo} {$comision->orientacion}</h3>";
 
     if (!empty($student_data)) {
-        echo "<table class='wp-list-table widefat striped'>";
-        echo "<thead>
-                <tr>
-                    <th>Nombres</th>
-                    <th>Apellidos</th>
-                    <th>DNI</th>
-                    <th>1°1C</th>
-                    <th>1°2C</th>
-                    <th>2°1C</th>
-                    <th>2°2C</th>
-                    <th>3°1C</th>
-                    <th>3°2C</th> 
-                    <th>Opciones</th>
-                </tr>
-              </thead>";
-        echo "<tbody>";
-
-        foreach ($student_data as $student) {
-            echo "<tr>
-                    <td>{$student['nombres']}</td>
-                    <td>{$student['apellidos']}</td>
-                    <td>{$student['numero_documento']}</td>
-                    <td>{$student['tramos']['1°1C']}</td>
-                    <td>{$student['tramos']['1°2C']}</td>
-                    <td>{$student['tramos']['2°1C']}</td>
-                    <td>{$student['tramos']['2°2C']}</td>
-                    <td>{$student['tramos']['3°1C']}</td>
-                    <td>{$student['tramos']['3°2C']}</td>
-                    <td><a href='" . admin_url("admin.php?page=fines-plugin-administrar-persona-page&persona_id={$student['persona_id']}") . "' class='button'>Detalle</a></td>
-                  </tr>";
-        }
-
-        echo "</tbody></table>";
+      include plugin_dir_path(__FILE__) . 'la_alumnos_table.html';
     } else {
         echo "<p>No se encontraron alumnos para esta comisión.</p>";
     }
 
     echo "<a href='javascript:history.back();' class='button'>Volver</a>";
     echo "</div>";
+}
+
+function getTramoColor($value, $anio_ingreso, $tramo) {
+    $gray = '#E0E0E0'; // Soft Gray for disabled cells
+
+    // Determine if the cell should be gray
+    $grayTramosForAnio2 = ['1°1C', '1°2C'];
+    $grayTramosForAnio3 = ['1°1C', '1°2C', '2°1C', '2°2C'];
+
+    if ($anio_ingreso == 3 && in_array($tramo, $grayTramosForAnio3)) {
+        return $gray;
+    } elseif ($anio_ingreso == 2 && in_array($tramo, $grayTramosForAnio2)) {
+        return $gray;
+    }
+
+    // Normal color logic
+    if ($value == 5) {
+        return '#C8E6C9'; // Mild Green Pastel
+    } elseif ($value == 4 || $value == 3) {
+        return '#FFF5CC'; // Soft Yellow Pastel
+    } else {
+        return '#FFC9C9'; // Light Rose Pastel
+    }
 }

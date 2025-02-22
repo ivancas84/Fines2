@@ -69,7 +69,7 @@ function fines_plugin_menu() {
 		'Lista de Alumnos', 
 		'edit_posts', 
 		'fines-plugin-lista-alumnos', 
-		'fines_plugin_lista_alumnos_page');
+		'la_lista_alumnos_page');
 
     add_submenu_page(
 		null, 
@@ -123,7 +123,7 @@ include_once plugin_dir_path(__FILE__) . 'lc_lista_comisiones_page/lc_lista_comi
 
 include_once plugin_dir_path(__FILE__) . 'lcd_lista_comisiones_direccion_page/lcd_lista_comisiones_direccion_page.php';
 
-include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_lista_alumnos_page.php';
+include_once plugin_dir_path(__FILE__) . 'la_lista_alumnos_page/la_lista_alumnos_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_comisiones_siguientes_semestre.php';
 

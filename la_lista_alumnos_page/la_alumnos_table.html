@@ -1,0 +1,77 @@
+<table class="wp-list-table widefat striped">
+    <thead>
+        <tr>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>DNI</th>
+            <th>Ingreso</th>
+            <th>cert?</th>
+            <th>cons?</th>
+            <th>prev?</th>
+            <th>dni?</th>
+            <th>part?</th>
+            <th>conf?</th>
+            <th>1°1C</th>
+            <th>1°2C</th>
+            <th>2°1C</th>
+            <th>2°2C</th>
+            <th>3°1C</th>
+            <th>3°2C</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($student_data as $student) : ?>
+            <tr>
+                <td><?= $student['nombres'] ?></td>
+                <td><?= $student['apellidos'] ?></td>
+                <td><?= $student['numero_documento'] ?></td>
+                <?= $student['ingreso'] ?>
+                
+                <td style="background-color: <?= ($student['tiene_certificado'] == '✔') ? '#A8E6A3' : '#FFADAD' ?>;">
+                    <?= $student['tiene_certificado'] ?>
+                </td>
+                <td style="background-color: <?= ($student['tiene_constancia'] == '✔') ? '#A8E6A3' : '#FFADAD' ?>;">
+                    <?= $student['tiene_constancia'] ?>
+                </td>
+                <td style="background-color: <?= ($student['previas_completas'] == '✔') ? '#A8E6A3' : '#FFADAD' ?>;">
+                    <?= $student['previas_completas'] ?>
+                </td>
+                <td style="background-color: <?= ($student['tiene_dni'] == '✔') ? '#A8E6A3' : '#FFADAD' ?>;">
+                    <?= $student['tiene_dni'] ?>
+                </td>
+                <td style="background-color: <?= ($student['tiene_partida'] == '✔') ? '#A8E6A3' : '#FFADAD' ?>;">
+                    <?= $student['tiene_partida'] ?>
+                </td>
+                <td style="background-color: <?= ($student['confirmado_direccion'] == '✔') ? '#A8E6A3' : '#FFADAD' ?>;">
+                    <?= $student['confirmado_direccion'] ?>
+                </td>
+
+                <td style="background-color: <?= getTramoColor($student['tramos']['1°1C'], $student['anio_ingreso'], '1°1C') ?>;">
+                    <?= $student['tramos']['1°1C'] ?>
+                </td>
+                <td style="background-color: <?= getTramoColor($student['tramos']['1°2C'], $student['anio_ingreso'], '1°2C') ?>;">
+                    <?= $student['tramos']['1°2C'] ?>
+                </td>
+                <td style="background-color: <?= getTramoColor($student['tramos']['2°1C'], $student['anio_ingreso'], '2°1C') ?>;">
+                    <?= $student['tramos']['2°1C'] ?>
+                </td>
+                <td style="background-color: <?= getTramoColor($student['tramos']['2°2C'], $student['anio_ingreso'], '2°2C') ?>;">
+                    <?= $student['tramos']['2°2C'] ?>
+                </td>
+                <td style="background-color: <?= getTramoColor($student['tramos']['3°1C'], $student['anio_ingreso'], '3°1C') ?>;">
+                    <?= $student['tramos']['3°1C'] ?>
+                </td>
+                <td style="background-color: <?= getTramoColor($student['tramos']['3°2C'], $student['anio_ingreso'], '3°2C') ?>;">
+                    <?= $student['tramos']['3°2C'] ?>
+                </td>
+
+                <td>
+                    <a href="<?= admin_url("admin.php?page=fines-plugin-administrar-persona-page&persona_id={$student['persona_id']}") ?>" class="button">
+                        Detalle
+                    </a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
