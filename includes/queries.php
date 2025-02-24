@@ -287,4 +287,16 @@ function wpdbCalificacionesAprobadas__by_idAlumno_notIdPlan($wpdb, $alumno_id, $
     );
 }
 
+function wpdbUltimoAlumnoComisionActivo__By_idAlumno($wpdb, $alumno_id){
+    return $wpdb->get_row(
+        $wpdb->prepare("
+            SELECT *
+            FROM alumno_comision
+            INNER JOIN comision ON alumno_comision.comision = comision.id
+            INNER JOIN calendario ON comision.calendario = calendario.id
+            WHERE alumno = '$alumno_id' AND estado = 'Activo'
+            ORDER BY calendario.anio DESC, calendario.semestre DESC;
+        ")
+    );
+}
 ?>

@@ -1,0 +1,40 @@
+<div class="wrap">
+    <h1>Formulario de Datos del Alumno</h1>
+    <form method="POST" action="">
+        <table class="form-table">
+            <tr>
+                <th><label>Apellidos:</label></th>
+                <td><input type="text" name="apellidos" value="<?= esc_attr($persona->apellidos) ?>" class="regular-text" required></td>
+            </tr>
+            <tr>
+                <th><label>Número de Documento:</label></th>
+                <td><input type="text" name="numero_documento" value="<?= esc_attr($persona->numero_documento) ?>" class="regular-text" required></td>
+            </tr>
+            <tr>
+                <th><label>Año en Curso:</label></th>
+                <td><input type="text" name="anio_en_curso" value="<?= esc_attr($anio_en_curso) ?>" class="regular-text" required></td>
+            </tr>
+            <tr>
+                <th><label>Orientación:</label></th>
+                <td><input type="text" name="orientacion" value="<?= esc_attr($alumno_comision->orientacion) ?>" class="regular-text" required></td>
+            </tr>
+            <tr>
+                <th><label>Resolución:</label></th>
+                <td><input type="text" name="resolucion" value="<?= esc_attr($alumno_comision->resolucion) ?>" class="regular-text" required></td>
+            </tr>
+            <tr>
+                <th><label>Fecha:</label></th>
+                <td><input type="text" name="fecha" value="<?= esc_attr($fecha) ?>" class="regular-text" readonly></td>
+            </tr>
+            <tr>
+                <th><label>Presentado a:</label></th>
+                <td><input type="text" name="presentado" value="<?= esc_attr($presentado) ?>" class="regular-text"></td>
+            </tr>
+            <tr>
+                <th><label>Observaciones:</label></th>
+                <td><textarea name="observaciones" rows="4" class="large-text"><?= esc_textarea($observaciones) ?></textarea></td>
+            </tr>
+        </table>
+        <p><input type="submit" name="submit" class="button button-primary" value="Guardar"></p>
+    </form>
+</div>

@@ -24,7 +24,6 @@ function dp_detalle_persona($persona_id, $wpdb) {
     include plugin_dir_path(__FILE__) . 'dp_detalle_persona_html.php';
 
 
-
   if ($alumno){ 
     include plugin_dir_path(__FILE__) . 'dp_detalle_alumno_html.php';
 
