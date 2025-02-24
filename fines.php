@@ -110,6 +110,23 @@ function fines_plugin_menu() {
           'edit_posts', 
           'fines-plugin-detalle-persona-division-page', 
           'dpd_detalle_persona_division_page');
+
+          add_submenu_page(
+            null, 
+            'Rindex división dirección',
+            'Rindex división dirección', 
+            'edit_posts', 
+            'fines-plugin-rindex-division-direccion-page', 
+            'rdd_rindex_division_direccion_page');
+
+    add_submenu_page(
+      null, 
+      'Constancia de alumno regular',
+      'Constancia de alumno regular', 
+      'edit_posts', 
+      'fines-plugin-constancia-alumno-regular-page', 
+      'car_constancia_alumno_regular_page'
+    );
   }
 
 
@@ -140,3 +157,5 @@ include_once plugin_dir_path(__FILE__) . 'rdd_rindex_division_direccion_page/rdd
 include_once plugin_dir_path(__FILE__) . 'dpd_detalle_persona_division_page/dpd_detalle_persona_division_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'bp_buscar_personas_page/bp_buscar_personas_page.php';
+
+include_once plugin_dir_path(__FILE__) . 'car_constancia_alumno_regular_page/car_constancia_alumno_regular_page.php';
