@@ -1,14 +1,18 @@
 <div class="wrap">
     <h1>Formulario de Datos del Alumno</h1>
-    <form method="POST" action="">
+    <form method="POST" action="https://planfines2.com.ar/constancia_alumno_regular.php">
         <table class="form-table">
+		<tr>
+                <th><label>Nombres:</label></th>
+                <td><input type="text" name="nombres" value="<?= esc_attr($nombres) ?>" class="regular-text" required></td>
+            </tr>
             <tr>
                 <th><label>Apellidos:</label></th>
-                <td><input type="text" name="apellidos" value="<?= esc_attr($persona->apellidos) ?>" class="regular-text" required></td>
+                <td><input type="text" name="apellidos" value="<?= esc_attr($apellidos) ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Número de Documento:</label></th>
-                <td><input type="text" name="numero_documento" value="<?= esc_attr($persona->numero_documento) ?>" class="regular-text" required></td>
+                <td><input type="text" name="numero_documento" value="<?= esc_attr($numero_documento) ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Año en Curso:</label></th>
@@ -16,11 +20,11 @@
             </tr>
             <tr>
                 <th><label>Orientación:</label></th>
-                <td><input type="text" name="orientacion" value="<?= esc_attr($alumno_comision->orientacion) ?>" class="regular-text" required></td>
+                <td><input type="text" name="orientacion" value="<?= esc_attr($orientacion) ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Resolución:</label></th>
-                <td><input type="text" name="resolucion" value="<?= esc_attr($alumno_comision->resolucion) ?>" class="regular-text" required></td>
+                <td><input type="text" name="resolucion" value="<?= esc_attr($resolucion) ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Fecha:</label></th>
@@ -33,6 +37,10 @@
             <tr>
                 <th><label>Observaciones:</label></th>
                 <td><textarea name="observaciones" rows="4" class="large-text"><?= esc_textarea($observaciones) ?></textarea></td>
+            </tr>
+			<tr>
+                <th><label>Notas (no se incluyen en la constancia):</label></th>
+                <td><textarea readonly name="notas" rows="4" class="large-text"><?= esc_textarea($notas) ?></textarea></td>
             </tr>
         </table>
         <p><input type="submit" name="submit" class="button button-primary" value="Guardar"></p>

@@ -11,23 +11,18 @@ $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
 function constancia_alumno_regular() {
     global $pdo;
 
+    $nombres = $_POST["nombres"];
+    $apellidos = $_POST["apellidos"];
+    $numero_documento = $_POST["numero_documento"];
+	
+	$anio_en_curso = $_POST["anio_en_curso"];
+	$orientacion = $_POST["orientacion"];
+	$resolucion = $_POST["resolucion"];
 
-    $idAlumno = $_GET['id_alumno'] ?? throw new Exception("No se especificó el ID del alumno.");
-
-    $persona = wpdbPersona__By_id($wpdb, $persona_id);
-
-
-    // Fetch student data
-    $stmt = $pdo->prepare("SELECT p.nombres, p.numero_documento, a.anio_inscripcion 
-                           FROM persona p 
-                           JOIN alumno a ON p.id = a.persona 
-                           WHERE a.id = ?");
-    $stmt->execute([$idAlumno]);
-    $alumno = $stmt->fetch();
-
-    if (!$alumno) {
-        throw new Exception("No se encontró el alumno con ID $idAlumno.");
-    }
+	$fecha = $_POST["fecha"];
+    $presentado = $_POST["presentado"];
+    $observaciones = $_POST["observaciones"];;
+	
 
     // Create PDF instance
     $pdf = new TCPDF();
@@ -44,9 +39,9 @@ function constancia_alumno_regular() {
 
     // Content
     $pdf->SetFont('helvetica', '', 12);
-    $content = "Se certifica que el estudiante " . $alumno['nombres'] . 
-               ", con documento número " . $alumno['numero_documento'] . 
-               ", está inscrito en el año " . $alumno['anio_inscripcion'] . ".";
+    $content = "Se certifica que el estudiante " . $nombres . 
+               ", con documento número " . $numero_documento . 
+               ", está inscrito en el año " . $anio_en_curso . ".";
     
     $pdf->MultiCell(0, 10, $content, 0, 'L');
 

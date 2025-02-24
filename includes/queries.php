@@ -290,11 +290,18 @@ function wpdbCalificacionesAprobadas__by_idAlumno_notIdPlan($wpdb, $alumno_id, $
 function wpdbUltimoAlumnoComisionActivo__By_idAlumno($wpdb, $alumno_id){
     return $wpdb->get_row(
         $wpdb->prepare("
-            SELECT *
-            FROM alumno_comision
+            SELECT planificacion.anio AS planificacion_anio, plan.orientacion, plan.resolucion,
+			CONCAT(sede.nombre, ' ', domicilio.calle,  ' N° ', domicilio.numero, ' e/ ', domicilio.entre, ' ', domicilio.localidad) AS sede_detalle,
+			CONCAT(calendario.anio, '-', calendario.semestre) AS periodo,
+            comision.pfid
+			FROM alumno_comision
             INNER JOIN comision ON alumno_comision.comision = comision.id
+			INNER JOIN sede ON comision.sede = sede.id
+			INNER JOIN domicilio ON sede.domicilio = domicilio.id
+			INNER JOIN planificacion ON comision.planificacion = planificacion.id
+			INNER JOIN plan ON planificacion.plan = plan.id
             INNER JOIN calendario ON comision.calendario = calendario.id
-            WHERE alumno = '$alumno_id' AND estado = 'Activo'
+            WHERE alumno_comision.alumno = '$alumno_id' AND alumno_comision.estado = 'Activo'
             ORDER BY calendario.anio DESC, calendario.semestre DESC;
         ")
     );
