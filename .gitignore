@@ -1,2 +1,3 @@
+.vs/
 scripts/db_config.php
 includes/fines_plugin_db_connect.php
