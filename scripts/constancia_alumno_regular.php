@@ -1,4 +1,7 @@
 <?php
+header('Content-Type: text/html; charset=utf-8');
+mb_internal_encoding('UTF-8');
+
 require_once 'db_config.php';
 require_once 'vendor/autoload.php'; // Ensure TCPDF is autoloaded
 
@@ -10,11 +13,17 @@ $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 ]);
 
-$pdo_pedidos = new PDO("mysql:host=$db_host_pedidos;dbname=$db_name_pedidos", $db_user_pedidos, $db_pass_pedidos, [
+$pdo_pedidos = new PDO("mysql:host=$db_host_pedidos;dbname=$db_name_pedidos;charset=utf8mb4", $db_user_pedidos, $db_pass_pedidos, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 ]);
 
+$numero_documento = $_POST["numero_documento"];
+$actual_year = date('Y');
+$actual_month = date('m');
+$actual_unix_timestamp = time();
+$upload_dir = "/wpsc/{$actual_year}/{$actual_month}/";
+$filename = "{$actual_unix_timestamp}_constancia_{$numero_documento}.pdf";
 $data = [
     "apellidos" => strtoupper($_POST["apellidos"]),
     "nombres" => ucwords(strtolower($_POST["nombres"])),
@@ -24,13 +33,16 @@ $data = [
     "fecha" => $_POST["fecha"],
     "presentacion" => $_POST["presentado"],
     "orientacion" => $_POST["orientacion"],
-    "observaciones" => $_POST["observaciones"]
+    "observaciones" => $_POST["observaciones"],
+    "filename" => $filename,
+    "upload_dir" => $upload_dir,
+    "save_path" => $upload_dir."/".$filename
 ];
 
 
-function generar_constancia_alumno_regular($data) {
+function generar_constancia_alumno_regular($url, $data) {
+    global $rutaUploadPedidos;
     // Create QR Code
-    $qrContent = "Validación: {$data['apellidos']}, {$data['nombres']} - DNI: {$data['numero_documento']}";
 
     $options = new QROptions([
         'eccLevel' => QRCode::ECC_L,
@@ -38,7 +50,7 @@ function generar_constancia_alumno_regular($data) {
         'scale' => 5,
     ]);
 
-    $qrcode = (new QRCode($options))->render($qrContent);
+    $qrcode = (new QRCode($options))->render($url);
 
     // Save the QR Code as a temporary file
     $qrFile = tempnam(sys_get_temp_dir(), 'qr') . '.png';
@@ -87,8 +99,17 @@ function generar_constancia_alumno_regular($data) {
     // Write the content with justified text and line spacing
     $pdf->writeHTMLCell(0, 0, '', '', $content, 0, 1, false, true, 'J');
 
+    
+
+    // Ensure directories exist
+    if (!file_exists(dirname($rutaUploadPedidos.$data["upload_dir"]))) {
+        mkdir(dirname($rutaUploadPedidos.$data["upload_dir"]), 0777, true);
+    }
+
+    // Save the PDF
+    $pdf->Output($rutaUploadPedidos.$data["save_path"], "F"); // Save to file
     // Output PDF
-    $pdf->Output("Constancia_Alumno_Regular.pdf", "I"); // Display in browser
+    $pdf->Output($data["filename"], "I"); // Display in browser
 
     // Clean up temp QR file
     unlink($qrFile);
@@ -100,6 +121,11 @@ function getNextId($pdo, $table) {
     return $stmt->fetchColumn();
 }
 
+function getNextFieldName($pdo, $table, $fieldName) {
+    $stmt = $pdo->query("SELECT IFNULL(MAX($fieldName), 0) + 1 AS next_id FROM $table");
+    return $stmt->fetchColumn();
+}
+
 function generateAuthCode($length = 8) {
     return substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, $length);
 }
@@ -108,20 +134,83 @@ function insertar_pedido($data){
     global $pdo_pedidos;
     
     $ticket_id = getNextId($pdo_pedidos, 'wpwt_psmsc_tickets');
-    $thread_id = getNextId($pdo_pedidos, 'wpwt_psmsc_threads');    
+    $thread_id = getNextId($pdo_pedidos, 'wpwt_psmsc_threads');  
+    $attachment_id = getNextId($pdo_pedidos, 'wpwt_psmsc_attachments')  ;
+    $auth_code = generateAuthCode();
 
     // Insert into wpwt_psmsc_tickets
     $sql_ticket = "INSERT INTO wpwt_psmsc_tickets 
-        (id, is_active, customer, subject, status, priority, category, date_created, date_updated, user_type, last_reply_by, auth_code) 
-        VALUES 
-        (:id, :is_active, :customer, :subject, :status, :priority, :category, :date_created, :date_updated, :user_type, :last_reply_by, :auth_code)";
+        (   
+            id, 
+            is_active, 
+            customer, 
+            subject, 
+            status, 
+            priority, 
+            category, 
+            assigned_agent, 
+            date_created, 
+            date_updated, 
+            agent_created, 
+            ip_address, 
+            source,
+            browser, 
+            os, 
+            add_recipients, 
+            prev_assignee, 
+            date_closed, 
+            user_type, 
+            last_reply_on, 
+            last_reply_by,
+            auth_code,
+            cust_24,
+            cust_25,
+            cust_26,
+            cust_27,
+            cust_28,
+            tags,
+            last_reply_source,
+            misc
+        )
+        VALUES (
+            :id, 
+            :is_active, 
+            :customer, 
+            :subject, 
+            :status, 
+            :priority, 
+            :category, 
+            :assigned_agent, 
+            :date_created, 
+            :date_updated, 
+            :agent_created, 
+            :ip_address, 
+            :source, 
+            :browser, 
+            :os, 
+            :add_recipients, 
+            :prev_assignee, 
+            :date_closed, 
+            :user_type, 
+            :last_reply_on, 
+            :last_reply_by,
+            :auth_code,
+            :cust_24,
+            :cust_25,
+            :cust_26,
+            :cust_27,
+            :cust_28,
+            :tags,
+            :last_reply_source,
+            :misc
+        )";
 
     $stmt_ticket = $pdo_pedidos->prepare($sql_ticket);
     $stmt_ticket->execute([
         ':id' => $ticket_id,
         ':is_active' => 1,
         ':customer' => 450, //corresponde a sistemas
-        ':subject' => "Constancia de alumno regular : " + $data["apellidos"] . ", " . $data["nombres"], //titulo
+        ':subject' => "Constancia de alumno regular : " . $data["apellidos"] . ", " . $data["nombres"], //titulo
         ':status' => 4, //cerrado
         ':priority' => 1, //baja 
         ':category' => 10, //constancia
@@ -129,57 +218,137 @@ function insertar_pedido($data){
         ':date_created' => date('Y-m-d H:i:s'),
         ':date_updated' => date('Y-m-d H:i:s'),
         ':agent_created' => 0,
-        ':ip_adress' => "",
+        ':ip_address' => "",
         ':source' => "",
         ':browser' => "",
         ':os' => "",
         ':add_recipients' => "",
-        ':prev_asignee' => "",
+        ':prev_assignee' => "",
         ':date_closed' => date('Y-m-d H:i:s'), //completar solo si status es 4
         ':user_type' => 'registered',
         ':last_reply_on' => "0000-00-00 00:00:00",
         ':last_reply_by' => "450",
-        ':auth_code' => generateAuthCode(),
-        ':cust24' => $data["numero_documento"], //tinytext
-        ':cust25' => "", //tinytext
-        ':cust26' => "", //tinytext 
-        ':cust27' => "", //tinytext, telefono 
-        ':cust28' => "Válido por 30 días", //tinytext, comentario
+        ':auth_code' => $auth_code,
+        ':cust_24' => $data["numero_documento"], //tinytext
+        ':cust_25' => "", //tinytext
+        ':cust_26' => "", //tinytext 
+        ':cust_27' => "", //tinytext, telefono 
+        ':cust_28' => "Válido por 30 días", //tinytext, comentario
         ':tags' => "", //tinytext
-        ':live_agents' => '{"1":"2024-12-25 14:11:12"}', //tinytext
+        //':live_agents' => '{"1":"2024-12-25 14:11:12"}', //tinytext
         'last_reply_source'=> "", //varchar(50)
         'misc'=> "", //longtext
-
-
     ]);
 
-    // Thread data
-    $type = "message";
-    $body = "This is a sample message body";
-
+    $threads_body = "La Dirección de la escuela CENS 462 de La Plata, hace constar por la presente que ";
+    $threads_body .= $data['apellidos'] . ", ";
+    $threads_body .= $data['nombres'] . " DNI N° ";
+    $threads_body .= $data['numero_documento'] . " es alumno regular de ";
+    $threads_body .= $data['anio'] . " año Programa Fines 2 Trayecto Secundario con orientación en ";
+    $threads_body .= $data['orientacion'] . " resolución ";
+    $threads_body .= $data['resolucion'];
+    
+    if (!empty($data['observaciones'])) {
+        $threads_body .= " - " . $data['observaciones']; 
+    }
+    
+    // Function to convert a number to an ordinal string in Spanish
+    function toOrdinalSpanish($number) {
+        $ordinals = [
+            1 => 'primer', 2 => 'segundo', 3 => 'tercer', 4 => 'cuarto',
+            5 => 'quinto', 6 => 'sexto', 7 => 'séptimo', 8 => 'octavo',
+            9 => 'noveno', 10 => 'décimo'
+        ];
+        return $ordinals[$number] ?? $number . "º";
+    }
+    
     // Insert into wpwt_psmsc_threads
     $sql_thread = "INSERT INTO wpwt_psmsc_threads 
-        (id, ticket, is_active, customer, type, body, date_created, date_updated) 
+        (
+            id, 
+            ticket, 
+            is_active, 
+            customer, 
+            type, 
+            body, 
+            attachments, 
+            ip_address, 
+            source, 
+            os, 
+            browser, 
+            seen, 
+            date_created, 
+            date_updated
+        ) 
         VALUES 
-        (:id, :ticket, 1, :customer, :type, :body, :date_created, :date_updated)";
+        (
+            :id, 
+            :ticket, 
+            :is_active, 
+            :customer, 
+            :type, 
+            :body, 
+            :attachments, 
+            :ip_address, 
+            :source, 
+            :os, 
+            :browser, 
+            :seen, 
+            :date_created, 
+            :date_updated
+        )";
 
     $stmt_thread = $pdo_pedidos->prepare($sql_thread);
     $stmt_thread->execute([
         ':id' => $thread_id,
         ':ticket' => $ticket_id,
-        ':customer' => $customer,
-        ':type' => $type,
-        ':body' => $body,
-        ':date_created' => $date_created,
-        ':date_updated' => $date_updated
+        ':is_active' => 1,
+        ':customer' => 450, //corresponde a sistemas
+        ':type' => "report",
+        ':body' => $threads_body,
+        ':attachments' => $attachment_id, 
+        ':ip_address' => "",
+        ':source' => "",
+        ':os' => "",
+        ':browser' => "",
+        ':seen' => "",
+        ':date_created' => date('Y-m-d H:i:s'),
+        ':date_updated' => date('Y-m-d H:i:s')
     ]);    
+
+    // Get the next available ID
+    // Insert into wpwt_psmsc_attachments
+    $sql_attachment = "INSERT INTO wpwt_psmsc_attachments 
+        (id, name, file_path, is_image, is_active, is_uploaded, date_created, source, source_id, ticket_id, customer_id) 
+        VALUES 
+        (:id, :name, :file_path, :is_image, :is_active, :is_uploaded, :date_created, :source, :source_id, :ticket_id, :customer_id)";
+
+    $stmt_attachment = $pdo_pedidos->prepare($sql_attachment);
+    $stmt_attachment->execute([
+        ':id' => $attachment_id,
+        ':name' => $data['filename'],
+        ':file_path' => $data['save_path'],
+        ':is_image' => 1,
+        ':is_active' => 1, // Mark as active
+        ':is_uploaded' => 0, // Mark as uploaded
+        ':date_created' => date('Y-m-d H:i:s'),
+        ':source' => "report",
+        ':source_id' => $thread_id,
+        ':ticket_id' => $ticket_id,
+        ':customer_id' => 0
+    ]);
+
+    return "https://planfines2.com.ar/wp/pedidos/?wpsc-section=ticket-list&ticket-id=" . $ticket_id . "&auth-code=" . $auth_code;
 }
+
+
 
 
 
 // Call the function
 try {
-    constancia_alumno_regular();
+    $url = insertar_pedido($data);
+    generar_constancia_alumno_regular($url, $data);
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
 }
