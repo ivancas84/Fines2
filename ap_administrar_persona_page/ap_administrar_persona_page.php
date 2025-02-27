@@ -58,13 +58,17 @@ function ap_administrar_persona_page() {
         include plugin_dir_path(__FILE__) . 'ap_persona_form.html';
 
         $alumno = wpdbAlumno__By_idPersona($wpdb, $persona_id);
-        
 
         echo "<h2>Alumno</h2>";
 
 
         if ($alumno){
-            
+            echo "<ul>";
+            echo '<li><a class="btn" href="' . admin_url('admin.php?page=fines-plugin-constancia-alumno-regular-page&id_persona=' . $persona->id) . '" class="btn">Constancia de Alumno Regular</a></li>';
+            echo '<li><a class="btn" href="' . admin_url('admin.php?page=fines-plugin-constancia-pase-page&id_persona=' . $persona->id) . '" class="btn">Constancia de Pase</a></li>';
+
+            echo "</ul>";
+
             $alumno_id = $alumno->id;
             $selected_plan = $alumno->plan;
             $selected_resolucion = $alumno->resolucion_inscripcion;
@@ -112,9 +116,12 @@ function ap_administrar_persona_page() {
                     $tramo = $alumno->anio_ingreso;
                     if($alumno->semestre_ingreso)
                         $tramo .= $alumno->semestre_ingreso;
+                    else 
+                        $tramo .= "1";
                 } else {
                     $tramo = "11";
                 }
+            
 
                 $calificacionesAprobadas = wpdbCalificacionesAprobadas__By_idAlumno_idPlan_tramo($wpdb, $alumno->id, $alumno->plan, $tramo);
                 $disposiciones = wpdbDisposiciones__By_idPlan_tramo($wpdb, $alumno->plan, $tramo);

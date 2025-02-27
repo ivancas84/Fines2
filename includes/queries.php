@@ -19,7 +19,7 @@ function sqlSelectComision(){
                     ) AS domicilio,
                     CONCAT(planificacion.anio,'°',planificacion.semestre,'C') AS tramo,
                     plan.orientacion, plan.resolucion,
-                    comision.autorizada, comision.apertura, comision.publicada,
+                    comision.autorizada, comision.apertura, comision.publicada, comision.turno,
                     comision.pfid,
                     GROUP_CONCAT(
                         DISTINCT '* ', persona.nombres, ' ',
@@ -78,7 +78,8 @@ function wpdbAlumno__By_idPersona($wpdb, $persona_id){
     return $wpdb->get_row(
         $wpdb->prepare("
             SELECT alumno.*,
-            CONCAT(plan.orientacion, ' ', plan.resolucion) AS detalle_plan
+            CONCAT(plan.orientacion, ' ', plan.resolucion) AS detalle_plan,
+            plan.orientacion, plan.resolucion
             FROM alumno 
             LEFT JOIN plan ON (alumno.plan = plan.id)
             WHERE persona = '$persona_id'
@@ -185,6 +186,7 @@ function wpdbCalificacionesAprobadas__By_idAlumno_idPlan_tramo($wpdb, $alumno_id
             calificacion.nota_final, 
             calificacion.crec, 
             CONCAT(planificacion.anio, planificacion.semestre) AS tramo, 
+            planificacion.anio AS anio, planificacion.semestre AS semestre,
             plan.orientacion, 
             plan.resolucion,
             asignatura.nombre,
@@ -215,6 +217,47 @@ function wpdbCalificacionesAprobadas__By_idAlumno_idPlan_tramo($wpdb, $alumno_id
     );
 }
 
+function wpdbCalificacionesDesaprobadas__By_idAlumno_idPlan_tramo($wpdb, $alumno_id, $plan_id, $tramo){
+    return $wpdb->get_results(
+        $wpdb->prepare("
+        SELECT DISTINCT CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
+            calificacion.id,
+            calificacion.disposicion,
+            calificacion.nota_final, 
+            calificacion.crec, 
+            CONCAT(planificacion.anio, planificacion.semestre) AS tramo, 
+            planificacion.anio AS anio, planificacion.semestre AS semestre,
+            plan.orientacion, 
+            plan.resolucion,
+            asignatura.nombre,
+            comision.pfid,
+            CONCAT(calendario.anio, '-', calendario.semestre) AS periodo,
+            CONCAT(toma_activa.nombres, ' ', toma_activa.apellidos, ' ', toma_activa.numero_documento) AS docente                    
+        FROM calificacion 
+        INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+        INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
+        INNER JOIN plan ON (planificacion.plan = plan.id)
+        INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id)
+        LEFT JOIN curso ON (calificacion.curso = curso.id)
+        LEFT JOIN comision ON (curso.comision = comision.id)				
+        LEFT JOIN calendario ON (comision.calendario = calendario.id)			
+        LEFT JOIN (
+            SELECT toma.curso, persona.nombres, persona.apellidos, persona.numero_documento 
+            FROM toma 
+            INNER JOIN persona ON (toma.docente = persona.id)
+            WHERE estado = 'Aprobada' 
+            AND estado_contralor != 'Modificar'
+        ) AS toma_activa ON (toma_activa.curso = curso.id)
+        WHERE alumno = '$alumno_id' AND plan.id = '$plan_id' 
+        AND CONCAT(planificacion.anio, planificacion.semestre) >= '$tramo'
+        AND ((nota_final < 7 OR nota_final IS NULL) AND (crec < 4 OR crec IS NULL))
+        ORDER BY planificacion.anio, planificacion.semestre
+        LIMIT 100
+        ")
+    );
+}
+
+
 function wpdbCalificaciones__By_idAlumno_idPlan_tramo($wpdb, $alumno_id, $plan_id, $tramo){
     return $wpdb->get_results(
         $wpdb->prepare("
@@ -224,6 +267,7 @@ function wpdbCalificaciones__By_idAlumno_idPlan_tramo($wpdb, $alumno_id, $plan_i
             calificacion.nota_final, 
             calificacion.crec, 
             CONCAT(planificacion.anio, planificacion.semestre) AS tramo, 
+            planificacion.anio AS anio, planificacion.semestre AS semestre,
             plan.orientacion, 
             plan.resolucion,
             asignatura.nombre,

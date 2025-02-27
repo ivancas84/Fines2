@@ -11,6 +11,8 @@
             <th>Resolución</th>
             <th>Autorizada</th>
             <th>Apertura</th>
+            <th>Turno</th>
+            <th>Referentes</th>
             <th>Lista de Alumnos</th>
         </tr>
     </thead>
@@ -30,6 +32,7 @@
                 <td><?= esc_html($comision->resolucion); ?></td>
                 <td><?= esc_html(boolToSiNo($comision->autorizada)); ?></td>
                 <td><?= esc_html(boolToSiNo($comision->apertura)); ?></td>
+                <td><?= esc_html($comision->turno); ?></td>
                 <td><?= $comision->referentes ?: 'Sin referentes' ?></td>
                 <td>
                     <a href="<?= esc_url($detalle_comision_url); ?>" class="button">Detalle</a> 
