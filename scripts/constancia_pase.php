@@ -110,7 +110,7 @@ function generar_constancia_pase($url, $data) {
 
     // Content
     $pdf->SetFont('helvetica', '', 10);
-    $content = "<p>La Dirección de la Escuela de Educación CENS Nº 462 de La Plata, hace constar por la presente que
+    $content = "<p>La Dirección del CENS Nº 462 de La Plata, hace constar por la presente que
     <strong><u><i>{$data['apellidos']}, {$data['nombres']}</i></u></strong> DNI Nº <strong><u><i>{$data['numero_documento']}</i></u></strong> 
     ha cursado los años <strong><u><i>{$data['anios_cursados']}</i></u></strong>
     del <strong><u><i>Programa Fines 2 Trayecto Secundario</i></u></strong> con orientación en <strong><u><i>{$data['orientacion']}</i></u></strong>,
@@ -142,7 +142,7 @@ function generar_constancia_pase($url, $data) {
     // Failed Grades Table
     if (!empty($data["calificaciones_desaprobadas"])) {
         $pdf->SetFont('helvetica', 'B', 12);
-        $pdf->Cell(0, 10, 'Calificaciones Desaprobadas', 0, 1);
+        $pdf->Cell(0, 10, 'Calificaciones Pendientes', 0, 1);
         $pdf->SetFont('helvetica', '', 10);
 
         $pdf->SetFillColor(220, 220, 220);
@@ -303,7 +303,7 @@ function insertar_pedido($data){
         'misc'=> "", //longtext
     ]);
 
-    $threads_body = "La Dirección de la escuela CENS 462 de La Plata, hace constar por la presente que ";
+    $threads_body = "La Dirección del CENS 462 de La Plata, hace constar por la presente que ";
     $threads_body .= $data['apellidos'] .    ", ";
     $threads_body .= $data['nombres'] . " DNI N° ";
     $threads_body .= $data['numero_documento'] . " ha cursado los años ";
