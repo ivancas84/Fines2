@@ -37,8 +37,8 @@ function sqlSelectComision(){
                 LEFT JOIN persona ON designacion.persona = persona.id";
 }
 
-function sqlSelectComision_autorizada__By_calendario__Without_tramo32_and_siguiente($idCalendario){
-	return "SELECT
+function wpdbComisiones_autorizadas__By_calendario__Without_tramo32_and_siguiente($wpdb, $idCalendario){
+	return $wpdb->get_results($wpdb->prepare("SELECT
 				comision.*, CONCAT(planificacion.anio,planificacion.semestre) as tramo, planificacion.plan
 			FROM comision     
 			INNER JOIN planificacion ON comision.planificacion = planificacion.id
@@ -46,7 +46,29 @@ function sqlSelectComision_autorizada__By_calendario__Without_tramo32_and_siguie
 			AND comision.autorizada = true
 			AND CONCAT(planificacion.anio,planificacion.semestre) != '32'
 			AND comision_siguiente IS NULL
-			";
+			"));
+}
+
+function wpdbComisiones_autorizadas__By_calendario__Without_tramo32($wpdb, $idCalendario){
+	return $wpdb->get_results($wpdb->prepare("SELECT
+				comision.*, CONCAT(planificacion.anio,planificacion.semestre) as tramo, planificacion.plan
+			FROM comision     
+			INNER JOIN planificacion ON comision.planificacion = planificacion.id
+			WHERE comision.calendario = '$idCalendario'
+			AND comision.autorizada = true
+			AND CONCAT(planificacion.anio,planificacion.semestre) != '32'
+			"));
+}
+
+function wpdbAlumnosComision__By_calendario__With_ComisionAutorizada__Without_tramo32($wpdb, $idCalendario){
+	return $wpdb->get_results($wpdb->prepare("
+            SELECT * FROM alumno_comision
+            INNER JOIN comision ON alumno_comision.comision = comision.id
+			INNER JOIN planificacion ON comision.planificacion = planificacion.id
+			WHERE comision.calendario = '$idCalendario'
+			AND comision.autorizada = true
+			AND CONCAT(planificacion.anio,planificacion.semestre) != '32'
+			"));
 }
 
 function sqlSelectPlanificacion__By_plan_And_tramo($idPlan, $idTramo){
