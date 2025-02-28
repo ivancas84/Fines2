@@ -16,26 +16,7 @@ function la_lista_alumnos_page() {
 
  
     // Query to fetch students associated with the given commission
-    $alumnos = $wpdb->get_results(
-        $wpdb->prepare("
-            SELECT alumno.id, alumno.anio_ingreso, alumno.tiene_dni, alumno.tiene_certificado, alumno.tiene_constancia, alumno.previas_completas, alumno.confirmado_direccion, alumno.tiene_partida, 
-            persona.id AS persona_id, persona.nombres, persona.apellidos, persona.numero_documento, 
-			calificacion_aprobada.tramo, calificacion_aprobada.cantidad_aprobadas
-			FROM alumno
-            INNER JOIN persona ON (alumno.persona = persona.id)
-			INNER JOIN alumno_comision ON alumno.id = alumno_comision.alumno
-			LEFT JOIN (
-					SELECT calificacion.alumno, planificacion.plan,
-                	CONCAT(planificacion.anio, '°', planificacion.semestre, 'C') AS tramo, COUNT(*) as cantidad_aprobadas 
-					FROM calificacion
-					INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
-					INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)					
-					WHERE (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
-                	GROUP BY calificacion.alumno, planificacion.plan, tramo
-			) AS calificacion_aprobada ON calificacion_aprobada.alumno = alumno.id AND calificacion_aprobada.plan = alumno.plan
-            WHERE alumno_comision.comision = '$comision_id' LIMIT 100"
-			)
-    );
+    $alumnos = wpdbAlumnosConCantidadCalificacionesAprobadas__By_comisionId__Join_alumnoPlan($wpdb, $comision_id);
 
     // Define all possible "tramo" values
     $tramo_values = ["1°1C", "1°2C", "2°1C", "2°2C", "3°1C", "3°2C"];

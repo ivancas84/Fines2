@@ -372,4 +372,100 @@ function wpdbUltimoAlumnoComisionActivo__By_idAlumno($wpdb, $alumno_id){
         ")
     );
 }
+
+
+function wpdbAlumnosConTodasLasCalificacionesAprobadas__By_comisionPfid($wpdb, $pfid){
+    // Step 2: Get student data and grades
+    $query_students = "
+        SELECT 
+            DISTINCT persona.id AS persona_id, 
+            persona.nombres, 
+            persona.apellidos, 
+            persona.numero_documento, 
+            alumno.estado_inscripcion,
+            alumno.tiene_dni, 
+            alumno.tiene_certificado, 
+            alumno.tiene_constancia, 
+            alumno.tiene_partida, 
+            alumno.previas_completas, 
+            alumno.confirmado_direccion, 
+            alumno.anio_ingreso,
+            CONCAT(plan.orientacion, ' ', plan.resolucion) AS detalle_plan,
+            calificacion_aprobada.detalle_asignatura, 
+            calificacion_aprobada.max_nota_final, 
+            calificacion_aprobada.max_crec
+        FROM alumno
+        INNER JOIN persona ON alumno.persona = persona.id
+        INNER JOIN alumno_comision ON alumno.id = alumno_comision.alumno
+        LEFT JOIN plan ON alumno.plan = plan.id
+        LEFT JOIN (
+            SELECT 
+                DISTINCT calificacion.alumno, 
+                CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
+                MAX(calificacion.nota_final) AS max_nota_final, 
+                MAX(calificacion.crec) AS max_crec
+            FROM calificacion
+            INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+            INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+            INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+            WHERE (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
+            GROUP BY calificacion.alumno, detalle_asignatura
+        ) AS calificacion_aprobada 
+        ON calificacion_aprobada.alumno = alumno.id 
+        WHERE alumno.id IN (
+            SELECT DISTINCT alumno 
+            FROM alumno_comision 
+            INNER JOIN comision ON comision.id = alumno_comision.comision
+            WHERE comision.pfid = %s
+        )
+    ";
+    return $wpdb->get_results($wpdb->prepare($query_students, $pfid));
+}
+
+function wpdbAlumnosConCantidadCalificacionesAprobadas__By_comisionId__Join_alumnoPlan($wpdb, $comision_id){
+    $wpdb->get_results(
+        $wpdb->prepare("
+            SELECT alumno.id, alumno.anio_ingreso, alumno.tiene_dni, alumno.tiene_certificado, alumno.tiene_constancia, alumno.previas_completas, alumno.confirmado_direccion, alumno.tiene_partida, 
+            persona.id AS persona_id, persona.nombres, persona.apellidos, persona.numero_documento, 
+			calificacion_aprobada.tramo, calificacion_aprobada.cantidad_aprobadas
+			FROM alumno
+            INNER JOIN persona ON (alumno.persona = persona.id)
+			INNER JOIN alumno_comision ON alumno.id = alumno_comision.alumno
+			LEFT JOIN (
+					SELECT calificacion.alumno, planificacion.plan,
+                	CONCAT(planificacion.anio, '°', planificacion.semestre, 'C') AS tramo, COUNT(*) as cantidad_aprobadas 
+					FROM calificacion
+					INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+					INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)					
+					WHERE (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
+                	GROUP BY calificacion.alumno, planificacion.plan, tramo
+			) AS calificacion_aprobada ON calificacion_aprobada.alumno = alumno.id AND calificacion_aprobada.plan = alumno.plan
+            WHERE alumno_comision.comision = '$comision_id' LIMIT 100"
+			)
+    );
+}
+
+function wpdbAlumnosConCantidadCalificacionesAprobadas__By_comisionId__Join_alumnoPlan_disposicionPlanificacion($wpdb, $comision_id){
+    $wpdb->get_results(
+        $wpdb->prepare("
+            SELECT alumno.id, alumno.anio_ingreso, alumno.tiene_dni, alumno.tiene_certificado, alumno.tiene_constancia, alumno.previas_completas, alumno.confirmado_direccion, alumno.tiene_partida, 
+            persona.id AS persona_id, persona.nombres, persona.apellidos, persona.numero_documento, 
+			calificacion_aprobada.tramo, calificacion_aprobada.cantidad_aprobadas
+			FROM alumno
+            INNER JOIN persona ON (alumno.persona = persona.id)
+			INNER JOIN alumno_comision ON alumno.id = alumno_comision.alumno
+			LEFT JOIN (
+					SELECT calificacion.alumno, planificacion.plan, disposicion.planificacion,
+                	CONCAT(planificacion.anio, '°', planificacion.semestre, 'C') AS tramo, COUNT(*) AS cantidad_aprobadas 
+					FROM calificacion
+					INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+					INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)					
+					WHERE (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
+                	GROUP BY calificacion.alumno, planificacion.plan, tramo
+			) AS calificacion_aprobada ON calificacion_aprobada.alumno = alumno.id AND calificacion_aprobada.plan = alumno.plan AND calificacion_aprobada.planificacion = disposicion.planificacion
+            WHERE alumno_comision.comision = '$comision_id' LIMIT 100"
+			)
+    );
+}
+
 ?>

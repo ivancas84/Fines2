@@ -27,51 +27,7 @@ function rd_rindex_division_page() {
     ";
     $headers = $wpdb->get_col($wpdb->prepare($query_headers, $pfid));
 
-    // Step 2: Get student data and grades
-    $query_students = "
-        SELECT 
-            DISTINCT persona.id AS persona_id, 
-            persona.nombres, 
-            persona.apellidos, 
-            persona.numero_documento, 
-            alumno.estado_inscripcion,
-            alumno.tiene_dni, 
-            alumno.tiene_certificado, 
-            alumno.tiene_constancia, 
-            alumno.tiene_partida, 
-            alumno.previas_completas, 
-            alumno.confirmado_direccion, 
-            alumno.anio_ingreso,
-            CONCAT(plan.orientacion, ' ', plan.resolucion) AS detalle_plan,
-            calificacion_aprobada.detalle_asignatura, 
-            calificacion_aprobada.max_nota_final, 
-            calificacion_aprobada.max_crec
-        FROM alumno
-        INNER JOIN persona ON alumno.persona = persona.id
-        INNER JOIN alumno_comision ON alumno.id = alumno_comision.alumno
-        LEFT JOIN plan ON alumno.plan = plan.id
-        LEFT JOIN (
-            SELECT 
-                DISTINCT calificacion.alumno, 
-                CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
-                MAX(calificacion.nota_final) AS max_nota_final, 
-                MAX(calificacion.crec) AS max_crec
-            FROM calificacion
-            INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
-            INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
-            INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
-            WHERE (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
-            GROUP BY calificacion.alumno, detalle_asignatura
-        ) AS calificacion_aprobada 
-        ON calificacion_aprobada.alumno = alumno.id 
-        WHERE alumno.id IN (
-            SELECT DISTINCT alumno 
-            FROM alumno_comision 
-            INNER JOIN comision ON comision.id = alumno_comision.comision
-            WHERE comision.pfid = %s
-        )
-    ";
-    $students = $wpdb->get_results($wpdb->prepare($query_students, $pfid));
+    $students = wpdbAlumnosConTodasLasCalificacionesAprobadas__By_comisionPfid($wpdb, $pfid)
 
     $extra_headers = ['Ingreso', 'DNI', 'Cons', 'Cert', 'Part', 'Prev', 'Conf'];
     
