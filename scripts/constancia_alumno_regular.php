@@ -8,32 +8,34 @@ require_once 'vendor/autoload.php'; // Ensure TCPDF is autoloaded
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 
-$pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-]);
+try {
+    $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
 
-$pdo_pedidos = new PDO("mysql:host=$db_host_pedidos;dbname=$db_name_pedidos;charset=utf8mb4", $db_user_pedidos, $db_pass_pedidos, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-]);
+    $pdo_pedidos = new PDO("mysql:host=$db_host_pedidos;dbname=$db_name_pedidos;charset=utf8mb4", $db_user_pedidos, $db_pass_pedidos, [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+    ]);
+} catch (PDOException $e) {
+    die("Database connection failed: " . $e->getMessage());
+}
 
-$numero_documento = $_POST["numero_documento"];
-$actual_year = date('Y');
-$actual_month = date('m');
+$numero_documento = filter_input(INPUT_POST, 'numero_documento', FILTER_SANITIZE_STRING);
 $actual_unix_timestamp = time();
-$upload_dir = "/wpsc/{$actual_year}/{$actual_month}/";
+$upload_dir = "/wpsc/". date('Y') . "/" . date('m') . "/";
 $filename = "{$actual_unix_timestamp}_constancia_{$numero_documento}.pdf";
 $data = [
-    "apellidos" => strtoupper($_POST["apellidos"]),
-    "nombres" => ucwords(strtolower($_POST["nombres"])),
-    "numero_documento" => $_POST["numero_documento"],
-    "anio" => $_POST["anio_en_curso"],
-    "resolucion" => $_POST["resolucion"],
-    "fecha" => $_POST["fecha"],
-    "presentacion" => $_POST["presentado"],
-    "orientacion" => $_POST["orientacion"],
-    "observaciones" => $_POST["observaciones"],
+    "apellidos" => strtoupper(filter_input(INPUT_POST, 'apellidos', FILTER_SANITIZE_STRING)),
+    "nombres" => ucwords(strtolower(filter_input(INPUT_POST, 'nombres', FILTER_SANITIZE_STRING))),
+    "numero_documento" => $numero_documento ,
+    "anio" => filter_input(INPUT_POST, 'anio_en_curso', FILTER_SANITIZE_STRING),
+    "resolucion" => filter_input(INPUT_POST, 'resolucion', FILTER_SANITIZE_STRING),
+    "fecha" => filter_input(INPUT_POST, 'fecha', FILTER_SANITIZE_STRING),
+    "presentacion" => filter_input(INPUT_POST, 'presentado', FILTER_SANITIZE_STRING),
+    "orientacion" => filter_input(INPUT_POST, 'orientacion', FILTER_SANITIZE_STRING),
+    "observaciones" => filter_input(INPUT_POST, 'observaciones', FILTER_SANITIZE_STRING),
     "filename" => $filename,
     "upload_dir" => $upload_dir,
     "save_path" => $upload_dir."/".$filename
@@ -85,7 +87,7 @@ function generar_constancia_alumno_regular($url, $data) {
     // Justify the content with interlineado
     $pdf->SetFont('helvetica', '', 10);
     $content = "
-    <p>La Dirección de la Escuela de Educación CENS Nº 462 de La Plata, hace constar por la presente que
+    <p>La Dirección del CENS Nº 462 de La Plata, hace constar por la presente que
     <strong><u><i>&nbsp;&nbsp;&nbsp;{$data['apellidos']}, {$data['nombres']}&nbsp;&nbsp;&nbsp;</i></u></strong> DNI Nº <strong><u><i>&nbsp;&nbsp;&nbsp;{$data['numero_documento']}&nbsp;&nbsp;&nbsp;</i></u></strong> 
     es alumno/a regular de <strong><u><i>&nbsp;&nbsp;&nbsp;{$data['anio']}&nbsp;&nbsp;&nbsp;</i></u></strong> año <strong><u><i>&nbsp;&nbsp;&nbsp;Programa Fines 2 Trayecto Secundario&nbsp;&nbsp;&nbsp;</i></u></strong> con orientación en <strong><u><i>&nbsp;&nbsp;&nbsp;{$data['orientacion']}&nbsp;&nbsp;&nbsp;</i></u></strong>
     resolución <strong><u><i>&nbsp;&nbsp;&nbsp;{$data['resolucion']}&nbsp;&nbsp;&nbsp;</i></u></strong>.</p>
@@ -240,7 +242,7 @@ function insertar_pedido($data){
         'misc'=> "", //longtext
     ]);
 
-    $threads_body = "La Dirección de la escuela CENS 462 de La Plata, hace constar por la presente que ";
+    $threads_body = "La Dirección del CENS 462 de La Plata, hace constar por la presente que ";
     $threads_body .= $data['apellidos'] . ", ";
     $threads_body .= $data['nombres'] . " DNI N° ";
     $threads_body .= $data['numero_documento'] . " es alumno regular de ";
