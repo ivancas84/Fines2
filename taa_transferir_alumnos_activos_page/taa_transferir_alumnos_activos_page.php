@@ -19,8 +19,7 @@ function lc_lista_comisiones_page() {
             $calendario_id = sanitize_text_field($_GET['calendario']);
             
             $comisiones = wpdbComisiones_autorizadas__By_calendario__Without_tramo32($wpdb, $calendario_id);
-
-            $alumnos_comision = wpdbAlumnosComision__By_calendario($calendario_id);
+            
              // Build SQL query
             $sql = sqlSelectComision() . "
                 WHERE calendario = '$calendario_id'";

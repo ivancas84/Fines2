@@ -25,9 +25,6 @@ function fines_plugin_comisiones_siguientes_semestre() {
             
              // Build SQL query
             $comisiones = wpdbComisiones_autorizadas__By_calendario__Without_tramo32_and_siguiente($calendario_id);
-               
-            // Execute query
-             = $sql));
 	
             if (!$comisiones) {
                 echo "<p style='color: red;'>No se encontraron comisiones para el calendario seleccionado.</p>";
