@@ -445,26 +445,46 @@ function wpdbAlumnosConCantidadCalificacionesAprobadas__By_comisionId__Join_alum
     );
 }
 
-function wpdbAlumnosConCantidadCalificacionesAprobadas__By_comisionId__Join_alumnoPlan_disposicionPlanificacion($wpdb, $comision_id){
-    $wpdb->get_results(
+function wpdbCantidadCalificacionesAprobadas3oMas__Group_alumno_planificacion__By_comision($wpdb, $comision_id){
+    return $wpdb->get_results(
         $wpdb->prepare("
-            SELECT alumno.id, alumno.anio_ingreso, alumno.tiene_dni, alumno.tiene_certificado, alumno.tiene_constancia, alumno.previas_completas, alumno.confirmado_direccion, alumno.tiene_partida, 
-            persona.id AS persona_id, persona.nombres, persona.apellidos, persona.numero_documento, 
-			calificacion_aprobada.tramo, calificacion_aprobada.cantidad_aprobadas
+        SELECT DISTINCT alumno.id, alumno.plan, comision.planificacion, calificacion_aprobada.cantidad_aprobadas, persona.numero_documento
 			FROM alumno
             INNER JOIN persona ON (alumno.persona = persona.id)
 			INNER JOIN alumno_comision ON alumno.id = alumno_comision.alumno
+            INNER JOIN comision ON comision.id = alumno_comision.comision
 			LEFT JOIN (
-					SELECT calificacion.alumno, planificacion.plan, disposicion.planificacion,
-                	CONCAT(planificacion.anio, '°', planificacion.semestre, 'C') AS tramo, COUNT(*) AS cantidad_aprobadas 
+					SELECT calificacion.alumno, disposicion.planificacion,
+                	COUNT(*) AS cantidad_aprobadas 
 					FROM calificacion
 					INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
 					INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)					
 					WHERE (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
-                	GROUP BY calificacion.alumno, planificacion.plan, tramo
-			) AS calificacion_aprobada ON calificacion_aprobada.alumno = alumno.id AND calificacion_aprobada.plan = alumno.plan AND calificacion_aprobada.planificacion = disposicion.planificacion
-            WHERE alumno_comision.comision = '$comision_id' LIMIT 100"
+                	GROUP BY calificacion.alumno, disposicion.planificacion
+			) AS calificacion_aprobada ON calificacion_aprobada.alumno = alumno.id AND calificacion_aprobada.planificacion = comision.planificacion
+            WHERE comision.id = '$comision_id' AND calificacion_aprobada.cantidad_aprobadas >= 3;"
 			)
+    );
+}
+
+function wpdbIdsAlumnos__By_comision($wpdb, $comision_id){
+    return $wpdb->get_col(
+        $wpdb->prepare("
+            SELECT DISTINCT alumno
+			FROM alumno_comision 
+            WHERE comision = '$comision_id';"
+        )
+    );
+}
+
+function wpdbUpdateTableKeyValue__By_id($wpdb, $table, $field, $value, $id, $valueFormat ="%s", $idFormat ="%s"){
+    // Update the database
+    return $wpdb->update(
+        $table,
+        [$field => $value],
+        ["id" => $id],
+        [$valueFormat],  // Value format
+        [$idFormat]   // ID format
     );
 }
 

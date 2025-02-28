@@ -1,6 +1,6 @@
 <?php
 
-function lc_lista_comisiones_page() {
+function taa_transferir_alumnos_activos_page() {
     $wpdb = fines_plugin_db_connect();
 
     if (!$wpdb) {
@@ -20,27 +20,39 @@ function lc_lista_comisiones_page() {
             
             $comisiones = wpdbComisiones_autorizadas__By_calendario__Without_tramo32($wpdb, $calendario_id);
             
-             // Build SQL query
-            $sql = sqlSelectComision() . "
-                WHERE calendario = '$calendario_id'";
 
-            // Add 'autorizada' filter if checkbox is checked
-            if ($filter_autorizada) {
-                $sql .= " AND comision.autorizada = true";
+            foreach($comisiones as $comision){
+
+
+                echo "<h2>Procesando " . $comision->pfid . "</h2>";
+                $idsAlumnosExistentes = wpdbIdsAlumnos__By_comision($wpdb, $comision->id);
+                $alumnos = wpdbCantidadCalificacionesAprobadas3oMas__Group_alumno_planificacion__By_comision($wpdb, $comision->id);
+                
+                echo "<p>Cantidad de alumnos existentes en la comisión (activos y no activos) " . count($idsAlumnosExistentes) . "</p>";
+                echo "<p>Alumnos que aprobaron 3 o más calificaciones " . count($alumnos) . "</p>";
+
+                if(!$comision->comision_siguiente){
+                    echo "<p>La comisión siguiente no está definida.</p>";
+                    continue;
+                }
+
+                foreach($alumnos as $alumno){
+                    if($alumno->plan != $comision->plan){
+                        echo "<p>El alumno " . $alumno->numero_documento . " tiene un plan diferente de la comisión. ";
+                        if (wpdbUpdateTableKeyValue__By_id($wpdb, "alumno", "plan", $comision->plan, $alumno->id) !== false) {
+                            echo "Se actualizó el plan</p>";
+                        } else {
+                            echo "Falló al actualizar el plan: " . $wpdb->last_error  . "</p>";
+                        }
+                    }
+
+                }
             }
 
-            $sql .= " GROUP BY comision.id ";
-
-            // Append order by clause
-            $sql .= " ORDER BY " . esc_sql($selected_order);
-
-            // Execute query
-            $comisiones = $wpdb->get_results($wpdb->prepare($sql));
-
-            if ($comisiones) {
-                include plugin_dir_path(__FILE__) . 'lc_tabla_comisiones.html';
-            } else {
+            if (!$comisiones) {
+                
                 echo "<p>No se encontraron comisiones para este calendario.</p>";
+                die();
             }
     }
 

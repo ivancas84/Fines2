@@ -136,6 +136,16 @@ function fines_plugin_menu() {
       'fines-plugin-constancia-pase-page', 
       'cp_constancia_pase_page'
     );
+
+
+    add_submenu_page(
+      null, 
+      'Transferir Alumnos Activos',
+      'Transferir Alumnos Activos', 
+      'edit_posts', 
+      'fines-plugin-transferir-alumnos-activos-page', 
+      'taa_transferir_alumnos_activos_page'
+    );
   }
 
 
@@ -170,3 +180,6 @@ include_once plugin_dir_path(__FILE__) . 'bp_buscar_personas_page/bp_buscar_pers
 include_once plugin_dir_path(__FILE__) . 'car_constancia_alumno_regular_page/car_constancia_alumno_regular_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'cp_constancia_pase_page/cp_constancia_pase_page.php';
+
+include_once plugin_dir_path(__FILE__) . 'taa_transferir_alumnos_activos_page/taa_transferir_alumnos_activos_page.php';
+
