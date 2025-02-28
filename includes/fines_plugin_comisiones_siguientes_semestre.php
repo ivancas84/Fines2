@@ -24,10 +24,10 @@ function fines_plugin_comisiones_siguientes_semestre() {
         $calendario_id = $_GET['calendario'];
             
              // Build SQL query
-            $sql = sqlSelectComision_autorizada__By_calendario__Without_tramo32_and_siguiente($calendario_id);
+            $comisiones = wpdbComisiones_autorizadas__By_calendario__Without_tramo32_and_siguiente($calendario_id);
                
             // Execute query
-            $comisiones = $wpdb->get_results($wpdb->prepare($sql));
+             = $sql));
 	
             if (!$comisiones) {
                 echo "<p style='color: red;'>No se encontraron comisiones para el calendario seleccionado.</p>";
