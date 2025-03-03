@@ -27,7 +27,7 @@ function taa_transferir_alumnos_activos_page() {
                 echo "<h2>Procesando " . $comision->pfid . "</h2>";
                 $idsAlumnosExistentes = wpdbIdsAlumnos__By_comision($wpdb, $comision->id);
                 $alumnos = wpdbCantidadCalificacionesAprobadas3oMas__Group_alumno_planificacion__By_comision($wpdb, $comision->id);
-                
+
                 echo "<p>Cantidad de alumnos existentes en la comisión (activos y no activos) " . count($idsAlumnosExistentes) . "</p>";
                 echo "<p>Alumnos que aprobaron 3 o más calificaciones " . count($alumnos) . "</p>";
 
@@ -35,6 +35,11 @@ function taa_transferir_alumnos_activos_page() {
                     echo "<p>La comisión siguiente no está definida.</p>";
                     continue;
                 }
+
+                $idsAlumnosExistentesSiguiente = wpdbIdsAlumnos__By_comision($wpdb, $comision->comision_siguiente);
+                echo "<p>Cantidad de alumnos existentes en la comisión siguiente (activos y no activos) " . count($idsAlumnosExistentesSiguiente) . "</p>";
+
+                $cantidadAlumnosAgregados = 0;
 
                 foreach($alumnos as $alumno){
                     if($alumno->plan != $comision->plan){
@@ -46,7 +51,32 @@ function taa_transferir_alumnos_activos_page() {
                         }
                     }
 
+                    if(!in_array($alumno->id, $idsAlumnosExistentesSiguiente)){
+                        
+                        $data = [
+                            'id'            => uniqid(), // Generate a unique ID
+                            'activo'        => 1,  // Set active status
+                            'comision'      => $comision->comision_siguiente,
+                            'alumno'        => $alumno->id,
+                            'estado'        => 'Activo',
+                        ];
+
+                        $format = ['%s', '%d', '%s', '%s', '%s'];
+
+                        $cantidadAlumnosAgregados++;
+
+                        if (!$wpdb->insert("alumno_comision", $data, $format)) {
+                            echo "Falló al insertar alumno " . $alumno->numero_documento . ": " . $wpdb->last_error  . "</p>";
+                            $cantidadAlumnosAgregados--;
+                        }
+
+                        
+                    }
+
                 }
+
+                echo "<p>Cantidad de alumnos agregados a la comisión " . $cantidadAlumnosAgregados . "</p>";
+
             }
 
             if (!$comisiones) {

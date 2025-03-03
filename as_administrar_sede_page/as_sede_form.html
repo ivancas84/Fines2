@@ -1,0 +1,73 @@
+
+
+
+
+<form id="as-sede-form" method="POST">
+    <? wp_nonce_field("as_sede_form_action", "as_sede_form_nonce"); ?>
+
+    <input type="hidden" name="sede_id" value="<?php echo esc_attr($sede_id); ?>">
+    <input type="hidden" name="domicilio_id" value="<?php echo esc_attr($domicilio_id); ?>">
+
+    <label for="centro_educativo">Centro Educativo:</label>
+    <select name="centro_educativo" id="centro_educativo">
+        <?php foreach ($centros as $centro): ?>
+            <option value="<?php echo esc_attr($centro->id); ?>" 
+                <?php selected($centro_educativo, $centro->id); ?>>
+                <?php echo esc_html($centro->nombre); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <label for="numero">Número:</label>
+    <input type="text" id="numero" name="numero" value="<?php echo esc_attr($numero); ?>" required>
+
+    <label for="nombre">Nombre:</label>
+    <input type="text" id="nombre" name="nombre" value="<?php echo esc_attr($nombre); ?>" required>
+
+    <label for="observaciones">Observaciones:</label>
+    <textarea id="observaciones" name="observaciones"><?php echo esc_textarea($observaciones); ?></textarea>
+
+    <label for="pfid">PFID:</label>
+    <input type="text" id="pfid" name="pfid" value="<?php echo esc_attr($pfid); ?>">
+
+    <label for="pfid_organizacion">PFID Organización:</label>
+    <input type="text" id="pfid_organizacion" name="pfid_organizacion" value="<?php echo esc_attr($pfid_organizacion); ?>">
+
+    <!-- Botones -->
+    <p>
+        <button type="submit" class='button'>Guardar</button>
+        <a href='javascript:history.back();' class='button'>Volver</a>
+    </p>
+
+    <!-- Honeypot -->
+    <input type="text" name="honeypot" style="display: none;">
+
+    <div id="as-sede-form-message"></div>
+</form>
+<script>
+    document.getElementById("as-sede-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        
+        let form = this;
+        let formData = new FormData(form);
+        formData.append("action", "as_sede_form_handle");
+        let messageBox = document.getElementById("as-sede-form-message");
+
+        fetch("<? echo admin_url('admin-ajax.php'); ?>", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            messageBox.innerHTML = data.message;
+            messageBox.style.color = data.success ? "green" : "red";
+            
+            if (data.success && data.sede_id) {
+                // Redirigir a la misma página con el ID de la comisión
+                window.location.href = "<? echo admin_url('admin.php?page=fines-plugin-administrar-sede-page&sede_id='); ?>" + data.sede_id;
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+</script>
+

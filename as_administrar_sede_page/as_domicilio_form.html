@@ -1,0 +1,63 @@
+
+
+
+
+<form id="as-domicilio-form" method="POST">
+    <? wp_nonce_field("as_domicilio_form_action", "as_domicilio_form_nonce"); ?>
+
+    <input type="hidden" name="domicilio_id" value="<?= echo esc_attr($domicilio_id); ?>">
+    <input type="hidden" name="sede_id" value="<?= echo esc_attr($sede_id); ?>">
+
+    <label for="numero">Calle:</label>
+    <input type="text" id="numero" name="numero" value="<?= echo esc_attr($numero); ?>" required>
+
+    <label for="nombre">Entre:</label>
+    <input type="text" id="nombre" name="nombre" value="<?= echo esc_attr($nombre); ?>" required>
+
+    <label for="observaciones">Número:</label>
+    <textarea id="observaciones" name="observaciones"><?= echo esc_textarea($observaciones); ?></textarea>
+
+    <label for="barrio">Barrio:</label>
+    <input type="text" id="barrio" name="barrio" value="<?= echo esc_attr($barrio); ?>">
+
+    <label for="localidad">Localidad:</label>
+    <input type="text" id="localidad" name="localidad" value="<?= echo esc_attr($localidad); ?>">
+
+    <!-- Botones -->
+    <p>
+        <button type="submit" class='button'>Guardar</button>
+        <a href='javascript:history.back();' class='button'>Volver</a>
+    </p>
+
+    <!-- Honeypot -->
+    <input type="text" name="honeypot" style="display: none;">
+
+    <div id="as-domicilio-form-message"></div>
+</form>
+<script>
+    document.getElementById("as-domicilio-form").addEventListener("submit", function(event) {
+        event.preventDefault();
+        
+        let form = this;
+        let formData = new FormData(form);
+        formData.append("action", "as_domicilio_form_handle");
+        let messageBox = document.getElementById("as-domicilio-form-message");
+
+        fetch("<? echo admin_url('admin-ajax.php'); ?>", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            messageBox.innerHTML = data.message;
+            messageBox.style.color = data.success ? "green" : "red";
+
+            if (data.success && data.sede_id) {
+                // Redirigir a la misma página con el ID de la comisión
+                window.location.href = "<? echo admin_url('admin.php?page=fines-plugin-administrar-sede-page&sede_id='); ?>" + data.sede_id;
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    });
+</script>
+

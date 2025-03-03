@@ -46,6 +46,15 @@ function fines_plugin_menu() {
 
     add_submenu_page(
       'fines-plugin', //debe coincidir con el slug del menu
+      'Buscar Personas', // Título de la página
+      'Buscar Personas', //Título del menú
+      'edit_posts', // Permisos
+      'fines-plugin-buscar-personas-page',  // Slug del submenú
+      'bp_buscar_personas_page' // Función que muestra la página del submenu
+    );
+
+    add_submenu_page(
+      'fines-plugin', //debe coincidir con el slug del menu
       'Administrar Comisión', // Título de la página
       'Administrar Comisión', //Título del menú
       'edit_posts', // Permisos
@@ -55,12 +64,14 @@ function fines_plugin_menu() {
 
   add_submenu_page(
     'fines-plugin', //debe coincidir con el slug del menu
-    'Buscar Personas', // Título de la página
-    'Buscar Personas', //Título del menú
+    'Administrar Sede', // Título de la página
+    'Administrar Sede', //Título del menú
     'edit_posts', // Permisos
-    'fines-plugin-buscar-personas-page',  // Slug del submenú
-    'bp_buscar_personas_page' // Función que muestra la página del submenu
+    'fines-plugin-administrar-sede-page',  // Slug del submenú
+    'as_administrar_sede_page' // Función que muestra la página del submenu
   );
+
+  
 
 
     add_submenu_page(
@@ -146,6 +157,8 @@ function fines_plugin_menu() {
       'fines-plugin-transferir-alumnos-activos-page', 
       'taa_transferir_alumnos_activos_page'
     );
+
+
   }
 
 
