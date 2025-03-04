@@ -1,5 +1,10 @@
 <?php
 
+function sanitize_or_null_text_field($value) {
+    $value = sanitize_text_field($value);
+    return $value === '' ? null : $value;
+}
+
 function toTitleCase($string) {
     return ucwords(strtolower($string));
 }

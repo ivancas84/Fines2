@@ -16,13 +16,13 @@ function as_sede_form_handle() {
         die();
     }
     
-    $centro_educativo = sanitize_text_field($_POST['centro_educativo']);
-    $numero = sanitize_text_field($_POST['numero']);
-    $nombre = sanitize_text_field($_POST['nombre']);
-    $observaciones = sanitize_text_field($_POST['observaciones']);
-    $pfid = sanitize_text_field($_POST['pfid']);
-    $pfid_organizacion = sanitize_text_field($_POST['pfid_organizacion']);
-    $domicilio_id = sanitize_text_field($_POST['domicilio']);;
+    $sede_id = sanitize_or_null_text_field($_POST['sede_id']);
+    $centro_educativo = sanitize_or_null_text_field($_POST['centro_educativo']);
+    $numero = sanitize_or_null_text_field($_POST['numero']);
+    $nombre = sanitize_or_null_text_field($_POST['nombre']);
+    $observaciones = sanitize_or_null_text_field($_POST['observaciones']);
+    $pfid = sanitize_or_null_text_field($_POST['pfid']);
+    $pfid_organizacion = sanitize_or_null_text_field($_POST['pfid_organizacion']);
 
     $proceso = "";
     if (empty($sede_id)) {
@@ -38,7 +38,6 @@ function as_sede_form_handle() {
                 'observaciones' => $observaciones,
                 'pfid' => $pfid,
                 'pfid_organizacion' => $pfid_organizacion,
-                'domicilio' => $domicilio_id,
             ],
             ['%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
         );
@@ -57,10 +56,9 @@ function as_sede_form_handle() {
                 'observaciones' => $observaciones,
                 'pfid' => $pfid,
                 'pfid_organizacion' => $pfid_organizacion,
-                'domicilio' => $domicilio_id,
             ],
             ['id' => $sede_id],
-            ['%s', '%s', '%s', '%s', '%s', '%s', '%s'],
+            ['%s', '%s', '%s', '%s', '%s', '%s'],
             ['%s']
         );
         

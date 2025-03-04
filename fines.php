@@ -182,6 +182,8 @@ include_once plugin_dir_path(__FILE__) . 'ap_administrar_persona_page/ap_adminis
 
 include_once plugin_dir_path(__FILE__) . 'ac_administrar_comision_page/ac_administrar_comision_page.php';
 
+include_once plugin_dir_path(__FILE__) . 'as_administrar_sede_page/as_administrar_sede_page.php';
+
 include_once plugin_dir_path(__FILE__) . 'rd_rindex_division_page/rd_rindex_division_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'rdd_rindex_division_direccion_page/rdd_rindex_division_direccion_page.php';

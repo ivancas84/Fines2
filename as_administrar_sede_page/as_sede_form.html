@@ -1,49 +1,92 @@
+<div class="wrap">
+    <h1><?php echo $sede_id ? "Editar Sede" : "Nueva Sede"; ?></h1>
 
+    <form id="as-sede-form" method="POST" class="as-form">
+        <?php wp_nonce_field("as_sede_form_action", "as_sede_form_nonce"); ?>
 
+        <input type="hidden" name="sede_id" value="<?php echo esc_attr($sede_id); ?>">
+        <input type="hidden" name="domicilio_id" value="<?php echo esc_attr($domicilio_id); ?>">
 
+        <fieldset>
+            <legend>Datos de la Sede</legend>
+            <table class="form-table">
+                <tr>
+                    <th><label for="centro_educativo">Centro Educativo:</label></th>
+                    <td>
+                        <select name="centro_educativo" id="centro_educativo">
+                            <?php foreach ($centros as $centro): ?>
+                                <option value="<?php echo esc_attr($centro->id); ?>" 
+                                    <?php selected($centro_educativo, $centro->id); ?>>
+                                    <?php echo esc_html($centro->nombre); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                </tr>
 
-<form id="as-sede-form" method="POST">
-    <? wp_nonce_field("as_sede_form_action", "as_sede_form_nonce"); ?>
+                <tr>
+                    <th><label for="numero">Número:</label></th>
+                    <td><input type="text" id="numero" name="numero" value="<?php echo esc_attr($numero); ?>" required></td>
+                </tr>
 
-    <input type="hidden" name="sede_id" value="<?php echo esc_attr($sede_id); ?>">
-    <input type="hidden" name="domicilio_id" value="<?php echo esc_attr($domicilio_id); ?>">
+                <tr>
+                    <th><label for="nombre">Nombre:</label></th>
+                    <td><input type="text" id="nombre" name="nombre" value="<?php echo esc_attr($nombre); ?>" required></td>
+                </tr>
 
-    <label for="centro_educativo">Centro Educativo:</label>
-    <select name="centro_educativo" id="centro_educativo">
-        <?php foreach ($centros as $centro): ?>
-            <option value="<?php echo esc_attr($centro->id); ?>" 
-                <?php selected($centro_educativo, $centro->id); ?>>
-                <?php echo esc_html($centro->nombre); ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
+                <tr>
+                    <th><label for="observaciones">Observaciones:</label></th>
+                    <td><textarea id="observaciones" name="observaciones"><?php echo esc_textarea($observaciones); ?></textarea></td>
+                </tr>
 
-    <label for="numero">Número:</label>
-    <input type="text" id="numero" name="numero" value="<?php echo esc_attr($numero); ?>" required>
+                <tr>
+                    <th><label for="pfid">PFID:</label></th>
+                    <td><input type="text" id="pfid" name="pfid" value="<?php echo esc_attr($pfid); ?>"></td>
+                </tr>
 
-    <label for="nombre">Nombre:</label>
-    <input type="text" id="nombre" name="nombre" value="<?php echo esc_attr($nombre); ?>" required>
+                <tr>
+                    <th><label for="pfid_organizacion">PFID Organización:</label></th>
+                    <td><input type="text" id="pfid_organizacion" name="pfid_organizacion" value="<?php echo esc_attr($pfid_organizacion); ?>"></td>
+                </tr>
+            </table>
+        </fieldset>
 
-    <label for="observaciones">Observaciones:</label>
-    <textarea id="observaciones" name="observaciones"><?php echo esc_textarea($observaciones); ?></textarea>
+        <!-- Botones -->
+        <p class="submit">
+            <button type="submit" class="button button-primary">Guardar</button>
+            <a href="javascript:history.back();" class="button button-secondary">Volver</a>
+        </p>
 
-    <label for="pfid">PFID:</label>
-    <input type="text" id="pfid" name="pfid" value="<?php echo esc_attr($pfid); ?>">
+        <!-- Honeypot -->
+        <input type="text" name="honeypot" style="display: none;">
+        <div id="as-sede-form-message"></div>
+    </form>
+</div>
 
-    <label for="pfid_organizacion">PFID Organización:</label>
-    <input type="text" id="pfid_organizacion" name="pfid_organizacion" value="<?php echo esc_attr($pfid_organizacion); ?>">
+<!-- Estilos adicionales -->
+<style>
+    .as-form {
+        max-width: 700px;
+        background: #fff;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .as-form legend {
+        font-weight: bold;
+        padding-bottom: 5px;
+    }
+    .as-form textarea {
+        width: 100%;
+        min-height: 80px;
+    }
+    .submit {
+        display: flex;
+        gap: 10px;
+    }
+</style>
 
-    <!-- Botones -->
-    <p>
-        <button type="submit" class='button'>Guardar</button>
-        <a href='javascript:history.back();' class='button'>Volver</a>
-    </p>
-
-    <!-- Honeypot -->
-    <input type="text" name="honeypot" style="display: none;">
-
-    <div id="as-sede-form-message"></div>
-</form>
 <script>
     document.getElementById("as-sede-form").addEventListener("submit", function(event) {
         event.preventDefault();
@@ -64,7 +107,7 @@
             
             if (data.success && data.sede_id) {
                 // Redirigir a la misma página con el ID de la comisión
-                window.location.href = "<? echo admin_url('admin.php?page=fines-plugin-administrar-sede-page&sede_id='); ?>" + data.sede_id;
+                window.location.href = "<? echo admin_url('admin.php?page=fines-plugin-administrar-sede-page&message=Registro%20realizado%20correctamente&sede_id='); ?>" + data.sede_id;
             }
         })
         .catch(error => console.error("Error:", error));

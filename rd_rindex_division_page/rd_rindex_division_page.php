@@ -27,7 +27,7 @@ function rd_rindex_division_page() {
     ";
     $headers = $wpdb->get_col($wpdb->prepare($query_headers, $pfid));
 
-    $students = wpdbAlumnosConTodasLasCalificacionesAprobadas__By_comisionPfid($wpdb, $pfid)
+    $students = wpdbAlumnosConTodasLasCalificacionesAprobadas__By_comisionPfid($wpdb, $pfid);
 
     $extra_headers = ['Ingreso', 'DNI', 'Cons', 'Cert', 'Part', 'Prev', 'Conf'];
     

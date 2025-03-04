@@ -2,38 +2,81 @@
 
 
 
-<form id="as-domicilio-form" method="POST">
-    <? wp_nonce_field("as_domicilio_form_action", "as_domicilio_form_nonce"); ?>
+<div class="wrap">
+    <h1><?php echo $domicilio_id ? "Editar Domicilio" : "Nuevo Domicilio"; ?></h1>
 
-    <input type="hidden" name="domicilio_id" value="<?= echo esc_attr($domicilio_id); ?>">
-    <input type="hidden" name="sede_id" value="<?= echo esc_attr($sede_id); ?>">
+    <form id="as-domicilio-form" method="POST" class="as-form">
+        <?php wp_nonce_field("as_domicilio_form_action", "as_domicilio_form_nonce"); ?>
 
-    <label for="numero">Calle:</label>
-    <input type="text" id="numero" name="numero" value="<?= echo esc_attr($numero); ?>" required>
+        <input type="hidden" name="domicilio_id" value="<?php echo esc_attr($domicilio_id); ?>">
+        <input type="hidden" name="sede_id" value="<?php echo esc_attr($sede_id); ?>">
 
-    <label for="nombre">Entre:</label>
-    <input type="text" id="nombre" name="nombre" value="<?= echo esc_attr($nombre); ?>" required>
+        <fieldset>
+            <legend>Datos del Domicilio</legend>
+            <table class="form-table">
+                <tr>
+                    <th><label for="calle">Calle:</label></th>
+                    <td><input type="text" id="calle" name="calle" value="<?php echo esc_attr($calle); ?>" required></td>
+                </tr>
 
-    <label for="observaciones">Número:</label>
-    <textarea id="observaciones" name="observaciones"><?= echo esc_textarea($observaciones); ?></textarea>
+                <tr>
+                    <th><label for="entre">Entre calles:</label></th>
+                    <td><input type="text" id="entre" name="entre" value="<?php echo esc_attr($entre); ?>"></td>
+                </tr>
 
-    <label for="barrio">Barrio:</label>
-    <input type="text" id="barrio" name="barrio" value="<?= echo esc_attr($barrio); ?>">
+                <tr>
+                    <th><label for="numero">Número:</label></th>
+                    <td><input type="text" id="numero" name="numero" value="<?php echo esc_attr($numero); ?>" required></td>
+                </tr>
 
-    <label for="localidad">Localidad:</label>
-    <input type="text" id="localidad" name="localidad" value="<?= echo esc_attr($localidad); ?>">
+                <tr>
+                    <th><label for="barrio">Barrio:</label></th>
+                    <td><input type="text" id="barrio" name="barrio" value="<?php echo esc_attr($barrio); ?>"></td>
+                </tr>
 
-    <!-- Botones -->
-    <p>
-        <button type="submit" class='button'>Guardar</button>
-        <a href='javascript:history.back();' class='button'>Volver</a>
-    </p>
+                <tr>
+                    <th><label for="localidad">Localidad:</label></th>
+                    <td><input type="text" id="localidad" name="localidad" value="<?php echo esc_attr($localidad); ?>"></td>
+                </tr>
+            </table>
+        </fieldset>
 
-    <!-- Honeypot -->
-    <input type="text" name="honeypot" style="display: none;">
+        <!-- Botones -->
+        <p class="submit">
+            <button type="submit" class="button button-primary">Guardar</button>
+            <a href="javascript:history.back();" class="button button-secondary">Volver</a>
+        </p>
 
-    <div id="as-domicilio-form-message"></div>
-</form>
+        <!-- Honeypot -->
+        <input type="text" name="honeypot" style="display: none;">
+        <div id="as-domicilio-form-message"></div>
+    </form>
+</div>
+
+<!-- Estilos adicionales -->
+<style>
+    .as-form {
+        max-width: 700px;
+        background: #fff;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .as-form legend {
+        font-weight: bold;
+        padding-bottom: 5px;
+    }
+    .as-form textarea,
+    .as-form input {
+        width: 100%;
+    }
+    .submit {
+        display: flex;
+        gap: 10px;
+    }
+</style>
+
 <script>
     document.getElementById("as-domicilio-form").addEventListener("submit", function(event) {
         event.preventDefault();
@@ -54,7 +97,7 @@
 
             if (data.success && data.sede_id) {
                 // Redirigir a la misma página con el ID de la comisión
-                window.location.href = "<? echo admin_url('admin.php?page=fines-plugin-administrar-sede-page&sede_id='); ?>" + data.sede_id;
+                window.location.href = "<? echo admin_url('admin.php?page=fines-plugin-administrar-sede-page&message=Registro%20realizado%20correctamente&sede_id='); ?>" + data.sede_id;
             }
         })
         .catch(error => console.error("Error:", error));

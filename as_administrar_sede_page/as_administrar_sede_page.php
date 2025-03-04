@@ -2,6 +2,11 @@
 
 function as_administrar_sede_page() {
     $wpdb = fines_plugin_db_connect();
+    $message = !empty($_GET['message']) ? $_GET['message'] : null;
+    if($message){
+        echo "<div class='notice notice-success is-dismissible'><p>{$message}</p></div>";
+    }
+
     $sede = as_init_sede($wpdb);
     as_init_domicilio($wpdb, $sede);
 }
@@ -44,8 +49,8 @@ function as_init_sede($wpdb) {
 
 function as_init_domicilio($wpdb, $sede){
     if($sede){
-
         $domicilio_id = $sede->domicilio ? $sede->domicilio : '';
+        $sede_id = $sede->id;
         $calle = '';
         $entre = '';
         $numero = '';
@@ -57,6 +62,7 @@ function as_init_domicilio($wpdb, $sede){
                 $wpdb->prepare("SELECT * FROM domicilio WHERE id = %s", $sede->domicilio)
             );
 
+            print_r($domicilio);
             if($domicilio){
                 $domicilio_id = $domicilio->id;
                 $calle = $domicilio->calle;

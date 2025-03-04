@@ -1,12 +1,12 @@
 <?php
 
-add_action('wp_ajax_as_sede_form_handle', 'as_sede_form_handle');
-add_action('wp_ajax_nopriv_as_sede_form_handle', 'as_sede_form_handle');
+add_action('wp_ajax_as_domicilio_form_handle', 'as_domicilio_form_handle');
+add_action('wp_ajax_nopriv_as_domicilio_form_handle', 'as_domicilio_form_handle');
 
-function as_sede_form_handle() {
+function as_domicilio_form_handle() {
     $wpdb = fines_plugin_db_connect();
     
-    if (!isset($_POST['as_sede_form_nonce']) || !wp_verify_nonce($_POST['as_sede_form_nonce'], 'as_sede_form_action')) {
+    if (!isset($_POST['as_domicilio_form_nonce']) || !wp_verify_nonce($_POST['as_domicilio_form_nonce'], 'as_domicilio_form_action')) {
         echo json_encode(['success' => false, 'message' => 'Error de seguridad.']);
         die();
     }
@@ -16,59 +16,72 @@ function as_sede_form_handle() {
         die();
     }
     
-    $centro_educativo = sanitize_text_field($_POST['centro_educativo']);
-    $numero = sanitize_text_field($_POST['numero']);
-    $nombre = sanitize_text_field($_POST['nombre']);
-    $observaciones = sanitize_text_field($_POST['observaciones']);
-    $pfid = sanitize_text_field($_POST['pfid']);
-    $pfid_organizacion = sanitize_text_field($_POST['pfid_organizacion']);
-    $domicilio_id = sanitize_text_field($_POST['domicilio']);;
+    $calle = sanitize_or_null_text_field($_POST['calle']);
+    $numero = sanitize_or_null_text_field($_POST['numero']);
+    $entre = sanitize_or_null_text_field($_POST['entre']);
+    $barrio = sanitize_or_null_text_field($_POST['barrio']);
+    $localidad = sanitize_or_null_text_field($_POST['localidad']);
+    $domicilio_id = sanitize_or_null_text_field($_POST['domicilio_id']);
+    $sede_id = sanitize_or_null_text_field($_POST['sede_id']);
 
     $proceso = "";
-    if (empty($sede_id)) {
+    if (empty($domicilio_id)) {
         $proceso = "Inserción";
-        $sede_id = uniqid();
+        $domicilio_id = uniqid();
         $insert_result = $wpdb->insert(
-            'sede',
+            'domicilio',
             [
-                'id' => $sede_id,
-                'centro_educativo' => $centro_educativo,
+                'id' => $domicilio_id,
+                'calle' => $calle,
                 'numero' => $numero,
-                'nombre' => $nombre,
-                'observaciones' => $observaciones,
-                'pfid' => $pfid,
-                'pfid_organizacion' => $pfid_organizacion,
-                'domicilio' => $domicilio_id,
+                'entre' => $entre,
+                'barrio' => $barrio,
+                'localidad' => $localidad,
             ],
-            ['%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s']
+            ['%s', '%s', '%s', '%s', '%s', '%s']
         );
         if(!$insert_result) {
-            echo json_encode(['success' => false, 'message' => 'Error al crear la sede: ' .  $wpdb->last_error]);
+            echo json_encode(['success' => false, 'message' => 'Error al crear domicilio: ' .  $wpdb->last_error]);
             die();
         }
     } else {
         $proceso = "Actualización";
         $update_result = $wpdb->update(
-            'sede',
+            'domicilio',
             [
-                'centro_educativo' => $centro_educativo,
+                'calle' => $calle,
                 'numero' => $numero,
-                'nombre' => $nombre,
-                'observaciones' => $observaciones,
-                'pfid' => $pfid,
-                'pfid_organizacion' => $pfid_organizacion,
-                'domicilio' => $domicilio_id,
+                'entre' => $entre,
+                'barrio' => $barrio,
+                'localidad' => $localidad,
             ],
-            ['id' => $sede_id],
-            ['%s', '%s', '%s', '%s', '%s', '%s', '%s'],
+            ['id' => $domicilio_id],
+            ['%s', '%s', '%s', '%s', '%s'],
             ['%s']
         );
         
         if(!$update_result) {
             if(!empty($wpdb->last_error)){
-                echo json_encode(['success' => false, 'message' => 'Error al actualizar la sede: ' .  $wpdb->last_error]);
+                echo json_encode(['success' => false, 'message' => 'Error al actualizar domicilio: ' .  $wpdb->last_error]);
                 die();
             }
+        }
+    }
+
+    $update_result = $wpdb->update(
+        'sede',
+        [
+            'domicilio' => $domicilio_id,
+        ],
+        ['id' => $sede_id],
+        ['%s'],
+        ['%s']
+    );
+
+    if(!$update_result) {
+        if(!empty($wpdb->last_error)){
+            echo json_encode(['success' => false, 'message' => 'Error al actualizar sede: ' .  $wpdb->last_error]);
+            die();
         }
     }
 
