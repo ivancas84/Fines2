@@ -488,5 +488,43 @@ function wpdbUpdateTableKeyValue__By_id($wpdb, $table, $field, $value, $id, $val
     );
 }
 
+function wpdbIdSedes__By_calendario($wpdb, $idCalendario){
+    $sql =  "
+        SELECT sede.id FROM sede
+        INNER JOIN comision ON (comision.sede = sede.id)
+        WHERE comision.calendario = %s
+        ";
+
+    $wpdb->get_col($wpdb->prepare($sql, $idCalendario));
+}
+
+function wpdbSedes__By_ids($wpdb, $ids, $order_by){
+    $sql =  "
+        SELECT sede.id, sede.nombre, sede.numero, sede.fecha_traspaso,
+        CONCAT(domicilio.calle, ' N° ', domicilio.numero,' e/ ', domicilio.entre, ' ', domicilio.barrio, ' ', domicilio.localidad) AS detalle_domicilio,
+        centro_educativo.nombre AS detalle_centro_educativo
+        FROM sede
+        LEFT JOIN centro_educativo ON (sede.centro_educativo = centro_educativo.id)
+        LEFT JOIN domicilio ON (sede.domicilio = domicilio.id)
+        WHERE sede.id IN (%s)
+        ORDER BY %s
+        ";
+
+    return $wpdb->get_results($wpdb->prepare($sql, implode(",", $ids), $order_by));
+}
+
+function wpdbSedes($wpdb, $order_by){
+    $sql =  "
+        SELECT sede.id, sede.nombre, sede.numero, sede.fecha_traspaso,
+        CONCAT(domicilio.calle, ' N° ', domicilio.numero,' e/ ', domicilio.entre, ' ', domicilio.barrio, ' ', domicilio.localidad) AS detalle_domicilio,
+        centro_educativo.nombre AS detalle_centro_educativo
+        FROM sede
+        LEFT JOIN centro_educativo ON (sede.centro_educativo = centro_educativo.id)
+        LEFT JOIN domicilio ON (sede.domicilio = domicilio.id)
+        ORDER BY %s
+        ";
+
+    return $wpdb->get_results($wpdb->prepare($sql, $order_by));
+}
 
 ?>

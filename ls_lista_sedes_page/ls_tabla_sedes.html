@@ -1,0 +1,30 @@
+<h2>Comisiones Consultadas</h2>
+
+<table class="wp-list-table widefat striped">
+    <thead>
+        <tr>
+            <th>Numero</th>
+            <th>Nombre</th>
+            <th>CENS</th>
+            <th>Fecha Traspaso</th>
+            <th>Domicilio</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <? foreach ($sedes as $sede): ?>
+            <? $detalle_sede_url = admin_url('admin.php?page=fines-plugin-administrar-sede-page&sede_id=' . $sede->id); ?>
+
+            <tr>
+                <td><?= esc_html($sede->numero); ?></td>
+                <td><?= esc_html($sede->nombre); ?></td>
+                <td><?= esc_html($sede->detalle_centro_educativo); ?></td>
+                <td><?= esc_html($sede->fecha_traspaso); ?></td>
+                <td><?= esc_html($sede->detalle_domicilio); ?></td>
+                <td>
+                    <a href="<?= esc_url($detalle_sede_url); ?>" class="button">Detalle</a> 
+                </td>
+            </tr>
+        <? endforeach; ?>
+    </tbody>
+</table>

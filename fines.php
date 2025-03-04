@@ -3,7 +3,7 @@
  * Plugin Name: Fines
  * Plugin URI: https://planfines2.com.ar/
  * Description: Acceso a base de Administración fines
- * Version: 1.0
+ * Version: 2.0
  * Author: Iván Castañeda
  * Author URI: https://planfines2.com.ar/
  * License: GPL2
@@ -62,6 +62,14 @@ function fines_plugin_menu() {
       'ac_administrar_comision_page' // Función que muestra la página del submenu
   );
 
+  add_submenu_page(
+    'fines-plugin', //debe coincidir con el slug del menu
+    'Lista de Sedes', // Título de la página
+    'Lista de Sedes', //Título del menú
+    'edit_posts', // Permisos
+    'fines-plugin-lista-sedes-page',  // Slug del submenú
+    'ls_lista_sedes_page' // Función que muestra la página del submenu
+  );
   add_submenu_page(
     'fines-plugin', //debe coincidir con el slug del menu
     'Administrar Sede', // Título de la página
@@ -171,6 +179,8 @@ include_once plugin_dir_path(__FILE__) . 'includes/queries.php';
 include_once plugin_dir_path(__FILE__) . 'lc_lista_comisiones_page/lc_lista_comisiones_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'lcd_lista_comisiones_direccion_page/lcd_lista_comisiones_direccion_page.php';
+
+include_once plugin_dir_path(__FILE__) . 'ls_lista_sedes_page/ls_lista_sedes_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'la_lista_alumnos_page/la_lista_alumnos_page.php';
 

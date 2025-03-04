@@ -62,7 +62,6 @@ function as_init_domicilio($wpdb, $sede){
                 $wpdb->prepare("SELECT * FROM domicilio WHERE id = %s", $sede->domicilio)
             );
 
-            print_r($domicilio);
             if($domicilio){
                 $domicilio_id = $domicilio->id;
                 $calle = $domicilio->calle;
