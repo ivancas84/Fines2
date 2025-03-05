@@ -84,14 +84,15 @@ function as_init_designaciones($wpdb, $sede) {
         $cargos = $wpdb->get_results("SELECT * FROM cargo ORDER BY descripcion ASC");
         
         $sede_id = $sede->id;
-        $designaciones = $wpdb->get_results(
-            $wpdb->prepare("SELECT * FROM designacion WHERE sede = %s" , $sede_id)
-        );
+        $designaciones = wpdbDesignaciones__By_sede($wpdb, $sede_id);
+
 
         include plugin_dir_path(__FILE__) . 'as_designacion_form.html';
     }
 }
 include plugin_dir_path(__FILE__) . 'as_sede_form_handle.php';
 include plugin_dir_path(__FILE__) . 'as_domicilio_form_handle.php';
+include plugin_dir_path(__FILE__) . 'as_designacion_form_handle.php';
+include plugin_dir_path(__FILE__) . 'as_designacion_delete_handle.php';
 
 ?>

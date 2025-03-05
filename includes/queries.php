@@ -535,4 +535,16 @@ function wpdbSedes($wpdb, $order_by){
     return $wpdb->get_results($wpdb->prepare($sql, $order_by));
 }
 
+function wpdbDesignaciones__By_sede($wpdb, $sede_id){
+    return $wpdb->get_results(
+        $wpdb->prepare("
+            SELECT designacion.*, 
+            persona.nombres, persona.apellidos, persona.telefono, persona.email,
+            cargo.descripcion AS cargo_descripcion
+            FROM designacion
+            INNER JOIN persona ON (designacion.persona = persona.id)
+            INNER JOIN cargo ON (designacion.cargo = cargo.id)
+            WHERE designacion.sede = %s" , $sede_id)
+    );
+}
 ?>
