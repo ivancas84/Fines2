@@ -9,6 +9,7 @@ function as_administrar_sede_page() {
 
     $sede = as_init_sede($wpdb);
     as_init_domicilio($wpdb, $sede);
+    as_init_designaciones($wpdb, $sede);
 }
 
 function as_init_sede($wpdb) {
@@ -74,8 +75,22 @@ function as_init_domicilio($wpdb, $sede){
 
         include plugin_dir_path(__FILE__) . 'as_domicilio_form.html';
     }
+
+
 }
 
+function as_init_designaciones($wpdb, $sede) {
+    if ($sede) {
+        $cargos = $wpdb->get_results("SELECT * FROM cargo ORDER BY descripcion ASC");
+        
+        $sede_id = $sede->id;
+        $designaciones = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM designacion WHERE sede = %s" , $sede_id)
+        );
+
+        include plugin_dir_path(__FILE__) . 'as_designacion_form.html';
+    }
+}
 include plugin_dir_path(__FILE__) . 'as_sede_form_handle.php';
 include plugin_dir_path(__FILE__) . 'as_domicilio_form_handle.php';
 

@@ -87,6 +87,14 @@ function wpdbPersona__By_id($wpdb, $persona_id){
     );
 }
 
+function wpdbPersona__By_numeroDocumento($wpdb, $numero_documento){
+    return $wpdb->get_row(
+        $wpdb->prepare("SELECT *
+                        FROM persona                        
+                        WHERE persona.numero_documento = '{$numero_documento}'")
+    );
+}
+
 function wpdbDetalles__By_idPersona($wpdb, $persona_id){
     return $wpdb->get_results(
         $wpdb->prepare("
