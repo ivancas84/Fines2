@@ -79,6 +79,14 @@ function fines_plugin_menu() {
     'as_administrar_sede_page' // Función que muestra la página del submenu
   );
 
+  add_submenu_page(
+    'fines-plugin', //debe coincidir con el slug del menu
+    'Generar Constancia Vacante', // Título de la página
+    'Generar Constancia Vacante', //Título del menú
+    'edit_posts', // Permisos
+    'fines-plugin-constancia-vacante-page',  // Slug del submenú
+    'cv_constancia_vacante_page' // Función que muestra la página del submenu
+  );
   
 
 
@@ -176,6 +184,8 @@ include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_db_connect.php';
 
 include_once plugin_dir_path(__FILE__) . 'includes/queries.php';
 
+include_once plugin_dir_path(__FILE__) . 'includes/queries_pedidos.php';
+
 include_once plugin_dir_path(__FILE__) . 'lc_lista_comisiones_page/lc_lista_comisiones_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'lcd_lista_comisiones_direccion_page/lcd_lista_comisiones_direccion_page.php';
@@ -205,6 +215,8 @@ include_once plugin_dir_path(__FILE__) . 'bp_buscar_personas_page/bp_buscar_pers
 include_once plugin_dir_path(__FILE__) . 'car_constancia_alumno_regular_page/car_constancia_alumno_regular_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'cp_constancia_pase_page/cp_constancia_pase_page.php';
+
+include_once plugin_dir_path(__FILE__) . 'cv_constancia_vacante_page/cv_constancia_vacante_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'taa_transferir_alumnos_activos_page/taa_transferir_alumnos_activos_page.php';
 

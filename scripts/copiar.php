@@ -1,7 +1,7 @@
 <?php
 echo __FILE__;
 
-require_once 'db_config.php'; // Database credentials (ignored in Git)
+require_once 'includes/db_config.php';
 
 // Connect to the database
 $mysqli = new mysqli($db_host, $db_user, $db_pass, $db_name);

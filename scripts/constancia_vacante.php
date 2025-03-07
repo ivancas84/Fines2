@@ -25,17 +25,13 @@ $actual_month = date('m');
 $actual_unix_timestamp = time();
 $upload_dir = "/wpsc/{$actual_year}/{$actual_month}/";
 $filename = "{$actual_unix_timestamp}_constancia_{$numero_documento}.pdf";
+
 $data = [
-    "calificaciones_aprobadas" => json_decode($_POST["calificaciones_aprobadas"]),
-    "calificaciones_desaprobadas" => json_decode($_POST["calificaciones_desaprobadas"]),
-    "anios_cursados" => $_POST["anios_cursados"],
     "apellidos" => strtoupper($_POST["apellidos"]),
     "nombres" => ucwords(strtolower($_POST["nombres"])),
     "numero_documento" => $_POST["numero_documento"],
-    "resolucion" => $_POST["resolucion"],
     "fecha" => $_POST["fecha"],
     "presentacion" => $_POST["presentacion"],
-    "orientacion" => $_POST["orientacion"],
     "observaciones" => $_POST["observaciones"],
     "filename" => $filename,
     "upload_dir" => $upload_dir,
@@ -43,41 +39,10 @@ $data = [
 ];
 
 
-class ConstanciaPasePDF extends TCPDF {
-    private $qrFile;
-
-    public function setQRFile($qrFile) {
-        $this->qrFile = $qrFile;
-    }
-
-    // Header method: Adds the logo and QR code on every page
-    public function Header() {
-        // Logo
-        $this->Image('./images/logo.jpg', 20, 15, 80, 0, 'JPG');
-
-        // QR Code
-        if (!empty($this->qrFile)) {
-            $this->Image($this->qrFile, 160, 15, 30, 30, 'PNG');
-        }
-
-        // Border Box (ensures it appears on all pages)
-        $this->Rect(10, 10, 190, 277);
-    }
-
-    // Footer method: Adds signatures on every page
-    public function Footer() {
-        $this->SetY(-50); // Position from the bottom
-
-        // Signatures
-        $this->Image('./images/sello_cens.png', 85, 235, 30, 40, 'PNG');
-        $this->Image('./images/firma_director_luis.png', 120, 240, 60, 35, 'PNG');
-    }
-}
-
-function generar_constancia_pase($url, $data) {
+function generar_constancia_vacante($url, $data) {
     global $rutaUploadPedidos;
-
     // Create QR Code
+
     $options = new QROptions([
         'eccLevel' => QRCode::ECC_L,
         'outputType' => QRCode::OUTPUT_IMAGE_PNG,
@@ -85,93 +50,65 @@ function generar_constancia_pase($url, $data) {
     ]);
 
     $qrcode = (new QRCode($options))->render($url);
+
+    // Save the QR Code as a temporary file
     $qrFile = tempnam(sys_get_temp_dir(), 'qr') . '.png';
     file_put_contents($qrFile, base64_decode(str_replace('data:image/png;base64,', '', $qrcode)));
 
     // Create PDF instance
-    $pdf = new ConstanciaPasePDF('P', 'mm', 'A4');
+    $pdf = new TCPDF('L', 'mm', 'A5'); // 'L' for Landscape, 'A5' for A5 paper size
     $pdf->SetCreator(PDF_CREATOR);
     $pdf->SetAuthor('Escuela CENS Nº 462');
-    $pdf->SetTitle('Constancia de Alumno Regular');
-    $pdf->SetMargins(20, 45, 20);
-    $pdf->setPrintHeader(true);
-    $pdf->setPrintFooter(true);
-    $pdf->SetAutoPageBreak(true, 50);
-
-    // Set QR Code for header
-    $pdf->setQRFile($qrFile);
-
+    $pdf->SetTitle('Constancia de Vacante');
+    $pdf->SetMargins(20, 30, 20);
+    $pdf->setPrintHeader(false); // Avoid header line
     $pdf->AddPage();
+    $pdf->Rect(10, 10, 190, 125); // Full-page border
 
+    // Header with logo and QR code
+    $pdf->Image('./images/logo.jpg', 20, 15, 120, 0, 'JPG'); // Logo occupies 2/3
+    $pdf->Image($qrFile, 160, 15, 30, 30, 'PNG'); // QR occupies 1/3
+    $pdf->Ln(15);
+    $pdf->SetAlpha(0.9);
+
+    // Add images at the bottom
+    $pdf->Image('./images/sello_cens.png', 85, 85, 30, 40, 'PNG'); // Bottom Center
+    $pdf->Image('./images/firma_director_luis.png', 120, 90, 60, 35, 'PNG'); // Bottom Right
+
+    $pdf->SetAlpha(1); // Reset transparency
     // Title
     $pdf->SetFont('helvetica', 'B', 14);
-    $pdf->Cell(0, 10, "CONSTANCIA DE PASE", 0, 1, 'C');
+    $pdf->Cell(0, 10, "CONSTANCIA DE VACANTE", 0, 1, 'C');
     $pdf->Ln(5);
 
-    // Content
+    // Justify the content with interlineado
     $pdf->SetFont('helvetica', '', 10);
-    $content = "<p>La Dirección del CENS Nº 462 de La Plata, hace constar por la presente que
-    <strong><u><i>{$data['apellidos']}, {$data['nombres']}</i></u></strong> DNI Nº <strong><u><i>{$data['numero_documento']}</i></u></strong> 
-    ha cursado los años <strong><u><i>{$data['anios_cursados']}</i></u></strong>
-    del <strong><u><i>Programa Fines 2 Trayecto Secundario</i></u></strong> con orientación en <strong><u><i>{$data['orientacion']}</i></u></strong>,
-    resolución <strong><u><i>{$data['resolucion']}</i></u></strong>, bajo el siguiente detalle.</p>";
-
-    $pdf->writeHTMLCell(0, 0, '', '', $content, 0, 1, false, true, 'J');
-    $pdf->Ln(5);
-
-    // Approved Grades Table
-    if (!empty($data["calificaciones_aprobadas"])) {
-        $pdf->SetFont('helvetica', 'B', 12);
-        $pdf->Cell(0, 10, 'Calificaciones Aprobadas', 0, 1);
-        $pdf->SetFont('helvetica', '', 10);
-
-        $pdf->SetFillColor(220, 220, 220);
-        $pdf->Cell(100, 8, 'Asignatura', 1, 0, 'C', true);
-        $pdf->Cell(25, 8, 'Tramo', 1, 0, 'C', true);
-        $pdf->Cell(25, 8, 'Nota', 1, 1, 'C', true);
-
-        foreach ($data["calificaciones_aprobadas"] as $row) {
-            $nota = (round($row->nota_final) != 0) ? round($row->nota_final) : round($row->crec)."c";
-            $pdf->Cell(100, 8, $row->nombre, 1);
-            $pdf->Cell(25, 8, $row->tramo, 1);
-            $pdf->Cell(25, 8, $nota, 1, 1);
-        }
-        $pdf->Ln(5);
-    }
-
-    // Failed Grades Table
-    if (!empty($data["calificaciones_desaprobadas"])) {
-        $pdf->SetFont('helvetica', 'B', 12);
-        $pdf->Cell(0, 10, 'Calificaciones Pendientes', 0, 1);
-        $pdf->SetFont('helvetica', '', 10);
-
-        $pdf->SetFillColor(220, 220, 220);
-        $pdf->Cell(100, 8, 'Asignatura', 1, 0, 'C', true);
-        $pdf->Cell(25, 8, 'Tramo', 1, 1, 'C', true);
-
-        foreach ($data["calificaciones_desaprobadas"] as $row) {
-            $pdf->Cell(100, 8, $row->nombre, 1);
-            $pdf->Cell(25, 8, $row->tramo, 1, 1);
-        }
-    }
-
-    $pdf->Ln(5);
-
-    $content = "<p>Se extiende la presente a pedido del interesado en La Plata el día <strong><u><i>{$data['fecha']}</i></u></strong> para ser presentado ante <strong><u><i>{$data['presentacion']}</i></u></strong>.</p>";
+    $content = "
+    <p>La Dirección del CENS Nº 462 de La Plata, hace constar por la presente que
+    <strong><u><i>&nbsp;&nbsp;&nbsp;{$data['apellidos']}, {$data['nombres']}&nbsp;&nbsp;&nbsp;</i></u></strong> DNI Nº <strong><u><i>&nbsp;&nbsp;&nbsp;{$data['numero_documento']}&nbsp;&nbsp;&nbsp;</i></u></strong> 
+    tiene una vacante en este establecimiento.</p>
+    <p>Se extiende la presente a pedido del interesado en La Plata el día <strong><u><i>&nbsp;&nbsp;&nbsp;{$data['fecha']}&nbsp;&nbsp;&nbsp;</i></u></strong> para ser presentado ante <strong><u><i>&nbsp;&nbsp;&nbsp;{$data['presentacion']}&nbsp;&nbsp;&nbsp;</i></u></strong>.</p>
+    ";
 
     if (!empty($data['observaciones'])) {
-        $content .= "<p>Observaciones:<strong><u><i>{$data['observaciones']}</i></u></strong></p>";
+        $content .= "<p>Observaciones:<strong><u><i>&nbsp;&nbsp;&nbsp;{$data['observaciones']}&nbsp;&nbsp;&nbsp;</i></u></strong></p>";
     }
 
+    // Write the content with justified text and line spacing
     $pdf->writeHTMLCell(0, 0, '', '', $content, 0, 1, false, true, 'J');
 
+    
     // Ensure directories exist
-    if (!file_exists(dirname($rutaUploadPedidos . $data["upload_dir"]))) {
-        mkdir(dirname($rutaUploadPedidos . $data["upload_dir"]), 0777, true);
+    if (!is_dir($rutaUploadPedidos.$data["upload_dir"])) {
+        // Create the directory recursively with proper permissions
+        if (!mkdir($rutaUploadPedidos.$data["upload_dir"], 0777, true)) {
+            echo "Failed to create directory";
+        }
     }
 
     // Save the PDF
-    $pdf->Output($rutaUploadPedidos . $data["save_path"], "F"); // Save to file
+    $pdf->Output($rutaUploadPedidos.$data["save_path"], "F"); // Save to file
+    // Output PDF
     $pdf->Output($data["filename"], "I"); // Display in browser
 
     // Clean up temp QR file
@@ -273,7 +210,7 @@ function insertar_pedido($data){
         ':id' => $ticket_id,
         ':is_active' => 1,
         ':customer' => 450, //corresponde a sistemas
-        ':subject' => "Constancia de pase : " . $data["apellidos"] . ", " . $data["nombres"], //titulo
+        ':subject' => "Constancia de vacante : " . $data["apellidos"] . ", " . $data["nombres"], //titulo
         ':status' => 4, //cerrado
         ':priority' => 1, //baja 
         ':category' => 10, //constancia
@@ -306,24 +243,12 @@ function insertar_pedido($data){
     $threads_body = "La Dirección del CENS 462 de La Plata, hace constar por la presente que ";
     $threads_body .= $data['apellidos'] .    ", ";
     $threads_body .= $data['nombres'] . " DNI N° ";
-    $threads_body .= $data['numero_documento'] . " ha cursado los años ";
-    $threads_body .= $data['anios_cursados'] . " del Programa Fines 2 Trayecto Secundario con orientación en ";
-    $threads_body .= $data['orientacion'] . " resolución ";
-    $threads_body .= $data['resolucion'] . ", aprobando " . count($data['calificaciones_aprobadas']) . " y adeudando " . count($data['calificaciones_desaprobadas']) . " materias.";
+    $threads_body .= $data['numero_documento'] . " tiene una vacante en este establecimiento. ";
     
     if (!empty($data['observaciones'])) {
         $threads_body .= " - " . $data['observaciones']; 
     }
     
-    // Function to convert a number to an ordinal string in Spanish
-    function toOrdinalSpanish($number) {
-        $ordinals = [
-            1 => 'primer', 2 => 'segundo', 3 => 'tercer', 4 => 'cuarto',
-            5 => 'quinto', 6 => 'sexto', 7 => 'séptimo', 8 => 'octavo',
-            9 => 'noveno', 10 => 'décimo'
-        ];
-        return $ordinals[$number] ?? $number . "º";
-    }
     
     // Insert into wpwt_psmsc_threads
     $sql_thread = "INSERT INTO wpwt_psmsc_threads 
@@ -408,7 +333,7 @@ function insertar_pedido($data){
 // Call the function
 try {
     $url = insertar_pedido($data);
-    generar_constancia_pase($url, $data);
+    generar_constancia_vacante($url, $data);
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
 }
