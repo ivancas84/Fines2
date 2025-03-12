@@ -2,6 +2,9 @@
 
 
 function ac_administrar_comision_page() {
+    $message = !empty($_GET['message']) ? $_GET['message'] : null;
+    if($message) echo "<div class='notice notice-success is-dismissible'><p>{$message}</p></div>";
+
     $comision_id = isset($_GET['comision_id']) ? $_GET['comision_id'] : null;
     $wpdb = fines_plugin_db_connect();
 
@@ -49,26 +52,24 @@ function ac_administrar_comision_page() {
             $observaciones = $comision->observaciones;
             $division = $comision->division;
 
-            ac_init_cursos($wpdb, $comision);
+            include plugin_dir_path(__FILE__) . 'ac_comision_form.html';
 
+            ac_init_cursos($wpdb, $comision->id);
         }
+        
+    } else {
+        include plugin_dir_path(__FILE__) . 'ac_comision_form.html';
     } 
 
-    include plugin_dir_path(__FILE__) . 'ac_comision_form.html';
 
 }
 
-function ac_init_cursos($wpdb, $sede) {
-    if ($sede) {
-        $cargos = $wpdb->get_results("SELECT * FROM cargo ORDER BY descripcion ASC");
-        
-        $sede_id = $sede->id;
-        $designaciones = $wpdb->get_results(
-            $wpdb->prepare("SELECT * FROM designacion WHERE sede = %s" , $sede_id)
-        );
-
-        include plugin_dir_path(__FILE__) . 'as_designacion_form.html';
-    }
+function ac_init_cursos($wpdb, $comision_id) {
+    $cursos = wpdbCursos__By_comision($wpdb, $comision_id);
+    if($cursos)
+        include plugin_dir_path(__FILE__) . 'ac_curso_table_form.html';
+    else 
+        echo "<p>No hay cursos para mostrar de la comisión</p>";
 }
 
 include plugin_dir_path(__FILE__) . 'ac_comision_form_handle.php';

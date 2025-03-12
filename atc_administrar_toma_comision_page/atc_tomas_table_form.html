@@ -1,0 +1,103 @@
+<h2>Tomas de Posesión</h2>
+
+<table border="1">
+    <tr>
+        <th>Fecha</th>
+        <th>Asignatura</th>
+        <th>Estado</th>
+        <th>Movimiento</th>
+        <th>Contralor</th>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>DNI</th>
+        <th>Teléfono</th>
+        <th>Email</th>
+        <th>Email ABC</th>
+        <th>Calificacion</th>
+        <th>Confirmada</th>
+        <th>Modificar</th>
+        <th>Eliminar</th>
+    </tr>
+    <?php foreach ($tomas as $index => $toma): ?>
+        <tr>
+            <form method="post" action="admin-post.php">
+                <input type="hidden" name="action" value="atc_toma_modify">
+                <?php wp_nonce_field("atc_toma_modify_action", "atc_toma_modify_nonce"); ?>
+                <input type="hidden" name="comision_id" value="<?= esc_attr($comision_id) ?>">
+                <input type="hidden" name="toma_id" value="<?= esc_attr($toma->id) ?>">
+
+                <td><input type="date" name="fecha_toma" value="<?= esc_attr($toma->fecha_toma) ?>"></td>
+                <td><input type="text" name="estado" value="<?= esc_attr($toma->estado) ?>"></td>
+                <td><input type="text" name="tipo_movimiento" value="<?= esc_attr($toma->tipo_movimiento) ?>"></td>
+                <td><input type="text" name="estado_contralor" value="<?= esc_attr($toma->estado_contralor) ?>"></td>
+                <td><?= esc_html($toma->asignatura_detalle) ?></td>
+                <td><?= esc_html($toma->nombres) ?></td>
+                <td><?= esc_html($toma->apellidos) ?></td>
+                <td><?= esc_html($toma->numero_documento) ?></td>
+                <td><?= esc_html($toma->telefono) ?></td>
+                <td><?= esc_html($toma->email) ?></td>
+                <td><?= esc_html($toma->email_abc) ?></td>
+                <td>
+                    <input type="checkbox" name="calificacion" value="1" <?= $toma->calificacion ? 'checked' : '' ?>>
+                </td>
+                <td>
+                    <input type="checkbox" name="confirmada" value="1" <?= $toma->confirmada ? 'checked' : '' ?>>
+                </td>
+                <td>
+                    <button type="submit">Guardar</button>
+                </td>
+            </form>
+            <td>
+                <form method="post" action="admin-post.php">
+                    <input type="hidden" name="action" value="atc_toma_delete">
+                    <?php wp_nonce_field("atc_toma_delete_action", "atc_toma_delete_nonce"); ?>
+                    <input type="hidden" name="toma_id" value="<?= esc_attr($toma->id) ?>">
+                    <button type="submit">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+</table>
+
+
+<h3>Añadir Toma</h3>
+<form method="post" action="admin-post.php">
+    <? wp_nonce_field("ac_curso_add_action", "atc_toma_add_nonce"); ?>    
+    <input type="hidden" name="action" value="atc_toma_add">
+    <input type="hidden" name="comision_id" value="<?= esc_attr($comision_id) ?>">
+
+    <input type="date" name="fecha_toma" required>
+    
+    <label>Estado:</label>
+    <select name="estado" id="estado">
+        <?php foreach ($estados as $estado): ?>
+            <option value="<?php echo esc_attr($estado); ?>">
+                <?php echo esc_html($estado); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <label>Contralor:</label>
+    <select name="estado_contralor" id="estado_contralor">
+        <?php foreach ($estados_contralor as $estado_contralor): ?>
+            <option value="<?php echo esc_attr($estado_contralor); ?>">
+                <?php echo esc_html($estado_contralor); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <label>Movimiento:</label>
+    <select name="tipo_movimiento" id="tipo_movimiento">
+        <?php foreach ($movimientos as $movimiento): ?>
+            <option value="<?php echo esc_attr($movimiento); ?>">
+                <?php echo esc_html($movimiento); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+
+    <label>DNI:</label>
+    <input type="text" name="numero_documento" required>
+
+    <input type="text" name="honeypot" style="display: none;">
+    <button type="submit">Agregar</button>
+</form>

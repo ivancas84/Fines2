@@ -105,6 +105,8 @@ function analizarDirectorio($ruta) {
     } else {
         echo "📄 Año ingreso no definido, manteniendo valor existente: $anioIngresoExistente \n";
         $confirmadoDireccion = $confirmadoDireccionExistente;
+        if($confirmadoDireccion == null)
+            $confirmadoDireccion = 0;
         $anioIngreso = $anioIngresoExistente; // Mantiene el valor en la DB si ya existía
         $estadoInscripcion = $estadoInscripcionExistente; // Mantiene el valor en la DB si ya existía
 

@@ -17,19 +17,19 @@ function bp_buscar_personas_page() {
 
     if (isset($_GET['submit']) && !empty($_GET['search'])) {
             $sql = "
-                SELECT * FROM persona 
-                WHERE apellidos LIKE '%$search%' 
-                OR nombres LIKE '%$search%'
-                OR numero_documento LIKE '%$search%'
-                OR telefono LIKE '%$search%'
-                OR email LIKE '%$search%'
-                OR email_abc LIKE '%$search%'";
+                    SELECT * FROM persona 
+                    WHERE lower(apellidos)  LIKE lower(%s) 
+                    OR lower(nombres) LIKE lower(%s)
+                    OR lower(numero_documento) LIKE lower(%s)
+                    OR lower(telefono) LIKE lower(%s)
+                    OR lower(email) LIKE lower(%s)
+                    OR lower(email_abc) LIKE lower(%s)";
 
             // Append order by clause
             $sql .= " ORDER BY " . esc_sql($selected_order);
 
             // Execute query
-            $personas  = $wpdb->get_results($wpdb->prepare($sql));
+            $personas  = $wpdb->get_results($wpdb->prepare($sql, "%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%", "%".$search."%"));
 
             if ($personas ) {
                 include plugin_dir_path(__FILE__) . 'bp_tabla_personas.html';

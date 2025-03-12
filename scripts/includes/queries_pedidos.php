@@ -14,6 +14,16 @@ function getNextFieldName($pdo, $table, $fieldName) {
     return $stmt->fetchColumn();
 }
 
+// Function to convert a number to an ordinal string in Spanish
+function toOrdinalSpanish($number) {
+    $ordinals = [
+        1 => 'primer', 2 => 'segundo', 3 => 'tercer', 4 => 'cuarto',
+        5 => 'quinto', 6 => 'sexto', 7 => 'séptimo', 8 => 'octavo',
+        9 => 'noveno', 10 => 'décimo'
+    ];
+    return $ordinals[$number] ?? $number . "º";
+}
+
 function pdoInsertarPedido($data){
     global $pdo_pedidos;
     

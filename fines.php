@@ -3,7 +3,7 @@
  * Plugin Name: Fines
  * Plugin URI: https://planfines2.com.ar/
  * Description: Acceso a base de Administración fines
- * Version: 2.0
+ * Version: 4.0
  * Author: Iván Castañeda
  * Author URI: https://planfines2.com.ar/
  * License: GPL2
@@ -122,29 +122,29 @@ function fines_plugin_menu() {
       'fines-plugin-comisiones-siguientes-semestre', 
         'fines_plugin_comisiones_siguientes_semestre');
 
-      add_submenu_page(
-        null, 
-        'Rindex división',
-        'Rindex división', 
-        'edit_posts', 
-        'fines-plugin-rindex-division-page', 
-        'rd_rindex_division_page');
+    add_submenu_page(
+      null, 
+      'Rindex división',
+      'Rindex división', 
+      'edit_posts', 
+      'fines-plugin-rindex-division-page', 
+      'rd_rindex_division_page');
 
-        add_submenu_page(
-          null, 
-          'Informe alumnos división',
-          'Informe alumnos división', 
-          'edit_posts', 
-          'fines-plugin-detalle-persona-division-page', 
-          'dpd_detalle_persona_division_page');
+    add_submenu_page(
+      null, 
+      'Informe alumnos división',
+      'Informe alumnos división', 
+      'edit_posts', 
+      'fines-plugin-detalle-persona-division-page', 
+      'dpd_detalle_persona_division_page');
 
-          add_submenu_page(
-            null, 
-            'Rindex división dirección',
-            'Rindex división dirección', 
-            'edit_posts', 
-            'fines-plugin-rindex-division-direccion-page', 
-            'rdd_rindex_division_direccion_page');
+    add_submenu_page(
+      null, 
+      'Rindex división dirección',
+      'Rindex división dirección', 
+      'edit_posts', 
+      'fines-plugin-rindex-division-direccion-page', 
+      'rdd_rindex_division_direccion_page');
 
     add_submenu_page(
       null, 
@@ -157,12 +157,23 @@ function fines_plugin_menu() {
 
     add_submenu_page(
       null, 
-      'Constancia de Pase',
-      'Constancia de Pase', 
+      'Administrar Tomas de Comisión',
+      'Administrar Tomas de Comision', 
       'edit_posts', 
       'fines-plugin-constancia-pase-page', 
       'cp_constancia_pase_page'
     );
+
+    add_submenu_page(
+      null, 
+      'Constancia de Pase',
+      'Constancia de Pase', 
+      'edit_posts', 
+      'fines-plugin-administrar-toma-comision', 
+      'atc_administrar_toma_comision_page'
+    );
+
+    
 
 
     add_submenu_page(
@@ -183,8 +194,6 @@ include_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_db_connect.php';
 
 include_once plugin_dir_path(__FILE__) . 'includes/queries.php';
-
-include_once plugin_dir_path(__FILE__) . 'includes/queries_pedidos.php';
 
 include_once plugin_dir_path(__FILE__) . 'lc_lista_comisiones_page/lc_lista_comisiones_page.php';
 
@@ -220,3 +229,4 @@ include_once plugin_dir_path(__FILE__) . 'cv_constancia_vacante_page/cv_constanc
 
 include_once plugin_dir_path(__FILE__) . 'taa_transferir_alumnos_activos_page/taa_transferir_alumnos_activos_page.php';
 
+include_once plugin_dir_path(__FILE__) . 'atc_administrar_toma_comision_page/atc_administrar_toma_comision_page.php';

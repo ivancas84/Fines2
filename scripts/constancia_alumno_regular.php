@@ -131,16 +131,6 @@ function generar_constancia_alumno_regular($url, $data) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
 // Call the function
 try {
     $url = pdoInsertarPedido($data);

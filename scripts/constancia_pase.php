@@ -42,6 +42,18 @@ $data = [
     "save_path" => $upload_dir."/".$filename
 ];
 
+$data["body"] = "La Dirección del CENS 462 de La Plata, hace constar por la presente que ";
+$data["body"] .= $data['apellidos'] .    ", ";
+$data["body"] .= $data['nombres'] . " DNI N° ";
+$data["body"] .= $data['numero_documento'] . " ha cursado los años ";
+$data["body"] .= $data['anios_cursados'] . " del Programa Fines 2 Trayecto Secundario con orientación en ";
+$data["body"] .= $data['orientacion'] . " resolución ";
+$data["body"] .= $data['resolucion'] . ", aprobando " . count($data['calificaciones_aprobadas']) . " y adeudando " . count($data['calificaciones_desaprobadas']) . " materias.";
+
+if (!empty($data['observaciones'])) {
+    $data["body"] .= " - " . $data['observaciones']; 
+}
+
 
 class ConstanciaPasePDF extends TCPDF {
     private $qrFile;
@@ -303,27 +315,8 @@ function insertar_pedido($data){
         'misc'=> "", //longtext
     ]);
 
-    $threads_body = "La Dirección del CENS 462 de La Plata, hace constar por la presente que ";
-    $threads_body .= $data['apellidos'] .    ", ";
-    $threads_body .= $data['nombres'] . " DNI N° ";
-    $threads_body .= $data['numero_documento'] . " ha cursado los años ";
-    $threads_body .= $data['anios_cursados'] . " del Programa Fines 2 Trayecto Secundario con orientación en ";
-    $threads_body .= $data['orientacion'] . " resolución ";
-    $threads_body .= $data['resolucion'] . ", aprobando " . count($data['calificaciones_aprobadas']) . " y adeudando " . count($data['calificaciones_desaprobadas']) . " materias.";
+   
     
-    if (!empty($data['observaciones'])) {
-        $threads_body .= " - " . $data['observaciones']; 
-    }
-    
-    // Function to convert a number to an ordinal string in Spanish
-    function toOrdinalSpanish($number) {
-        $ordinals = [
-            1 => 'primer', 2 => 'segundo', 3 => 'tercer', 4 => 'cuarto',
-            5 => 'quinto', 6 => 'sexto', 7 => 'séptimo', 8 => 'octavo',
-            9 => 'noveno', 10 => 'décimo'
-        ];
-        return $ordinals[$number] ?? $number . "º";
-    }
     
     // Insert into wpwt_psmsc_threads
     $sql_thread = "INSERT INTO wpwt_psmsc_threads 
@@ -368,7 +361,7 @@ function insertar_pedido($data){
         ':is_active' => 1,
         ':customer' => 450, //corresponde a sistemas
         ':type' => "report",
-        ':body' => $threads_body,
+        ':body' => $data["body"],
         ':attachments' => $attachment_id, 
         ':ip_address' => "",
         ':source' => "",

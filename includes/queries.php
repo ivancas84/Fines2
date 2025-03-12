@@ -547,4 +547,101 @@ function wpdbDesignaciones__By_sede($wpdb, $sede_id){
             WHERE designacion.sede = %s" , $sede_id)
     );
 }
+
+function wpdbEstadosToma($wpdb){
+    return $wpdb->get_col(
+        $wpdb->prepare("
+            SELECT DISTINCT estado FROM toma;
+        ")
+    );
+}
+
+function wpdbEstadosContralorToma($wpdb){
+    return $wpdb->get_col(
+        $wpdb->prepare("
+            SELECT DISTINCT estado_contralor FROM toma;
+        ")
+    );
+}
+
+function wpdbMovimientosToma($wpdb){
+    return $wpdb->get_col(
+        $wpdb->prepare("
+            SELECT DISTINCT tipo_movimiento FROM toma;
+        ")
+    );
+}
+
+function wpdbTomas__By_comision($wpdb, $comision_id){
+    return $wpdb->get_results(
+        $wpdb->prepare("
+            SELECT toma.*, 
+            persona.nombres, persona.apellidos, persona.telefono, persona.email, persona.email_abc, persona.numero_documento,
+            CONCAT(asignatura.nombre, ' ', asignatura.codigo) AS asignatura_detalle
+            FROM toma
+            INNER JOIN curso ON (toma.curso = curso.id)
+            INNER JOIN disposicion ON (curso.disposicion = disposicion.id)
+            INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id)
+            INNER JOIN persona ON (toma.docente = persona.id)
+            WHERE curso.comision = %s" , $comision_id)
+    );
+}
+
+function wpdbCursos__By_comision($wpdb, $comision_id){
+    return $wpdb->get_results(
+        $wpdb->prepare("
+            SELECT curso.*, 
+            CONCAT(asignatura.nombre, ' ', asignatura.codigo) AS asignatura_detalle 
+            FROM curso 
+            INNER JOIN disposicion ON (curso.disposicion = disposicion.id) 
+            INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id) 
+            LEFT JOIN ( 
+                SELECT toma.curso, persona.nombres, persona.apellidos, persona.numero_documento 
+                FROM toma 
+                INNER JOIN curso ON (toma.curso = curso.id) 
+                INNER JOIN persona ON (toma.docente = persona.id) 
+                WHERE estado = 'Aprobada' AND estado_contralor != 'Modificar' 
+                AND curso.comision = %s ) AS toma_activa ON (curso.id = toma_activa.curso) 
+                WHERE curso.comision = %s;" , $comision_id, $comision_id
+        )
+    );
+}
+
+function wpdbComision__By_id($wpdb, $comision_id){
+    return $wpdb->get_row(
+        $wpdb->prepare("
+            SELECT
+                comision.id as comision_id,
+                comision.autorizada, comision.apertura, comision.publicada, comision.turno,
+                comision.pfid,
+                sede.id as sede_id,
+                sede.nombre,
+                CONCAT(
+                    'Calle ', COALESCE(domicilio.calle, '-'), ' ',
+                    'e/ ', COALESCE(domicilio.entre, '-'), ', ',
+                    'N° ', COALESCE(domicilio.numero, '-'), ', ',
+                    COALESCE(domicilio.barrio, '-'), ', ',
+                    COALESCE(domicilio.localidad, '-')
+                ) AS domicilio_detalle,
+                CONCAT(planificacion.anio,'°',planificacion.semestre,'C') AS tramo,
+                plan.orientacion, plan.resolucion,
+                GROUP_CONCAT(
+                    DISTINCT '* ', persona.nombres, ' ',
+                    COALESCE(persona.apellidos, '-'), ' ',
+                    COALESCE(persona.telefono, '-'), ' ',
+                    COALESCE(persona.email, '-') 
+                    SEPARATOR '<br/>'
+                ) AS referentes
+            FROM comision     
+            INNER JOIN sede ON comision.sede = sede.id
+            LEFT JOIN domicilio ON sede.domicilio = domicilio.id
+            INNER JOIN planificacion ON comision.planificacion = planificacion.id
+            INNER JOIN plan ON planificacion.plan = plan.id
+            LEFT JOIN designacion ON comision.sede = designacion.sede AND designacion.cargo = 1 AND designacion.hasta IS NULL
+            LEFT JOIN persona ON designacion.persona = persona.id
+            WHERE comision.id = %s
+            GROUP BY comision.id" , $comision_id
+        )
+    );
+}
 ?>
