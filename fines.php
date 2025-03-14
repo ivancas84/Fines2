@@ -157,6 +157,15 @@ function fines_plugin_menu() {
 
     add_submenu_page(
       null, 
+      'Constancia de certificado de título en trámite completo',
+      'Constancia de certificado de título en trámite completo', 
+      'edit_posts', 
+      'fines-plugin-constancia-certificado-completo-page', 
+      'ccc_constancia_certificado_completo_page'
+    );
+
+    add_submenu_page(
+      null, 
       'Administrar Tomas de Comisión',
       'Administrar Tomas de Comision', 
       'edit_posts', 
@@ -224,6 +233,8 @@ include_once plugin_dir_path(__FILE__) . 'bp_buscar_personas_page/bp_buscar_pers
 include_once plugin_dir_path(__FILE__) . 'car_constancia_alumno_regular_page/car_constancia_alumno_regular_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'cp_constancia_pase_page/cp_constancia_pase_page.php';
+
+include_once plugin_dir_path(__FILE__) . 'ccc_constancia_certificado_completo_page/ccc_constancia_certificado_completo_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'cv_constancia_vacante_page/cv_constancia_vacante_page.php';
 

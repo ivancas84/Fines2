@@ -66,7 +66,7 @@ function ap_administrar_persona_page() {
             echo "<ul>";
             echo '<li><a class="btn" href="' . admin_url('admin.php?page=fines-plugin-constancia-alumno-regular-page&id_persona=' . $persona->id) . '" class="btn">Constancia de Alumno Regular</a></li>';
             echo '<li><a class="btn" href="' . admin_url('admin.php?page=fines-plugin-constancia-pase-page&id_persona=' . $persona->id) . '" class="btn">Constancia de Pase</a></li>';
-
+            echo '<li><a class="btn" href="' . admin_url('admin.php?page=fines-plugin-constancia-certificado-completo-page&id_persona=' . $persona->id) . '" class="btn">Constancia de Certificado Completo</a></li>';
             echo "</ul>";
 
             $alumno_id = $alumno->id;
