@@ -1,0 +1,30 @@
+<h2>Lista de Comisiones Autorizadas para tomar posesión</h2>
+
+<table class="wp-list-table widefat striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Domicilio</th>
+            <th>PFID</th>
+            <th>Asignatura</th>
+            <th>Horario</th>
+            <th>Toma Posesión</th>
+        </tr>
+    </thead>
+    <tbody>
+        <? foreach ($cursos as $curso): ?>
+            <?  $formulario_toma_url = esc_url('https://planfines2.com.ar/wp/toma-de-posesion/?comision=' . rawurlencode($curso->comision_pfid . ' ' . $curso->asignatura_codigo));  ?>
+
+            <tr>
+                <td><?= esc_html($curso->sede_nombre); ?></td>
+                <td><?= esc_html($curso->domicilio_detalle); ?></td>
+                <td><?= esc_html($curso->comision_pfid); ?></td>
+                <td><?= esc_html($curso->asignatura_detalle); ?></td>
+                <td><?= esc_html($curso->descripcion_horario); ?></td>
+                <td>
+                    <a href="<?= esc_url($formulario_toma_url); ?>" class="button">Tomar</a> 
+                </td>
+            </tr>
+        <? endforeach; ?>
+    </tbody>
+</table>

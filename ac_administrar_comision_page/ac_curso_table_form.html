@@ -3,11 +3,13 @@
 <table border="1">
     <tr>
         <th>Asignatura</th>
+        <th>Horario</th>
         <th>Acciones</th>
     </tr>
     <?php foreach ($cursos as $curso): ?>
         <tr>
             <td><?= esc_html($curso->asignatura_detalle) ?></td>
+            <td><?= esc_html($curso->descripcion_horario) ?></td>
             <td>
                 <form method="post" action="admin-post.php">
                     <input type="hidden" name="action" value="ac_curso_delete">

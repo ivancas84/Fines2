@@ -66,6 +66,7 @@ function ac_administrar_comision_page() {
 
 function ac_init_cursos($wpdb, $comision_id) {
     $cursos = wpdbCursos__By_comision($wpdb, $comision_id);
+    print_r($cursos);
     if($cursos)
         include plugin_dir_path(__FILE__) . 'ac_curso_table_form.html';
     else 

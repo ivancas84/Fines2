@@ -60,6 +60,18 @@ function wpdbComisiones_autorizadas__By_calendario__Without_tramo32($wpdb, $idCa
 			"));
 }
 
+function wpdbComisiones_autorizadas_publicadas__By_calendario($wpdb, $idCalendario){
+    return $wpdb->get_results($wpdb->prepare("SELECT
+        comision.*, CONCAT(planificacion.anio,planificacion.semestre) as tramo, planificacion.plan
+        FROM comision     
+        INNER JOIN planificacion ON comision.planificacion = planificacion.id
+        WHERE comision.calendario = '$idCalendario'
+        AND comision.autorizada = true
+"));
+
+
+}
+
 function wpdbAlumnosComision__By_calendario__With_ComisionAutorizada__Without_tramo32($wpdb, $idCalendario){
 	return $wpdb->get_results($wpdb->prepare("
             SELECT * FROM alumno_comision
@@ -603,6 +615,34 @@ function wpdbCursos__By_comision($wpdb, $comision_id){
                 WHERE estado = 'Aprobada' AND estado_contralor != 'Modificar' 
                 AND curso.comision = %s ) AS toma_activa ON (curso.id = toma_activa.curso) 
                 WHERE curso.comision = %s;" , $comision_id, $comision_id
+        )
+    );
+}
+
+function wpdbCursos_autorizados_publicados__By_calendario($wpdb, $comision_id){
+    return $wpdb->get_results(
+        $wpdb->prepare("
+            SELECT curso.*, 
+            CONCAT(asignatura.nombre, ' ', asignatura.codigo) AS asignatura_detalle,
+            comision.pfid AS comision_pfid,
+            asignatura.codigo AS asignatura_codigo,
+            sede.nombre AS sede_nombre,
+            CONCAT(
+                'Calle ', COALESCE(domicilio.calle, '-'), ' ',
+                'e/ ', COALESCE(domicilio.entre, '-'), ', ',
+                'N° ', COALESCE(domicilio.numero, '-'), ', ',
+                COALESCE(domicilio.barrio, '-'), ', ',
+                COALESCE(domicilio.localidad, '-')
+            ) AS domicilio_detalle
+            FROM curso 
+            INNER JOIN disposicion ON (curso.disposicion = disposicion.id) 
+            INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id) 
+            INNER JOIN comision ON (comision.id = curso.comision)
+            INNER JOIN sede ON (sede.id = comision.sede)
+            INNER JOIN domicilio ON (domicilio.id = sede.domicilio)
+            WHERE comision.autorizada = true 
+            AND comision.publicada = true 
+            AND comision.calendario = %s;" , $comision_id
         )
     );
 }

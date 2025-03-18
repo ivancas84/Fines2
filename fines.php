@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 function register_fines_shortcodes() {
   add_shortcode('fines_lista_comisiones', 'lcd_lista_comisiones_direccion_page');
   add_shortcode('fines_rindex_division', 'rdd_rindex_division_direccion_page');
-
+  add_shortcode('fines_toma_posesion', 'tp_toma_posesion_page');
 }
 add_action('init', 'register_fines_shortcodes');
 
@@ -88,6 +88,14 @@ function fines_plugin_menu() {
     'cv_constancia_vacante_page' // Función que muestra la página del submenu
   );
   
+  add_submenu_page(
+    'fines-plugin', 
+    'Procesar Docentes PF',
+    'Procesar Docentes PF', 
+    'edit_posts', 
+    'fines-plugin-procesar-docentes-pf-page', 
+    'pfpd_procesar_docentes_pf_page'
+  );
 
 
     add_submenu_page(
@@ -145,6 +153,14 @@ function fines_plugin_menu() {
       'edit_posts', 
       'fines-plugin-rindex-division-direccion-page', 
       'rdd_rindex_division_direccion_page');
+
+    add_submenu_page(
+      null, 
+      'Toma de Posesión',
+      'Toma de Posesión', 
+      'edit_posts', 
+      'fines-plugin-toma-posesion-page', 
+      'tp_toma_posesion_page');
 
     add_submenu_page(
       null, 
@@ -241,3 +257,7 @@ include_once plugin_dir_path(__FILE__) . 'cv_constancia_vacante_page/cv_constanc
 include_once plugin_dir_path(__FILE__) . 'taa_transferir_alumnos_activos_page/taa_transferir_alumnos_activos_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'atc_administrar_toma_comision_page/atc_administrar_toma_comision_page.php';
+
+include_once plugin_dir_path(__FILE__) . 'pfpd_procesar_docentes_pf_page/pfpd_procesar_docentes_pf_page.php';
+
+include_once plugin_dir_path(__FILE__) . 'tp_toma_posesion_page/tp_toma_posesion_page.php';
