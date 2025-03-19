@@ -8,6 +8,8 @@ function ac_administrar_comision_page() {
     $comision_id = isset($_GET['comision_id']) ? $_GET['comision_id'] : null;
     $wpdb = fines_plugin_db_connect();
 
+    $disposiciones = wpdbDisposiciones($wpdb);
+    print_r($disposiciones);
     $calendarios = $wpdb->get_results("SELECT id, anio, semestre, descripcion FROM calendario ORDER BY anio DESC, semestre DESC");
     $sedes = $wpdb->get_results("SELECT * FROM sede WHERE centro_educativo = '6047d36d50316'  ORDER BY nombre ASC");
     $modalidades = $wpdb->get_results("SELECT * FROM modalidad ORDER BY nombre ASC");
@@ -66,7 +68,6 @@ function ac_administrar_comision_page() {
 
 function ac_init_cursos($wpdb, $comision_id) {
     $cursos = wpdbCursos__By_comision($wpdb, $comision_id);
-    print_r($cursos);
     if($cursos)
         include plugin_dir_path(__FILE__) . 'ac_curso_table_form.html';
     else 

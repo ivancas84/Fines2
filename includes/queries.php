@@ -684,4 +684,29 @@ function wpdbComision__By_id($wpdb, $comision_id){
         )
     );
 }
+
+function wpdbDisposiciones($wpdb){
+    return $wpdb->get_results(
+        $wpdb->prepare("
+            SELECT disposicion.id, 
+                CONCAT(
+                    asignatura.nombre, ' ', 
+                    planificacion.anio, '/', planificacion.semestre, ' ', plan.resolucion, ' ', 
+                    UPPER(
+                        CONCAT( 
+                            LEFT(SUBSTRING_INDEX(plan.orientacion, ' ', 1), 1), 
+                            LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(plan.orientacion, ' ', -2), ' ', 1), 1),
+                            LEFT(SUBSTRING_INDEX(plan.orientacion, ' ', -1), 1) 
+                        )
+                    )) AS Label 
+                    FROM disposicion 
+                    INNER JOIN asignatura ON asignatura.id = disposicion.asignatura 
+                    INNER JOIN planificacion ON planificacion.id = disposicion.planificacion 
+                    INNER JOIN plan ON plan.id = planificacion.plan 
+                    WHERE plan.id IN ('202303101', '202303102', '4', '5') 
+                    ORDER BY asignatura.nombre, planificacion.anio, planificacion.semestre, plan.resolucion, plan.orientacion ASC;
+        
+        ")
+    );
+}
 ?>
