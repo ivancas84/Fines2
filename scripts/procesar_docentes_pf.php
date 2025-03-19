@@ -7,14 +7,15 @@ require_once 'includes/queries_fines.php';
 
 
 
-$pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
+$pdo = new PDO("mysql:host=$db_host;dbname=$db_name;", $db_user, $db_pass, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 ]);
+$pdo->exec("SET NAMES 'utf8mb3'");
 
 
 // Path to your JSON file
-$jsonFile = $rutaBase . '/data.json';
+$jsonFile = $rutaBase . '/data2.json';
 
 // Check if the file exists
 if (!file_exists($jsonFile)) {
@@ -23,6 +24,7 @@ if (!file_exists($jsonFile)) {
 
 // Read the file contents
 $dataJson = file_get_contents($jsonFile);
+$dataJson = mb_convert_encoding($dataJson, 'UTF-8', 'auto');
 
 
 
@@ -47,6 +49,14 @@ if(empty($id_calendario)) {
 foreach ($data as $persona) {
     echo "******************************<br>";
     print_r($persona);
+
+    // Convertir caracteres a utf8mb3
+    foreach ($persona as $key => $value) {
+        if (is_string($value)) {
+            $persona[$key] = mb_convert_encoding($value, 'UTF-8', 'auto');
+        }
+    }
+
     // Check if the person exists
     $stmt = $pdo->prepare("SELECT * FROM persona WHERE numero_documento = ?");
     $stmt->execute([$persona['numero_documento']]);
@@ -56,7 +66,6 @@ foreach ($data as $persona) {
     $fecha_nacimiento = $date->format('Y-m-d'); // Converts to 'YYYY-MM-DD' format
     $email_abc = !empty(trim($persona["email_abc"])) ? trim($persona["email_abc"]) : null;
 
-    if(is_null($email_abc)) echo "Es null email abc<br>";
     if ($result) {
 
         $id_persona = $result["id"];
@@ -74,11 +83,8 @@ foreach ($data as $persona) {
             $persona['telefono'], $email_abc, $persona['numero_documento']
         ]);
 
-        if ($update) {
-            echo "Persona actualizada.". "<br/>";
-        } else {
-            echo "Persona no actualizada (mismos valores)<br/>";
-        }
+        echo $update ? "Persona actualizada.<br/>" : "Persona no actualizada (mismos valores)<br/>";
+
     } else {
         $id_persona = uniqid();
         // Insert new person
@@ -92,13 +98,9 @@ foreach ($data as $persona) {
             $persona['anio_nacimiento'], $fecha_nacimiento, $persona['telefono'], $email_abc
         ]);
 
-        if ($insert) {
-            echo "Se ha insertado la persona<br/>";
-        }
+        echo $insert ? "Se ha insertado la persona<br/>" : "Error al insertar la persona.<br/>";
+
     }
-
-
-
 
     if(empty($pfidComisiones)) continue;
 
@@ -109,10 +111,11 @@ foreach ($data as $persona) {
 
             if(!$id_curso){
                 echo "No existe curso<br>";
-                die();
+                continue;
             }
 
             $toma = pdoFines_tomaActiva__By_comisionPfid_asignaturaCodigo_calendario($pdo, $cargo["comision"], $cargo["codigo"], $id_calendario);
+            
             if(!$toma) {
                 echo "No existe toma de posesion en el cargo<br>";
                 $id_toma = uniqid();
@@ -129,29 +132,15 @@ foreach ($data as $persona) {
                     $id_curso, $id_persona
                 ]);
         
-                if ($insert) {
-                    echo "Se ha insertado la toma<br/>";
-                }  else {
-                    $errorInfo = $stmt->errorInfo(); // Get last error
-                    echo "Error: No se pudo insertar la toma.<br/>";
-                    echo "SQLSTATE: " . $errorInfo[0] . "<br/>";
-                    echo "Código de error: " . $errorInfo[1] . "<br/>";
-                    echo "Mensaje: " . $errorInfo[2] . "<br/>";
-                }      
+                echo $insert ?  "Se ha insertado la toma<br/>" : "Error al insertar la toma: " . $stmt->errorInfo();
             }
-            else if($toma["docente"] != $id_persona) echo "Existe una toma con un docente diferente. No se ejecutará ningun acción<br>";
-            else echo "Existe una toma con un el mismo docente. No se ejecutará ningun acción<br>";
+
+            else echo ($toma["docente"] != $id_persona) ? 
+                "Existe una toma con un docente diferente. No se ejecutará ningun acción<br>"
+                : "Existe una toma con un el mismo docente. No se ejecutará ningun acción<br>";
         }
     }
     
-    // Insert or update cargos (delete old and insert new)
-    //$pdo->prepare("DELETE FROM cargos WHERE numero_documento = ?")->execute([$persona['numero_documento']]);
-
-    /*
-    foreach ($persona['cargos'] as $cargo) {
-        $sql = "INSERT INTO cargos (numero_documento, comision, codigo) VALUES (?, ?, ?)";
-        $pdo->prepare($sql)->execute([$persona['numero_documento'], $cargo['comision'], $cargo['codigo']]);
-    }*/
 }
 
 
