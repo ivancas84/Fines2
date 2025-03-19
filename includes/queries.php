@@ -603,7 +603,8 @@ function wpdbCursos__By_comision($wpdb, $comision_id){
     return $wpdb->get_results(
         $wpdb->prepare("
             SELECT curso.*, 
-            CONCAT(asignatura.nombre, ' ', asignatura.codigo) AS asignatura_detalle 
+            CONCAT(asignatura.nombre, ' ', asignatura.codigo) AS asignatura_detalle ,
+            disposicion.horas_catedra AS disposicion_horas_catedra
             FROM curso 
             INNER JOIN disposicion ON (curso.disposicion = disposicion.id) 
             INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id) 
@@ -698,7 +699,7 @@ function wpdbDisposiciones($wpdb){
                             LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(plan.orientacion, ' ', -2), ' ', 1), 1),
                             LEFT(SUBSTRING_INDEX(plan.orientacion, ' ', -1), 1) 
                         )
-                    )) AS Label 
+                    )) AS Label
                     FROM disposicion 
                     INNER JOIN asignatura ON asignatura.id = disposicion.asignatura 
                     INNER JOIN planificacion ON planificacion.id = disposicion.planificacion 

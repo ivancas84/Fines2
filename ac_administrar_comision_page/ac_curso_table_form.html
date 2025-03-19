@@ -20,13 +20,12 @@
                     <option value="">-- Seleccione --</option>
                     <? foreach ($disposiciones as $disposicion) : ?>
                         <option value="<? echo esc_attr($disposicion->id); ?>" 
-                            <? selected($curso->disposicion, $calendario->id); ?>>
+                            <? selected($curso->disposicion, $disposicion->id); ?>>
                             <? echo esc_html($disposicion->Label); ?>
                         </option>
                     <? endforeach; ?>
                  </select>
                 </td>
-                <td><input type="text" name="asignatura_detalle" value="<?= esc_attr($curso->asignatura_detalle) ?>"></td>
                 <td><input type="text" name="horas_catedra" value="<?= esc_attr($curso->horas_catedra) ?>"></td>
                 <td><?= $curso->disposicion_horas_catedra ?></td>
                 <td><input type="text" name="descripcion_horario" value="<?= esc_attr($curso->descripcion_horario) ?>"></td>
