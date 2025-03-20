@@ -2,14 +2,37 @@
 
 <table border="1">
     <tr>
-        <th>Asignatura</th>
+        <th>Disposicion</th>
+        <th>Hs. Cat. Curso</th>
         <th>Horario</th>
         <th>Acciones</th>
     </tr>
     <?php foreach ($cursos as $curso): ?>
         <tr>
-            <td><?= esc_html($curso->asignatura_detalle) ?></td>
-            <td><?= esc_html($curso->descripcion_horario) ?></td>
+            <form method="post" action="admin-post.php">
+                <input type="hidden" name="action" value="ac_curso_modify">
+                <?php wp_nonce_field("ac_curso_modify_action", "ac_curso_modify_nonce"); ?>
+                <input type="hidden" name="comision_id" value="<?= esc_attr($comision_id) ?>">
+                <input type="hidden" name="curso_id" value="<?= esc_attr($curso->id) ?>">
+
+                <td> 
+                    <select name="disposicion">
+                    <option value="">-- Seleccione --</option>
+                    <? foreach ($disposiciones as $disposicion) : ?>
+                        <option value="<? echo esc_attr($disposicion->id); ?>" 
+                            <? selected($curso->disposicion, $disposicion->id); ?>>
+                            <? echo esc_html($disposicion->Label); ?>
+                        </option>
+                    <? endforeach; ?>
+                 </select>
+                </td>
+                <td><input type="text" name="horas_catedra" value="<?= esc_attr($curso->horas_catedra) ?>"></td>
+                <td><?= $curso->disposicion_horas_catedra ?></td>
+                <td><input type="text" name="descripcion_horario" value="<?= esc_attr($curso->descripcion_horario) ?>"></td>
+                <td>
+                    <button type="submit">Guardar</button>
+                </td>
+            </form>
             <td>
                 <form method="post" action="admin-post.php">
                     <input type="hidden" name="action" value="ac_curso_delete">
