@@ -9,7 +9,11 @@ require_once 'vendor/autoload.php'; // Ensure TCPDF is autoloaded
 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
+require 'vendor/autoload.php';
 try {
     $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -28,36 +32,110 @@ try {
 
 // Call the function
 try {
-    //$url = pdoInsertarPedido($data);
+    
 
     $id_calendario = $_GET['calendario'];
-    $url = "NO VALIDO";
+    
     $tomas = pdoFines_tomasAprobadas__ByCalendario($pdo, $id_calendario);
     foreach($tomas as $toma){
+        
+
         $actual_unix_timestamp = time();
         $toma["root_dir"] = $rutaUploadPedidos;
         $toma["upload_dir"] = "/wpsc/". date('Y') . "/" . date('m') . "/";
         $toma["filename"] = "{$actual_unix_timestamp}_toma_{$toma['numero_documento']}.pdf";
-        $toma["save_path"] = $toma["upload_dir"]."/".$toma["filename"];
+        $toma["save_path"] = $toma["root_dir"] . $toma["upload_dir"] . $toma["filename"];
 
+        $docente = mb_strtoupper($toma["apellidos"], "UTF-8") . ', ' . mb_convert_case($toma["nombres"], MB_CASE_TITLE, "UTF-8");
+        $asignatura = htmlentities(mb_convert_encoding($toma['asignatura_nombre'] . " " . $toma['asignatura_codigo'], 'UTF-8', 'auto'), ENT_QUOTES, 'UTF-8');
+        $sede = htmlentities(mb_convert_encoding($toma['sede_nombre'], 'UTF-8', 'auto'), ENT_QUOTES, 'UTF-8');
+        $domicilio = htmlentities(mb_convert_encoding($toma['domicilio_detalle'], 'UTF-8', 'auto'), ENT_QUOTES, 'UTF-8');
+        $horario = htmlentities(mb_convert_encoding($toma['descripcion_horario'], 'UTF-8', 'auto'), ENT_QUOTES, 'UTF-8');
+        $resolucion = htmlentities(mb_convert_encoding($toma['resolucion'], 'UTF-8', 'auto'), ENT_QUOTES, 'UTF-8');
+        $pfid = htmlentities($toma["pfid"], ENT_QUOTES, 'UTF-8');
+        $telefono = htmlentities(mb_convert_encoding($toma['telefono'], 'UTF-8', 'auto'), ENT_QUOTES, 'UTF-8');
+
+        // Format date
+        $fecha_nacimiento = DateTime::createFromFormat('Y-m-d', $toma["fecha_nacimiento"])->format('d/m/Y');
+        if(!empty($toma["fecha_toma"])) $fecha_toma = DateTime::createFromFormat('Y-m-d', $toma["fecha_toma"])->format('d/m/Y');
+        else $fecha_toma = DateTime::createFromFormat('Y-m-d', $toma["fecha_inicio"])->format('d/m/Y');
+        $fecha_fin = DateTime::createFromFormat('Y-m-d', $toma["fecha_fin"])->format('d/m/Y');
+        
+        // Merge emails into a single string
+        $emails = [];
+        if (!empty(trim($toma["email_abc"]))) array_push($emails, htmlentities($toma["email_abc"], ENT_QUOTES, 'UTF-8'));
+        if (!empty(trim($toma["email"]))) array_push($emails, htmlentities($toma["email"], ENT_QUOTES, 'UTF-8'));
+        $emails = implode(", ", $emails);
+        $cuil = htmlentities($toma["cuil"], ENT_QUOTES, 'UTF-8');
+
+        $toma["subject"] = "Toma de Posesión del docente " . $docente . " CUIL " . $cuil . " en cargo " . $pfid . " " . $asignatura;
+        
+        // Generate table
+        $toma["data_docente"] = '
+<table border="1" cellpadding="5">
+    <tr><th colspan="4" bgcolor="#cccccc"><b>Datos del Docente</b></th></tr>
+    <tr>
+        <td><b>Nombre</b></td>
+        <td colspan="3">' . $docente . '</td>
+    </tr>
+    <tr>
+        <td><b>CUIL</b></td><td>' . $cuil . '</td>
+        <td><b>Fecha de Nacimiento</b></td><td>' . $fecha_nacimiento . '</td>
+    </tr>
+    <tr>
+        <td><b>Email</b></td><td colspan="3">' . $emails . '</td>
+    </tr>
+    <tr>
+        <td><b>Domicilio</b></td><td colspan="3">' . htmlentities($toma["descripcion_domicilio"], ENT_QUOTES, 'UTF-8') . '</td>
+    </tr>
+    <tr>
+        <td><b>Teléfono</b></td><td colspan="3">' . $telefono . '</td>
+    </tr>
+</table>
+';
+
+        $toma["body"] =  '<table border="1" cellpadding="5">
+        <tr><th colspan="4" bgcolor="#cccccc"><b>Datos del Cargo</b></th></tr>
+        <tr>
+            <td><b>Sede</b></td><td>' . $sede . '</td>
+            <td><b>Comisión</b></td><td>' . $pfid . '</td>
+        </tr>
+        <tr>
+            <td><b>Domicilio</b></td><td colspan="3">' . $domicilio . '</td>
+        </tr>
+        <tr>
+            <td><b>Horario</b></td><td colspan="3">' . $horario . '</td>
+        </tr>
+        <tr>
+            <td><b>Fecha Toma</b></td><td>' . $fecha_toma . '</td>
+            <td><b>Fecha Fin</b></td><td>' . $fecha_fin . '</td>
+        </tr>
+        <tr>
+            <td><b>Asignatura</b></td><td>' . $asignatura . '</td>
+            <td><b>Hs Cát</b></td><td>' . htmlentities($toma["horas_catedra"], ENT_QUOTES, 'UTF-8') . '</td>
+        </tr>
+        <tr>
+            <td><b>Tramo</b></td><td>' . $toma["tramo"] . '</td>
+            <td><b>Resolución</b></td><td>' . $resolucion . '</td>
+        </tr>
+    </table>';
+
+
+        if(!empty($toma["archivo"])){
+            echo $pfid . " " . $docente . " " . $telefono . " (ya existe) " . $toma["archivo"] . "<br>"; 
+            continue;
+        }
+
+        $url = pdoInsertarPedido($toma);
         generar_toma_posesion($url, $toma);
+        pdoFines_updateArchivoTomaById($pdo, $url, $toma["id"]);
+        echo $pfid . " " . $docente . " " . $telefono . " (generado) " . $toma["archivo"]; 
+        sendEmail($toma["save_path"], $sede, $pfid, $toma['asignatura_nombre'] . " " . $toma['asignatura_codigo'], $docente, $toma["email_abc"], $toma["email"]);
         exit;
     }
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
 }
-
-/*$data["body"] = "La Dirección del CENS 462 de La Plata, hace constar por la presente que ";
-$data["body"] .= $data['apellidos'] . ", ";
-$data["body"] .= $data['nombres'] . " DNI N° ";
-$data["body"] .= $data['numero_documento'] . " es alumno regular de ";
-$data["body"] .= $data['anio'] . " año Programa Fines 2 Trayecto Secundario con orientación en ";
-$data["body"] .= $data['orientacion'] . " resolución ";
-$data["body"] .= $data['resolucion'];
-    
-if (!empty($data['observaciones'])) {
-    $data["body"] .= " - " . $data['observaciones']; 
-}*/
 
 
 function generar_toma_posesion($url, $data) {
@@ -116,91 +194,85 @@ function generar_toma_posesion($url, $data) {
 
     $pdf->SetFont('helvetica', '', 10);
 
-    // Format date
- // Convert special characters to UTF-8 and encode for HTML rendering
-$asignatura = htmlentities(mb_convert_encoding($data['asignatura_nombre'], 'UTF-8', 'auto'), ENT_QUOTES, 'UTF-8');
-$sede = htmlentities(mb_convert_encoding($data['sede_nombre'], 'UTF-8', 'auto'), ENT_QUOTES, 'UTF-8');
-$domicilio = htmlentities(mb_convert_encoding($data['domicilio_detalle'], 'UTF-8', 'auto'), ENT_QUOTES, 'UTF-8');
-$horario = htmlentities(mb_convert_encoding($data['descripcion_horario'], 'UTF-8', 'auto'), ENT_QUOTES, 'UTF-8');
-$resolucion = htmlentities(mb_convert_encoding($data['resolucion'], 'UTF-8', 'auto'), ENT_QUOTES, 'UTF-8');
-
-// Format date
-$fecha_nacimiento = DateTime::createFromFormat('Y-m-d', $data["fecha_nacimiento"])->format('d/m/Y');
-if(!empty($data["fecha_toma"])) $fecha_toma = DateTime::createFromFormat('Y-m-d', $data["fecha_toma"])->format('d/m/Y');
-else $fecha_toma = DateTime::createFromFormat('Y-m-d', $data["fecha_inicio"])->format('d/m/Y');
-$fecha_fin = DateTime::createFromFormat('Y-m-d', $data["fecha_fin"])->format('d/m/Y');
-
-// Merge emails into a single string
-$emails = [];
-if (!empty(trim($data["email_abc"]))) array_push($emails, htmlentities($data["email_abc"], ENT_QUOTES, 'UTF-8'));
-if (!empty(trim($data["email"]))) array_push($emails, htmlentities($data["email"], ENT_QUOTES, 'UTF-8'));
-$emails = implode(", ", $emails);
-
-// Generate table
-$table = '
-<table border="1" cellpadding="5">
-    <tr><th colspan="4" bgcolor="#cccccc"><b>Datos del Docente</b></th></tr>
-    <tr>
-        <td><b>Nombre</b></td>
-        <td colspan="3">' . mb_strtoupper($data["apellidos"], "UTF-8") . ', ' . mb_convert_case($data["nombres"], MB_CASE_TITLE, "UTF-8") . '</td>
-    </tr>
-    <tr>
-        <td><b>CUIL</b></td><td>' . htmlentities($data["cuil"], ENT_QUOTES, 'UTF-8') . '</td>
-        <td><b>Fecha de Nacimiento</b></td><td>' . $fecha_nacimiento . '</td>
-    </tr>
-    <tr>
-        <td><b>Email</b></td><td colspan="3">' . $emails . '</td>
-    </tr>
-    <tr>
-        <td><b>Domicilio</b></td><td colspan="3">' . htmlentities($data["descripcion_domicilio"], ENT_QUOTES, 'UTF-8') . '</td>
-    </tr>
-</table>
-';
-
-$pdf->writeHTML($table, true, false, false, false, '');
-$pdf->Ln(5);
-
-$table = '<table border="1" cellpadding="5">
-    <tr><th colspan="4" bgcolor="#cccccc"><b>Datos del Cargo</b></th></tr>
-    <tr>
-        <td><b>Sede</b></td><td>' . $sede . '</td>
-        <td><b>Comisión</b></td><td>' . htmlentities($data["pfid"], ENT_QUOTES, 'UTF-8') . '</td>
-    </tr>
-    <tr>
-        <td><b>Domicilio</b></td><td colspan="3">' . $domicilio . '</td>
-    </tr>
-    <tr>
-        <td><b>Horario</b></td><td colspan="3">' . $horario . '</td>
-    </tr>
-    <tr>
-        <td><b>Fecha Toma</b></td><td>' . $fecha_toma . '</td>
-        <td><b>Fecha Fin</b></td><td>' . $fecha_fin . '</td>
-    </tr>
-    <tr>
-        <td><b>Asignatura</b></td><td>' . $asignatura . '</td>
-        <td><b>Hs Cát</b></td><td>' . htmlentities($data["horas_catedra"], ENT_QUOTES, 'UTF-8') . '</td>
-    </tr>
-    <tr>
-        <td><b>Tramo</b></td><td>' . $data["tramo"] . '</td>
-        <td><b>Resolución</b></td><td>' . $resolucion . '</td>
-    </tr>
-</table>';
-
-// Add table to PDF
-$pdf->writeHTML($table, true, false, false, false, '');
+   
 
 
+    $pdf->writeHTML($data["data_docente"], true, false, false, false, '');
+    $pdf->Ln(5);
+
+
+
+    // Add table to PDF
+    $pdf->writeHTML($data["body"], true, false, false, false, '');
+
+
+    
     // Ensure directories exist
     if (!file_exists(dirname($data["root_dir"].$data["upload_dir"]))) {
         mkdir(dirname($data["root_dir"].$data["upload_dir"]), 0777, true);
     }
 
+
     // Save or Display PDF
-    //$pdf->Output($data["save_path"], "F"); // Save to file
-    $pdf->Output($data["filename"], "I"); // Display in browser
+    $pdf->Output($data["save_path"], "F"); // Save to file
+    //$pdf->Output($data["filename"], "I"); // Display in browser
 
     // Clean up temp QR file
     unlink($qrFile);
+}
+
+
+
+function sendEmail($path_toma, $sede_nombre, $comision_pfid, $asignatura_nombre, $docente_nombre, $email_abc, $email) {
+    $mail = new PHPMailer(true);
+    
+    try {
+        $mail->isSMTP();
+        $mail->Host = EMAIL_DOCENTES_HOST;
+        $mail->SMTPAuth = true;
+        $mail->Username = EMAIL_DOCENTES_USER;
+        $mail->Password = EMAIL_DOCENTES_PASSWORD;
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+        
+        $attachmentPath = $path_toma;
+        $toPrimary = "icastaneda@abc.gob.ar";
+        $toSecondary = "";
+        //$toPrimary = $email_abc;
+        //$toSecondary = $email;
+        $bcc = EMAIL_DOCENTES_BCC;
+        $subject = "Toma de posesión: {$comision_pfid} {$asignatura_nombre}";
+        $subject =  mb_encode_mimeheader($subject, "UTF-8", "B");
+        $body = "<p>Hola {$docente_nombre}, usted ha recibido este email porque fue designado/a en la asignatura <strong>{$asignatura_nombre}</strong> de sede {$sede_nombre}</p>
+<p><strong>Para confirmar su toma de posesión, necesitamos que responda este email indicando que la información del documento adjunto es correcta.</strong></p>
+<p>Se recuerda que al aceptar su toma de posesión, usted se compromete a:</p>
+  <ul>
+    <li>Completar las planillas de finalización en tiempo y forma.</li>
+    <li>Participar de las mesas de examen cuando se lo requiera.</li>
+    <li>Atender a la brevedad cualquier solicitud indicada por el CENS.</li>
+  </ul>
+</p>
+<p><strong>Para cualquier duda comuníquese vía mensaje o audio de WhatsApp al número 2216713326</strong></p>
+<br>
+Saluda a Usted muy atentamente:
+<br>
+Equipo de Coordinadores del Plan Fines 2 CENS 462
+<br><a href=\"https://planfines2.com.ar\">https://planfines2.com.ar</a>";
+        
+        $mail->setFrom(EMAIL_DOCENTES_FROM_ADDRESS);
+        if(!empty($toPrimary)) $mail->addAddress($toPrimary);
+        if(!empty($toSecondary)) $mail->addAddress($toSecondary);
+        $mail->addBCC($bcc);
+        $mail->Subject = $subject;
+        $mail->Body = $body;
+        $mail->isHTML(true);
+        $mail->addAttachment($attachmentPath);
+        
+        $mail->send();
+        echo "Message has been sent";
+    } catch (Exception $e) {
+        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
 }
 
 

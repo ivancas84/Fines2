@@ -104,7 +104,7 @@ function pdoInsertarPedido($data){
         ':id' => $ticket_id,
         ':is_active' => 1,
         ':customer' => 450, //corresponde a sistemas
-        ':subject' => "Constancia de alumno regular : " . $data["apellidos"] . ", " . $data["nombres"], //titulo
+        ':subject' => $data["subject"], //titulo
         ':status' => 4, //cerrado
         ':priority' => 1, //baja 
         ':category' => 10, //constancia
@@ -134,17 +134,6 @@ function pdoInsertarPedido($data){
         'misc'=> "", //longtext
     ]);
 
-    
-    
-    // Function to convert a number to an ordinal string in Spanish
-    function toOrdinalSpanish($number) {
-        $ordinals = [
-            1 => 'primer', 2 => 'segundo', 3 => 'tercer', 4 => 'cuarto',
-            5 => 'quinto', 6 => 'sexto', 7 => 'séptimo', 8 => 'octavo',
-            9 => 'noveno', 10 => 'décimo'
-        ];
-        return $ordinals[$number] ?? $number . "º";
-    }
     
     // Insert into wpwt_psmsc_threads
     $sql_thread = "INSERT INTO wpwt_psmsc_threads 
@@ -211,7 +200,7 @@ function pdoInsertarPedido($data){
     $stmt_attachment->execute([
         ':id' => $attachment_id,
         ':name' => $data['filename'],
-        ':file_path' => $data['save_path'],
+        ':file_path' => $data["upload_dir"] . $data["filename"],
         ':is_image' => 1,
         ':is_active' => 1, // Mark as active
         ':is_uploaded' => 0, // Mark as uploaded

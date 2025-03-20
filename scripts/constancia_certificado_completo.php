@@ -133,6 +133,7 @@ function generar_constancia_titulo_tramite($url, $data) {
 
 // Call the function
 try {
+    $data["subject"] = "Constancia de certificado completo : " . $data["apellidos"] . ", " . $data["nombres"];
     $url = pdoInsertarPedido($data);
     generar_constancia_titulo_tramite($url, $data);
 } catch (Exception $e) {

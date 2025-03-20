@@ -133,6 +133,7 @@ function generar_constancia_alumno_regular($url, $data) {
 
 // Call the function
 try {
+    $data["subject"] = "Constancia de alumno regular : " . $data["apellidos"] . ", " . $data["nombres"];
     $url = pdoInsertarPedido($data);
     generar_constancia_alumno_regular($url, $data);
 } catch (Exception $e) {

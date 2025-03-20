@@ -33,6 +33,19 @@ function pdoFines_updateCuilById($pdo_fines, $cuil, $id)
     }
 }
 
+function pdoFines_updateArchivoTomaById($pdo_fines, $archivo, $id)
+{
+    $stmt = $pdo_fines->prepare("UPDATE toma SET archivo = :archivo WHERE id = :id");
+    $stmt->bindParam(':archivo', $archivo, PDO::PARAM_STR); 
+    $stmt->bindParam(':id', $id, PDO::PARAM_STR); 
+    $stmt->execute();
+
+    if ($stmt->rowCount() > 0) {
+        return true; //echo "Updated successfully.";
+    } else {
+        return false; //echo "No record updated (ID may not exist or archivo is the same).";
+    }
+}
 
 function pdoFines_updateDescripcionHorarioById($pdo_fines, $descripcion_horario, $id)
 {
@@ -94,8 +107,10 @@ function pdoFines_tomaActiva__By_comisionPfid_asignaturaCodigo_calendario($pdo_f
 function pdoFines_tomasAprobadas__ByCalendario($pdo_fines, $id_calendario){
     $stmt = $pdo_fines->prepare("
         SELECT 
+            toma.id,
+            toma.archivo,
             toma.fecha_toma,  
-            persona.numero_documento, persona.nombres, persona.apellidos, persona.cuil, persona.fecha_nacimiento, persona.email, persona.email_abc, persona.descripcion_domicilio,
+            persona.telefono, persona.numero_documento, persona.nombres, persona.apellidos, persona.cuil, persona.fecha_nacimiento, persona.email, persona.email_abc, persona.descripcion_domicilio,
             sede.nombre AS sede_nombre, 
             comision.pfid,
             CONCAT(planificacion.anio, '°', planificacion.semestre, 'C') AS tramo,

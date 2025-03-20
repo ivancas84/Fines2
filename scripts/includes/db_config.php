@@ -11,4 +11,12 @@ $db_name_pedidos = 'planfi10_wp211';    // Name of the external database
 $db_user_pedidos = 'planfi10_wp211';    // Database username
 $db_pass_pedidos = 'nF7jJfUcCMDuWaG8azeG';    // Database password
 
+define("EMAIL_DOCENTES_HOST", "mail.planfines2.com.ar");
+define("EMAIL_DOCENTES_USER", "docentes@planfines2.com.ar");
+define("EMAIL_DOCENTES_PASSWORD", "Fines2023");
+define("EMAIL_DOCENTES_FROM_NAME", "Docentes CENS 462");
+define("EMAIL_DOCENTES_FROM_ADDRESS", "docentes@planfines2.com.ar");
+define("EMAIL_DOCENTES_BCC", "docentes.cens462@gmail.com");
+
+
 ?>
