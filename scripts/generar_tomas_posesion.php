@@ -1,6 +1,8 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
+set_time_limit(0);
 mb_internal_encoding('UTF-8');
+
 
 require_once 'includes/db_config.php';
 require_once 'includes/queries_pedidos.php';
@@ -34,9 +36,11 @@ try {
 try {
     
 
-    $id_calendario = $_GET['calendario'];
+    $id_calendario = "202502110007";
     
     $tomas = pdoFines_tomasAprobadas__ByCalendario($pdo, $id_calendario);
+    echo "CANTIDAD DE TOMAS " . count($tomas) . "<br>";
+
     foreach($tomas as $toma){
         
 
@@ -129,9 +133,11 @@ try {
         $url = pdoInsertarPedido($toma);
         generar_toma_posesion($url, $toma);
         pdoFines_updateArchivoTomaById($pdo, $url, $toma["id"]);
-        echo $pfid . " " . $docente . " " . $telefono . " (generado) " . $toma["archivo"]; 
+        echo $pfid . " " . $docente . " " . $telefono . " (generado) " . $url; 
         sendEmail($toma["save_path"], $sede, $pfid, $toma['asignatura_nombre'] . " " . $toma['asignatura_codigo'], $docente, $toma["email_abc"], $toma["email"]);
-        exit;
+        
+        sleep(5); // Wait for 30 seconds before processing the next item to avoid multiple emails
+
     }
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
@@ -236,10 +242,10 @@ function sendEmail($path_toma, $sede_nombre, $comision_pfid, $asignatura_nombre,
         $mail->Port = 587;
         
         $attachmentPath = $path_toma;
-        $toPrimary = "icastaneda@abc.gob.ar";
-        $toSecondary = "";
-        //$toPrimary = $email_abc;
-        //$toSecondary = $email;
+        //$toPrimary = "icastaneda@abc.gob.ar";
+        //$toSecondary = "";
+        $toPrimary = $email_abc;
+        $toSecondary = $email;
         $bcc = EMAIL_DOCENTES_BCC;
         $subject = "Toma de posesión: {$comision_pfid} {$asignatura_nombre}";
         $subject =  mb_encode_mimeheader($subject, "UTF-8", "B");

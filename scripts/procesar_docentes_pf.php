@@ -38,7 +38,7 @@ if ($data === null) {
 } 
 
 
-$id_calendario = $_GET["calendario"];
+$id_calendario = "202502110007";
 
 if(empty($id_calendario)) {
     echo "Calendario no definido, no se procesaran los cargos";
@@ -48,6 +48,10 @@ if(empty($id_calendario)) {
 
 foreach ($data as $persona) {
     echo "******************************<br>";
+    if(empty($persona["numero_documento"])){
+        echo "Persona vacía";
+        continue;
+    }
     print_r($persona);
 
     // Convertir caracteres a utf8mb3

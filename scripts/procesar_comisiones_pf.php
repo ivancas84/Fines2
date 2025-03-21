@@ -2,7 +2,7 @@
 header('Content-Type: text/html; charset=utf-8');
 mb_internal_encoding('UTF-8');
 
-$id_calendario = $_GET["calendario"];
+$id_calendario = "202502110007";
 
 require_once 'includes/db_config.php';
 require_once 'includes/queries_fines.php';
@@ -11,6 +11,7 @@ $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 ]);
+
 
 if(empty($id_calendario)) {
     echo "Calendario no definido";

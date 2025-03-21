@@ -140,7 +140,7 @@ function pdoFines_tomasAprobadas__ByCalendario($pdo_fines, $id_calendario){
         INNER JOIN domicilio ON sede.domicilio = domicilio.id
         INNER JOIN persona ON (toma.docente = persona.id)
         WHERE comision.calendario = :calendario
-        AND (toma.estado = 'Aprobada' OR toma.estado = 'Pendiente') 
+        AND (toma.estado = 'Aprobada') 
         AND toma.estado_contralor != 'Modificar'
     ");
     $stmt->bindParam(':calendario', $id_calendario, PDO::PARAM_STR); // Bind as a string
