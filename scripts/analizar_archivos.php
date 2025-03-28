@@ -15,8 +15,13 @@ function analizarDirectorio($ruta) {
     if (count($partes) < 1) return;
 
     $ultimoDirectorio = trim($partes[count($partes) - 1]);
-    preg_match('/^(\d{7,8}|\d{10})/', $ultimoDirectorio, $coincidencias);
-    $numero = $coincidencias[1] ?? null;
+    preg_match('/\d{7,10}/', $ultimoDirectorio, $coincidencias);
+
+    if(count($coincidencias) != 1){
+        return;
+    }
+    
+    $numero = $coincidencias[0] ?? null;
     if (!$numero) return;
 
     $archivosFiltrados = [];

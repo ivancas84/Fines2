@@ -1,7 +1,10 @@
 <?php
 echo "<pre>";
 
+echo "Analizando archivos informe...<br>";
+
 require_once 'includes/db_config.php';
+
 
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -17,10 +20,13 @@ function analizarDirectorio($ruta) {
     $idComisionActual = $_GET['comision_id'] ?? null;
 
     $ultimoDirectorio = trim($partes[count($partes) - 1]);
-    preg_match('/^(\d{7,8}|\d{10})/', $ultimoDirectorio, $coincidencias);
-    $numero = $coincidencias[1] ?? null;
-    if (!$numero) return;
+    preg_match('/\d{7,10}/', $ultimoDirectorio, $coincidencias);
 
+    if(count($coincidencias) != 1){
+        return;
+    }
+    
+    $numero = $coincidencias[0];
     $archivosFiltrados = [];
     if (is_dir($ruta)) {
         foreach (scandir($ruta) as $archivo) {

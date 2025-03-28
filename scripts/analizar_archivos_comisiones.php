@@ -1,6 +1,7 @@
 <?php
 echo "<pre>";
 
+echo "Analizando archivos de comisiones...<br>";
 require_once 'includes/db_config.php';
 
 $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
@@ -17,7 +18,7 @@ function analizarDirectorio($ruta) {
     $idComisionActual = $_GET['comision_id'] ?? null;
 
     $ultimoDirectorio = trim($partes[count($partes) - 1]);
-    preg_match('/^(\d{7,8}|\d{10})/', $ultimoDirectorio, $coincidencias);
+    preg_match('/\d{7,10}/', $ultimoDirectorio, $coincidencias);
     $numero = $coincidencias[1] ?? null;
     if (!$numero) return;
 
