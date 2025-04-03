@@ -1,6 +1,6 @@
-    <h1>Búsqueda de Comisiones</h1>
+   <h1>Búsqueda de Cursos</h1>
     <form method="GET">
-        <input type="hidden" name="page" value="fines-plugin-comisiones" />
+        <input type="hidden" name="page" value="fines-plugin-lista-cursos" />
         <label for="calendario">Calendario:</label>
         <select name="calendario" id="calendario">
             <option value="">-- Seleccione --</option>
@@ -22,13 +22,6 @@
             <option value="apertura" <?php selected($selected_order, 'apertura'); ?>>Apertura</option>
 
         </select>
-
-        <!-- Checkbox for Autorizada -->
-        <label>
-            <input type="checkbox" name="autorizada" value="1" <?php checked($filter_autorizada); ?>>
-            Solo autorizada
-        </label>
-
 
         <input type="submit" name="submit" value="Consultar" class="button button-primary">
     </form>

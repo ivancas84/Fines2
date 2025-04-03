@@ -648,6 +648,45 @@ function wpdbCursos_autorizados_publicados__By_calendario($wpdb, $comision_id){
     );
 }
 
+function wpdbCursosConTomasActivas($wpdb, $calendario_id, $order_by){
+    return $wpdb->get_results(
+        $wpdb->prepare("
+            SELECT curso.*,
+            CONCAT(toma_activa.nombres, ' ', toma_activa.apellidos, ' ', toma_activa.numero_documento) AS docente_detalle,
+            toma_activa.fecha_toma,
+            CONCAT(asignatura.nombre, ' ', asignatura.codigo) AS asignatura_detalle,
+            CONCAT(planificacion.anio, ' ', planificacion.semestre) AS tramo,
+            comision.pfid AS comision_pfid,
+            asignatura.codigo AS asignatura_codigo,
+            sede.nombre AS sede_nombre,
+            CONCAT(
+                'Calle ', COALESCE(domicilio.calle, '-'), ' ',
+                'e/ ', COALESCE(domicilio.entre, '-'), ', ',
+                'N° ', COALESCE(domicilio.numero, '-'), ', ',
+                COALESCE(domicilio.barrio, '-'), ', ',
+                COALESCE(domicilio.localidad, '-')
+            ) AS domicilio_detalle
+            FROM curso 
+            INNER JOIN disposicion ON (curso.disposicion = disposicion.id) 
+            INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id) 
+            INNER JOIN comision ON (comision.id = curso.comision)
+            INNER JOIN planificacion ON (planificacion.id = comision.planificacion)
+            INNER JOIN sede ON (sede.id = comision.sede)
+            INNER JOIN domicilio ON (domicilio.id = sede.domicilio)
+            LEFT JOIN (
+                SELECT toma.fecha_toma, toma.curso, persona.nombres, persona.apellidos, persona.numero_documento 
+                FROM toma 
+                INNER JOIN persona ON (toma.docente = persona.id)
+                WHERE estado = 'Aprobada' 
+                AND estado_contralor != 'Modificar'
+            ) AS toma_activa ON (toma_activa.curso = curso.id)
+            WHERE comision.autorizada = true 
+            AND comision.calendario = %s
+            {$order_by}" , $calendario_id
+        )
+    );
+}
+
 function wpdbComision__By_id($wpdb, $comision_id){
     return $wpdb->get_row(
         $wpdb->prepare("

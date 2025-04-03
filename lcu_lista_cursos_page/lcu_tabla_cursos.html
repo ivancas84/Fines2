@@ -1,0 +1,35 @@
+<h2>Comisiones Consultadas</h2>
+
+<table class="wp-list-table widefat striped">
+    <thead>
+        <tr>
+            <th>Sede</th>
+            <th>Comisión</th>
+            <th>Tramo</th>
+            <th>Asignatura</th>
+            <th>Docente</th>
+            <th>Fecha Toma</th>
+            <th>Opciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        <? foreach ($cursos as $curso): ?>
+            <? $detalle_comision_url = admin_url('admin.php?page=fines-plugin-administrar-comision-page&comision_id=' . $curso->comision); ?>
+            <? $administrar_tomas_url = admin_url('admin.php?page=fines-plugin-administrar-toma-comision&comision_id=' . $curso->comision); ?>
+
+            <tr>
+                <td><?= esc_html($curso->sede_nombre); ?></td>
+                <td><?= esc_html($curso->comision_pfid); ?></td>
+                <td><?= esc_html($curso->tramo); ?></td>
+                <td><?= esc_html($curso->asignatura_detalle); ?></td>
+                <td><?= esc_html($curso->docente_detalle); ?></td>
+                <td><?= esc_html($curso->fecha_toma); ?></td>
+                <td>
+                    <a href="<?= esc_url($detalle_comision_url); ?>" class="button">Detalle Comisión</a> 
+                    <a href="<?= esc_url($administrar_tomas_url); ?>" class="button">Administrar Tomas</a> 
+
+                </td>
+            </tr>
+        <? endforeach; ?>
+    </tbody>
+</table>

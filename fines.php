@@ -97,6 +97,15 @@ function fines_plugin_menu() {
     'pfpd_procesar_docentes_pf_page'
   );
 
+  add_submenu_page(
+    'fines-plugin', 
+    'Lista de Cursos',
+    'Lista de Cursos', 
+    'edit_posts', 
+    'fines-plugin-lista-cursos', 
+    'lcu_lista_cursos_page'
+  );
+
 
     add_submenu_page(
 		null, 
@@ -259,5 +268,7 @@ include_once plugin_dir_path(__FILE__) . 'taa_transferir_alumnos_activos_page/ta
 include_once plugin_dir_path(__FILE__) . 'atc_administrar_toma_comision_page/atc_administrar_toma_comision_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'pfpd_procesar_docentes_pf_page/pfpd_procesar_docentes_pf_page.php';
+
+include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'tp_toma_posesion_page/tp_toma_posesion_page.php';

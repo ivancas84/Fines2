@@ -5,6 +5,7 @@
             <th>Apellidos</th>
             <th>DNI</th>
             <th>Ingreso</th>
+            <th>Estado</th>
             <th>cert?</th>
             <th>cons?</th>
             <th>prev?</th>
@@ -27,7 +28,7 @@
                 <td><?= $student['apellidos'] ?></td>
                 <td><?= $student['numero_documento'] ?></td>
                 <?= $student['ingreso'] ?>
-                
+                <td><?= $student['estado'] ?></td>
                 <td style="background-color: <?= ($student['tiene_certificado'] == '✔') ? '#A8E6A3' : '#FFADAD' ?>;">
                     <?= $student['tiene_certificado'] ?>
                 </td>
