@@ -75,3 +75,9 @@ function ac_init_cursos($wpdb, $comision_id) {
 
 include plugin_dir_path(__FILE__) . 'ac_comision_form_handle.php';
 
+include plugin_dir_path(__FILE__) . 'ac_curso_modify_handle.php';
+
+include plugin_dir_path(__FILE__) . 'ac_curso_add_handle.php';
+
+
+

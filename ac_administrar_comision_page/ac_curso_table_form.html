@@ -50,12 +50,32 @@
 
 <h3>Añadir Curso</h3>
 <form method="post" action="admin-post.php">
-    <? wp_nonce_field("ac_curso_add_action", "ac_curso_add_nonce"); ?>    
-    <input type="hidden" name="action" value="ac_cursos_add">
+    <input type="hidden" name="action" value="ac_curso_add">
+    <?php wp_nonce_field("ac_curso_add_action", "ac_curso_add_nonce"); ?>  
     <input type="hidden" name="comision_id" value="<?= esc_attr($comision_id) ?>">
     <input type="text" name="honeypot" style="display: none;">
 
-    <label>Curso:</label>
-
-    <button type="submit">Agregar</button>
+    <table>
+        <tr>
+            <th>Disposicion</th>
+            <th>Hs. Cat. Curso</th>
+            <th>Horario</th>
+            <th>Acciones</th>
+        </tr>
+        <tr>
+            <td>
+                <select name="disposicion">
+                    <option value="">-- Seleccione --</option>
+                    <?php foreach ($disposiciones as $disposicion) : ?>
+                        <option value="<?= esc_attr($disposicion->id); ?>">
+                            <?= esc_html($disposicion->Label); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </td>
+            <td><input type="text" name="horas_catedra" value=""></td>
+            <td><input type="text" name="descripcion_horario" value=""></td>
+            <td><button type="submit">Agregar</button></td>
+        </tr>
+    </table>
 </form>

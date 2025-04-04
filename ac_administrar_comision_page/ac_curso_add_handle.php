@@ -1,8 +1,9 @@
 <?php
-add_action('admin_post_ac_curso_modify', 'ac_curso_modify_handle');
+add_action('admin_post_ac_curso_add', 'ac_curso_add_handle');
 
-function ac_curso_modify_handle() {
+function ac_curso_add_handle() {
 
+  
     $comision_id = $_POST['comision_id'];
 
     if (!current_user_can('edit_posts')) {
@@ -10,7 +11,7 @@ function ac_curso_modify_handle() {
         exit;
     }
 
-    if (!isset($_POST['ac_curso_modify_nonce']) || !wp_verify_nonce($_POST['ac_curso_modify_nonce'], 'ac_curso_modify_action')) {
+    if (!isset($_POST['ac_curso_add_nonce']) || !wp_verify_nonce($_POST['ac_curso_add_nonce'], 'ac_curso_add_action')) {
         wp_redirect(admin_url("admin.php?page=fines-plugin-administrar-comision-page&comision_id=$comision_id&message=Error de seguridad"));
         exit;
     }
@@ -22,25 +23,27 @@ function ac_curso_modify_handle() {
 
     $wpdb = fines_plugin_db_connect();
 
-    $curso_id = sanitize_or_null_text_field($_POST['curso_id']);
+    // Generate a unique ID for the new curso
+    $curso_id = uniqid('curso_');
     $disposicion = sanitize_or_null_text_field($_POST['disposicion']);
     $horas_catedra = sanitize_or_null_text_field($_POST['horas_catedra']);
     $descripcion_horario = sanitize_or_null_text_field($_POST['descripcion_horario']);
 
-    $result = $wpdb->update(
+    $result = $wpdb->insert(
         "curso",
         [
+            'id' => $curso_id,
+            'comision' => $comision_id,
             'disposicion' => $disposicion,
             'horas_catedra' => $horas_catedra,
             'descripcion_horario' => $descripcion_horario,
-        ],
-        ['id' => $curso_id]
+        ]
     );
 
     if ($result === false) {
-        $message = "Error al modificar el curso";
+        $message = "Error al agregar el curso";
     } else {
-        $message = "Curso modificado";
+        $message = "Curso agregado exitosamente";
     }
 
     wp_redirect(admin_url("admin.php?page=fines-plugin-administrar-comision-page&comision_id=$comision_id&message=" . urlencode($message)));
