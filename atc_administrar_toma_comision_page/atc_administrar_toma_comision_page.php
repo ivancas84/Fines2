@@ -29,10 +29,11 @@ function atc_comision_detail($wpdb) {
 
 function atc_init_tomas($wpdb, $comision_id) {
         //$cargos = $wpdb->get_results("SELECT * FROM cargo ORDER BY descripcion ASC");
-        
-
+    
+    $cursos = wpdbCursos__By_comision($wpdb, $comision_id);
     $tomas = wpdbTomas__By_comision($wpdb, $comision_id);
-
+    $selected_curso = null;
+    
     $estados = wpdbEstadosToma($wpdb);
     $estados_contralor = wpdbEstadosContralorToma($wpdb);
     $movimientos = wpdbMovimientosToma($wpdb);
@@ -45,5 +46,8 @@ function atc_init_tomas($wpdb, $comision_id) {
 }
 
 include plugin_dir_path(__FILE__) . 'atc_toma_modify_handle.php';
+include plugin_dir_path(__FILE__) . 'atc_toma_add_handle.php';
+include plugin_dir_path(__FILE__) . 'atc_toma_delete_handle.php';
+
 
 ?>

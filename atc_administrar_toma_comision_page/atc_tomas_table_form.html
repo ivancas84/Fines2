@@ -51,7 +51,9 @@
                 <form method="post" action="admin-post.php">
                     <input type="hidden" name="action" value="atc_toma_delete">
                     <?php wp_nonce_field("atc_toma_delete_action", "atc_toma_delete_nonce"); ?>
+                    <input type="hidden" name="comision_id" value="<?= esc_attr($comision_id) ?>">
                     <input type="hidden" name="toma_id" value="<?= esc_attr($toma->id) ?>">
+                    <input type="text" name="honeypot" style="display:none">
                     <button type="submit">Eliminar</button>
                 </form>
             </td>
@@ -62,12 +64,22 @@
 
 <h3>Añadir Toma</h3>
 <form method="post" action="admin-post.php">
-    <? wp_nonce_field("ac_curso_add_action", "atc_toma_add_nonce"); ?>    
+    <? wp_nonce_field("atc_toma_add_action", "atc_toma_add_nonce"); ?>    
     <input type="hidden" name="action" value="atc_toma_add">
     <input type="hidden" name="comision_id" value="<?= esc_attr($comision_id) ?>">
-
     <input type="date" name="fecha_toma" required>
     
+    <label>Curso:</label>
+    <select name="curso">
+        <option value="">-- Seleccione --</option>
+        <? foreach ($cursos as $curso) : ?>
+            <option value="<? echo esc_attr($curso->id); ?>" 
+                <? selected($selected_curso, $curso->id); ?>>
+                <? echo esc_html($curso->asignatura_detalle); ?>
+            </option>
+        <? endforeach; ?>
+    </select>
+   
     <label>Estado:</label>
     <select name="estado" id="estado">
         <?php foreach ($estados as $estado): ?>
@@ -85,7 +97,7 @@
             </option>
         <?php endforeach; ?>
     </select>
-
+    
     <label>Movimiento:</label>
     <select name="tipo_movimiento" id="tipo_movimiento">
         <?php foreach ($movimientos as $movimiento): ?>
