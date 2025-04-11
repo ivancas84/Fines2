@@ -22,15 +22,6 @@ function ac_curso_delete_handle() {
 
     $wpdb = fines_plugin_db_connect();
 
-    
-    
-    <td><input type="text" name="asignatura_detalle" value="<?= esc_attr($curso->asignatura_detalle) ?>"></td>
-    <td><input type="text" name="horas_catedra" value="<?= esc_attr($curso->horas_catedra) ?>"></td>
-    <td><?= $curso->disposicion_horas_catedra) ?></td>
-    <td><input type="text" name="descripcion_horario" value="<?= esc_attr($curso->descripcion_horario) ?>"></td>
-    <td>
-
-
     $curso_id = sanitize_or_null_text_field($_POST['curso_id']);
     $asignatura_detalle = sanitize_or_null_text_field($_POST['asignatura_detalle']);
     $horas_catedra = sanitize_or_null_text_field($_POST['horas_catedra']);

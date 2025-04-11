@@ -42,8 +42,6 @@ try {
     echo "CANTIDAD DE TOMAS " . count($tomas) . "<br>";
 
     foreach($tomas as $toma){
-        
-
         $actual_unix_timestamp = time();
         $toma["root_dir"] = $rutaUploadPedidos;
         $toma["upload_dir"] = "/wpsc/". date('Y') . "/" . date('m') . "/";
