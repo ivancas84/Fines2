@@ -1,6 +1,12 @@
 <?php
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '/class/PdoFines.php');
+
 function la_lista_alumnos_page() {
-	$wpdb = fines_plugin_db_connect();
+
+
 
     if (!isset($_GET['comision_id']) || empty($_GET['comision_id'])) {
         echo "<p>Error: No se especificó la comisión.</p>";
@@ -9,14 +15,10 @@ function la_lista_alumnos_page() {
 
     $comision_id = $_GET['comision_id'];
 
-    // Fetch commission details
-	$comision = $wpdb->get_row(
-		$wpdb->prepare(sqlSelectComision() . " WHERE comision.id = '$comision_id'")
-	);
+    $pdoFines = new PdoFines(DB_HOST_FINES, DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES);
 
- 
-    // Query to fetch students associated with the given commission
-    $alumnos = wpdbAlumnosConCantidadCalificacionesAprobadas__By_comisionId__Join_alumnoPlan($wpdb, $comision_id);
+    $comision = $pdoFines->comisionById($comision_id);
+    $alumnos = $pdoFines->alumnosConCantidadCalificacionesAprobadasByComisionJoinAlumnoPlan($comision_id);
 
     // Define all possible "tramo" values
     $tramo_values = ["1°1C", "1°2C", "2°1C", "2°2C", "3°1C", "3°2C"];
@@ -39,6 +41,7 @@ function la_lista_alumnos_page() {
 
 
             $student_data[$student_id] = [
+                'estado' => $alumno->estado,
                 'anio_ingreso' => $alumno->anio_ingreso,
                 'persona_id' => $alumno->persona_id,
                 'ingreso' => '<td style="background-color: ' . $ingreso_color . ';">' . esc_html($alumno->anio_ingreso) . '</td>',
