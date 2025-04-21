@@ -9,37 +9,31 @@ $calendario_id = "202502110007";
 
 try {
 
-    echo "Crear clases de acceso a datos...<br>";
     $pdoFines = new PdoFines(DB_HOST_FINES, DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES);
     $programaFines = new ProgramaFines(PF_USER, PF_PASSWORD);
-    echo "Clases creadas correctamente.<br><br>";
 
-    echo "Obtener pfids de db...<br>";
     $pfids = $pdoFines->pfidsComisionesByCalendario($calendario_id);
-    echo "Se obtuvieron " . count($pfids) . "pfids <br><br>";
 
     foreach($pfids as $pfid) {
-        echo "Obteniendo lista de alumnos pf de la comisión {$pfid}...<br>";
+        echo "<h2>Procesando comisión {$pfid}</h2>";
         $alumnosPf = $programaFines->infoListaAlumnos($pfid);
-        echo "Se obtuvieron " . count($alumnosPf) . " registros.<br><br>";
-
-        echo "Obteniendo lista de alumnos db de la comisión {$pfid}...<br>";
         $alumnosDb = $pdoFines->alumnosByComisionPfidAndCalendario($pfid, $calendario_id);
-        echo "Se obtuvieron " . count($alumnosDb) . " registros.<br><br>";
 
+        echo "<strong>Análisis de DB</strong><br>";
+        $cantidadAlumnosExistentes = 0;
         foreach($alumnosPf as $alumnoPf){
             $encontrado = false;
 
             foreach($alumnosDb as $alumnoDb){
                 if($alumnoPf["dni"] == $alumnoDb["numero_documento"]){
-                    echo "Alumno existe en la comisión de DB: {$alumnoPf["dni"]} - {$alumnoPf["nombres"]} {$alumnoPf["apellidos"]}<br>";
+                    $cantidadAlumnosExistentes++;
                     $encontrado = true;
                     break;
                 } 
             }
 
             if(!$encontrado) {
-                echo "Alumno no existe en la comisión de DB: {$alumnoPf["dni"]} - {$alumnoPf["nombres"]} {$alumnoPf["apellidos"]}<br>";
+                echo "Alumno existe en comisión PF / no existe en comisión DB: {$alumnoPf["dni"]} - {$alumnoPf["nombres"]} {$alumnoPf["apellidos"]}<br>";
                 
                 $alumno = $pdoFines->alumnoByNumeroDocumento($alumnoPf["dni"]);
 
@@ -64,37 +58,38 @@ try {
                     }
                 }
 
-
+                echo "<br><br>";
             }            
         }
 
-        echo "<br>";
+        echo "Cantidad de alumnos existentes en la comisión DB que están en PF: {$cantidadAlumnosExistentes}<br>";
+
+        echo "<strong>Análisis de PF</strong><br>";
+
+        $cantidadAlumnosExistentes = 0;
 
         foreach($alumnosDb as $alumnoDb){
             $encontrado = false;
-
+        
             foreach($alumnosPf as $alumnoPf){
                 if($alumnoPf["dni"] == $alumnoDb["numero_documento"]){
-                    echo "Alumno existe en la comisión de PF: {$alumnoDb["numero_documento"]} - {$alumnoDb["nombres"]} {$alumnoDb["apellidos"]}<br>";
+                    $cantidadAlumnosExistentes++;	
                     $encontrado = true;
                     break;
                 } 
             }
 
             if(!$encontrado) {
-                echo "Alumno no existe en la comisión de PF: {$alumnoDb["numero_documento"]} - {$alumnoDb["nombres"]} {$alumnoDb["apellidos"]}<br>";
+                echo "Alumno existe en comisión DB / no existe en comisión PF: {$alumnoDb["numero_documento"]} - {$alumnoDb["nombres"]} {$alumnoDb["apellidos"]}<br>";
             }
         }
-        echo "<br><br>";
+
+        echo "Cantidad de alumnos existentes en la comisión PF que están en DB: {$cantidadAlumnosExistentes}<br>";
 
 
     }
-
     
-    // Cerrar la conexión
-    echo "Cerrando la conexión...<br\>";
     $programaFines->dispose($client);
-    echo "Conexión cerrada.<br\>";
 
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "<br\>";

@@ -135,13 +135,13 @@ class PdoFines
             return $stmt->fetch(PDO::FETCH_OBJ);
         }
 
-        function personaByNumeroDocumento($numero_documento){
+        function personaByNumeroDocumento($numero_documento, $fetchMode = PDO::FETCH_OBJ){
             $stmt = $this->pdo->prepare("
                 SELECT * FROM persona WHERE numero_documento = :numero_documento
             ");
             $stmt->bindParam(':numero_documento', $numero_documento, PDO::PARAM_STR); // Bind as a string
             $stmt->execute();
-            return $stmt->fetch(PDO::FETCH_OBJ);
+            return $stmt->fetch($fetchMode);
         }
 
         function comisionesByAlumno($alumno_id){
@@ -164,8 +164,178 @@ class PdoFines
             $stmt->bindParam(':alumno_id', $alumno_id, PDO::PARAM_STR); // Bind as a string
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_OBJ);
-        }
+    }
 
+    public function tomasAprobadasByCalendario($calendario_id){
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    toma.id,
+                    toma.archivo,
+                    toma.fecha_toma,  
+                    persona.telefono, persona.numero_documento, persona.nombres, persona.apellidos, persona.cuil, persona.fecha_nacimiento, persona.email, persona.email_abc, persona.descripcion_domicilio,
+                    sede.nombre AS sede_nombre, 
+                    comision.pfid,
+                    CONCAT(planificacion.anio, '°', planificacion.semestre, 'C') AS tramo,
+                    CONCAT(
+                                'Calle ', COALESCE(domicilio.calle, '-'), ' ',
+                                'e/ ', COALESCE(domicilio.entre, '-'), ', ',
+                                'N° ', COALESCE(domicilio.numero, '-'), ', ',
+                                COALESCE(domicilio.barrio, '-'), ', ',
+                                COALESCE(domicilio.localidad, '-')
+                            ) AS domicilio_detalle,
+                    asignatura.nombre AS asignatura_nombre, asignatura.codigo AS asignatura_codigo,
+                    curso.descripcion_horario,
+                    disposicion.horas_catedra,
+                    calendario.inicio AS fecha_inicio,
+                    calendario.fin AS fecha_fin,
+                    plan.orientacion,
+                    plan.resolucion
+                FROM toma 
+                INNER JOIN curso ON toma.curso = curso.id
+                INNER JOIN disposicion ON curso.disposicion = disposicion.id
+                INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+                INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+                INNER JOIN plan ON planificacion.plan = plan.id
+                INNER JOIN comision ON curso.comision = comision.id
+                INNER JOIN calendario ON comision.calendario = calendario.id
+                INNER JOIN sede ON comision.sede = sede.id
+                INNER JOIN domicilio ON sede.domicilio = domicilio.id
+                INNER JOIN persona ON (toma.docente = persona.id)
+                WHERE comision.calendario = :calendario
+                AND (toma.estado = 'Aprobada') 
+                AND toma.estado_contralor != 'Modificar'
+            ");
+            $stmt->bindParam(':calendario', $$calendario_id, PDO::PARAM_STR); // Bind as a string
+        
+            $stmt->execute();
+        
+            return $stmt->fetchAll() ?? [];
+    }
+    public function contralorByCalendario($calendario_id){
+            $stmt = $this->pdo->prepare("
+            SELECT 
+                toma.id,
+                toma.archivo,
+                toma.fecha_toma,  toma.tipo_movimiento, 
+                persona.telefono, persona.numero_documento, persona.nombres, persona.apellidos, persona.cuil, persona.fecha_nacimiento, persona.email, persona.email_abc, persona.descripcion_domicilio,
+                sede.nombre AS sede_nombre, 
+                comision.pfid,
+                calendario.fin AS calendario_fecha_fin,
+                planificacion.anio AS planificacion_anio,
+                planificacion.semestre AS planificacion_semestre,
+                CONCAT(planificacion.anio, '°', planificacion.semestre, 'C') AS tramo,
+                CONCAT(
+                            'Calle ', COALESCE(domicilio.calle, '-'), ' ',
+                            'e/ ', COALESCE(domicilio.entre, '-'), ', ',
+                            'N° ', COALESCE(domicilio.numero, '-'), ', ',
+                            COALESCE(domicilio.barrio, '-'), ', ',
+                            COALESCE(domicilio.localidad, '-')
+                        ) AS domicilio_detalle,
+                asignatura.nombre AS asignatura_nombre, asignatura.codigo AS asignatura_codigo,
+                curso.descripcion_horario,
+                curso.horas_catedra AS curso_horas_catedra,
+                disposicion.horas_catedra AS disposicion_horas_catedra,
+                calendario.inicio AS fecha_inicio,
+                calendario.fin AS fecha_fin,
+                plan.orientacion,
+                plan.resolucion,
+                comision.turno
+            FROM toma 
+            INNER JOIN curso ON toma.curso = curso.id
+            INNER JOIN disposicion ON curso.disposicion = disposicion.id
+            INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+            INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+            INNER JOIN plan ON planificacion.plan = plan.id
+            INNER JOIN comision ON curso.comision = comision.id
+            INNER JOIN calendario ON comision.calendario = calendario.id
+            INNER JOIN sede ON comision.sede = sede.id
+            INNER JOIN domicilio ON sede.domicilio = domicilio.id
+            INNER JOIN persona ON (toma.docente = persona.id)
+            WHERE comision.calendario = :calendario
+            AND (toma.estado = 'Aprobada') 
+            AND toma.estado_contralor = 'Pasar'
+            AND toma.id NOT IN (
+                SELECT toma
+                FROM asignacion_planilla_docente
+                WHERE reclamo = false
+            )
+            ORDER BY persona.numero_documento ASC;
+        ");
+        $stmt->bindParam(':calendario', $calendario_id, PDO::PARAM_STR); // Bind as a string
+    
+        $stmt->execute();
+    
+        return $stmt->fetchAll(PDO::FETCH_OBJ) ?? [];
+    }
         
 
+    public function updatePersonaArray($persona){
+        // Update existing person
+        $sql = "UPDATE persona 
+                SET nombres = ?, apellidos = ?, descripcion_domicilio = ?, 
+                    dia_nacimiento = ?, mes_nacimiento = ?, anio_nacimiento = ?, 
+                    fecha_nacimiento = ?,
+                    telefono = ?, email_abc = ?
+                WHERE numero_documento = ?";
+        
+        return $this->pdo->prepare($sql)->execute([
+            $persona['nombres'], $persona['apellidos'], $persona['descripcion_domicilio'],
+            $persona['dia_nacimiento'], $persona['mes_nacimiento'], $persona['anio_nacimiento'],
+            $persona['fecha_nacimiento'],
+            $persona['telefono'], $persona["email_abc"], $persona['numero_documento']
+        ]);
+    }
+
+    public function insertPersonaArray($persona){
+        // Insert new person
+        $sql = "INSERT INTO persona (id, nombres, apellidos, descripcion_domicilio, 
+                                    dia_nacimiento, mes_nacimiento, anio_nacimiento, 
+                                    fecha_nacimiento, numero_documento, telefono, email_abc) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        return $this->pdo->prepare($sql)->execute([
+            $persona['id'],
+            $persona['nombres'], $persona['apellidos'], $persona['descripcion_domicilio'],
+            $persona['dia_nacimiento'], $persona['mes_nacimiento'], $persona['anio_nacimiento'],
+            $persona['fecha_nacimiento'],
+            $persona['numero_documento'], $persona['telefono'], $persona["email_abc"]
+        ]);
+    }
+    public function insertAsignacionPlanillaDocente($toma, $planilla_docente){
+        $id = uniqid(); // Or generate your own unique ID
+
+        // Prepare SQL with placeholders
+        $sql = "INSERT INTO asignacion_planilla_docente (id, planilla_docente, toma)
+                VALUES (:id, :planilla_docente, :toma)";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        // Bind values to the placeholders
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':planilla_docente', $planilla_docente);
+        $stmt->bindParam(':toma', $toma);
+
+        // Execute the statement
+        $stmt->execute();
+    }
+
+    function idCursoByComisionPfid_AsignaturaCodigo_Calendario($pfid_comision, $codigo_asignatura, $id_calendario) {
+        $stmt = $this->pdo->prepare("
+            SELECT curso.id 
+            FROM curso
+            INNER JOIN disposicion ON curso.disposicion = disposicion.id
+            INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+            INNER JOIN comision ON curso.comision = comision.id
+            WHERE comision.pfid = :pfid
+            AND comision.calendario = :calendario
+            AND asignatura.codigo LIKE :codigo"
+        );
+        $stmt->bindParam(':calendario', $id_calendario, PDO::PARAM_STR); // Bind as a string
+        $stmt->bindParam(':pfid', $pfid_comision, PDO::PARAM_STR); // Bind as a string
+        $stmt->bindValue(':codigo', "%".$codigo_asignatura."%", PDO::PARAM_STR); // Use bindValue for LIKE wildcard
+    
+        $stmt->execute();
+    
+        return $stmt->fetchColumn() ?? null;
+    }
 }

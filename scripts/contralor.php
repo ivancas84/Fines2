@@ -2,19 +2,17 @@
 header('Content-Type: text/html; charset=utf-8');
 mb_internal_encoding('UTF-8');
 
+
 require_once 'includes/db_config.php';
-require_once 'includes/queries_fines.php';
 
+require_once 'class/PdoFines.php';
 
-$pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-]);
-$pdo->exec("SET NAMES 'utf8mb3'");
-
-$id_calendario = "202502110007";
-
-$tomas = pdoFines_ContralorByCalendario($pdo, $id_calendario);
+$pdoFines = new PdoFines(DB_HOST_FINES, DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES);
+$tomas = $pdoFines->contralorByCalendario(CALENDARIO_ID);
+if(!count($tomas)){
+    echo "No hay tomas pendientes para contralor del calendario " . CALENDARIO_ID;
+    die();
+}
 echo "<table>";
 foreach($tomas as $toma){
     $orientacion_ = explode(' ', $toma['orientacion']);

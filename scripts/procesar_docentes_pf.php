@@ -4,18 +4,10 @@ mb_internal_encoding('UTF-8');
 
 require_once 'includes/db_config.php';
 require_once 'includes/queries_fines.php';
+require_once 'class/PdoFines.php';
 
-
-
-$pdo = new PDO("mysql:host=$db_host;dbname=$db_name;", $db_user, $db_pass, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-]);
-$pdo->exec("SET NAMES 'utf8mb3'");
-
-
-// Path to your JSON file
-$jsonFile = $rutaBase . '/data2.json';
+$pdoFines = new PdoFines(DB_HOST_FINES, DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES);
+$jsonFile = RUTA_BASE . '/data2.json';
 
 // Check if the file exists
 if (!file_exists($jsonFile)) {
@@ -25,8 +17,6 @@ if (!file_exists($jsonFile)) {
 // Read the file contents
 $dataJson = file_get_contents($jsonFile);
 $dataJson = mb_convert_encoding($dataJson, 'UTF-8', 'auto');
-
-
 
 // Decode JSON
 $dataJson = trim($dataJson); // Remove whitespace
@@ -43,7 +33,7 @@ $id_calendario = "202502110007";
 if(empty($id_calendario)) {
     echo "Calendario no definido, no se procesaran los cargos";
 } else {
-    $pfidComisiones = pdoFines_pfidComisionesById($pdo, $id_calendario);
+    $pfidComisiones = $pdoFines->pfidsComisionesByCalendario($id_calendario);
 }
 
 foreach ($data as $persona) {
@@ -62,46 +52,22 @@ foreach ($data as $persona) {
     }
 
     // Check if the person exists
-    $stmt = $pdo->prepare("SELECT * FROM persona WHERE numero_documento = ?");
-    $stmt->execute([$persona['numero_documento']]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC); // Fetch as an associative array
+    $result = $pdoFines->personaByNumeroDocumento($persona['numero_documento'], PDO::FETCH_ASSOC);
     $date = new DateTime();
     $date->setDate($persona['anio_nacimiento'], $persona['mes_nacimiento'], $persona['dia_nacimiento']);
-    $fecha_nacimiento = $date->format('Y-m-d'); // Converts to 'YYYY-MM-DD' format
-    $email_abc = !empty(trim($persona["email_abc"])) ? trim($persona["email_abc"]) : null;
+    $persona["fecha_nacimiento"] = $date->format('Y-m-d'); // Converts to 'YYYY-MM-DD' format
+    $persona["email_abc"] = !empty(trim($persona["email_abc"])) ? trim($persona["email_abc"]) : null;
 
     if ($result) {
 
-        $id_persona = $result["id"];
-        // Update existing person
-        $sql = "UPDATE persona 
-                SET nombres = ?, apellidos = ?, descripcion_domicilio = ?, 
-                    dia_nacimiento = ?, mes_nacimiento = ?, anio_nacimiento = ?, 
-                    fecha_nacimiento = ?,
-                    telefono = ?, email_abc = ?
-                WHERE numero_documento = ?";
-        $update = $pdo->prepare($sql)->execute([
-            $persona['nombres'], $persona['apellidos'], $persona['descripcion_domicilio'],
-            $persona['dia_nacimiento'], $persona['mes_nacimiento'], $persona['anio_nacimiento'],
-            $fecha_nacimiento,
-            $persona['telefono'], $email_abc, $persona['numero_documento']
-        ]);
 
+        $persona["id"] = $result["id"];
+        $update = $pdoFines->updatePersonaArray($persona);
         echo $update ? "Persona actualizada.<br/>" : "Persona no actualizada (mismos valores)<br/>";
 
     } else {
-        $id_persona = uniqid();
-        // Insert new person
-        $sql = "INSERT INTO persona (id, numero_documento, nombres, apellidos, descripcion_domicilio, 
-                                      dia_nacimiento, mes_nacimiento, anio_nacimiento, fecha_nacimiento, telefono, email_abc) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        $insert = $pdo->prepare($sql)->execute([
-            $id_persona,
-            $persona['numero_documento'], $persona['nombres'], $persona['apellidos'],
-            $persona['descripcion_domicilio'], $persona['dia_nacimiento'], $persona['mes_nacimiento'], 
-            $persona['anio_nacimiento'], $fecha_nacimiento, $persona['telefono'], $email_abc
-        ]);
-
+        $persona["id"] = uniqid();
+        $insert = $pdoFines->insertPersonaArray($persona);
         echo $insert ? "Se ha insertado la persona<br/>" : "Error al insertar la persona.<br/>";
 
     }
@@ -111,7 +77,7 @@ foreach ($data as $persona) {
     foreach($persona["cargos"]  as $cargo){
         if(in_array($cargo["comision"], $pfidComisiones)){
             echo "***** PROCESAR CARGO " . $cargo["comision"] . " " . $cargo["codigo"] . "*****<br>";
-            $id_curso = pdoFines_idCurso__By_ComisionPfid_AsignaturaCodigo_calendario($pdo, $cargo["comision"], $cargo["codigo"], $id_calendario);
+            $id_curso = $pdoFines->idCursoByComisionPfid_AsignaturaCodigo_Calendario($cargo["comision"], $cargo["codigo"], $id_calendario);
 
             if(!$id_curso){
                 echo "No existe curso<br>";

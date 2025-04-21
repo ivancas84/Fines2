@@ -16,12 +16,21 @@ use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
 require 'vendor/autoload.php';
+
+require_once 'includes/db_config.php';
+
+require_once 'class/PdoFines.php';
+
+$pdoFines = new PdoFines(DB_HOST_FINES, DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES);
 try {
-    $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-    $pdo->exec("SET NAMES 'utf8mb3'");
+    $db_host = DB_HOST_FINES;
+    $db_name = DB_NAME_FINES;
+    $db_user = DB_USER_FINES;
+    $db_pass = DB_PASS_FINES;
+    $db_host_pedidos = DB_HOST_PEDIDOS;
+    $db_name_pedidos = DB_NAME_PEDIDOS;
+    $db_user_pedidos = DB_USER_PEDIDOS; 
+    $db_pass_pedidos = DB_PASS_PEDIDOS; 
 
     $pdo_pedidos = new PDO("mysql:host=$db_host_pedidos;dbname=$db_name_pedidos;charset=utf8mb4", $db_user_pedidos, $db_pass_pedidos, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -43,7 +52,7 @@ try {
 
     foreach($tomas as $toma){
         $actual_unix_timestamp = time();
-        $toma["root_dir"] = $rutaUploadPedidos;
+        $toma["root_dir"] = PATH_UPLOAD_PEDIDOS;
         $toma["upload_dir"] = "/wpsc/". date('Y') . "/" . date('m') . "/";
         $toma["filename"] = "{$actual_unix_timestamp}_toma_{$toma['numero_documento']}.pdf";
         $toma["save_path"] = $toma["root_dir"] . $toma["upload_dir"] . $toma["filename"];
@@ -228,8 +237,14 @@ function generar_toma_posesion($url, $data) {
 
 
 function sendEmail($path_toma, $sede_nombre, $comision_pfid, $asignatura_nombre, $docente_nombre, $email_abc, $email) {
-    $mail = new PHPMailer(true);
-    
+    $maxAttempts = 3;
+    $attempt = 0;
+    $sent = false;
+
+    while ($attempt < $maxAttempts && !$sent) {
+        $mail = new PHPMailer(true);
+
+
     try {
         $mail->isSMTP();
         $mail->Host = EMAIL_DOCENTES_HOST;
@@ -273,9 +288,18 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
         $mail->addAttachment($attachmentPath);
         
         $mail->send();
+        $sent = true;
         echo "Message has been sent<br>";
     } catch (Exception $e) {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}<br>";
+        $attempt++;
+        if ($attempt < $maxAttempts) {
+            sleep(5); // Wait 5 seconds before retry
+        }
+    }
+
+    }
+    if (!$sent) {
+        echo "Message could not be sent after {$maxAttempts} attempts.<br>";
     }
 }
 
