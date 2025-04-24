@@ -2,26 +2,17 @@
 header('Content-Type: text/html; charset=utf-8');
 mb_internal_encoding('UTF-8');
 
-$id_calendario = "202502110007";
 
 require_once 'includes/db_config.php';
 require_once 'includes/queries_fines.php';
+require_once 'class/PdoFines.php';;
 
-$pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
-    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-]);
+$pdoFines = new PdoFines(DB_HOST_FINES, DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES);
 
-
-if(empty($id_calendario)) {
-    echo "Calendario no definido";
-    die();
-}
-
-$pfidComisiones = pdoFines_pfidComisionesById($pdo, $id_calendario);
+$pfidComisiones = $pdoFines->pfidsComisionesByCalendario(CALENDARIO_ID);
 
 // Path to your JSON file
-$file = $rutaBase . '/comisiones.txt';
+$file = RUTA_BASE . '/comisiones.txt';
 $dataText = file_get_contents($file);
 
 $dict = []; // Equivalent to Dictionary<string, object>
@@ -50,7 +41,7 @@ foreach (array_filter(explode(PHP_EOL, $dataText)) as $line) {
             if (!empty($matches)) {
                 $cuil = $matches[0];
                 $cuilParts = explode("-", $cuil);
-                $id = pdoFines_idPersonaByDni($pdo, $cuilParts[1] ?? '');
+                $id = $pdoFines->idPersonaByDni($cuilParts[1] ?? '');
 
                 if (empty($id)) {
                     echo "No existe docente " . $cuil . "<br/>";
@@ -60,7 +51,7 @@ foreach (array_filter(explode(PHP_EOL, $dataText)) as $line) {
                 }
 
                 // Update cuil
-                $result = pdoFines_updateCuilById($pdo, implode("", $cuilParts), $id);
+                $result = $pdoFines->updateCuilById(implode("", $cuilParts), $id);
                 if ($result) {
                     echo "CUIL actualizado.". "<br/>";
                 } else {
@@ -89,7 +80,7 @@ foreach (array_filter(explode(PHP_EOL, $dataText)) as $line) {
 
                 echo "Procesando comisión " . $comision_pfid. "<br/>";
 
-                $id_curso = pdoFines_idCurso__By_ComisionPfid_AsignaturaCodigo_calendario($pdo, $comision_pfid, $asignatura_codigo, $id_calendario);
+                $id_curso = $pdoFines->idCursoByParams($comision_pfid, $asignatura_codigo, CALENDARIO_ID);
                 if (empty($id_curso)) {
                     echo "No existe curso " . $comision_pfid . " " . $asignatura_codigo . "<br>";
                     break;
@@ -98,7 +89,7 @@ foreach (array_filter(explode(PHP_EOL, $dataText)) as $line) {
                 echo "Curso existente " . $comision_pfid . " " . $asignatura_codigo . " (" . $id_curso . ")<br>";
                 echo "Voy a actualizar horario " . $descripcion_horario . "<br>";
                 // Update descripcion_horario
-                $result = pdoFines_updateDescripcionHorarioById($pdo, $descripcion_horario, $id_curso);
+                $result = $pdoFines->updateDescripcionHorarioById($descripcion_horario, $id_curso);
                 if ($result) {
                     echo "Descripcion horario actualizada.". "<br/>";
                 } else {

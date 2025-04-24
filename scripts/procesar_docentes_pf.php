@@ -27,14 +27,7 @@ if ($data === null) {
     die();
 } 
 
-
-$id_calendario = "202502110007";
-
-if(empty($id_calendario)) {
-    echo "Calendario no definido, no se procesaran los cargos";
-} else {
-    $pfidComisiones = $pdoFines->pfidsComisionesByCalendario($id_calendario);
-}
+$pfidComisiones = $pdoFines->pfidsComisionesByCalendario(CALENDARIO_ID);
 
 foreach ($data as $persona) {
     echo "******************************<br>";
@@ -77,36 +70,25 @@ foreach ($data as $persona) {
     foreach($persona["cargos"]  as $cargo){
         if(in_array($cargo["comision"], $pfidComisiones)){
             echo "***** PROCESAR CARGO " . $cargo["comision"] . " " . $cargo["codigo"] . "*****<br>";
-            $id_curso = $pdoFines->idCursoByComisionPfid_AsignaturaCodigo_Calendario($cargo["comision"], $cargo["codigo"], $id_calendario);
+            $id_curso = $pdoFines->idCursoByParams($cargo["comision"], $cargo["codigo"], CALENDARIO_ID);
 
             if(!$id_curso){
-                echo "No existe curso<br>";
+                echo "<strong>No existe curso</strong><br>";
                 continue;
             }
 
-            $toma = pdoFines_tomaActiva__By_comisionPfid_asignaturaCodigo_calendario($pdo, $cargo["comision"], $cargo["codigo"], $id_calendario);
+            $toma = $pdoFines->tomaActivaByParams($cargo["comision"], $cargo["codigo"], CALENDARIO_ID);
             
             if(!$toma) {
                 echo "No existe toma de posesion en el cargo<br>";
-                $id_toma = uniqid();
-                // Insert new person
-                $sql = "INSERT INTO toma (id, estado, tipo_movimiento, estado_contralor, 
-                                              curso, docente) 
-                        VALUES (?, ?, ?, ?, ?, ?)";
 
-                $stmt = $pdo->prepare($sql);
-
-                $insert = $stmt->execute([
-                    $id_toma,
-                    'Pendiente', 'AI', 'Pasar',
-                    $id_curso, $id_persona
-                ]);
+                $insert =$pdoFines->insertTomaPendienteAI($id_curso, $persona["id"]);	
         
-                echo $insert ?  "Se ha insertado la toma<br/>" : "Error al insertar la toma: " . $stmt->errorInfo();
+                echo $insert ?  "<strong>Se ha insertado la toma</strong><br/>" : "<strong>Error al insertar la toma: " . $stmt->errorInfo() . "</strong><br/>";
             }
 
-            else echo ($toma["docente"] != $id_persona) ? 
-                "Existe una toma con un docente diferente. No se ejecutará ningun acción<br>"
+            else echo ($toma["docente"] != $persona["id"]) ? 
+                "<strong>Existe una toma con un docente diferente. No se ejecutará ningun acción</strong><br>"
                 : "Existe una toma con un el mismo docente. No se ejecutará ningun acción<br>";
         }
     }

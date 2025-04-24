@@ -35,6 +35,15 @@ function fines_plugin_menu() {
 
     );
 	
+    add_submenu_page(
+      'fines-plugin', 
+      'Lista de Cursos',
+      'Lista de Cursos', 
+      'edit_posts', 
+      'fines-plugin-lista-cursos', 
+      'lcu_lista_cursos_page'
+    );
+    
 	add_submenu_page(
         'fines-plugin', //debe coincidir con el slug del menu
         'Comisiones', // Título de la página
@@ -52,6 +61,7 @@ function fines_plugin_menu() {
       'fines-plugin-buscar-personas-page',  // Slug del submenú
       'bp_buscar_personas_page' // Función que muestra la página del submenu
     );
+
 
     add_submenu_page(
       'fines-plugin', //debe coincidir con el slug del menu
@@ -89,21 +99,21 @@ function fines_plugin_menu() {
   );
   
   add_submenu_page(
+    'fines-plugin', //debe coincidir con el slug del menu
+    'Generar Constancia General', // Título de la página
+    'Generar Constancia General', //Título del menú
+    'edit_posts', // Permisos
+    'fines-plugin-constancia-general-page',  // Slug del submenú
+    'cg_constancia_general_page' // Función que muestra la página del submenu
+  );
+  
+  add_submenu_page(
     'fines-plugin', 
     'Procesar Docentes PF',
     'Procesar Docentes PF', 
     'edit_posts', 
     'fines-plugin-procesar-docentes-pf-page', 
     'pfpd_procesar_docentes_pf_page'
-  );
-
-  add_submenu_page(
-    'fines-plugin', 
-    'Lista de Cursos',
-    'Lista de Cursos', 
-    'edit_posts', 
-    'fines-plugin-lista-cursos', 
-    'lcu_lista_cursos_page'
   );
 
 
@@ -262,6 +272,8 @@ include_once plugin_dir_path(__FILE__) . 'cp_constancia_pase_page/cp_constancia_
 include_once plugin_dir_path(__FILE__) . 'ccc_constancia_certificado_completo_page/ccc_constancia_certificado_completo_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'cv_constancia_vacante_page/cv_constancia_vacante_page.php';
+
+include_once plugin_dir_path(__FILE__) . 'cg_constancia_general_page/cg_constancia_general_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'taa_transferir_alumnos_activos_page/taa_transferir_alumnos_activos_page.php';
 

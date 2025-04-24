@@ -11,10 +11,10 @@ class PdoFines
     
         public $pdo;
     
-        public function __construct($db_host, $db_name, $db_user, $db_pass)
+        public function __construct()
         {
             try {
-                $this->pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
+                $this->pdo = new PDO("mysql:host=" . DB_HOST_FINES . ";dbname=" . DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES, [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
                 ]);
@@ -269,21 +269,59 @@ class PdoFines
     }
         
 
-    public function updatePersonaArray($persona){
-        // Update existing person
-        $sql = "UPDATE persona 
-                SET nombres = ?, apellidos = ?, descripcion_domicilio = ?, 
-                    dia_nacimiento = ?, mes_nacimiento = ?, anio_nacimiento = ?, 
-                    fecha_nacimiento = ?,
-                    telefono = ?, email_abc = ?
-                WHERE numero_documento = ?";
-        
-        return $this->pdo->prepare($sql)->execute([
-            $persona['nombres'], $persona['apellidos'], $persona['descripcion_domicilio'],
-            $persona['dia_nacimiento'], $persona['mes_nacimiento'], $persona['anio_nacimiento'],
-            $persona['fecha_nacimiento'],
-            $persona['telefono'], $persona["email_abc"], $persona['numero_documento']
-        ]);
+    
+
+    
+
+    //********** CURSO **********/
+    function idCursoByParams($pfid_comision, $codigo_asignatura, $id_calendario) {
+        $stmt = $this->pdo->prepare("
+            SELECT curso.id 
+            FROM curso
+            INNER JOIN disposicion ON curso.disposicion = disposicion.id
+            INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+            INNER JOIN comision ON curso.comision = comision.id
+            WHERE comision.pfid = :pfid
+            AND comision.calendario = :calendario
+            AND asignatura.codigo LIKE :codigo"
+        );
+        $stmt->bindParam(':calendario', $id_calendario, PDO::PARAM_STR); // Bind as a string
+        $stmt->bindParam(':pfid', $pfid_comision, PDO::PARAM_STR); // Bind as a string
+        $stmt->bindValue(':codigo', "%".$codigo_asignatura."%", PDO::PARAM_STR); // Use bindValue for LIKE wildcard
+    
+        $stmt->execute();
+    
+        return $stmt->fetchColumn() ?? null;
+    }
+
+    function updateDescripcionHorarioById($descripcion_horario, $id)
+    {
+        $stmt = $this->pdo->prepare("UPDATE curso SET descripcion_horario = :descripcion_horario WHERE id = :id");
+        $stmt->bindParam(':descripcion_horario', $descripcion_horario, PDO::PARAM_STR); // Bind CUIL as a string
+        $stmt->bindParam(':id', $id, PDO::PARAM_STR); // Bind ID as an integer
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            return true; //echo "CUIL updated successfully.";
+        } else {
+            return false; //echo "No record updated (ID may not exist or CUIL is the same).";
+        }
+    }
+
+
+   
+
+
+
+
+    //********** PERSONA **********/
+    function idPersonaByDni($dni)
+    {
+        $stmt = $this->pdo->prepare("SELECT id FROM persona WHERE numero_documento = :numero_documento");
+        $stmt->bindParam(':numero_documento', $dni, PDO::PARAM_STR); // Bind as a string
+        $stmt->execute();
+    
+        return $stmt->fetchColumn() ?? null;
     }
 
     public function insertPersonaArray($persona){
@@ -301,6 +339,68 @@ class PdoFines
             $persona['numero_documento'], $persona['telefono'], $persona["email_abc"]
         ]);
     }
+
+    public function updatePersonaArray($persona){
+        // Update existing person
+        $sql = "UPDATE persona 
+                SET nombres = ?, apellidos = ?, descripcion_domicilio = ?, 
+                    dia_nacimiento = ?, mes_nacimiento = ?, anio_nacimiento = ?, 
+                    fecha_nacimiento = ?,
+                    telefono = ?, email_abc = ?
+                WHERE numero_documento = ?";
+        
+        return $this->pdo->prepare($sql)->execute([
+            $persona['nombres'], $persona['apellidos'], $persona['descripcion_domicilio'],
+            $persona['dia_nacimiento'], $persona['mes_nacimiento'], $persona['anio_nacimiento'],
+            $persona['fecha_nacimiento'],
+            $persona['telefono'], $persona["email_abc"], $persona['numero_documento']
+        ]);
+    }
+
+    function updateCuilById($cuil, $id)
+    {
+        $stmt = $this->pdo->prepare("UPDATE persona SET cuil = :cuil WHERE id = :id");
+        $stmt->bindParam(':cuil', $cuil, PDO::PARAM_STR); // Bind CUIL as a string
+        $stmt->bindParam(':id', $id, PDO::PARAM_STR); // Bind ID as an integer
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            return true; //echo "CUIL updated successfully.";
+        } else {
+            return false; //echo "No record updated (ID may not exist or CUIL is the same).";
+        }
+    }
+
+
+    
+
+
+    //********** SELECT TOMA **********/
+    function tomaActivaByParams($pfid_comision, $codigo_asignatura, $id_calendario){
+        $stmt = $this->pdo->prepare("
+            SELECT toma.* FROM toma 
+            INNER JOIN curso ON toma.curso = curso.id
+            INNER JOIN disposicion ON curso.disposicion = disposicion.id
+            INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+            INNER JOIN comision ON curso.comision = comision.id
+            INNER JOIN persona ON (toma.docente = persona.id)
+            WHERE comision.pfid = :pfid
+            AND comision.calendario = :calendario
+            AND asignatura.codigo LIKE :codigo
+            AND (toma.estado = 'Aprobada' OR toma.estado = 'Pendiente') 
+            AND toma.estado_contralor != 'Modificar'
+        ");
+        $stmt->bindParam(':calendario', $id_calendario, PDO::PARAM_STR); // Bind as a string
+        $stmt->bindParam(':pfid', $pfid_comision, PDO::PARAM_STR); // Bind as a string
+        $stmt->bindValue(':codigo', "%".$codigo_asignatura."%", PDO::PARAM_STR); // Use bindValue for LIKE wildcard
+    
+        $stmt->execute();
+    
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?? null;
+    }
+
+
+    //********** INSERT / UPDATE ASIGNACION PLANILLA DOCENTE **********/
     public function insertAsignacionPlanillaDocente($toma, $planilla_docente){
         $id = uniqid(); // Or generate your own unique ID
 
@@ -319,23 +419,20 @@ class PdoFines
         $stmt->execute();
     }
 
-    function idCursoByComisionPfid_AsignaturaCodigo_Calendario($pfid_comision, $codigo_asignatura, $id_calendario) {
-        $stmt = $this->pdo->prepare("
-            SELECT curso.id 
-            FROM curso
-            INNER JOIN disposicion ON curso.disposicion = disposicion.id
-            INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
-            INNER JOIN comision ON curso.comision = comision.id
-            WHERE comision.pfid = :pfid
-            AND comision.calendario = :calendario
-            AND asignatura.codigo LIKE :codigo"
-        );
-        $stmt->bindParam(':calendario', $id_calendario, PDO::PARAM_STR); // Bind as a string
-        $stmt->bindParam(':pfid', $pfid_comision, PDO::PARAM_STR); // Bind as a string
-        $stmt->bindValue(':codigo', "%".$codigo_asignatura."%", PDO::PARAM_STR); // Use bindValue for LIKE wildcard
-    
-        $stmt->execute();
-    
-        return $stmt->fetchColumn() ?? null;
+
+    //********** INSERT TOMA **********/
+    public function insertTomaPendienteAI($id_curso, $id_persona){
+        $id_toma = uniqid();
+
+        // Insert new person
+        $sql = "INSERT INTO toma (id, estado, tipo_movimiento, estado_contralor, 
+                                    curso, docente) 
+                VALUES (?, ?, ?, ?, ?, ?)";
+        
+        return $this->pdo->prepare($sql)->execute([
+            $id_toma,
+            'Pendiente', 'AI', 'Pasar',
+            $id_curso, $id_persona
+        ]);
     }
 }
