@@ -25,13 +25,7 @@ class PdoFines
             }
         }
  
-        function pfidsComisionesByCalendario($idCalendario) {
-            $stmt = $this->pdo->prepare("SELECT DISTINCT pfid FROM comision WHERE calendario = :idCalendario");
-            $stmt->bindParam(':idCalendario', $idCalendario, PDO::PARAM_STR); // Bind as a string
-            $stmt->execute();
-
-            return $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch as a simple array of pfid values
-        }
+        
 
         function alumnosByComisionPfidAndCalendario($comision_pfid, $calendario_id) {
             $stmt = $this->pdo->prepare("
@@ -86,43 +80,7 @@ class PdoFines
             return $stmt->fetchAll(PDO::FETCH_OBJ);
         }
 
-        function comisionById($comision_id) {
-            $stmt = $this->pdo->prepare("
-                SELECT
-					comision.id as comision_id,
-					sede.id as sede_id,
-					sede.nombre,
-                    CONCAT(
-                        'Calle ', COALESCE(domicilio.calle, '-'), ' ',
-                        'e/ ', COALESCE(domicilio.entre, '-'), ', ',
-                        'N° ', COALESCE(domicilio.numero, '-'), ', ',
-                        COALESCE(domicilio.barrio, '-'), ', ',
-                        COALESCE(domicilio.localidad, '-')
-                    ) AS domicilio,
-                    CONCAT(planificacion.anio,'°',planificacion.semestre,'C') AS tramo,
-                    plan.orientacion, plan.resolucion,
-                    comision.autorizada, comision.apertura, comision.publicada, comision.turno,
-                    comision.pfid,
-                    GROUP_CONCAT(
-                        DISTINCT '* ', persona.nombres, ' ',
-                        COALESCE(persona.apellidos, '-'), ' ',
-                        COALESCE(persona.telefono, '-'), ' ',
-                        COALESCE(persona.email, '-') 
-                        SEPARATOR '<br/>'
-                    ) AS referentes
-                FROM comision     
-                INNER JOIN sede ON comision.sede = sede.id
-                LEFT JOIN domicilio ON sede.domicilio = domicilio.id
-                INNER JOIN planificacion ON comision.planificacion = planificacion.id
-                INNER JOIN plan ON planificacion.plan = plan.id
-                LEFT JOIN designacion ON comision.sede = designacion.sede AND designacion.cargo = 1 AND designacion.hasta IS NULL
-                LEFT JOIN persona ON designacion.persona = persona.id WHERE comision.id = :idComision;
-                ");
-            $stmt->bindParam(':idComision', $comision_id, PDO::PARAM_STR); // Bind as a string
-            $stmt->execute();
-            return $stmt->fetch(PDO::FETCH_OBJ);
-        }
-
+        
         function alumnoByNumeroDocumento($numero_documento){
             $stmt = $this->pdo->prepare("
                 SELECT alumno.id, persona.id AS persona_id, persona.nombres, persona.apellidos, persona.numero_documento
@@ -270,8 +228,66 @@ class PdoFines
         
 
     
+    //********** CALENDARIO **********/
+    function calendarios($fetchMode = PDO::FETCH_OBJ){
+        $stmt = $this->pdo->prepare("
+            SELECT id, anio, semestre, descripcion 
+            FROM calendario ORDER BY anio DESC, semestre DESC
+            "
+        );
+    
+        $stmt->execute();
+
+        return $stmt->fetchAll($fetchMode) ?? [];
+    }
+
+
+    //********** COMISION **********/
+    function comisionById($comision_id) {
+        $stmt = $this->pdo->prepare("
+            SELECT
+                comision.id as comision_id,
+                sede.id as sede_id,
+                sede.nombre,
+                CONCAT(
+                    'Calle ', COALESCE(domicilio.calle, '-'), ' ',
+                    'e/ ', COALESCE(domicilio.entre, '-'), ', ',
+                    'N° ', COALESCE(domicilio.numero, '-'), ', ',
+                    COALESCE(domicilio.barrio, '-'), ', ',
+                    COALESCE(domicilio.localidad, '-')
+                ) AS domicilio,
+                CONCAT(planificacion.anio,'°',planificacion.semestre,'C') AS tramo,
+                plan.orientacion, plan.resolucion,
+                comision.autorizada, comision.apertura, comision.publicada, comision.turno,
+                comision.pfid,
+                GROUP_CONCAT(
+                    DISTINCT '* ', persona.nombres, ' ',
+                    COALESCE(persona.apellidos, '-'), ' ',
+                    COALESCE(persona.telefono, '-'), ' ',
+                    COALESCE(persona.email, '-') 
+                    SEPARATOR '<br/>'
+                ) AS referentes
+            FROM comision     
+            INNER JOIN sede ON comision.sede = sede.id
+            LEFT JOIN domicilio ON sede.domicilio = domicilio.id
+            INNER JOIN planificacion ON comision.planificacion = planificacion.id
+            INNER JOIN plan ON planificacion.plan = plan.id
+            LEFT JOIN designacion ON comision.sede = designacion.sede AND designacion.cargo = 1 AND designacion.hasta IS NULL
+            LEFT JOIN persona ON designacion.persona = persona.id WHERE comision.id = :idComision;
+            ");
+        $stmt->bindParam(':idComision', $comision_id, PDO::PARAM_STR); // Bind as a string
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_OBJ);
+    }
 
     
+    function pfidsComisionesByCalendario($idCalendario) {
+        $stmt = $this->pdo->prepare("SELECT DISTINCT pfid FROM comision WHERE calendario = :idCalendario");
+        $stmt->bindParam(':idCalendario', $idCalendario, PDO::PARAM_STR); // Bind as a string
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_COLUMN); // Fetch as a simple array of pfid values
+    }
 
     //********** CURSO **********/
     function idCursoByParams($pfid_comision, $codigo_asignatura, $id_calendario) {

@@ -8,26 +8,31 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/class/PdoFines.php');
 function ppc_procesar_planilla_calificacion_page() {
 
     $pdo = new PdoFines();
-
-
-    echo "<div class=\"wrap\">";
+	$comision_id = isset($_GET['comision_id']) ? sanitize_text_field($_GET['comision_id']) : '';
+    $comision = $pdo->comisionById($comision_id);
     
     include plugin_dir_path(__FILE__) . 'ppc_form.html';
 
-
     if (isset($_POST['submit']) && !empty($_POST['data'])) {
-        $dataJson = stripslashes($_POST['data']); // Remove extra escaping
-        $dataJson = json_decode($dataJson, true); // Decode once more if needed
-
-        if ($dataJson && is_string($dataJson)) {
-            $dataJson = json_decode($dataJson, true);
-        }
-
-        if ($data === null) {
-            echo "JSON Decode Error: " . json_last_error_msg();
-        } else {
-            print_r($data);
-        }
+        $rawData = trim($_POST['data']);
+        $lines = explode(PHP_EOL, $rawData);
+    
+        // Clean up each line
+        $rows = array_map(function($line) {
+            return array_map('trim', explode("\t", $line));
+        }, $lines);
+    
+        // Use first row as headers
+        $headers = array_shift($rows);
+    
+        // Convert to array of associative arrays
+        $result = array_map(function($row) use ($headers) {
+            return array_combine($headers, $row);
+        }, $rows);
+    
+        echo "<pre>";
+        print_r($result);
+        echo "</pre>";
     }
     echo "</div>";
 }

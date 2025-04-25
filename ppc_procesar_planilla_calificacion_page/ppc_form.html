@@ -1,0 +1,11 @@
+<h1>Procesar Docentes PF</h1>
+<p>Utilizar script en page manipulator "docentes.js" para extraer json de datos de docentes</p>
+<form method="POST">
+    <input type="hidden" name="page" value="fines-plugin-procesar-docentes-pf" />
+    
+    <label for="busqueda">Datos:</label>
+    <textarea name="data" id="data" value="<?= esc_attr($data);?>"></textarea>
+
+    <input type="submit" name="submit" value="Consultar" class="button button-primary">
+</form>
+
