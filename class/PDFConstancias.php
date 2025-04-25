@@ -27,6 +27,8 @@ use chillerlan\QRCode\QROptions;
             file_put_contents($this->qrFile, base64_decode(str_replace('data:image/png;base64,', '', $qrcode)));
         }
 
+
+
         protected function mainDataA5($title, $url){
             $this->qrFile($url);  
             $this->SetCreator(PDF_CREATOR);
@@ -54,21 +56,25 @@ use chillerlan\QRCode\QROptions;
             $this->SetFont('helvetica', '', 10);
         }
 
-        public function OutputData($data){
-            $this->mainDataA5($data["titulo"], $data["url"]);
-            $this->writeHTMLCell(0, 0, '', '', $data["body"], 0, 1, false, true, 'J');
-
-            $dir = PATH_UPLOAD_PEDIDOS . $data["upload_dir"];
+        public function OutputBase($uploadDir, $fileName){
+            $dir = PATH_UPLOAD_PEDIDOS . $uploadDir;
             if (!is_dir($dir)) {
                 if (!mkdir($dir, 0777, true)) {
                     throw new Exception("Failed to create directory: $dir");
                 }
             }
 
-            $this->Output($dir . $data["filename"], "F");
-            $this->Output($data["filename"], "I");
+            $this->Output($dir . $fileName, "F");
+            $this->Output($fileName, "I");
 
             unlink($this->qrFile);
+        }
+
+        public function OutputData($data){
+            $this->mainDataA5($data["titulo"], $data["url"]);
+            $this->writeHTMLCell(0, 0, '', '', $data["body"], 0, 1, false, true, 'J');
+
+            $this->OutputBase($data["upload_dir"], $data["filename"]);
         }
 
         public function constanciaGeneral($data){
