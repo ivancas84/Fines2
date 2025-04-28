@@ -280,7 +280,7 @@ class PdoFines
         return $stmt->fetch(PDO::FETCH_OBJ);
     }
 
-    
+
     function pfidsComisionesByCalendario($idCalendario) {
         $stmt = $this->pdo->prepare("SELECT DISTINCT pfid FROM comision WHERE calendario = :idCalendario");
         $stmt->bindParam(':idCalendario', $idCalendario, PDO::PARAM_STR); // Bind as a string
@@ -326,7 +326,48 @@ class PdoFines
 
 
    
-
+    //********** CURSO **********/
+    function cursoById($curso_id) {
+    $stmt = $this->pdo->prepare("
+        SELECT
+            curso.id as curso_id,
+            asignatura.nombre as asignatura_nombre,
+            comision.id as comision_id,
+            sede.id as sede_id,
+            sede.nombre,
+            CONCAT(
+                'Calle ', COALESCE(domicilio.calle, '-'), ' ',
+                'e/ ', COALESCE(domicilio.entre, '-'), ', ',
+                'N° ', COALESCE(domicilio.numero, '-'), ', ',
+                COALESCE(domicilio.barrio, '-'), ', ',
+                COALESCE(domicilio.localidad, '-')
+            ) AS domicilio,
+            CONCAT(planificacion.anio,'°',planificacion.semestre,'C') AS tramo,
+            plan.orientacion, plan.resolucion,
+            comision.autorizada, comision.apertura, comision.publicada, comision.turno,
+            comision.pfid,
+            GROUP_CONCAT(
+                DISTINCT '* ', persona.nombres, ' ',
+                COALESCE(persona.apellidos, '-'), ' ',
+                COALESCE(persona.telefono, '-'), ' ',
+                COALESCE(persona.email, '-') 
+                SEPARATOR '<br/>'
+            ) AS referentes
+        FROM curso
+        INNER JOIN disposicion ON curso.disposicion = disposicion.id
+        INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+        INNER JOIN comision ON curso.comision = comision.id
+        INNER JOIN sede ON comision.sede = sede.id
+        LEFT JOIN domicilio ON sede.domicilio = domicilio.id
+        INNER JOIN planificacion ON comision.planificacion = planificacion.id
+        INNER JOIN plan ON planificacion.plan = plan.id
+        LEFT JOIN designacion ON comision.sede = designacion.sede AND designacion.cargo = 1 AND designacion.hasta IS NULL
+        LEFT JOIN persona ON designacion.persona = persona.id WHERE curso.id = :idCurso;
+        ");
+    $stmt->bindParam(':idCurso', $curso_id, PDO::PARAM_STR); // Bind as a string
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_OBJ);
+}
 
 
 

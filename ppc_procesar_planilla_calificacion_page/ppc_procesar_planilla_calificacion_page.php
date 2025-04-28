@@ -1,38 +1,53 @@
 <?php
 
+add_submenu_page(
+    null, 
+    'Procesar Planilla Calificación',
+    'Procesar Planilla Calificación', 
+    'edit_posts', 
+    'fines-plugin-ppc', 
+    'ppc_procesar_planilla_calificacion_page'
+  );
+
+
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/class/PdoFines.php');
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/class/Tools.php');
 
 function ppc_procesar_planilla_calificacion_page() {
 
     $pdo = new PdoFines();
-	$comision_id = isset($_GET['comision_id']) ? sanitize_text_field($_GET['comision_id']) : '';
-    $comision = $pdo->comisionById($comision_id);
+	$curso_id = isset($_GET['curso_id']) ? sanitize_text_field($_GET['curso_id']) : '';
+    $curso = $pdo->cursoById($curso_id);
     
-    include plugin_dir_path(__FILE__) . 'ppc_form.html';
-
-    if (isset($_POST['submit']) && !empty($_POST['data'])) {
-        $rawData = trim($_POST['data']);
-        $lines = explode(PHP_EOL, $rawData);
-    
-        // Clean up each line
-        $rows = array_map(function($line) {
-            return array_map('trim', explode("\t", $line));
-        }, $lines);
-    
-        // Use first row as headers
-        $headers = array_shift($rows);
-    
-        // Convert to array of associative arrays
-        $result = array_map(function($row) use ($headers) {
-            return array_combine($headers, $row);
-        }, $rows);
-    
-        echo "<pre>";
-        print_r($result);
-        echo "</pre>";
+    if (!isset($_POST['submit']) || empty($_POST['data']) || empty($_POST['format'])) {
+        include plugin_dir_path(__FILE__) . 'ppc_form.html';
     }
-    echo "</div>";
+    else  {
+
+        $rawData = trim($_POST['data']);
+        $format = $_POST['format'];
+        $result = Tools::excelParse($rawData);
+
+        foreach($result as $row) {
+            $data = array();
+
+            if($format == "pf"){
+                foreach($row as $key => $value) {
+                    if(str_contains($key, "Nombre")){
+                        $data  = array_merge($data, Tools::parseFirstColumnCalificacionPF($value));
+                    } else if(str_contains($key, "Final")){
+                        $data["calificacion"] = $value;
+                    }
+                } 
+                
+                print_r($data);
+                echo "<br>";  
+            }
+
+        }
+
+    }
 }

@@ -16,6 +16,7 @@
         <? foreach ($cursos as $curso): ?>
             <? $detalle_comision_url = admin_url('admin.php?page=fines-plugin-administrar-comision-page&comision_id=' . $curso->comision); ?>
             <? $administrar_tomas_url = admin_url('admin.php?page=fines-plugin-administrar-toma-comision&comision_id=' . $curso->comision); ?>
+            <? $cargar_planilla_calificacion_url = admin_url('admin.php?page=fines-plugin-ppc&curso_id=' . $curso->id); ?>
 
             <tr>
                 <td><?= esc_html($curso->sede_nombre); ?></td>
@@ -27,6 +28,7 @@
                 <td>
                     <a href="<?= esc_url($detalle_comision_url); ?>" class="button">Detalle Comisión</a> 
                     <a href="<?= esc_url($administrar_tomas_url); ?>" class="button">Administrar Tomas</a> 
+                    <a href="<?= esc_url($cargar_planilla_calificacion_url); ?>" class="button">Cargar Planillas Calificación</a> 
 
                 </td>
             </tr>

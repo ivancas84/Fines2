@@ -117,14 +117,6 @@ function fines_plugin_menu() {
   );
 
 
-  add_submenu_page(
-    'fines-plugin', 
-    'Procesar Planilla Calificación',
-    'Procesar Planilla Calificación', 
-    'edit_posts', 
-    'fines-plugin-ppc', 
-    'ppc_procesar_planilla_calificacion_page'
-  );
 
   include_once plugin_dir_path(__FILE__) . 'ppc_procesar_planilla_calificacion_page/ppc_procesar_planilla_calificacion_page.php';
 
