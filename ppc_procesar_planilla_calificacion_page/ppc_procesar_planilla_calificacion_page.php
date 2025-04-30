@@ -34,20 +34,53 @@ function ppc_procesar_planilla_calificacion_page() {
         foreach($result as $row) {
             $data = array();
 
-            if($format == "pf"){
-                foreach($row as $key => $value) {
-                    if(str_contains($key, "Nombre")){
-                        $data  = array_merge($data, Tools::parseFirstColumnCalificacionPF($value));
-                    } else if(str_contains($key, "Final")){
-                        $data["calificacion"] = $value;
-                    }
-                } 
-                
-                print_r($data);
-                echo "<br>";  
-            }
+            try {
 
-        }
+                if($format == "pf"){
+                    foreach($row as $key => $value) {
+                        if(str_contains($key, "Nombre")){
+                            $data = array_merge($data, Tools::parseFirstColumnCalificacionPF($value));
+                        } else if(str_contains($key, "Final")){
+                            $data["calificacion"] = Tools::formatCalificacionValue($value);
+                        }
+                    }
+
+                    $nombres = $data["nombres"];
+                    $apellidos = $data["apellidos"];
+                    $numero_documento = $data["numero_documento"];
+                    $calificacion = $data["calificacion"];
+                    if(empty($nombres) || empty($numero_documento) || empty($calificacion)){
+                        throw new Exception("Datos incompletos en la fila.");
+                    }
+
+                    //verificar si existe el alumno
+                    $alumno = $pdo->alumnoByNumeroDocumento($numero_documento);
+
+                    if(empty($alumno)){
+                        //no existe el alumno, verificar si existe persona
+                        $persona = $pdo->personaByNumeroDocumento($numero_documento);
+                        if(empty($persona)){
+                            $persona["id"] = uniqid();
+                            $insert = $pdo->insertPersonaPrincipalArray($data);
+                            if(!$insert) throw new Exception("No se pudo insertar la persona: " . $stmt->errorInfo());
+                        }
+
+                        $alumno["id"] = uniqid();
+                        $alumno["persona"] = $persona["id"];
+                        $alumno["observaciones"] = "Importado desde planilla de calificaciones";
+                        $alumno["plan"] = $data["plan_id"];
+
+                        $pdo->insertAlumnoPrincipalArray($alumno);
+                    }
+                    
+
+                }
+
+            } catch (Exception $e) {
+                echo "Error: " . $e->getMessage() . "<br>";
+            }
+        } 
 
     }
+
 }

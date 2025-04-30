@@ -226,6 +226,20 @@ class PdoFines
         return $stmt->fetchAll(PDO::FETCH_OBJ) ?? [];
     }
         
+    //********** ALUMNO **********/
+    public function insertAlumnoPrincipalArray($persona){
+        // Insert new person
+
+        $sql = "INSERT INTO persona (id, persona, observaciones, plan) 
+                VALUES (?, ?, ?, ?)";
+        
+        return $this->pdo->prepare($sql)->execute([
+            $persona['id'],
+            $persona['persona'], 
+            $persona['observaciones'],
+            $persona['plan']
+        ]);
+    }
 
     
     //********** CALENDARIO **********/
@@ -343,6 +357,7 @@ class PdoFines
                 COALESCE(domicilio.localidad, '-')
             ) AS domicilio,
             CONCAT(planificacion.anio,'°',planificacion.semestre,'C') AS tramo,
+            plan.id AS plan_id,
             plan.orientacion, plan.resolucion,
             comision.autorizada, comision.apertura, comision.publicada, comision.turno,
             comision.pfid,
@@ -379,6 +394,19 @@ class PdoFines
         $stmt->execute();
     
         return $stmt->fetchColumn() ?? null;
+    }
+
+    public function insertPersonaPrincipalArray($persona){
+        // Insert new person
+
+        $sql = "INSERT INTO persona (id, nombres, apellidos, numero_documento) 
+                VALUES (?, ?, ?, ?)";
+        
+        return $this->pdo->prepare($sql)->execute([
+            $persona['id'],
+            $persona['nombres'], $persona['apellidos'],
+            $persona['numero_documento']
+        ]);
     }
 
     public function insertPersonaArray($persona){
