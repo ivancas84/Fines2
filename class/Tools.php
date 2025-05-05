@@ -14,14 +14,7 @@ class Tools {
         }, $rows);
     }
 
-    public static function formatCalificacionValue($value){
-        $value = intval(trim($value));
-        if($value < 7){
-            throw new Exception("Calificación vacía o menor a 7");
-        }
-
-        return $value;
-    }
+    
 
     public static function parseFirstColumnCalificacionPF($inputString) {
         // Define the regex pattern to match the structure
@@ -49,5 +42,13 @@ class Tools {
         }
     }
     
-    
+    public static function organizeArrayByKey(array $array, string $key): array {
+        $result = array();
+        foreach ($array as $item) {
+            if (isset($item[$key])) {
+                $result[$item[$key]][] = $item;
+            }
+        }
+        return $result;
+    }
 }

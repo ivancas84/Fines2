@@ -42,7 +42,7 @@ class PdoFines
             return $stmt->fetchAll();
         }
 
-        function alumnosByComision($comision_id) {
+        function alumnosByComision($comision_id, $fetchMode = PDO::FETCH_OBJ) {
             $stmt = $this->pdo->prepare("
                 SELECT DISTINCT *, alumno.id AS alumno_id, persona.id AS persona_id
                 FROM alumno_comision
@@ -54,6 +54,29 @@ class PdoFines
             $stmt->execute();
 
             return $stmt->fetchAll();
+        }
+
+        function calificacionesByCursoArray(array $curso, $fetchMode = PDO::FETCH_OBJ) {
+            //curso.disposicion
+            
+
+            //el alumno puede tener una calificacion con esa disposicion que pertenece a la comision pero no tiene curso
+            //el alumno puede tener una calificacion con ese curso
+
+            
+            $stmt = $this->pdo->prepare("
+                SELECT DISTINCT *, alumno.id AS alumno_id, persona.id AS persona_id
+                FROM calificacion
+                INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+                INNER JOIN curso ON (disposicion.curso = curso.id)
+                INNER JOIN comision ON (curso.comision = comision.id)
+                INNER JOIN alumno ON (calificacion.alumno = alumno.id)
+                INNER JOIN persona ON (persona.id = alumno.persona)
+                WHERE curso.id = :idCurso");
+            $stmt->bindParam(':idCurso', $curso_id, PDO::PARAM_STR); // Bind as a string
+            $stmt->execute();
+
+            return $stmt->fetchAll($fetchMode);
         }
 
         function alumnosConCantidadCalificacionesAprobadasByComisionJoinAlumnoPlan($comision_id){
@@ -225,12 +248,27 @@ class PdoFines
     
         return $stmt->fetchAll(PDO::FETCH_OBJ) ?? [];
     }
+
+
+    //********** BASE ***********/
+    function updateKey($table, $key, $value, $id, $typeValue = PDO::PARAM_STR, $typeId = PDO::PARAM_STR) {
+        $stmt = $this->pdo->prepare("UPDATE $table SET $key = :value WHERE id = :id");
+        $stmt->bindParam(':value', $value, $typeValue); // Bind CUIL as a string
+        $stmt->bindParam(':id', $id, $typeId); // Bind ID as an integer
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            return true; //echo "CUIL updated successfully.";
+        } else {
+            return false; //echo "No record updated (ID may not exist or CUIL is the same).";
+        }
+    }
         
     //********** ALUMNO **********/
     public function insertAlumnoPrincipalArray($persona){
         // Insert new person
 
-        $sql = "INSERT INTO persona (id, persona, observaciones, plan) 
+        $sql = "INSERT INTO alumno (id, persona, observaciones, plan) 
                 VALUES (?, ?, ?, ?)";
         
         return $this->pdo->prepare($sql)->execute([
@@ -239,6 +277,39 @@ class PdoFines
             $persona['observaciones'],
             $persona['plan']
         ]);
+    }
+
+
+     //********** ALUMNO_COMISION **********/
+     public function insertAlumnoComisionPrincipalArray($alumno_comision){
+        // Insert new person
+
+        $sql = "INSERT INTO alumno_comision (id, alumno, comision, estado, observaciones) 
+                VALUES (?, ?, ?, ?)";
+        
+        return $this->pdo->prepare($sql)->execute([
+            $alumno_comision['id'],
+            $alumno_comision['alumno'], 
+            $alumno_comision['comision'],
+            $alumno_comision['estado'],
+            $alumno_comision['observaciones']
+        ]);
+    }
+
+    public function insertData($table, $data){
+        // Prepare the SQL statement with placeholders
+        $sql = "INSERT INTO $table (" . implode(", ", array_keys($data)) . ") VALUES (:" . implode(", :", array_keys($data)) . ")";
+
+        // Prepare the statement
+        $stmt = $this->pdo->prepare($sql);
+
+        // Bind the parameters dynamically
+        foreach ($data as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+
+        // Execute the statement
+        return $stmt->execute();
     }
 
     
@@ -256,6 +327,34 @@ class PdoFines
     }
 
 
+    //********** CALIFICACION **********/
+
+
+    //Calificaciones por disposicion y dnis
+    function calificacionesAprobadasByDisposicionAndDnis($disposicion_id, $numeros_documento, $fetchMode = PDO::FETCH_OBJ) {
+        // Step 1: Create placeholders
+        $placeholders = [];
+        for ($i = 0; $i < count($numeros_documento); $i++)
+            $placeholders[] = ":doc$i";
+
+        $stmt = $this->pdo->prepare("
+            SELECT DISTINCT calificacion.nota_final, calificacion.crec, calificacion.curso, calificacion.id AS calificacion_id, alumno.id AS alumno_id, persona.id AS persona_id, persona.numero_documento AS numero_documento
+            FROM calificacion
+            INNER JOIN alumno ON (calificacion.alumno = alumno.id)
+            INNER JOIN persona ON (persona.id = alumno.persona)
+            WHERE (nota_final >= 7 OR crec >= 4)
+            AND calificacion.disposicion = :idDisposicion
+            AND persona.numero_documento IN (" . implode(',', $placeholders) . ")");
+
+        $stmt->bindParam(':idDisposicion', $disposicion_id, PDO::PARAM_STR); // Bind as a string
+
+        for ($i = 0; $i < count($numeros_documento); $i++)
+            $stmt->bindValue(":doc$i", $numeros_documento[$i], PDO::PARAM_STR);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll($fetchMode);
+    }
     //********** COMISION **********/
     function comisionById($comision_id) {
         $stmt = $this->pdo->prepare("

@@ -4,6 +4,59 @@ class ProgramaFines
 {
     private $client;
 
+    public static function parseFirstColumnCalificacionPF($inputString) {
+        // Define the regex pattern to match the structure
+        $pattern = '/^(\d+)\s+([^,]+),\s+(.+?)\s+DNI\s+(\d+)$/';
+        
+        // Apply the regex pattern
+        if (preg_match($pattern, $inputString, $matches)) {
+            // $matches[1] contains the position number
+            // $matches[2] contains the apellidos (surnames)
+            // $matches[3] contains the nombres (first names)
+            // $matches[4] contains the documento (document number)
+            
+            $apellidos = trim($matches[2]);
+            $nombres = trim($matches[3]);
+            $numero_documento = trim($matches[4]);
+            
+            $response = [
+                'apellidos' => $apellidos,
+                'nombres' => $nombres,
+                'numero_documento' => $numero_documento
+            ];
+
+        }
+
+        throw new Exception("No se pudo parsear el string: {$inputString}"); // Pattern not matched
+    }
+
+    public static function parseRowCalificacionPF($row)
+    {
+        $data = array();
+        foreach($row as $key => $value) {
+            if(str_contains($key, "Nombre")){
+                $data = array_merge($data, self::parseFirstColumnCalificacionPF($value));
+            } else if(str_contains($key, "Final")){
+                $data["calificacion"] = self::formatCalificacionValue($value);
+            }
+        }
+
+        if(empty($data["nombres"]) || empty($data["apellidos"]) || empty($data["calificacion"])){
+            throw new Exception("Datos incompletos en la fila.");
+        }
+
+    }
+
+    public static function formatCalificacionValue($value){
+        $value = intval(trim($value));
+        if($value < 7){
+            throw new Exception("Calificación vacía o menor a 7");
+        }
+
+        return $value;
+    }
+    
+
     public function __construct($pfUser, $pfPassword)
     {
         $this->client = curl_init();
