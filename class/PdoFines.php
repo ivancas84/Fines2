@@ -296,21 +296,7 @@ class PdoFines
         ]);
     }
 
-    public function insertData($table, $data){
-        // Prepare the SQL statement with placeholders
-        $sql = "INSERT INTO $table (" . implode(", ", array_keys($data)) . ") VALUES (:" . implode(", :", array_keys($data)) . ")";
-
-        // Prepare the statement
-        $stmt = $this->pdo->prepare($sql);
-
-        // Bind the parameters dynamically
-        foreach ($data as $key => $value) {
-            $stmt->bindValue(":$key", $value);
-        }
-
-        // Execute the statement
-        return $stmt->execute();
-    }
+    
 
     
     //********** CALENDARIO **********/
@@ -328,8 +314,6 @@ class PdoFines
 
 
     //********** CALIFICACION **********/
-
-
     //Calificaciones por disposicion y dnis
     function calificacionesAprobadasByDisposicionAndDnis($disposicion_id, $numeros_documento, $fetchMode = PDO::FETCH_OBJ) {
         // Step 1: Create placeholders
@@ -355,6 +339,26 @@ class PdoFines
 
         return $stmt->fetchAll($fetchMode);
     }
+
+    public function insertCalificacionArray($calificacion){
+        $sql = "INSERT INTO calificacion (id, alumno, curso, nota_final, crec) 
+                VALUES (?, ?, ?, ?, ?)";
+        
+        $stmt = $this->pdo->prepare($sql);
+        
+        $insert = $stmt->execute([
+            $calificacion['id'],
+            $calificacion['alumno'], 
+            $calificacion['comision'],
+            $calificacion['estado'],
+            $calificacion['observaciones']
+        ]);
+
+        if(!$insert) throw new Exception("No se pudo insertar la calificacion: " . $stmt->errorInfo());
+    }
+
+
+
     //********** COMISION **********/
     function comisionById($comision_id) {
         $stmt = $this->pdo->prepare("

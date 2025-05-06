@@ -14,6 +14,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/class/PdoFines.php');
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/class/ProgramaFines.php');
+
 require_once($_SERVER['DOCUMENT_ROOT'] . '/class/Tools.php');
 
 function ppc_insertar_alumno($pdo, $data, $persona_id) {
@@ -29,32 +31,34 @@ function ppc_insertar_alumno($pdo, $data, $persona_id) {
 }
 
 function ppc_insertar_alumno_comision($pdo, $alumno_id, $comision_id) {
+    $alumno = [];
     $alumno["id"] = uniqid();
     $alumno["alumno"] = $alumno_id;
     $alumno["comision"] = $comision_id;
     $alumno["estado"] = "Ingresante";
     $alumno["observaciones"] = "Importado desde planilla de calificaciones";
 
-    $insert = $pdo->insertAlumnoComisionPrincipalArray($alumno);
-    if(!$insert) throw new Exception("No se pudo insertar al alumno: " . $stmt->errorInfo());
+    $pdo->insertAlumnoComisionPrincipalArray($alumno);
 }
 
 function ppc_insertar_calificacion($pdo, $alumno_id, $curso_id, $nota_final, $crec) {
-    $alumno["id"] = uniqid();
-    $alumno["alumno"] = $alumno_id;
-    $alumno["curso"] = $curso_id;
-    $alumno["nota_final"] = $nota_final;
-    $alumno["crec"] = $crec;
+    $calificacion = [];
+    $calificacion["id"] = uniqid();
+    $calificacion["alumno"] = $alumno_id;
+    $calificacion["curso"] = $curso_id;
+    $calificacion["nota_final"] = $nota_final;
+    $calificacion["crec"] = $crec;
 
-    $insert = $pdo->insertAlumnoComisionPrincipalArray($alumno);
-    if(!$insert) throw new Exception("No se pudo insertar al alumno: " . $stmt->errorInfo());
+    
+    $pdo->insertCalificacionArray($calificacion);
 }
 
 function ppc_procesar_planilla_calificacion_page() {
 
     $pdo = new PdoFines();
-	$curso_id = isset($_GET['curso_id']) ? sanitize_text_field($_GET['curso_id']) : throw new Exception("No se ha especificado el curso_id");
-    
+    $curso = $pdo->cursoById(sanitize_text_field($_GET['curso_id']));
+
+    if(empty($curso)) throw new Exception("No se ha encontrado el curso con id: " . $curso_id);
     if (!isset($_POST['submit']) || empty($_POST['data']) || empty($_POST['format'])) {
         include plugin_dir_path(__FILE__) . 'ppc_form.html';
     }
@@ -82,8 +86,11 @@ function ppc_procesar_planilla_calificacion_page() {
             }
         } 
 
-        $curso = $pdo->cursoById($curso_id);
-
+        echo "<pre>";
+        print_r($alumnosComisionCalificacionPF);
+        echo "</pre>";
+        echo "fin";
+        die();
 
         $alumnosComision = $pdo->alumnosByComision($curso["comision_id"], PDO::FETCH_ASSOC);
         $alumnosComision = Tools::organizeArrayByKey($alumnosComision, "numero_documento");
@@ -92,7 +99,7 @@ function ppc_procesar_planilla_calificacion_page() {
         $calificaciones = Tools::organizeArrayByKey($calificaciones, "numero_documento");
 
 
-
+        die();
         foreach($alumnosComisionCalificacionPF as $numero_documento => $data) {
 
             if(array_key_exists($numero_documento, $calificaciones)){ //no existe calificacion aprobada
