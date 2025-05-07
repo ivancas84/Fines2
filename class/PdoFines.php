@@ -53,7 +53,7 @@ class PdoFines
             $stmt->bindParam(':idComision', $comision_id, PDO::PARAM_STR); // Bind as a string
             $stmt->execute();
 
-            return $stmt->fetchAll();
+            return $stmt->fetchAll($fetchMode);
         }
 
         function calificacionesByCursoArray(array $curso, $fetchMode = PDO::FETCH_OBJ) {
@@ -341,7 +341,7 @@ class PdoFines
     }
 
     public function insertCalificacionArray($calificacion){
-        $sql = "INSERT INTO calificacion (id, alumno, curso, nota_final, crec) 
+        $sql = "INSERT INTO calificacion (id, alumno, curso, nota_final, disposicion) 
                 VALUES (?, ?, ?, ?, ?)";
         
         $stmt = $this->pdo->prepare($sql);
@@ -349,9 +349,9 @@ class PdoFines
         $insert = $stmt->execute([
             $calificacion['id'],
             $calificacion['alumno'], 
-            $calificacion['comision'],
-            $calificacion['estado'],
-            $calificacion['observaciones']
+            $calificacion['curso'],
+            $calificacion['nota_final'],
+            $calificacion['disposicion'],
         ]);
 
         if(!$insert) throw new Exception("No se pudo insertar la calificacion: " . $stmt->errorInfo());
@@ -444,13 +444,15 @@ class PdoFines
 
    
     //********** CURSO **********/
-    function cursoById($curso_id) {
+    function cursoById($curso_id, $fetchMode = PDO::FETCH_OBJ) {
+        // Get course details by ID
     $stmt = $this->pdo->prepare("
         SELECT
             curso.id as curso_id,
             asignatura.nombre as asignatura_nombre,
             comision.id as comision_id,
             sede.id as sede_id,
+            disposicion.id as disposicion_id,
             sede.nombre,
             CONCAT(
                 'Calle ', COALESCE(domicilio.calle, '-'), ' ',
@@ -484,7 +486,7 @@ class PdoFines
         ");
     $stmt->bindParam(':idCurso', $curso_id, PDO::PARAM_STR); // Bind as a string
     $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_OBJ);
+    return $stmt->fetch($fetchMode);
 }
 
 
@@ -505,11 +507,15 @@ class PdoFines
         $sql = "INSERT INTO persona (id, nombres, apellidos, numero_documento) 
                 VALUES (?, ?, ?, ?)";
         
-        return $this->pdo->prepare($sql)->execute([
+        $stmt = $this->pdo->prepare($sql);
+
+        $insert = $stmt->execute([
             $persona['id'],
             $persona['nombres'], $persona['apellidos'],
             $persona['numero_documento']
         ]);
+
+        if(!$insert) throw new Exception("No se pudo insertar la persona: " . $stmt->errorInfo());
     }
 
     public function insertPersonaArray($persona){

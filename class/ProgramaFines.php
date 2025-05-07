@@ -5,29 +5,35 @@ class ProgramaFines
     private $client;
 
     public static function parseFirstColumnCalificacionPF($inputString) {
-        // Define the regex pattern to match the structure
-        $pattern = '/^(\d+)\s+([^,]+),\s+(.+?)\s+DNI\s+(\d+)$/';
-        
-        // Apply the regex pattern
-        if (preg_match($pattern, $inputString, $matches)) {
-            // $matches[1] contains the position number
-            // $matches[2] contains the apellidos (surnames)
-            // $matches[3] contains the nombres (first names)
-            // $matches[4] contains the documento (document number)
-            
-            $apellidos = trim($matches[2]);
-            $nombres = trim($matches[3]);
-            $numero_documento = trim($matches[4]);
-            
-            $response = [
-                'apellidos' => $apellidos,
-                'nombres' => $nombres,
-                'numero_documento' => $numero_documento
-            ];
 
-        }
+        // Eliminar el número al principio (hasta el primer espacio)
+        $spacePos = strpos($inputString, ' ');
+        if ($spacePos === false) return null; // línea no válida
 
-        throw new Exception("No se pudo parsear el string: {$inputString}"); // Pattern not matched
+        $inputString = substr($inputString, $spacePos + 1); // todo después del primer espacio
+
+        // Separar por "DNI"
+        $parts = explode('DNI', $inputString);
+        if (count($parts) !== 2) return null; // no contiene DNI
+
+        $namePart = trim($parts[0]);
+        $dniPart = trim($parts[1]);
+
+        // Obtener número de documento
+        if (!is_numeric($dniPart)) return null;
+
+        // Separar apellidos y nombres por la coma
+        $nameSplit = explode(',', $namePart);
+        if (count($nameSplit) !== 2) return null;
+
+        $apellidos = trim($nameSplit[0]);
+        $nombres = trim($nameSplit[1]);
+
+        return [
+            'apellidos' => $apellidos,
+            'nombres' => $nombres,
+            'numero_documento' => $dniPart
+        ];
     }
 
     public static function parseRowCalificacionPF($row)
@@ -44,6 +50,8 @@ class ProgramaFines
         if(empty($data["nombres"]) || empty($data["apellidos"]) || empty($data["calificacion"])){
             throw new Exception("Datos incompletos en la fila.");
         }
+
+        return $data;
 
     }
 

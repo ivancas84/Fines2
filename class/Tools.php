@@ -26,7 +26,7 @@ class Tools {
         $result = array();
         foreach ($array as $item) {
             if (isset($item[$key])) {
-                $result[$item[$key]][] = $item;
+                $result[$item[$key]] = $item;
             }
         }
         return $result;
