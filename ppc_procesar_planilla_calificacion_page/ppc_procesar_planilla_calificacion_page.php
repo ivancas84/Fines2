@@ -142,8 +142,9 @@ function ppc_definir_datos_calificaciones($result, $format) {
             }
 
         } catch (Exception $e) {
-            print_r($row);
-            echo " Error al definir datos: " . $e->getMessage() . "<br><br>";
+            if($format == "pf"){ 
+                echo $row["Apellido, Nombre DNI"] . ": " . $e->getMessage() . "<br><br>";
+            }
         }
     } 
 
@@ -166,6 +167,7 @@ function ppc_procesar_planilla_calificacion_page() {
     $format = $_POST['format'];
     $result = Tools::excelParse($rawData);
 
+    echo "<h2>Alumnos que no serán evaluados de la Planilla</h2>";
     $alumnosComisionCalificacionPF = ppc_definir_datos_calificaciones($result, $format);
 
     $alumnosComision = $pdo->alumnosByComision($curso["comision_id"], PDO::FETCH_ASSOC);
@@ -191,5 +193,31 @@ function ppc_procesar_planilla_calificacion_page() {
         echo "<br><br>";
     }
     echo "</pre>";
+
+    echo "<h2>Alumnos desaprobados</h2>";
+
+    $alumnosDesaprobados = [];
+
+    foreach($alumnosComision as $numero_documento => $ac){
+        if(
+            array_key_exists($numero_documento, $alumnosComisionCalificacionPF)
+            || array_key_exists($numero_documento, $calificaciones)
+        ) continue;
+
+        array_push($alumnosDesaprobados, [
+            "apellidos" => $alumnosComision["apellidos"],
+            "nombres" => $alumnosComision["nombres"],
+            "numero_documento" => $alumnosComision["numero_documento"],
+        ]);
+    }
+
+    usort($alumnosDesaprobados, function ($a, $b) {
+        return strcmp($a['apellidos'], $b['apellidos']);
+    });
+
+
+    foreach($alumnosDesaprobados as $ad){
+      echo $ad["apellidos"] . ", " . $ad["nombres"] . " DNI " . $ad["numero_documento"];
+    }
 
 }
