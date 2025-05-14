@@ -197,13 +197,9 @@ function ppc_procesar_planilla_calificacion_page() {
     }
     echo "</pre>";
 
-<<<<<<< HEAD
     echo "<p>Recibido. Muchas gracias.</p>";
     echo "<p><strong>Los siguientes Alumnos activos figuran desaprobados. Por favor controlar.</strong></p>";
     echo "<p>Si el alumno indicado a continuación está aprobado, por favor, responder este email indicando la nota!</p>";
-=======
-    echo "<h2>Alumnos desaprobados</h2>";
->>>>>>> a5e884c4cd233971135aaa6a28b4fb7b531ca495
 
     $alumnosDesaprobados = [];
 
@@ -213,16 +209,8 @@ function ppc_procesar_planilla_calificacion_page() {
             || array_key_exists($numero_documento, $calificaciones)
         ) continue;
 
-<<<<<<< HEAD
 
         array_push($alumnosDesaprobados, $ac);
-=======
-        array_push($alumnosDesaprobados, [
-            "apellidos" => $alumnosComision["apellidos"],
-            "nombres" => $alumnosComision["nombres"],
-            "numero_documento" => $alumnosComision["numero_documento"],
-        ]);
->>>>>>> a5e884c4cd233971135aaa6a28b4fb7b531ca495
     }
 
     usort($alumnosDesaprobados, function ($a, $b) {
@@ -231,11 +219,7 @@ function ppc_procesar_planilla_calificacion_page() {
 
 
     foreach($alumnosDesaprobados as $ad){
-<<<<<<< HEAD
       echo $ad["apellidos"] . ", " . $ad["nombres"] . " DNI " . $ad["numero_documento"] . "<br>";
-=======
-      echo $ad["apellidos"] . ", " . $ad["nombres"] . " DNI " . $ad["numero_documento"];
->>>>>>> a5e884c4cd233971135aaa6a28b4fb7b531ca495
     }
 
 }
