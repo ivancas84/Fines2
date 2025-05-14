@@ -18,14 +18,13 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/class/ProgramaFines.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/class/Tools.php');
 
-function ppc_insertar_alumno($pdo, $data, $persona_id) {
+function ppc_insertar_alumno($pdo, $persona_id, $plan_id) {
     $alumno["id"] = uniqid();
     $alumno["persona"] =  $persona_id;
     $alumno["observaciones"] = "Importado desde planilla de calificaciones";
-    $alumno["plan"] = $data["plan_id"];
+    $alumno["plan"] = $plan_id;
 
     $insert = $pdo->insertAlumnoPrincipalArray($alumno);
-    if(!$insert) throw new Exception("No se pudo insertar al alumno: " . $stmt->errorInfo());
 
     echo " - Alumno insertado id ". $alumno["id"];
 
@@ -45,10 +44,10 @@ function ppc_insertar_alumno_comision($pdo, $alumno_id, $comision_id) {
 }
 
 function ppc_insertar_persona($pdo, $data) {
-    $persona["id"] = uniqid();
+    $data["id"] = uniqid();
     $pdo->insertPersonaPrincipalArray($data);
-    echo " - Persona insertada id ". $persona["id"];
-    return $persona["id"];
+    echo " - Persona insertada id ". $data["id"];
+    return $data["id"];
 }
 
 function ppc_insertar_calificacion($pdo, $alumno_id, $curso_id, $disposicion_id, $nota_final) {
@@ -64,18 +63,18 @@ function ppc_insertar_calificacion($pdo, $alumno_id, $curso_id, $disposicion_id,
     echo " - Calificacion insertada: " . $calificacion["nota_final"];
 }
 
-function ppc_existe_calificacion_aprobada($pdo, $calificacion, $curso_id, $calificacionPf) {
+function ppc_existe_calificacion_aprobada($pdo, $calificacion, $curso_id, $nota) {
 
     $nota_final = intval($calificacion["nota_final"]);
     if(!empty($nota_final) && $nota_final >= 7) {
-        echo " - Ya estaba aprobado con: " . $nota_final;
-        if($nota_final != intval($calificacionPf)) 
+        echo " - Ya estaba aprobado con " . $nota_final;
+        if($nota_final != intval($nota)) 
             echo " - Calificacion diferente a la de la planilla";
     } else {
         $crec = intval($calificacion["crec"]);
-        echo " - Ya estaba aprobado con: " . $crec . "C";
+        echo " - Ya estaba aprobado con " . $crec . "C";
 
-        if($crec != intval($calificacionPf)) {
+        if($crec != intval($nota)) {
             echo " - Calificacion diferente a la de la planilla";
         }
     }
@@ -92,7 +91,7 @@ function ppc_existe_calificacion_aprobada($pdo, $calificacion, $curso_id, $calif
     echo "<br>";
 }
 
-function ppc_no_existe_alumno_en_comision($pdo, $data, $comision_id) {
+function ppc_no_existe_alumno_en_comision($pdo, $data, $comision_id, $plan_id) {
     $alumno = $pdo->alumnoByNumeroDocumento($data["numero_documento"]);
 
     if(empty($alumno)){  //no existe el alumno, verificar si existe persona
@@ -102,7 +101,10 @@ function ppc_no_existe_alumno_en_comision($pdo, $data, $comision_id) {
            $persona_id = ppc_insertar_persona($pdo, $data);
         }
 
-        $alumno_id =  ppc_insertar_alumno($pdo, $data, $persona_id);
+        $alumno_id =  ppc_insertar_alumno($pdo, $persona_id, $plan_id);
+    } else {
+        $alumno_id = $alumno->id;
+        echo " - Alumno ya existe id " . $alumno_id;
     }
 
     ppc_insertar_alumno_comision($pdo, $alumno_id, $comision_id);
@@ -110,22 +112,24 @@ function ppc_no_existe_alumno_en_comision($pdo, $data, $comision_id) {
     return $alumno_id;
 }
 
-function ppc_verificar_alumno_comision($pdo, $numero_documento, $alumnosComision, $data, $comision_id){
+function ppc_verificar_alumno_comision($pdo, $numero_documento, $alumnosComision, $data, $comision_id, $plan_id){
     if(array_key_exists($numero_documento, $alumnosComision)){ //existe alumno en la comision
         $alumno_id = $alumnosComision[$numero_documento]["alumno_id"];
         echo " - Alumno ya existe en la comision id " . $alumno_id;
     } else { //no existe alumno en la comision, verificar si existe el alumno
-        $alumno_id = ppc_no_existe_alumno_en_comision($pdo, $data, $comision_id);
+        $alumno_id = ppc_no_existe_alumno_en_comision($pdo, $data, $comision_id, $plan_id);   
     }
 
     return $alumno_id;
 }
 
-function ppc_verificar_alumno_calificacion($pdo, $numero_documento, $alumno_id, $calificaciones, $calificacion, $curso_id, $disposicion_id){
+
+
+function ppc_verificar_alumno_calificacion($pdo, $numero_documento, $alumno_id, $calificaciones, $nota, $curso_id, $disposicion_id){
     if(array_key_exists($numero_documento, $calificaciones)){ //existe calificacion aprobada
-        ppc_existe_calificacion_aprobada($pdo, $calificaciones[$numero_documento], $curso_id, $calificacion);
+        ppc_existe_calificacion_aprobada($pdo, $calificaciones[$numero_documento], $curso_id, $nota);
     } else { //no existe calificacion aprobada, se inserta la nueva
-        ppc_insertar_calificacion($pdo, $alumno_id, $curso_id, $disposicion_id, $calificacion);
+        ppc_insertar_calificacion($pdo, $alumno_id, $curso_id, $disposicion_id, $nota);
     }
 }
 
@@ -142,8 +146,9 @@ function ppc_definir_datos_calificaciones($result, $format) {
             }
 
         } catch (Exception $e) {
-            print_r($row);
-            echo " Error al definir datos: " . $e->getMessage() . "<br><br>";
+            if($format == "pf"){ 
+                echo $row["Apellido, Nombre DNI"] . ": " . $e->getMessage() . "<br><br>";
+            }
         }
     } 
 
@@ -166,6 +171,7 @@ function ppc_procesar_planilla_calificacion_page() {
     $format = $_POST['format'];
     $result = Tools::excelParse($rawData);
 
+    echo "<h2>Alumnos que no serán evaluados de la Planilla</h2>";
     $alumnosComisionCalificacionPF = ppc_definir_datos_calificaciones($result, $format);
 
     $alumnosComision = $pdo->alumnosByComision($curso["comision_id"], PDO::FETCH_ASSOC);
@@ -183,13 +189,37 @@ function ppc_procesar_planilla_calificacion_page() {
         echo "<br><br>Alumno: " . $i . ";<br>";
         print_r($data);
 
-        $alumno_id = ppc_verificar_alumno_comision($pdo, $numero_documento, $alumnosComision, $data, $curso["comision_id"]);
-
+        $alumno_id = ppc_verificar_alumno_comision($pdo, $numero_documento, $alumnosComision, $data, $curso["comision_id"], $curso["plan_id"]);
 
         ppc_verificar_alumno_calificacion($pdo, $numero_documento, $alumno_id, $calificaciones, $data["calificacion"], $curso["curso_id"], $curso["disposicion_id"]);   
         
         echo "<br><br>";
     }
     echo "</pre>";
+
+    echo "<p>Recibido. Muchas gracias.</p>";
+    echo "<p><strong>Los siguientes Alumnos activos figuran desaprobados. Por favor controlar.</strong></p>";
+    echo "<p>Si el alumno indicado a continuación está aprobado, por favor, responder este email indicando la nota!</p>";
+
+    $alumnosDesaprobados = [];
+
+    foreach($alumnosComision as $numero_documento => $ac){
+        if(
+            array_key_exists($numero_documento, $alumnosComisionCalificacionPF)
+            || array_key_exists($numero_documento, $calificaciones)
+        ) continue;
+
+
+        array_push($alumnosDesaprobados, $ac);
+    }
+
+    usort($alumnosDesaprobados, function ($a, $b) {
+        return strcmp($a['apellidos'], $b['apellidos']);
+    });
+
+
+    foreach($alumnosDesaprobados as $ad){
+      echo $ad["apellidos"] . ", " . $ad["nombres"] . " DNI " . $ad["numero_documento"] . "<br>";
+    }
 
 }

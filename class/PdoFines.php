@@ -192,7 +192,7 @@ class PdoFines
         
             return $stmt->fetchAll() ?? [];
     }
-    public function contralorByCalendario($calendario_id){
+    public function contralorByCalendario($calendario_id, $fetchMode = PDO::FETCH_OBJ){
             $stmt = $this->pdo->prepare("
             SELECT 
                 toma.id,
@@ -246,7 +246,7 @@ class PdoFines
     
         $stmt->execute();
     
-        return $stmt->fetchAll(PDO::FETCH_OBJ) ?? [];
+        return $stmt->fetchAll($fetchMode) ?? [];
     }
 
 
@@ -285,7 +285,7 @@ class PdoFines
         // Insert new person
 
         $sql = "INSERT INTO alumno_comision (id, alumno, comision, estado, observaciones) 
-                VALUES (?, ?, ?, ?)";
+                VALUES (?, ?, ?, ?, ?)";
         
         return $this->pdo->prepare($sql)->execute([
             $alumno_comision['id'],
@@ -322,7 +322,7 @@ class PdoFines
             $placeholders[] = ":doc$i";
 
         $stmt = $this->pdo->prepare("
-            SELECT DISTINCT calificacion.nota_final, calificacion.crec, calificacion.curso, calificacion.id AS calificacion_id, alumno.id AS alumno_id, persona.id AS persona_id, persona.numero_documento AS numero_documento
+            SELECT DISTINCT calificacion.id, calificacion.nota_final, calificacion.crec, calificacion.curso, calificacion.id AS calificacion_id, alumno.id AS alumno_id, persona.id AS persona_id, persona.numero_documento AS numero_documento
             FROM calificacion
             INNER JOIN alumno ON (calificacion.alumno = alumno.id)
             INNER JOIN persona ON (persona.id = alumno.persona)
