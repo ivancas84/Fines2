@@ -24,34 +24,12 @@ add_action('init', 'register_fines_shortcodes');
 add_action('admin_menu', 'fines_plugin_menu'); //function fines_plugin_menu to display the menu
 
 function fines_plugin_menu() {
-	add_menu_page(
-        'Administración Fines', //Título de la Página
-        'Fines', // Título del menú
-        'edit_posts', // Permisos
-        'fines-plugin', // Slug del menú
-        'lc_lista_comisiones_page', // Función que muestra la página principal del plugin
-        'dashicons-admin-generic', // Icono del menú
-		2 // Posición en el menú
-
-    );
 	
-    add_submenu_page(
-      'fines-plugin', 
-      'Lista de Cursos',
-      'Lista de Cursos', 
-      'edit_posts', 
-      'fines-plugin-lista-cursos', 
-      'lcu_lista_cursos_page'
-    );
-    
-	add_submenu_page(
-        'fines-plugin', //debe coincidir con el slug del menu
-        'Comisiones', // Título de la página
-        'Comisiones', //Título del menú
-        'edit_posts', // Permisos
-        'fines-plugin-comisiones',  // Slug del submenú
-        'lc_lista_comisiones_page' // Función que muestra la página del submenu
-    );
+	
+    include_once plugin_dir_path(__FILE__) . 'lc_lista_comisiones_page/lc_lista_comisiones_page.php';
+
+
+    include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
 
     add_submenu_page(
       'fines-plugin', //debe coincidir con el slug del menu
@@ -120,6 +98,7 @@ function fines_plugin_menu() {
 
   include_once plugin_dir_path(__FILE__) . 'ppc_procesar_planilla_calificacion_page/ppc_procesar_planilla_calificacion_page.php';
 
+  include_once plugin_dir_path(__FILE__) . 'cac_cargar_alumnos_comision/cac_cargar_alumnos_comision_page.php';
 
     add_submenu_page(
 		null, 
@@ -243,7 +222,6 @@ include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_db_connect.php';
 
 include_once plugin_dir_path(__FILE__) . 'includes/queries.php';
 
-include_once plugin_dir_path(__FILE__) . 'lc_lista_comisiones_page/lc_lista_comisiones_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'lcd_lista_comisiones_direccion_page/lcd_lista_comisiones_direccion_page.php';
 
@@ -285,6 +263,5 @@ include_once plugin_dir_path(__FILE__) . 'atc_administrar_toma_comision_page/atc
 
 include_once plugin_dir_path(__FILE__) . 'pfpd_procesar_docentes_pf_page/pfpd_procesar_docentes_pf_page.php';
 
-include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'tp_toma_posesion_page/tp_toma_posesion_page.php';

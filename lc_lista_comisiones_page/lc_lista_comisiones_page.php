@@ -1,14 +1,33 @@
 <?php
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '/class/PdoFines.php');
+
+add_menu_page(
+    'Administración Fines', //Título de la Página
+    'Fines', // Título del menú
+    'edit_posts', // Permisos
+    'fines-plugin', // Slug del menú
+    'lc_lista_comisiones_page', // Función que muestra la página principal del plugin
+    'dashicons-admin-generic', // Icono del menú
+    2 // Posición en el menú
+
+);
+
+add_submenu_page(
+    'fines-plugin', //debe coincidir con el slug del menu
+    'Comisiones', // Título de la página
+    'Comisiones', //Título del menú
+    'edit_posts', // Permisos
+    'fines-plugin-comisiones',  // Slug del submenú
+    'lc_lista_comisiones_page' // Función que muestra la página del submenu
+);
+
 function lc_lista_comisiones_page() {
-    $wpdb = fines_plugin_db_connect();
+    $pdo = new PdoFines();
 
-    if (!$wpdb) {
-		echo "error de conexión";
-		return;
-    }
-
-	$calendarios = $wpdb->get_results("SELECT id, anio, semestre, descripcion FROM calendario ORDER BY anio DESC, semestre DESC");
+	$calendarios = $pdo->calendarios();
 	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : '';
     $selected_order = isset($_GET['order_by']) ? sanitize_text_field($_GET['order_by']) : 'tramo';
     $filter_autorizada = isset($_GET['autorizada']) ? true : false;
@@ -20,22 +39,7 @@ function lc_lista_comisiones_page() {
     if (isset($_GET['submit']) && !empty($_GET['calendario'])) {
             $calendario_id = sanitize_text_field($_GET['calendario']);
             
-             // Build SQL query
-            $sql = sqlSelectComision() . "
-                WHERE calendario = '$calendario_id'";
-
-            // Add 'autorizada' filter if checkbox is checked
-            if ($filter_autorizada) {
-                $sql .= " AND comision.autorizada = true";
-            }
-
-            $sql .= " GROUP BY comision.id ";
-
-            // Append order by clause
-            $sql .= " ORDER BY " . esc_sql($selected_order);
-
-            // Execute query
-            $comisiones = $wpdb->get_results($wpdb->prepare($sql));
+            $comisiones = $pdo->comisionesByParams($calendario_id, $filter_autorizada, esc_sql($selected_order));
 
             if ($comisiones) {
                 include plugin_dir_path(__FILE__) . 'lc_tabla_comisiones.html';

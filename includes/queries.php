@@ -5,37 +5,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-function sqlSelectComision(){
-	return "SELECT
-					comision.id as comision_id,
-					sede.id as sede_id,
-					sede.nombre,
-                    CONCAT(
-                        'Calle ', COALESCE(domicilio.calle, '-'), ' ',
-                        'e/ ', COALESCE(domicilio.entre, '-'), ', ',
-                        'N° ', COALESCE(domicilio.numero, '-'), ', ',
-                        COALESCE(domicilio.barrio, '-'), ', ',
-                        COALESCE(domicilio.localidad, '-')
-                    ) AS domicilio,
-                    CONCAT(planificacion.anio,'°',planificacion.semestre,'C') AS tramo,
-                    plan.orientacion, plan.resolucion,
-                    comision.autorizada, comision.apertura, comision.publicada, comision.turno,
-                    comision.pfid,
-                    GROUP_CONCAT(
-                        DISTINCT '* ', persona.nombres, ' ',
-                        COALESCE(persona.apellidos, '-'), ' ',
-                        COALESCE(persona.telefono, '-'), ' ',
-                        COALESCE(persona.email, '-') 
-                        SEPARATOR '<br/>'
-                    ) AS referentes
-                FROM comision     
-                INNER JOIN sede ON comision.sede = sede.id
-                LEFT JOIN domicilio ON sede.domicilio = domicilio.id
-                INNER JOIN planificacion ON comision.planificacion = planificacion.id
-                INNER JOIN plan ON planificacion.plan = plan.id
-                LEFT JOIN designacion ON comision.sede = designacion.sede AND designacion.cargo = 1 AND designacion.hasta IS NULL
-                LEFT JOIN persona ON designacion.persona = persona.id";
-}
+
 
 function wpdbComisiones_autorizadas__By_calendario__Without_tramo32_and_siguiente($wpdb, $idCalendario){
 	return $wpdb->get_results($wpdb->prepare("SELECT
@@ -644,45 +614,6 @@ function wpdbCursos_autorizados_publicados__By_calendario($wpdb, $comision_id){
             WHERE comision.autorizada = true 
             AND comision.publicada = true 
             AND comision.calendario = %s;" , $comision_id
-        )
-    );
-}
-
-function wpdbCursosConTomasActivas($wpdb, $calendario_id, $order_by){
-    return $wpdb->get_results(
-        $wpdb->prepare("
-            SELECT curso.*,
-            CONCAT(toma_activa.nombres, ' ', toma_activa.apellidos, ' ', toma_activa.numero_documento) AS docente_detalle,
-            toma_activa.fecha_toma,
-            CONCAT(asignatura.nombre, ' ', asignatura.codigo) AS asignatura_detalle,
-            CONCAT(planificacion.anio, ' ', planificacion.semestre) AS tramo,
-            comision.pfid AS comision_pfid,
-            asignatura.codigo AS asignatura_codigo,
-            sede.nombre AS sede_nombre,
-            CONCAT(
-                'Calle ', COALESCE(domicilio.calle, '-'), ' ',
-                'e/ ', COALESCE(domicilio.entre, '-'), ', ',
-                'N° ', COALESCE(domicilio.numero, '-'), ', ',
-                COALESCE(domicilio.barrio, '-'), ', ',
-                COALESCE(domicilio.localidad, '-')
-            ) AS domicilio_detalle
-            FROM curso 
-            INNER JOIN disposicion ON (curso.disposicion = disposicion.id) 
-            INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id) 
-            INNER JOIN comision ON (comision.id = curso.comision)
-            INNER JOIN planificacion ON (planificacion.id = comision.planificacion)
-            INNER JOIN sede ON (sede.id = comision.sede)
-            INNER JOIN domicilio ON (domicilio.id = sede.domicilio)
-            LEFT JOIN (
-                SELECT toma.fecha_toma, toma.curso, persona.nombres, persona.apellidos, persona.numero_documento 
-                FROM toma 
-                INNER JOIN persona ON (toma.docente = persona.id)
-                WHERE estado = 'Aprobada' 
-                AND estado_contralor != 'Modificar'
-            ) AS toma_activa ON (toma_activa.curso = curso.id)
-            WHERE comision.autorizada = true 
-            AND comision.calendario = %s
-            {$order_by}" , $calendario_id
         )
     );
 }

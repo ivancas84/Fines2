@@ -1,14 +1,23 @@
 <?php
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '/class/PdoFines.php');
+
+
+add_submenu_page(
+    'fines-plugin', 
+    'Lista de Cursos',
+    'Lista de Cursos', 
+    'edit_posts', 
+    'fines-plugin-lista-cursos', 
+    'lcu_lista_cursos_page'
+  );
+
 function lcu_lista_cursos_page() {
-    $wpdb = fines_plugin_db_connect();
+    $pdo = new PdoFines();
 
-    if (!$wpdb) {
-		echo "error de conexión";
-		return;
-    }
-
-	$calendarios = $wpdb->get_results("SELECT id, anio, semestre, descripcion FROM calendario ORDER BY anio DESC, semestre DESC");
+	$calendarios = $pdo->calendarios();
 	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : '';
     $selected_order = isset($_GET['order_by']) ? sanitize_text_field($_GET['order_by']) : 'tramo';
 
@@ -31,7 +40,7 @@ function lcu_lista_cursos_page() {
             $order_by = "";
     }
     
-    $cursos = wpdbCursosConTomasActivas($wpdb, $calendario_id, $order_by); 
+    $cursos = $pdo->cursosConTomasActivas($calendario_id, $order_by);
 
     if ($cursos) {
         include plugin_dir_path(__FILE__) . 'lcu_tabla_cursos.html';
