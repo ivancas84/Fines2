@@ -37,7 +37,7 @@ function cac_insertar_alumno_comision($pdo, $alumno_id, $comision_id) {
     $ac["alumno"] = $alumno_id;
     $ac["comision"] = $comision_id;
     $ac["estado"] = "Incorporado";
-    $ac["observaciones"] = "Importado desde planilla de calificaciones";
+    $ac["observaciones"] = "Importado desde lista de alumnos";
 
     echo " - Alumno incorporado a la comision id " . $ac["id"];
     $pdo->insertAlumnoComisionPrincipalArray($ac);
@@ -77,7 +77,7 @@ function cac_no_existe_alumno_en_comision($pdo, $data, $comision_id, $plan_id) {
         cac_imprimir_comisiones_alumno($pdo, $alumno_id);
     }
 
-    //cac_insertar_alumno_comision($pdo, $alumno_id, $comision_id);
+    cac_insertar_alumno_comision($pdo, $alumno_id, $comision_id);
 
     return $alumno_id;
 }
@@ -115,7 +115,7 @@ function cac_cargar_alumnos_comision_page() {
 
     $rawData = trim($_POST['data']);
     $alumnosData = Tools::excelParseIgnorePrefix($rawData);
-
+    $dnisProcesados = [];
     $alumnosComision = $pdo->alumnosByComision($comision["comision_id"], PDO::FETCH_ASSOC);
     $alumnosComision = Tools::organizeArrayByKey($alumnosComision, "numero_documento");
 
@@ -126,11 +126,18 @@ function cac_cargar_alumnos_comision_page() {
         echo "<br><br>Alumno: " . $i . ";<br>";
         $cuilDni = Tools::cuilDni($data["cuil_dni"]);
         if(empty($cuilDni["dni"])){
-            print_r($data);
+            echo $data["apellidos"] . " " . $data["nombres"] . "<br>";
             echo "DNI vacío, no se procesará el alumno<br>";
             continue;
         }
-        
+
+        if(in_array($cuilDni["dni"], $dnisProcesados)){
+            echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["dni"] . "<br>";
+            echo "DNI ya procesado, no se procesará el alumno<br>";
+            continue;
+        }
+        $dnisProcesados[] = $cuilDni["dni"];
+
         $data["numero_documento"] = $cuilDni["dni"];
         $data["cuil"] = $cuilDni["cuil"];
 

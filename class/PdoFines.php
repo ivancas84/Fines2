@@ -280,6 +280,47 @@ class PdoFines
         ]);
     }
 
+    public function insertAlumnoAvanzadoArray($alumno){
+
+        if(!array_key_exists("persona", $alumno) || empty($alumno["persona"]))
+            throw new Exception("No se ha definido la persona del alumno");
+
+        if(!array_key_exists("plan", $alumno) || empty($alumno["plan"]))
+            throw new Exception("No se ha definido la persona del alumno");
+        
+        if(!array_key_exists("anio_ingreso", $alumno) || empty($alumno["anio_ingreso"])){
+            $alumno["anio_ingreso"] = null;
+            $alumno["confirmado_direccion"] = 0;
+            $alumno["estado_inscripcion"] = "Indeterminado";
+        } else {
+            $alumno["confirmado_direccion"] = 1;
+            $alumno["estado_inscripcion"] = "Correcto";            
+        }
+
+        if(!array_key_exists("semestre_ingreso", $alumno) || empty($alumno["semestre_ingreso"]))
+            $alumno["semestre_ingreso"] = 1;
+
+        
+        if(!array_key_exists("tiene_dni", $alumno) || empty($alumno["tiene_dni"]))
+            $alumno["tiene_dni"] = 0;
+
+        if(!array_key_exists("tiene_constancia", $alumno) || empty($alumno["tiene_constancia"]))
+            $alumno["tiene_constancia"] = 0;
+
+
+
+
+        $sql = "INSERT INTO alumno (id, persona, plan, anio_ingreso, confirmado_direccion) 
+                VALUES (?, ?, ?, ?)";
+        
+        return $this->pdo->prepare($sql)->execute([
+            $alumno['id'],
+            $alumno['persona'], 
+            $alumno['observaciones'],
+            $alumno['plan']
+        ]);
+    }
+
 
      //********** ALUMNO_COMISION **********/
      public function insertAlumnoComisionPrincipalArray($alumno_comision){
