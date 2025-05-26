@@ -52,8 +52,6 @@ foreach ($data as $persona) {
     $persona["email_abc"] = !empty(trim($persona["email_abc"])) ? trim($persona["email_abc"]) : null;
 
     if ($result) {
-
-
         $persona["id"] = $result["id"];
         $update = $pdoFines->updatePersonaArray($persona);
         echo $update ? "Persona actualizada.<br/>" : "Persona no actualizada (mismos valores)<br/>";
@@ -62,7 +60,6 @@ foreach ($data as $persona) {
         $persona["id"] = uniqid();
         $insert = $pdoFines->insertPersonaArray($persona);
         echo $insert ? "Se ha insertado la persona<br/>" : "Error al insertar la persona.<br/>";
-
     }
 
     if(empty($pfidComisiones)) continue;

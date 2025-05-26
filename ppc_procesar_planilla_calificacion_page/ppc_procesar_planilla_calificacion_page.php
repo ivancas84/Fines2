@@ -24,7 +24,7 @@ function ppc_insertar_alumno($pdo, $persona_id, $plan_id) {
     $alumno["observaciones"] = "Importado desde planilla de calificaciones";
     $alumno["plan"] = $plan_id;
 
-    $insert = $pdo->insertAlumnoPrincipalArray($alumno);
+    $insert = $pdo->insertAlumnoArray($alumno);
 
     echo " - Alumno insertado id ". $alumno["id"];
 
@@ -45,7 +45,7 @@ function ppc_insertar_alumno_comision($pdo, $alumno_id, $comision_id) {
 
 function ppc_insertar_persona($pdo, $data) {
     $data["id"] = uniqid();
-    $pdo->insertPersonaPrincipalArray($data);
+    $pdo->insertPersonaArray($data);
     echo " - Persona insertada id ". $data["id"];
     return $data["id"];
 }

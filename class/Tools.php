@@ -1,6 +1,15 @@
 <?php
 class Tools {
 
+
+    public static function toBool($value): bool {
+        if (is_string($value)) {
+            $value = strtolower(trim($value));
+            return in_array($value, ['1', 'true', 'yes', 'y', 'si', 's', 'ok', 't', 'on'], true);
+        }
+        return (bool)$value;
+    }
+
     public static function nombreParecido(array $persona1, array $persona2, int $length = 5): bool {
         // Obtener y normalizar los nombres y apellidos a minúsculas
         $nombres1   = isset($persona1["nombres"]) ? mb_strtolower($persona1["nombres"]) : '';
@@ -27,12 +36,14 @@ class Tools {
     
     public static function cuilDni(string $cuilDni): array {
         $cuilDni = preg_replace('/\D/', '', $cuilDni);
-        $return = [ "cuil" => null, "dni" => null ];
+        $return = [ "cuil" => null, "dni" => null, "cuil1" => null, "cuil2" => null ];
         if (strlen($cuilDni) === 7 || strlen($cuilDni) === 8) {
             $return["dni"] = $cuilDni;
         } elseif (strlen($cuilDni) === 11) {
             $return["cuil"] = $cuilDni;
+            $return["cuil1"] = substr($cuilDni, 0, 2);
             $return["dni"] = substr($cuilDni, 2, 8);
+            $return["cuil2"] = substr($cuilDni, 10, 1);
         }
         return $return;
     }

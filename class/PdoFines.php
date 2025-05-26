@@ -24,7 +24,26 @@ class PdoFines
                 echo "Connection failed: " . $e->getMessage();
             }
         }
- 
+
+
+        //********** METODOS GENERALES **********/
+        function existeValor($fieldName, $array){
+            return array_key_exists($fieldName, $array) && !empty($array[$fieldName]);
+        }
+
+
+        function compareAndUpdateField($fieldName, $original, &$nuevo, &$actualizaciones, $nullIfEmpty = true) {
+            if(!array_key_exists($fieldName, $nuevo))
+                $nuevo[$fieldName] = $original[$fieldName];
+            else if(empty($nuevo[$fieldName])){
+                if($nullIfEmpty)
+                    $nuevo[$fieldName] = null;
+                else
+                    $nuevo[$fieldName] = $original[$fieldName];
+            }
+            else if($original[$fieldName] != $nuevo[$fieldName])
+                $actualizaciones[$fieldName] = $original[$fieldName] . " -> " . $nuevo[$fieldName];
+        }
         
 
         function alumnosByComisionPfidAndCalendario($comision_pfid, $calendario_id) {
@@ -104,26 +123,9 @@ class PdoFines
         }
 
         
-        function alumnoByNumeroDocumento($numero_documento){
-            $stmt = $this->pdo->prepare("
-                SELECT alumno.id, persona.id AS persona_id, persona.nombres, persona.apellidos, persona.numero_documento
-                FROM alumno
-                INNER JOIN persona ON alumno.persona = persona.id
-                WHERE persona.numero_documento = :numero_documento
-            ");
-            $stmt->bindParam(':numero_documento', $numero_documento, PDO::PARAM_STR); // Bind as a string
-            $stmt->execute();
-            return $stmt->fetch(PDO::FETCH_OBJ);
-        }
+        
 
-        function personaByNumeroDocumento($numero_documento, $fetchMode = PDO::FETCH_OBJ){
-            $stmt = $this->pdo->prepare("
-                SELECT * FROM persona WHERE numero_documento = :numero_documento
-            ");
-            $stmt->bindParam(':numero_documento', $numero_documento, PDO::PARAM_STR); // Bind as a string
-            $stmt->execute();
-            return $stmt->fetch($fetchMode);
-        }
+        
 
         function comisionesByAlumno($alumno_id, $fetchMode = PDO::FETCH_OBJ){
             $stmt = $this->pdo->prepare("
@@ -265,62 +267,8 @@ class PdoFines
         }
     }
         
-    //********** ALUMNO **********/
-    public function insertAlumnoPrincipalArray($persona){
-        // Insert new person
 
-        $sql = "INSERT INTO alumno (id, persona, observaciones, plan) 
-                VALUES (?, ?, ?, ?)";
-        
-        return $this->pdo->prepare($sql)->execute([
-            $persona['id'],
-            $persona['persona'], 
-            $persona['observaciones'],
-            $persona['plan']
-        ]);
-    }
-
-    public function insertAlumnoAvanzadoArray($alumno){
-
-        if(!array_key_exists("persona", $alumno) || empty($alumno["persona"]))
-            throw new Exception("No se ha definido la persona del alumno");
-
-        if(!array_key_exists("plan", $alumno) || empty($alumno["plan"]))
-            throw new Exception("No se ha definido la persona del alumno");
-        
-        if(!array_key_exists("anio_ingreso", $alumno) || empty($alumno["anio_ingreso"])){
-            $alumno["anio_ingreso"] = null;
-            $alumno["confirmado_direccion"] = 0;
-            $alumno["estado_inscripcion"] = "Indeterminado";
-        } else {
-            $alumno["confirmado_direccion"] = 1;
-            $alumno["estado_inscripcion"] = "Correcto";            
-        }
-
-        if(!array_key_exists("semestre_ingreso", $alumno) || empty($alumno["semestre_ingreso"]))
-            $alumno["semestre_ingreso"] = 1;
-
-        
-        if(!array_key_exists("tiene_dni", $alumno) || empty($alumno["tiene_dni"]))
-            $alumno["tiene_dni"] = 0;
-
-        if(!array_key_exists("tiene_constancia", $alumno) || empty($alumno["tiene_constancia"]))
-            $alumno["tiene_constancia"] = 0;
-
-
-
-
-        $sql = "INSERT INTO alumno (id, persona, plan, anio_ingreso, confirmado_direccion) 
-                VALUES (?, ?, ?, ?)";
-        
-        return $this->pdo->prepare($sql)->execute([
-            $alumno['id'],
-            $alumno['persona'], 
-            $alumno['observaciones'],
-            $alumno['plan']
-        ]);
-    }
-
+    
 
      //********** ALUMNO_COMISION **********/
      public function insertAlumnoComisionPrincipalArray($alumno_comision){
@@ -631,97 +579,7 @@ class PdoFines
 
 
     //********** PERSONA **********/
-    function idPersonaByDni($dni)
-    {
-        $stmt = $this->pdo->prepare("SELECT id FROM persona WHERE numero_documento = :numero_documento");
-        $stmt->bindParam(':numero_documento', $dni, PDO::PARAM_STR); // Bind as a string
-        $stmt->execute();
     
-        return $stmt->fetchColumn() ?? null;
-    }
-
-    public function insertPersonaPrincipalCuilArray($persona){
-        // Insert new person
-
-        $sql = "INSERT INTO persona (id, nombres, apellidos, numero_documento, cuil) 
-                VALUES (?, ?, ?, ?, ?)";
-        
-        $stmt = $this->pdo->prepare($sql);
-
-        $insert = $stmt->execute([
-            $persona['id'],
-            $persona['nombres'], $persona['apellidos'],
-            $persona['numero_documento'],
-            $persona['cuil']
-        ]);
-
-        if(!$insert) throw new Exception("No se pudo insertar la persona: " . $stmt->errorInfo());
-    }
-
-    public function insertPersonaPrincipalArray($persona){
-        // Insert new person
-
-        $sql = "INSERT INTO persona (id, nombres, apellidos, numero_documento) 
-                VALUES (?, ?, ?, ?)";
-        
-        $stmt = $this->pdo->prepare($sql);
-
-        $insert = $stmt->execute([
-            $persona['id'],
-            $persona['nombres'], $persona['apellidos'],
-            $persona['numero_documento']
-        ]);
-
-        if(!$insert) throw new Exception("No se pudo insertar la persona: " . $stmt->errorInfo());
-    }
-
-    public function insertPersonaArray($persona){
-        // Insert new person
-        $sql = "INSERT INTO persona (id, nombres, apellidos, descripcion_domicilio, 
-                                    dia_nacimiento, mes_nacimiento, anio_nacimiento, 
-                                    fecha_nacimiento, numero_documento, telefono, email_abc) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
-        return $this->pdo->prepare($sql)->execute([
-            $persona['id'],
-            $persona['nombres'], $persona['apellidos'], $persona['descripcion_domicilio'],
-            $persona['dia_nacimiento'], $persona['mes_nacimiento'], $persona['anio_nacimiento'],
-            $persona['fecha_nacimiento'],
-            $persona['numero_documento'], $persona['telefono'], $persona["email_abc"]
-        ]);
-    }
-
-    public function updatePersonaArray($persona){
-        // Update existing person
-        $sql = "UPDATE persona 
-                SET nombres = ?, apellidos = ?, descripcion_domicilio = ?, 
-                    dia_nacimiento = ?, mes_nacimiento = ?, anio_nacimiento = ?, 
-                    fecha_nacimiento = ?,
-                    telefono = ?, email_abc = ?
-                WHERE numero_documento = ?";
-        
-        return $this->pdo->prepare($sql)->execute([
-            $persona['nombres'], $persona['apellidos'], $persona['descripcion_domicilio'],
-            $persona['dia_nacimiento'], $persona['mes_nacimiento'], $persona['anio_nacimiento'],
-            $persona['fecha_nacimiento'],
-            $persona['telefono'], $persona["email_abc"], $persona['numero_documento']
-        ]);
-    }
-
-    function updateCuilById($cuil, $id)
-    {
-        $stmt = $this->pdo->prepare("UPDATE persona SET cuil = :cuil WHERE id = :id");
-        $stmt->bindParam(':cuil', $cuil, PDO::PARAM_STR); // Bind CUIL as a string
-        $stmt->bindParam(':id', $id, PDO::PARAM_STR); // Bind ID as an integer
-        $stmt->execute();
-
-        if ($stmt->rowCount() > 0) {
-            return true; //echo "CUIL updated successfully.";
-        } else {
-            return false; //echo "No record updated (ID may not exist or CUIL is the same).";
-        }
-    }
-
 
     
 

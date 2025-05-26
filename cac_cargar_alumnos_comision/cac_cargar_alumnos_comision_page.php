@@ -8,6 +8,10 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/class/ProgramaFines.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/class/Tools.php');
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Dao/AlumnoDAO.php');
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Dao/PersonaDAO.php');
+
 add_submenu_page(
     null, 
     'Cargar Alumnos Comisión',
@@ -18,13 +22,12 @@ add_submenu_page(
 );
 
   
-function cac_insertar_alumno($pdo, $alumno, $persona_id, $plan_id) {
+function cac_insertar_alumno($alumno, $persona_id, $plan_id) {
     $alumno["id"] = uniqid();
     $alumno["persona"] =  $persona_id;
     $alumno["plan"] = $plan_id;
 
-    $insert = $pdo->insertAlumnoAvanzadoArray($alumno);
-
+    AlumnoDAO::insertAlumnoArray($alumno);
     echo " - Alumno insertado id ". $alumno["id"];
 
     return $alumno["id"];
@@ -36,20 +39,22 @@ function cac_insertar_alumno_comision($pdo, $alumno_id, $comision_id) {
     $ac["id"] = uniqid();
     $ac["alumno"] = $alumno_id;
     $ac["comision"] = $comision_id;
-    $ac["estado"] = "Incorporado";
+    $ac["estado"] = "Ingresante";
     $ac["observaciones"] = "Importado desde lista de alumnos";
 
-    echo " - Alumno incorporado a la comision id " . $ac["id"];
+    echo " - Alumno ingresante a la comision id " . $ac["id"];
     $pdo->insertAlumnoComisionPrincipalArray($ac);
 }
 
 
-function cac_insertar_persona($pdo, $data) {
+function cac_insertar_persona($data) {
     $data["id"] = uniqid();
-    $pdo->insertPersonaPrincipalCuilArray($data);
+    PersonaDAO::insertPersonaArray($data);
     echo " - Persona insertada id ". $data["id"] . "<br>";
     return $data["id"];
 }
+
+
 
 function cac_imprimir_comisiones_alumno($pdo, $alumno_id) {
     $comisiones = $pdo->comisionesByAlumno($alumno_id, PDO::FETCH_ASSOC);
@@ -58,47 +63,8 @@ function cac_imprimir_comisiones_alumno($pdo, $alumno_id) {
     }
 }
 
-function cac_no_existe_alumno_en_comision($pdo, $data, $comision_id, $plan_id) {
-    $alumno = $pdo->alumnoByNumeroDocumento($data["numero_documento"], PDO::FETCH_ASSOC);
-
-    if(empty($alumno)){  //no existe el alumno, verificar si existe persona
-        $persona = $pdo->personaByNumeroDocumento($data["numero_documento"], PDO::FETCH_ASSOC);
-        
-        if(empty($persona)){ //no existe persona, crearla
-           $persona_id = cac_insertar_persona($pdo, $data);
-        } else { //existe persona, verificar datos
-            if(!Tools::nombreParecido($persona, $data))
-                throw new Exception("El nombre registrado de la persona es diferente " . $persona["nombres"] . " " . $persona["apellidos"]);
-        }
-
-        $alumno_id = cac_insertar_alumno($pdo, $data, $persona_id, $plan_id);
-    } else {
-        $alumno_id = $alumno->id;
-        cac_imprimir_comisiones_alumno($pdo, $alumno_id);
-    }
-
-    cac_insertar_alumno_comision($pdo, $alumno_id, $comision_id);
-
-    return $alumno_id;
-}
-
-
-function cac_verificar_alumno_comision($pdo, $alumnosComision, $data, $comision_id, $plan_id){
-    $numero_documento = $data["numero_documento"];
-    if(array_key_exists($numero_documento, $alumnosComision)){ //existe alumno en la comision
-        $alumno_id = $alumnosComision[$numero_documento]["alumno_id"];
-        echo " - Alumno ya existe en la comision id " . $alumno_id . "<br>";
-        
-    } else { //no existe alumno en la comision, verificar si existe el alumno
-        $alumno_id = cac_no_existe_alumno_en_comision($pdo, $data, $comision_id, $plan_id);   
-    }
-
-    return $alumno_id;
-}
-
 
 function cac_cargar_alumnos_comision_page() {
-
     $pdo = new PdoFines();
     $comision = $pdo->comisionById(sanitize_text_field($_GET['comision_id']), PDO::FETCH_ASSOC);
 
@@ -110,11 +76,12 @@ function cac_cargar_alumnos_comision_page() {
     }
 
     echo "<h1>Cargar Alumnos a la Comision</h1>";
-    echo "<pre>";
+    
     print_r($comision);
 
     $rawData = trim($_POST['data']);
     $alumnosData = Tools::excelParseIgnorePrefix($rawData);
+    echo "<h2>Cantidad de alumnos a procesar ". count($alumnosData) . "</h2>";
     $dnisProcesados = [];
     $alumnosComision = $pdo->alumnosByComision($comision["comision_id"], PDO::FETCH_ASSOC);
     $alumnosComision = Tools::organizeArrayByKey($alumnosComision, "numero_documento");
@@ -144,7 +111,51 @@ function cac_cargar_alumnos_comision_page() {
         echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["numero_documento"] . "<br>";
 
         try {
-            $alumno_id = cac_verificar_alumno_comision($pdo, $alumnosComision, $data, $comision["comision_id"], $comision["plan_id"]);
+
+            $persona = PersonaDAO::personaByNumeroDocumento($data["numero_documento"], PDO::FETCH_ASSOC);
+                
+            if(empty($persona)){ //no existe persona, crearla
+                $data["persona_id"] = cac_insertar_persona($data);
+            } else { //existe persona, verificar datos
+                if(!Tools::nombreParecido($persona, $data))
+                    throw new Exception("El nombre registrado de la persona es diferente " . $persona["nombres"] . " " . $persona["apellidos"]);
+                $data["persona_id"] = $persona["id"];
+                $actualizaciones = PersonaDAO::compareAndUpdatePersonaArray($persona, $data);
+                if(empty($actualizaciones)){
+                    echo " - Persona ya existe, no se actualiza id ". $data["persona_id"] . "<br>";
+                } else {
+                    echo " - Persona actualizada id ". $data["persona_id"] . "<br>";
+                    echo "<pre>";
+                    print_r($actualizaciones);
+                    echo "</pre>";        
+                }
+                   
+            }
+
+            $alumno = AlumnoDAO::alumnoByNumeroDocumento($data["numero_documento"], PDO::FETCH_ASSOC);
+        
+            if(empty($alumno)){  //no existe el alumno, verificar si existe persona
+                $data["alumno_id"] = cac_insertar_alumno($data, $data["persona_id"], $plan_id);
+            } else {
+                $actualizaciones = AlumnoDAO::compareAndUpdateAlumnoArray($alumno, $data);
+                $data["alumno_id"] = $alumno["id"];
+                $actualizaciones = PersonaDAO::compareAndUpdatePersonaArray($persona, $data);
+                if(empty($actualizaciones)){
+                    echo " - Alumno ya existe, no se actualiza id ". $data["alumno_id"] . "<br>";
+                } else {
+                    echo " - Alumno actualizado id ". $data["alumno_id"] . "<br>";
+                    echo "<pre>";
+                    print_r($actualizaciones);
+                    echo "</pre>";        
+                }
+                cac_imprimir_comisiones_alumno($pdo, $data["alumno_id"]);
+            }
+
+            if(array_key_exists($data["numero_documento"], $alumnosComision)){ //existe alumno en la comision
+                echo " - Alumno ya existe en la comision<br>";
+            } else { 
+                cac_insertar_alumno_comision($pdo, $data["alumno_id"], $comision["comision_id"]);
+            }
         
         } catch (Exception $e) {
             echo $e->getMessage() . "<br>";
