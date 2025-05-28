@@ -277,4 +277,13 @@ class PersonaDAO
         }
     }
 
+    public static function personaById($id, $fetchMode = PDO::FETCH_ASSOC)
+    {
+        $pdo = new PdoFines();
+        $stmt = $pdo->pdo->prepare("SELECT * FROM persona WHERE id = :id");
+        $stmt->bindParam(':id', $id, PDO::PARAM_STR); // Bind ID as a string
+        $stmt->execute();
+        return $stmt->fetch($fetchMode);
+    }
+
 }

@@ -87,6 +87,7 @@ function ap_administrar_persona_page() {
             $tiene_partida = $alumno->tiene_partida;
             $previas_completas = $alumno->previas_completas;
             $confirmado_direccion = $alumno->confirmado_direccion;
+            $fecha_titulacion = $alumno->fecha_titulacion;
 
             $comisiones = wpdbComisiones__By_idAlumno($wpdb, $alumno->id);
 

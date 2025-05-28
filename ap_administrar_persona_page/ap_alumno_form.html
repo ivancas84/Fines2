@@ -46,27 +46,32 @@
         </div>
         
 
-        <div class="form-group">
-            <label for="anio_inscripcion">Año de Inscripción:</label>
-            <input type="number" id="anio_inscripcion" name="anio_inscripcion" value="<?=$anio_inscripcion?>">
-        </div>
-
-        <div class="form-group">
-            <label for="semestre_inscripcion">Semestre de Inscripción:</label>
-            <input type="number" id="semestre_inscripcion" name="semestre_inscripcion" value="<?=$semestre_inscripcion?>">
-        </div>
-
-        <div class="form-group">
-            <label for="establecimiento_inscripcion">Establecimiento:</label>
-            <input type="text" id="establecimiento_inscripcion" name="establecimiento_inscripcion" value="<?=$establecimiento_inscripcion?>">
-        </div>
-
-        <div class="form-group">
-            <label for="observaciones">Observaciones:</label>
-            <textarea id="observaciones" name="observaciones"><?=$observaciones?></textarea>
-        </div>
+    <div class="form-group">
+        <label for="anio_inscripcion">Año de Inscripción:</label>
+        <input type="number" id="anio_inscripcion" name="anio_inscripcion" value="<?=$anio_inscripcion?>">
     </div>
 
+    <div class="form-group">
+        <label for="semestre_inscripcion">Semestre de Inscripción:</label>
+        <input type="number" id="semestre_inscripcion" name="semestre_inscripcion" value="<?=$semestre_inscripcion?>">
+    </div>
+
+    <div class="form-group">
+        <label for="establecimiento_inscripcion">Establecimiento:</label>
+        <input type="text" id="establecimiento_inscripcion" name="establecimiento_inscripcion" value="<?=$establecimiento_inscripcion?>">
+    </div>
+
+    <div class="form-group">
+        <label for="fecha_titulacion">Fecha de Titulación:</label>
+        <input type="date" id="fecha_titulacion" name="fecha_titulacion" value="<?=$fecha_titulacion ?? ''?>">
+    </div>
+
+    <div class="form-group" style="grid-column: span 2;">
+        <label for="observaciones">Observaciones:</label>
+        <textarea id="observaciones" name="observaciones"><?=$observaciones?></textarea>
+    </div>
+
+</div>
     <h3>Legajo</h3>
     <p> El legajo se actualiza desde el drive según la estructura establecida.</p>
     <div class="checkbox-grid">

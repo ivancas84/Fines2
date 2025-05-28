@@ -498,6 +498,7 @@ class PdoFines
                 comision.pfid AS comision_pfid,
                 asignatura.codigo AS asignatura_codigo,
                 sede.nombre AS sede_nombre,
+                persona.telefono,
                 CONCAT(
                     'Calle ', COALESCE(domicilio.calle, '-'), ' ',
                     'e/ ', COALESCE(domicilio.entre, '-'), ', ',
@@ -513,16 +514,16 @@ class PdoFines
                 INNER JOIN sede ON (sede.id = comision.sede)
                 INNER JOIN domicilio ON (domicilio.id = sede.domicilio)
                 LEFT JOIN (
-                    SELECT toma.fecha_toma, toma.curso, persona.nombres, persona.apellidos, persona.numero_documento 
+                    SELECT persona.id AS persona_id, toma.fecha_toma, toma.curso, persona.nombres, persona.apellidos, persona.numero_documento 
                     FROM toma 
                     INNER JOIN persona ON (toma.docente = persona.id)
                     WHERE estado = 'Aprobada' 
                     AND estado_contralor != 'Modificar'
                 ) AS toma_activa ON (toma_activa.curso = curso.id)
+                LEFT JOIN persona ON (toma_activa.persona_id = persona.id) 
                 WHERE comision.autorizada = true 
                 AND comision.calendario = :idCalendario
                 {$order_by}"
-        
         );
         $stmt->bindParam(':idCalendario', $calendario_id, PDO::PARAM_STR); // Bind as a string
         $stmt->execute();

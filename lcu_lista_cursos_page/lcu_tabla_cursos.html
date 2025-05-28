@@ -8,6 +8,7 @@
             <th>Tramo</th>
             <th>Asignatura</th>
             <th>Docente</th>
+            <th>Teléfono</th>
             <th>Fecha Toma</th>
             <th>Opciones</th>
         </tr>
@@ -25,6 +26,7 @@
                 <td><?= esc_html($curso->tramo); ?></td>
                 <td><?= esc_html($curso->asignatura_detalle); ?></td>
                 <td><?= esc_html($curso->docente_detalle); ?></td>
+                <td><?= esc_html($curso->telefono); ?></td>
                 <td><?= esc_html($curso->fecha_toma); ?></td>
                 <td>
                     <a href="<?= esc_url($detalle_comision_url); ?>" class="button">Detalle Comisión</a> 

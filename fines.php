@@ -30,6 +30,9 @@ function fines_plugin_menu() {
 
 
     include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
+    
+    include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_administrar_persona_page.php';
+
 
     add_submenu_page(
       'fines-plugin', //debe coincidir con el slug del menu
