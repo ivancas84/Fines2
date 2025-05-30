@@ -1,8 +1,91 @@
 <?php
 
+function html_hidden_inputs($values, $fieldNames) {
+    foreach($fieldNames as $fieldName) {
+        echo "<input type='hidden' name='$fieldName' value='" . esc_attr($values[$fieldName]) . "' />";
+    }
+}
+
+function html_select($fieldName, $options, $values){
+    echo "<select name='$fieldName'>
+            <option value=''>-- Seleccione --</option>";
+    foreach ($options as $option) {
+        $selected = (isset($values[$fieldName]) && $values[$fieldName] === $option) ? 'selected' : '';
+        echo "<option value='" . esc_attr($option) . "' $selected>" . esc_html($option) . "</option>";
+    }
+    echo "</select>";
+}
+
+function initialize_handle($page_name, $handle_name, $field_id, $field_value){
+    if (!current_user_can('edit_posts')) {
+        wp_redirect(admin_url("admin.php?page=$page_name&$field_id=$field_value&message=No tienes permisos suficientes"));
+        exit;
+    }
+
+    if (!isset($_POST[$handle_name . '_nonce']) || !wp_verify_nonce($_POST[$handle_name . '_nonce'], $handle_name . '_action')) {
+        wp_redirect(admin_url("admin.php?page=$page_name&$field_id=$field_value&message=Error de seguridad"));
+        exit;
+    }
+
+    if (!empty($_POST['honeypot'])) {
+        wp_redirect(admin_url("admin.php?page=$page_name&$field_id=$field_value&message=Detección de spam"));
+        exit;
+    }
+}
+
 function sanitize_or_null_text_field($value) {
     $value = sanitize_text_field($value);
     return $value === '' ? null : $value;
+}
+
+function sanitize_or_null_text_field_from_array(&$array, $fieldName) {
+    $array[$fieldName] = sanitize_text_field($array[$fieldName]);
+    $array[$fieldName] = empty($array[$fieldName]) ? null : $array[$fieldName];
+}
+
+function sanitize_or_null_email_field_from_array(&$array, $fieldName) {
+    $array[$fieldName] = sanitilize_email($array[$fieldName]);
+    $array[$fieldName] = empty($array[$fieldName]) ? null : $array[$fieldName];
+}
+
+function intval_or_null_field_from_array(&$array, $fieldName) {
+    if (isset($array[$fieldName]) && is_numeric($array[$fieldName])) {
+        $array[$fieldName] = intval($array[$fieldName]);
+    } else {
+        $array[$fieldName] = null;
+    }
+}
+
+function boolval_field_from_array(&$array, $fieldName) {
+    if (isset($array[$fieldName]) && Tools::toBool($array[$fieldName])) {
+        $array[$fieldName] = boolval($array[$fieldName]);
+    } else {
+        $array[$fieldName] = false;
+    }
+}
+
+function boolval_fields_from_array(&$array, $fieldNames) {
+    foreach ($fieldNames as $fieldName) {
+        boolval_field_from_array($array, $fieldName);
+    }
+}
+
+function intval_or_null_fields_from_array(&$array, $fieldNames) {
+    foreach ($fieldNames as $fieldName) {
+        intval_or_null_field_from_array($array, $fieldName);
+    }
+}
+
+function sanitize_or_null_text_fields_from_array(&$array, $fieldNames) {
+    foreach ($fieldNames as $fieldName) {
+        sanitize_or_null_text_field_from_array($array, $fieldName);
+    }
+}
+
+function sanitize_or_null_email_fields_from_array(&$array, $fieldNames) {
+    foreach ($fieldNames as $fieldName) {
+        sanitize_or_null_text_field_from_array($array, $fieldName);
+    }
 }
 
 function toTitleCase($string) {

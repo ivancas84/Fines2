@@ -23,15 +23,17 @@ add_action('init', 'register_fines_shortcodes');
 
 add_action('admin_menu', 'fines_plugin_menu'); //function fines_plugin_menu to display the menu
 
+
 function fines_plugin_menu() {
 	
-	
+  
     include_once plugin_dir_path(__FILE__) . 'lc_lista_comisiones_page/lc_lista_comisiones_page.php';
 
 
     include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
     
     include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_administrar_persona_page.php';
+
 
 
     add_submenu_page(
@@ -219,6 +221,10 @@ function fines_plugin_menu() {
   }
 
 
+include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_persona_admin_handle.php';
+include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_alumno_admin_handle.php';
+
+
 include_once plugin_dir_path(__FILE__) . 'includes/helpers.php';
 
 include_once plugin_dir_path(__FILE__) . 'includes/fines_plugin_db_connect.php';
@@ -268,3 +274,6 @@ include_once plugin_dir_path(__FILE__) . 'pfpd_procesar_docentes_pf_page/pfpd_pr
 
 
 include_once plugin_dir_path(__FILE__) . 'tp_toma_posesion_page/tp_toma_posesion_page.php';
+
+
+

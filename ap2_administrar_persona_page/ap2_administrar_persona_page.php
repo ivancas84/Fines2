@@ -16,6 +16,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/Dao/CalendarioDAO.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/Dao/PlanDAO.php');
 
+
 add_submenu_page(
     null, 
     'Administrar Persona 2',
@@ -23,37 +24,51 @@ add_submenu_page(
     'edit_posts', 
     'fines-plugin-ap2', 
     'ap2_administrar_persona_page'
-);
+  );
 
 function ap2_administrar_persona_page() {
+
     $message = !empty($_GET['message']) ? $_GET['message'] : null;
     if($message) echo "<div class='notice notice-success is-dismissible'><p>{$message}</p></div>";
 
-
     $persona_id = isset($_GET['persona_id']) ? $_GET['persona_id'] : null;
 
+
+
+
+
     //***** Campos de persona *****/
-    $fieldsPersona = [
-        'nombres', 'apellidos', 'numero_documento', 'cuil', 'fecha_nacimiento', 'lugar_nacimiento',
-        'telefono', 'email', 'email_abc', 'genero', 'lugar_nacimiento', 'descripcion_domicilio'
-    ];
+    $persona = (empty($persona_id)) ? null : PersonaDAO::personaById($persona_id);
 
-    $persona = PersonaDAO::personaById($persona_id);
-
-    if(!$persona){
+    if(empty($persona)){
         $persona = array();
-        foreach($fieldsPersona as $field) $persona[$field] = null;
-
+        foreach(PersonaDAO::getFields() as $field) $persona[$field] = null;
     }
 
     include plugin_dir_path(__FILE__) . 'ap2_persona_admin_form.html';
 
 
+
+
+
+
     //***** Campos de alumno *****/
-    $calendarios = CalendarioDAO::calendarios();
-    $selected_calendario = null;
+
+    if(empty($persona))
+        return;
+
+    $estados_inscripcion= AlumnoDAO::estados_inscripcion();
 
     $planes = PlanDAO::planes();
-    $selected_plan = null;
+
+    $alumno = AlumnoDAO::alumnoByPersona($persona['persona_id']);
+
+    if(empty($alumno)){
+        $alumno = array();
+        foreach(AlumnoDAO::getFields() as $field) $alumno[$field] = null;
+    }
+
+    include plugin_dir_path(__FILE__) . 'ap2_alumno_admin_form.html';
 
 }
+

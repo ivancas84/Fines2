@@ -10,6 +10,40 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/class/Tools.php');
 
 class AlumnoDAO
 {
+
+    public static function estados_inscripcion(): array {
+        $sql = "SELECT DISTINCT estado_inscripcion FROM alumno ORDER BY estado_inscripcion";
+
+        $pdo = new PdoFines();
+        $stmt = $pdo->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public static function getFields() {
+        return [
+            "persona", "plan", "anio_ingreso", "semestre_ingreso", "confirmado_direccion",
+            "estado_inscripcion", "tiene_dni", "tiene_constancia", "tiene_certificado",
+            "tiene_partida", "previas_completas", "observaciones","fecha_titulacion"
+        ];
+    }
+
+    public static function alumnoByPersona($persona_id) {
+        $pdo = new PdoFines();
+        $stmt = $pdo->pdo->prepare("
+            SELECT alumno.id AS alumno_id, 
+            alumno.*, 
+            persona.id AS persona_id, persona.nombres, persona.apellidos, persona.numero_documento
+            FROM alumno
+            INNER JOIN persona ON alumno.persona = persona.id
+            WHERE persona.id = :persona_id
+        ");
+        $stmt->bindParam(':persona_id', $persona_id, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
     public static function insertAlumnoArray($alumno){
         $pdo = new PdoFines();
         if(!array_key_exists("persona", $alumno) || empty($alumno["persona"]))

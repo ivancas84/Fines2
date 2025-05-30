@@ -10,6 +10,28 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/class/Tools.php');
 
 class PersonaDAO
 {
+
+  
+    public static function getFields()
+    {
+        return [
+            "cuil",
+            "cuil1",
+            "cuil2",
+            "numero_documento",
+            "nombres",
+            "apellidos",
+            "descripcion_domicilio",
+            "dia_nacimiento",
+            "mes_nacimiento",
+            "anio_nacimiento",
+            "fecha_nacimiento",
+            "telefono",
+            "email",
+            "email_abc"
+        ];
+    }
+
     public static function personaByNumeroDocumento($numero_documento, $fetchMode = PDO::FETCH_OBJ)
     {
         $pdo = new PdoFines();
@@ -243,9 +265,11 @@ class PersonaDAO
 
     }
 
-    public function updatePersonaArray($persona){
+    
+    public function updatePersona($persona){
 
         $pdo = new PdoFines();
+        
         // Update existing person
         $sql = "UPDATE persona 
                 SET nombres = ?, apellidos = ?, descripcion_domicilio = ?, 
@@ -254,6 +278,7 @@ class PersonaDAO
                     telefono = ?, email_abc = ?
                 WHERE numero_documento = ?";
         
+
         return $pdo->pdo->prepare($sql)->execute([
             $persona['nombres'], $persona['apellidos'], $persona['descripcion_domicilio'],
             $persona['dia_nacimiento'], $persona['mes_nacimiento'], $persona['anio_nacimiento'],
@@ -280,7 +305,7 @@ class PersonaDAO
     public static function personaById($id, $fetchMode = PDO::FETCH_ASSOC)
     {
         $pdo = new PdoFines();
-        $stmt = $pdo->pdo->prepare("SELECT * FROM persona WHERE id = :id");
+        $stmt = $pdo->pdo->prepare("SELECT *, id as persona_id FROM persona WHERE id = :id");
         $stmt->bindParam(':id', $id, PDO::PARAM_STR); // Bind ID as a string
         $stmt->execute();
         return $stmt->fetch($fetchMode);

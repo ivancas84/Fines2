@@ -1,10 +1,13 @@
-<h1>Informe <?=$apellidos?>, <?=$nombres?> <?=$numero_documento?></h1>
+<h1>Informe <?=$persona['apellidos']?>, <?=$persona['nombres']?> <?=$persona['numero_documento']?></h1>
 
-<form id="ap2-persona-form" method="POST" action="admin-post.php">
+<form id="ap2-persona-admin" method="POST" action="admin-post.php">
     <input type="hidden" name="action" value="ap2_persona_admin">
 
     <?php wp_nonce_field("ap2_persona_admin_action", "ap2_persona_admin_nonce"); ?>
+    
     <input type="hidden" name="persona_id" id="persona_id" value="<?= $persona['persona_id'] ?? '' ?>" />
+
+    <input type="text" name="honeypot" style="display: none;">
 
     <div class="form-grid">
         <div class="form-group">
@@ -57,9 +60,6 @@
             <input type="text" id="lugar_nacimiento" name="lugar_nacimiento" value="<?=$persona['lugar_nacimiento']?>">
         </div>
     </div>
-
-    <input type="hidden" name="persona_id" value="<?=$persona['persona_id']?>">
-    <input type="text" name="honeypot" style="display: none;">
 
     <button type="submit" class="submit-btn">Guardar Cambios</button>
 

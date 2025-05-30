@@ -25,8 +25,67 @@ class PdoFines
             }
         }
 
+        public static function UpdateFields_($tableName, $fieldNames, $values){
+            $pdoFines = new PdoFines();
+            $pdoFines->updateFields($tableName, $fieldNames, $values);
+        }
+        
+        public static function InsertFields_($tableName, $fieldNames, $values){
+            $pdoFines = new PdoFines();
+            $pdoFines->insertFields($tableName, $fieldNames, $values);
+        }
+
+        function insertFields($tableName, $fieldNames, $values){
+            $sql = "INSERT INTO $tableName (" . implode(", ", $fieldNames) . ") VALUES (";
+
+            foreach($fieldNames as $fieldName){
+                $sql .= "?, ";
+            }
+
+            $sql = rtrim($sql, ', ') . ")";
+            
+            $stmt = $this->pdo->prepare($sql);
+            $params = [];
+
+            foreach($fieldNames as $fieldName){
+                if($this->existeValor($fieldName, $values)){
+                    $params[] = $values[$fieldName];
+                } else {
+                    $params[] = null; // Si el campo no existe o está vacío, asigna null
+                }
+            }
+
+            if(!$stmt->execute($params)) throw new Exception("No se pudo insertar el registro: " . implode(", ", $stmt->errorInfo()));
+        }
 
         //********** METODOS GENERALES **********/
+        function updateFields($tableName, $fieldNames, $values){
+            $sql = "UPDATE $tableName SET ";
+
+            foreach($fieldNames as $fieldName){
+                $sql .= "$fieldName = ?, ";
+            }
+
+            $sql = rtrim($sql, ', ') . " WHERE id = ?";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            $params = [];
+
+            foreach($fieldNames as $fieldName){
+                if($this->existeValor($fieldName, $values)){
+                    $params[] = $values[$fieldName];
+                } else {
+                    $params[] = null; // Si el campo no existe o está vacío, asigna null
+                }
+            }
+
+            $params[] = $values[$tableName.'_id']; // Asegúrate de que 'id' esté en el array de valores
+            $update = $stmt->execute($params);
+            if(!$update) throw new Exception("No se pudo actualizar el registro: " . $stmt->errorInfo());
+            
+        }
+
         function existeValor($fieldName, $array){
             return array_key_exists($fieldName, $array) && !empty($array[$fieldName]);
         }
