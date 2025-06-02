@@ -8,6 +8,10 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/class/ProgramaFines.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/class/Tools.php');
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Dao/DisposicionDAO.php');
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Dao/CalificacionDAO.php');
+
 class AlumnoDAO
 {
 
@@ -42,7 +46,6 @@ class AlumnoDAO
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-
 
     public static function insertAlumnoArray($alumno){
         $pdo = new PdoFines();
@@ -98,7 +101,6 @@ class AlumnoDAO
         if(!$insert) throw new Exception("No se pudo insertar al alumno: " . $stmt->errorInfo());
     }
 
-
     public static function alumnoByNumeroDocumento($numero_documento, $fetchMode = PDO::FETCH_OBJ) {
         $pdo = new PdoFines();
         $stmt = $pdo->pdo->prepare("
@@ -111,8 +113,6 @@ class AlumnoDAO
         $stmt->execute();
         return $stmt->fetch($fetchMode);
     }
-
-
 
     public static function compareAndUpdateAlumnoArray($original, $nuevo, $nullIfEmpty = false): array {
         $pdo = new PdoFines();
@@ -254,6 +254,66 @@ class AlumnoDAO
 
     }
 
+    public static function tramo($alumno){
 
+        if(!empty($alumno["anio_ingreso"])){
+                $tramo = $alumno["anio_ingreso"];
+                    if(!empty($alumno["semestre_ingreso"]))
+                        $tramo .= $alumno["semestre_ingreso"];
+                    else 
+                        $tramo .= "1";
+
+                return $tramo;
+        } 
+        
+        return "11";
+    }
+
+
+    public static function reestructurarCalificacionesByAlumno($alumno){
+        $idsCalificacionesDesaprobadas = CalificacionDAO::idsCalificacionesDesaprobadasByAlumno($alumno['alumno_id']);
+        if(!empty($idsCalificacionesDesaprobadas)){
+            CalificacionDAO::deleteCalificacionesByIds($idsCalificacionesDesaprobadas);
+        }
+
+        if(!empty($alumno["plan"])){
+            if(!empty($alumno["anio_ingreso"])){
+                $tramo = $alumno["anio_ingreso"];
+                    if(!empty($alumno["semestre_ingreso"]))
+                        $tramo .= $alumno["semestre_ingreso"];
+                    else 
+                        $tramo .= "1";
+            } else {
+                $tramo = "11";
+            }
+
+            $calificacionesAprobadas = CalificacionDAO::calificacionesAprobadasByAlumnoPlanTramo($alumno['alumno_id'], $alumno['plan'], $tramo);
+            $disposiciones = DisposicionDAO::disposicionesByPlanTramo($alumno['plan'], $tramo);
+
+            $count = 0;
+            foreach($disposiciones as $disposicion){
+                $existe = false;
+                foreach($calificacionesAprobadas as $calificacion){
+                    if($calificacion["disposicion"] == $disposicion["disposicion_id"])
+                    {
+                        $existe = true;
+                        break;
+                    }   
+                }
+                if(!$existe){
+                    $count++;
+                    PdoFines::InsertFields_("calificacion", CalificacionDAO::getFields(), array(
+                        'calificacion_id' => uniqid(),
+                        'disposicion' => $disposicion["disposicion_id"],
+                        'archivado' => 0,
+                        'alumno' => $alumno['alumno_id']
+                    ));
+                }
+            }
+            
+                
+        }
+            
+    }
 
 }

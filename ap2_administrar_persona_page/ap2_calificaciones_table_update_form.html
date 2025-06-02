@@ -1,0 +1,55 @@
+<form method="post" action="admin-post.php">    
+    <?php wp_nonce_field("ap2_update_calificaciones_action", "ap2_update_calificaciones_nonce"); ?>
+    <input type="hidden" name="action" value="ap2_update_calificaciones">
+    <input type="hidden" name="persona_id" value="<?= esc_attr($persona_id) ?>">
+    <input type="hidden" name="alumno_id" value="<?= esc_attr($alumno['alumno_id']) ?>">
+    <input type="text" name="honeypot" style="display: none;">
+
+
+<table border="1" cellpadding="5" cellspacing="0">
+    <thead>
+        <tr>
+            <th>id</th>
+            <th>Asignatura</th>
+            <th>Tramo</th>
+            <th>Nota Final</th>
+            <th>Crec</th>
+            <th>Pfid</th>
+            <th>Período</th>
+            <th>Docente</th>
+            <th>Orientacion</th>
+            <th>Resolución</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php for ($i = 0; $i < count($calificaciones); $i++):
+            $cal = $calificaciones[$i]; 
+            // Determine row color based on conditions
+            $rowColor = ($cal['nota_final'] < 7 && $cal['crec'] < 4) ? "background-color: #FFDDDD;" // Red pastel
+                        : "background-color: #DDFFDD;"; // Green pastel
+        ?>
+            <tr style="<?= $rowColor ?>">
+                <<td style="display:none;">
+                    <input type="hidden" name="calificacion_id<?=$i?>" value="<?= esc_attr($cal['id']) ?>">
+                </td>
+                <td><?= esc_html($cal['id']) ?></td>
+                <td><?= esc_html($cal['nombre']) ?></td>
+                <td><?= esc_html($cal['tramo']) ?></td>
+                <td>
+                    <input type="number" step="0.1" name="nota_final<?=$i?>" value="<?= round($cal['nota_final']) ?>">
+                </td>
+                <td>
+                    <input type="number" step="0.1" name="crec<?=$i?>" value="<?= round($cal['crec']) ?>">
+                </td>
+                <td><?= esc_html($cal['pfid']) ?></td>
+                <td><?= esc_html($cal['periodo']) ?></td>
+                <td><?= esc_html($cal['docente']) ?></td>
+                <td><?= esc_html($cal['orientacion']) ?></td>
+                <td><?= esc_html($cal['resolucion']) ?></td>
+            </tr>>
+        <?php endfor; ?>
+    </tbody>
+</table>
+
+    <button type="submit">Actualizar Calificaciones</button>
+</form>

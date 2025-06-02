@@ -2,6 +2,18 @@
 class Tools {
 
 
+    public static function newArray($array, $fieldNames){
+        $newArray = [];
+        foreach ($fieldNames as $fieldName) {
+            if (isset($array[$fieldName])) {
+                $newArray[$fieldName] = $array[$fieldName];
+            } else {
+                $newArray[$fieldName] = null; // O cualquier valor por defecto que desees
+            }
+        }
+        return $newArray;
+    }
+
     public static function toBool($value): bool {
         if (is_string($value)) {
             $value = strtolower(trim($value));

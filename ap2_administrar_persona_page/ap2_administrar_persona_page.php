@@ -16,6 +16,11 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/Dao/CalendarioDAO.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/Dao/PlanDAO.php');
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Dao/CalificacionDAO.php');
+
+require_once($_SERVER['DOCUMENT_ROOT'] . '/Dao/DisposicionDAO.php');
+
+
 
 add_submenu_page(
     null, 
@@ -69,6 +74,37 @@ function ap2_administrar_persona_page() {
     }
 
     include plugin_dir_path(__FILE__) . 'ap2_alumno_admin_form.html';
+
+
+
+
+
+    //***** CALIFICACIONES *****/
+    if(empty($alumno))
+        return;
+
+
+
+    AlumnoDAO::reestructurarCalificacionesByAlumno($alumno);
+
+    $tramo = AlumnoDAO::tramo($alumno);
+
+    if(!empty($alumno["plan"])){
+        $calificaciones = CalificacionDAO::calificacionesByAlumnoPlanTramo($alumno["id"], $alumno["plan"], $tramo);
+        if ($calificaciones) {
+            include plugin_dir_path(__FILE__) . 'ap2_calificaciones_table_update_form.html';
+        } else {
+            echo "<p>No se encontraron calificaciones para este alumno.</p>";
+        }
+        
+        
+        $calificaciones_ = CalificacionDAO::calificacionesAprobadasByAlumnoNotInPlan($alumno["id"], $alumno["plan"]);
+        if ($calificaciones_) {
+            include plugin_dir_path(__FILE__) . 'ap2_calificaciones_aux_table.html';
+        } else {
+            echo "<p>No se encontraron calificaciones adicionales para este alumno.</p>";
+        }    
+    }
 
 }
 

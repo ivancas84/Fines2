@@ -25,6 +25,11 @@ class PdoFines
             }
         }
 
+        public static function UpdateValues($tableName, $values){
+            $pdoFines = new PdoFines();
+            $pdoFines->updateFields($tableName, array_keys($values), $values);
+        }
+
         public static function UpdateFields_($tableName, $fieldNames, $values){
             $pdoFines = new PdoFines();
             $pdoFines->updateFields($tableName, $fieldNames, $values);
@@ -38,6 +43,8 @@ class PdoFines
         function insertFields($tableName, $fieldNames, $values){
             $sql = "INSERT INTO $tableName (" . implode(", ", $fieldNames) . ") VALUES (";
 
+            $sql .= "?, "; //id
+
             foreach($fieldNames as $fieldName){
                 $sql .= "?, ";
             }
@@ -47,6 +54,8 @@ class PdoFines
             $stmt = $this->pdo->prepare($sql);
             $params = [];
 
+            $params[] = $values[$tableName.'_id'] ?? uniqid(); // Asegúrate de que 'id' esté en el array de valores
+           
             foreach($fieldNames as $fieldName){
                 if($this->existeValor($fieldName, $values)){
                     $params[] = $values[$fieldName];
