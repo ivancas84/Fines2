@@ -2,7 +2,7 @@
 
 namespace SqlOrganize\Sql;
 
-use Override;
+require_once MAIN_PATH . 'SqlOrganize/Sql/Db.php';
 
 /**
  * Contenedor principal para SQL Server
@@ -15,16 +15,15 @@ class DbMy extends Db
     /**
      * Constructor
      * 
-     * @param Config $config Configuración
      * @param ISchema $schema Schema
      * @param array|null $cache Cache opcional
      * 
      * @example
      * $connectionString = "server=127.0.0.1;uid=root;pwd=12345;database=test"
      */
-    public function __construct(Config $config, ISchema $schema, )
+    public function __construct(ISchema $schema)
     {
-        parent::__construct($config, $schema);
+        parent::__construct($schema);
     }
 
     public function CreateSelectQueries(): SelectQueries

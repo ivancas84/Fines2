@@ -20,7 +20,7 @@ abstract class Db
     public array $entities;
     
     
-    public function __construct(array $config, ISchema $schema)
+    public function __construct(ISchema $schema)
     {
         $this->entities = $schema->entities;
         

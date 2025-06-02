@@ -1,33 +1,29 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines;
+namespace SqlOrganize\Sql\Fines2;
+
+require_once MAIN_PATH . 'SqlOrganizeMy\Sql\DbMy.php';
+require_once MAIN_PATH . 'SqlOrganize\Sql\ISchema.php';
+require_once MAIN_PATH . 'SqlOrganize\Sql\ModifyQueries.php';
+require_once MAIN_PATH . 'SqlOrganize\Utils\ValueTypesUtils.php';
+require_once MAIN_PATH . 'Model\Schema.php';
+
 
 use SqlOrganize\Sql\DbMy;
-use SqlOrganize\Sql\Config;
 use SqlOrganize\Sql\ISchema;
 use SqlOrganize\Sql\ModifyQueries;
-use SqlOrganize\Sql\ValueTypesUtils;
-use SqlOrganize\Sql\Schema;
-
+use SqlOrganize\Utils\ValueTypesUtils;
+use SqlOrganize\Sql\Fines2\Schema;
 
 class Context
 {
-    public static ?DbSs $db = null;
+    public static DbMy $db;
 
-    private function __construct()
+    public function __construct()
     {
-        $settings = parse_ini_file(__DIR__ . '/config.ini', true);
-
-        if (empty($settings["connectionString"]) ||
-            empty($settings["username"]) ||
-            empty($settings["password"])
-            ) {
-            throw new \Exception("Propiedades no definidas, revisar la configuración");
-        }
-
         $schema = new Schema();
 
-        self::$db = new DbMy(self::$config, $schema);
+        self::$db = new DbMy($schema);
 
     }
 

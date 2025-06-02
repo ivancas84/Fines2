@@ -5,8 +5,11 @@ namespace SqlOrganize\Sql;
 /**
  * Configuracion del esquema de la base de datos
  */
-interface ISchema
+class ISchema
 {
+
+     public array $entities;
+
     /**
      * JSON con entidades del modelo
      * 
@@ -14,13 +17,11 @@ interface ISchema
      * 
      * @return array<string, EntityMetadata>
      */
-    public function getEntities(): array;
+    public function getEntities(): array{
+        return $this->entities;
+
+    }
     
-    /**
-     * Establece las entidades del esquema
-     * 
-     * @param array<string, EntityMetadata> $entities
-     */
-    public function setEntities(array $entities): void;
+   
     
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace SqlOrganize\Sql;
+namespace SqlOrganize\Utils;
 
 class ValueTypesUtils
 {
