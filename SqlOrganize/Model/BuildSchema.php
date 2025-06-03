@@ -11,7 +11,9 @@ require_once MAIN_PATH . 'SqlOrganize/Model/Field.php';
 require_once MAIN_PATH . 'SqlOrganize/Model/EntityTree.php';
 require_once MAIN_PATH . 'SqlOrganize/Model/EntityRelation.php';
 require_once MAIN_PATH . 'SqlOrganize/Model/EntityRef.php';
+require_once MAIN_PATH . 'SqlOrganize/Model/Config.php';
 require_once MAIN_PATH . 'SqlOrganize/Utils/ValueTypesUtils.php';
+
 
 use SqlOrganize\Utils\ValueTypesUtils;
 
@@ -19,6 +21,7 @@ use SqlOrganize\Utils\ValueTypesUtils;
 
 abstract class BuildSchema
 {
+    public Config $config;
     public array $tables = [];
     public array $entities = [];
     public array $fields = [];
@@ -27,18 +30,15 @@ abstract class BuildSchema
     /**
      * Definir datos del esquema y arbol de relaciones
      */
-    public function __construct()
+    public function __construct(Config $config)
     {
-
-        $reserved_alias = array_filter(array_map('trim', explode(',', RESERVED_ALIAS)));
-        $reserved_entities = array_filter(array_map('trim', explode(',', RESERVED_ENTITIES)));
-        $dont_treat_as_fk  = array_filter(array_map('trim', explode(',', DONT_TREAT_AS_FK)));
+        $this->config = $config;
 
         // Definicion inicial de tables y columns
-        $tableAlias = array_merge([], $reserved_alias);
+        $tableAlias = array_merge([], $config->reservedAlias);
 
         foreach ($this->getTableNames() as $tableName) {
-            if (in_array($tableName, $reserved_entities)) {
+            if (in_array($tableName, $config->reservedEntities)) {
                 continue;
             }
 
@@ -48,11 +48,11 @@ abstract class BuildSchema
             $tableAlias[] = $table->alias;
             $table->columns = $this->getColumns($table->name);
 
-            $fieldsAliases = array_merge([], $reserved_alias);
+            $fieldsAliases = array_merge([], $config->reservedAlias);
             foreach ($table->columns as $col) {
                 if ($col->IS_FOREIGN_KEY == 1 && 
-                    !in_array($col->REFERENCED_TABLE_NAME, $reserved_entities)) {
-                    $idSource = (ID_SOURCE == "field_name") ? 
+                    !in_array($col->REFERENCED_TABLE_NAME, $config->reservedEntities)) {
+                    $idSource = ($config->idName == "field_name") ? 
                         $col->COLUMN_NAME : $col->REFERENCED_TABLE_NAME;
                     $col->alias = $this->getAlias($idSource, $fieldsAliases, 3);
                     $fieldsAliases[] = $col->alias;
@@ -60,8 +60,8 @@ abstract class BuildSchema
                 $table->columnNames[] = $col->COLUMN_NAME;
 
                 if ($col->IS_FOREIGN_KEY == 1 && 
-                    !in_array($col->REFERENCED_TABLE_NAME, $reserved_entities) &&
-                    !in_array($col->REFERENCED_TABLE_NAME, $dont_treat_as_fk)) {
+                    !in_array($col->REFERENCED_TABLE_NAME, $config->reservedEntities) &&
+                    !in_array($col->REFERENCED_TABLE_NAME, $config->dontTreatAsFk)) {
                     $table->fk[] = $col->COLUMN_NAME;
                 }
                 if ($col->IS_PRIMARY_KEY == 1) {
@@ -90,7 +90,7 @@ abstract class BuildSchema
 
         // Definicion de entities
         foreach ($this->tables as $t) {
-            if (in_array($t->name, $reserved_entities)) {
+            if (in_array($t->name, $this->config->reservedEntities)) {
                 continue;
             }
 
@@ -114,7 +114,7 @@ abstract class BuildSchema
 
         // Definicion de fields
         foreach ($this->tables as $t) {
-            if (in_array($t->name, $reserved_entities)) {
+            if (in_array($t->name, $this->config->reservedEntities)) {
                 continue;
             }
 
@@ -141,7 +141,7 @@ abstract class BuildSchema
         // Definicion de tree y relations de entities
         foreach ($this->entities as $name => $e) {
 
-            $bet = new BuildEntityTree($this->entities, $this->fields, $e->name);
+            $bet = new BuildEntityTree($this->config, $this->entities, $this->fields, $e->name);
             $e->tree = $bet->build();
             $this->relationsRecursive($e->relations, $e->tree);
         }
@@ -370,25 +370,32 @@ abstract class BuildSchema
         }
     }
 
-public function createSchema(): void
+public function createSchema(): void    
 {
-    if (!is_dir(SCHEMA_CLASS_PATH)) {
-        mkdir(SCHEMA_CLASS_PATH, 0755, true);
+    if (!is_dir($this->config->schemaClassPath)) {
+        mkdir($this->config->schemaClassPath, 0755, true);
     }
 
     $schemaFileName = "Schema.php";
-    $schemaSourcePath = SCHEMA_CLASS_PATH . DIRECTORY_SEPARATOR . $schemaFileName;
+    $schemaSourcePath = $this->config->schemaClassPath . DIRECTORY_SEPARATOR . $schemaFileName;
     $sw = fopen($schemaSourcePath, 'w');
 
     fwrite($sw, "<?php\n\n");
-    fwrite($sw, "namespace SqlOrganize\\Sql\\" . MODEL_NAMESPACE . ";\n\n");
+    fwrite($sw, "namespace SqlOrganize\\Sql\\" . $this->config->namespace . ";\n\n");
     fwrite($sw, "require_once MAIN_PATH . 'SqlOrganize/Sql/ISchema.php';\n");
     fwrite($sw, "require_once MAIN_PATH . 'SqlOrganize/Sql/EntityMetadata.php';\n");
     fwrite($sw, "require_once MAIN_PATH . 'SqlOrganize/Sql/Field.php';\n");
+    fwrite($sw, "require_once MAIN_PATH . 'SqlOrganize/Sql/EntityTree.php';\n");
+    fwrite($sw, "require_once MAIN_PATH . 'SqlOrganize/Sql/EntityRelation.php';\n");
+    fwrite($sw, "require_once MAIN_PATH . 'SqlOrganize/Sql/EntityRef.php';\n\n");
 
     fwrite($sw, "use SqlOrganize\\Sql\\ISchema;\n");
     fwrite($sw, "use SqlOrganize\\Sql\\EntityMetadata;\n");
     fwrite($sw, "use SqlOrganize\\Sql\\Field;\n\n");
+    fwrite($sw, "use SqlOrganize\\Sql\\EntityTree;\n");
+    fwrite($sw, "use SqlOrganize\\Sql\\EntityRelation;\n");
+    fwrite($sw, "use SqlOrganize\\Sql\\EntityRef;\n\n");
+
     fwrite($sw, "/**\n");
     fwrite($sw, " * Esquema de la base de datos\n");
     fwrite($sw, " * Esta clase fue generada por una herramienta, no debe ser modificada.\n");
@@ -399,117 +406,101 @@ public function createSchema(): void
     fwrite($sw, "    {\n");
 
     foreach ($this->entities as $entityName => $entity) {
-        fwrite($sw, "        \$e = new EntityMetadata();\n");
-        fwrite($sw, "        \$e->name = '{$entityName}';\n");
-        fwrite($sw, "        \$e->alias = '{$entity->alias}';\n");
+        fwrite($sw, "        \$this->entities['{$entityName}'] = EntityMetadata::getInstance('{$entityName}', '{$entity->alias}');\n");
 
         if (!empty($entity->schema)) {
-            fwrite($sw, "        \$e->schema = '{$entity->schema}';\n");
+            fwrite($sw, "        \$this->entities['{$entityName}']->schema = '{$entity->schema}';\n");
         }
         if (!empty($entity->pk)) {
-            fwrite($sw, "        \$e->pk = ['" . implode("', '", $entity->pk) . "'];\n");
+            fwrite($sw, "        \$this->entities['{$entityName}']->pk = ['" . implode("', '", $entity->pk) . "'];\n");
         }
         if (!empty($entity->fk)) {
-            fwrite($sw, "        \$e->fk = ['" . implode("', '", $entity->fk) . "'];\n");
+            fwrite($sw, "        \$this->entities['{$entityName}']->fk = ['" . implode("', '", $entity->fk) . "'];\n");
         }
         if (!empty($entity->noAdmin)) {
-            fwrite($sw, "        \$e->noAdmin = ['" . implode("', '", $entity->noAdmin) . "'];\n");
+            fwrite($sw, "        \$this->entities['{$entityName}']->noAdmin = ['" . implode("', '", $entity->noAdmin) . "'];\n");
         }
         if (!empty($entity->unique)) {
-            fwrite($sw, "        \$e->unique = ['" . implode("', '", $entity->unique) . "'];\n");
+            fwrite($sw, "        \$this->entities['{$entityName}']->unique = ['" . implode("', '", $entity->unique) . "'];\n");
         }
         if (!empty($entity->uniqueMultiple)) {
             $ums = array_map(fn($g) => "['" . implode("', '", $g) . "']", $entity->uniqueMultiple);
-            fwrite($sw, "        \$e->uniqueMultiple = [" . implode(", ", $ums) . "];\n");
+            fwrite($sw, "        \$this->entities['{$entityName}']->uniqueMultiple = [" . implode(", ", $ums) . "];\n");
         }
         if (!empty($entity->notNull)) {
-            fwrite($sw, "        \$e->notNull = ['" . implode("', '", $entity->notNull) . "'];\n");
+            fwrite($sw, "        \$this->entities['{$entityName}']->notNull = ['" . implode("', '", $entity->notNull) . "'];\n");
         }
+
+        fwrite($sw, "\n");
 
         // Tree relationships
         if (!empty($entity->tree)) {
-            fwrite($sw, "        \$e->tree = [];\n");
+            fwrite($sw, "        \$this->entities['{$entityName}']->tree = [];\n");
             foreach ($entity->tree as $fieldId => $tree) {
-                fwrite($sw, "        \$tree = new \\SqlOrganize\\Sql\\EntityTree();\n");
-                fwrite($sw, "        \$tree->fieldName = '{$tree->fieldName}';\n");
-                fwrite($sw, "        \$tree->refFieldName = '{$tree->refFieldName}';\n");
-                fwrite($sw, "        \$tree->refEntityName = '{$tree->refEntityName}';\n");
+                fwrite($sw, "        \$this->entities['{$entityName}']->tree['{$fieldId}'] = EntityTree::getInstance('{$tree->fieldName}', '{$tree->refEntityName}', '{$tree->refFieldName}');\n");
                 
                 if (!empty($tree->children)) {
-                    $this->writeTreeChildren($sw, $tree->children);
+                    $this->writeTreeChildren($sw, "        \$this->entities['{$entityName}']->tree['{$fieldId}']", $tree->children);
                 }
-                
-                fwrite($sw, "        \$e->tree['{$fieldId}'] = \$tree;\n\n");
+                fwrite($sw, "\n");
             }
         }
 
         // Relations
         if (!empty($entity->relations)) {
-            fwrite($sw, "        \$e->relations = [];\n");
+            fwrite($sw, "        \$this->entities['{$entityName}']->relations = [];\n");
             foreach ($entity->relations as $fieldId => $relation) {
-                fwrite($sw, "        \$relation = new \\SqlOrganize\\Sql\\EntityRelation();\n");
-                fwrite($sw, "        \$relation->fieldName = '{$relation->fieldName}';\n");
-                fwrite($sw, "        \$relation->refFieldName = '{$relation->refFieldName}';\n");
-                fwrite($sw, "        \$relation->refEntityName = '{$relation->refEntityName}';\n");
+                fwrite($sw, "        \$this->entities['{$entityName}']->relations['{$fieldId}'] = EntityRelation::getInstance('{$relation->fieldName}', '{$relation->refEntityName}', '{$relation->refFieldName}');\n");
                 if (!empty($relation->parentId)) {
-                    fwrite($sw, "        \$relation->parentId = '{$relation->parentId}';\n");
+                    fwrite($sw, "        \$this->entities['{$entityName}']->relations['{$fieldId}']->parentId = '{$relation->parentId}';\n");
                 }
-                fwrite($sw, "        \$e->relations['{$fieldId}'] = \$relation;\n\n");
+                fwrite($sw, "\n");
+
             }
         }
 
         // One-to-One relationships (oo)
         if (!empty($entity->oo)) {
-            fwrite($sw, "        \$e->oo = [];\n");
+            fwrite($sw, "        \$this->entities['{$entityName}']->oo = [];\n");
             foreach ($entity->oo as $id => $rref) {
-                fwrite($sw, "        \$oo = new \\SqlOrganize\\Model\\EntityRef();\n");
-                fwrite($sw, "        \$oo->fieldName = '{$rref->fieldName}';\n");
-                fwrite($sw, "        \$oo->entityName = '{$rref->entityName}';\n");
-                fwrite($sw, "        \$e->oo['{$id}'] = \$oo;\n\n");
+                fwrite($sw, "        \$this->entities['{$entityName}']->oo['{$id}']  = EntityRef::getInstance('{$rref->fieldName}', '{$rref->entityName}');\n\n");
             }
         }
 
         // One-to-Many relationships (om)
         if (!empty($entity->om)) {
-            fwrite($sw, "        \$e->om = [];\n");
+            fwrite($sw, "        \$this->entities['{$entityName}']->om = [];\n");
             foreach ($entity->om as $id => $rref) {
-                fwrite($sw, "        \$om = new \\SqlOrganize\\Model\\EntityRef();\n");
-                fwrite($sw, "        \$om->fieldName = '{$rref->fieldName}';\n");
-                fwrite($sw, "        \$om->entityName = '{$rref->entityName}';\n");
-                fwrite($sw, "        \$e->om['{$id}'] = \$om;\n\n");
+                fwrite($sw, "        \$this->entities['{$entityName}']->om['{$id}'] = EntityRef::getInstance('{$rref->fieldName}', '{$rref->entityName}');\n");
             }
         }
 
         // Fields
         if (isset($this->fields[$entityName])) {
             foreach ($this->fields[$entityName] as $fieldName => $field) {
-                fwrite($sw, "        \$f = new Field();\n");
-                fwrite($sw, "        \$f->entityName = '{$entityName}';\n");
-                fwrite($sw, "        \$f->name = '{$fieldName}';\n");
-                fwrite($sw, "        \$f->dataType = '{$field->dataType}';\n");
-                fwrite($sw, "        \$f->type = '{$field->type}';\n");
+                fwrite($sw, "        \$this->entities['{$entityName}']->fields['{$fieldName}'] = Field::getInstance('{$entityName}', '{$fieldName}', '{$field->dataType}', '{$field->type}');\n");
 
                 if (!empty($field->defaultValue)) {
-                    fwrite($sw, "        \$f->defaultValue = '{$field->defaultValue}';\n");
+                    fwrite($sw, "        \$this->entities['{$entityName}']->fields['{$fieldName}']->defaultValue = '{$field->defaultValue}';\n");
                 }
                 if (!empty($field->alias)) {
-                    fwrite($sw, "        \$f->alias = '{$field->alias}';\n");
+                    fwrite($sw, "        \$this->entities['{$entityName}']->fields['{$fieldName}']->alias = '{$field->alias}';\n");
                 }
                 if (!empty($field->refEntityName)) {
-                    fwrite($sw, "        \$f->refEntityName = '{$field->refEntityName}';\n");
+                    fwrite($sw, "        \$this->entities['{$entityName}']->fields['{$fieldName}']->refEntityName = '{$field->refEntityName}';\n");
                 }
                 if (!empty($field->refFieldName)) {
-                    fwrite($sw, "        \$f->refFieldName = '{$field->refFieldName}';\n");
+                    fwrite($sw, "        \$this->entities['{$entityName}']->fields['{$fieldName}']->refFieldName = '{$field->refFieldName}';\n");
                 }
                 if (!empty($field->checks)) {
-                    fwrite($sw, "        \$f->checks = [\n");
+                    fwrite($sw, "        \$this->entities['{$entityName}']->fields['{$fieldName}']->checks = [\n");
                     foreach ($field->checks as $k => $v) {
                         fwrite($sw, "            '{$k}' => '{$v}',\n");
                     }
                     fwrite($sw, "        ];\n");
                 }
                 if (!empty($field->resets)) {
-                    fwrite($sw, "        \$f->resets = [\n");
+                    fwrite($sw, "        \$this->entities['{$entityName}']->fields['{$fieldName}']->resets = [\n");
                     foreach ($field->resets as $k => $v) {
                         $vStr = is_bool($v) ? ($v ? 'true' : 'false') : "'{$v}'";
                         fwrite($sw, "            '{$k}' => {$vStr},\n");
@@ -517,11 +508,9 @@ public function createSchema(): void
                     fwrite($sw, "        ];\n");
                 }
 
-                fwrite($sw, "        \$e->fields['{$fieldName}'] = \$f;\n\n");
             }
         }
 
-        fwrite($sw, "        \$this->entities['{$entityName}'] = \$e;\n\n");
     }
 
     fwrite($sw, "    }\n");
@@ -529,26 +518,23 @@ public function createSchema(): void
 
     fclose($sw);
 
-    if (!is_dir(SCHEMA_BUILDER_CLASS_PATH)) {
-        mkdir(SCHEMA_BUILDER_CLASS_PATH, 0755, true);
+    if (!is_dir($this->config->schemaBuilderClassPath)) {
+        mkdir($this->config->schemaBuilderClassPath, 0755, true);
     }
 
-    $schemaDestinationPath = SCHEMA_BUILDER_CLASS_PATH . DIRECTORY_SEPARATOR . $schemaFileName;
+    $schemaDestinationPath = $this->config->schemaBuilderClassPath . DIRECTORY_SEPARATOR . $schemaFileName;
     copy($schemaSourcePath, $schemaDestinationPath);
 }
 
-public function writeTreeChildren($sw, $children, $prefix = "")
+public function writeTreeChildren($sw, $source, $children)
 {
-    fwrite($sw, $prefix . "        \$tree->children = [];\n");
+    fwrite($sw, $source . "->children = [];\n");
     foreach ($children as $fieldId => $tree) {
-        fwrite($sw, $prefix . "        \$child = new \\SqlOrganize\\Sql\\EntityTree();\n");
-        fwrite($sw, $prefix . "        \$child->fieldName = '{$tree->fieldName}';\n");
-        fwrite($sw, $prefix . "        \$child->refFieldName = '{$tree->refFieldName}';\n");
-        fwrite($sw, $prefix . "        \$child->refEntityName = '{$tree->refEntityName}';\n");
+        fwrite($sw, $source . "->children['{$fieldId}'] = EntityTree::getInstance('{$tree->fieldName}', '{$tree->refEntityName}', '{$tree->refFieldName}');\n");
         if (!empty($tree->children)) {
-            $this->writeTreeChildren($sw, $tree->children, $prefix . "        ");
+            $this->writeTreeChildren($sw, $source . "->children['{$fieldId}']", $tree->children);
         }
-        fwrite($sw, $prefix . "        \$tree->children['{$fieldId}'] = \$child;\n");
+        fwrite($sw, "\n");
     }
 }
 

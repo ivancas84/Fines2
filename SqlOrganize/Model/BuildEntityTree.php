@@ -10,6 +10,7 @@ require_once MAIN_PATH . 'SqlOrganize/Model/Field.php';
 class BuildEntityTree
 {
    
+    public Config $config;
     /**
      * @var array<string, EntityMetadata>
      */
@@ -26,8 +27,9 @@ class BuildEntityTree
     
     protected array $allEntitiesVisited = [];
     
-    public function __construct(array $entities, array $fields, string $entityName)
+    public function __construct(Config $config, array $entities, array $fields, string $entityName)
     {    
+        $this->config = $config;
         $this->entities = $entities;
         $this->entityName = $entityName;
         $this->fields = $fields;
@@ -85,11 +87,9 @@ class BuildEntityTree
      */
     protected function fk(EntityMetadata $entity, array $entitiesVisited, ?string $alias = null): array
     {
-        $limit_to_first_level = array_filter(array_map('trim', explode(',', LIMIT_TO_FIRST_LEVEL)));
-
         if (in_array($entity->name, $entitiesVisited) || 
             (in_array($entity->name, $this->allEntitiesVisited) && 
-             in_array($entity->name, $limit_to_first_level))) {
+             in_array($entity->name, $this->config->limitToFirstLevel))) {
             return [];
         }
         
@@ -101,11 +101,11 @@ class BuildEntityTree
         $dict = [];
         
         foreach ($fk as $field) {
-            $idSource = (ID_SOURCE === "field_name") ? $field->name : $field->refEntityName;
+            $idSource = ($this->config->idSource === "field_name") ? $field->name : $field->refEntityName;
             $fieldId = $this->getFieldId($idSource, $alias);
             
             if (in_array($field->refEntityName, $this->allEntitiesVisited) && 
-                in_array($field->refEntityName, $limit_to_first_level)) {
+                in_array($field->refEntityName, $this->config->limitToFirstLevel)) {
                 continue;
             }
             

@@ -8,5 +8,5 @@ require_once __DIR__ . '/../SqlOrganizeMy/Model/BuildSchemaMy.php';
 
 use SqlOrganize\Model\BuildSchemaMy;
 
-$schema = new BuildSchemaMy();
+$schema = new BuildSchemaMy($configModel);
 $schema->createSchema();

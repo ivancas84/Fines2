@@ -18,21 +18,19 @@ class DataProvider {
      * Devuelve entidades a partir de ids
      */
     public function fetchTreeByIds(string $entityName, ...$ids): array {
-        $rawEntities = $this->fetchDataByIds($entityName, $ids);
+        $rawEntities = $this->fetchDataByIds($entityName, ...$ids);
+
         // Inicializar relaciones en null
         $fieldNamesRel = $this->db->fieldNamesRel($entityName);
-        foreach ($rawEntities as &$entity) {
-            foreach ($fieldNamesRel as $fieldName) {
-                $entity[$fieldName] = null;
-            }
-        }
+
+        $response = [];
 
         // Reorganizar en forma de árbol
-        foreach ($rawEntities as &$entity) {
-            $entity = $this->valuesTree($entityName, $entity);
+        foreach ($rawEntities as &$row) {
+            $response[] = $this->valuesTree($entityName, $row);
         }
 
-        return $rawEntities; // Ya es array asociativo, no se necesita deserializar
+        return $response; // Ya es array asociativo, no se necesita deserializar
     }
 
     /**
@@ -47,7 +45,7 @@ class DataProvider {
     /**
      * Consulta por IDs
      */
-    public function fetchDataByIds(string $entityName, array $ids): array {
+    public function fetchDataByIds(string $entityName, ...$ids): array {
         $ids = array_unique($ids);
         if (empty($ids)) return [];
 
@@ -59,8 +57,9 @@ class DataProvider {
             $params[$param] = $id;
         }
 
+        $entityMetadata = $this->db->GetEntityMetadata($entityName);
         $sql = $this->db->createSelectQueries()->selectAll($entityName);
-        $sql .= " WHERE id IN (" . implode(", ", $placeholders) . ")";
+        $sql .= " WHERE " . $entityMetadata->Pt() . "." . $this->db->config->idName . " IN (" . implode(", ", $placeholders) . ")";
 
         $stmt = $this->db->connection()->prepare($sql);
         $stmt->execute($params);
@@ -79,10 +78,6 @@ class DataProvider {
     protected function valuesTree(string $entityName, array $values): array {
         $response = [];
 
-        if (isset($values['Label'])) {
-            $response['Label'] = $values['Label'];
-        }
-
         foreach ($this->db->fieldNames($entityName) as $fieldName) {
             if (array_key_exists($fieldName, $values)) {
                 $response[$fieldName] = $values[$fieldName];
@@ -96,20 +91,14 @@ class DataProvider {
 
     protected function valuesTreeRecursive(array $values, array $tree, array &$response): void {
         foreach ($tree as $fieldId => $et) {
+
             $fieldName = $et->fieldName;
             if (isset($response[$fieldName]) && $response[$fieldName] !== null) {
                 $response[$fieldName . '_'] = [];
 
-                $labelKey = $fieldId . $this->db->config->separator . 'Label';
-                if (isset($values[$labelKey])) {
-                    $response[$fieldName . '_']['Label'] = $values[$labelKey];
-                }
-
                 foreach ($this->db->fieldNames($et->refEntityName) as $refFieldName) {
                     $compositeKey = $fieldId . $this->db->config->separator . $refFieldName;
-                    if (isset($values[$compositeKey])) {
-                        $response[$fieldName . '_'][$refFieldName] = $values[$compositeKey];
-                    }
+                    $response[$fieldName . '_'][$refFieldName] = (isset($values[$compositeKey])) ? $values[$compositeKey] : null;
                 }
 
                 if (!empty($et->children)) {

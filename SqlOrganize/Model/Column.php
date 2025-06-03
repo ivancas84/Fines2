@@ -12,23 +12,23 @@ class Column
     public string $alias = "";
     public string $dataType;
     
-    public string $tableName;
-    public string $columnName;
-    public mixed $columnDefault = null;
-    public int $isNullable = 0;
-    public ?string $dataTypeDb = null;
+    public string $TABLE_NAME;
+    public string $COLUMN_NAME;
+    public mixed $COLUMN_DEFAULT = null;
+    public int $IS_NULLABLE = 0;
+    public ?string $DATA_TYPE = null;
     
-    public mixed $characterMaximumLength = null;
-    public mixed $maxLength = null;
-    public mixed $numericPrecision = null;
-    public mixed $numericScale = null;
-    public ?string $referencedTableName = null;
-    public ?string $referencedColumnName = null;
-    public int $isPrimaryKey = 0;
-    public int $isUniqueKey = 0;
-    public int $constraintName = 0;
-    public int $isForeignKey = 0;
-    public int $isUnsigned = 0;
+    public mixed $CHARACTER_MAXIMUM_LENGTH = null;
+    public mixed $MAX_LENGTH = null;
+    public mixed $NUMERIC_PRECISION = null;
+    public mixed $NUMERIC_SCALE = null;
+    public ?string $REFERENCED_TABLE_NAME = null;
+    public ?string $REFERENCED_COLUMN_NAME = null;
+    public int $IS_PRIMARY_KEY = 0;
+    public int $IS_UNIQUE_KEY = 0;
+    public int $CONSTRAINT_NAME = 0;
+    public int $IS_FOREIGN_KEY = 0;
+    public int $IS_UNSIGNED = 0;
     
-    public string $columnType;
+    public string $COLUMN_TYPE;
 }

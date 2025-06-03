@@ -129,7 +129,7 @@ class BuildSchemaMy extends BuildSchema
     protected function getInfoUnique(string $tableName): array
     {
         try {
-            $pdo = new PDO("mysql:host=" . DB_HOST_FINES . ";dbname=" . DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES, [
+            $pdo = new PDO("mysql:host=" . $this->config->host . ";dbname=" . $this->config->dbName, $this->config->user, $this->config->pass, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ]);
@@ -156,7 +156,7 @@ class BuildSchemaMy extends BuildSchema
             ";
             
             $stmt = $pdo->prepare($sql);
-            $stmt->bindValue(':dbName', DB_NAME_FINES);
+            $stmt->bindValue(':dbName', $this->config->dbName);
             $stmt->bindParam(':tableName', $tableName);
             $stmt->execute();
             
@@ -167,7 +167,7 @@ class BuildSchemaMy extends BuildSchema
                 $columnName = $row['COLUMN_NAME'];
                 
                 // Skip if it's the ID column defined in config
-                if ($columnName === ID_NAME) {
+                if ($columnName === $this->config->idName) {
                     continue;
                 }
                 

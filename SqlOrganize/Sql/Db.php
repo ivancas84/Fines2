@@ -146,9 +146,11 @@ abstract class Db
      */
     public function FieldNamesRel(string $entityName): array
     {
+
         $fieldNamesR = [];
         
         $entityMetadata = $this->GetEntityMetadata($entityName);
+
         if (!empty($entityMetadata->relations)) {
             foreach ($entityMetadata->relations as $fieldId => $er) {
                 // conviene colocar primero el id para facilitar la division en dapper

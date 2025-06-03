@@ -5,9 +5,17 @@ namespace SqlOrganize\Sql\Fines2;
 require_once MAIN_PATH . 'SqlOrganize/Sql/ISchema.php';
 require_once MAIN_PATH . 'SqlOrganize/Sql/EntityMetadata.php';
 require_once MAIN_PATH . 'SqlOrganize/Sql/Field.php';
+require_once MAIN_PATH . 'SqlOrganize/Sql/EntityTree.php';
+require_once MAIN_PATH . 'SqlOrganize/Sql/EntityRelation.php';
+require_once MAIN_PATH . 'SqlOrganize/Sql/EntityRef.php';
+
 use SqlOrganize\Sql\ISchema;
 use SqlOrganize\Sql\EntityMetadata;
 use SqlOrganize\Sql\Field;
+
+use SqlOrganize\Sql\EntityTree;
+use SqlOrganize\Sql\EntityRelation;
+use SqlOrganize\Sql\EntityRef;
 
 /**
  * Esquema de la base de datos
@@ -17,6812 +25,3456 @@ class Schema extends ISchema
 {
     public function __construct()
     {
-        $e = new EntityMetadata();
-        $e->name = 'alumno';
-        $e->alias = 'alum';
-        $e->pk = ['id'];
-        $e->fk = ['persona', 'plan', 'resolucion_inscripcion'];
-        $e->unique = ['libro_folio', 'persona'];
-        $e->notNull = ['confirmado_direccion', 'creado', 'id', 'persona', 'previas_completas', 'tiene_certificado', 'tiene_constancia', 'tiene_dni', 'tiene_partida'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'persona';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'persona';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'domicilio';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'domicilio';
-        $tree->children['domicilio'] = $child;
-        $e->tree['persona'] = $tree;
+        $this->entities['alumno'] = EntityMetadata::getInstance('alumno', 'alum');
+        $this->entities['alumno']->pk = ['id'];
+        $this->entities['alumno']->fk = ['persona', 'plan', 'resolucion_inscripcion'];
+        $this->entities['alumno']->unique = ['libro_folio', 'persona'];
+        $this->entities['alumno']->notNull = ['confirmado_direccion', 'creado', 'id', 'persona', 'previas_completas', 'tiene_certificado', 'tiene_constancia', 'tiene_dni', 'tiene_partida'];
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'plan';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'plan';
-        $e->tree['plan'] = $tree;
+        $this->entities['alumno']->tree = [];
+        $this->entities['alumno']->tree['persona'] = EntityTree::getInstance('persona', 'persona', 'id');
+        $this->entities['alumno']->tree['persona']->children = [];
+        $this->entities['alumno']->tree['persona']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'resolucion_inscripcion';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'resolucion';
-        $e->tree['resolucion_inscripcion'] = $tree;
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'persona';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'persona';
-        $e->relations['persona'] = $relation;
+        $this->entities['alumno']->tree['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'persona';
-        $e->relations['domicilio'] = $relation;
+        $this->entities['alumno']->tree['resolucion_inscripcion'] = EntityTree::getInstance('resolucion_inscripcion', 'resolucion', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $e->relations['plan'] = $relation;
+        $this->entities['alumno']->relations = [];
+        $this->entities['alumno']->relations['persona'] = EntityRelation::getInstance('persona', 'persona', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'resolucion_inscripcion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'resolucion';
-        $e->relations['resolucion_inscripcion'] = $relation;
+        $this->entities['alumno']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['alumno']->relations['domicilio']->parentId = 'persona';
 
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'alumno';
-        $om->entityName = 'alumno_comision';
-        $e->om['alumnoComision_'] = $om;
+        $this->entities['alumno']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
 
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'alumno';
-        $om->entityName = 'calificacion';
-        $e->om['calificacion_'] = $om;
+        $this->entities['alumno']->relations['resolucion_inscripcion'] = EntityRelation::getInstance('resolucion_inscripcion', 'resolucion', 'id');
 
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'alumno';
-        $om->entityName = 'disposicion_pendiente';
-        $e->om['disposicionPendiente_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'adeuda_deudores';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno']->om = [];
+        $this->entities['alumno']->om['alumnoComision_'] = EntityRef::getInstance('alumno', 'alumno_comision');
+        $this->entities['alumno']->om['calificacion_'] = EntityRef::getInstance('alumno', 'calificacion');
+        $this->entities['alumno']->om['disposicionPendiente_'] = EntityRef::getInstance('alumno', 'disposicion_pendiente');
+        $this->entities['alumno']->fields['adeuda_deudores'] = Field::getInstance('alumno', 'adeuda_deudores', 'varchar', 'string');
+        $this->entities['alumno']->fields['adeuda_deudores']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['adeuda_deudores']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['adeuda_deudores'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'adeuda_legajo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno']->fields['adeuda_legajo'] = Field::getInstance('alumno', 'adeuda_legajo', 'varchar', 'string');
+        $this->entities['alumno']->fields['adeuda_legajo']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['adeuda_legajo']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['adeuda_legajo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'anio_ingreso';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno']->fields['anio_ingreso'] = Field::getInstance('alumno', 'anio_ingreso', 'varchar', 'string');
+        $this->entities['alumno']->fields['anio_ingreso']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['anio_ingreso']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['anio_ingreso'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'anio_inscripcion';
-        $f->dataType = 'smallint';
-        $f->type = 'short';
-        $f->checks = [
+        $this->entities['alumno']->fields['anio_inscripcion'] = Field::getInstance('alumno', 'anio_inscripcion', 'smallint', 'short');
+        $this->entities['alumno']->fields['anio_inscripcion']->checks = [
             'type' => 'short',
         ];
-        $e->fields['anio_inscripcion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'anio_inscripcion_completo';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['alumno']->fields['anio_inscripcion_completo'] = Field::getInstance('alumno', 'anio_inscripcion_completo', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['anio_inscripcion_completo']->checks = [
             'type' => 'byte',
         ];
-        $e->fields['anio_inscripcion_completo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'comentarios';
-        $f->dataType = 'text';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno']->fields['comentarios'] = Field::getInstance('alumno', 'comentarios', 'text', 'string');
+        $this->entities['alumno']->fields['comentarios']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['comentarios']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['comentarios'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'confirmado_direccion';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['alumno']->fields['confirmado_direccion'] = Field::getInstance('alumno', 'confirmado_direccion', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['confirmado_direccion']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['confirmado_direccion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'creado';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['alumno']->fields['creado'] = Field::getInstance('alumno', 'creado', 'timestamp', 'DateTime');
+        $this->entities['alumno']->fields['creado']->defaultValue = 'current_timestamp()';
+        $this->entities['alumno']->fields['creado']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['creado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'documentacion_inscripcion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno']->fields['documentacion_inscripcion'] = Field::getInstance('alumno', 'documentacion_inscripcion', 'varchar', 'string');
+        $this->entities['alumno']->fields['documentacion_inscripcion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['documentacion_inscripcion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['documentacion_inscripcion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'establecimiento_inscripcion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno']->fields['establecimiento_inscripcion'] = Field::getInstance('alumno', 'establecimiento_inscripcion', 'varchar', 'string');
+        $this->entities['alumno']->fields['establecimiento_inscripcion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['establecimiento_inscripcion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['establecimiento_inscripcion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'estado_inscripcion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno']->fields['estado_inscripcion'] = Field::getInstance('alumno', 'estado_inscripcion', 'varchar', 'string');
+        $this->entities['alumno']->fields['estado_inscripcion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['estado_inscripcion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['estado_inscripcion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'fecha_titulacion';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['alumno']->fields['fecha_titulacion'] = Field::getInstance('alumno', 'fecha_titulacion', 'date', 'DateTime');
+        $this->entities['alumno']->fields['fecha_titulacion']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['fecha_titulacion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'folio';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno']->fields['folio'] = Field::getInstance('alumno', 'folio', 'varchar', 'string');
+        $this->entities['alumno']->fields['folio']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['folio']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['folio'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno']->fields['id'] = Field::getInstance('alumno', 'id', 'varchar', 'string');
+        $this->entities['alumno']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'libro';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno']->fields['libro'] = Field::getInstance('alumno', 'libro', 'varchar', 'string');
+        $this->entities['alumno']->fields['libro']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['libro']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['libro'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'libro_folio';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno']->fields['libro_folio'] = Field::getInstance('alumno', 'libro_folio', 'varchar', 'string');
+        $this->entities['alumno']->fields['libro_folio']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['libro_folio']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['libro_folio'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'observaciones';
-        $f->dataType = 'text';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno']->fields['observaciones'] = Field::getInstance('alumno', 'observaciones', 'text', 'string');
+        $this->entities['alumno']->fields['observaciones']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['observaciones']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['observaciones'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'persona';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'per';
-        $f->refEntityName = 'persona';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['alumno']->fields['persona'] = Field::getInstance('alumno', 'persona', 'varchar', 'string');
+        $this->entities['alumno']->fields['persona']->alias = 'per';
+        $this->entities['alumno']->fields['persona']->refEntityName = 'persona';
+        $this->entities['alumno']->fields['persona']->refFieldName = 'id';
+        $this->entities['alumno']->fields['persona']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['persona']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['persona'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'plan';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'pla';
-        $f->refEntityName = 'plan';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['alumno']->fields['plan'] = Field::getInstance('alumno', 'plan', 'varchar', 'string');
+        $this->entities['alumno']->fields['plan']->alias = 'pla';
+        $this->entities['alumno']->fields['plan']->refEntityName = 'plan';
+        $this->entities['alumno']->fields['plan']->refFieldName = 'id';
+        $this->entities['alumno']->fields['plan']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['plan']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['plan'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'previas_completas';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['alumno']->fields['previas_completas'] = Field::getInstance('alumno', 'previas_completas', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['previas_completas']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['previas_completas'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'resolucion_inscripcion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'res';
-        $f->refEntityName = 'resolucion';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['alumno']->fields['resolucion_inscripcion'] = Field::getInstance('alumno', 'resolucion_inscripcion', 'varchar', 'string');
+        $this->entities['alumno']->fields['resolucion_inscripcion']->alias = 'res';
+        $this->entities['alumno']->fields['resolucion_inscripcion']->refEntityName = 'resolucion';
+        $this->entities['alumno']->fields['resolucion_inscripcion']->refFieldName = 'id';
+        $this->entities['alumno']->fields['resolucion_inscripcion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno']->fields['resolucion_inscripcion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['resolucion_inscripcion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'semestre_ingreso';
-        $f->dataType = 'smallint';
-        $f->type = 'short';
-        $f->checks = [
+        $this->entities['alumno']->fields['semestre_ingreso'] = Field::getInstance('alumno', 'semestre_ingreso', 'smallint', 'short');
+        $this->entities['alumno']->fields['semestre_ingreso']->checks = [
             'type' => 'short',
         ];
-        $e->fields['semestre_ingreso'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'semestre_inscripcion';
-        $f->dataType = 'smallint';
-        $f->type = 'short';
-        $f->checks = [
+        $this->entities['alumno']->fields['semestre_inscripcion'] = Field::getInstance('alumno', 'semestre_inscripcion', 'smallint', 'short');
+        $this->entities['alumno']->fields['semestre_inscripcion']->checks = [
             'type' => 'short',
         ];
-        $e->fields['semestre_inscripcion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'tiene_certificado';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['alumno']->fields['tiene_certificado'] = Field::getInstance('alumno', 'tiene_certificado', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['tiene_certificado']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['tiene_certificado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'tiene_constancia';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['alumno']->fields['tiene_constancia'] = Field::getInstance('alumno', 'tiene_constancia', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['tiene_constancia']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['tiene_constancia'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'tiene_dni';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['alumno']->fields['tiene_dni'] = Field::getInstance('alumno', 'tiene_dni', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['tiene_dni']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['tiene_dni'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno';
-        $f->name = 'tiene_partida';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['alumno']->fields['tiene_partida'] = Field::getInstance('alumno', 'tiene_partida', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['tiene_partida']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['tiene_partida'] = $f;
+        $this->entities['alumno_comision'] = EntityMetadata::getInstance('alumno_comision', 'alu1');
+        $this->entities['alumno_comision']->pk = ['id'];
+        $this->entities['alumno_comision']->fk = ['alumno', 'comision'];
+        $this->entities['alumno_comision']->notNull = ['alumno', 'creado', 'id'];
 
-        $this->entities['alumno'] = $e;
+        $this->entities['alumno_comision']->tree = [];
+        $this->entities['alumno_comision']->tree['alumno'] = EntityTree::getInstance('alumno', 'alumno', 'id');
+        $this->entities['alumno_comision']->tree['alumno']->children = [];
+        $this->entities['alumno_comision']->tree['alumno']->children['persona'] = EntityTree::getInstance('persona', 'persona', 'id');
+        $this->entities['alumno_comision']->tree['alumno']->children['persona']->children = [];
+        $this->entities['alumno_comision']->tree['alumno']->children['persona']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'alumno_comision';
-        $e->alias = 'alu1';
-        $e->pk = ['id'];
-        $e->fk = ['alumno', 'comision'];
-        $e->notNull = ['alumno', 'creado', 'id'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'alumno';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'alumno';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'persona';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'persona';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'domicilio';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'domicilio';
-                $tree->children['domicilio'] = $child;
-        $tree->children['persona'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'plan';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'plan';
-        $tree->children['plan'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'resolucion_inscripcion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'resolucion';
-        $tree->children['resolucion_inscripcion'] = $child;
-        $e->tree['alumno'] = $tree;
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'comision';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'comision';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'calendario';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'calendario';
-        $tree->children['calendario'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'comision_siguiente';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'comision';
-        $tree->children['comision_siguiente'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'modalidad';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'modalidad';
-        $tree->children['modalidad'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'planificacion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'planificacion';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'plan';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'plan';
-                $tree->children['plan_pla'] = $child;
-        $tree->children['planificacion'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'sede';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'sede';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'centro_educativo';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'centro_educativo';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'domicilio';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'domicilio';
-                        $tree->children['domicilio_cen'] = $child;
-                $tree->children['centro_educativo'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'domicilio';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'domicilio';
-                $tree->children['domicilio_sed'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'organizacion';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'sede';
-                $tree->children['organizacion'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'tipo_sede';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'tipo_sede';
-                $tree->children['tipo_sede'] = $child;
-        $tree->children['sede'] = $child;
-        $e->tree['comision'] = $tree;
+        $this->entities['alumno_comision']->tree['alumno']->children['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'alumno';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'alumno';
-        $e->relations['alumno'] = $relation;
+        $this->entities['alumno_comision']->tree['alumno']->children['resolucion_inscripcion'] = EntityTree::getInstance('resolucion_inscripcion', 'resolucion', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'persona';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'persona';
-        $relation->parentId = 'alumno';
-        $e->relations['persona'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'persona';
-        $e->relations['domicilio'] = $relation;
+        $this->entities['alumno_comision']->tree['comision'] = EntityTree::getInstance('comision', 'comision', 'id');
+        $this->entities['alumno_comision']->tree['comision']->children = [];
+        $this->entities['alumno_comision']->tree['comision']->children['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'alumno';
-        $e->relations['plan'] = $relation;
+        $this->entities['alumno_comision']->tree['comision']->children['comision_siguiente'] = EntityTree::getInstance('comision_siguiente', 'comision', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'resolucion_inscripcion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'resolucion';
-        $relation->parentId = 'alumno';
-        $e->relations['resolucion_inscripcion'] = $relation;
+        $this->entities['alumno_comision']->tree['comision']->children['modalidad'] = EntityTree::getInstance('modalidad', 'modalidad', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $e->relations['comision'] = $relation;
+        $this->entities['alumno_comision']->tree['comision']->children['planificacion'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['alumno_comision']->tree['comision']->children['planificacion']->children = [];
+        $this->entities['alumno_comision']->tree['comision']->children['planificacion']->children['plan_pla'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'calendario';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'calendario';
-        $relation->parentId = 'comision';
-        $e->relations['calendario'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision_siguiente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $relation->parentId = 'comision';
-        $e->relations['comision_siguiente'] = $relation;
+        $this->entities['alumno_comision']->tree['comision']->children['sede'] = EntityTree::getInstance('sede', 'sede', 'id');
+        $this->entities['alumno_comision']->tree['comision']->children['sede']->children = [];
+        $this->entities['alumno_comision']->tree['comision']->children['sede']->children['centro_educativo'] = EntityTree::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['alumno_comision']->tree['comision']->children['sede']->children['centro_educativo']->children = [];
+        $this->entities['alumno_comision']->tree['comision']->children['sede']->children['centro_educativo']->children['domicilio_cen'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'modalidad';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'modalidad';
-        $relation->parentId = 'comision';
-        $e->relations['modalidad'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'comision';
-        $e->relations['planificacion'] = $relation;
+        $this->entities['alumno_comision']->tree['comision']->children['sede']->children['domicilio_sed'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion';
-        $e->relations['plan_pla'] = $relation;
+        $this->entities['alumno_comision']->tree['comision']->children['sede']->children['organizacion'] = EntityTree::getInstance('organizacion', 'sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'comision';
-        $e->relations['sede'] = $relation;
+        $this->entities['alumno_comision']->tree['comision']->children['sede']->children['tipo_sede'] = EntityTree::getInstance('tipo_sede', 'tipo_sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'centro_educativo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'centro_educativo';
-        $relation->parentId = 'sede';
-        $e->relations['centro_educativo'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'centro_educativo';
-        $e->relations['domicilio_cen'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'sede';
-        $e->relations['domicilio_sed'] = $relation;
+        $this->entities['alumno_comision']->relations = [];
+        $this->entities['alumno_comision']->relations['alumno'] = EntityRelation::getInstance('alumno', 'alumno', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'organizacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'sede';
-        $e->relations['organizacion'] = $relation;
+        $this->entities['alumno_comision']->relations['persona'] = EntityRelation::getInstance('persona', 'persona', 'id');
+        $this->entities['alumno_comision']->relations['persona']->parentId = 'alumno';
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'tipo_sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'tipo_sede';
-        $relation->parentId = 'sede';
-        $e->relations['tipo_sede'] = $relation;
+        $this->entities['alumno_comision']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['alumno_comision']->relations['domicilio']->parentId = 'persona';
 
-        $f = new Field();
-        $f->entityName = 'alumno_comision';
-        $f->name = 'activo';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['alumno_comision']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['alumno_comision']->relations['plan']->parentId = 'alumno';
+
+        $this->entities['alumno_comision']->relations['resolucion_inscripcion'] = EntityRelation::getInstance('resolucion_inscripcion', 'resolucion', 'id');
+        $this->entities['alumno_comision']->relations['resolucion_inscripcion']->parentId = 'alumno';
+
+        $this->entities['alumno_comision']->relations['comision'] = EntityRelation::getInstance('comision', 'comision', 'id');
+
+        $this->entities['alumno_comision']->relations['calendario'] = EntityRelation::getInstance('calendario', 'calendario', 'id');
+        $this->entities['alumno_comision']->relations['calendario']->parentId = 'comision';
+
+        $this->entities['alumno_comision']->relations['comision_siguiente'] = EntityRelation::getInstance('comision_siguiente', 'comision', 'id');
+        $this->entities['alumno_comision']->relations['comision_siguiente']->parentId = 'comision';
+
+        $this->entities['alumno_comision']->relations['modalidad'] = EntityRelation::getInstance('modalidad', 'modalidad', 'id');
+        $this->entities['alumno_comision']->relations['modalidad']->parentId = 'comision';
+
+        $this->entities['alumno_comision']->relations['planificacion'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['alumno_comision']->relations['planificacion']->parentId = 'comision';
+
+        $this->entities['alumno_comision']->relations['plan_pla'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['alumno_comision']->relations['plan_pla']->parentId = 'planificacion';
+
+        $this->entities['alumno_comision']->relations['sede'] = EntityRelation::getInstance('sede', 'sede', 'id');
+        $this->entities['alumno_comision']->relations['sede']->parentId = 'comision';
+
+        $this->entities['alumno_comision']->relations['centro_educativo'] = EntityRelation::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['alumno_comision']->relations['centro_educativo']->parentId = 'sede';
+
+        $this->entities['alumno_comision']->relations['domicilio_cen'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['alumno_comision']->relations['domicilio_cen']->parentId = 'centro_educativo';
+
+        $this->entities['alumno_comision']->relations['domicilio_sed'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['alumno_comision']->relations['domicilio_sed']->parentId = 'sede';
+
+        $this->entities['alumno_comision']->relations['organizacion'] = EntityRelation::getInstance('organizacion', 'sede', 'id');
+        $this->entities['alumno_comision']->relations['organizacion']->parentId = 'sede';
+
+        $this->entities['alumno_comision']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
+        $this->entities['alumno_comision']->relations['tipo_sede']->parentId = 'sede';
+
+        $this->entities['alumno_comision']->fields['activo'] = Field::getInstance('alumno_comision', 'activo', 'tinyint', 'byte');
+        $this->entities['alumno_comision']->fields['activo']->checks = [
             'type' => 'byte',
         ];
-        $e->fields['activo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno_comision';
-        $f->name = 'alumno';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'alu';
-        $f->refEntityName = 'alumno';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['alumno_comision']->fields['alumno'] = Field::getInstance('alumno_comision', 'alumno', 'varchar', 'string');
+        $this->entities['alumno_comision']->fields['alumno']->alias = 'alu';
+        $this->entities['alumno_comision']->fields['alumno']->refEntityName = 'alumno';
+        $this->entities['alumno_comision']->fields['alumno']->refFieldName = 'id';
+        $this->entities['alumno_comision']->fields['alumno']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['alumno_comision']->fields['alumno']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['alumno'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno_comision';
-        $f->name = 'comision';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'com';
-        $f->refEntityName = 'comision';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['alumno_comision']->fields['comision'] = Field::getInstance('alumno_comision', 'comision', 'varchar', 'string');
+        $this->entities['alumno_comision']->fields['comision']->alias = 'com';
+        $this->entities['alumno_comision']->fields['comision']->refEntityName = 'comision';
+        $this->entities['alumno_comision']->fields['comision']->refFieldName = 'id';
+        $this->entities['alumno_comision']->fields['comision']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno_comision']->fields['comision']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['comision'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno_comision';
-        $f->name = 'creado';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['alumno_comision']->fields['creado'] = Field::getInstance('alumno_comision', 'creado', 'timestamp', 'DateTime');
+        $this->entities['alumno_comision']->fields['creado']->defaultValue = 'current_timestamp()';
+        $this->entities['alumno_comision']->fields['creado']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['creado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno_comision';
-        $f->name = 'estado';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->defaultValue = 'Activo';
-        $f->checks = [
+        $this->entities['alumno_comision']->fields['estado'] = Field::getInstance('alumno_comision', 'estado', 'varchar', 'string');
+        $this->entities['alumno_comision']->fields['estado']->defaultValue = 'Activo';
+        $this->entities['alumno_comision']->fields['estado']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno_comision']->fields['estado']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['estado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno_comision';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno_comision']->fields['id'] = Field::getInstance('alumno_comision', 'id', 'varchar', 'string');
+        $this->entities['alumno_comision']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['alumno_comision']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno_comision';
-        $f->name = 'observaciones';
-        $f->dataType = 'text';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['alumno_comision']->fields['observaciones'] = Field::getInstance('alumno_comision', 'observaciones', 'text', 'string');
+        $this->entities['alumno_comision']->fields['observaciones']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['alumno_comision']->fields['observaciones']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['observaciones'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'alumno_comision';
-        $f->name = 'pfid';
-        $f->dataType = 'int';
-        $f->type = 'uint';
-        $f->checks = [
+        $this->entities['alumno_comision']->fields['pfid'] = Field::getInstance('alumno_comision', 'pfid', 'int', 'uint');
+        $this->entities['alumno_comision']->fields['pfid']->checks = [
             'type' => 'uint',
         ];
-        $e->fields['pfid'] = $f;
+        $this->entities['asignacion_planilla_docente'] = EntityMetadata::getInstance('asignacion_planilla_docente', 'asig');
+        $this->entities['asignacion_planilla_docente']->pk = ['id'];
+        $this->entities['asignacion_planilla_docente']->fk = ['planilla_docente', 'toma'];
+        $this->entities['asignacion_planilla_docente']->notNull = ['id', 'insertado', 'planilla_docente', 'reclamo', 'toma'];
 
-        $this->entities['alumno_comision'] = $e;
+        $this->entities['asignacion_planilla_docente']->tree = [];
+        $this->entities['asignacion_planilla_docente']->tree['planilla_docente'] = EntityTree::getInstance('planilla_docente', 'planilla_docente', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'asignacion_planilla_docente';
-        $e->alias = 'asig';
-        $e->pk = ['id'];
-        $e->fk = ['planilla_docente', 'toma'];
-        $e->notNull = ['id', 'insertado', 'planilla_docente', 'reclamo', 'toma'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'planilla_docente';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'planilla_docente';
-        $e->tree['planilla_docente'] = $tree;
+        $this->entities['asignacion_planilla_docente']->tree['toma'] = EntityTree::getInstance('toma', 'toma', 'id');
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children = [];
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso'] = EntityTree::getInstance('curso', 'curso', 'id');
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children = [];
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'toma';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'toma';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'curso';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'curso';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'asignatura';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'asignatura';
-                $tree->children['asignatura'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'comision';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'comision';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'calendario';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'calendario';
-                        $tree->children['calendario'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'comision_siguiente';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'comision';
-                        $tree->children['comision_siguiente'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'modalidad';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'modalidad';
-                        $tree->children['modalidad'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'planificacion';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'planificacion';
-                                $tree->children = [];
-                                $child = new \SqlOrganize\Sql\EntityTree();
-                                $child->fieldName = 'plan';
-                                $child->refFieldName = 'id';
-                                $child->refEntityName = 'plan';
-                                $tree->children['plan'] = $child;
-                        $tree->children['planificacion'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'sede';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'sede';
-                                $tree->children = [];
-                                $child = new \SqlOrganize\Sql\EntityTree();
-                                $child->fieldName = 'centro_educativo';
-                                $child->refFieldName = 'id';
-                                $child->refEntityName = 'centro_educativo';
-                                        $tree->children = [];
-                                        $child = new \SqlOrganize\Sql\EntityTree();
-                                        $child->fieldName = 'domicilio';
-                                        $child->refFieldName = 'id';
-                                        $child->refEntityName = 'domicilio';
-                                        $tree->children['domicilio_cen'] = $child;
-                                $tree->children['centro_educativo'] = $child;
-                                $child = new \SqlOrganize\Sql\EntityTree();
-                                $child->fieldName = 'domicilio';
-                                $child->refFieldName = 'id';
-                                $child->refEntityName = 'domicilio';
-                                $tree->children['domicilio'] = $child;
-                                $child = new \SqlOrganize\Sql\EntityTree();
-                                $child->fieldName = 'organizacion';
-                                $child->refFieldName = 'id';
-                                $child->refEntityName = 'sede';
-                                $tree->children['organizacion'] = $child;
-                                $child = new \SqlOrganize\Sql\EntityTree();
-                                $child->fieldName = 'tipo_sede';
-                                $child->refFieldName = 'id';
-                                $child->refEntityName = 'tipo_sede';
-                                $tree->children['tipo_sede'] = $child;
-                        $tree->children['sede'] = $child;
-                $tree->children['comision'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'disposicion';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'disposicion';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'asignatura';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'asignatura';
-                        $tree->children['asignatura_dis'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'planificacion';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'planificacion';
-                                $tree->children = [];
-                                $child = new \SqlOrganize\Sql\EntityTree();
-                                $child->fieldName = 'plan';
-                                $child->refFieldName = 'id';
-                                $child->refEntityName = 'plan';
-                                $tree->children['plan_pla'] = $child;
-                        $tree->children['planificacion_dis'] = $child;
-                $tree->children['disposicion'] = $child;
-        $tree->children['curso'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'docente';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'persona';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'domicilio';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'domicilio';
-                $tree->children['domicilio_doc'] = $child;
-        $tree->children['docente'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'planilla_docente';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'planilla_docente';
-        $tree->children['planilla_docente_tom'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'reemplazo';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'persona';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'domicilio';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'domicilio';
-                $tree->children['domicilio_ree'] = $child;
-        $tree->children['reemplazo'] = $child;
-        $e->tree['toma'] = $tree;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision'] = EntityTree::getInstance('comision', 'comision', 'id');
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children = [];
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planilla_docente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planilla_docente';
-        $e->relations['planilla_docente'] = $relation;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['comision_siguiente'] = EntityTree::getInstance('comision_siguiente', 'comision', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'toma';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'toma';
-        $e->relations['toma'] = $relation;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['modalidad'] = EntityTree::getInstance('modalidad', 'modalidad', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'curso';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'curso';
-        $relation->parentId = 'toma';
-        $e->relations['curso'] = $relation;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['planificacion'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['planificacion']->children = [];
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['planificacion']->children['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $relation->parentId = 'curso';
-        $e->relations['asignatura'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $relation->parentId = 'curso';
-        $e->relations['comision'] = $relation;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede'] = EntityTree::getInstance('sede', 'sede', 'id');
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children = [];
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children['centro_educativo'] = EntityTree::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children['centro_educativo']->children = [];
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children['centro_educativo']->children['domicilio_cen'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'calendario';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'calendario';
-        $relation->parentId = 'comision';
-        $e->relations['calendario'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision_siguiente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $relation->parentId = 'comision';
-        $e->relations['comision_siguiente'] = $relation;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'modalidad';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'modalidad';
-        $relation->parentId = 'comision';
-        $e->relations['modalidad'] = $relation;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children['organizacion'] = EntityTree::getInstance('organizacion', 'sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'comision';
-        $e->relations['planificacion'] = $relation;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children['tipo_sede'] = EntityTree::getInstance('tipo_sede', 'tipo_sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion';
-        $e->relations['plan'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'comision';
-        $e->relations['sede'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'centro_educativo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'centro_educativo';
-        $relation->parentId = 'sede';
-        $e->relations['centro_educativo'] = $relation;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['disposicion'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['disposicion']->children = [];
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['disposicion']->children['asignatura_dis'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'centro_educativo';
-        $e->relations['domicilio_cen'] = $relation;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['disposicion']->children['planificacion_dis'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['disposicion']->children['planificacion_dis']->children = [];
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['disposicion']->children['planificacion_dis']->children['plan_pla'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'sede';
-        $e->relations['domicilio'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'organizacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'sede';
-        $e->relations['organizacion'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'tipo_sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'tipo_sede';
-        $relation->parentId = 'sede';
-        $e->relations['tipo_sede'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'disposicion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'disposicion';
-        $relation->parentId = 'curso';
-        $e->relations['disposicion'] = $relation;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['docente'] = EntityTree::getInstance('docente', 'persona', 'id');
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['docente']->children = [];
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['docente']->children['domicilio_doc'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $relation->parentId = 'disposicion';
-        $e->relations['asignatura_dis'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'disposicion';
-        $e->relations['planificacion_dis'] = $relation;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['planilla_docente_tom'] = EntityTree::getInstance('planilla_docente', 'planilla_docente', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion_dis';
-        $e->relations['plan_pla'] = $relation;
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['reemplazo'] = EntityTree::getInstance('reemplazo', 'persona', 'id');
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['reemplazo']->children = [];
+        $this->entities['asignacion_planilla_docente']->tree['toma']->children['reemplazo']->children['domicilio_ree'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'docente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'persona';
-        $relation->parentId = 'toma';
-        $e->relations['docente'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'docente';
-        $e->relations['domicilio_doc'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planilla_docente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planilla_docente';
-        $relation->parentId = 'toma';
-        $e->relations['planilla_docente_tom'] = $relation;
+        $this->entities['asignacion_planilla_docente']->relations = [];
+        $this->entities['asignacion_planilla_docente']->relations['planilla_docente'] = EntityRelation::getInstance('planilla_docente', 'planilla_docente', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'reemplazo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'persona';
-        $relation->parentId = 'toma';
-        $e->relations['reemplazo'] = $relation;
+        $this->entities['asignacion_planilla_docente']->relations['toma'] = EntityRelation::getInstance('toma', 'toma', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'reemplazo';
-        $e->relations['domicilio_ree'] = $relation;
+        $this->entities['asignacion_planilla_docente']->relations['curso'] = EntityRelation::getInstance('curso', 'curso', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['curso']->parentId = 'toma';
 
-        $f = new Field();
-        $f->entityName = 'asignacion_planilla_docente';
-        $f->name = 'comentario';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['asignacion_planilla_docente']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['asignatura']->parentId = 'curso';
+
+        $this->entities['asignacion_planilla_docente']->relations['comision'] = EntityRelation::getInstance('comision', 'comision', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['comision']->parentId = 'curso';
+
+        $this->entities['asignacion_planilla_docente']->relations['calendario'] = EntityRelation::getInstance('calendario', 'calendario', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['calendario']->parentId = 'comision';
+
+        $this->entities['asignacion_planilla_docente']->relations['comision_siguiente'] = EntityRelation::getInstance('comision_siguiente', 'comision', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['comision_siguiente']->parentId = 'comision';
+
+        $this->entities['asignacion_planilla_docente']->relations['modalidad'] = EntityRelation::getInstance('modalidad', 'modalidad', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['modalidad']->parentId = 'comision';
+
+        $this->entities['asignacion_planilla_docente']->relations['planificacion'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['planificacion']->parentId = 'comision';
+
+        $this->entities['asignacion_planilla_docente']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['plan']->parentId = 'planificacion';
+
+        $this->entities['asignacion_planilla_docente']->relations['sede'] = EntityRelation::getInstance('sede', 'sede', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['sede']->parentId = 'comision';
+
+        $this->entities['asignacion_planilla_docente']->relations['centro_educativo'] = EntityRelation::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['centro_educativo']->parentId = 'sede';
+
+        $this->entities['asignacion_planilla_docente']->relations['domicilio_cen'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['domicilio_cen']->parentId = 'centro_educativo';
+
+        $this->entities['asignacion_planilla_docente']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['domicilio']->parentId = 'sede';
+
+        $this->entities['asignacion_planilla_docente']->relations['organizacion'] = EntityRelation::getInstance('organizacion', 'sede', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['organizacion']->parentId = 'sede';
+
+        $this->entities['asignacion_planilla_docente']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['tipo_sede']->parentId = 'sede';
+
+        $this->entities['asignacion_planilla_docente']->relations['disposicion'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['disposicion']->parentId = 'curso';
+
+        $this->entities['asignacion_planilla_docente']->relations['asignatura_dis'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['asignatura_dis']->parentId = 'disposicion';
+
+        $this->entities['asignacion_planilla_docente']->relations['planificacion_dis'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['planificacion_dis']->parentId = 'disposicion';
+
+        $this->entities['asignacion_planilla_docente']->relations['plan_pla'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['plan_pla']->parentId = 'planificacion_dis';
+
+        $this->entities['asignacion_planilla_docente']->relations['docente'] = EntityRelation::getInstance('docente', 'persona', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['docente']->parentId = 'toma';
+
+        $this->entities['asignacion_planilla_docente']->relations['domicilio_doc'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['domicilio_doc']->parentId = 'docente';
+
+        $this->entities['asignacion_planilla_docente']->relations['planilla_docente_tom'] = EntityRelation::getInstance('planilla_docente', 'planilla_docente', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['planilla_docente_tom']->parentId = 'toma';
+
+        $this->entities['asignacion_planilla_docente']->relations['reemplazo'] = EntityRelation::getInstance('reemplazo', 'persona', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['reemplazo']->parentId = 'toma';
+
+        $this->entities['asignacion_planilla_docente']->relations['domicilio_ree'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['asignacion_planilla_docente']->relations['domicilio_ree']->parentId = 'reemplazo';
+
+        $this->entities['asignacion_planilla_docente']->fields['comentario'] = Field::getInstance('asignacion_planilla_docente', 'comentario', 'varchar', 'string');
+        $this->entities['asignacion_planilla_docente']->fields['comentario']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['asignacion_planilla_docente']->fields['comentario']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['comentario'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'asignacion_planilla_docente';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['asignacion_planilla_docente']->fields['id'] = Field::getInstance('asignacion_planilla_docente', 'id', 'varchar', 'string');
+        $this->entities['asignacion_planilla_docente']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['asignacion_planilla_docente']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'asignacion_planilla_docente';
-        $f->name = 'insertado';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['asignacion_planilla_docente']->fields['insertado'] = Field::getInstance('asignacion_planilla_docente', 'insertado', 'timestamp', 'DateTime');
+        $this->entities['asignacion_planilla_docente']->fields['insertado']->defaultValue = 'current_timestamp()';
+        $this->entities['asignacion_planilla_docente']->fields['insertado']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['insertado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'asignacion_planilla_docente';
-        $f->name = 'planilla_docente';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'pla';
-        $f->refEntityName = 'planilla_docente';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['asignacion_planilla_docente']->fields['planilla_docente'] = Field::getInstance('asignacion_planilla_docente', 'planilla_docente', 'varchar', 'string');
+        $this->entities['asignacion_planilla_docente']->fields['planilla_docente']->alias = 'pla';
+        $this->entities['asignacion_planilla_docente']->fields['planilla_docente']->refEntityName = 'planilla_docente';
+        $this->entities['asignacion_planilla_docente']->fields['planilla_docente']->refFieldName = 'id';
+        $this->entities['asignacion_planilla_docente']->fields['planilla_docente']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['asignacion_planilla_docente']->fields['planilla_docente']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['planilla_docente'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'asignacion_planilla_docente';
-        $f->name = 'reclamo';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['asignacion_planilla_docente']->fields['reclamo'] = Field::getInstance('asignacion_planilla_docente', 'reclamo', 'tinyint', 'byte');
+        $this->entities['asignacion_planilla_docente']->fields['reclamo']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['reclamo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'asignacion_planilla_docente';
-        $f->name = 'toma';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'tom';
-        $f->refEntityName = 'toma';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['asignacion_planilla_docente']->fields['toma'] = Field::getInstance('asignacion_planilla_docente', 'toma', 'varchar', 'string');
+        $this->entities['asignacion_planilla_docente']->fields['toma']->alias = 'tom';
+        $this->entities['asignacion_planilla_docente']->fields['toma']->refEntityName = 'toma';
+        $this->entities['asignacion_planilla_docente']->fields['toma']->refFieldName = 'id';
+        $this->entities['asignacion_planilla_docente']->fields['toma']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['asignacion_planilla_docente']->fields['toma']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['toma'] = $f;
+        $this->entities['asignatura'] = EntityMetadata::getInstance('asignatura', 'asi1');
+        $this->entities['asignatura']->pk = ['id'];
+        $this->entities['asignatura']->unique = ['nombre'];
+        $this->entities['asignatura']->notNull = ['id', 'nombre'];
 
-        $this->entities['asignacion_planilla_docente'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'asignatura';
-        $e->alias = 'asi1';
-        $e->pk = ['id'];
-        $e->unique = ['nombre'];
-        $e->notNull = ['id', 'nombre'];
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'asignatura';
-        $om->entityName = 'curso';
-        $e->om['curso_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'asignatura';
-        $om->entityName = 'disposicion';
-        $e->om['disposicion_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'asignatura';
-        $f->name = 'clasificacion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['asignatura']->om = [];
+        $this->entities['asignatura']->om['curso_'] = EntityRef::getInstance('asignatura', 'curso');
+        $this->entities['asignatura']->om['disposicion_'] = EntityRef::getInstance('asignatura', 'disposicion');
+        $this->entities['asignatura']->fields['clasificacion'] = Field::getInstance('asignatura', 'clasificacion', 'varchar', 'string');
+        $this->entities['asignatura']->fields['clasificacion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['asignatura']->fields['clasificacion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['clasificacion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'asignatura';
-        $f->name = 'codigo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['asignatura']->fields['codigo'] = Field::getInstance('asignatura', 'codigo', 'varchar', 'string');
+        $this->entities['asignatura']->fields['codigo']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['asignatura']->fields['codigo']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['codigo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'asignatura';
-        $f->name = 'formacion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['asignatura']->fields['formacion'] = Field::getInstance('asignatura', 'formacion', 'varchar', 'string');
+        $this->entities['asignatura']->fields['formacion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['asignatura']->fields['formacion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['formacion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'asignatura';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['asignatura']->fields['id'] = Field::getInstance('asignatura', 'id', 'varchar', 'string');
+        $this->entities['asignatura']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['asignatura']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'asignatura';
-        $f->name = 'nombre';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['asignatura']->fields['nombre'] = Field::getInstance('asignatura', 'nombre', 'varchar', 'string');
+        $this->entities['asignatura']->fields['nombre']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['asignatura']->fields['nombre']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['nombre'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'asignatura';
-        $f->name = 'perfil';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['asignatura']->fields['perfil'] = Field::getInstance('asignatura', 'perfil', 'varchar', 'string');
+        $this->entities['asignatura']->fields['perfil']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['asignatura']->fields['perfil']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['perfil'] = $f;
+        $this->entities['calendario'] = EntityMetadata::getInstance('calendario', 'cale');
+        $this->entities['calendario']->pk = ['id'];
+        $this->entities['calendario']->notNull = ['anio', 'id', 'insertado', 'semestre'];
 
-        $this->entities['asignatura'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'calendario';
-        $e->alias = 'cale';
-        $e->pk = ['id'];
-        $e->notNull = ['anio', 'id', 'insertado', 'semestre'];
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'calendario';
-        $om->entityName = 'comision';
-        $e->om['comision_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'calendario';
-        $f->name = 'anio';
-        $f->dataType = 'year';
-        $f->type = 'short';
-        $f->checks = [
+        $this->entities['calendario']->om = [];
+        $this->entities['calendario']->om['comision_'] = EntityRef::getInstance('calendario', 'comision');
+        $this->entities['calendario']->fields['anio'] = Field::getInstance('calendario', 'anio', 'year', 'short');
+        $this->entities['calendario']->fields['anio']->checks = [
             'type' => 'short',
             'required' => '1',
         ];
-        $e->fields['anio'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calendario';
-        $f->name = 'descripcion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['calendario']->fields['descripcion'] = Field::getInstance('calendario', 'descripcion', 'varchar', 'string');
+        $this->entities['calendario']->fields['descripcion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['calendario']->fields['descripcion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['descripcion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calendario';
-        $f->name = 'fin';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['calendario']->fields['fin'] = Field::getInstance('calendario', 'fin', 'date', 'DateTime');
+        $this->entities['calendario']->fields['fin']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['fin'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calendario';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['calendario']->fields['id'] = Field::getInstance('calendario', 'id', 'varchar', 'string');
+        $this->entities['calendario']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['calendario']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calendario';
-        $f->name = 'inicio';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['calendario']->fields['inicio'] = Field::getInstance('calendario', 'inicio', 'date', 'DateTime');
+        $this->entities['calendario']->fields['inicio']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['inicio'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calendario';
-        $f->name = 'insertado';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['calendario']->fields['insertado'] = Field::getInstance('calendario', 'insertado', 'timestamp', 'DateTime');
+        $this->entities['calendario']->fields['insertado']->defaultValue = 'current_timestamp()';
+        $this->entities['calendario']->fields['insertado']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['insertado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calendario';
-        $f->name = 'semestre';
-        $f->dataType = 'smallint';
-        $f->type = 'short';
-        $f->checks = [
+        $this->entities['calendario']->fields['semestre'] = Field::getInstance('calendario', 'semestre', 'smallint', 'short');
+        $this->entities['calendario']->fields['semestre']->checks = [
             'type' => 'short',
             'required' => '1',
         ];
-        $e->fields['semestre'] = $f;
+        $this->entities['calificacion'] = EntityMetadata::getInstance('calificacion', 'cali');
+        $this->entities['calificacion']->pk = ['id'];
+        $this->entities['calificacion']->fk = ['alumno', 'curso', 'disposicion'];
+        $this->entities['calificacion']->notNull = ['alumno', 'archivado', 'disposicion', 'id'];
 
-        $this->entities['calendario'] = $e;
+        $this->entities['calificacion']->tree = [];
+        $this->entities['calificacion']->tree['alumno'] = EntityTree::getInstance('alumno', 'alumno', 'id');
+        $this->entities['calificacion']->tree['alumno']->children = [];
+        $this->entities['calificacion']->tree['alumno']->children['persona'] = EntityTree::getInstance('persona', 'persona', 'id');
+        $this->entities['calificacion']->tree['alumno']->children['persona']->children = [];
+        $this->entities['calificacion']->tree['alumno']->children['persona']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'calificacion';
-        $e->alias = 'cali';
-        $e->pk = ['id'];
-        $e->fk = ['alumno', 'curso', 'disposicion'];
-        $e->notNull = ['alumno', 'archivado', 'disposicion', 'id'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'alumno';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'alumno';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'persona';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'persona';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'domicilio';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'domicilio';
-                $tree->children['domicilio'] = $child;
-        $tree->children['persona'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'plan';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'plan';
-        $tree->children['plan'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'resolucion_inscripcion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'resolucion';
-        $tree->children['resolucion_inscripcion'] = $child;
-        $e->tree['alumno'] = $tree;
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'curso';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'curso';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'asignatura';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'asignatura';
-        $tree->children['asignatura'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'comision';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'comision';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'calendario';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'calendario';
-                $tree->children['calendario'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'comision_siguiente';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'comision';
-                $tree->children['comision_siguiente'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'modalidad';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'modalidad';
-                $tree->children['modalidad'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'planificacion';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'planificacion';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'plan';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'plan';
-                        $tree->children['plan_pla'] = $child;
-                $tree->children['planificacion'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'sede';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'sede';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'centro_educativo';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'centro_educativo';
-                                $tree->children = [];
-                                $child = new \SqlOrganize\Sql\EntityTree();
-                                $child->fieldName = 'domicilio';
-                                $child->refFieldName = 'id';
-                                $child->refEntityName = 'domicilio';
-                                $tree->children['domicilio_cen'] = $child;
-                        $tree->children['centro_educativo'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'domicilio';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'domicilio';
-                        $tree->children['domicilio_sed'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'organizacion';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'sede';
-                        $tree->children['organizacion'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'tipo_sede';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'tipo_sede';
-                        $tree->children['tipo_sede'] = $child;
-                $tree->children['sede'] = $child;
-        $tree->children['comision'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'disposicion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'disposicion';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'asignatura';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'asignatura';
-                $tree->children['asignatura_dis'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'planificacion';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'planificacion';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'plan';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'plan';
-                        $tree->children['plan_pla1'] = $child;
-                $tree->children['planificacion_dis'] = $child;
-        $tree->children['disposicion_cur'] = $child;
-        $e->tree['curso'] = $tree;
+        $this->entities['calificacion']->tree['alumno']->children['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'disposicion';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'disposicion';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'asignatura';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'asignatura';
-        $tree->children['asignatura_dis1'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'planificacion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'planificacion';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'plan';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'plan';
-                $tree->children['plan_pla2'] = $child;
-        $tree->children['planificacion_dis1'] = $child;
-        $e->tree['disposicion'] = $tree;
+        $this->entities['calificacion']->tree['alumno']->children['resolucion_inscripcion'] = EntityTree::getInstance('resolucion_inscripcion', 'resolucion', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'alumno';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'alumno';
-        $e->relations['alumno'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'persona';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'persona';
-        $relation->parentId = 'alumno';
-        $e->relations['persona'] = $relation;
+        $this->entities['calificacion']->tree['curso'] = EntityTree::getInstance('curso', 'curso', 'id');
+        $this->entities['calificacion']->tree['curso']->children = [];
+        $this->entities['calificacion']->tree['curso']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'persona';
-        $e->relations['domicilio'] = $relation;
+        $this->entities['calificacion']->tree['curso']->children['comision'] = EntityTree::getInstance('comision', 'comision', 'id');
+        $this->entities['calificacion']->tree['curso']->children['comision']->children = [];
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'alumno';
-        $e->relations['plan'] = $relation;
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['comision_siguiente'] = EntityTree::getInstance('comision_siguiente', 'comision', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'resolucion_inscripcion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'resolucion';
-        $relation->parentId = 'alumno';
-        $e->relations['resolucion_inscripcion'] = $relation;
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['modalidad'] = EntityTree::getInstance('modalidad', 'modalidad', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'curso';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'curso';
-        $e->relations['curso'] = $relation;
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['planificacion'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['planificacion']->children = [];
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['planificacion']->children['plan_pla'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $relation->parentId = 'curso';
-        $e->relations['asignatura'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $relation->parentId = 'curso';
-        $e->relations['comision'] = $relation;
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['sede'] = EntityTree::getInstance('sede', 'sede', 'id');
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['sede']->children = [];
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['sede']->children['centro_educativo'] = EntityTree::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['sede']->children['centro_educativo']->children = [];
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['sede']->children['centro_educativo']->children['domicilio_cen'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'calendario';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'calendario';
-        $relation->parentId = 'comision';
-        $e->relations['calendario'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision_siguiente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $relation->parentId = 'comision';
-        $e->relations['comision_siguiente'] = $relation;
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['sede']->children['domicilio_sed'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'modalidad';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'modalidad';
-        $relation->parentId = 'comision';
-        $e->relations['modalidad'] = $relation;
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['sede']->children['organizacion'] = EntityTree::getInstance('organizacion', 'sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'comision';
-        $e->relations['planificacion'] = $relation;
+        $this->entities['calificacion']->tree['curso']->children['comision']->children['sede']->children['tipo_sede'] = EntityTree::getInstance('tipo_sede', 'tipo_sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion';
-        $e->relations['plan_pla'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'comision';
-        $e->relations['sede'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'centro_educativo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'centro_educativo';
-        $relation->parentId = 'sede';
-        $e->relations['centro_educativo'] = $relation;
+        $this->entities['calificacion']->tree['curso']->children['disposicion_cur'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
+        $this->entities['calificacion']->tree['curso']->children['disposicion_cur']->children = [];
+        $this->entities['calificacion']->tree['curso']->children['disposicion_cur']->children['asignatura_dis'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'centro_educativo';
-        $e->relations['domicilio_cen'] = $relation;
+        $this->entities['calificacion']->tree['curso']->children['disposicion_cur']->children['planificacion_dis'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['calificacion']->tree['curso']->children['disposicion_cur']->children['planificacion_dis']->children = [];
+        $this->entities['calificacion']->tree['curso']->children['disposicion_cur']->children['planificacion_dis']->children['plan_pla1'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'sede';
-        $e->relations['domicilio_sed'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'organizacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'sede';
-        $e->relations['organizacion'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'tipo_sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'tipo_sede';
-        $relation->parentId = 'sede';
-        $e->relations['tipo_sede'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'disposicion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'disposicion';
-        $relation->parentId = 'curso';
-        $e->relations['disposicion_cur'] = $relation;
+        $this->entities['calificacion']->tree['disposicion'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
+        $this->entities['calificacion']->tree['disposicion']->children = [];
+        $this->entities['calificacion']->tree['disposicion']->children['asignatura_dis1'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $relation->parentId = 'disposicion_cur';
-        $e->relations['asignatura_dis'] = $relation;
+        $this->entities['calificacion']->tree['disposicion']->children['planificacion_dis1'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['calificacion']->tree['disposicion']->children['planificacion_dis1']->children = [];
+        $this->entities['calificacion']->tree['disposicion']->children['planificacion_dis1']->children['plan_pla2'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'disposicion_cur';
-        $e->relations['planificacion_dis'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion_dis';
-        $e->relations['plan_pla1'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'disposicion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'disposicion';
-        $e->relations['disposicion'] = $relation;
+        $this->entities['calificacion']->relations = [];
+        $this->entities['calificacion']->relations['alumno'] = EntityRelation::getInstance('alumno', 'alumno', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $relation->parentId = 'disposicion';
-        $e->relations['asignatura_dis1'] = $relation;
+        $this->entities['calificacion']->relations['persona'] = EntityRelation::getInstance('persona', 'persona', 'id');
+        $this->entities['calificacion']->relations['persona']->parentId = 'alumno';
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'disposicion';
-        $e->relations['planificacion_dis1'] = $relation;
+        $this->entities['calificacion']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['calificacion']->relations['domicilio']->parentId = 'persona';
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion_dis1';
-        $e->relations['plan_pla2'] = $relation;
+        $this->entities['calificacion']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['calificacion']->relations['plan']->parentId = 'alumno';
 
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'alumno';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'alu';
-        $f->refEntityName = 'alumno';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['calificacion']->relations['resolucion_inscripcion'] = EntityRelation::getInstance('resolucion_inscripcion', 'resolucion', 'id');
+        $this->entities['calificacion']->relations['resolucion_inscripcion']->parentId = 'alumno';
+
+        $this->entities['calificacion']->relations['curso'] = EntityRelation::getInstance('curso', 'curso', 'id');
+
+        $this->entities['calificacion']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $this->entities['calificacion']->relations['asignatura']->parentId = 'curso';
+
+        $this->entities['calificacion']->relations['comision'] = EntityRelation::getInstance('comision', 'comision', 'id');
+        $this->entities['calificacion']->relations['comision']->parentId = 'curso';
+
+        $this->entities['calificacion']->relations['calendario'] = EntityRelation::getInstance('calendario', 'calendario', 'id');
+        $this->entities['calificacion']->relations['calendario']->parentId = 'comision';
+
+        $this->entities['calificacion']->relations['comision_siguiente'] = EntityRelation::getInstance('comision_siguiente', 'comision', 'id');
+        $this->entities['calificacion']->relations['comision_siguiente']->parentId = 'comision';
+
+        $this->entities['calificacion']->relations['modalidad'] = EntityRelation::getInstance('modalidad', 'modalidad', 'id');
+        $this->entities['calificacion']->relations['modalidad']->parentId = 'comision';
+
+        $this->entities['calificacion']->relations['planificacion'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['calificacion']->relations['planificacion']->parentId = 'comision';
+
+        $this->entities['calificacion']->relations['plan_pla'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['calificacion']->relations['plan_pla']->parentId = 'planificacion';
+
+        $this->entities['calificacion']->relations['sede'] = EntityRelation::getInstance('sede', 'sede', 'id');
+        $this->entities['calificacion']->relations['sede']->parentId = 'comision';
+
+        $this->entities['calificacion']->relations['centro_educativo'] = EntityRelation::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['calificacion']->relations['centro_educativo']->parentId = 'sede';
+
+        $this->entities['calificacion']->relations['domicilio_cen'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['calificacion']->relations['domicilio_cen']->parentId = 'centro_educativo';
+
+        $this->entities['calificacion']->relations['domicilio_sed'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['calificacion']->relations['domicilio_sed']->parentId = 'sede';
+
+        $this->entities['calificacion']->relations['organizacion'] = EntityRelation::getInstance('organizacion', 'sede', 'id');
+        $this->entities['calificacion']->relations['organizacion']->parentId = 'sede';
+
+        $this->entities['calificacion']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
+        $this->entities['calificacion']->relations['tipo_sede']->parentId = 'sede';
+
+        $this->entities['calificacion']->relations['disposicion_cur'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
+        $this->entities['calificacion']->relations['disposicion_cur']->parentId = 'curso';
+
+        $this->entities['calificacion']->relations['asignatura_dis'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $this->entities['calificacion']->relations['asignatura_dis']->parentId = 'disposicion_cur';
+
+        $this->entities['calificacion']->relations['planificacion_dis'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['calificacion']->relations['planificacion_dis']->parentId = 'disposicion_cur';
+
+        $this->entities['calificacion']->relations['plan_pla1'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['calificacion']->relations['plan_pla1']->parentId = 'planificacion_dis';
+
+        $this->entities['calificacion']->relations['disposicion'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
+
+        $this->entities['calificacion']->relations['asignatura_dis1'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $this->entities['calificacion']->relations['asignatura_dis1']->parentId = 'disposicion';
+
+        $this->entities['calificacion']->relations['planificacion_dis1'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['calificacion']->relations['planificacion_dis1']->parentId = 'disposicion';
+
+        $this->entities['calificacion']->relations['plan_pla2'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['calificacion']->relations['plan_pla2']->parentId = 'planificacion_dis1';
+
+        $this->entities['calificacion']->fields['alumno'] = Field::getInstance('calificacion', 'alumno', 'varchar', 'string');
+        $this->entities['calificacion']->fields['alumno']->alias = 'alu';
+        $this->entities['calificacion']->fields['alumno']->refEntityName = 'alumno';
+        $this->entities['calificacion']->fields['alumno']->refFieldName = 'id';
+        $this->entities['calificacion']->fields['alumno']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['calificacion']->fields['alumno']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['alumno'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'archivado';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['calificacion']->fields['archivado'] = Field::getInstance('calificacion', 'archivado', 'tinyint', 'byte');
+        $this->entities['calificacion']->fields['archivado']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['archivado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'crec';
-        $f->dataType = 'decimal';
-        $f->type = 'decimal';
-        $f->checks = [
+        $this->entities['calificacion']->fields['crec'] = Field::getInstance('calificacion', 'crec', 'decimal', 'decimal');
+        $this->entities['calificacion']->fields['crec']->checks = [
             'type' => 'decimal',
         ];
-        $e->fields['crec'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'curso';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'cur';
-        $f->refEntityName = 'curso';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['calificacion']->fields['curso'] = Field::getInstance('calificacion', 'curso', 'varchar', 'string');
+        $this->entities['calificacion']->fields['curso']->alias = 'cur';
+        $this->entities['calificacion']->fields['curso']->refEntityName = 'curso';
+        $this->entities['calificacion']->fields['curso']->refFieldName = 'id';
+        $this->entities['calificacion']->fields['curso']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['calificacion']->fields['curso']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['curso'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'disposicion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'dis';
-        $f->refEntityName = 'disposicion';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['calificacion']->fields['disposicion'] = Field::getInstance('calificacion', 'disposicion', 'varchar', 'string');
+        $this->entities['calificacion']->fields['disposicion']->alias = 'dis';
+        $this->entities['calificacion']->fields['disposicion']->refEntityName = 'disposicion';
+        $this->entities['calificacion']->fields['disposicion']->refFieldName = 'id';
+        $this->entities['calificacion']->fields['disposicion']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['calificacion']->fields['disposicion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['disposicion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'division';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['calificacion']->fields['division'] = Field::getInstance('calificacion', 'division', 'varchar', 'string');
+        $this->entities['calificacion']->fields['division']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['calificacion']->fields['division']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['division'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'fecha';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['calificacion']->fields['fecha'] = Field::getInstance('calificacion', 'fecha', 'date', 'DateTime');
+        $this->entities['calificacion']->fields['fecha']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['fecha'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['calificacion']->fields['id'] = Field::getInstance('calificacion', 'id', 'varchar', 'string');
+        $this->entities['calificacion']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['calificacion']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'nota1';
-        $f->dataType = 'decimal';
-        $f->type = 'decimal';
-        $f->checks = [
+        $this->entities['calificacion']->fields['nota1'] = Field::getInstance('calificacion', 'nota1', 'decimal', 'decimal');
+        $this->entities['calificacion']->fields['nota1']->checks = [
             'type' => 'decimal',
         ];
-        $e->fields['nota1'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'nota2';
-        $f->dataType = 'decimal';
-        $f->type = 'decimal';
-        $f->checks = [
+        $this->entities['calificacion']->fields['nota2'] = Field::getInstance('calificacion', 'nota2', 'decimal', 'decimal');
+        $this->entities['calificacion']->fields['nota2']->checks = [
             'type' => 'decimal',
         ];
-        $e->fields['nota2'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'nota3';
-        $f->dataType = 'decimal';
-        $f->type = 'decimal';
-        $f->checks = [
+        $this->entities['calificacion']->fields['nota3'] = Field::getInstance('calificacion', 'nota3', 'decimal', 'decimal');
+        $this->entities['calificacion']->fields['nota3']->checks = [
             'type' => 'decimal',
         ];
-        $e->fields['nota3'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'nota_final';
-        $f->dataType = 'decimal';
-        $f->type = 'decimal';
-        $f->checks = [
+        $this->entities['calificacion']->fields['nota_final'] = Field::getInstance('calificacion', 'nota_final', 'decimal', 'decimal');
+        $this->entities['calificacion']->fields['nota_final']->checks = [
             'type' => 'decimal',
         ];
-        $e->fields['nota_final'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'observaciones';
-        $f->dataType = 'text';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['calificacion']->fields['observaciones'] = Field::getInstance('calificacion', 'observaciones', 'text', 'string');
+        $this->entities['calificacion']->fields['observaciones']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['calificacion']->fields['observaciones']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['observaciones'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'calificacion';
-        $f->name = 'porcentaje_asistencia';
-        $f->dataType = 'int';
-        $f->type = 'int';
-        $f->checks = [
+        $this->entities['calificacion']->fields['porcentaje_asistencia'] = Field::getInstance('calificacion', 'porcentaje_asistencia', 'int', 'int');
+        $this->entities['calificacion']->fields['porcentaje_asistencia']->checks = [
             'type' => 'int',
         ];
-        $e->fields['porcentaje_asistencia'] = $f;
+        $this->entities['cargo'] = EntityMetadata::getInstance('cargo', 'carg');
+        $this->entities['cargo']->pk = ['id'];
+        $this->entities['cargo']->unique = ['descripcion'];
+        $this->entities['cargo']->notNull = ['descripcion', 'id'];
 
-        $this->entities['calificacion'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'cargo';
-        $e->alias = 'carg';
-        $e->pk = ['id'];
-        $e->unique = ['descripcion'];
-        $e->notNull = ['descripcion', 'id'];
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'cargo';
-        $om->entityName = 'designacion';
-        $e->om['designacion_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'cargo';
-        $f->name = 'descripcion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['cargo']->om = [];
+        $this->entities['cargo']->om['designacion_'] = EntityRef::getInstance('cargo', 'designacion');
+        $this->entities['cargo']->fields['descripcion'] = Field::getInstance('cargo', 'descripcion', 'varchar', 'string');
+        $this->entities['cargo']->fields['descripcion']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['cargo']->fields['descripcion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['descripcion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'cargo';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['cargo']->fields['id'] = Field::getInstance('cargo', 'id', 'varchar', 'string');
+        $this->entities['cargo']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['cargo']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
+        $this->entities['centro_educativo'] = EntityMetadata::getInstance('centro_educativo', 'cent');
+        $this->entities['centro_educativo']->pk = ['id'];
+        $this->entities['centro_educativo']->fk = ['domicilio'];
+        $this->entities['centro_educativo']->unique = ['cue'];
+        $this->entities['centro_educativo']->notNull = ['id', 'nombre'];
 
-        $this->entities['cargo'] = $e;
+        $this->entities['centro_educativo']->tree = [];
+        $this->entities['centro_educativo']->tree['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'centro_educativo';
-        $e->alias = 'cent';
-        $e->pk = ['id'];
-        $e->fk = ['domicilio'];
-        $e->unique = ['cue'];
-        $e->notNull = ['id', 'nombre'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'domicilio';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'domicilio';
-        $e->tree['domicilio'] = $tree;
+        $this->entities['centro_educativo']->relations = [];
+        $this->entities['centro_educativo']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $e->relations['domicilio'] = $relation;
-
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'centro_educativo';
-        $om->entityName = 'sede';
-        $e->om['sede_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'centro_educativo';
-        $f->name = 'cue';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['centro_educativo']->om = [];
+        $this->entities['centro_educativo']->om['sede_'] = EntityRef::getInstance('centro_educativo', 'sede');
+        $this->entities['centro_educativo']->fields['cue'] = Field::getInstance('centro_educativo', 'cue', 'varchar', 'string');
+        $this->entities['centro_educativo']->fields['cue']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['centro_educativo']->fields['cue']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['cue'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'centro_educativo';
-        $f->name = 'domicilio';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'dom';
-        $f->refEntityName = 'domicilio';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['centro_educativo']->fields['domicilio'] = Field::getInstance('centro_educativo', 'domicilio', 'varchar', 'string');
+        $this->entities['centro_educativo']->fields['domicilio']->alias = 'dom';
+        $this->entities['centro_educativo']->fields['domicilio']->refEntityName = 'domicilio';
+        $this->entities['centro_educativo']->fields['domicilio']->refFieldName = 'id';
+        $this->entities['centro_educativo']->fields['domicilio']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['centro_educativo']->fields['domicilio']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['domicilio'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'centro_educativo';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['centro_educativo']->fields['id'] = Field::getInstance('centro_educativo', 'id', 'varchar', 'string');
+        $this->entities['centro_educativo']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['centro_educativo']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'centro_educativo';
-        $f->name = 'nombre';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['centro_educativo']->fields['nombre'] = Field::getInstance('centro_educativo', 'nombre', 'varchar', 'string');
+        $this->entities['centro_educativo']->fields['nombre']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['centro_educativo']->fields['nombre']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['nombre'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'centro_educativo';
-        $f->name = 'observaciones';
-        $f->dataType = 'text';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['centro_educativo']->fields['observaciones'] = Field::getInstance('centro_educativo', 'observaciones', 'text', 'string');
+        $this->entities['centro_educativo']->fields['observaciones']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['centro_educativo']->fields['observaciones']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['observaciones'] = $f;
+        $this->entities['comision'] = EntityMetadata::getInstance('comision', 'comi');
+        $this->entities['comision']->pk = ['id'];
+        $this->entities['comision']->fk = ['calendario', 'comision_siguiente', 'modalidad', 'planificacion', 'sede'];
+        $this->entities['comision']->notNull = ['alta', 'apertura', 'autorizada', 'calendario', 'division', 'id', 'modalidad', 'publicada', 'sede'];
 
-        $this->entities['centro_educativo'] = $e;
+        $this->entities['comision']->tree = [];
+        $this->entities['comision']->tree['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'comision';
-        $e->alias = 'comi';
-        $e->pk = ['id'];
-        $e->fk = ['calendario', 'comision_siguiente', 'modalidad', 'planificacion', 'sede'];
-        $e->notNull = ['alta', 'apertura', 'autorizada', 'calendario', 'division', 'id', 'modalidad', 'publicada', 'sede'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'calendario';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'calendario';
-        $e->tree['calendario'] = $tree;
+        $this->entities['comision']->tree['comision_siguiente'] = EntityTree::getInstance('comision_siguiente', 'comision', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'comision_siguiente';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'comision';
-        $e->tree['comision_siguiente'] = $tree;
+        $this->entities['comision']->tree['modalidad'] = EntityTree::getInstance('modalidad', 'modalidad', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'modalidad';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'modalidad';
-        $e->tree['modalidad'] = $tree;
+        $this->entities['comision']->tree['planificacion'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['comision']->tree['planificacion']->children = [];
+        $this->entities['comision']->tree['planificacion']->children['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'planificacion';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'planificacion';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'plan';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'plan';
-        $tree->children['plan'] = $child;
-        $e->tree['planificacion'] = $tree;
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'sede';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'sede';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'centro_educativo';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'centro_educativo';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'domicilio';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'domicilio';
-                $tree->children['domicilio_cen'] = $child;
-        $tree->children['centro_educativo'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'domicilio';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'domicilio';
-        $tree->children['domicilio'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'organizacion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'sede';
-        $tree->children['organizacion'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'tipo_sede';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'tipo_sede';
-        $tree->children['tipo_sede'] = $child;
-        $e->tree['sede'] = $tree;
+        $this->entities['comision']->tree['sede'] = EntityTree::getInstance('sede', 'sede', 'id');
+        $this->entities['comision']->tree['sede']->children = [];
+        $this->entities['comision']->tree['sede']->children['centro_educativo'] = EntityTree::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['comision']->tree['sede']->children['centro_educativo']->children = [];
+        $this->entities['comision']->tree['sede']->children['centro_educativo']->children['domicilio_cen'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'calendario';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'calendario';
-        $e->relations['calendario'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision_siguiente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $e->relations['comision_siguiente'] = $relation;
+        $this->entities['comision']->tree['sede']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'modalidad';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'modalidad';
-        $e->relations['modalidad'] = $relation;
+        $this->entities['comision']->tree['sede']->children['organizacion'] = EntityTree::getInstance('organizacion', 'sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $e->relations['planificacion'] = $relation;
+        $this->entities['comision']->tree['sede']->children['tipo_sede'] = EntityTree::getInstance('tipo_sede', 'tipo_sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion';
-        $e->relations['plan'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $e->relations['sede'] = $relation;
+        $this->entities['comision']->relations = [];
+        $this->entities['comision']->relations['calendario'] = EntityRelation::getInstance('calendario', 'calendario', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'centro_educativo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'centro_educativo';
-        $relation->parentId = 'sede';
-        $e->relations['centro_educativo'] = $relation;
+        $this->entities['comision']->relations['comision_siguiente'] = EntityRelation::getInstance('comision_siguiente', 'comision', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'centro_educativo';
-        $e->relations['domicilio_cen'] = $relation;
+        $this->entities['comision']->relations['modalidad'] = EntityRelation::getInstance('modalidad', 'modalidad', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'sede';
-        $e->relations['domicilio'] = $relation;
+        $this->entities['comision']->relations['planificacion'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'organizacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'sede';
-        $e->relations['organizacion'] = $relation;
+        $this->entities['comision']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['comision']->relations['plan']->parentId = 'planificacion';
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'tipo_sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'tipo_sede';
-        $relation->parentId = 'sede';
-        $e->relations['tipo_sede'] = $relation;
+        $this->entities['comision']->relations['sede'] = EntityRelation::getInstance('sede', 'sede', 'id');
 
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'comision';
-        $om->entityName = 'alumno_comision';
-        $e->om['alumnoComision_'] = $om;
+        $this->entities['comision']->relations['centro_educativo'] = EntityRelation::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['comision']->relations['centro_educativo']->parentId = 'sede';
 
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'comision_siguiente';
-        $om->entityName = 'comision';
-        $e->om['comision_comision_siguiente_'] = $om;
+        $this->entities['comision']->relations['domicilio_cen'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['comision']->relations['domicilio_cen']->parentId = 'centro_educativo';
 
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'comision';
-        $om->entityName = 'comision_relacionada';
-        $e->om['comisionRelacionada_'] = $om;
+        $this->entities['comision']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['comision']->relations['domicilio']->parentId = 'sede';
 
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'relacion';
-        $om->entityName = 'comision_relacionada';
-        $e->om['comisionRelacionada_relacion_'] = $om;
+        $this->entities['comision']->relations['organizacion'] = EntityRelation::getInstance('organizacion', 'sede', 'id');
+        $this->entities['comision']->relations['organizacion']->parentId = 'sede';
 
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'comision';
-        $om->entityName = 'curso';
-        $e->om['curso_'] = $om;
+        $this->entities['comision']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
+        $this->entities['comision']->relations['tipo_sede']->parentId = 'sede';
 
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'alta';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['comision']->om = [];
+        $this->entities['comision']->om['alumnoComision_'] = EntityRef::getInstance('comision', 'alumno_comision');
+        $this->entities['comision']->om['comision_comision_siguiente_'] = EntityRef::getInstance('comision_siguiente', 'comision');
+        $this->entities['comision']->om['comisionRelacionada_'] = EntityRef::getInstance('comision', 'comision_relacionada');
+        $this->entities['comision']->om['comisionRelacionada_relacion_'] = EntityRef::getInstance('relacion', 'comision_relacionada');
+        $this->entities['comision']->om['curso_'] = EntityRef::getInstance('comision', 'curso');
+        $this->entities['comision']->fields['alta'] = Field::getInstance('comision', 'alta', 'timestamp', 'DateTime');
+        $this->entities['comision']->fields['alta']->defaultValue = 'current_timestamp()';
+        $this->entities['comision']->fields['alta']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['alta'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'apertura';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['comision']->fields['apertura'] = Field::getInstance('comision', 'apertura', 'tinyint', 'byte');
+        $this->entities['comision']->fields['apertura']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['apertura'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'autorizada';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['comision']->fields['autorizada'] = Field::getInstance('comision', 'autorizada', 'tinyint', 'byte');
+        $this->entities['comision']->fields['autorizada']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['autorizada'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'calendario';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'cal';
-        $f->refEntityName = 'calendario';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['comision']->fields['calendario'] = Field::getInstance('comision', 'calendario', 'varchar', 'string');
+        $this->entities['comision']->fields['calendario']->alias = 'cal';
+        $this->entities['comision']->fields['calendario']->refEntityName = 'calendario';
+        $this->entities['comision']->fields['calendario']->refFieldName = 'id';
+        $this->entities['comision']->fields['calendario']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['calendario']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['calendario'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'comentario';
-        $f->dataType = 'text';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['comision']->fields['comentario'] = Field::getInstance('comision', 'comentario', 'text', 'string');
+        $this->entities['comision']->fields['comentario']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['comentario']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['comentario'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'comision_siguiente';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'com';
-        $f->refEntityName = 'comision';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['comision']->fields['comision_siguiente'] = Field::getInstance('comision', 'comision_siguiente', 'varchar', 'string');
+        $this->entities['comision']->fields['comision_siguiente']->alias = 'com';
+        $this->entities['comision']->fields['comision_siguiente']->refEntityName = 'comision';
+        $this->entities['comision']->fields['comision_siguiente']->refFieldName = 'id';
+        $this->entities['comision']->fields['comision_siguiente']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['comision_siguiente']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['comision_siguiente'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'configuracion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->defaultValue = 'Histórica';
-        $f->checks = [
+        $this->entities['comision']->fields['configuracion'] = Field::getInstance('comision', 'configuracion', 'varchar', 'string');
+        $this->entities['comision']->fields['configuracion']->defaultValue = 'Histórica';
+        $this->entities['comision']->fields['configuracion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['configuracion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['configuracion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'division';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['comision']->fields['division'] = Field::getInstance('comision', 'division', 'varchar', 'string');
+        $this->entities['comision']->fields['division']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['division']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['division'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'estado';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->defaultValue = 'Confirma';
-        $f->checks = [
+        $this->entities['comision']->fields['estado'] = Field::getInstance('comision', 'estado', 'varchar', 'string');
+        $this->entities['comision']->fields['estado']->defaultValue = 'Confirma';
+        $this->entities['comision']->fields['estado']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['estado']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['estado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['comision']->fields['id'] = Field::getInstance('comision', 'id', 'varchar', 'string');
+        $this->entities['comision']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'identificacion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['comision']->fields['identificacion'] = Field::getInstance('comision', 'identificacion', 'varchar', 'string');
+        $this->entities['comision']->fields['identificacion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['identificacion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['identificacion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'modalidad';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'mod';
-        $f->refEntityName = 'modalidad';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['comision']->fields['modalidad'] = Field::getInstance('comision', 'modalidad', 'varchar', 'string');
+        $this->entities['comision']->fields['modalidad']->alias = 'mod';
+        $this->entities['comision']->fields['modalidad']->refEntityName = 'modalidad';
+        $this->entities['comision']->fields['modalidad']->refFieldName = 'id';
+        $this->entities['comision']->fields['modalidad']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['modalidad']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['modalidad'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'observaciones';
-        $f->dataType = 'text';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['comision']->fields['observaciones'] = Field::getInstance('comision', 'observaciones', 'text', 'string');
+        $this->entities['comision']->fields['observaciones']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['observaciones']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['observaciones'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'pfid';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['comision']->fields['pfid'] = Field::getInstance('comision', 'pfid', 'varchar', 'string');
+        $this->entities['comision']->fields['pfid']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['pfid']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['pfid'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'planificacion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'pla';
-        $f->refEntityName = 'planificacion';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['comision']->fields['planificacion'] = Field::getInstance('comision', 'planificacion', 'varchar', 'string');
+        $this->entities['comision']->fields['planificacion']->alias = 'pla';
+        $this->entities['comision']->fields['planificacion']->refEntityName = 'planificacion';
+        $this->entities['comision']->fields['planificacion']->refFieldName = 'id';
+        $this->entities['comision']->fields['planificacion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['planificacion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['planificacion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'publicada';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['comision']->fields['publicada'] = Field::getInstance('comision', 'publicada', 'tinyint', 'byte');
+        $this->entities['comision']->fields['publicada']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['publicada'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'sede';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'sed';
-        $f->refEntityName = 'sede';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['comision']->fields['sede'] = Field::getInstance('comision', 'sede', 'varchar', 'string');
+        $this->entities['comision']->fields['sede']->alias = 'sed';
+        $this->entities['comision']->fields['sede']->refEntityName = 'sede';
+        $this->entities['comision']->fields['sede']->refFieldName = 'id';
+        $this->entities['comision']->fields['sede']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['sede']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['sede'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision';
-        $f->name = 'turno';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['comision']->fields['turno'] = Field::getInstance('comision', 'turno', 'varchar', 'string');
+        $this->entities['comision']->fields['turno']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['comision']->fields['turno']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['turno'] = $f;
+        $this->entities['comision_relacionada'] = EntityMetadata::getInstance('comision_relacionada', 'com1');
+        $this->entities['comision_relacionada']->pk = ['id'];
+        $this->entities['comision_relacionada']->fk = ['comision', 'relacion'];
+        $this->entities['comision_relacionada']->notNull = ['comision', 'id', 'relacion'];
 
-        $this->entities['comision'] = $e;
+        $this->entities['comision_relacionada']->tree = [];
+        $this->entities['comision_relacionada']->tree['comision'] = EntityTree::getInstance('comision', 'comision', 'id');
+        $this->entities['comision_relacionada']->tree['comision']->children = [];
+        $this->entities['comision_relacionada']->tree['comision']->children['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'comision_relacionada';
-        $e->alias = 'com1';
-        $e->pk = ['id'];
-        $e->fk = ['comision', 'relacion'];
-        $e->notNull = ['comision', 'id', 'relacion'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'comision';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'comision';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'calendario';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'calendario';
-        $tree->children['calendario'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'comision_siguiente';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'comision';
-        $tree->children['comision_siguiente'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'modalidad';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'modalidad';
-        $tree->children['modalidad'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'planificacion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'planificacion';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'plan';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'plan';
-                $tree->children['plan'] = $child;
-        $tree->children['planificacion'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'sede';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'sede';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'centro_educativo';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'centro_educativo';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'domicilio';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'domicilio';
-                        $tree->children['domicilio_cen'] = $child;
-                $tree->children['centro_educativo'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'domicilio';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'domicilio';
-                $tree->children['domicilio'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'organizacion';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'sede';
-                $tree->children['organizacion'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'tipo_sede';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'tipo_sede';
-                $tree->children['tipo_sede'] = $child;
-        $tree->children['sede'] = $child;
-        $e->tree['comision'] = $tree;
+        $this->entities['comision_relacionada']->tree['comision']->children['comision_siguiente'] = EntityTree::getInstance('comision_siguiente', 'comision', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'relacion';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'comision';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'calendario';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'calendario';
-        $tree->children['calendario_rel'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'comision_siguiente';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'comision';
-        $tree->children['comision_siguiente_rel'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'modalidad';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'modalidad';
-        $tree->children['modalidad_rel'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'planificacion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'planificacion';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'plan';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'plan';
-                $tree->children['plan_pla'] = $child;
-        $tree->children['planificacion_rel'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'sede';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'sede';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'centro_educativo';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'centro_educativo';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'domicilio';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'domicilio';
-                        $tree->children['domicilio_cen1'] = $child;
-                $tree->children['centro_educativo_sed'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'domicilio';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'domicilio';
-                $tree->children['domicilio_sed'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'organizacion';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'sede';
-                $tree->children['organizacion_sed'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'tipo_sede';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'tipo_sede';
-                $tree->children['tipo_sede_sed'] = $child;
-        $tree->children['sede_rel'] = $child;
-        $e->tree['relacion'] = $tree;
+        $this->entities['comision_relacionada']->tree['comision']->children['modalidad'] = EntityTree::getInstance('modalidad', 'modalidad', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $e->relations['comision'] = $relation;
+        $this->entities['comision_relacionada']->tree['comision']->children['planificacion'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['comision_relacionada']->tree['comision']->children['planificacion']->children = [];
+        $this->entities['comision_relacionada']->tree['comision']->children['planificacion']->children['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'calendario';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'calendario';
-        $relation->parentId = 'comision';
-        $e->relations['calendario'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision_siguiente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $relation->parentId = 'comision';
-        $e->relations['comision_siguiente'] = $relation;
+        $this->entities['comision_relacionada']->tree['comision']->children['sede'] = EntityTree::getInstance('sede', 'sede', 'id');
+        $this->entities['comision_relacionada']->tree['comision']->children['sede']->children = [];
+        $this->entities['comision_relacionada']->tree['comision']->children['sede']->children['centro_educativo'] = EntityTree::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['comision_relacionada']->tree['comision']->children['sede']->children['centro_educativo']->children = [];
+        $this->entities['comision_relacionada']->tree['comision']->children['sede']->children['centro_educativo']->children['domicilio_cen'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'modalidad';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'modalidad';
-        $relation->parentId = 'comision';
-        $e->relations['modalidad'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'comision';
-        $e->relations['planificacion'] = $relation;
+        $this->entities['comision_relacionada']->tree['comision']->children['sede']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion';
-        $e->relations['plan'] = $relation;
+        $this->entities['comision_relacionada']->tree['comision']->children['sede']->children['organizacion'] = EntityTree::getInstance('organizacion', 'sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'comision';
-        $e->relations['sede'] = $relation;
+        $this->entities['comision_relacionada']->tree['comision']->children['sede']->children['tipo_sede'] = EntityTree::getInstance('tipo_sede', 'tipo_sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'centro_educativo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'centro_educativo';
-        $relation->parentId = 'sede';
-        $e->relations['centro_educativo'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'centro_educativo';
-        $e->relations['domicilio_cen'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'sede';
-        $e->relations['domicilio'] = $relation;
+        $this->entities['comision_relacionada']->tree['relacion'] = EntityTree::getInstance('relacion', 'comision', 'id');
+        $this->entities['comision_relacionada']->tree['relacion']->children = [];
+        $this->entities['comision_relacionada']->tree['relacion']->children['calendario_rel'] = EntityTree::getInstance('calendario', 'calendario', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'organizacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'sede';
-        $e->relations['organizacion'] = $relation;
+        $this->entities['comision_relacionada']->tree['relacion']->children['comision_siguiente_rel'] = EntityTree::getInstance('comision_siguiente', 'comision', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'tipo_sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'tipo_sede';
-        $relation->parentId = 'sede';
-        $e->relations['tipo_sede'] = $relation;
+        $this->entities['comision_relacionada']->tree['relacion']->children['modalidad_rel'] = EntityTree::getInstance('modalidad', 'modalidad', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'relacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $e->relations['relacion'] = $relation;
+        $this->entities['comision_relacionada']->tree['relacion']->children['planificacion_rel'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['comision_relacionada']->tree['relacion']->children['planificacion_rel']->children = [];
+        $this->entities['comision_relacionada']->tree['relacion']->children['planificacion_rel']->children['plan_pla'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'calendario';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'calendario';
-        $relation->parentId = 'relacion';
-        $e->relations['calendario_rel'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision_siguiente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $relation->parentId = 'relacion';
-        $e->relations['comision_siguiente_rel'] = $relation;
+        $this->entities['comision_relacionada']->tree['relacion']->children['sede_rel'] = EntityTree::getInstance('sede', 'sede', 'id');
+        $this->entities['comision_relacionada']->tree['relacion']->children['sede_rel']->children = [];
+        $this->entities['comision_relacionada']->tree['relacion']->children['sede_rel']->children['centro_educativo_sed'] = EntityTree::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['comision_relacionada']->tree['relacion']->children['sede_rel']->children['centro_educativo_sed']->children = [];
+        $this->entities['comision_relacionada']->tree['relacion']->children['sede_rel']->children['centro_educativo_sed']->children['domicilio_cen1'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'modalidad';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'modalidad';
-        $relation->parentId = 'relacion';
-        $e->relations['modalidad_rel'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'relacion';
-        $e->relations['planificacion_rel'] = $relation;
+        $this->entities['comision_relacionada']->tree['relacion']->children['sede_rel']->children['domicilio_sed'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion_rel';
-        $e->relations['plan_pla'] = $relation;
+        $this->entities['comision_relacionada']->tree['relacion']->children['sede_rel']->children['organizacion_sed'] = EntityTree::getInstance('organizacion', 'sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'relacion';
-        $e->relations['sede_rel'] = $relation;
+        $this->entities['comision_relacionada']->tree['relacion']->children['sede_rel']->children['tipo_sede_sed'] = EntityTree::getInstance('tipo_sede', 'tipo_sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'centro_educativo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'centro_educativo';
-        $relation->parentId = 'sede_rel';
-        $e->relations['centro_educativo_sed'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'centro_educativo_sed';
-        $e->relations['domicilio_cen1'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'sede_rel';
-        $e->relations['domicilio_sed'] = $relation;
+        $this->entities['comision_relacionada']->relations = [];
+        $this->entities['comision_relacionada']->relations['comision'] = EntityRelation::getInstance('comision', 'comision', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'organizacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'sede_rel';
-        $e->relations['organizacion_sed'] = $relation;
+        $this->entities['comision_relacionada']->relations['calendario'] = EntityRelation::getInstance('calendario', 'calendario', 'id');
+        $this->entities['comision_relacionada']->relations['calendario']->parentId = 'comision';
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'tipo_sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'tipo_sede';
-        $relation->parentId = 'sede_rel';
-        $e->relations['tipo_sede_sed'] = $relation;
+        $this->entities['comision_relacionada']->relations['comision_siguiente'] = EntityRelation::getInstance('comision_siguiente', 'comision', 'id');
+        $this->entities['comision_relacionada']->relations['comision_siguiente']->parentId = 'comision';
 
-        $f = new Field();
-        $f->entityName = 'comision_relacionada';
-        $f->name = 'comision';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'com';
-        $f->refEntityName = 'comision';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['comision_relacionada']->relations['modalidad'] = EntityRelation::getInstance('modalidad', 'modalidad', 'id');
+        $this->entities['comision_relacionada']->relations['modalidad']->parentId = 'comision';
+
+        $this->entities['comision_relacionada']->relations['planificacion'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['comision_relacionada']->relations['planificacion']->parentId = 'comision';
+
+        $this->entities['comision_relacionada']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['comision_relacionada']->relations['plan']->parentId = 'planificacion';
+
+        $this->entities['comision_relacionada']->relations['sede'] = EntityRelation::getInstance('sede', 'sede', 'id');
+        $this->entities['comision_relacionada']->relations['sede']->parentId = 'comision';
+
+        $this->entities['comision_relacionada']->relations['centro_educativo'] = EntityRelation::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['comision_relacionada']->relations['centro_educativo']->parentId = 'sede';
+
+        $this->entities['comision_relacionada']->relations['domicilio_cen'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['comision_relacionada']->relations['domicilio_cen']->parentId = 'centro_educativo';
+
+        $this->entities['comision_relacionada']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['comision_relacionada']->relations['domicilio']->parentId = 'sede';
+
+        $this->entities['comision_relacionada']->relations['organizacion'] = EntityRelation::getInstance('organizacion', 'sede', 'id');
+        $this->entities['comision_relacionada']->relations['organizacion']->parentId = 'sede';
+
+        $this->entities['comision_relacionada']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
+        $this->entities['comision_relacionada']->relations['tipo_sede']->parentId = 'sede';
+
+        $this->entities['comision_relacionada']->relations['relacion'] = EntityRelation::getInstance('relacion', 'comision', 'id');
+
+        $this->entities['comision_relacionada']->relations['calendario_rel'] = EntityRelation::getInstance('calendario', 'calendario', 'id');
+        $this->entities['comision_relacionada']->relations['calendario_rel']->parentId = 'relacion';
+
+        $this->entities['comision_relacionada']->relations['comision_siguiente_rel'] = EntityRelation::getInstance('comision_siguiente', 'comision', 'id');
+        $this->entities['comision_relacionada']->relations['comision_siguiente_rel']->parentId = 'relacion';
+
+        $this->entities['comision_relacionada']->relations['modalidad_rel'] = EntityRelation::getInstance('modalidad', 'modalidad', 'id');
+        $this->entities['comision_relacionada']->relations['modalidad_rel']->parentId = 'relacion';
+
+        $this->entities['comision_relacionada']->relations['planificacion_rel'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['comision_relacionada']->relations['planificacion_rel']->parentId = 'relacion';
+
+        $this->entities['comision_relacionada']->relations['plan_pla'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['comision_relacionada']->relations['plan_pla']->parentId = 'planificacion_rel';
+
+        $this->entities['comision_relacionada']->relations['sede_rel'] = EntityRelation::getInstance('sede', 'sede', 'id');
+        $this->entities['comision_relacionada']->relations['sede_rel']->parentId = 'relacion';
+
+        $this->entities['comision_relacionada']->relations['centro_educativo_sed'] = EntityRelation::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['comision_relacionada']->relations['centro_educativo_sed']->parentId = 'sede_rel';
+
+        $this->entities['comision_relacionada']->relations['domicilio_cen1'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['comision_relacionada']->relations['domicilio_cen1']->parentId = 'centro_educativo_sed';
+
+        $this->entities['comision_relacionada']->relations['domicilio_sed'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['comision_relacionada']->relations['domicilio_sed']->parentId = 'sede_rel';
+
+        $this->entities['comision_relacionada']->relations['organizacion_sed'] = EntityRelation::getInstance('organizacion', 'sede', 'id');
+        $this->entities['comision_relacionada']->relations['organizacion_sed']->parentId = 'sede_rel';
+
+        $this->entities['comision_relacionada']->relations['tipo_sede_sed'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
+        $this->entities['comision_relacionada']->relations['tipo_sede_sed']->parentId = 'sede_rel';
+
+        $this->entities['comision_relacionada']->fields['comision'] = Field::getInstance('comision_relacionada', 'comision', 'varchar', 'string');
+        $this->entities['comision_relacionada']->fields['comision']->alias = 'com';
+        $this->entities['comision_relacionada']->fields['comision']->refEntityName = 'comision';
+        $this->entities['comision_relacionada']->fields['comision']->refFieldName = 'id';
+        $this->entities['comision_relacionada']->fields['comision']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['comision_relacionada']->fields['comision']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['comision'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision_relacionada';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['comision_relacionada']->fields['id'] = Field::getInstance('comision_relacionada', 'id', 'varchar', 'string');
+        $this->entities['comision_relacionada']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['comision_relacionada']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'comision_relacionada';
-        $f->name = 'relacion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'rel';
-        $f->refEntityName = 'comision';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['comision_relacionada']->fields['relacion'] = Field::getInstance('comision_relacionada', 'relacion', 'varchar', 'string');
+        $this->entities['comision_relacionada']->fields['relacion']->alias = 'co1';
+        $this->entities['comision_relacionada']->fields['relacion']->refEntityName = 'comision';
+        $this->entities['comision_relacionada']->fields['relacion']->refFieldName = 'id';
+        $this->entities['comision_relacionada']->fields['relacion']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['comision_relacionada']->fields['relacion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['relacion'] = $f;
+        $this->entities['contralor'] = EntityMetadata::getInstance('contralor', 'cont');
+        $this->entities['contralor']->pk = ['id'];
+        $this->entities['contralor']->fk = ['planilla_docente'];
+        $this->entities['contralor']->notNull = ['id', 'insertado', 'planilla_docente'];
 
-        $this->entities['comision_relacionada'] = $e;
+        $this->entities['contralor']->tree = [];
+        $this->entities['contralor']->tree['planilla_docente'] = EntityTree::getInstance('planilla_docente', 'planilla_docente', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'contralor';
-        $e->alias = 'cont';
-        $e->pk = ['id'];
-        $e->fk = ['planilla_docente'];
-        $e->notNull = ['id', 'insertado', 'planilla_docente'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'planilla_docente';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'planilla_docente';
-        $e->tree['planilla_docente'] = $tree;
+        $this->entities['contralor']->relations = [];
+        $this->entities['contralor']->relations['planilla_docente'] = EntityRelation::getInstance('planilla_docente', 'planilla_docente', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planilla_docente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planilla_docente';
-        $e->relations['planilla_docente'] = $relation;
-
-        $f = new Field();
-        $f->entityName = 'contralor';
-        $f->name = 'fecha_consejo';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['contralor']->fields['fecha_consejo'] = Field::getInstance('contralor', 'fecha_consejo', 'date', 'DateTime');
+        $this->entities['contralor']->fields['fecha_consejo']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['fecha_consejo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'contralor';
-        $f->name = 'fecha_contralor';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['contralor']->fields['fecha_contralor'] = Field::getInstance('contralor', 'fecha_contralor', 'date', 'DateTime');
+        $this->entities['contralor']->fields['fecha_contralor']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['fecha_contralor'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'contralor';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['contralor']->fields['id'] = Field::getInstance('contralor', 'id', 'varchar', 'string');
+        $this->entities['contralor']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['contralor']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'contralor';
-        $f->name = 'insertado';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['contralor']->fields['insertado'] = Field::getInstance('contralor', 'insertado', 'timestamp', 'DateTime');
+        $this->entities['contralor']->fields['insertado']->defaultValue = 'current_timestamp()';
+        $this->entities['contralor']->fields['insertado']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['insertado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'contralor';
-        $f->name = 'planilla_docente';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'pla';
-        $f->refEntityName = 'planilla_docente';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['contralor']->fields['planilla_docente'] = Field::getInstance('contralor', 'planilla_docente', 'varchar', 'string');
+        $this->entities['contralor']->fields['planilla_docente']->alias = 'pla';
+        $this->entities['contralor']->fields['planilla_docente']->refEntityName = 'planilla_docente';
+        $this->entities['contralor']->fields['planilla_docente']->refFieldName = 'id';
+        $this->entities['contralor']->fields['planilla_docente']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['contralor']->fields['planilla_docente']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['planilla_docente'] = $f;
+        $this->entities['curso'] = EntityMetadata::getInstance('curso', 'curs');
+        $this->entities['curso']->pk = ['id'];
+        $this->entities['curso']->fk = ['asignatura', 'comision', 'disposicion'];
+        $this->entities['curso']->notNull = ['alta', 'comision', 'horas_catedra', 'id'];
 
-        $this->entities['contralor'] = $e;
+        $this->entities['curso']->tree = [];
+        $this->entities['curso']->tree['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'curso';
-        $e->alias = 'curs';
-        $e->pk = ['id'];
-        $e->fk = ['asignatura', 'comision', 'disposicion'];
-        $e->notNull = ['alta', 'comision', 'horas_catedra', 'id'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'asignatura';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'asignatura';
-        $e->tree['asignatura'] = $tree;
+        $this->entities['curso']->tree['comision'] = EntityTree::getInstance('comision', 'comision', 'id');
+        $this->entities['curso']->tree['comision']->children = [];
+        $this->entities['curso']->tree['comision']->children['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'comision';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'comision';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'calendario';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'calendario';
-        $tree->children['calendario'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'comision_siguiente';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'comision';
-        $tree->children['comision_siguiente'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'modalidad';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'modalidad';
-        $tree->children['modalidad'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'planificacion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'planificacion';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'plan';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'plan';
-                $tree->children['plan'] = $child;
-        $tree->children['planificacion'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'sede';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'sede';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'centro_educativo';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'centro_educativo';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'domicilio';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'domicilio';
-                        $tree->children['domicilio_cen'] = $child;
-                $tree->children['centro_educativo'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'domicilio';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'domicilio';
-                $tree->children['domicilio'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'organizacion';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'sede';
-                $tree->children['organizacion'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'tipo_sede';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'tipo_sede';
-                $tree->children['tipo_sede'] = $child;
-        $tree->children['sede'] = $child;
-        $e->tree['comision'] = $tree;
+        $this->entities['curso']->tree['comision']->children['comision_siguiente'] = EntityTree::getInstance('comision_siguiente', 'comision', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'disposicion';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'disposicion';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'asignatura';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'asignatura';
-        $tree->children['asignatura_dis'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'planificacion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'planificacion';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'plan';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'plan';
-                $tree->children['plan_pla'] = $child;
-        $tree->children['planificacion_dis'] = $child;
-        $e->tree['disposicion'] = $tree;
+        $this->entities['curso']->tree['comision']->children['modalidad'] = EntityTree::getInstance('modalidad', 'modalidad', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $e->relations['asignatura'] = $relation;
+        $this->entities['curso']->tree['comision']->children['planificacion'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['curso']->tree['comision']->children['planificacion']->children = [];
+        $this->entities['curso']->tree['comision']->children['planificacion']->children['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $e->relations['comision'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'calendario';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'calendario';
-        $relation->parentId = 'comision';
-        $e->relations['calendario'] = $relation;
+        $this->entities['curso']->tree['comision']->children['sede'] = EntityTree::getInstance('sede', 'sede', 'id');
+        $this->entities['curso']->tree['comision']->children['sede']->children = [];
+        $this->entities['curso']->tree['comision']->children['sede']->children['centro_educativo'] = EntityTree::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['curso']->tree['comision']->children['sede']->children['centro_educativo']->children = [];
+        $this->entities['curso']->tree['comision']->children['sede']->children['centro_educativo']->children['domicilio_cen'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision_siguiente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $relation->parentId = 'comision';
-        $e->relations['comision_siguiente'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'modalidad';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'modalidad';
-        $relation->parentId = 'comision';
-        $e->relations['modalidad'] = $relation;
+        $this->entities['curso']->tree['comision']->children['sede']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'comision';
-        $e->relations['planificacion'] = $relation;
+        $this->entities['curso']->tree['comision']->children['sede']->children['organizacion'] = EntityTree::getInstance('organizacion', 'sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion';
-        $e->relations['plan'] = $relation;
+        $this->entities['curso']->tree['comision']->children['sede']->children['tipo_sede'] = EntityTree::getInstance('tipo_sede', 'tipo_sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'comision';
-        $e->relations['sede'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'centro_educativo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'centro_educativo';
-        $relation->parentId = 'sede';
-        $e->relations['centro_educativo'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'centro_educativo';
-        $e->relations['domicilio_cen'] = $relation;
+        $this->entities['curso']->tree['disposicion'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
+        $this->entities['curso']->tree['disposicion']->children = [];
+        $this->entities['curso']->tree['disposicion']->children['asignatura_dis'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'sede';
-        $e->relations['domicilio'] = $relation;
+        $this->entities['curso']->tree['disposicion']->children['planificacion_dis'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['curso']->tree['disposicion']->children['planificacion_dis']->children = [];
+        $this->entities['curso']->tree['disposicion']->children['planificacion_dis']->children['plan_pla'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'organizacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'sede';
-        $e->relations['organizacion'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'tipo_sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'tipo_sede';
-        $relation->parentId = 'sede';
-        $e->relations['tipo_sede'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'disposicion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'disposicion';
-        $e->relations['disposicion'] = $relation;
+        $this->entities['curso']->relations = [];
+        $this->entities['curso']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $relation->parentId = 'disposicion';
-        $e->relations['asignatura_dis'] = $relation;
+        $this->entities['curso']->relations['comision'] = EntityRelation::getInstance('comision', 'comision', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'disposicion';
-        $e->relations['planificacion_dis'] = $relation;
+        $this->entities['curso']->relations['calendario'] = EntityRelation::getInstance('calendario', 'calendario', 'id');
+        $this->entities['curso']->relations['calendario']->parentId = 'comision';
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion_dis';
-        $e->relations['plan_pla'] = $relation;
+        $this->entities['curso']->relations['comision_siguiente'] = EntityRelation::getInstance('comision_siguiente', 'comision', 'id');
+        $this->entities['curso']->relations['comision_siguiente']->parentId = 'comision';
 
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'curso';
-        $om->entityName = 'calificacion';
-        $e->om['calificacion_'] = $om;
+        $this->entities['curso']->relations['modalidad'] = EntityRelation::getInstance('modalidad', 'modalidad', 'id');
+        $this->entities['curso']->relations['modalidad']->parentId = 'comision';
 
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'curso';
-        $om->entityName = 'horario';
-        $e->om['horario_'] = $om;
+        $this->entities['curso']->relations['planificacion'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['curso']->relations['planificacion']->parentId = 'comision';
 
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'curso';
-        $om->entityName = 'toma';
-        $e->om['toma_'] = $om;
+        $this->entities['curso']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['curso']->relations['plan']->parentId = 'planificacion';
 
-        $f = new Field();
-        $f->entityName = 'curso';
-        $f->name = 'alta';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['curso']->relations['sede'] = EntityRelation::getInstance('sede', 'sede', 'id');
+        $this->entities['curso']->relations['sede']->parentId = 'comision';
+
+        $this->entities['curso']->relations['centro_educativo'] = EntityRelation::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['curso']->relations['centro_educativo']->parentId = 'sede';
+
+        $this->entities['curso']->relations['domicilio_cen'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['curso']->relations['domicilio_cen']->parentId = 'centro_educativo';
+
+        $this->entities['curso']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['curso']->relations['domicilio']->parentId = 'sede';
+
+        $this->entities['curso']->relations['organizacion'] = EntityRelation::getInstance('organizacion', 'sede', 'id');
+        $this->entities['curso']->relations['organizacion']->parentId = 'sede';
+
+        $this->entities['curso']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
+        $this->entities['curso']->relations['tipo_sede']->parentId = 'sede';
+
+        $this->entities['curso']->relations['disposicion'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
+
+        $this->entities['curso']->relations['asignatura_dis'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $this->entities['curso']->relations['asignatura_dis']->parentId = 'disposicion';
+
+        $this->entities['curso']->relations['planificacion_dis'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['curso']->relations['planificacion_dis']->parentId = 'disposicion';
+
+        $this->entities['curso']->relations['plan_pla'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['curso']->relations['plan_pla']->parentId = 'planificacion_dis';
+
+        $this->entities['curso']->om = [];
+        $this->entities['curso']->om['calificacion_'] = EntityRef::getInstance('curso', 'calificacion');
+        $this->entities['curso']->om['horario_'] = EntityRef::getInstance('curso', 'horario');
+        $this->entities['curso']->om['toma_'] = EntityRef::getInstance('curso', 'toma');
+        $this->entities['curso']->fields['alta'] = Field::getInstance('curso', 'alta', 'timestamp', 'DateTime');
+        $this->entities['curso']->fields['alta']->defaultValue = 'current_timestamp()';
+        $this->entities['curso']->fields['alta']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['alta'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'curso';
-        $f->name = 'asignatura';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'asi';
-        $f->refEntityName = 'asignatura';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['curso']->fields['asignatura'] = Field::getInstance('curso', 'asignatura', 'varchar', 'string');
+        $this->entities['curso']->fields['asignatura']->alias = 'asi';
+        $this->entities['curso']->fields['asignatura']->refEntityName = 'asignatura';
+        $this->entities['curso']->fields['asignatura']->refFieldName = 'id';
+        $this->entities['curso']->fields['asignatura']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['curso']->fields['asignatura']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['asignatura'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'curso';
-        $f->name = 'codigo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['curso']->fields['codigo'] = Field::getInstance('curso', 'codigo', 'varchar', 'string');
+        $this->entities['curso']->fields['codigo']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['curso']->fields['codigo']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['codigo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'curso';
-        $f->name = 'comision';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'com';
-        $f->refEntityName = 'comision';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['curso']->fields['comision'] = Field::getInstance('curso', 'comision', 'varchar', 'string');
+        $this->entities['curso']->fields['comision']->alias = 'com';
+        $this->entities['curso']->fields['comision']->refEntityName = 'comision';
+        $this->entities['curso']->fields['comision']->refFieldName = 'id';
+        $this->entities['curso']->fields['comision']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['curso']->fields['comision']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['comision'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'curso';
-        $f->name = 'descripcion_horario';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['curso']->fields['descripcion_horario'] = Field::getInstance('curso', 'descripcion_horario', 'varchar', 'string');
+        $this->entities['curso']->fields['descripcion_horario']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['curso']->fields['descripcion_horario']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['descripcion_horario'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'curso';
-        $f->name = 'disposicion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'dis';
-        $f->refEntityName = 'disposicion';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['curso']->fields['disposicion'] = Field::getInstance('curso', 'disposicion', 'varchar', 'string');
+        $this->entities['curso']->fields['disposicion']->alias = 'dis';
+        $this->entities['curso']->fields['disposicion']->refEntityName = 'disposicion';
+        $this->entities['curso']->fields['disposicion']->refFieldName = 'id';
+        $this->entities['curso']->fields['disposicion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['curso']->fields['disposicion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['disposicion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'curso';
-        $f->name = 'horas_catedra';
-        $f->dataType = 'int';
-        $f->type = 'int';
-        $f->checks = [
+        $this->entities['curso']->fields['horas_catedra'] = Field::getInstance('curso', 'horas_catedra', 'int', 'int');
+        $this->entities['curso']->fields['horas_catedra']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $e->fields['horas_catedra'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'curso';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['curso']->fields['id'] = Field::getInstance('curso', 'id', 'varchar', 'string');
+        $this->entities['curso']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['curso']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'curso';
-        $f->name = 'ige';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['curso']->fields['ige'] = Field::getInstance('curso', 'ige', 'varchar', 'string');
+        $this->entities['curso']->fields['ige']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['curso']->fields['ige']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['ige'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'curso';
-        $f->name = 'observaciones';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['curso']->fields['observaciones'] = Field::getInstance('curso', 'observaciones', 'varchar', 'string');
+        $this->entities['curso']->fields['observaciones']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['curso']->fields['observaciones']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['observaciones'] = $f;
+        $this->entities['designacion'] = EntityMetadata::getInstance('designacion', 'desi');
+        $this->entities['designacion']->pk = ['id'];
+        $this->entities['designacion']->fk = ['cargo', 'persona', 'sede'];
+        $this->entities['designacion']->notNull = ['alta', 'cargo', 'id', 'persona', 'sede'];
 
-        $this->entities['curso'] = $e;
+        $this->entities['designacion']->tree = [];
+        $this->entities['designacion']->tree['cargo'] = EntityTree::getInstance('cargo', 'cargo', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'designacion';
-        $e->alias = 'desi';
-        $e->pk = ['id'];
-        $e->fk = ['cargo', 'persona', 'sede'];
-        $e->notNull = ['alta', 'cargo', 'id', 'persona', 'sede'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'cargo';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'cargo';
-        $e->tree['cargo'] = $tree;
+        $this->entities['designacion']->tree['persona'] = EntityTree::getInstance('persona', 'persona', 'id');
+        $this->entities['designacion']->tree['persona']->children = [];
+        $this->entities['designacion']->tree['persona']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'persona';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'persona';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'domicilio';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'domicilio';
-        $tree->children['domicilio'] = $child;
-        $e->tree['persona'] = $tree;
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'sede';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'sede';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'centro_educativo';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'centro_educativo';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'domicilio';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'domicilio';
-                $tree->children['domicilio_cen'] = $child;
-        $tree->children['centro_educativo'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'domicilio';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'domicilio';
-        $tree->children['domicilio_sed'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'organizacion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'sede';
-        $tree->children['organizacion'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'tipo_sede';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'tipo_sede';
-        $tree->children['tipo_sede'] = $child;
-        $e->tree['sede'] = $tree;
+        $this->entities['designacion']->tree['sede'] = EntityTree::getInstance('sede', 'sede', 'id');
+        $this->entities['designacion']->tree['sede']->children = [];
+        $this->entities['designacion']->tree['sede']->children['centro_educativo'] = EntityTree::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['designacion']->tree['sede']->children['centro_educativo']->children = [];
+        $this->entities['designacion']->tree['sede']->children['centro_educativo']->children['domicilio_cen'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'cargo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'cargo';
-        $e->relations['cargo'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'persona';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'persona';
-        $e->relations['persona'] = $relation;
+        $this->entities['designacion']->tree['sede']->children['domicilio_sed'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'persona';
-        $e->relations['domicilio'] = $relation;
+        $this->entities['designacion']->tree['sede']->children['organizacion'] = EntityTree::getInstance('organizacion', 'sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $e->relations['sede'] = $relation;
+        $this->entities['designacion']->tree['sede']->children['tipo_sede'] = EntityTree::getInstance('tipo_sede', 'tipo_sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'centro_educativo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'centro_educativo';
-        $relation->parentId = 'sede';
-        $e->relations['centro_educativo'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'centro_educativo';
-        $e->relations['domicilio_cen'] = $relation;
+        $this->entities['designacion']->relations = [];
+        $this->entities['designacion']->relations['cargo'] = EntityRelation::getInstance('cargo', 'cargo', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'sede';
-        $e->relations['domicilio_sed'] = $relation;
+        $this->entities['designacion']->relations['persona'] = EntityRelation::getInstance('persona', 'persona', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'organizacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'sede';
-        $e->relations['organizacion'] = $relation;
+        $this->entities['designacion']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['designacion']->relations['domicilio']->parentId = 'persona';
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'tipo_sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'tipo_sede';
-        $relation->parentId = 'sede';
-        $e->relations['tipo_sede'] = $relation;
+        $this->entities['designacion']->relations['sede'] = EntityRelation::getInstance('sede', 'sede', 'id');
 
-        $f = new Field();
-        $f->entityName = 'designacion';
-        $f->name = 'alta';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['designacion']->relations['centro_educativo'] = EntityRelation::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['designacion']->relations['centro_educativo']->parentId = 'sede';
+
+        $this->entities['designacion']->relations['domicilio_cen'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['designacion']->relations['domicilio_cen']->parentId = 'centro_educativo';
+
+        $this->entities['designacion']->relations['domicilio_sed'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['designacion']->relations['domicilio_sed']->parentId = 'sede';
+
+        $this->entities['designacion']->relations['organizacion'] = EntityRelation::getInstance('organizacion', 'sede', 'id');
+        $this->entities['designacion']->relations['organizacion']->parentId = 'sede';
+
+        $this->entities['designacion']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
+        $this->entities['designacion']->relations['tipo_sede']->parentId = 'sede';
+
+        $this->entities['designacion']->fields['alta'] = Field::getInstance('designacion', 'alta', 'timestamp', 'DateTime');
+        $this->entities['designacion']->fields['alta']->defaultValue = 'current_timestamp()';
+        $this->entities['designacion']->fields['alta']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['alta'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'designacion';
-        $f->name = 'cargo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'car';
-        $f->refEntityName = 'cargo';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['designacion']->fields['cargo'] = Field::getInstance('designacion', 'cargo', 'varchar', 'string');
+        $this->entities['designacion']->fields['cargo']->alias = 'car';
+        $this->entities['designacion']->fields['cargo']->refEntityName = 'cargo';
+        $this->entities['designacion']->fields['cargo']->refFieldName = 'id';
+        $this->entities['designacion']->fields['cargo']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['designacion']->fields['cargo']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['cargo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'designacion';
-        $f->name = 'desde';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['designacion']->fields['desde'] = Field::getInstance('designacion', 'desde', 'date', 'DateTime');
+        $this->entities['designacion']->fields['desde']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['desde'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'designacion';
-        $f->name = 'hasta';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['designacion']->fields['hasta'] = Field::getInstance('designacion', 'hasta', 'date', 'DateTime');
+        $this->entities['designacion']->fields['hasta']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['hasta'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'designacion';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['designacion']->fields['id'] = Field::getInstance('designacion', 'id', 'varchar', 'string');
+        $this->entities['designacion']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['designacion']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'designacion';
-        $f->name = 'persona';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'per';
-        $f->refEntityName = 'persona';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['designacion']->fields['persona'] = Field::getInstance('designacion', 'persona', 'varchar', 'string');
+        $this->entities['designacion']->fields['persona']->alias = 'per';
+        $this->entities['designacion']->fields['persona']->refEntityName = 'persona';
+        $this->entities['designacion']->fields['persona']->refFieldName = 'id';
+        $this->entities['designacion']->fields['persona']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['designacion']->fields['persona']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['persona'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'designacion';
-        $f->name = 'pfid';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['designacion']->fields['pfid'] = Field::getInstance('designacion', 'pfid', 'varchar', 'string');
+        $this->entities['designacion']->fields['pfid']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['designacion']->fields['pfid']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['pfid'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'designacion';
-        $f->name = 'sede';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'sed';
-        $f->refEntityName = 'sede';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['designacion']->fields['sede'] = Field::getInstance('designacion', 'sede', 'varchar', 'string');
+        $this->entities['designacion']->fields['sede']->alias = 'sed';
+        $this->entities['designacion']->fields['sede']->refEntityName = 'sede';
+        $this->entities['designacion']->fields['sede']->refFieldName = 'id';
+        $this->entities['designacion']->fields['sede']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['designacion']->fields['sede']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['sede'] = $f;
+        $this->entities['detalle_persona'] = EntityMetadata::getInstance('detalle_persona', 'deta');
+        $this->entities['detalle_persona']->pk = ['id'];
+        $this->entities['detalle_persona']->fk = ['archivo', 'persona'];
+        $this->entities['detalle_persona']->notNull = ['creado', 'descripcion', 'id', 'persona'];
 
-        $this->entities['designacion'] = $e;
+        $this->entities['detalle_persona']->tree = [];
+        $this->entities['detalle_persona']->tree['archivo'] = EntityTree::getInstance('archivo', 'file', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'detalle_persona';
-        $e->alias = 'deta';
-        $e->pk = ['id'];
-        $e->fk = ['archivo', 'persona'];
-        $e->notNull = ['creado', 'descripcion', 'id', 'persona'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'archivo';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'file';
-        $e->tree['archivo'] = $tree;
+        $this->entities['detalle_persona']->tree['persona'] = EntityTree::getInstance('persona', 'persona', 'id');
+        $this->entities['detalle_persona']->tree['persona']->children = [];
+        $this->entities['detalle_persona']->tree['persona']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'persona';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'persona';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'domicilio';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'domicilio';
-        $tree->children['domicilio'] = $child;
-        $e->tree['persona'] = $tree;
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'archivo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'file';
-        $e->relations['archivo'] = $relation;
+        $this->entities['detalle_persona']->relations = [];
+        $this->entities['detalle_persona']->relations['archivo'] = EntityRelation::getInstance('archivo', 'file', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'persona';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'persona';
-        $e->relations['persona'] = $relation;
+        $this->entities['detalle_persona']->relations['persona'] = EntityRelation::getInstance('persona', 'persona', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'persona';
-        $e->relations['domicilio'] = $relation;
+        $this->entities['detalle_persona']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['detalle_persona']->relations['domicilio']->parentId = 'persona';
 
-        $f = new Field();
-        $f->entityName = 'detalle_persona';
-        $f->name = 'archivo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'arc';
-        $f->refEntityName = 'file';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['detalle_persona']->fields['archivo'] = Field::getInstance('detalle_persona', 'archivo', 'varchar', 'string');
+        $this->entities['detalle_persona']->fields['archivo']->alias = 'fil';
+        $this->entities['detalle_persona']->fields['archivo']->refEntityName = 'file';
+        $this->entities['detalle_persona']->fields['archivo']->refFieldName = 'id';
+        $this->entities['detalle_persona']->fields['archivo']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['detalle_persona']->fields['archivo']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['archivo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'detalle_persona';
-        $f->name = 'asunto';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['detalle_persona']->fields['asunto'] = Field::getInstance('detalle_persona', 'asunto', 'varchar', 'string');
+        $this->entities['detalle_persona']->fields['asunto']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['detalle_persona']->fields['asunto']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['asunto'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'detalle_persona';
-        $f->name = 'creado';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['detalle_persona']->fields['creado'] = Field::getInstance('detalle_persona', 'creado', 'timestamp', 'DateTime');
+        $this->entities['detalle_persona']->fields['creado']->defaultValue = 'current_timestamp()';
+        $this->entities['detalle_persona']->fields['creado']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['creado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'detalle_persona';
-        $f->name = 'descripcion';
-        $f->dataType = 'text';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['detalle_persona']->fields['descripcion'] = Field::getInstance('detalle_persona', 'descripcion', 'text', 'string');
+        $this->entities['detalle_persona']->fields['descripcion']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['detalle_persona']->fields['descripcion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['descripcion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'detalle_persona';
-        $f->name = 'fecha';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'curdate()';
-        $f->checks = [
+        $this->entities['detalle_persona']->fields['fecha'] = Field::getInstance('detalle_persona', 'fecha', 'date', 'DateTime');
+        $this->entities['detalle_persona']->fields['fecha']->defaultValue = 'curdate()';
+        $this->entities['detalle_persona']->fields['fecha']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['fecha'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'detalle_persona';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['detalle_persona']->fields['id'] = Field::getInstance('detalle_persona', 'id', 'varchar', 'string');
+        $this->entities['detalle_persona']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['detalle_persona']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'detalle_persona';
-        $f->name = 'persona';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'per';
-        $f->refEntityName = 'persona';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['detalle_persona']->fields['persona'] = Field::getInstance('detalle_persona', 'persona', 'varchar', 'string');
+        $this->entities['detalle_persona']->fields['persona']->alias = 'per';
+        $this->entities['detalle_persona']->fields['persona']->refEntityName = 'persona';
+        $this->entities['detalle_persona']->fields['persona']->refFieldName = 'id';
+        $this->entities['detalle_persona']->fields['persona']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['detalle_persona']->fields['persona']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['persona'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'detalle_persona';
-        $f->name = 'tipo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['detalle_persona']->fields['tipo'] = Field::getInstance('detalle_persona', 'tipo', 'varchar', 'string');
+        $this->entities['detalle_persona']->fields['tipo']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['detalle_persona']->fields['tipo']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['tipo'] = $f;
+        $this->entities['dia'] = EntityMetadata::getInstance('dia', 'dia');
+        $this->entities['dia']->pk = ['id'];
+        $this->entities['dia']->unique = ['dia', 'numero'];
+        $this->entities['dia']->notNull = ['dia', 'id', 'numero'];
 
-        $this->entities['detalle_persona'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'dia';
-        $e->alias = 'dia';
-        $e->pk = ['id'];
-        $e->unique = ['dia', 'numero'];
-        $e->notNull = ['dia', 'id', 'numero'];
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'dia';
-        $om->entityName = 'horario';
-        $e->om['horario_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'dia';
-        $f->name = 'dia';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['dia']->om = [];
+        $this->entities['dia']->om['horario_'] = EntityRef::getInstance('dia', 'horario');
+        $this->entities['dia']->fields['dia'] = Field::getInstance('dia', 'dia', 'varchar', 'string');
+        $this->entities['dia']->fields['dia']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['dia']->fields['dia']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['dia'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'dia';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['dia']->fields['id'] = Field::getInstance('dia', 'id', 'varchar', 'string');
+        $this->entities['dia']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['dia']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'dia';
-        $f->name = 'numero';
-        $f->dataType = 'smallint';
-        $f->type = 'short';
-        $f->checks = [
+        $this->entities['dia']->fields['numero'] = Field::getInstance('dia', 'numero', 'smallint', 'short');
+        $this->entities['dia']->fields['numero']->checks = [
             'type' => 'short',
             'required' => '1',
         ];
-        $e->fields['numero'] = $f;
+        $this->entities['disposicion'] = EntityMetadata::getInstance('disposicion', 'disp');
+        $this->entities['disposicion']->pk = ['id'];
+        $this->entities['disposicion']->fk = ['asignatura', 'planificacion'];
+        $this->entities['disposicion']->notNull = ['asignatura', 'id', 'planificacion'];
 
-        $this->entities['dia'] = $e;
+        $this->entities['disposicion']->tree = [];
+        $this->entities['disposicion']->tree['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'disposicion';
-        $e->alias = 'disp';
-        $e->pk = ['id'];
-        $e->fk = ['asignatura', 'planificacion'];
-        $e->notNull = ['asignatura', 'horas_catedra', 'id', 'planificacion'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'asignatura';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'asignatura';
-        $e->tree['asignatura'] = $tree;
+        $this->entities['disposicion']->tree['planificacion'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['disposicion']->tree['planificacion']->children = [];
+        $this->entities['disposicion']->tree['planificacion']->children['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'planificacion';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'planificacion';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'plan';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'plan';
-        $tree->children['plan'] = $child;
-        $e->tree['planificacion'] = $tree;
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $e->relations['asignatura'] = $relation;
+        $this->entities['disposicion']->relations = [];
+        $this->entities['disposicion']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $e->relations['planificacion'] = $relation;
+        $this->entities['disposicion']->relations['planificacion'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion';
-        $e->relations['plan'] = $relation;
+        $this->entities['disposicion']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['disposicion']->relations['plan']->parentId = 'planificacion';
 
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'disposicion';
-        $om->entityName = 'calificacion';
-        $e->om['calificacion_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'disposicion';
-        $om->entityName = 'curso';
-        $e->om['curso_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'disposicion';
-        $om->entityName = 'disposicion_pendiente';
-        $e->om['disposicionPendiente_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'disposicion';
-        $om->entityName = 'distribucion_horaria';
-        $e->om['distribucionHoraria_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'disposicion';
-        $f->name = 'asignatura';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'asi';
-        $f->refEntityName = 'asignatura';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['disposicion']->om = [];
+        $this->entities['disposicion']->om['calificacion_'] = EntityRef::getInstance('disposicion', 'calificacion');
+        $this->entities['disposicion']->om['curso_'] = EntityRef::getInstance('disposicion', 'curso');
+        $this->entities['disposicion']->om['disposicionPendiente_'] = EntityRef::getInstance('disposicion', 'disposicion_pendiente');
+        $this->entities['disposicion']->om['distribucionHoraria_'] = EntityRef::getInstance('disposicion', 'distribucion_horaria');
+        $this->entities['disposicion']->fields['asignatura'] = Field::getInstance('disposicion', 'asignatura', 'varchar', 'string');
+        $this->entities['disposicion']->fields['asignatura']->alias = 'asi';
+        $this->entities['disposicion']->fields['asignatura']->refEntityName = 'asignatura';
+        $this->entities['disposicion']->fields['asignatura']->refFieldName = 'id';
+        $this->entities['disposicion']->fields['asignatura']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['disposicion']->fields['asignatura']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['asignatura'] = $f;
+        $this->entities['disposicion']->fields['id'] = Field::getInstance('disposicion', 'id', 'varchar', 'string');
+        $this->entities['disposicion']->fields['id']->checks = [
+            'type' => 'string',
+            'required' => '1',
+        ];
+        $this->entities['disposicion']->fields['id']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+        ];
+        $this->entities['disposicion']->fields['orden_informe_coordinacion_distrital'] = Field::getInstance('disposicion', 'orden_informe_coordinacion_distrital', 'int', 'int');
+        $this->entities['disposicion']->fields['orden_informe_coordinacion_distrital']->checks = [
+            'type' => 'int',
+        ];
+        $this->entities['disposicion']->fields['planificacion'] = Field::getInstance('disposicion', 'planificacion', 'varchar', 'string');
+        $this->entities['disposicion']->fields['planificacion']->alias = 'pla';
+        $this->entities['disposicion']->fields['planificacion']->refEntityName = 'planificacion';
+        $this->entities['disposicion']->fields['planificacion']->refFieldName = 'id';
+        $this->entities['disposicion']->fields['planificacion']->checks = [
+            'type' => 'string',
+            'required' => '1',
+        ];
+        $this->entities['disposicion']->fields['planificacion']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+        ];
+        $this->entities['disposicion_pendiente'] = EntityMetadata::getInstance('disposicion_pendiente', 'dis1');
+        $this->entities['disposicion_pendiente']->pk = ['id'];
+        $this->entities['disposicion_pendiente']->fk = ['alumno', 'disposicion'];
+        $this->entities['disposicion_pendiente']->notNull = ['alumno', 'disposicion', 'id'];
 
-        $f = new Field();
-        $f->entityName = 'disposicion';
-        $f->name = 'horas_catedra';
-        $f->dataType = 'int';
-        $f->type = 'int';
-        $f->checks = [
+        $this->entities['disposicion_pendiente']->tree = [];
+        $this->entities['disposicion_pendiente']->tree['alumno'] = EntityTree::getInstance('alumno', 'alumno', 'id');
+        $this->entities['disposicion_pendiente']->tree['alumno']->children = [];
+        $this->entities['disposicion_pendiente']->tree['alumno']->children['persona'] = EntityTree::getInstance('persona', 'persona', 'id');
+        $this->entities['disposicion_pendiente']->tree['alumno']->children['persona']->children = [];
+        $this->entities['disposicion_pendiente']->tree['alumno']->children['persona']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
+
+
+        $this->entities['disposicion_pendiente']->tree['alumno']->children['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
+
+        $this->entities['disposicion_pendiente']->tree['alumno']->children['resolucion_inscripcion'] = EntityTree::getInstance('resolucion_inscripcion', 'resolucion', 'id');
+
+
+        $this->entities['disposicion_pendiente']->tree['disposicion'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
+        $this->entities['disposicion_pendiente']->tree['disposicion']->children = [];
+        $this->entities['disposicion_pendiente']->tree['disposicion']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
+
+        $this->entities['disposicion_pendiente']->tree['disposicion']->children['planificacion'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['disposicion_pendiente']->tree['disposicion']->children['planificacion']->children = [];
+        $this->entities['disposicion_pendiente']->tree['disposicion']->children['planificacion']->children['plan_pla'] = EntityTree::getInstance('plan', 'plan', 'id');
+
+
+
+        $this->entities['disposicion_pendiente']->relations = [];
+        $this->entities['disposicion_pendiente']->relations['alumno'] = EntityRelation::getInstance('alumno', 'alumno', 'id');
+
+        $this->entities['disposicion_pendiente']->relations['persona'] = EntityRelation::getInstance('persona', 'persona', 'id');
+        $this->entities['disposicion_pendiente']->relations['persona']->parentId = 'alumno';
+
+        $this->entities['disposicion_pendiente']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['disposicion_pendiente']->relations['domicilio']->parentId = 'persona';
+
+        $this->entities['disposicion_pendiente']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['disposicion_pendiente']->relations['plan']->parentId = 'alumno';
+
+        $this->entities['disposicion_pendiente']->relations['resolucion_inscripcion'] = EntityRelation::getInstance('resolucion_inscripcion', 'resolucion', 'id');
+        $this->entities['disposicion_pendiente']->relations['resolucion_inscripcion']->parentId = 'alumno';
+
+        $this->entities['disposicion_pendiente']->relations['disposicion'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
+
+        $this->entities['disposicion_pendiente']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $this->entities['disposicion_pendiente']->relations['asignatura']->parentId = 'disposicion';
+
+        $this->entities['disposicion_pendiente']->relations['planificacion'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['disposicion_pendiente']->relations['planificacion']->parentId = 'disposicion';
+
+        $this->entities['disposicion_pendiente']->relations['plan_pla'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['disposicion_pendiente']->relations['plan_pla']->parentId = 'planificacion';
+
+        $this->entities['disposicion_pendiente']->fields['alumno'] = Field::getInstance('disposicion_pendiente', 'alumno', 'varchar', 'string');
+        $this->entities['disposicion_pendiente']->fields['alumno']->alias = 'alu';
+        $this->entities['disposicion_pendiente']->fields['alumno']->refEntityName = 'alumno';
+        $this->entities['disposicion_pendiente']->fields['alumno']->refFieldName = 'id';
+        $this->entities['disposicion_pendiente']->fields['alumno']->checks = [
+            'type' => 'string',
+            'required' => '1',
+        ];
+        $this->entities['disposicion_pendiente']->fields['alumno']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+        ];
+        $this->entities['disposicion_pendiente']->fields['disposicion'] = Field::getInstance('disposicion_pendiente', 'disposicion', 'varchar', 'string');
+        $this->entities['disposicion_pendiente']->fields['disposicion']->alias = 'dis';
+        $this->entities['disposicion_pendiente']->fields['disposicion']->refEntityName = 'disposicion';
+        $this->entities['disposicion_pendiente']->fields['disposicion']->refFieldName = 'id';
+        $this->entities['disposicion_pendiente']->fields['disposicion']->checks = [
+            'type' => 'string',
+            'required' => '1',
+        ];
+        $this->entities['disposicion_pendiente']->fields['disposicion']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+        ];
+        $this->entities['disposicion_pendiente']->fields['id'] = Field::getInstance('disposicion_pendiente', 'id', 'varchar', 'string');
+        $this->entities['disposicion_pendiente']->fields['id']->checks = [
+            'type' => 'string',
+            'required' => '1',
+        ];
+        $this->entities['disposicion_pendiente']->fields['id']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+        ];
+        $this->entities['disposicion_pendiente']->fields['modo'] = Field::getInstance('disposicion_pendiente', 'modo', 'varchar', 'string');
+        $this->entities['disposicion_pendiente']->fields['modo']->checks = [
+            'type' => 'string',
+        ];
+        $this->entities['disposicion_pendiente']->fields['modo']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+            'nullIfEmpty' => true,
+        ];
+        $this->entities['distribucion_horaria'] = EntityMetadata::getInstance('distribucion_horaria', 'dist');
+        $this->entities['distribucion_horaria']->pk = ['id'];
+        $this->entities['distribucion_horaria']->fk = ['disposicion'];
+        $this->entities['distribucion_horaria']->notNull = ['dia', 'horas_catedra', 'id'];
+
+        $this->entities['distribucion_horaria']->tree = [];
+        $this->entities['distribucion_horaria']->tree['disposicion'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
+        $this->entities['distribucion_horaria']->tree['disposicion']->children = [];
+        $this->entities['distribucion_horaria']->tree['disposicion']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
+
+        $this->entities['distribucion_horaria']->tree['disposicion']->children['planificacion'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['distribucion_horaria']->tree['disposicion']->children['planificacion']->children = [];
+        $this->entities['distribucion_horaria']->tree['disposicion']->children['planificacion']->children['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
+
+
+
+        $this->entities['distribucion_horaria']->relations = [];
+        $this->entities['distribucion_horaria']->relations['disposicion'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
+
+        $this->entities['distribucion_horaria']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $this->entities['distribucion_horaria']->relations['asignatura']->parentId = 'disposicion';
+
+        $this->entities['distribucion_horaria']->relations['planificacion'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['distribucion_horaria']->relations['planificacion']->parentId = 'disposicion';
+
+        $this->entities['distribucion_horaria']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['distribucion_horaria']->relations['plan']->parentId = 'planificacion';
+
+        $this->entities['distribucion_horaria']->fields['dia'] = Field::getInstance('distribucion_horaria', 'dia', 'int', 'int');
+        $this->entities['distribucion_horaria']->fields['dia']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $e->fields['horas_catedra'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'disposicion';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
-            'type' => 'string',
-            'required' => '1',
-        ];
-        $f->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-        ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'disposicion';
-        $f->name = 'orden_informe_coordinacion_distrital';
-        $f->dataType = 'int';
-        $f->type = 'int';
-        $f->checks = [
-            'type' => 'int',
-        ];
-        $e->fields['orden_informe_coordinacion_distrital'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'disposicion';
-        $f->name = 'planificacion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'pla';
-        $f->refEntityName = 'planificacion';
-        $f->refFieldName = 'id';
-        $f->checks = [
-            'type' => 'string',
-            'required' => '1',
-        ];
-        $f->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-        ];
-        $e->fields['planificacion'] = $f;
-
-        $this->entities['disposicion'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'disposicion_pendiente';
-        $e->alias = 'dis1';
-        $e->pk = ['id'];
-        $e->fk = ['alumno', 'disposicion'];
-        $e->notNull = ['alumno', 'disposicion', 'id'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'alumno';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'alumno';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'persona';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'persona';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'domicilio';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'domicilio';
-                $tree->children['domicilio'] = $child;
-        $tree->children['persona'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'plan';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'plan';
-        $tree->children['plan'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'resolucion_inscripcion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'resolucion';
-        $tree->children['resolucion_inscripcion'] = $child;
-        $e->tree['alumno'] = $tree;
-
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'disposicion';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'disposicion';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'asignatura';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'asignatura';
-        $tree->children['asignatura'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'planificacion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'planificacion';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'plan';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'plan';
-                $tree->children['plan_pla'] = $child;
-        $tree->children['planificacion'] = $child;
-        $e->tree['disposicion'] = $tree;
-
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'alumno';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'alumno';
-        $e->relations['alumno'] = $relation;
-
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'persona';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'persona';
-        $relation->parentId = 'alumno';
-        $e->relations['persona'] = $relation;
-
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'persona';
-        $e->relations['domicilio'] = $relation;
-
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'alumno';
-        $e->relations['plan'] = $relation;
-
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'resolucion_inscripcion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'resolucion';
-        $relation->parentId = 'alumno';
-        $e->relations['resolucion_inscripcion'] = $relation;
-
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'disposicion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'disposicion';
-        $e->relations['disposicion'] = $relation;
-
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $relation->parentId = 'disposicion';
-        $e->relations['asignatura'] = $relation;
-
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'disposicion';
-        $e->relations['planificacion'] = $relation;
-
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion';
-        $e->relations['plan_pla'] = $relation;
-
-        $f = new Field();
-        $f->entityName = 'disposicion_pendiente';
-        $f->name = 'alumno';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'alu';
-        $f->refEntityName = 'alumno';
-        $f->refFieldName = 'id';
-        $f->checks = [
-            'type' => 'string',
-            'required' => '1',
-        ];
-        $f->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-        ];
-        $e->fields['alumno'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'disposicion_pendiente';
-        $f->name = 'disposicion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'dis';
-        $f->refEntityName = 'disposicion';
-        $f->refFieldName = 'id';
-        $f->checks = [
-            'type' => 'string',
-            'required' => '1',
-        ];
-        $f->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-        ];
-        $e->fields['disposicion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'disposicion_pendiente';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
-            'type' => 'string',
-            'required' => '1',
-        ];
-        $f->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-        ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'disposicion_pendiente';
-        $f->name = 'modo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['distribucion_horaria']->fields['disposicion'] = Field::getInstance('distribucion_horaria', 'disposicion', 'varchar', 'string');
+        $this->entities['distribucion_horaria']->fields['disposicion']->alias = 'dis';
+        $this->entities['distribucion_horaria']->fields['disposicion']->refEntityName = 'disposicion';
+        $this->entities['distribucion_horaria']->fields['disposicion']->refFieldName = 'id';
+        $this->entities['distribucion_horaria']->fields['disposicion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['distribucion_horaria']->fields['disposicion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['modo'] = $f;
-
-        $this->entities['disposicion_pendiente'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'distribucion_horaria';
-        $e->alias = 'dist';
-        $e->pk = ['id'];
-        $e->fk = ['disposicion'];
-        $e->notNull = ['dia', 'horas_catedra', 'id'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'disposicion';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'disposicion';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'asignatura';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'asignatura';
-        $tree->children['asignatura'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'planificacion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'planificacion';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'plan';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'plan';
-                $tree->children['plan'] = $child;
-        $tree->children['planificacion'] = $child;
-        $e->tree['disposicion'] = $tree;
-
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'disposicion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'disposicion';
-        $e->relations['disposicion'] = $relation;
-
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $relation->parentId = 'disposicion';
-        $e->relations['asignatura'] = $relation;
-
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'disposicion';
-        $e->relations['planificacion'] = $relation;
-
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion';
-        $e->relations['plan'] = $relation;
-
-        $f = new Field();
-        $f->entityName = 'distribucion_horaria';
-        $f->name = 'dia';
-        $f->dataType = 'int';
-        $f->type = 'int';
-        $f->checks = [
+        $this->entities['distribucion_horaria']->fields['horas_catedra'] = Field::getInstance('distribucion_horaria', 'horas_catedra', 'int', 'int');
+        $this->entities['distribucion_horaria']->fields['horas_catedra']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $e->fields['dia'] = $f;
+        $this->entities['distribucion_horaria']->fields['id'] = Field::getInstance('distribucion_horaria', 'id', 'varchar', 'string');
+        $this->entities['distribucion_horaria']->fields['id']->checks = [
+            'type' => 'string',
+            'required' => '1',
+        ];
+        $this->entities['distribucion_horaria']->fields['id']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+        ];
+        $this->entities['domicilio'] = EntityMetadata::getInstance('domicilio', 'domi');
+        $this->entities['domicilio']->pk = ['id'];
+        $this->entities['domicilio']->notNull = ['calle', 'id', 'localidad', 'numero'];
 
-        $f = new Field();
-        $f->entityName = 'distribucion_horaria';
-        $f->name = 'disposicion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'dis';
-        $f->refEntityName = 'disposicion';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['domicilio']->om = [];
+        $this->entities['domicilio']->om['centroEducativo_'] = EntityRef::getInstance('domicilio', 'centro_educativo');
+        $this->entities['domicilio']->om['persona_'] = EntityRef::getInstance('domicilio', 'persona');
+        $this->entities['domicilio']->om['sede_'] = EntityRef::getInstance('domicilio', 'sede');
+        $this->entities['domicilio']->fields['barrio'] = Field::getInstance('domicilio', 'barrio', 'varchar', 'string');
+        $this->entities['domicilio']->fields['barrio']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['domicilio']->fields['barrio']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['disposicion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'distribucion_horaria';
-        $f->name = 'horas_catedra';
-        $f->dataType = 'int';
-        $f->type = 'int';
-        $f->checks = [
-            'type' => 'int',
-            'required' => '1',
-        ];
-        $e->fields['horas_catedra'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'distribucion_horaria';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['domicilio']->fields['calle'] = Field::getInstance('domicilio', 'calle', 'varchar', 'string');
+        $this->entities['domicilio']->fields['calle']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['domicilio']->fields['calle']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $this->entities['distribucion_horaria'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'domicilio';
-        $e->alias = 'domi';
-        $e->pk = ['id'];
-        $e->notNull = ['calle', 'id', 'localidad', 'numero'];
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'domicilio';
-        $om->entityName = 'centro_educativo';
-        $e->om['centroEducativo_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'domicilio';
-        $om->entityName = 'persona';
-        $e->om['persona_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'domicilio';
-        $om->entityName = 'sede';
-        $e->om['sede_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'domicilio';
-        $f->name = 'barrio';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['domicilio']->fields['departamento'] = Field::getInstance('domicilio', 'departamento', 'varchar', 'string');
+        $this->entities['domicilio']->fields['departamento']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['domicilio']->fields['departamento']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['barrio'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'domicilio';
-        $f->name = 'calle';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
-            'type' => 'string',
-            'required' => '1',
-        ];
-        $f->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-        ];
-        $e->fields['calle'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'domicilio';
-        $f->name = 'departamento';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['domicilio']->fields['entre'] = Field::getInstance('domicilio', 'entre', 'varchar', 'string');
+        $this->entities['domicilio']->fields['entre']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['domicilio']->fields['entre']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['departamento'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'domicilio';
-        $f->name = 'entre';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['domicilio']->fields['id'] = Field::getInstance('domicilio', 'id', 'varchar', 'string');
+        $this->entities['domicilio']->fields['id']->checks = [
+            'type' => 'string',
+            'required' => '1',
+        ];
+        $this->entities['domicilio']->fields['id']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+        ];
+        $this->entities['domicilio']->fields['localidad'] = Field::getInstance('domicilio', 'localidad', 'varchar', 'string');
+        $this->entities['domicilio']->fields['localidad']->checks = [
+            'type' => 'string',
+            'required' => '1',
+        ];
+        $this->entities['domicilio']->fields['localidad']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+        ];
+        $this->entities['domicilio']->fields['numero'] = Field::getInstance('domicilio', 'numero', 'varchar', 'string');
+        $this->entities['domicilio']->fields['numero']->checks = [
+            'type' => 'string',
+            'required' => '1',
+        ];
+        $this->entities['domicilio']->fields['numero']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+        ];
+        $this->entities['domicilio']->fields['piso'] = Field::getInstance('domicilio', 'piso', 'varchar', 'string');
+        $this->entities['domicilio']->fields['piso']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['domicilio']->fields['piso']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['entre'] = $f;
+        $this->entities['email'] = EntityMetadata::getInstance('email', 'emai');
+        $this->entities['email']->pk = ['id'];
+        $this->entities['email']->fk = ['persona'];
+        $this->entities['email']->notNull = ['email', 'id', 'insertado', 'persona', 'verificado'];
 
-        $f = new Field();
-        $f->entityName = 'domicilio';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
-            'type' => 'string',
-            'required' => '1',
-        ];
-        $f->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-        ];
-        $e->fields['id'] = $f;
+        $this->entities['email']->tree = [];
+        $this->entities['email']->tree['persona'] = EntityTree::getInstance('persona', 'persona', 'id');
+        $this->entities['email']->tree['persona']->children = [];
+        $this->entities['email']->tree['persona']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $f = new Field();
-        $f->entityName = 'domicilio';
-        $f->name = 'localidad';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
-            'type' => 'string',
-            'required' => '1',
-        ];
-        $f->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-        ];
-        $e->fields['localidad'] = $f;
 
-        $f = new Field();
-        $f->entityName = 'domicilio';
-        $f->name = 'numero';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
-            'type' => 'string',
-            'required' => '1',
-        ];
-        $f->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-        ];
-        $e->fields['numero'] = $f;
+        $this->entities['email']->relations = [];
+        $this->entities['email']->relations['persona'] = EntityRelation::getInstance('persona', 'persona', 'id');
 
-        $f = new Field();
-        $f->entityName = 'domicilio';
-        $f->name = 'piso';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
-            'type' => 'string',
-        ];
-        $f->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-            'nullIfEmpty' => true,
-        ];
-        $e->fields['piso'] = $f;
+        $this->entities['email']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['email']->relations['domicilio']->parentId = 'persona';
 
-        $this->entities['domicilio'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'email';
-        $e->alias = 'emai';
-        $e->pk = ['id'];
-        $e->fk = ['persona'];
-        $e->notNull = ['email', 'id', 'insertado', 'persona', 'verificado'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'persona';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'persona';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'domicilio';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'domicilio';
-        $tree->children['domicilio'] = $child;
-        $e->tree['persona'] = $tree;
-
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'persona';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'persona';
-        $e->relations['persona'] = $relation;
-
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'persona';
-        $e->relations['domicilio'] = $relation;
-
-        $f = new Field();
-        $f->entityName = 'email';
-        $f->name = 'eliminado';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['email']->fields['eliminado'] = Field::getInstance('email', 'eliminado', 'timestamp', 'DateTime');
+        $this->entities['email']->fields['eliminado']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['eliminado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'email';
-        $f->name = 'email';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['email']->fields['email'] = Field::getInstance('email', 'email', 'varchar', 'string');
+        $this->entities['email']->fields['email']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['email']->fields['email']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['email'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'email';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['email']->fields['id'] = Field::getInstance('email', 'id', 'varchar', 'string');
+        $this->entities['email']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['email']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'email';
-        $f->name = 'insertado';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['email']->fields['insertado'] = Field::getInstance('email', 'insertado', 'timestamp', 'DateTime');
+        $this->entities['email']->fields['insertado']->defaultValue = 'current_timestamp()';
+        $this->entities['email']->fields['insertado']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['insertado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'email';
-        $f->name = 'persona';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'per';
-        $f->refEntityName = 'persona';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['email']->fields['persona'] = Field::getInstance('email', 'persona', 'varchar', 'string');
+        $this->entities['email']->fields['persona']->alias = 'per';
+        $this->entities['email']->fields['persona']->refEntityName = 'persona';
+        $this->entities['email']->fields['persona']->refFieldName = 'id';
+        $this->entities['email']->fields['persona']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['email']->fields['persona']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['persona'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'email';
-        $f->name = 'verificado';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['email']->fields['verificado'] = Field::getInstance('email', 'verificado', 'tinyint', 'byte');
+        $this->entities['email']->fields['verificado']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['verificado'] = $f;
+        $this->entities['file'] = EntityMetadata::getInstance('file', 'file');
+        $this->entities['file']->pk = ['id'];
+        $this->entities['file']->notNull = ['content', 'created', 'id', 'name', 'size', 'type'];
 
-        $this->entities['email'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'file';
-        $e->alias = 'file';
-        $e->pk = ['id'];
-        $e->notNull = ['content', 'created', 'id', 'name', 'size', 'type'];
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'archivo';
-        $om->entityName = 'detalle_persona';
-        $e->om['detallePersona_archivo_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'file';
-        $f->name = 'content';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['file']->om = [];
+        $this->entities['file']->om['detallePersona_archivo_'] = EntityRef::getInstance('archivo', 'detalle_persona');
+        $this->entities['file']->fields['content'] = Field::getInstance('file', 'content', 'varchar', 'string');
+        $this->entities['file']->fields['content']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['file']->fields['content']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['content'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'file';
-        $f->name = 'created';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['file']->fields['created'] = Field::getInstance('file', 'created', 'timestamp', 'DateTime');
+        $this->entities['file']->fields['created']->defaultValue = 'current_timestamp()';
+        $this->entities['file']->fields['created']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['created'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'file';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['file']->fields['id'] = Field::getInstance('file', 'id', 'varchar', 'string');
+        $this->entities['file']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['file']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'file';
-        $f->name = 'name';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['file']->fields['name'] = Field::getInstance('file', 'name', 'varchar', 'string');
+        $this->entities['file']->fields['name']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['file']->fields['name']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['name'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'file';
-        $f->name = 'size';
-        $f->dataType = 'int';
-        $f->type = 'uint';
-        $f->checks = [
+        $this->entities['file']->fields['size'] = Field::getInstance('file', 'size', 'int', 'uint');
+        $this->entities['file']->fields['size']->checks = [
             'type' => 'uint',
             'required' => '1',
         ];
-        $e->fields['size'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'file';
-        $f->name = 'type';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['file']->fields['type'] = Field::getInstance('file', 'type', 'varchar', 'string');
+        $this->entities['file']->fields['type']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['file']->fields['type']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['type'] = $f;
+        $this->entities['horario'] = EntityMetadata::getInstance('horario', 'hora');
+        $this->entities['horario']->pk = ['id'];
+        $this->entities['horario']->fk = ['curso', 'dia'];
+        $this->entities['horario']->notNull = ['curso', 'dia', 'hora_fin', 'hora_inicio', 'id'];
 
-        $this->entities['file'] = $e;
+        $this->entities['horario']->tree = [];
+        $this->entities['horario']->tree['curso'] = EntityTree::getInstance('curso', 'curso', 'id');
+        $this->entities['horario']->tree['curso']->children = [];
+        $this->entities['horario']->tree['curso']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'horario';
-        $e->alias = 'hora';
-        $e->pk = ['id'];
-        $e->fk = ['curso', 'dia'];
-        $e->notNull = ['curso', 'dia', 'hora_fin', 'hora_inicio', 'id'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'curso';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'curso';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'asignatura';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'asignatura';
-        $tree->children['asignatura'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'comision';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'comision';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'calendario';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'calendario';
-                $tree->children['calendario'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'comision_siguiente';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'comision';
-                $tree->children['comision_siguiente'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'modalidad';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'modalidad';
-                $tree->children['modalidad'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'planificacion';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'planificacion';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'plan';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'plan';
-                        $tree->children['plan'] = $child;
-                $tree->children['planificacion'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'sede';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'sede';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'centro_educativo';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'centro_educativo';
-                                $tree->children = [];
-                                $child = new \SqlOrganize\Sql\EntityTree();
-                                $child->fieldName = 'domicilio';
-                                $child->refFieldName = 'id';
-                                $child->refEntityName = 'domicilio';
-                                $tree->children['domicilio_cen'] = $child;
-                        $tree->children['centro_educativo'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'domicilio';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'domicilio';
-                        $tree->children['domicilio'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'organizacion';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'sede';
-                        $tree->children['organizacion'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'tipo_sede';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'tipo_sede';
-                        $tree->children['tipo_sede'] = $child;
-                $tree->children['sede'] = $child;
-        $tree->children['comision'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'disposicion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'disposicion';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'asignatura';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'asignatura';
-                $tree->children['asignatura_dis'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'planificacion';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'planificacion';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'plan';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'plan';
-                        $tree->children['plan_pla'] = $child;
-                $tree->children['planificacion_dis'] = $child;
-        $tree->children['disposicion'] = $child;
-        $e->tree['curso'] = $tree;
+        $this->entities['horario']->tree['curso']->children['comision'] = EntityTree::getInstance('comision', 'comision', 'id');
+        $this->entities['horario']->tree['curso']->children['comision']->children = [];
+        $this->entities['horario']->tree['curso']->children['comision']->children['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'dia';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'dia';
-        $e->tree['dia'] = $tree;
+        $this->entities['horario']->tree['curso']->children['comision']->children['comision_siguiente'] = EntityTree::getInstance('comision_siguiente', 'comision', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'curso';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'curso';
-        $e->relations['curso'] = $relation;
+        $this->entities['horario']->tree['curso']->children['comision']->children['modalidad'] = EntityTree::getInstance('modalidad', 'modalidad', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $relation->parentId = 'curso';
-        $e->relations['asignatura'] = $relation;
+        $this->entities['horario']->tree['curso']->children['comision']->children['planificacion'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['horario']->tree['curso']->children['comision']->children['planificacion']->children = [];
+        $this->entities['horario']->tree['curso']->children['comision']->children['planificacion']->children['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $relation->parentId = 'curso';
-        $e->relations['comision'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'calendario';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'calendario';
-        $relation->parentId = 'comision';
-        $e->relations['calendario'] = $relation;
+        $this->entities['horario']->tree['curso']->children['comision']->children['sede'] = EntityTree::getInstance('sede', 'sede', 'id');
+        $this->entities['horario']->tree['curso']->children['comision']->children['sede']->children = [];
+        $this->entities['horario']->tree['curso']->children['comision']->children['sede']->children['centro_educativo'] = EntityTree::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['horario']->tree['curso']->children['comision']->children['sede']->children['centro_educativo']->children = [];
+        $this->entities['horario']->tree['curso']->children['comision']->children['sede']->children['centro_educativo']->children['domicilio_cen'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision_siguiente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $relation->parentId = 'comision';
-        $e->relations['comision_siguiente'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'modalidad';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'modalidad';
-        $relation->parentId = 'comision';
-        $e->relations['modalidad'] = $relation;
+        $this->entities['horario']->tree['curso']->children['comision']->children['sede']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'comision';
-        $e->relations['planificacion'] = $relation;
+        $this->entities['horario']->tree['curso']->children['comision']->children['sede']->children['organizacion'] = EntityTree::getInstance('organizacion', 'sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion';
-        $e->relations['plan'] = $relation;
+        $this->entities['horario']->tree['curso']->children['comision']->children['sede']->children['tipo_sede'] = EntityTree::getInstance('tipo_sede', 'tipo_sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'comision';
-        $e->relations['sede'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'centro_educativo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'centro_educativo';
-        $relation->parentId = 'sede';
-        $e->relations['centro_educativo'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'centro_educativo';
-        $e->relations['domicilio_cen'] = $relation;
+        $this->entities['horario']->tree['curso']->children['disposicion'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
+        $this->entities['horario']->tree['curso']->children['disposicion']->children = [];
+        $this->entities['horario']->tree['curso']->children['disposicion']->children['asignatura_dis'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'sede';
-        $e->relations['domicilio'] = $relation;
+        $this->entities['horario']->tree['curso']->children['disposicion']->children['planificacion_dis'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['horario']->tree['curso']->children['disposicion']->children['planificacion_dis']->children = [];
+        $this->entities['horario']->tree['curso']->children['disposicion']->children['planificacion_dis']->children['plan_pla'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'organizacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'sede';
-        $e->relations['organizacion'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'tipo_sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'tipo_sede';
-        $relation->parentId = 'sede';
-        $e->relations['tipo_sede'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'disposicion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'disposicion';
-        $relation->parentId = 'curso';
-        $e->relations['disposicion'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $relation->parentId = 'disposicion';
-        $e->relations['asignatura_dis'] = $relation;
+        $this->entities['horario']->tree['dia'] = EntityTree::getInstance('dia', 'dia', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'disposicion';
-        $e->relations['planificacion_dis'] = $relation;
+        $this->entities['horario']->relations = [];
+        $this->entities['horario']->relations['curso'] = EntityRelation::getInstance('curso', 'curso', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion_dis';
-        $e->relations['plan_pla'] = $relation;
+        $this->entities['horario']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $this->entities['horario']->relations['asignatura']->parentId = 'curso';
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'dia';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'dia';
-        $e->relations['dia'] = $relation;
+        $this->entities['horario']->relations['comision'] = EntityRelation::getInstance('comision', 'comision', 'id');
+        $this->entities['horario']->relations['comision']->parentId = 'curso';
 
-        $f = new Field();
-        $f->entityName = 'horario';
-        $f->name = 'curso';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'cur';
-        $f->refEntityName = 'curso';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['horario']->relations['calendario'] = EntityRelation::getInstance('calendario', 'calendario', 'id');
+        $this->entities['horario']->relations['calendario']->parentId = 'comision';
+
+        $this->entities['horario']->relations['comision_siguiente'] = EntityRelation::getInstance('comision_siguiente', 'comision', 'id');
+        $this->entities['horario']->relations['comision_siguiente']->parentId = 'comision';
+
+        $this->entities['horario']->relations['modalidad'] = EntityRelation::getInstance('modalidad', 'modalidad', 'id');
+        $this->entities['horario']->relations['modalidad']->parentId = 'comision';
+
+        $this->entities['horario']->relations['planificacion'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['horario']->relations['planificacion']->parentId = 'comision';
+
+        $this->entities['horario']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['horario']->relations['plan']->parentId = 'planificacion';
+
+        $this->entities['horario']->relations['sede'] = EntityRelation::getInstance('sede', 'sede', 'id');
+        $this->entities['horario']->relations['sede']->parentId = 'comision';
+
+        $this->entities['horario']->relations['centro_educativo'] = EntityRelation::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['horario']->relations['centro_educativo']->parentId = 'sede';
+
+        $this->entities['horario']->relations['domicilio_cen'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['horario']->relations['domicilio_cen']->parentId = 'centro_educativo';
+
+        $this->entities['horario']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['horario']->relations['domicilio']->parentId = 'sede';
+
+        $this->entities['horario']->relations['organizacion'] = EntityRelation::getInstance('organizacion', 'sede', 'id');
+        $this->entities['horario']->relations['organizacion']->parentId = 'sede';
+
+        $this->entities['horario']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
+        $this->entities['horario']->relations['tipo_sede']->parentId = 'sede';
+
+        $this->entities['horario']->relations['disposicion'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
+        $this->entities['horario']->relations['disposicion']->parentId = 'curso';
+
+        $this->entities['horario']->relations['asignatura_dis'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $this->entities['horario']->relations['asignatura_dis']->parentId = 'disposicion';
+
+        $this->entities['horario']->relations['planificacion_dis'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['horario']->relations['planificacion_dis']->parentId = 'disposicion';
+
+        $this->entities['horario']->relations['plan_pla'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['horario']->relations['plan_pla']->parentId = 'planificacion_dis';
+
+        $this->entities['horario']->relations['dia'] = EntityRelation::getInstance('dia', 'dia', 'id');
+
+        $this->entities['horario']->fields['curso'] = Field::getInstance('horario', 'curso', 'varchar', 'string');
+        $this->entities['horario']->fields['curso']->alias = 'cur';
+        $this->entities['horario']->fields['curso']->refEntityName = 'curso';
+        $this->entities['horario']->fields['curso']->refFieldName = 'id';
+        $this->entities['horario']->fields['curso']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['horario']->fields['curso']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['curso'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'horario';
-        $f->name = 'dia';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'dia';
-        $f->refEntityName = 'dia';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['horario']->fields['dia'] = Field::getInstance('horario', 'dia', 'varchar', 'string');
+        $this->entities['horario']->fields['dia']->alias = 'dia';
+        $this->entities['horario']->fields['dia']->refEntityName = 'dia';
+        $this->entities['horario']->fields['dia']->refFieldName = 'id';
+        $this->entities['horario']->fields['dia']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['horario']->fields['dia']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['dia'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'horario';
-        $f->name = 'hora_fin';
-        $f->dataType = 'time';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['horario']->fields['hora_fin'] = Field::getInstance('horario', 'hora_fin', 'time', 'DateTime');
+        $this->entities['horario']->fields['hora_fin']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['hora_fin'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'horario';
-        $f->name = 'hora_inicio';
-        $f->dataType = 'time';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['horario']->fields['hora_inicio'] = Field::getInstance('horario', 'hora_inicio', 'time', 'DateTime');
+        $this->entities['horario']->fields['hora_inicio']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['hora_inicio'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'horario';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['horario']->fields['id'] = Field::getInstance('horario', 'id', 'varchar', 'string');
+        $this->entities['horario']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['horario']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
+        $this->entities['modalidad'] = EntityMetadata::getInstance('modalidad', 'moda');
+        $this->entities['modalidad']->pk = ['id'];
+        $this->entities['modalidad']->unique = ['nombre'];
+        $this->entities['modalidad']->notNull = ['id', 'nombre'];
 
-        $this->entities['horario'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'modalidad';
-        $e->alias = 'moda';
-        $e->pk = ['id'];
-        $e->unique = ['nombre'];
-        $e->notNull = ['id', 'nombre'];
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'modalidad';
-        $om->entityName = 'comision';
-        $e->om['comision_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'modalidad';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['modalidad']->om = [];
+        $this->entities['modalidad']->om['comision_'] = EntityRef::getInstance('modalidad', 'comision');
+        $this->entities['modalidad']->fields['id'] = Field::getInstance('modalidad', 'id', 'varchar', 'string');
+        $this->entities['modalidad']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['modalidad']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'modalidad';
-        $f->name = 'nombre';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['modalidad']->fields['nombre'] = Field::getInstance('modalidad', 'nombre', 'varchar', 'string');
+        $this->entities['modalidad']->fields['nombre']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['modalidad']->fields['nombre']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['nombre'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'modalidad';
-        $f->name = 'pfid';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['modalidad']->fields['pfid'] = Field::getInstance('modalidad', 'pfid', 'varchar', 'string');
+        $this->entities['modalidad']->fields['pfid']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['modalidad']->fields['pfid']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['pfid'] = $f;
+        $this->entities['persona'] = EntityMetadata::getInstance('persona', 'pers');
+        $this->entities['persona']->pk = ['id'];
+        $this->entities['persona']->fk = ['domicilio'];
+        $this->entities['persona']->unique = ['cuil', 'email_abc', 'numero_documento'];
+        $this->entities['persona']->notNull = ['alta', 'email_verificado', 'id', 'info_verificada', 'nombres', 'numero_documento', 'telefono_verificado'];
 
-        $this->entities['modalidad'] = $e;
+        $this->entities['persona']->tree = [];
+        $this->entities['persona']->tree['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'persona';
-        $e->alias = 'pers';
-        $e->pk = ['id'];
-        $e->fk = ['domicilio'];
-        $e->unique = ['cuil', 'email_abc', 'numero_documento'];
-        $e->notNull = ['alta', 'email_verificado', 'id', 'info_verificada', 'nombres', 'numero_documento', 'telefono_verificado'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'domicilio';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'domicilio';
-        $e->tree['domicilio'] = $tree;
+        $this->entities['persona']->relations = [];
+        $this->entities['persona']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $e->relations['domicilio'] = $relation;
+        $this->entities['persona']->oo = [];
+        $this->entities['persona']->oo['alumno_']  = EntityRef::getInstance('persona', 'alumno');
 
-        $e->oo = [];
-        $oo = new \SqlOrganize\Model\EntityRef();
-        $oo->fieldName = 'persona';
-        $oo->entityName = 'alumno';
-        $e->oo['alumno_'] = $oo;
-
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'persona';
-        $om->entityName = 'designacion';
-        $e->om['designacion_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'persona';
-        $om->entityName = 'detalle_persona';
-        $e->om['detallePersona_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'persona';
-        $om->entityName = 'email';
-        $e->om['email_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'persona';
-        $om->entityName = 'telefono';
-        $e->om['telefono_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'docente';
-        $om->entityName = 'toma';
-        $e->om['toma_docente_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'reemplazo';
-        $om->entityName = 'toma';
-        $e->om['toma_reemplazo_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'alta';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['persona']->om = [];
+        $this->entities['persona']->om['designacion_'] = EntityRef::getInstance('persona', 'designacion');
+        $this->entities['persona']->om['detallePersona_'] = EntityRef::getInstance('persona', 'detalle_persona');
+        $this->entities['persona']->om['email_'] = EntityRef::getInstance('persona', 'email');
+        $this->entities['persona']->om['telefono_'] = EntityRef::getInstance('persona', 'telefono');
+        $this->entities['persona']->om['toma_docente_'] = EntityRef::getInstance('docente', 'toma');
+        $this->entities['persona']->om['toma_reemplazo_'] = EntityRef::getInstance('reemplazo', 'toma');
+        $this->entities['persona']->fields['alta'] = Field::getInstance('persona', 'alta', 'timestamp', 'DateTime');
+        $this->entities['persona']->fields['alta']->defaultValue = 'current_timestamp()';
+        $this->entities['persona']->fields['alta']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['alta'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'anio_nacimiento';
-        $f->dataType = 'smallint';
-        $f->type = 'ushort';
-        $f->checks = [
+        $this->entities['persona']->fields['anio_nacimiento'] = Field::getInstance('persona', 'anio_nacimiento', 'smallint', 'ushort');
+        $this->entities['persona']->fields['anio_nacimiento']->checks = [
             'type' => 'ushort',
         ];
-        $e->fields['anio_nacimiento'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'apellidos';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['apellidos'] = Field::getInstance('persona', 'apellidos', 'varchar', 'string');
+        $this->entities['persona']->fields['apellidos']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['apellidos']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['apellidos'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'apodo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['apodo'] = Field::getInstance('persona', 'apodo', 'varchar', 'string');
+        $this->entities['persona']->fields['apodo']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['apodo']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['apodo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'codigo_area';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['codigo_area'] = Field::getInstance('persona', 'codigo_area', 'varchar', 'string');
+        $this->entities['persona']->fields['codigo_area']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['codigo_area']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['codigo_area'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'cuil';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['cuil'] = Field::getInstance('persona', 'cuil', 'varchar', 'string');
+        $this->entities['persona']->fields['cuil']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['cuil']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['cuil'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'cuil1';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['persona']->fields['cuil1'] = Field::getInstance('persona', 'cuil1', 'tinyint', 'byte');
+        $this->entities['persona']->fields['cuil1']->checks = [
             'type' => 'byte',
         ];
-        $e->fields['cuil1'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'cuil2';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['persona']->fields['cuil2'] = Field::getInstance('persona', 'cuil2', 'tinyint', 'byte');
+        $this->entities['persona']->fields['cuil2']->checks = [
             'type' => 'byte',
         ];
-        $e->fields['cuil2'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'departamento';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['departamento'] = Field::getInstance('persona', 'departamento', 'varchar', 'string');
+        $this->entities['persona']->fields['departamento']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['departamento']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['departamento'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'descripcion_domicilio';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['descripcion_domicilio'] = Field::getInstance('persona', 'descripcion_domicilio', 'varchar', 'string');
+        $this->entities['persona']->fields['descripcion_domicilio']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['descripcion_domicilio']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['descripcion_domicilio'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'dia_nacimiento';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['persona']->fields['dia_nacimiento'] = Field::getInstance('persona', 'dia_nacimiento', 'tinyint', 'byte');
+        $this->entities['persona']->fields['dia_nacimiento']->checks = [
             'type' => 'byte',
         ];
-        $e->fields['dia_nacimiento'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'domicilio';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'dom';
-        $f->refEntityName = 'domicilio';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['persona']->fields['domicilio'] = Field::getInstance('persona', 'domicilio', 'varchar', 'string');
+        $this->entities['persona']->fields['domicilio']->alias = 'dom';
+        $this->entities['persona']->fields['domicilio']->refEntityName = 'domicilio';
+        $this->entities['persona']->fields['domicilio']->refFieldName = 'id';
+        $this->entities['persona']->fields['domicilio']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['domicilio']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['domicilio'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'email';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['email'] = Field::getInstance('persona', 'email', 'varchar', 'string');
+        $this->entities['persona']->fields['email']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['email']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['email'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'email_abc';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['email_abc'] = Field::getInstance('persona', 'email_abc', 'varchar', 'string');
+        $this->entities['persona']->fields['email_abc']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['email_abc']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['email_abc'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'email_verificado';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['persona']->fields['email_verificado'] = Field::getInstance('persona', 'email_verificado', 'tinyint', 'byte');
+        $this->entities['persona']->fields['email_verificado']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['email_verificado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'fecha_nacimiento';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['persona']->fields['fecha_nacimiento'] = Field::getInstance('persona', 'fecha_nacimiento', 'date', 'DateTime');
+        $this->entities['persona']->fields['fecha_nacimiento']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['fecha_nacimiento'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'genero';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['genero'] = Field::getInstance('persona', 'genero', 'varchar', 'string');
+        $this->entities['persona']->fields['genero']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['genero']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['genero'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['id'] = Field::getInstance('persona', 'id', 'varchar', 'string');
+        $this->entities['persona']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'info_verificada';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['persona']->fields['info_verificada'] = Field::getInstance('persona', 'info_verificada', 'tinyint', 'byte');
+        $this->entities['persona']->fields['info_verificada']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['info_verificada'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'localidad';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['localidad'] = Field::getInstance('persona', 'localidad', 'varchar', 'string');
+        $this->entities['persona']->fields['localidad']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['localidad']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['localidad'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'lugar_nacimiento';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['lugar_nacimiento'] = Field::getInstance('persona', 'lugar_nacimiento', 'varchar', 'string');
+        $this->entities['persona']->fields['lugar_nacimiento']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['lugar_nacimiento']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['lugar_nacimiento'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'mes_nacimiento';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['persona']->fields['mes_nacimiento'] = Field::getInstance('persona', 'mes_nacimiento', 'tinyint', 'byte');
+        $this->entities['persona']->fields['mes_nacimiento']->checks = [
             'type' => 'byte',
         ];
-        $e->fields['mes_nacimiento'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'nacionalidad';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['nacionalidad'] = Field::getInstance('persona', 'nacionalidad', 'varchar', 'string');
+        $this->entities['persona']->fields['nacionalidad']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['nacionalidad']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['nacionalidad'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'nombres';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['nombres'] = Field::getInstance('persona', 'nombres', 'varchar', 'string');
+        $this->entities['persona']->fields['nombres']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['nombres']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['nombres'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'numero_documento';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['numero_documento'] = Field::getInstance('persona', 'numero_documento', 'varchar', 'string');
+        $this->entities['persona']->fields['numero_documento']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['numero_documento']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['numero_documento'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'partido';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['partido'] = Field::getInstance('persona', 'partido', 'varchar', 'string');
+        $this->entities['persona']->fields['partido']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['partido']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['partido'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'sexo';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['persona']->fields['sexo'] = Field::getInstance('persona', 'sexo', 'tinyint', 'byte');
+        $this->entities['persona']->fields['sexo']->checks = [
             'type' => 'byte',
         ];
-        $e->fields['sexo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'telefono';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['persona']->fields['telefono'] = Field::getInstance('persona', 'telefono', 'varchar', 'string');
+        $this->entities['persona']->fields['telefono']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['persona']->fields['telefono']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['telefono'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'persona';
-        $f->name = 'telefono_verificado';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['persona']->fields['telefono_verificado'] = Field::getInstance('persona', 'telefono_verificado', 'tinyint', 'byte');
+        $this->entities['persona']->fields['telefono_verificado']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['telefono_verificado'] = $f;
+        $this->entities['plan'] = EntityMetadata::getInstance('plan', 'plan');
+        $this->entities['plan']->pk = ['id'];
+        $this->entities['plan']->notNull = ['id', 'orientacion'];
 
-        $this->entities['persona'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'plan';
-        $e->alias = 'plan';
-        $e->pk = ['id'];
-        $e->notNull = ['id', 'orientacion'];
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'plan';
-        $om->entityName = 'alumno';
-        $e->om['alumno_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'plan';
-        $om->entityName = 'planificacion';
-        $e->om['planificacion_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'plan';
-        $f->name = 'distribucion_horaria';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['plan']->om = [];
+        $this->entities['plan']->om['alumno_'] = EntityRef::getInstance('plan', 'alumno');
+        $this->entities['plan']->om['planificacion_'] = EntityRef::getInstance('plan', 'planificacion');
+        $this->entities['plan']->fields['distribucion_horaria'] = Field::getInstance('plan', 'distribucion_horaria', 'varchar', 'string');
+        $this->entities['plan']->fields['distribucion_horaria']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['plan']->fields['distribucion_horaria']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['distribucion_horaria'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'plan';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['plan']->fields['id'] = Field::getInstance('plan', 'id', 'varchar', 'string');
+        $this->entities['plan']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['plan']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'plan';
-        $f->name = 'orientacion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['plan']->fields['orientacion'] = Field::getInstance('plan', 'orientacion', 'varchar', 'string');
+        $this->entities['plan']->fields['orientacion']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['plan']->fields['orientacion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['orientacion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'plan';
-        $f->name = 'pfid';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['plan']->fields['pfid'] = Field::getInstance('plan', 'pfid', 'varchar', 'string');
+        $this->entities['plan']->fields['pfid']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['plan']->fields['pfid']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['pfid'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'plan';
-        $f->name = 'resolucion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['plan']->fields['resolucion'] = Field::getInstance('plan', 'resolucion', 'varchar', 'string');
+        $this->entities['plan']->fields['resolucion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['plan']->fields['resolucion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['resolucion'] = $f;
+        $this->entities['planificacion'] = EntityMetadata::getInstance('planificacion', 'pla1');
+        $this->entities['planificacion']->pk = ['id'];
+        $this->entities['planificacion']->fk = ['plan'];
+        $this->entities['planificacion']->notNull = ['anio', 'id', 'plan', 'semestre'];
 
-        $this->entities['plan'] = $e;
+        $this->entities['planificacion']->tree = [];
+        $this->entities['planificacion']->tree['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'planificacion';
-        $e->alias = 'pla1';
-        $e->pk = ['id'];
-        $e->fk = ['plan'];
-        $e->notNull = ['anio', 'id', 'plan', 'semestre'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'plan';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'plan';
-        $e->tree['plan'] = $tree;
+        $this->entities['planificacion']->relations = [];
+        $this->entities['planificacion']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $e->relations['plan'] = $relation;
-
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'planificacion';
-        $om->entityName = 'comision';
-        $e->om['comision_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'planificacion';
-        $om->entityName = 'disposicion';
-        $e->om['disposicion_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'planificacion';
-        $f->name = 'anio';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['planificacion']->om = [];
+        $this->entities['planificacion']->om['comision_'] = EntityRef::getInstance('planificacion', 'comision');
+        $this->entities['planificacion']->om['disposicion_'] = EntityRef::getInstance('planificacion', 'disposicion');
+        $this->entities['planificacion']->fields['anio'] = Field::getInstance('planificacion', 'anio', 'varchar', 'string');
+        $this->entities['planificacion']->fields['anio']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['planificacion']->fields['anio']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['anio'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'planificacion';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['planificacion']->fields['id'] = Field::getInstance('planificacion', 'id', 'varchar', 'string');
+        $this->entities['planificacion']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['planificacion']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'planificacion';
-        $f->name = 'pfid';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['planificacion']->fields['pfid'] = Field::getInstance('planificacion', 'pfid', 'varchar', 'string');
+        $this->entities['planificacion']->fields['pfid']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['planificacion']->fields['pfid']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['pfid'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'planificacion';
-        $f->name = 'plan';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'pla';
-        $f->refEntityName = 'plan';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['planificacion']->fields['plan'] = Field::getInstance('planificacion', 'plan', 'varchar', 'string');
+        $this->entities['planificacion']->fields['plan']->alias = 'pla';
+        $this->entities['planificacion']->fields['plan']->refEntityName = 'plan';
+        $this->entities['planificacion']->fields['plan']->refFieldName = 'id';
+        $this->entities['planificacion']->fields['plan']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['planificacion']->fields['plan']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['plan'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'planificacion';
-        $f->name = 'semestre';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['planificacion']->fields['semestre'] = Field::getInstance('planificacion', 'semestre', 'varchar', 'string');
+        $this->entities['planificacion']->fields['semestre']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['planificacion']->fields['semestre']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['semestre'] = $f;
+        $this->entities['planilla_docente'] = EntityMetadata::getInstance('planilla_docente', 'pla2');
+        $this->entities['planilla_docente']->pk = ['id'];
+        $this->entities['planilla_docente']->notNull = ['id', 'insertado', 'numero'];
 
-        $this->entities['planificacion'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'planilla_docente';
-        $e->alias = 'pla2';
-        $e->pk = ['id'];
-        $e->notNull = ['id', 'insertado', 'numero'];
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'planilla_docente';
-        $om->entityName = 'asignacion_planilla_docente';
-        $e->om['asignacionPlanillaDocente_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'planilla_docente';
-        $om->entityName = 'contralor';
-        $e->om['contralor_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'planilla_docente';
-        $om->entityName = 'toma';
-        $e->om['toma_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'planilla_docente';
-        $f->name = 'fecha_consejo';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['planilla_docente']->om = [];
+        $this->entities['planilla_docente']->om['asignacionPlanillaDocente_'] = EntityRef::getInstance('planilla_docente', 'asignacion_planilla_docente');
+        $this->entities['planilla_docente']->om['contralor_'] = EntityRef::getInstance('planilla_docente', 'contralor');
+        $this->entities['planilla_docente']->om['toma_'] = EntityRef::getInstance('planilla_docente', 'toma');
+        $this->entities['planilla_docente']->fields['fecha_consejo'] = Field::getInstance('planilla_docente', 'fecha_consejo', 'date', 'DateTime');
+        $this->entities['planilla_docente']->fields['fecha_consejo']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['fecha_consejo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'planilla_docente';
-        $f->name = 'fecha_contralor';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['planilla_docente']->fields['fecha_contralor'] = Field::getInstance('planilla_docente', 'fecha_contralor', 'date', 'DateTime');
+        $this->entities['planilla_docente']->fields['fecha_contralor']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['fecha_contralor'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'planilla_docente';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['planilla_docente']->fields['id'] = Field::getInstance('planilla_docente', 'id', 'varchar', 'string');
+        $this->entities['planilla_docente']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['planilla_docente']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'planilla_docente';
-        $f->name = 'insertado';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['planilla_docente']->fields['insertado'] = Field::getInstance('planilla_docente', 'insertado', 'timestamp', 'DateTime');
+        $this->entities['planilla_docente']->fields['insertado']->defaultValue = 'current_timestamp()';
+        $this->entities['planilla_docente']->fields['insertado']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['insertado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'planilla_docente';
-        $f->name = 'numero';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['planilla_docente']->fields['numero'] = Field::getInstance('planilla_docente', 'numero', 'varchar', 'string');
+        $this->entities['planilla_docente']->fields['numero']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['planilla_docente']->fields['numero']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['numero'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'planilla_docente';
-        $f->name = 'observaciones';
-        $f->dataType = 'text';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['planilla_docente']->fields['observaciones'] = Field::getInstance('planilla_docente', 'observaciones', 'text', 'string');
+        $this->entities['planilla_docente']->fields['observaciones']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['planilla_docente']->fields['observaciones']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['observaciones'] = $f;
+        $this->entities['resolucion'] = EntityMetadata::getInstance('resolucion', 'reso');
+        $this->entities['resolucion']->pk = ['id'];
+        $this->entities['resolucion']->notNull = ['id', 'numero'];
 
-        $this->entities['planilla_docente'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'resolucion';
-        $e->alias = 'reso';
-        $e->pk = ['id'];
-        $e->notNull = ['id', 'numero'];
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'resolucion_inscripcion';
-        $om->entityName = 'alumno';
-        $e->om['alumno_resolucion_inscripcion_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'resolucion';
-        $f->name = 'anio';
-        $f->dataType = 'year';
-        $f->type = 'short';
-        $f->checks = [
+        $this->entities['resolucion']->om = [];
+        $this->entities['resolucion']->om['alumno_resolucion_inscripcion_'] = EntityRef::getInstance('resolucion_inscripcion', 'alumno');
+        $this->entities['resolucion']->fields['anio'] = Field::getInstance('resolucion', 'anio', 'year', 'short');
+        $this->entities['resolucion']->fields['anio']->checks = [
             'type' => 'short',
         ];
-        $e->fields['anio'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'resolucion';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['resolucion']->fields['id'] = Field::getInstance('resolucion', 'id', 'varchar', 'string');
+        $this->entities['resolucion']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['resolucion']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'resolucion';
-        $f->name = 'numero';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['resolucion']->fields['numero'] = Field::getInstance('resolucion', 'numero', 'varchar', 'string');
+        $this->entities['resolucion']->fields['numero']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['resolucion']->fields['numero']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['numero'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'resolucion';
-        $f->name = 'tipo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['resolucion']->fields['tipo'] = Field::getInstance('resolucion', 'tipo', 'varchar', 'string');
+        $this->entities['resolucion']->fields['tipo']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['resolucion']->fields['tipo']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['tipo'] = $f;
+        $this->entities['sede'] = EntityMetadata::getInstance('sede', 'sede');
+        $this->entities['sede']->pk = ['id'];
+        $this->entities['sede']->fk = ['centro_educativo', 'domicilio', 'organizacion', 'tipo_sede'];
+        $this->entities['sede']->notNull = ['alta', 'id', 'nombre', 'numero'];
 
-        $this->entities['resolucion'] = $e;
+        $this->entities['sede']->tree = [];
+        $this->entities['sede']->tree['centro_educativo'] = EntityTree::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['sede']->tree['centro_educativo']->children = [];
+        $this->entities['sede']->tree['centro_educativo']->children['domicilio_cen'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'sede';
-        $e->alias = 'sede';
-        $e->pk = ['id'];
-        $e->fk = ['centro_educativo', 'domicilio', 'organizacion', 'tipo_sede'];
-        $e->unique = ['nombre'];
-        $e->notNull = ['alta', 'id', 'nombre', 'numero'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'centro_educativo';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'centro_educativo';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'domicilio';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'domicilio';
-        $tree->children['domicilio_cen'] = $child;
-        $e->tree['centro_educativo'] = $tree;
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'domicilio';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'domicilio';
-        $e->tree['domicilio'] = $tree;
+        $this->entities['sede']->tree['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'organizacion';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'sede';
-        $e->tree['organizacion'] = $tree;
+        $this->entities['sede']->tree['organizacion'] = EntityTree::getInstance('organizacion', 'sede', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'tipo_sede';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'tipo_sede';
-        $e->tree['tipo_sede'] = $tree;
+        $this->entities['sede']->tree['tipo_sede'] = EntityTree::getInstance('tipo_sede', 'tipo_sede', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'centro_educativo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'centro_educativo';
-        $e->relations['centro_educativo'] = $relation;
+        $this->entities['sede']->relations = [];
+        $this->entities['sede']->relations['centro_educativo'] = EntityRelation::getInstance('centro_educativo', 'centro_educativo', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'centro_educativo';
-        $e->relations['domicilio_cen'] = $relation;
+        $this->entities['sede']->relations['domicilio_cen'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['sede']->relations['domicilio_cen']->parentId = 'centro_educativo';
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $e->relations['domicilio'] = $relation;
+        $this->entities['sede']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'organizacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $e->relations['organizacion'] = $relation;
+        $this->entities['sede']->relations['organizacion'] = EntityRelation::getInstance('organizacion', 'sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'tipo_sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'tipo_sede';
-        $e->relations['tipo_sede'] = $relation;
+        $this->entities['sede']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
 
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'sede';
-        $om->entityName = 'comision';
-        $e->om['comision_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'sede';
-        $om->entityName = 'designacion';
-        $e->om['designacion_'] = $om;
-
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'organizacion';
-        $om->entityName = 'sede';
-        $e->om['sede_organizacion_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'alta';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['sede']->om = [];
+        $this->entities['sede']->om['comision_'] = EntityRef::getInstance('sede', 'comision');
+        $this->entities['sede']->om['designacion_'] = EntityRef::getInstance('sede', 'designacion');
+        $this->entities['sede']->om['sede_organizacion_'] = EntityRef::getInstance('organizacion', 'sede');
+        $this->entities['sede']->fields['alta'] = Field::getInstance('sede', 'alta', 'timestamp', 'DateTime');
+        $this->entities['sede']->fields['alta']->defaultValue = 'current_timestamp()';
+        $this->entities['sede']->fields['alta']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['alta'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'baja';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['sede']->fields['baja'] = Field::getInstance('sede', 'baja', 'timestamp', 'DateTime');
+        $this->entities['sede']->fields['baja']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['baja'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'centro_educativo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'cen';
-        $f->refEntityName = 'centro_educativo';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['sede']->fields['centro_educativo'] = Field::getInstance('sede', 'centro_educativo', 'varchar', 'string');
+        $this->entities['sede']->fields['centro_educativo']->alias = 'cen';
+        $this->entities['sede']->fields['centro_educativo']->refEntityName = 'centro_educativo';
+        $this->entities['sede']->fields['centro_educativo']->refFieldName = 'id';
+        $this->entities['sede']->fields['centro_educativo']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['sede']->fields['centro_educativo']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['centro_educativo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'domicilio';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'dom';
-        $f->refEntityName = 'domicilio';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['sede']->fields['domicilio'] = Field::getInstance('sede', 'domicilio', 'varchar', 'string');
+        $this->entities['sede']->fields['domicilio']->alias = 'dom';
+        $this->entities['sede']->fields['domicilio']->refEntityName = 'domicilio';
+        $this->entities['sede']->fields['domicilio']->refFieldName = 'id';
+        $this->entities['sede']->fields['domicilio']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['sede']->fields['domicilio']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['domicilio'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'fecha_traspaso';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['sede']->fields['fecha_traspaso'] = Field::getInstance('sede', 'fecha_traspaso', 'date', 'DateTime');
+        $this->entities['sede']->fields['fecha_traspaso']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['fecha_traspaso'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['sede']->fields['id'] = Field::getInstance('sede', 'id', 'varchar', 'string');
+        $this->entities['sede']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['sede']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'nombre';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['sede']->fields['nombre'] = Field::getInstance('sede', 'nombre', 'varchar', 'string');
+        $this->entities['sede']->fields['nombre']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['sede']->fields['nombre']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['nombre'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'numero';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['sede']->fields['numero'] = Field::getInstance('sede', 'numero', 'varchar', 'string');
+        $this->entities['sede']->fields['numero']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['sede']->fields['numero']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['numero'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'observaciones';
-        $f->dataType = 'text';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['sede']->fields['observaciones'] = Field::getInstance('sede', 'observaciones', 'text', 'string');
+        $this->entities['sede']->fields['observaciones']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['sede']->fields['observaciones']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['observaciones'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'organizacion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'org';
-        $f->refEntityName = 'sede';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['sede']->fields['organizacion'] = Field::getInstance('sede', 'organizacion', 'varchar', 'string');
+        $this->entities['sede']->fields['organizacion']->alias = 'sed';
+        $this->entities['sede']->fields['organizacion']->refEntityName = 'sede';
+        $this->entities['sede']->fields['organizacion']->refFieldName = 'id';
+        $this->entities['sede']->fields['organizacion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['sede']->fields['organizacion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['organizacion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'pfid';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['sede']->fields['pfid'] = Field::getInstance('sede', 'pfid', 'varchar', 'string');
+        $this->entities['sede']->fields['pfid']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['sede']->fields['pfid']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['pfid'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'pfid_organizacion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['sede']->fields['pfid_organizacion'] = Field::getInstance('sede', 'pfid_organizacion', 'varchar', 'string');
+        $this->entities['sede']->fields['pfid_organizacion']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['sede']->fields['pfid_organizacion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['pfid_organizacion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'sede';
-        $f->name = 'tipo_sede';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'tip';
-        $f->refEntityName = 'tipo_sede';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['sede']->fields['tipo_sede'] = Field::getInstance('sede', 'tipo_sede', 'varchar', 'string');
+        $this->entities['sede']->fields['tipo_sede']->alias = 'tip';
+        $this->entities['sede']->fields['tipo_sede']->refEntityName = 'tipo_sede';
+        $this->entities['sede']->fields['tipo_sede']->refFieldName = 'id';
+        $this->entities['sede']->fields['tipo_sede']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['sede']->fields['tipo_sede']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['tipo_sede'] = $f;
+        $this->entities['telefono'] = EntityMetadata::getInstance('telefono', 'tele');
+        $this->entities['telefono']->pk = ['id'];
+        $this->entities['telefono']->fk = ['persona'];
+        $this->entities['telefono']->notNull = ['id', 'insertado', 'numero', 'persona'];
 
-        $this->entities['sede'] = $e;
+        $this->entities['telefono']->tree = [];
+        $this->entities['telefono']->tree['persona'] = EntityTree::getInstance('persona', 'persona', 'id');
+        $this->entities['telefono']->tree['persona']->children = [];
+        $this->entities['telefono']->tree['persona']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'telefono';
-        $e->alias = 'tele';
-        $e->pk = ['id'];
-        $e->fk = ['persona'];
-        $e->notNull = ['id', 'insertado', 'numero', 'persona'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'persona';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'persona';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'domicilio';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'domicilio';
-        $tree->children['domicilio'] = $child;
-        $e->tree['persona'] = $tree;
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'persona';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'persona';
-        $e->relations['persona'] = $relation;
+        $this->entities['telefono']->relations = [];
+        $this->entities['telefono']->relations['persona'] = EntityRelation::getInstance('persona', 'persona', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'persona';
-        $e->relations['domicilio'] = $relation;
+        $this->entities['telefono']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['telefono']->relations['domicilio']->parentId = 'persona';
 
-        $f = new Field();
-        $f->entityName = 'telefono';
-        $f->name = 'eliminado';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['telefono']->fields['eliminado'] = Field::getInstance('telefono', 'eliminado', 'timestamp', 'DateTime');
+        $this->entities['telefono']->fields['eliminado']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['eliminado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'telefono';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['telefono']->fields['id'] = Field::getInstance('telefono', 'id', 'varchar', 'string');
+        $this->entities['telefono']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['telefono']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'telefono';
-        $f->name = 'insertado';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['telefono']->fields['insertado'] = Field::getInstance('telefono', 'insertado', 'timestamp', 'DateTime');
+        $this->entities['telefono']->fields['insertado']->defaultValue = 'current_timestamp()';
+        $this->entities['telefono']->fields['insertado']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['insertado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'telefono';
-        $f->name = 'numero';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['telefono']->fields['numero'] = Field::getInstance('telefono', 'numero', 'varchar', 'string');
+        $this->entities['telefono']->fields['numero']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['telefono']->fields['numero']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['numero'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'telefono';
-        $f->name = 'persona';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'per';
-        $f->refEntityName = 'persona';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['telefono']->fields['persona'] = Field::getInstance('telefono', 'persona', 'varchar', 'string');
+        $this->entities['telefono']->fields['persona']->alias = 'per';
+        $this->entities['telefono']->fields['persona']->refEntityName = 'persona';
+        $this->entities['telefono']->fields['persona']->refFieldName = 'id';
+        $this->entities['telefono']->fields['persona']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['telefono']->fields['persona']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['persona'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'telefono';
-        $f->name = 'prefijo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['telefono']->fields['prefijo'] = Field::getInstance('telefono', 'prefijo', 'varchar', 'string');
+        $this->entities['telefono']->fields['prefijo']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['telefono']->fields['prefijo']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['prefijo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'telefono';
-        $f->name = 'tipo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['telefono']->fields['tipo'] = Field::getInstance('telefono', 'tipo', 'varchar', 'string');
+        $this->entities['telefono']->fields['tipo']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['telefono']->fields['tipo']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['tipo'] = $f;
+        $this->entities['tipo_sede'] = EntityMetadata::getInstance('tipo_sede', 'tipo');
+        $this->entities['tipo_sede']->pk = ['id'];
+        $this->entities['tipo_sede']->unique = ['descripcion'];
+        $this->entities['tipo_sede']->notNull = ['descripcion', 'id'];
 
-        $this->entities['telefono'] = $e;
-
-        $e = new EntityMetadata();
-        $e->name = 'tipo_sede';
-        $e->alias = 'tipo';
-        $e->pk = ['id'];
-        $e->unique = ['descripcion'];
-        $e->notNull = ['descripcion', 'id'];
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'tipo_sede';
-        $om->entityName = 'sede';
-        $e->om['sede_'] = $om;
-
-        $f = new Field();
-        $f->entityName = 'tipo_sede';
-        $f->name = 'descripcion';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['tipo_sede']->om = [];
+        $this->entities['tipo_sede']->om['sede_'] = EntityRef::getInstance('tipo_sede', 'sede');
+        $this->entities['tipo_sede']->fields['descripcion'] = Field::getInstance('tipo_sede', 'descripcion', 'varchar', 'string');
+        $this->entities['tipo_sede']->fields['descripcion']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['tipo_sede']->fields['descripcion']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['descripcion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'tipo_sede';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['tipo_sede']->fields['id'] = Field::getInstance('tipo_sede', 'id', 'varchar', 'string');
+        $this->entities['tipo_sede']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['tipo_sede']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
+        $this->entities['toma'] = EntityMetadata::getInstance('toma', 'toma');
+        $this->entities['toma']->pk = ['id'];
+        $this->entities['toma']->fk = ['curso', 'docente', 'planilla_docente', 'reemplazo'];
+        $this->entities['toma']->notNull = ['alta', 'asistencia', 'calificacion', 'confirmada', 'curso', 'id', 'sin_planillas', 'temas_tratados', 'tipo_movimiento'];
 
-        $this->entities['tipo_sede'] = $e;
+        $this->entities['toma']->tree = [];
+        $this->entities['toma']->tree['curso'] = EntityTree::getInstance('curso', 'curso', 'id');
+        $this->entities['toma']->tree['curso']->children = [];
+        $this->entities['toma']->tree['curso']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
-        $e = new EntityMetadata();
-        $e->name = 'toma';
-        $e->alias = 'toma';
-        $e->pk = ['id'];
-        $e->fk = ['curso', 'docente', 'planilla_docente', 'reemplazo'];
-        $e->notNull = ['alta', 'asistencia', 'calificacion', 'confirmada', 'curso', 'id', 'sin_planillas', 'temas_tratados', 'tipo_movimiento'];
-        $e->tree = [];
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'curso';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'curso';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'asignatura';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'asignatura';
-        $tree->children['asignatura'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'comision';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'comision';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'calendario';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'calendario';
-                $tree->children['calendario'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'comision_siguiente';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'comision';
-                $tree->children['comision_siguiente'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'modalidad';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'modalidad';
-                $tree->children['modalidad'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'planificacion';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'planificacion';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'plan';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'plan';
-                        $tree->children['plan'] = $child;
-                $tree->children['planificacion'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'sede';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'sede';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'centro_educativo';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'centro_educativo';
-                                $tree->children = [];
-                                $child = new \SqlOrganize\Sql\EntityTree();
-                                $child->fieldName = 'domicilio';
-                                $child->refFieldName = 'id';
-                                $child->refEntityName = 'domicilio';
-                                $tree->children['domicilio_cen'] = $child;
-                        $tree->children['centro_educativo'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'domicilio';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'domicilio';
-                        $tree->children['domicilio'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'organizacion';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'sede';
-                        $tree->children['organizacion'] = $child;
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'tipo_sede';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'tipo_sede';
-                        $tree->children['tipo_sede'] = $child;
-                $tree->children['sede'] = $child;
-        $tree->children['comision'] = $child;
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'disposicion';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'disposicion';
-                $tree->children = [];
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'asignatura';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'asignatura';
-                $tree->children['asignatura_dis'] = $child;
-                $child = new \SqlOrganize\Sql\EntityTree();
-                $child->fieldName = 'planificacion';
-                $child->refFieldName = 'id';
-                $child->refEntityName = 'planificacion';
-                        $tree->children = [];
-                        $child = new \SqlOrganize\Sql\EntityTree();
-                        $child->fieldName = 'plan';
-                        $child->refFieldName = 'id';
-                        $child->refEntityName = 'plan';
-                        $tree->children['plan_pla'] = $child;
-                $tree->children['planificacion_dis'] = $child;
-        $tree->children['disposicion'] = $child;
-        $e->tree['curso'] = $tree;
+        $this->entities['toma']->tree['curso']->children['comision'] = EntityTree::getInstance('comision', 'comision', 'id');
+        $this->entities['toma']->tree['curso']->children['comision']->children = [];
+        $this->entities['toma']->tree['curso']->children['comision']->children['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'docente';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'persona';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'domicilio';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'domicilio';
-        $tree->children['domicilio_doc'] = $child;
-        $e->tree['docente'] = $tree;
+        $this->entities['toma']->tree['curso']->children['comision']->children['comision_siguiente'] = EntityTree::getInstance('comision_siguiente', 'comision', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'planilla_docente';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'planilla_docente';
-        $e->tree['planilla_docente'] = $tree;
+        $this->entities['toma']->tree['curso']->children['comision']->children['modalidad'] = EntityTree::getInstance('modalidad', 'modalidad', 'id');
 
-        $tree = new \SqlOrganize\Sql\EntityTree();
-        $tree->fieldName = 'reemplazo';
-        $tree->refFieldName = 'id';
-        $tree->refEntityName = 'persona';
-        $tree->children = [];
-        $child = new \SqlOrganize\Sql\EntityTree();
-        $child->fieldName = 'domicilio';
-        $child->refFieldName = 'id';
-        $child->refEntityName = 'domicilio';
-        $tree->children['domicilio_ree'] = $child;
-        $e->tree['reemplazo'] = $tree;
+        $this->entities['toma']->tree['curso']->children['comision']->children['planificacion'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['toma']->tree['curso']->children['comision']->children['planificacion']->children = [];
+        $this->entities['toma']->tree['curso']->children['comision']->children['planificacion']->children['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $e->relations = [];
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'curso';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'curso';
-        $e->relations['curso'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $relation->parentId = 'curso';
-        $e->relations['asignatura'] = $relation;
+        $this->entities['toma']->tree['curso']->children['comision']->children['sede'] = EntityTree::getInstance('sede', 'sede', 'id');
+        $this->entities['toma']->tree['curso']->children['comision']->children['sede']->children = [];
+        $this->entities['toma']->tree['curso']->children['comision']->children['sede']->children['centro_educativo'] = EntityTree::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['toma']->tree['curso']->children['comision']->children['sede']->children['centro_educativo']->children = [];
+        $this->entities['toma']->tree['curso']->children['comision']->children['sede']->children['centro_educativo']->children['domicilio_cen'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $relation->parentId = 'curso';
-        $e->relations['comision'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'calendario';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'calendario';
-        $relation->parentId = 'comision';
-        $e->relations['calendario'] = $relation;
+        $this->entities['toma']->tree['curso']->children['comision']->children['sede']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'comision_siguiente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'comision';
-        $relation->parentId = 'comision';
-        $e->relations['comision_siguiente'] = $relation;
+        $this->entities['toma']->tree['curso']->children['comision']->children['sede']->children['organizacion'] = EntityTree::getInstance('organizacion', 'sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'modalidad';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'modalidad';
-        $relation->parentId = 'comision';
-        $e->relations['modalidad'] = $relation;
+        $this->entities['toma']->tree['curso']->children['comision']->children['sede']->children['tipo_sede'] = EntityTree::getInstance('tipo_sede', 'tipo_sede', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'comision';
-        $e->relations['planificacion'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion';
-        $e->relations['plan'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'comision';
-        $e->relations['sede'] = $relation;
+        $this->entities['toma']->tree['curso']->children['disposicion'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
+        $this->entities['toma']->tree['curso']->children['disposicion']->children = [];
+        $this->entities['toma']->tree['curso']->children['disposicion']->children['asignatura_dis'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'centro_educativo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'centro_educativo';
-        $relation->parentId = 'sede';
-        $e->relations['centro_educativo'] = $relation;
+        $this->entities['toma']->tree['curso']->children['disposicion']->children['planificacion_dis'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['toma']->tree['curso']->children['disposicion']->children['planificacion_dis']->children = [];
+        $this->entities['toma']->tree['curso']->children['disposicion']->children['planificacion_dis']->children['plan_pla'] = EntityTree::getInstance('plan', 'plan', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'centro_educativo';
-        $e->relations['domicilio_cen'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'sede';
-        $e->relations['domicilio'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'organizacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'sede';
-        $relation->parentId = 'sede';
-        $e->relations['organizacion'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'tipo_sede';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'tipo_sede';
-        $relation->parentId = 'sede';
-        $e->relations['tipo_sede'] = $relation;
+        $this->entities['toma']->tree['docente'] = EntityTree::getInstance('docente', 'persona', 'id');
+        $this->entities['toma']->tree['docente']->children = [];
+        $this->entities['toma']->tree['docente']->children['domicilio_doc'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'disposicion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'disposicion';
-        $relation->parentId = 'curso';
-        $e->relations['disposicion'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'asignatura';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'asignatura';
-        $relation->parentId = 'disposicion';
-        $e->relations['asignatura_dis'] = $relation;
+        $this->entities['toma']->tree['planilla_docente'] = EntityTree::getInstance('planilla_docente', 'planilla_docente', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planificacion';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planificacion';
-        $relation->parentId = 'disposicion';
-        $e->relations['planificacion_dis'] = $relation;
+        $this->entities['toma']->tree['reemplazo'] = EntityTree::getInstance('reemplazo', 'persona', 'id');
+        $this->entities['toma']->tree['reemplazo']->children = [];
+        $this->entities['toma']->tree['reemplazo']->children['domicilio_ree'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'plan';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'plan';
-        $relation->parentId = 'planificacion_dis';
-        $e->relations['plan_pla'] = $relation;
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'docente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'persona';
-        $e->relations['docente'] = $relation;
+        $this->entities['toma']->relations = [];
+        $this->entities['toma']->relations['curso'] = EntityRelation::getInstance('curso', 'curso', 'id');
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'docente';
-        $e->relations['domicilio_doc'] = $relation;
+        $this->entities['toma']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $this->entities['toma']->relations['asignatura']->parentId = 'curso';
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'planilla_docente';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'planilla_docente';
-        $e->relations['planilla_docente'] = $relation;
+        $this->entities['toma']->relations['comision'] = EntityRelation::getInstance('comision', 'comision', 'id');
+        $this->entities['toma']->relations['comision']->parentId = 'curso';
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'reemplazo';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'persona';
-        $e->relations['reemplazo'] = $relation;
+        $this->entities['toma']->relations['calendario'] = EntityRelation::getInstance('calendario', 'calendario', 'id');
+        $this->entities['toma']->relations['calendario']->parentId = 'comision';
 
-        $relation = new \SqlOrganize\Sql\EntityRelation();
-        $relation->fieldName = 'domicilio';
-        $relation->refFieldName = 'id';
-        $relation->refEntityName = 'domicilio';
-        $relation->parentId = 'reemplazo';
-        $e->relations['domicilio_ree'] = $relation;
+        $this->entities['toma']->relations['comision_siguiente'] = EntityRelation::getInstance('comision_siguiente', 'comision', 'id');
+        $this->entities['toma']->relations['comision_siguiente']->parentId = 'comision';
 
-        $e->om = [];
-        $om = new \SqlOrganize\Model\EntityRef();
-        $om->fieldName = 'toma';
-        $om->entityName = 'asignacion_planilla_docente';
-        $e->om['asignacionPlanillaDocente_'] = $om;
+        $this->entities['toma']->relations['modalidad'] = EntityRelation::getInstance('modalidad', 'modalidad', 'id');
+        $this->entities['toma']->relations['modalidad']->parentId = 'comision';
 
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'alta';
-        $f->dataType = 'timestamp';
-        $f->type = 'DateTime';
-        $f->defaultValue = 'current_timestamp()';
-        $f->checks = [
+        $this->entities['toma']->relations['planificacion'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['toma']->relations['planificacion']->parentId = 'comision';
+
+        $this->entities['toma']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['toma']->relations['plan']->parentId = 'planificacion';
+
+        $this->entities['toma']->relations['sede'] = EntityRelation::getInstance('sede', 'sede', 'id');
+        $this->entities['toma']->relations['sede']->parentId = 'comision';
+
+        $this->entities['toma']->relations['centro_educativo'] = EntityRelation::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $this->entities['toma']->relations['centro_educativo']->parentId = 'sede';
+
+        $this->entities['toma']->relations['domicilio_cen'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['toma']->relations['domicilio_cen']->parentId = 'centro_educativo';
+
+        $this->entities['toma']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['toma']->relations['domicilio']->parentId = 'sede';
+
+        $this->entities['toma']->relations['organizacion'] = EntityRelation::getInstance('organizacion', 'sede', 'id');
+        $this->entities['toma']->relations['organizacion']->parentId = 'sede';
+
+        $this->entities['toma']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
+        $this->entities['toma']->relations['tipo_sede']->parentId = 'sede';
+
+        $this->entities['toma']->relations['disposicion'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
+        $this->entities['toma']->relations['disposicion']->parentId = 'curso';
+
+        $this->entities['toma']->relations['asignatura_dis'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $this->entities['toma']->relations['asignatura_dis']->parentId = 'disposicion';
+
+        $this->entities['toma']->relations['planificacion_dis'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $this->entities['toma']->relations['planificacion_dis']->parentId = 'disposicion';
+
+        $this->entities['toma']->relations['plan_pla'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $this->entities['toma']->relations['plan_pla']->parentId = 'planificacion_dis';
+
+        $this->entities['toma']->relations['docente'] = EntityRelation::getInstance('docente', 'persona', 'id');
+
+        $this->entities['toma']->relations['domicilio_doc'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['toma']->relations['domicilio_doc']->parentId = 'docente';
+
+        $this->entities['toma']->relations['planilla_docente'] = EntityRelation::getInstance('planilla_docente', 'planilla_docente', 'id');
+
+        $this->entities['toma']->relations['reemplazo'] = EntityRelation::getInstance('reemplazo', 'persona', 'id');
+
+        $this->entities['toma']->relations['domicilio_ree'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $this->entities['toma']->relations['domicilio_ree']->parentId = 'reemplazo';
+
+        $this->entities['toma']->om = [];
+        $this->entities['toma']->om['asignacionPlanillaDocente_'] = EntityRef::getInstance('toma', 'asignacion_planilla_docente');
+        $this->entities['toma']->fields['alta'] = Field::getInstance('toma', 'alta', 'timestamp', 'DateTime');
+        $this->entities['toma']->fields['alta']->defaultValue = 'current_timestamp()';
+        $this->entities['toma']->fields['alta']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $e->fields['alta'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'archivo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
-            'type' => 'string',
-        ];
-        $f->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-            'nullIfEmpty' => true,
-        ];
-        $e->fields['archivo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'asistencia';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['toma']->fields['asistencia'] = Field::getInstance('toma', 'asistencia', 'tinyint', 'byte');
+        $this->entities['toma']->fields['asistencia']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['asistencia'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'calificacion';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['toma']->fields['calificacion'] = Field::getInstance('toma', 'calificacion', 'tinyint', 'byte');
+        $this->entities['toma']->fields['calificacion']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['calificacion'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'comentario';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['toma']->fields['comentario'] = Field::getInstance('toma', 'comentario', 'varchar', 'string');
+        $this->entities['toma']->fields['comentario']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['toma']->fields['comentario']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['comentario'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'confirmada';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['toma']->fields['confirmada'] = Field::getInstance('toma', 'confirmada', 'tinyint', 'byte');
+        $this->entities['toma']->fields['confirmada']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['confirmada'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'curso';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'cur';
-        $f->refEntityName = 'curso';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['toma']->fields['curso'] = Field::getInstance('toma', 'curso', 'varchar', 'string');
+        $this->entities['toma']->fields['curso']->alias = 'cur';
+        $this->entities['toma']->fields['curso']->refEntityName = 'curso';
+        $this->entities['toma']->fields['curso']->refFieldName = 'id';
+        $this->entities['toma']->fields['curso']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['toma']->fields['curso']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['curso'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'docente';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'doc';
-        $f->refEntityName = 'persona';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['toma']->fields['docente'] = Field::getInstance('toma', 'docente', 'varchar', 'string');
+        $this->entities['toma']->fields['docente']->alias = 'per';
+        $this->entities['toma']->fields['docente']->refEntityName = 'persona';
+        $this->entities['toma']->fields['docente']->refFieldName = 'id';
+        $this->entities['toma']->fields['docente']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['toma']->fields['docente']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['docente'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'estado';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['toma']->fields['estado'] = Field::getInstance('toma', 'estado', 'varchar', 'string');
+        $this->entities['toma']->fields['estado']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['toma']->fields['estado']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['estado'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'estado_contralor';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['toma']->fields['estado_contralor'] = Field::getInstance('toma', 'estado_contralor', 'varchar', 'string');
+        $this->entities['toma']->fields['estado_contralor']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['toma']->fields['estado_contralor']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['estado_contralor'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'fecha_toma';
-        $f->dataType = 'date';
-        $f->type = 'DateTime';
-        $f->checks = [
+        $this->entities['toma']->fields['fecha_toma'] = Field::getInstance('toma', 'fecha_toma', 'date', 'DateTime');
+        $this->entities['toma']->fields['fecha_toma']->checks = [
             'type' => 'DateTime',
         ];
-        $e->fields['fecha_toma'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'id';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['toma']->fields['id'] = Field::getInstance('toma', 'id', 'varchar', 'string');
+        $this->entities['toma']->fields['id']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['toma']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['id'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'observaciones';
-        $f->dataType = 'text';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['toma']->fields['observaciones'] = Field::getInstance('toma', 'observaciones', 'text', 'string');
+        $this->entities['toma']->fields['observaciones']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['toma']->fields['observaciones']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['observaciones'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'planilla_docente';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'pla';
-        $f->refEntityName = 'planilla_docente';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['toma']->fields['planilla_docente'] = Field::getInstance('toma', 'planilla_docente', 'varchar', 'string');
+        $this->entities['toma']->fields['planilla_docente']->alias = 'pla';
+        $this->entities['toma']->fields['planilla_docente']->refEntityName = 'planilla_docente';
+        $this->entities['toma']->fields['planilla_docente']->refFieldName = 'id';
+        $this->entities['toma']->fields['planilla_docente']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['toma']->fields['planilla_docente']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['planilla_docente'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'reemplazo';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->alias = 'ree';
-        $f->refEntityName = 'persona';
-        $f->refFieldName = 'id';
-        $f->checks = [
+        $this->entities['toma']->fields['reemplazo'] = Field::getInstance('toma', 'reemplazo', 'varchar', 'string');
+        $this->entities['toma']->fields['reemplazo']->alias = 'pe1';
+        $this->entities['toma']->fields['reemplazo']->refEntityName = 'persona';
+        $this->entities['toma']->fields['reemplazo']->refFieldName = 'id';
+        $this->entities['toma']->fields['reemplazo']->checks = [
             'type' => 'string',
         ];
-        $f->resets = [
+        $this->entities['toma']->fields['reemplazo']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $e->fields['reemplazo'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'sin_planillas';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['toma']->fields['sin_planillas'] = Field::getInstance('toma', 'sin_planillas', 'tinyint', 'byte');
+        $this->entities['toma']->fields['sin_planillas']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['sin_planillas'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'temas_tratados';
-        $f->dataType = 'tinyint';
-        $f->type = 'byte';
-        $f->checks = [
+        $this->entities['toma']->fields['temas_tratados'] = Field::getInstance('toma', 'temas_tratados', 'tinyint', 'byte');
+        $this->entities['toma']->fields['temas_tratados']->checks = [
             'type' => 'byte',
             'required' => '1',
         ];
-        $e->fields['temas_tratados'] = $f;
-
-        $f = new Field();
-        $f->entityName = 'toma';
-        $f->name = 'tipo_movimiento';
-        $f->dataType = 'varchar';
-        $f->type = 'string';
-        $f->checks = [
+        $this->entities['toma']->fields['tipo_movimiento'] = Field::getInstance('toma', 'tipo_movimiento', 'varchar', 'string');
+        $this->entities['toma']->fields['tipo_movimiento']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $f->resets = [
+        $this->entities['toma']->fields['tipo_movimiento']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $e->fields['tipo_movimiento'] = $f;
-
-        $this->entities['toma'] = $e;
-
     }
 }

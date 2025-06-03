@@ -4,6 +4,10 @@ namespace SqlOrganize\Model;
 
 class Field
 {
+
+
+
+
     public string $name;
     
     public ?string $alias = null;

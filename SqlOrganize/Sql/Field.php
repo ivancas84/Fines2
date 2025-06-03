@@ -4,6 +4,15 @@ namespace SqlOrganize\Sql;
 
 class Field
 {
+    public static function getInstance($entityName, $name, $dataType, $type): Field {
+        $f = new Field();
+        $f->entityName = $entityName;
+        $f->name = $name;
+        $f->dataType = $dataType;
+        $f->type = $type;
+        return $f;
+    }
+
     public Db $db;
     public string $name;
     public ?string $alias = null;

@@ -235,7 +235,7 @@ abstract class SelectQueries
             if (strpos($fieldName, $this->db->config->separator) !== false) {
                 $ff = explode($this->db->config->separator, $fieldName);
                 $refEntityName = $entityMetadata->relations[$ff[0]]->refEntityName;
-                $sql .= $$this->db->getEntityMetadata($refEntityName)->map($ff[1], $ff[0]) . " AS '" . $fieldName . "', ";
+                $sql .= $this->db->getEntityMetadata($refEntityName)->map($ff[1], $ff[0]) . " AS '" . $fieldName . "', ";
             } else {
                 $sql .= $entityMetadata->map($fieldName) . ", ";
             }

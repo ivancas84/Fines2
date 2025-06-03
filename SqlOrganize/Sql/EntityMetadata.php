@@ -11,6 +11,13 @@ class EntityMetadata
     
     private ?string $_className = null;
     
+    public static function getInstance($name, $alias){
+        $em = new EntityMetadata();
+        $em->name = $name;
+        $em->alias = $alias;
+        return $em;
+    }
+
     public function getClassName(): string
     {
         return empty($this->_className) 
