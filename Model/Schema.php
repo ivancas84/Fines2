@@ -2,9 +2,9 @@
 
 namespace SqlOrganize\Sql\Fines2;
 
-require_once MAIN_PATH . 'SqlOrganize\Sql\EntityMetadata.php';
-require_once MAIN_PATH . 'SqlOrganize\Sql\Field.php';
-
+require_once MAIN_PATH . 'SqlOrganize/Sql/ISchema.php';
+require_once MAIN_PATH . 'SqlOrganize/Sql/EntityMetadata.php';
+require_once MAIN_PATH . 'SqlOrganize/Sql/Field.php';
 use SqlOrganize\Sql\ISchema;
 use SqlOrganize\Sql\EntityMetadata;
 use SqlOrganize\Sql\Field;
@@ -24,6 +24,73 @@ class Schema extends ISchema
         $e->fk = ['persona', 'plan', 'resolucion_inscripcion'];
         $e->unique = ['libro_folio', 'persona'];
         $e->notNull = ['confirmado_direccion', 'creado', 'id', 'persona', 'previas_completas', 'tiene_certificado', 'tiene_constancia', 'tiene_dni', 'tiene_partida'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'persona';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'persona';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'domicilio';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'domicilio';
+        $tree->children['domicilio'] = $child;
+        $e->tree['persona'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'plan';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'plan';
+        $e->tree['plan'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'resolucion_inscripcion';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'resolucion';
+        $e->tree['resolucion_inscripcion'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'persona';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'persona';
+        $e->relations['persona'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'persona';
+        $e->relations['domicilio'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $e->relations['plan'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'resolucion_inscripcion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'resolucion';
+        $e->relations['resolucion_inscripcion'] = $relation;
+
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'alumno';
+        $om->entityName = 'alumno_comision';
+        $e->om['alumnoComision_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'alumno';
+        $om->entityName = 'calificacion';
+        $e->om['calificacion_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'alumno';
+        $om->entityName = 'disposicion_pendiente';
+        $e->om['disposicionPendiente_'] = $om;
+
         $f = new Field();
         $f->entityName = 'alumno';
         $f->name = 'adeuda_deudores';
@@ -394,6 +461,218 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['alumno', 'comision'];
         $e->notNull = ['alumno', 'creado', 'id'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'alumno';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'alumno';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'persona';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'persona';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'domicilio';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'domicilio';
+                $tree->children['domicilio'] = $child;
+        $tree->children['persona'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'plan';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'plan';
+        $tree->children['plan'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'resolucion_inscripcion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'resolucion';
+        $tree->children['resolucion_inscripcion'] = $child;
+        $e->tree['alumno'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'comision';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'comision';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'calendario';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'calendario';
+        $tree->children['calendario'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'comision_siguiente';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'comision';
+        $tree->children['comision_siguiente'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'modalidad';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'modalidad';
+        $tree->children['modalidad'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'planificacion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'planificacion';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'plan';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'plan';
+                $tree->children['plan_pla'] = $child;
+        $tree->children['planificacion'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'sede';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'sede';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'centro_educativo';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'centro_educativo';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'domicilio';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'domicilio';
+                        $tree->children['domicilio_cen'] = $child;
+                $tree->children['centro_educativo'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'domicilio';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'domicilio';
+                $tree->children['domicilio_sed'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'organizacion';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'sede';
+                $tree->children['organizacion'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'tipo_sede';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'tipo_sede';
+                $tree->children['tipo_sede'] = $child;
+        $tree->children['sede'] = $child;
+        $e->tree['comision'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'alumno';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'alumno';
+        $e->relations['alumno'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'persona';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'persona';
+        $relation->parentId = 'alumno';
+        $e->relations['persona'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'persona';
+        $e->relations['domicilio'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'alumno';
+        $e->relations['plan'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'resolucion_inscripcion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'resolucion';
+        $relation->parentId = 'alumno';
+        $e->relations['resolucion_inscripcion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $e->relations['comision'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'calendario';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'calendario';
+        $relation->parentId = 'comision';
+        $e->relations['calendario'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision_siguiente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $relation->parentId = 'comision';
+        $e->relations['comision_siguiente'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'modalidad';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'modalidad';
+        $relation->parentId = 'comision';
+        $e->relations['modalidad'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'comision';
+        $e->relations['planificacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion';
+        $e->relations['plan_pla'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'comision';
+        $e->relations['sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'centro_educativo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'centro_educativo';
+        $relation->parentId = 'sede';
+        $e->relations['centro_educativo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'centro_educativo';
+        $e->relations['domicilio_cen'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'sede';
+        $e->relations['domicilio_sed'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'organizacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'sede';
+        $e->relations['organizacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'tipo_sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'tipo_sede';
+        $relation->parentId = 'sede';
+        $e->relations['tipo_sede'] = $relation;
+
         $f = new Field();
         $f->entityName = 'alumno_comision';
         $f->name = 'activo';
@@ -516,6 +795,318 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['planilla_docente', 'toma'];
         $e->notNull = ['id', 'insertado', 'planilla_docente', 'reclamo', 'toma'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'planilla_docente';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'planilla_docente';
+        $e->tree['planilla_docente'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'toma';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'toma';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'curso';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'curso';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'asignatura';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'asignatura';
+                $tree->children['asignatura'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'comision';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'comision';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'calendario';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'calendario';
+                        $tree->children['calendario'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'comision_siguiente';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'comision';
+                        $tree->children['comision_siguiente'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'modalidad';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'modalidad';
+                        $tree->children['modalidad'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'planificacion';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'planificacion';
+                                $tree->children = [];
+                                $child = new \SqlOrganize\Sql\EntityTree();
+                                $child->fieldName = 'plan';
+                                $child->refFieldName = 'id';
+                                $child->refEntityName = 'plan';
+                                $tree->children['plan'] = $child;
+                        $tree->children['planificacion'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'sede';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'sede';
+                                $tree->children = [];
+                                $child = new \SqlOrganize\Sql\EntityTree();
+                                $child->fieldName = 'centro_educativo';
+                                $child->refFieldName = 'id';
+                                $child->refEntityName = 'centro_educativo';
+                                        $tree->children = [];
+                                        $child = new \SqlOrganize\Sql\EntityTree();
+                                        $child->fieldName = 'domicilio';
+                                        $child->refFieldName = 'id';
+                                        $child->refEntityName = 'domicilio';
+                                        $tree->children['domicilio_cen'] = $child;
+                                $tree->children['centro_educativo'] = $child;
+                                $child = new \SqlOrganize\Sql\EntityTree();
+                                $child->fieldName = 'domicilio';
+                                $child->refFieldName = 'id';
+                                $child->refEntityName = 'domicilio';
+                                $tree->children['domicilio'] = $child;
+                                $child = new \SqlOrganize\Sql\EntityTree();
+                                $child->fieldName = 'organizacion';
+                                $child->refFieldName = 'id';
+                                $child->refEntityName = 'sede';
+                                $tree->children['organizacion'] = $child;
+                                $child = new \SqlOrganize\Sql\EntityTree();
+                                $child->fieldName = 'tipo_sede';
+                                $child->refFieldName = 'id';
+                                $child->refEntityName = 'tipo_sede';
+                                $tree->children['tipo_sede'] = $child;
+                        $tree->children['sede'] = $child;
+                $tree->children['comision'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'disposicion';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'disposicion';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'asignatura';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'asignatura';
+                        $tree->children['asignatura_dis'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'planificacion';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'planificacion';
+                                $tree->children = [];
+                                $child = new \SqlOrganize\Sql\EntityTree();
+                                $child->fieldName = 'plan';
+                                $child->refFieldName = 'id';
+                                $child->refEntityName = 'plan';
+                                $tree->children['plan_pla'] = $child;
+                        $tree->children['planificacion_dis'] = $child;
+                $tree->children['disposicion'] = $child;
+        $tree->children['curso'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'docente';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'persona';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'domicilio';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'domicilio';
+                $tree->children['domicilio_doc'] = $child;
+        $tree->children['docente'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'planilla_docente';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'planilla_docente';
+        $tree->children['planilla_docente_tom'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'reemplazo';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'persona';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'domicilio';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'domicilio';
+                $tree->children['domicilio_ree'] = $child;
+        $tree->children['reemplazo'] = $child;
+        $e->tree['toma'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planilla_docente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planilla_docente';
+        $e->relations['planilla_docente'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'toma';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'toma';
+        $e->relations['toma'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'curso';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'curso';
+        $relation->parentId = 'toma';
+        $e->relations['curso'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $relation->parentId = 'curso';
+        $e->relations['asignatura'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $relation->parentId = 'curso';
+        $e->relations['comision'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'calendario';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'calendario';
+        $relation->parentId = 'comision';
+        $e->relations['calendario'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision_siguiente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $relation->parentId = 'comision';
+        $e->relations['comision_siguiente'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'modalidad';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'modalidad';
+        $relation->parentId = 'comision';
+        $e->relations['modalidad'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'comision';
+        $e->relations['planificacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion';
+        $e->relations['plan'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'comision';
+        $e->relations['sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'centro_educativo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'centro_educativo';
+        $relation->parentId = 'sede';
+        $e->relations['centro_educativo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'centro_educativo';
+        $e->relations['domicilio_cen'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'sede';
+        $e->relations['domicilio'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'organizacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'sede';
+        $e->relations['organizacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'tipo_sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'tipo_sede';
+        $relation->parentId = 'sede';
+        $e->relations['tipo_sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'disposicion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'disposicion';
+        $relation->parentId = 'curso';
+        $e->relations['disposicion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $relation->parentId = 'disposicion';
+        $e->relations['asignatura_dis'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'disposicion';
+        $e->relations['planificacion_dis'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion_dis';
+        $e->relations['plan_pla'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'docente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'persona';
+        $relation->parentId = 'toma';
+        $e->relations['docente'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'docente';
+        $e->relations['domicilio_doc'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planilla_docente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planilla_docente';
+        $relation->parentId = 'toma';
+        $e->relations['planilla_docente_tom'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'reemplazo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'persona';
+        $relation->parentId = 'toma';
+        $e->relations['reemplazo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'reemplazo';
+        $e->relations['domicilio_ree'] = $relation;
+
         $f = new Field();
         $f->entityName = 'asignacion_planilla_docente';
         $f->name = 'comentario';
@@ -613,6 +1204,17 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->unique = ['nombre'];
         $e->notNull = ['id', 'nombre'];
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'asignatura';
+        $om->entityName = 'curso';
+        $e->om['curso_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'asignatura';
+        $om->entityName = 'disposicion';
+        $e->om['disposicion_'] = $om;
+
         $f = new Field();
         $f->entityName = 'asignatura';
         $f->name = 'clasificacion';
@@ -710,6 +1312,12 @@ class Schema extends ISchema
         $e->alias = 'cale';
         $e->pk = ['id'];
         $e->notNull = ['anio', 'id', 'insertado', 'semestre'];
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'calendario';
+        $om->entityName = 'comision';
+        $e->om['comision_'] = $om;
+
         $f = new Field();
         $f->entityName = 'calendario';
         $f->name = 'anio';
@@ -802,6 +1410,343 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['alumno', 'curso', 'disposicion'];
         $e->notNull = ['alumno', 'archivado', 'disposicion', 'id'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'alumno';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'alumno';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'persona';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'persona';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'domicilio';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'domicilio';
+                $tree->children['domicilio'] = $child;
+        $tree->children['persona'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'plan';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'plan';
+        $tree->children['plan'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'resolucion_inscripcion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'resolucion';
+        $tree->children['resolucion_inscripcion'] = $child;
+        $e->tree['alumno'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'curso';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'curso';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'asignatura';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'asignatura';
+        $tree->children['asignatura'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'comision';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'comision';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'calendario';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'calendario';
+                $tree->children['calendario'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'comision_siguiente';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'comision';
+                $tree->children['comision_siguiente'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'modalidad';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'modalidad';
+                $tree->children['modalidad'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'planificacion';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'planificacion';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'plan';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'plan';
+                        $tree->children['plan_pla'] = $child;
+                $tree->children['planificacion'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'sede';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'sede';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'centro_educativo';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'centro_educativo';
+                                $tree->children = [];
+                                $child = new \SqlOrganize\Sql\EntityTree();
+                                $child->fieldName = 'domicilio';
+                                $child->refFieldName = 'id';
+                                $child->refEntityName = 'domicilio';
+                                $tree->children['domicilio_cen'] = $child;
+                        $tree->children['centro_educativo'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'domicilio';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'domicilio';
+                        $tree->children['domicilio_sed'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'organizacion';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'sede';
+                        $tree->children['organizacion'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'tipo_sede';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'tipo_sede';
+                        $tree->children['tipo_sede'] = $child;
+                $tree->children['sede'] = $child;
+        $tree->children['comision'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'disposicion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'disposicion';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'asignatura';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'asignatura';
+                $tree->children['asignatura_dis'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'planificacion';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'planificacion';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'plan';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'plan';
+                        $tree->children['plan_pla1'] = $child;
+                $tree->children['planificacion_dis'] = $child;
+        $tree->children['disposicion_cur'] = $child;
+        $e->tree['curso'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'disposicion';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'disposicion';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'asignatura';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'asignatura';
+        $tree->children['asignatura_dis1'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'planificacion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'planificacion';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'plan';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'plan';
+                $tree->children['plan_pla2'] = $child;
+        $tree->children['planificacion_dis1'] = $child;
+        $e->tree['disposicion'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'alumno';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'alumno';
+        $e->relations['alumno'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'persona';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'persona';
+        $relation->parentId = 'alumno';
+        $e->relations['persona'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'persona';
+        $e->relations['domicilio'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'alumno';
+        $e->relations['plan'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'resolucion_inscripcion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'resolucion';
+        $relation->parentId = 'alumno';
+        $e->relations['resolucion_inscripcion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'curso';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'curso';
+        $e->relations['curso'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $relation->parentId = 'curso';
+        $e->relations['asignatura'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $relation->parentId = 'curso';
+        $e->relations['comision'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'calendario';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'calendario';
+        $relation->parentId = 'comision';
+        $e->relations['calendario'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision_siguiente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $relation->parentId = 'comision';
+        $e->relations['comision_siguiente'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'modalidad';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'modalidad';
+        $relation->parentId = 'comision';
+        $e->relations['modalidad'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'comision';
+        $e->relations['planificacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion';
+        $e->relations['plan_pla'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'comision';
+        $e->relations['sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'centro_educativo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'centro_educativo';
+        $relation->parentId = 'sede';
+        $e->relations['centro_educativo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'centro_educativo';
+        $e->relations['domicilio_cen'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'sede';
+        $e->relations['domicilio_sed'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'organizacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'sede';
+        $e->relations['organizacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'tipo_sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'tipo_sede';
+        $relation->parentId = 'sede';
+        $e->relations['tipo_sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'disposicion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'disposicion';
+        $relation->parentId = 'curso';
+        $e->relations['disposicion_cur'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $relation->parentId = 'disposicion_cur';
+        $e->relations['asignatura_dis'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'disposicion_cur';
+        $e->relations['planificacion_dis'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion_dis';
+        $e->relations['plan_pla1'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'disposicion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'disposicion';
+        $e->relations['disposicion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $relation->parentId = 'disposicion';
+        $e->relations['asignatura_dis1'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'disposicion';
+        $e->relations['planificacion_dis1'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion_dis1';
+        $e->relations['plan_pla2'] = $relation;
+
         $f = new Field();
         $f->entityName = 'calificacion';
         $f->name = 'alumno';
@@ -990,6 +1935,12 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->unique = ['descripcion'];
         $e->notNull = ['descripcion', 'id'];
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'cargo';
+        $om->entityName = 'designacion';
+        $e->om['designacion_'] = $om;
+
         $f = new Field();
         $f->entityName = 'cargo';
         $f->name = 'descripcion';
@@ -1029,6 +1980,26 @@ class Schema extends ISchema
         $e->fk = ['domicilio'];
         $e->unique = ['cue'];
         $e->notNull = ['id', 'nombre'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'domicilio';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'domicilio';
+        $e->tree['domicilio'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $e->relations['domicilio'] = $relation;
+
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'centro_educativo';
+        $om->entityName = 'sede';
+        $e->om['sede_'] = $om;
+
         $f = new Field();
         $f->entityName = 'centro_educativo';
         $f->name = 'cue';
@@ -1115,6 +2086,169 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['calendario', 'comision_siguiente', 'modalidad', 'planificacion', 'sede'];
         $e->notNull = ['alta', 'apertura', 'autorizada', 'calendario', 'division', 'id', 'modalidad', 'publicada', 'sede'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'calendario';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'calendario';
+        $e->tree['calendario'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'comision_siguiente';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'comision';
+        $e->tree['comision_siguiente'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'modalidad';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'modalidad';
+        $e->tree['modalidad'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'planificacion';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'planificacion';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'plan';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'plan';
+        $tree->children['plan'] = $child;
+        $e->tree['planificacion'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'sede';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'sede';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'centro_educativo';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'centro_educativo';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'domicilio';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'domicilio';
+                $tree->children['domicilio_cen'] = $child;
+        $tree->children['centro_educativo'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'domicilio';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'domicilio';
+        $tree->children['domicilio'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'organizacion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'sede';
+        $tree->children['organizacion'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'tipo_sede';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'tipo_sede';
+        $tree->children['tipo_sede'] = $child;
+        $e->tree['sede'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'calendario';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'calendario';
+        $e->relations['calendario'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision_siguiente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $e->relations['comision_siguiente'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'modalidad';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'modalidad';
+        $e->relations['modalidad'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $e->relations['planificacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion';
+        $e->relations['plan'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $e->relations['sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'centro_educativo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'centro_educativo';
+        $relation->parentId = 'sede';
+        $e->relations['centro_educativo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'centro_educativo';
+        $e->relations['domicilio_cen'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'sede';
+        $e->relations['domicilio'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'organizacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'sede';
+        $e->relations['organizacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'tipo_sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'tipo_sede';
+        $relation->parentId = 'sede';
+        $e->relations['tipo_sede'] = $relation;
+
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'comision';
+        $om->entityName = 'alumno_comision';
+        $e->om['alumnoComision_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'comision_siguiente';
+        $om->entityName = 'comision';
+        $e->om['comision_comision_siguiente_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'comision';
+        $om->entityName = 'comision_relacionada';
+        $e->om['comisionRelacionada_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'relacion';
+        $om->entityName = 'comision_relacionada';
+        $e->om['comisionRelacionada_relacion_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'comision';
+        $om->entityName = 'curso';
+        $e->om['curso_'] = $om;
+
         $f = new Field();
         $f->entityName = 'comision';
         $f->name = 'alta';
@@ -1395,6 +2529,304 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['comision', 'relacion'];
         $e->notNull = ['comision', 'id', 'relacion'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'comision';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'comision';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'calendario';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'calendario';
+        $tree->children['calendario'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'comision_siguiente';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'comision';
+        $tree->children['comision_siguiente'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'modalidad';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'modalidad';
+        $tree->children['modalidad'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'planificacion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'planificacion';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'plan';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'plan';
+                $tree->children['plan'] = $child;
+        $tree->children['planificacion'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'sede';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'sede';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'centro_educativo';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'centro_educativo';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'domicilio';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'domicilio';
+                        $tree->children['domicilio_cen'] = $child;
+                $tree->children['centro_educativo'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'domicilio';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'domicilio';
+                $tree->children['domicilio'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'organizacion';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'sede';
+                $tree->children['organizacion'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'tipo_sede';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'tipo_sede';
+                $tree->children['tipo_sede'] = $child;
+        $tree->children['sede'] = $child;
+        $e->tree['comision'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'relacion';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'comision';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'calendario';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'calendario';
+        $tree->children['calendario_rel'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'comision_siguiente';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'comision';
+        $tree->children['comision_siguiente_rel'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'modalidad';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'modalidad';
+        $tree->children['modalidad_rel'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'planificacion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'planificacion';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'plan';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'plan';
+                $tree->children['plan_pla'] = $child;
+        $tree->children['planificacion_rel'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'sede';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'sede';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'centro_educativo';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'centro_educativo';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'domicilio';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'domicilio';
+                        $tree->children['domicilio_cen1'] = $child;
+                $tree->children['centro_educativo_sed'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'domicilio';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'domicilio';
+                $tree->children['domicilio_sed'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'organizacion';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'sede';
+                $tree->children['organizacion_sed'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'tipo_sede';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'tipo_sede';
+                $tree->children['tipo_sede_sed'] = $child;
+        $tree->children['sede_rel'] = $child;
+        $e->tree['relacion'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $e->relations['comision'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'calendario';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'calendario';
+        $relation->parentId = 'comision';
+        $e->relations['calendario'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision_siguiente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $relation->parentId = 'comision';
+        $e->relations['comision_siguiente'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'modalidad';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'modalidad';
+        $relation->parentId = 'comision';
+        $e->relations['modalidad'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'comision';
+        $e->relations['planificacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion';
+        $e->relations['plan'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'comision';
+        $e->relations['sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'centro_educativo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'centro_educativo';
+        $relation->parentId = 'sede';
+        $e->relations['centro_educativo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'centro_educativo';
+        $e->relations['domicilio_cen'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'sede';
+        $e->relations['domicilio'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'organizacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'sede';
+        $e->relations['organizacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'tipo_sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'tipo_sede';
+        $relation->parentId = 'sede';
+        $e->relations['tipo_sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'relacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $e->relations['relacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'calendario';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'calendario';
+        $relation->parentId = 'relacion';
+        $e->relations['calendario_rel'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision_siguiente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $relation->parentId = 'relacion';
+        $e->relations['comision_siguiente_rel'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'modalidad';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'modalidad';
+        $relation->parentId = 'relacion';
+        $e->relations['modalidad_rel'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'relacion';
+        $e->relations['planificacion_rel'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion_rel';
+        $e->relations['plan_pla'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'relacion';
+        $e->relations['sede_rel'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'centro_educativo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'centro_educativo';
+        $relation->parentId = 'sede_rel';
+        $e->relations['centro_educativo_sed'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'centro_educativo_sed';
+        $e->relations['domicilio_cen1'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'sede_rel';
+        $e->relations['domicilio_sed'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'organizacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'sede_rel';
+        $e->relations['organizacion_sed'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'tipo_sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'tipo_sede';
+        $relation->parentId = 'sede_rel';
+        $e->relations['tipo_sede_sed'] = $relation;
+
         $f = new Field();
         $f->entityName = 'comision_relacionada';
         $f->name = 'comision';
@@ -1454,6 +2886,20 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['planilla_docente'];
         $e->notNull = ['id', 'insertado', 'planilla_docente'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'planilla_docente';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'planilla_docente';
+        $e->tree['planilla_docente'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planilla_docente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planilla_docente';
+        $e->relations['planilla_docente'] = $relation;
+
         $f = new Field();
         $f->entityName = 'contralor';
         $f->name = 'fecha_consejo';
@@ -1527,6 +2973,234 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['asignatura', 'comision', 'disposicion'];
         $e->notNull = ['alta', 'comision', 'horas_catedra', 'id'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'asignatura';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'asignatura';
+        $e->tree['asignatura'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'comision';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'comision';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'calendario';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'calendario';
+        $tree->children['calendario'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'comision_siguiente';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'comision';
+        $tree->children['comision_siguiente'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'modalidad';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'modalidad';
+        $tree->children['modalidad'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'planificacion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'planificacion';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'plan';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'plan';
+                $tree->children['plan'] = $child;
+        $tree->children['planificacion'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'sede';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'sede';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'centro_educativo';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'centro_educativo';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'domicilio';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'domicilio';
+                        $tree->children['domicilio_cen'] = $child;
+                $tree->children['centro_educativo'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'domicilio';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'domicilio';
+                $tree->children['domicilio'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'organizacion';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'sede';
+                $tree->children['organizacion'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'tipo_sede';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'tipo_sede';
+                $tree->children['tipo_sede'] = $child;
+        $tree->children['sede'] = $child;
+        $e->tree['comision'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'disposicion';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'disposicion';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'asignatura';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'asignatura';
+        $tree->children['asignatura_dis'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'planificacion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'planificacion';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'plan';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'plan';
+                $tree->children['plan_pla'] = $child;
+        $tree->children['planificacion_dis'] = $child;
+        $e->tree['disposicion'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $e->relations['asignatura'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $e->relations['comision'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'calendario';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'calendario';
+        $relation->parentId = 'comision';
+        $e->relations['calendario'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision_siguiente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $relation->parentId = 'comision';
+        $e->relations['comision_siguiente'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'modalidad';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'modalidad';
+        $relation->parentId = 'comision';
+        $e->relations['modalidad'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'comision';
+        $e->relations['planificacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion';
+        $e->relations['plan'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'comision';
+        $e->relations['sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'centro_educativo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'centro_educativo';
+        $relation->parentId = 'sede';
+        $e->relations['centro_educativo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'centro_educativo';
+        $e->relations['domicilio_cen'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'sede';
+        $e->relations['domicilio'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'organizacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'sede';
+        $e->relations['organizacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'tipo_sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'tipo_sede';
+        $relation->parentId = 'sede';
+        $e->relations['tipo_sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'disposicion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'disposicion';
+        $e->relations['disposicion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $relation->parentId = 'disposicion';
+        $e->relations['asignatura_dis'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'disposicion';
+        $e->relations['planificacion_dis'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion_dis';
+        $e->relations['plan_pla'] = $relation;
+
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'curso';
+        $om->entityName = 'calificacion';
+        $e->om['calificacion_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'curso';
+        $om->entityName = 'horario';
+        $e->om['horario_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'curso';
+        $om->entityName = 'toma';
+        $e->om['toma_'] = $om;
+
         $f = new Field();
         $f->entityName = 'curso';
         $f->name = 'alta';
@@ -1687,6 +3361,119 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['cargo', 'persona', 'sede'];
         $e->notNull = ['alta', 'cargo', 'id', 'persona', 'sede'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'cargo';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'cargo';
+        $e->tree['cargo'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'persona';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'persona';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'domicilio';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'domicilio';
+        $tree->children['domicilio'] = $child;
+        $e->tree['persona'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'sede';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'sede';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'centro_educativo';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'centro_educativo';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'domicilio';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'domicilio';
+                $tree->children['domicilio_cen'] = $child;
+        $tree->children['centro_educativo'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'domicilio';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'domicilio';
+        $tree->children['domicilio_sed'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'organizacion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'sede';
+        $tree->children['organizacion'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'tipo_sede';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'tipo_sede';
+        $tree->children['tipo_sede'] = $child;
+        $e->tree['sede'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'cargo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'cargo';
+        $e->relations['cargo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'persona';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'persona';
+        $e->relations['persona'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'persona';
+        $e->relations['domicilio'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $e->relations['sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'centro_educativo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'centro_educativo';
+        $relation->parentId = 'sede';
+        $e->relations['centro_educativo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'centro_educativo';
+        $e->relations['domicilio_cen'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'sede';
+        $e->relations['domicilio_sed'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'organizacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'sede';
+        $e->relations['organizacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'tipo_sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'tipo_sede';
+        $relation->parentId = 'sede';
+        $e->relations['tipo_sede'] = $relation;
+
         $f = new Field();
         $f->entityName = 'designacion';
         $f->name = 'alta';
@@ -1811,6 +3598,45 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['archivo', 'persona'];
         $e->notNull = ['creado', 'descripcion', 'id', 'persona'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'archivo';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'file';
+        $e->tree['archivo'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'persona';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'persona';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'domicilio';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'domicilio';
+        $tree->children['domicilio'] = $child;
+        $e->tree['persona'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'archivo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'file';
+        $e->relations['archivo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'persona';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'persona';
+        $e->relations['persona'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'persona';
+        $e->relations['domicilio'] = $relation;
+
         $f = new Field();
         $f->entityName = 'detalle_persona';
         $f->name = 'archivo';
@@ -1938,6 +3764,12 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->unique = ['dia', 'numero'];
         $e->notNull = ['dia', 'id', 'numero'];
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'dia';
+        $om->entityName = 'horario';
+        $e->om['horario_'] = $om;
+
         $f = new Field();
         $f->entityName = 'dia';
         $f->name = 'dia';
@@ -1986,7 +3818,67 @@ class Schema extends ISchema
         $e->alias = 'disp';
         $e->pk = ['id'];
         $e->fk = ['asignatura', 'planificacion'];
-        $e->notNull = ['asignatura', 'id', 'planificacion'];
+        $e->notNull = ['asignatura', 'horas_catedra', 'id', 'planificacion'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'asignatura';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'asignatura';
+        $e->tree['asignatura'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'planificacion';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'planificacion';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'plan';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'plan';
+        $tree->children['plan'] = $child;
+        $e->tree['planificacion'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $e->relations['asignatura'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $e->relations['planificacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion';
+        $e->relations['plan'] = $relation;
+
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'disposicion';
+        $om->entityName = 'calificacion';
+        $e->om['calificacion_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'disposicion';
+        $om->entityName = 'curso';
+        $e->om['curso_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'disposicion';
+        $om->entityName = 'disposicion_pendiente';
+        $e->om['disposicionPendiente_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'disposicion';
+        $om->entityName = 'distribucion_horaria';
+        $e->om['distribucionHoraria_'] = $om;
+
         $f = new Field();
         $f->entityName = 'disposicion';
         $f->name = 'asignatura';
@@ -2004,6 +3896,17 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
         ];
         $e->fields['asignatura'] = $f;
+
+        $f = new Field();
+        $f->entityName = 'disposicion';
+        $f->name = 'horas_catedra';
+        $f->dataType = 'int';
+        $f->type = 'int';
+        $f->checks = [
+            'type' => 'int',
+            'required' => '1',
+        ];
+        $e->fields['horas_catedra'] = $f;
 
         $f = new Field();
         $f->entityName = 'disposicion';
@@ -2056,6 +3959,120 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['alumno', 'disposicion'];
         $e->notNull = ['alumno', 'disposicion', 'id'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'alumno';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'alumno';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'persona';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'persona';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'domicilio';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'domicilio';
+                $tree->children['domicilio'] = $child;
+        $tree->children['persona'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'plan';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'plan';
+        $tree->children['plan'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'resolucion_inscripcion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'resolucion';
+        $tree->children['resolucion_inscripcion'] = $child;
+        $e->tree['alumno'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'disposicion';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'disposicion';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'asignatura';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'asignatura';
+        $tree->children['asignatura'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'planificacion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'planificacion';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'plan';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'plan';
+                $tree->children['plan_pla'] = $child;
+        $tree->children['planificacion'] = $child;
+        $e->tree['disposicion'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'alumno';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'alumno';
+        $e->relations['alumno'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'persona';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'persona';
+        $relation->parentId = 'alumno';
+        $e->relations['persona'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'persona';
+        $e->relations['domicilio'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'alumno';
+        $e->relations['plan'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'resolucion_inscripcion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'resolucion';
+        $relation->parentId = 'alumno';
+        $e->relations['resolucion_inscripcion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'disposicion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'disposicion';
+        $e->relations['disposicion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $relation->parentId = 'disposicion';
+        $e->relations['asignatura'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'disposicion';
+        $e->relations['planificacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion';
+        $e->relations['plan_pla'] = $relation;
+
         $f = new Field();
         $f->entityName = 'disposicion_pendiente';
         $f->name = 'alumno';
@@ -2130,6 +4147,58 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['disposicion'];
         $e->notNull = ['dia', 'horas_catedra', 'id'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'disposicion';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'disposicion';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'asignatura';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'asignatura';
+        $tree->children['asignatura'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'planificacion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'planificacion';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'plan';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'plan';
+                $tree->children['plan'] = $child;
+        $tree->children['planificacion'] = $child;
+        $e->tree['disposicion'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'disposicion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'disposicion';
+        $e->relations['disposicion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $relation->parentId = 'disposicion';
+        $e->relations['asignatura'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'disposicion';
+        $e->relations['planificacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion';
+        $e->relations['plan'] = $relation;
+
         $f = new Field();
         $f->entityName = 'distribucion_horaria';
         $f->name = 'dia';
@@ -2192,6 +4261,22 @@ class Schema extends ISchema
         $e->alias = 'domi';
         $e->pk = ['id'];
         $e->notNull = ['calle', 'id', 'localidad', 'numero'];
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'domicilio';
+        $om->entityName = 'centro_educativo';
+        $e->om['centroEducativo_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'domicilio';
+        $om->entityName = 'persona';
+        $e->om['persona_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'domicilio';
+        $om->entityName = 'sede';
+        $e->om['sede_'] = $om;
+
         $f = new Field();
         $f->entityName = 'domicilio';
         $f->name = 'barrio';
@@ -2320,6 +4405,33 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['persona'];
         $e->notNull = ['email', 'id', 'insertado', 'persona', 'verificado'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'persona';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'persona';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'domicilio';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'domicilio';
+        $tree->children['domicilio'] = $child;
+        $e->tree['persona'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'persona';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'persona';
+        $e->relations['persona'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'persona';
+        $e->relations['domicilio'] = $relation;
+
         $f = new Field();
         $f->entityName = 'email';
         $f->name = 'eliminado';
@@ -2408,6 +4520,12 @@ class Schema extends ISchema
         $e->alias = 'file';
         $e->pk = ['id'];
         $e->notNull = ['content', 'created', 'id', 'name', 'size', 'type'];
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'archivo';
+        $om->entityName = 'detalle_persona';
+        $e->om['detallePersona_archivo_'] = $om;
+
         $f = new Field();
         $f->entityName = 'file';
         $f->name = 'content';
@@ -2499,6 +4617,243 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['curso', 'dia'];
         $e->notNull = ['curso', 'dia', 'hora_fin', 'hora_inicio', 'id'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'curso';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'curso';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'asignatura';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'asignatura';
+        $tree->children['asignatura'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'comision';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'comision';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'calendario';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'calendario';
+                $tree->children['calendario'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'comision_siguiente';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'comision';
+                $tree->children['comision_siguiente'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'modalidad';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'modalidad';
+                $tree->children['modalidad'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'planificacion';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'planificacion';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'plan';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'plan';
+                        $tree->children['plan'] = $child;
+                $tree->children['planificacion'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'sede';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'sede';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'centro_educativo';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'centro_educativo';
+                                $tree->children = [];
+                                $child = new \SqlOrganize\Sql\EntityTree();
+                                $child->fieldName = 'domicilio';
+                                $child->refFieldName = 'id';
+                                $child->refEntityName = 'domicilio';
+                                $tree->children['domicilio_cen'] = $child;
+                        $tree->children['centro_educativo'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'domicilio';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'domicilio';
+                        $tree->children['domicilio'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'organizacion';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'sede';
+                        $tree->children['organizacion'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'tipo_sede';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'tipo_sede';
+                        $tree->children['tipo_sede'] = $child;
+                $tree->children['sede'] = $child;
+        $tree->children['comision'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'disposicion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'disposicion';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'asignatura';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'asignatura';
+                $tree->children['asignatura_dis'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'planificacion';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'planificacion';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'plan';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'plan';
+                        $tree->children['plan_pla'] = $child;
+                $tree->children['planificacion_dis'] = $child;
+        $tree->children['disposicion'] = $child;
+        $e->tree['curso'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'dia';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'dia';
+        $e->tree['dia'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'curso';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'curso';
+        $e->relations['curso'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $relation->parentId = 'curso';
+        $e->relations['asignatura'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $relation->parentId = 'curso';
+        $e->relations['comision'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'calendario';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'calendario';
+        $relation->parentId = 'comision';
+        $e->relations['calendario'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision_siguiente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $relation->parentId = 'comision';
+        $e->relations['comision_siguiente'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'modalidad';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'modalidad';
+        $relation->parentId = 'comision';
+        $e->relations['modalidad'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'comision';
+        $e->relations['planificacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion';
+        $e->relations['plan'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'comision';
+        $e->relations['sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'centro_educativo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'centro_educativo';
+        $relation->parentId = 'sede';
+        $e->relations['centro_educativo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'centro_educativo';
+        $e->relations['domicilio_cen'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'sede';
+        $e->relations['domicilio'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'organizacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'sede';
+        $e->relations['organizacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'tipo_sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'tipo_sede';
+        $relation->parentId = 'sede';
+        $e->relations['tipo_sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'disposicion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'disposicion';
+        $relation->parentId = 'curso';
+        $e->relations['disposicion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $relation->parentId = 'disposicion';
+        $e->relations['asignatura_dis'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'disposicion';
+        $e->relations['planificacion_dis'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion_dis';
+        $e->relations['plan_pla'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'dia';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'dia';
+        $e->relations['dia'] = $relation;
+
         $f = new Field();
         $f->entityName = 'horario';
         $f->name = 'curso';
@@ -2580,6 +4935,12 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->unique = ['nombre'];
         $e->notNull = ['id', 'nombre'];
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'modalidad';
+        $om->entityName = 'comision';
+        $e->om['comision_'] = $om;
+
         $f = new Field();
         $f->entityName = 'modalidad';
         $f->name = 'id';
@@ -2634,6 +4995,57 @@ class Schema extends ISchema
         $e->fk = ['domicilio'];
         $e->unique = ['cuil', 'email_abc', 'numero_documento'];
         $e->notNull = ['alta', 'email_verificado', 'id', 'info_verificada', 'nombres', 'numero_documento', 'telefono_verificado'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'domicilio';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'domicilio';
+        $e->tree['domicilio'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $e->relations['domicilio'] = $relation;
+
+        $e->oo = [];
+        $oo = new \SqlOrganize\Model\EntityRef();
+        $oo->fieldName = 'persona';
+        $oo->entityName = 'alumno';
+        $e->oo['alumno_'] = $oo;
+
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'persona';
+        $om->entityName = 'designacion';
+        $e->om['designacion_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'persona';
+        $om->entityName = 'detalle_persona';
+        $e->om['detallePersona_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'persona';
+        $om->entityName = 'email';
+        $e->om['email_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'persona';
+        $om->entityName = 'telefono';
+        $e->om['telefono_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'docente';
+        $om->entityName = 'toma';
+        $e->om['toma_docente_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'reemplazo';
+        $om->entityName = 'toma';
+        $e->om['toma_reemplazo_'] = $om;
+
         $f = new Field();
         $f->entityName = 'persona';
         $f->name = 'alta';
@@ -3029,6 +5441,17 @@ class Schema extends ISchema
         $e->alias = 'plan';
         $e->pk = ['id'];
         $e->notNull = ['id', 'orientacion'];
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'plan';
+        $om->entityName = 'alumno';
+        $e->om['alumno_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'plan';
+        $om->entityName = 'planificacion';
+        $e->om['planificacion_'] = $om;
+
         $f = new Field();
         $f->entityName = 'plan';
         $f->name = 'distribucion_horaria';
@@ -3112,6 +5535,31 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['plan'];
         $e->notNull = ['anio', 'id', 'plan', 'semestre'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'plan';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'plan';
+        $e->tree['plan'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $e->relations['plan'] = $relation;
+
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'planificacion';
+        $om->entityName = 'comision';
+        $e->om['comision_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'planificacion';
+        $om->entityName = 'disposicion';
+        $e->om['disposicion_'] = $om;
+
         $f = new Field();
         $f->entityName = 'planificacion';
         $f->name = 'anio';
@@ -3197,6 +5645,22 @@ class Schema extends ISchema
         $e->alias = 'pla2';
         $e->pk = ['id'];
         $e->notNull = ['id', 'insertado', 'numero'];
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'planilla_docente';
+        $om->entityName = 'asignacion_planilla_docente';
+        $e->om['asignacionPlanillaDocente_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'planilla_docente';
+        $om->entityName = 'contralor';
+        $e->om['contralor_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'planilla_docente';
+        $om->entityName = 'toma';
+        $e->om['toma_'] = $om;
+
         $f = new Field();
         $f->entityName = 'planilla_docente';
         $f->name = 'fecha_consejo';
@@ -3281,6 +5745,12 @@ class Schema extends ISchema
         $e->alias = 'reso';
         $e->pk = ['id'];
         $e->notNull = ['id', 'numero'];
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'resolucion_inscripcion';
+        $om->entityName = 'alumno';
+        $e->om['alumno_resolucion_inscripcion_'] = $om;
+
         $f = new Field();
         $f->entityName = 'resolucion';
         $f->name = 'anio';
@@ -3343,7 +5813,87 @@ class Schema extends ISchema
         $e->alias = 'sede';
         $e->pk = ['id'];
         $e->fk = ['centro_educativo', 'domicilio', 'organizacion', 'tipo_sede'];
+        $e->unique = ['nombre'];
         $e->notNull = ['alta', 'id', 'nombre', 'numero'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'centro_educativo';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'centro_educativo';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'domicilio';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'domicilio';
+        $tree->children['domicilio_cen'] = $child;
+        $e->tree['centro_educativo'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'domicilio';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'domicilio';
+        $e->tree['domicilio'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'organizacion';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'sede';
+        $e->tree['organizacion'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'tipo_sede';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'tipo_sede';
+        $e->tree['tipo_sede'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'centro_educativo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'centro_educativo';
+        $e->relations['centro_educativo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'centro_educativo';
+        $e->relations['domicilio_cen'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $e->relations['domicilio'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'organizacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $e->relations['organizacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'tipo_sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'tipo_sede';
+        $e->relations['tipo_sede'] = $relation;
+
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'sede';
+        $om->entityName = 'comision';
+        $e->om['comision_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'sede';
+        $om->entityName = 'designacion';
+        $e->om['designacion_'] = $om;
+
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'organizacion';
+        $om->entityName = 'sede';
+        $e->om['sede_organizacion_'] = $om;
+
         $f = new Field();
         $f->entityName = 'sede';
         $f->name = 'alta';
@@ -3546,6 +6096,33 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['persona'];
         $e->notNull = ['id', 'insertado', 'numero', 'persona'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'persona';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'persona';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'domicilio';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'domicilio';
+        $tree->children['domicilio'] = $child;
+        $e->tree['persona'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'persona';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'persona';
+        $e->relations['persona'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'persona';
+        $e->relations['domicilio'] = $relation;
+
         $f = new Field();
         $f->entityName = 'telefono';
         $f->name = 'eliminado';
@@ -3654,6 +6231,12 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->unique = ['descripcion'];
         $e->notNull = ['descripcion', 'id'];
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'tipo_sede';
+        $om->entityName = 'sede';
+        $e->om['sede_'] = $om;
+
         $f = new Field();
         $f->entityName = 'tipo_sede';
         $f->name = 'descripcion';
@@ -3692,6 +6275,299 @@ class Schema extends ISchema
         $e->pk = ['id'];
         $e->fk = ['curso', 'docente', 'planilla_docente', 'reemplazo'];
         $e->notNull = ['alta', 'asistencia', 'calificacion', 'confirmada', 'curso', 'id', 'sin_planillas', 'temas_tratados', 'tipo_movimiento'];
+        $e->tree = [];
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'curso';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'curso';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'asignatura';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'asignatura';
+        $tree->children['asignatura'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'comision';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'comision';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'calendario';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'calendario';
+                $tree->children['calendario'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'comision_siguiente';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'comision';
+                $tree->children['comision_siguiente'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'modalidad';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'modalidad';
+                $tree->children['modalidad'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'planificacion';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'planificacion';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'plan';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'plan';
+                        $tree->children['plan'] = $child;
+                $tree->children['planificacion'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'sede';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'sede';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'centro_educativo';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'centro_educativo';
+                                $tree->children = [];
+                                $child = new \SqlOrganize\Sql\EntityTree();
+                                $child->fieldName = 'domicilio';
+                                $child->refFieldName = 'id';
+                                $child->refEntityName = 'domicilio';
+                                $tree->children['domicilio_cen'] = $child;
+                        $tree->children['centro_educativo'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'domicilio';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'domicilio';
+                        $tree->children['domicilio'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'organizacion';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'sede';
+                        $tree->children['organizacion'] = $child;
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'tipo_sede';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'tipo_sede';
+                        $tree->children['tipo_sede'] = $child;
+                $tree->children['sede'] = $child;
+        $tree->children['comision'] = $child;
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'disposicion';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'disposicion';
+                $tree->children = [];
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'asignatura';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'asignatura';
+                $tree->children['asignatura_dis'] = $child;
+                $child = new \SqlOrganize\Sql\EntityTree();
+                $child->fieldName = 'planificacion';
+                $child->refFieldName = 'id';
+                $child->refEntityName = 'planificacion';
+                        $tree->children = [];
+                        $child = new \SqlOrganize\Sql\EntityTree();
+                        $child->fieldName = 'plan';
+                        $child->refFieldName = 'id';
+                        $child->refEntityName = 'plan';
+                        $tree->children['plan_pla'] = $child;
+                $tree->children['planificacion_dis'] = $child;
+        $tree->children['disposicion'] = $child;
+        $e->tree['curso'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'docente';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'persona';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'domicilio';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'domicilio';
+        $tree->children['domicilio_doc'] = $child;
+        $e->tree['docente'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'planilla_docente';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'planilla_docente';
+        $e->tree['planilla_docente'] = $tree;
+
+        $tree = new \SqlOrganize\Sql\EntityTree();
+        $tree->fieldName = 'reemplazo';
+        $tree->refFieldName = 'id';
+        $tree->refEntityName = 'persona';
+        $tree->children = [];
+        $child = new \SqlOrganize\Sql\EntityTree();
+        $child->fieldName = 'domicilio';
+        $child->refFieldName = 'id';
+        $child->refEntityName = 'domicilio';
+        $tree->children['domicilio_ree'] = $child;
+        $e->tree['reemplazo'] = $tree;
+
+        $e->relations = [];
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'curso';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'curso';
+        $e->relations['curso'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $relation->parentId = 'curso';
+        $e->relations['asignatura'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $relation->parentId = 'curso';
+        $e->relations['comision'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'calendario';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'calendario';
+        $relation->parentId = 'comision';
+        $e->relations['calendario'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'comision_siguiente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'comision';
+        $relation->parentId = 'comision';
+        $e->relations['comision_siguiente'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'modalidad';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'modalidad';
+        $relation->parentId = 'comision';
+        $e->relations['modalidad'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'comision';
+        $e->relations['planificacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion';
+        $e->relations['plan'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'comision';
+        $e->relations['sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'centro_educativo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'centro_educativo';
+        $relation->parentId = 'sede';
+        $e->relations['centro_educativo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'centro_educativo';
+        $e->relations['domicilio_cen'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'sede';
+        $e->relations['domicilio'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'organizacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'sede';
+        $relation->parentId = 'sede';
+        $e->relations['organizacion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'tipo_sede';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'tipo_sede';
+        $relation->parentId = 'sede';
+        $e->relations['tipo_sede'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'disposicion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'disposicion';
+        $relation->parentId = 'curso';
+        $e->relations['disposicion'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'asignatura';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'asignatura';
+        $relation->parentId = 'disposicion';
+        $e->relations['asignatura_dis'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planificacion';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planificacion';
+        $relation->parentId = 'disposicion';
+        $e->relations['planificacion_dis'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'plan';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'plan';
+        $relation->parentId = 'planificacion_dis';
+        $e->relations['plan_pla'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'docente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'persona';
+        $e->relations['docente'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'docente';
+        $e->relations['domicilio_doc'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'planilla_docente';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'planilla_docente';
+        $e->relations['planilla_docente'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'reemplazo';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'persona';
+        $e->relations['reemplazo'] = $relation;
+
+        $relation = new \SqlOrganize\Sql\EntityRelation();
+        $relation->fieldName = 'domicilio';
+        $relation->refFieldName = 'id';
+        $relation->refEntityName = 'domicilio';
+        $relation->parentId = 'reemplazo';
+        $e->relations['domicilio_ree'] = $relation;
+
+        $e->om = [];
+        $om = new \SqlOrganize\Model\EntityRef();
+        $om->fieldName = 'toma';
+        $om->entityName = 'asignacion_planilla_docente';
+        $e->om['asignacionPlanillaDocente_'] = $om;
+
         $f = new Field();
         $f->entityName = 'toma';
         $f->name = 'alta';
@@ -3703,6 +6579,21 @@ class Schema extends ISchema
             'required' => '1',
         ];
         $e->fields['alta'] = $f;
+
+        $f = new Field();
+        $f->entityName = 'toma';
+        $f->name = 'archivo';
+        $f->dataType = 'varchar';
+        $f->type = 'string';
+        $f->checks = [
+            'type' => 'string',
+        ];
+        $f->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+            'nullIfEmpty' => true,
+        ];
+        $e->fields['archivo'] = $f;
 
         $f = new Field();
         $f->entityName = 'toma';

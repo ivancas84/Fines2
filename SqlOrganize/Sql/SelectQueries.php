@@ -142,7 +142,7 @@ abstract class SelectQueries
         $sql = "SELECT DISTINCT ";
         $sql .= $this->sqlFieldsSimple($entityName);
         $sql .= $this->sqlFrom($entityName);
-        $sql .= " WHERE " . $this->db->config->id . " = :Id";
+        $sql .= " WHERE " . $this->db->config->idName . " = :Id";
 
         return $sql;
     }
@@ -154,19 +154,7 @@ abstract class SelectQueries
         $sql = "SELECT DISTINCT ";
         $sql .= $this->sqlFieldsSimple($entityName);
         $sql .= $this->sqlFrom($entityName);
-        $sql .= " WHERE " . $metadata->alias . "." . $this->db->config->id . " IN (:Ids)";
-
-        return $sql;
-    }
-
-    public function byIdsAll($entityName)
-    {
-        $metadata = $this->db->getEntityMetadata($entityName);
-        $sql = "SELECT DISTINCT ";
-        $sql .= $this->sqlFields($entityName);
-        $sql .= $this->sqlFrom($entityName);
-        $sql .= $this->sqlJoin($entityName);
-        $sql .= " WHERE " . $metadata->alias . "." . $this->db->config->id . " IN (:Ids)";
+        $sql .= " WHERE " . $metadata->alias . "." . $this->db->config->idName . " IN (:Ids)";
 
         return $sql;
     }
@@ -227,7 +215,7 @@ abstract class SelectQueries
     public function selectId($entityName)
     {
         $metadata = $this->db->getEntityMetadata($entityName);
-        $sql = "SELECT DISTINCT " . $metadata->alias . "." . $this->db->config->id . "\n";
+        $sql = "SELECT DISTINCT " . $metadata->alias . "." . $this->db->config->idName . "\n";
         $sql .= $this->sqlFrom($entityName);
         $sql .= $this->sqlJoin($entityName);
 

@@ -2,6 +2,9 @@
 
 namespace SqlOrganize\Sql;
 
+require_once MAIN_PATH . 'SqlOrganize/Sql/SelectQueries.php';
+
+
 /**
  * Consultas de selección específicas para SQL Server
  */
@@ -28,7 +31,7 @@ class SelectQueriesMy extends SelectQueries
             ";
             
             $stmt = $connection->prepare($sql);
-            $stmt->bindValue(':dbName', $this->db->config->dbName);
+            $stmt->bindValue(':dbName', DB_NAME_FINES);
             $stmt->execute();
             
             $tables = [];

@@ -3,6 +3,12 @@
 namespace SqlOrganize\Sql;
 
 require_once MAIN_PATH . 'SqlOrganize/Sql/Db.php';
+require_once MAIN_PATH . 'SqlOrganize/Sql/DataProvider.php';
+
+require_once MAIN_PATH . 'SqlOrganizeMy/Sql/SelectQueriesMy.php';
+
+
+use PDO;
 
 /**
  * Contenedor principal para SQL Server
@@ -12,6 +18,10 @@ require_once MAIN_PATH . 'SqlOrganize/Sql/Db.php';
  */
 class DbMy extends Db
 {
+
+    private static ?Db $instance = null;
+
+    
     /**
      * Constructor
      * 
@@ -21,10 +31,32 @@ class DbMy extends Db
      * @example
      * $connectionString = "server=127.0.0.1;uid=root;pwd=12345;database=test"
      */
-    public function __construct(ISchema $schema)
+    protected function __construct(Config $config, ISchema $schema)
     {
-        parent::__construct($schema);
+        parent::__construct($config, $schema);
     }
+
+    protected function createConnection(){
+        $this->pdo = new PDO("mysql:host=" . DB_HOST_FINES . ";dbname=" . DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+        $this->pdo->exec("SET NAMES 'utf8mb3'");
+    }
+
+        // Accessor
+    public static function getInstance(?Config $config, ?ISchema $schema): DB
+    {
+        if (self::$instance === null) {
+            if($schema === null || $config === null) {
+                throw new \InvalidArgumentException("Schema or Config cannot be null");
+            }
+            self::$instance = new DbMy($config, $schema);
+        }
+
+        return self::$instance;
+    }
+
 
     public function CreateSelectQueries(): SelectQueries
     {

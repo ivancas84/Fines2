@@ -14,16 +14,27 @@ use PDOException;
  * En una determinada App existira una clase Container que sera el director (Builder) y utilizara clases estaticas de Db (Singleton).
  * Todos los elementos necesarios para conectarse, obtener y definir datos de una base, deben pertenecer a Db.
  */
-abstract class Db
+abstract class Db 
 {
+
     /** @var array<string, EntityMetadata> */
     public array $entities;
+
+    public PDO $pdo;
+    public Config $config;
     
-    
-    public function __construct(ISchema $schema)
+    protected function __construct(Config $config, ISchema $schema)
     {
+        $this->config = $config;
+        $this->initEntities($schema);
+        $this->createConnection();
+    }
+
+    protected abstract function createConnection();
+    
+    protected function initEntities(ISchema $schema){
         $this->entities = $schema->entities;
-        
+
         foreach ($this->entities as $entity) {
             $entity->db = $this;
             
@@ -31,6 +42,13 @@ abstract class Db
                 $field->db = $this;
             }
         }
+    }
+
+  
+    // Get the PDO connection
+    public function getConnection(): PDO
+    {
+        return $this->pdo;
     }
     
     /**
@@ -70,7 +88,7 @@ abstract class Db
     /**
      * Nombres de campos de la entidad
      * 
-     * Importante, por cada entidad y por cada relacion, debe incluirse el campo derivado db.config.id. 
+     * Importante, por cada entidad y por cada relacion, debe incluirse el campo derivado ID_NAME. 
      * Varios metodos definidos asumen que el valor de _Id esta incluido (EntityVal, DbCache, EntitySql, etc)
      * Utilizar FieldNamesRel, para devolver los nombres de campos junto el nombre de campos de relaciones
      * 
@@ -82,14 +100,14 @@ abstract class Db
         $l = array_keys($this->FieldsEntity($entityName));
         
         // Remove id if exists
-        $idIndex = array_search($this->config->id, $l);
+        $idIndex = array_search($this->config->idName, $l);
         if ($idIndex !== false) {
             unset($l[$idIndex]);
             $l = array_values($l); // Reindex array
         }
         
         // Insert id at the beginning
-        array_unshift($l, $this->config->id);
+        array_unshift($l, $this->config->idName);
         return $l;
     }
     
@@ -101,7 +119,7 @@ abstract class Db
     {
         $l = array_keys($this->FieldsEntity($entityName));
         
-        $idIndex = array_search($this->config->id, $l);
+        $idIndex = array_search($this->config->idName, $l);
         if ($idIndex !== false) {
             unset($l[$idIndex]);
             $l = array_values($l); // Reindex array
@@ -134,7 +152,7 @@ abstract class Db
         if (!empty($entityMetadata->relations)) {
             foreach ($entityMetadata->relations as $fieldId => $er) {
                 // conviene colocar primero el id para facilitar la division en dapper
-                $fieldNamesR[] = $fieldId . $this->config->separator . $this->config->id;
+                $fieldNamesR[] = $fieldId . $this->config->separator . $this->config->idName;
                 
                 foreach ($this->FieldNamesWithoutId($er->refEntityName) as $fieldName) {
                     $fieldNamesR[] = $fieldId . $this->config->separator . $fieldName;
@@ -173,18 +191,19 @@ abstract class Db
      * Conexion con la base de datos
      */
     public function Connection(): PDO {
-        return new PDO(
-            $this->config->connectionString,
-            $this->config->username, // username
-            $this->config->password, // password
-            [
+        return new PDO("mysql:host=" . DB_HOST_FINES . ";dbname=" . DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-            ]
-        );
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ]);
+            $pdo->exec("SET NAMES 'utf8mb3'");
     }
     
+
+    public function CreateDataProvider(): DataProvider
+    {
+        return new DataProvider($this);
+    }
+
     /**
      * Definir SQL de persistencia
      */

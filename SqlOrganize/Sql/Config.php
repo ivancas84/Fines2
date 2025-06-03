@@ -10,10 +10,11 @@ class Config
     /**
      * Conexión con la base de datos
      */
-    public string $connectionString;
-    public string $username;
-    public string $password;
-
+    public string $host;
+    public string $dbName;
+    public string $user;
+    public string $pass;
+    
     
     /**
      * String de concatenacion
@@ -36,12 +37,8 @@ class Config
      * Todas las tablas deben tener un identificador, que puede ser real o ficticio.
      * El identificador ficticio se define como "_Id"
      */
-    public string $id = "_Id";
-    
-    /**
-     * Nombre de la base de datos
-     */
-    public string $dbName;
+    public string $idName = "id";
+
     
     public string $separator = "__";
 }

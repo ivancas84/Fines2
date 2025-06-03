@@ -370,25 +370,6 @@ abstract class BuildSchema
         }
     }
 
-    public function createModelTree($sw, array $tree, string $prefix = ""): void
-    {
-        fwrite($sw, $prefix . "                            'children' => [\n");
-
-        foreach ($tree as $fieldId => $tree_) {
-            fwrite($sw, $prefix . "                                // " . $fieldId . "\n");
-            fwrite($sw, $prefix . "                                '" . $fieldId . "' => [\n");
-            fwrite($sw, $prefix . "                                    'fieldName' => '" . $tree_->fieldName . "',\n");
-            fwrite($sw, $prefix . "                                    'refFieldName' => '" . $tree_->refFieldName . "',\n");
-            fwrite($sw, $prefix . "                                    'refEntityName' => '" . $tree_->refEntityName . "',\n");
-            if (!empty($tree_->children)) {
-                $this->createModelTree($sw, $tree_->children, $prefix . "        ");
-            }
-            fwrite($sw, $prefix . "                                ],\n\n");
-        }
-
-        fwrite($sw, $prefix . "                            ],\n");
-    }
-    
 public function createSchema(): void
 {
     if (!is_dir(SCHEMA_CLASS_PATH)) {
@@ -401,6 +382,10 @@ public function createSchema(): void
 
     fwrite($sw, "<?php\n\n");
     fwrite($sw, "namespace SqlOrganize\\Sql\\" . MODEL_NAMESPACE . ";\n\n");
+    fwrite($sw, "require_once MAIN_PATH . 'SqlOrganize/Sql/ISchema.php';\n");
+    fwrite($sw, "require_once MAIN_PATH . 'SqlOrganize/Sql/EntityMetadata.php';\n");
+    fwrite($sw, "require_once MAIN_PATH . 'SqlOrganize/Sql/Field.php';\n");
+
     fwrite($sw, "use SqlOrganize\\Sql\\ISchema;\n");
     fwrite($sw, "use SqlOrganize\\Sql\\EntityMetadata;\n");
     fwrite($sw, "use SqlOrganize\\Sql\\Field;\n\n");
@@ -439,6 +424,60 @@ public function createSchema(): void
         }
         if (!empty($entity->notNull)) {
             fwrite($sw, "        \$e->notNull = ['" . implode("', '", $entity->notNull) . "'];\n");
+        }
+
+        // Tree relationships
+        if (!empty($entity->tree)) {
+            fwrite($sw, "        \$e->tree = [];\n");
+            foreach ($entity->tree as $fieldId => $tree) {
+                fwrite($sw, "        \$tree = new \\SqlOrganize\\Sql\\EntityTree();\n");
+                fwrite($sw, "        \$tree->fieldName = '{$tree->fieldName}';\n");
+                fwrite($sw, "        \$tree->refFieldName = '{$tree->refFieldName}';\n");
+                fwrite($sw, "        \$tree->refEntityName = '{$tree->refEntityName}';\n");
+                
+                if (!empty($tree->children)) {
+                    $this->writeTreeChildren($sw, $tree->children);
+                }
+                
+                fwrite($sw, "        \$e->tree['{$fieldId}'] = \$tree;\n\n");
+            }
+        }
+
+        // Relations
+        if (!empty($entity->relations)) {
+            fwrite($sw, "        \$e->relations = [];\n");
+            foreach ($entity->relations as $fieldId => $relation) {
+                fwrite($sw, "        \$relation = new \\SqlOrganize\\Sql\\EntityRelation();\n");
+                fwrite($sw, "        \$relation->fieldName = '{$relation->fieldName}';\n");
+                fwrite($sw, "        \$relation->refFieldName = '{$relation->refFieldName}';\n");
+                fwrite($sw, "        \$relation->refEntityName = '{$relation->refEntityName}';\n");
+                if (!empty($relation->parentId)) {
+                    fwrite($sw, "        \$relation->parentId = '{$relation->parentId}';\n");
+                }
+                fwrite($sw, "        \$e->relations['{$fieldId}'] = \$relation;\n\n");
+            }
+        }
+
+        // One-to-One relationships (oo)
+        if (!empty($entity->oo)) {
+            fwrite($sw, "        \$e->oo = [];\n");
+            foreach ($entity->oo as $id => $rref) {
+                fwrite($sw, "        \$oo = new \\SqlOrganize\\Model\\EntityRef();\n");
+                fwrite($sw, "        \$oo->fieldName = '{$rref->fieldName}';\n");
+                fwrite($sw, "        \$oo->entityName = '{$rref->entityName}';\n");
+                fwrite($sw, "        \$e->oo['{$id}'] = \$oo;\n\n");
+            }
+        }
+
+        // One-to-Many relationships (om)
+        if (!empty($entity->om)) {
+            fwrite($sw, "        \$e->om = [];\n");
+            foreach ($entity->om as $id => $rref) {
+                fwrite($sw, "        \$om = new \\SqlOrganize\\Model\\EntityRef();\n");
+                fwrite($sw, "        \$om->fieldName = '{$rref->fieldName}';\n");
+                fwrite($sw, "        \$om->entityName = '{$rref->entityName}';\n");
+                fwrite($sw, "        \$e->om['{$id}'] = \$om;\n\n");
+            }
         }
 
         // Fields
@@ -482,8 +521,6 @@ public function createSchema(): void
             }
         }
 
-        // Relations, tree, oo, om could be added here the same way
-
         fwrite($sw, "        \$this->entities['{$entityName}'] = \$e;\n\n");
     }
 
@@ -498,6 +535,21 @@ public function createSchema(): void
 
     $schemaDestinationPath = SCHEMA_BUILDER_CLASS_PATH . DIRECTORY_SEPARATOR . $schemaFileName;
     copy($schemaSourcePath, $schemaDestinationPath);
+}
+
+public function writeTreeChildren($sw, $children, $prefix = "")
+{
+    fwrite($sw, $prefix . "        \$tree->children = [];\n");
+    foreach ($children as $fieldId => $tree) {
+        fwrite($sw, $prefix . "        \$child = new \\SqlOrganize\\Sql\\EntityTree();\n");
+        fwrite($sw, $prefix . "        \$child->fieldName = '{$tree->fieldName}';\n");
+        fwrite($sw, $prefix . "        \$child->refFieldName = '{$tree->refFieldName}';\n");
+        fwrite($sw, $prefix . "        \$child->refEntityName = '{$tree->refEntityName}';\n");
+        if (!empty($tree->children)) {
+            $this->writeTreeChildren($sw, $tree->children, $prefix . "        ");
+        }
+        fwrite($sw, $prefix . "        \$tree->children['{$fieldId}'] = \$child;\n");
+    }
 }
 
 

@@ -2,15 +2,9 @@
 
 namespace SqlOrganize\Sql\Fines2;
 
-set_time_limit(300); // 300 seconds = 5 minutes
-
 require_once __DIR__ . '/config.php';
 
-require_once MAIN_PATH . 'Model\Context.php';
-
-$context = new Context();
-
+$dataProvider = $db->CreateDataProvider();
+$data = $dataProvider->fetchTreeByIds("alumno", 'ff920472-c2e6-4f3e-99fc-4d8401260287', 'fe538c9d-1af6-4f5a-89dd-cdc757a51afe');
 echo "<pre>";
-print_r($context->$db->EntityNames());
-
-v
+print_r($data);
