@@ -1,25 +1,20 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class Resolucion extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "resolucion";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->alumno_resolucion_inscripcion_ = [];
-    }
-
-    public function setFromTree(array $treeData)
-    {
+        $this->Alumno_resolucion_inscripcion_ = [];
     }
 
     /** @var DateTime|null */
@@ -35,9 +30,9 @@ class Resolucion extends Entity
     public ?string $tipo = null;
 
     /** @var int|null */
-    public ?int $alumno_resolucion_inscripcion_Count = null;
+    public ?int $Alumno_resolucion_inscripcion_Count = null;
 
     /** @var Alumno[] (ref alumno.resolucion_inscripcion _m:o resolucion.id) */
-    public array $alumno_resolucion_inscripcion_ = [];
+    public array $Alumno_resolucion_inscripcion_ = [];
 
 }

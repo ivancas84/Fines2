@@ -1,25 +1,20 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class File extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "file";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->detallePersona_archivo_ = [];
-    }
-
-    public function setFromTree(array $treeData)
-    {
+        $this->DetallePersona_archivo_ = [];
     }
 
     /** @var string|null */
@@ -41,9 +36,9 @@ class File extends Entity
     public ?string $type = null;
 
     /** @var int|null */
-    public ?int $detallePersona_archivo_Count = null;
+    public ?int $DetallePersona_archivo_Count = null;
 
     /** @var DetallePersona[] (ref detalle_persona.archivo _m:o file.id) */
-    public array $detallePersona_archivo_ = [];
+    public array $DetallePersona_archivo_ = [];
 
 }

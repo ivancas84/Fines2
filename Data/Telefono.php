@@ -1,25 +1,19 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class Telefono extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "telefono";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-    }
-
-    public function setFromTree(array $treeData)
-    {
-    $persona_ = null;
     }
 
     /** @var DateTime|null */
@@ -44,9 +38,6 @@ class Telefono extends Entity
     public ?string $tipo = null;
 
     /** @var Persona|null (fk telefono.persona _m:o persona.id) */
-    public ?Persona $persona_ = null;
-
-    /** @var string|null */
-    public ?string $persona__ = null;
+    public ?\Fines2\Persona $persona_ = null;
 
 }

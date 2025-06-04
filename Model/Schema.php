@@ -52,9 +52,9 @@ class Schema extends ISchema
         $this->entities['alumno']->relations['resolucion_inscripcion'] = EntityRelation::getInstance('resolucion_inscripcion', 'resolucion', 'id');
 
         $this->entities['alumno']->om = [];
-        $this->entities['alumno']->om['alumnoComision_'] = EntityRef::getInstance('alumno', 'alumno_comision');
-        $this->entities['alumno']->om['calificacion_'] = EntityRef::getInstance('alumno', 'calificacion');
-        $this->entities['alumno']->om['disposicionPendiente_'] = EntityRef::getInstance('alumno', 'disposicion_pendiente');
+        $this->entities['alumno']->om['AlumnoComision_'] = EntityRef::getInstance('alumno', 'alumno_comision');
+        $this->entities['alumno']->om['Calificacion_'] = EntityRef::getInstance('alumno', 'calificacion');
+        $this->entities['alumno']->om['DisposicionPendiente_'] = EntityRef::getInstance('alumno', 'disposicion_pendiente');
         $this->entities['alumno']->fields['adeuda_deudores'] = Field::getInstance('alumno', 'adeuda_deudores', 'varchar', 'string');
         $this->entities['alumno']->fields['adeuda_deudores']->checks = [
             'type' => 'string',
@@ -616,8 +616,8 @@ class Schema extends ISchema
         $this->entities['asignatura']->notNull = ['id', 'nombre'];
 
         $this->entities['asignatura']->om = [];
-        $this->entities['asignatura']->om['curso_'] = EntityRef::getInstance('asignatura', 'curso');
-        $this->entities['asignatura']->om['disposicion_'] = EntityRef::getInstance('asignatura', 'disposicion');
+        $this->entities['asignatura']->om['Curso_'] = EntityRef::getInstance('asignatura', 'curso');
+        $this->entities['asignatura']->om['Disposicion_'] = EntityRef::getInstance('asignatura', 'disposicion');
         $this->entities['asignatura']->fields['clasificacion'] = Field::getInstance('asignatura', 'clasificacion', 'varchar', 'string');
         $this->entities['asignatura']->fields['clasificacion']->checks = [
             'type' => 'string',
@@ -677,7 +677,7 @@ class Schema extends ISchema
         $this->entities['calendario']->notNull = ['anio', 'id', 'insertado', 'semestre'];
 
         $this->entities['calendario']->om = [];
-        $this->entities['calendario']->om['comision_'] = EntityRef::getInstance('calendario', 'comision');
+        $this->entities['calendario']->om['Comision_'] = EntityRef::getInstance('calendario', 'comision');
         $this->entities['calendario']->fields['anio'] = Field::getInstance('calendario', 'anio', 'year', 'DateTime');
         $this->entities['calendario']->fields['anio']->checks = [
             'type' => 'DateTime',
@@ -972,7 +972,7 @@ class Schema extends ISchema
         $this->entities['cargo']->notNull = ['descripcion', 'id'];
 
         $this->entities['cargo']->om = [];
-        $this->entities['cargo']->om['designacion_'] = EntityRef::getInstance('cargo', 'designacion');
+        $this->entities['cargo']->om['Designacion_'] = EntityRef::getInstance('cargo', 'designacion');
         $this->entities['cargo']->fields['descripcion'] = Field::getInstance('cargo', 'descripcion', 'varchar', 'string');
         $this->entities['cargo']->fields['descripcion']->checks = [
             'type' => 'string',
@@ -1004,7 +1004,7 @@ class Schema extends ISchema
         $this->entities['centro_educativo']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
 
         $this->entities['centro_educativo']->om = [];
-        $this->entities['centro_educativo']->om['sede_'] = EntityRef::getInstance('centro_educativo', 'sede');
+        $this->entities['centro_educativo']->om['Sede_'] = EntityRef::getInstance('centro_educativo', 'sede');
         $this->entities['centro_educativo']->fields['cue'] = Field::getInstance('centro_educativo', 'cue', 'varchar', 'string');
         $this->entities['centro_educativo']->fields['cue']->checks = [
             'type' => 'string',
@@ -1114,11 +1114,11 @@ class Schema extends ISchema
         $this->entities['comision']->relations['tipo_sede']->parentId = 'sede';
 
         $this->entities['comision']->om = [];
-        $this->entities['comision']->om['alumnoComision_'] = EntityRef::getInstance('comision', 'alumno_comision');
-        $this->entities['comision']->om['comision_comision_siguiente_'] = EntityRef::getInstance('comision_siguiente', 'comision');
-        $this->entities['comision']->om['comisionRelacionada_'] = EntityRef::getInstance('comision', 'comision_relacionada');
-        $this->entities['comision']->om['comisionRelacionada_relacion_'] = EntityRef::getInstance('relacion', 'comision_relacionada');
-        $this->entities['comision']->om['curso_'] = EntityRef::getInstance('comision', 'curso');
+        $this->entities['comision']->om['AlumnoComision_'] = EntityRef::getInstance('comision', 'alumno_comision');
+        $this->entities['comision']->om['Comision_comision_siguiente_'] = EntityRef::getInstance('comision_siguiente', 'comision');
+        $this->entities['comision']->om['ComisionRelacionada_'] = EntityRef::getInstance('comision', 'comision_relacionada');
+        $this->entities['comision']->om['ComisionRelacionada_relacion_'] = EntityRef::getInstance('relacion', 'comision_relacionada');
+        $this->entities['comision']->om['Curso_'] = EntityRef::getInstance('comision', 'curso');
         $this->entities['comision']->fields['alta'] = Field::getInstance('comision', 'alta', 'timestamp', 'DateTime');
         $this->entities['comision']->fields['alta']->defaultValue = 'current_timestamp()';
         $this->entities['comision']->fields['alta']->checks = [
@@ -1591,9 +1591,9 @@ class Schema extends ISchema
         $this->entities['curso']->relations['plan_pla']->parentId = 'planificacion_dis';
 
         $this->entities['curso']->om = [];
-        $this->entities['curso']->om['calificacion_'] = EntityRef::getInstance('curso', 'calificacion');
-        $this->entities['curso']->om['horario_'] = EntityRef::getInstance('curso', 'horario');
-        $this->entities['curso']->om['toma_'] = EntityRef::getInstance('curso', 'toma');
+        $this->entities['curso']->om['Calificacion_'] = EntityRef::getInstance('curso', 'calificacion');
+        $this->entities['curso']->om['Horario_'] = EntityRef::getInstance('curso', 'horario');
+        $this->entities['curso']->om['Toma_'] = EntityRef::getInstance('curso', 'toma');
         $this->entities['curso']->fields['alta'] = Field::getInstance('curso', 'alta', 'timestamp', 'DateTime');
         $this->entities['curso']->fields['alta']->defaultValue = 'current_timestamp()';
         $this->entities['curso']->fields['alta']->checks = [
@@ -1904,7 +1904,7 @@ class Schema extends ISchema
         $this->entities['dia']->notNull = ['dia', 'id', 'numero'];
 
         $this->entities['dia']->om = [];
-        $this->entities['dia']->om['horario_'] = EntityRef::getInstance('dia', 'horario');
+        $this->entities['dia']->om['Horario_'] = EntityRef::getInstance('dia', 'horario');
         $this->entities['dia']->fields['dia'] = Field::getInstance('dia', 'dia', 'varchar', 'string');
         $this->entities['dia']->fields['dia']->checks = [
             'type' => 'string',
@@ -1931,7 +1931,7 @@ class Schema extends ISchema
         $this->entities['disposicion'] = EntityMetadata::getInstance('disposicion', 'disp');
         $this->entities['disposicion']->pk = ['id'];
         $this->entities['disposicion']->fk = ['asignatura', 'planificacion'];
-        $this->entities['disposicion']->notNull = ['asignatura', 'horas_catedra', 'id', 'planificacion'];
+        $this->entities['disposicion']->notNull = ['asignatura', 'id', 'planificacion'];
 
         $this->entities['disposicion']->tree = [];
         $this->entities['disposicion']->tree['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
@@ -1950,10 +1950,10 @@ class Schema extends ISchema
         $this->entities['disposicion']->relations['plan']->parentId = 'planificacion';
 
         $this->entities['disposicion']->om = [];
-        $this->entities['disposicion']->om['calificacion_'] = EntityRef::getInstance('disposicion', 'calificacion');
-        $this->entities['disposicion']->om['curso_'] = EntityRef::getInstance('disposicion', 'curso');
-        $this->entities['disposicion']->om['disposicionPendiente_'] = EntityRef::getInstance('disposicion', 'disposicion_pendiente');
-        $this->entities['disposicion']->om['distribucionHoraria_'] = EntityRef::getInstance('disposicion', 'distribucion_horaria');
+        $this->entities['disposicion']->om['Calificacion_'] = EntityRef::getInstance('disposicion', 'calificacion');
+        $this->entities['disposicion']->om['Curso_'] = EntityRef::getInstance('disposicion', 'curso');
+        $this->entities['disposicion']->om['DisposicionPendiente_'] = EntityRef::getInstance('disposicion', 'disposicion_pendiente');
+        $this->entities['disposicion']->om['DistribucionHoraria_'] = EntityRef::getInstance('disposicion', 'distribucion_horaria');
         $this->entities['disposicion']->fields['asignatura'] = Field::getInstance('disposicion', 'asignatura', 'varchar', 'string');
         $this->entities['disposicion']->fields['asignatura']->alias = 'asi';
         $this->entities['disposicion']->fields['asignatura']->refEntityName = 'asignatura';
@@ -1965,11 +1965,6 @@ class Schema extends ISchema
         $this->entities['disposicion']->fields['asignatura']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
-        ];
-        $this->entities['disposicion']->fields['horas_catedra'] = Field::getInstance('disposicion', 'horas_catedra', 'int', 'int');
-        $this->entities['disposicion']->fields['horas_catedra']->checks = [
-            'type' => 'int',
-            'required' => '1',
         ];
         $this->entities['disposicion']->fields['id'] = Field::getInstance('disposicion', 'id', 'varchar', 'string');
         $this->entities['disposicion']->fields['id']->checks = [
@@ -2156,9 +2151,9 @@ class Schema extends ISchema
         $this->entities['domicilio']->notNull = ['calle', 'id', 'localidad', 'numero'];
 
         $this->entities['domicilio']->om = [];
-        $this->entities['domicilio']->om['centroEducativo_'] = EntityRef::getInstance('domicilio', 'centro_educativo');
-        $this->entities['domicilio']->om['persona_'] = EntityRef::getInstance('domicilio', 'persona');
-        $this->entities['domicilio']->om['sede_'] = EntityRef::getInstance('domicilio', 'sede');
+        $this->entities['domicilio']->om['CentroEducativo_'] = EntityRef::getInstance('domicilio', 'centro_educativo');
+        $this->entities['domicilio']->om['Persona_'] = EntityRef::getInstance('domicilio', 'persona');
+        $this->entities['domicilio']->om['Sede_'] = EntityRef::getInstance('domicilio', 'sede');
         $this->entities['domicilio']->fields['barrio'] = Field::getInstance('domicilio', 'barrio', 'varchar', 'string');
         $this->entities['domicilio']->fields['barrio']->checks = [
             'type' => 'string',
@@ -2298,7 +2293,7 @@ class Schema extends ISchema
         $this->entities['file']->notNull = ['content', 'created', 'id', 'name', 'size', 'type'];
 
         $this->entities['file']->om = [];
-        $this->entities['file']->om['detallePersona_archivo_'] = EntityRef::getInstance('archivo', 'detalle_persona');
+        $this->entities['file']->om['DetallePersona_archivo_'] = EntityRef::getInstance('archivo', 'detalle_persona');
         $this->entities['file']->fields['content'] = Field::getInstance('file', 'content', 'varchar', 'string');
         $this->entities['file']->fields['content']->checks = [
             'type' => 'string',
@@ -2502,7 +2497,7 @@ class Schema extends ISchema
         $this->entities['modalidad']->notNull = ['id', 'nombre'];
 
         $this->entities['modalidad']->om = [];
-        $this->entities['modalidad']->om['comision_'] = EntityRef::getInstance('modalidad', 'comision');
+        $this->entities['modalidad']->om['Comision_'] = EntityRef::getInstance('modalidad', 'comision');
         $this->entities['modalidad']->fields['id'] = Field::getInstance('modalidad', 'id', 'varchar', 'string');
         $this->entities['modalidad']->fields['id']->checks = [
             'type' => 'string',
@@ -2543,15 +2538,15 @@ class Schema extends ISchema
         $this->entities['persona']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
 
         $this->entities['persona']->oo = [];
-        $this->entities['persona']->oo['alumno_']  = EntityRef::getInstance('persona', 'alumno');
+        $this->entities['persona']->oo['Alumno_']  = EntityRef::getInstance('persona', 'alumno');
 
         $this->entities['persona']->om = [];
-        $this->entities['persona']->om['designacion_'] = EntityRef::getInstance('persona', 'designacion');
-        $this->entities['persona']->om['detallePersona_'] = EntityRef::getInstance('persona', 'detalle_persona');
-        $this->entities['persona']->om['email_'] = EntityRef::getInstance('persona', 'email');
-        $this->entities['persona']->om['telefono_'] = EntityRef::getInstance('persona', 'telefono');
-        $this->entities['persona']->om['toma_docente_'] = EntityRef::getInstance('docente', 'toma');
-        $this->entities['persona']->om['toma_reemplazo_'] = EntityRef::getInstance('reemplazo', 'toma');
+        $this->entities['persona']->om['Designacion_'] = EntityRef::getInstance('persona', 'designacion');
+        $this->entities['persona']->om['DetallePersona_'] = EntityRef::getInstance('persona', 'detalle_persona');
+        $this->entities['persona']->om['Email_'] = EntityRef::getInstance('persona', 'email');
+        $this->entities['persona']->om['Telefono_'] = EntityRef::getInstance('persona', 'telefono');
+        $this->entities['persona']->om['Toma_docente_'] = EntityRef::getInstance('docente', 'toma');
+        $this->entities['persona']->om['Toma_reemplazo_'] = EntityRef::getInstance('reemplazo', 'toma');
         $this->entities['persona']->fields['alta'] = Field::getInstance('persona', 'alta', 'timestamp', 'DateTime');
         $this->entities['persona']->fields['alta']->defaultValue = 'current_timestamp()';
         $this->entities['persona']->fields['alta']->checks = [
@@ -2771,8 +2766,8 @@ class Schema extends ISchema
         $this->entities['plan']->notNull = ['id', 'orientacion'];
 
         $this->entities['plan']->om = [];
-        $this->entities['plan']->om['alumno_'] = EntityRef::getInstance('plan', 'alumno');
-        $this->entities['plan']->om['planificacion_'] = EntityRef::getInstance('plan', 'planificacion');
+        $this->entities['plan']->om['Alumno_'] = EntityRef::getInstance('plan', 'alumno');
+        $this->entities['plan']->om['Planificacion_'] = EntityRef::getInstance('plan', 'planificacion');
         $this->entities['plan']->fields['distribucion_horaria'] = Field::getInstance('plan', 'distribucion_horaria', 'varchar', 'string');
         $this->entities['plan']->fields['distribucion_horaria']->checks = [
             'type' => 'string',
@@ -2830,8 +2825,8 @@ class Schema extends ISchema
         $this->entities['planificacion']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
 
         $this->entities['planificacion']->om = [];
-        $this->entities['planificacion']->om['comision_'] = EntityRef::getInstance('planificacion', 'comision');
-        $this->entities['planificacion']->om['disposicion_'] = EntityRef::getInstance('planificacion', 'disposicion');
+        $this->entities['planificacion']->om['Comision_'] = EntityRef::getInstance('planificacion', 'comision');
+        $this->entities['planificacion']->om['Disposicion_'] = EntityRef::getInstance('planificacion', 'disposicion');
         $this->entities['planificacion']->fields['anio'] = Field::getInstance('planificacion', 'anio', 'varchar', 'string');
         $this->entities['planificacion']->fields['anio']->checks = [
             'type' => 'string',
@@ -2885,9 +2880,9 @@ class Schema extends ISchema
         $this->entities['planilla_docente']->notNull = ['id', 'insertado', 'numero'];
 
         $this->entities['planilla_docente']->om = [];
-        $this->entities['planilla_docente']->om['asignacionPlanillaDocente_'] = EntityRef::getInstance('planilla_docente', 'asignacion_planilla_docente');
-        $this->entities['planilla_docente']->om['contralor_'] = EntityRef::getInstance('planilla_docente', 'contralor');
-        $this->entities['planilla_docente']->om['toma_'] = EntityRef::getInstance('planilla_docente', 'toma');
+        $this->entities['planilla_docente']->om['AsignacionPlanillaDocente_'] = EntityRef::getInstance('planilla_docente', 'asignacion_planilla_docente');
+        $this->entities['planilla_docente']->om['Contralor_'] = EntityRef::getInstance('planilla_docente', 'contralor');
+        $this->entities['planilla_docente']->om['Toma_'] = EntityRef::getInstance('planilla_docente', 'toma');
         $this->entities['planilla_docente']->fields['fecha_consejo'] = Field::getInstance('planilla_docente', 'fecha_consejo', 'date', 'DateTime');
         $this->entities['planilla_docente']->fields['fecha_consejo']->checks = [
             'type' => 'DateTime',
@@ -2934,7 +2929,7 @@ class Schema extends ISchema
         $this->entities['resolucion']->notNull = ['id', 'numero'];
 
         $this->entities['resolucion']->om = [];
-        $this->entities['resolucion']->om['alumno_resolucion_inscripcion_'] = EntityRef::getInstance('resolucion_inscripcion', 'alumno');
+        $this->entities['resolucion']->om['Alumno_resolucion_inscripcion_'] = EntityRef::getInstance('resolucion_inscripcion', 'alumno');
         $this->entities['resolucion']->fields['anio'] = Field::getInstance('resolucion', 'anio', 'year', 'DateTime');
         $this->entities['resolucion']->fields['anio']->checks = [
             'type' => 'DateTime',
@@ -2969,7 +2964,6 @@ class Schema extends ISchema
         $this->entities['sede'] = EntityMetadata::getInstance('sede', 'sede');
         $this->entities['sede']->pk = ['id'];
         $this->entities['sede']->fk = ['centro_educativo', 'domicilio', 'organizacion', 'tipo_sede'];
-        $this->entities['sede']->unique = ['nombre'];
         $this->entities['sede']->notNull = ['alta', 'id', 'nombre', 'numero'];
 
         $this->entities['sede']->tree = [];
@@ -2997,9 +2991,9 @@ class Schema extends ISchema
         $this->entities['sede']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
 
         $this->entities['sede']->om = [];
-        $this->entities['sede']->om['comision_'] = EntityRef::getInstance('sede', 'comision');
-        $this->entities['sede']->om['designacion_'] = EntityRef::getInstance('sede', 'designacion');
-        $this->entities['sede']->om['sede_organizacion_'] = EntityRef::getInstance('organizacion', 'sede');
+        $this->entities['sede']->om['Comision_'] = EntityRef::getInstance('sede', 'comision');
+        $this->entities['sede']->om['Designacion_'] = EntityRef::getInstance('sede', 'designacion');
+        $this->entities['sede']->om['Sede_organizacion_'] = EntityRef::getInstance('organizacion', 'sede');
         $this->entities['sede']->fields['alta'] = Field::getInstance('sede', 'alta', 'timestamp', 'DateTime');
         $this->entities['sede']->fields['alta']->defaultValue = 'current_timestamp()';
         $this->entities['sede']->fields['alta']->checks = [
@@ -3197,7 +3191,7 @@ class Schema extends ISchema
         $this->entities['tipo_sede']->notNull = ['descripcion', 'id'];
 
         $this->entities['tipo_sede']->om = [];
-        $this->entities['tipo_sede']->om['sede_'] = EntityRef::getInstance('tipo_sede', 'sede');
+        $this->entities['tipo_sede']->om['Sede_'] = EntityRef::getInstance('tipo_sede', 'sede');
         $this->entities['tipo_sede']->fields['descripcion'] = Field::getInstance('tipo_sede', 'descripcion', 'varchar', 'string');
         $this->entities['tipo_sede']->fields['descripcion']->checks = [
             'type' => 'string',
@@ -3344,21 +3338,12 @@ class Schema extends ISchema
         $this->entities['toma']->relations['domicilio_ree']->parentId = 'reemplazo';
 
         $this->entities['toma']->om = [];
-        $this->entities['toma']->om['asignacionPlanillaDocente_'] = EntityRef::getInstance('toma', 'asignacion_planilla_docente');
+        $this->entities['toma']->om['AsignacionPlanillaDocente_'] = EntityRef::getInstance('toma', 'asignacion_planilla_docente');
         $this->entities['toma']->fields['alta'] = Field::getInstance('toma', 'alta', 'timestamp', 'DateTime');
         $this->entities['toma']->fields['alta']->defaultValue = 'current_timestamp()';
         $this->entities['toma']->fields['alta']->checks = [
             'type' => 'DateTime',
             'required' => '1',
-        ];
-        $this->entities['toma']->fields['archivo'] = Field::getInstance('toma', 'archivo', 'varchar', 'string');
-        $this->entities['toma']->fields['archivo']->checks = [
-            'type' => 'string',
-        ];
-        $this->entities['toma']->fields['archivo']->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-            'nullIfEmpty' => true,
         ];
         $this->entities['toma']->fields['asistencia'] = Field::getInstance('toma', 'asistencia', 'tinyint', 'int');
         $this->entities['toma']->fields['asistencia']->checks = [

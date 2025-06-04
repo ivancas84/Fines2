@@ -48,14 +48,10 @@ class Config
      */
     public bool $fkId = true;
     
-
-
-    
     public string $separator = "__";
 
     public string $schemaClassPath;
 
-    public string $schemaBuilderClassPath;
-
+    public string $dbClass = "\SqlOrganize\Sql\DbMy";
 
 }

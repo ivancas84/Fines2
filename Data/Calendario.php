@@ -1,25 +1,20 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class Calendario extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "calendario";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->comision_ = [];
-    }
-
-    public function setFromTree(array $treeData)
-    {
+        $this->Comision_ = [];
     }
 
     /** @var DateTime|null */
@@ -44,9 +39,9 @@ class Calendario extends Entity
     public ?int $semestre = null;
 
     /** @var int|null */
-    public ?int $comision_Count = null;
+    public ?int $Comision_Count = null;
 
     /** @var Comision[] (ref comision.calendario _m:o calendario.id) */
-    public array $comision_ = [];
+    public array $Comision_ = [];
 
 }

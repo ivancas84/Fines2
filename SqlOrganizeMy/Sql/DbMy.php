@@ -2,12 +2,6 @@
 
 namespace SqlOrganize\Sql;
 
-require_once MAIN_PATH . 'SqlOrganize/Sql/Db.php';
-require_once MAIN_PATH . 'SqlOrganize/Sql/DataProvider.php';
-
-require_once MAIN_PATH . 'SqlOrganizeMy/Sql/SelectQueriesMy.php';
-
-
 use PDO;
 
 /**
@@ -25,15 +19,14 @@ class DbMy extends Db
     /**
      * Constructor
      * 
-     * @param ISchema $schema Schema
-     * @param array|null $cache Cache opcional
+     * @param array|null $entities 
      * 
      * @example
      * $connectionString = "server=127.0.0.1;uid=root;pwd=12345;database=test"
      */
-    protected function __construct(Config $config, ISchema $schema)
+    protected function __construct(Config $config, array $entities)
     {
-        parent::__construct($config, $schema);
+        parent::__construct($config, $entities);
     }
 
     protected function createConnection(){
@@ -45,16 +38,17 @@ class DbMy extends Db
     }
 
         // Accessor
-    public static function getInstance(?Config $config, ?ISchema $schema): DB
+    public static function getInstance(): DB
     {
-        if (self::$instance === null) {
-            if($schema === null || $config === null) {
-                throw new \InvalidArgumentException("Schema or Config cannot be null");
-            }
-            self::$instance = new DbMy($config, $schema);
-        }
-
         return self::$instance;
+    }
+
+    public static function initInstance(?Config $config, array $entities){
+        self::$instance = new DbMy($config, $entities);
+
+        foreach(self::$instance->entities as $entityMetadata){
+            require_once rtrim($config->mainPath, '/') . '/Data/' . $entityMetadata->getClassName() .'.php';
+        }
     }
 
 

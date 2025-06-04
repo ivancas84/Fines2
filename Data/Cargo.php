@@ -1,25 +1,20 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class Cargo extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "cargo";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->designacion_ = [];
-    }
-
-    public function setFromTree(array $treeData)
-    {
+        $this->Designacion_ = [];
     }
 
     /** @var string|null */
@@ -29,9 +24,9 @@ class Cargo extends Entity
     public ?string $id = null;
 
     /** @var int|null */
-    public ?int $designacion_Count = null;
+    public ?int $Designacion_Count = null;
 
     /** @var Designacion[] (ref designacion.cargo _m:o cargo.id) */
-    public array $designacion_ = [];
+    public array $Designacion_ = [];
 
 }

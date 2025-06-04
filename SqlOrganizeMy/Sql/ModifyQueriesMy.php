@@ -1,8 +1,6 @@
 <?php
 namespace SqlOrganize\Sql;
 
-require_once("");
-
 class ModifyQueriesMy extends ModifyQueries
 {
     public function __construct(Db $db)

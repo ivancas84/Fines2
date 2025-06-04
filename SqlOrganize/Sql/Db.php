@@ -23,17 +23,17 @@ abstract class Db
     public PDO $pdo;
     public Config $config;
     
-    protected function __construct(Config $config, ISchema $schema)
+    protected function __construct(Config $config, array $entities)
     {
         $this->config = $config;
-        $this->initEntities($schema);
+        $this->initEntities($entities);
         $this->createConnection();
     }
 
     protected abstract function createConnection();
     
-    protected function initEntities(ISchema $schema){
-        $this->entities = $schema->entities;
+    protected function initEntities(array $entities){
+        $this->entities = $entities;
 
         foreach ($this->entities as $entity) {
             $entity->db = $this;

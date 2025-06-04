@@ -1,27 +1,22 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class PlanillaDocente extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "planilla_docente";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->asignacionPlanillaDocente_ = [];
-        $this->contralor_ = [];
-        $this->toma_ = [];
-    }
-
-    public function setFromTree(array $treeData)
-    {
+        $this->AsignacionPlanillaDocente_ = [];
+        $this->Contralor_ = [];
+        $this->Toma_ = [];
     }
 
     /** @var DateTime|null */
@@ -43,21 +38,21 @@ class PlanillaDocente extends Entity
     public ?string $observaciones = null;
 
     /** @var int|null */
-    public ?int $asignacionPlanillaDocente_Count = null;
+    public ?int $AsignacionPlanillaDocente_Count = null;
 
     /** @var AsignacionPlanillaDocente[] (ref asignacion_planilla_docente.planilla_docente _m:o planilla_docente.id) */
-    public array $asignacionPlanillaDocente_ = [];
+    public array $AsignacionPlanillaDocente_ = [];
 
     /** @var int|null */
-    public ?int $contralor_Count = null;
+    public ?int $Contralor_Count = null;
 
     /** @var Contralor[] (ref contralor.planilla_docente _m:o planilla_docente.id) */
-    public array $contralor_ = [];
+    public array $Contralor_ = [];
 
     /** @var int|null */
-    public ?int $toma_Count = null;
+    public ?int $Toma_Count = null;
 
     /** @var Toma[] (ref toma.planilla_docente _m:o planilla_docente.id) */
-    public array $toma_ = [];
+    public array $Toma_ = [];
 
 }

@@ -14,6 +14,25 @@ class DataProvider {
         $this->db = $db;
     }
 
+
+    public function fetchEntitiesByIds(string $entityName, ...$ids): array {
+        $data = $this->fetchTreeByIds($entityName, ...$ids);
+        $entityMetadata = $this->db->getEntityMetadata($entityName);
+
+        $className = $this->db->config->namespace."\\".$entityMetadata->getClassName();
+
+        $response = [];
+        foreach($data as $d) {
+            $obj = new $className;
+            $obj->ssetFromTree($d);
+            $response[] = $obj;
+        }
+
+        return $response;
+
+
+    }
+
     /**
      * Devuelve entidades a partir de ids
      */

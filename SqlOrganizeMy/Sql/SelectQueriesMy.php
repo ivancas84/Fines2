@@ -2,9 +2,6 @@
 
 namespace SqlOrganize\Sql;
 
-require_once MAIN_PATH . 'SqlOrganize/Sql/SelectQueries.php';
-
-
 /**
  * Consultas de selección específicas para SQL Server
  */

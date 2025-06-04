@@ -41,4 +41,10 @@ class Config
 
     
     public string $separator = "__";
+
+
+    public string $mainPath = "";
+
+    public string $namespace = "";
+
 }

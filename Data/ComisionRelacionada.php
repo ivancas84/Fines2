@@ -1,26 +1,19 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class ComisionRelacionada extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "comision_relacionada";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-    }
-
-    public function setFromTree(array $treeData)
-    {
-    $comision_ = null;
-    $relacion_ = null;
     }
 
     /** @var string|null */
@@ -33,15 +26,9 @@ class ComisionRelacionada extends Entity
     public ?string $relacion = null;
 
     /** @var Comision|null (fk comision_relacionada.comision _m:o comision.id) */
-    public ?Comision $comision_ = null;
-
-    /** @var string|null */
-    public ?string $comision__ = null;
+    public ?\Fines2\Comision $comision_ = null;
 
     /** @var Comision|null (fk comision_relacionada.relacion _m:o comision.id) */
-    public ?Comision $relacion_ = null;
-
-    /** @var string|null */
-    public ?string $relacion__ = null;
+    public ?\Fines2\Comision $relacion_ = null;
 
 }

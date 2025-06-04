@@ -1,29 +1,26 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class Persona extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "persona";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->designacion_ = [];
-        $this->detallePersona_ = [];
-        $this->email_ = [];
-        $this->telefono_ = [];
-        $this->toma_docente_ = [];
-        $this->toma_reemplazo_ = [];
+        $this->Designacion_ = [];
+        $this->DetallePersona_ = [];
+        $this->Email_ = [];
+        $this->Telefono_ = [];
+        $this->Toma_docente_ = [];
+        $this->Toma_reemplazo_ = [];
     }
-
-    
 
     /** @var DateTime|null */
     public ?DateTime $alta = null;
@@ -113,48 +110,45 @@ class Persona extends Entity
     public ?int $telefono_verificado = null;
 
     /** @var Domicilio|null (fk persona.domicilio _m:o domicilio.id) */
-    public ?Domicilio $domicilio_ = null;
-
-    /** @var string|null */
-    public ?string $domicilio__ = null;
+    public ?\Fines2\Domicilio $domicilio_ = null;
 
     /** @var Alumno|null (ref alumno.persona _o:o persona.id) */
-    public ?Alumno $alumno_ = null;
+    public ?\Fines2\Alumno $Alumno_ = null;
 
     /** @var int|null */
-    public ?int $designacion_Count = null;
+    public ?int $Designacion_Count = null;
 
     /** @var Designacion[] (ref designacion.persona _m:o persona.id) */
-    public array $designacion_ = [];
+    public array $Designacion_ = [];
 
     /** @var int|null */
-    public ?int $detallePersona_Count = null;
+    public ?int $DetallePersona_Count = null;
 
     /** @var DetallePersona[] (ref detalle_persona.persona _m:o persona.id) */
-    public array $detallePersona_ = [];
+    public array $DetallePersona_ = [];
 
     /** @var int|null */
-    public ?int $email_Count = null;
+    public ?int $Email_Count = null;
 
     /** @var Email[] (ref email.persona _m:o persona.id) */
-    public array $email_ = [];
+    public array $Email_ = [];
 
     /** @var int|null */
-    public ?int $telefono_Count = null;
+    public ?int $Telefono_Count = null;
 
     /** @var Telefono[] (ref telefono.persona _m:o persona.id) */
-    public array $telefono_ = [];
+    public array $Telefono_ = [];
 
     /** @var int|null */
-    public ?int $toma_docente_Count = null;
+    public ?int $Toma_docente_Count = null;
 
     /** @var Toma[] (ref toma.docente _m:o persona.id) */
-    public array $toma_docente_ = [];
+    public array $Toma_docente_ = [];
 
     /** @var int|null */
-    public ?int $toma_reemplazo_Count = null;
+    public ?int $Toma_reemplazo_Count = null;
 
     /** @var Toma[] (ref toma.reemplazo _m:o persona.id) */
-    public array $toma_reemplazo_ = [];
+    public array $Toma_reemplazo_ = [];
 
 }

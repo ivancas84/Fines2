@@ -1,26 +1,19 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class DetallePersona extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "detalle_persona";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-    }
-
-    public function setFromTree(array $treeData)
-    {
-    $archivo_ = null;
-    $persona_ = null;
     }
 
     /** @var string|null */
@@ -48,15 +41,9 @@ class DetallePersona extends Entity
     public ?string $tipo = null;
 
     /** @var File|null (fk detalle_persona.archivo _m:o file.id) */
-    public ?File $archivo_ = null;
-
-    /** @var string|null */
-    public ?string $archivo__ = null;
+    public ?\Fines2\File $archivo_ = null;
 
     /** @var Persona|null (fk detalle_persona.persona _m:o persona.id) */
-    public ?Persona $persona_ = null;
-
-    /** @var string|null */
-    public ?string $persona__ = null;
+    public ?\Fines2\Persona $persona_ = null;
 
 }

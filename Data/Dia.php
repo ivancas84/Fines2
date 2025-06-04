@@ -1,25 +1,20 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class Dia extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "dia";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->horario_ = [];
-    }
-
-    public function setFromTree(array $treeData)
-    {
+        $this->Horario_ = [];
     }
 
     /** @var string|null */
@@ -32,9 +27,9 @@ class Dia extends Entity
     public ?int $numero = null;
 
     /** @var int|null */
-    public ?int $horario_Count = null;
+    public ?int $Horario_Count = null;
 
     /** @var Horario[] (ref horario.dia _m:o dia.id) */
-    public array $horario_ = [];
+    public array $Horario_ = [];
 
 }

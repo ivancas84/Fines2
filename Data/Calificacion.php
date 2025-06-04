@@ -1,27 +1,19 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class Calificacion extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "calificacion";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-    }
-
-    public function setFromTree(array $treeData)
-    {
-    $alumno_ = null;
-    $curso_ = null;
-    $disposicion_ = null;
     }
 
     /** @var string|null */
@@ -67,21 +59,12 @@ class Calificacion extends Entity
     public ?int $porcentaje_asistencia = null;
 
     /** @var Alumno|null (fk calificacion.alumno _m:o alumno.id) */
-    public ?Alumno $alumno_ = null;
-
-    /** @var string|null */
-    public ?string $alumno__ = null;
+    public ?\Fines2\Alumno $alumno_ = null;
 
     /** @var Curso|null (fk calificacion.curso _m:o curso.id) */
-    public ?Curso $curso_ = null;
-
-    /** @var string|null */
-    public ?string $curso__ = null;
+    public ?\Fines2\Curso $curso_ = null;
 
     /** @var Disposicion|null (fk calificacion.disposicion _m:o disposicion.id) */
-    public ?Disposicion $disposicion_ = null;
-
-    /** @var string|null */
-    public ?string $disposicion__ = null;
+    public ?\Fines2\Disposicion $disposicion_ = null;
 
 }

@@ -1,25 +1,19 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class Email extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "email";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-    }
-
-    public function setFromTree(array $treeData)
-    {
-    $persona_ = null;
     }
 
     /** @var DateTime|null */
@@ -41,9 +35,6 @@ class Email extends Entity
     public ?int $verificado = null;
 
     /** @var Persona|null (fk email.persona _m:o persona.id) */
-    public ?Persona $persona_ = null;
-
-    /** @var string|null */
-    public ?string $persona__ = null;
+    public ?\Fines2\Persona $persona_ = null;
 
 }

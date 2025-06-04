@@ -1,30 +1,22 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class Alumno extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "alumno";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->alumnoComision_ = [];
-        $this->calificacion_ = [];
-        $this->disposicionPendiente_ = [];
-    }
-
-    public function setFromTree(array $treeData)
-    {
-    $persona_ = null;
-    $plan_ = null;
-    $resolucion_inscripcion_ = null;
+        $this->AlumnoComision_ = [];
+        $this->Calificacion_ = [];
+        $this->DisposicionPendiente_ = [];
     }
 
     /** @var string|null */
@@ -109,36 +101,30 @@ class Alumno extends Entity
     public ?int $tiene_partida = null;
 
     /** @var Persona|null (fk alumno.persona _o:o persona.id) */
-    public ?Persona $persona_ = null;
+    public ?\Fines2\Persona $persona_ = null;
 
     /** @var Plan|null (fk alumno.plan _m:o plan.id) */
-    public ?Plan $plan_ = null;
-
-    /** @var string|null */
-    public ?string $plan__ = null;
+    public ?\Fines2\Plan $plan_ = null;
 
     /** @var Resolucion|null (fk alumno.resolucion_inscripcion _m:o resolucion.id) */
-    public ?Resolucion $resolucion_inscripcion_ = null;
-
-    /** @var string|null */
-    public ?string $resolucion_inscripcion__ = null;
+    public ?\Fines2\Resolucion $resolucion_inscripcion_ = null;
 
     /** @var int|null */
-    public ?int $alumnoComision_Count = null;
+    public ?int $AlumnoComision_Count = null;
 
     /** @var AlumnoComision[] (ref alumno_comision.alumno _m:o alumno.id) */
-    public array $alumnoComision_ = [];
+    public array $AlumnoComision_ = [];
 
     /** @var int|null */
-    public ?int $calificacion_Count = null;
+    public ?int $Calificacion_Count = null;
 
     /** @var Calificacion[] (ref calificacion.alumno _m:o alumno.id) */
-    public array $calificacion_ = [];
+    public array $Calificacion_ = [];
 
     /** @var int|null */
-    public ?int $disposicionPendiente_Count = null;
+    public ?int $DisposicionPendiente_Count = null;
 
     /** @var DisposicionPendiente[] (ref disposicion_pendiente.alumno _m:o alumno.id) */
-    public array $disposicionPendiente_ = [];
+    public array $DisposicionPendiente_ = [];
 
 }

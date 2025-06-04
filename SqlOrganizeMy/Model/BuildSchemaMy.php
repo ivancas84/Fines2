@@ -2,8 +2,6 @@
 
 namespace SqlOrganize\Model;
 
-require_once __DIR__ . '/../../SqlOrganize/Model/BuildSchema.php';
-
 use PDO;
 use PDOException;
 use SqlOrganize\Model\Column;

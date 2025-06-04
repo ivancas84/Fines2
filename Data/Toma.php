@@ -1,36 +1,24 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\Entity;
-use SqlOrganize\Sql\Db;
 use Exception;
 use DateTime;
 
 class Toma extends Entity
 {
 
-    public function __construct(Db $db)
+    public function __construct()
     {
         $this->_entityName = "toma";
-        $this->_db = $db;
+        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->asignacionPlanillaDocente_ = [];
-    }
-
-    public function setFromTree(array $treeData)
-    {
-    $curso_ = null;
-    $docente_ = null;
-    $planilla_docente_ = null;
-    $reemplazo_ = null;
+        $this->AsignacionPlanillaDocente_ = [];
     }
 
     /** @var DateTime|null */
     public ?DateTime $alta = null;
-
-    /** @var string|null */
-    public ?string $archivo = null;
 
     /** @var int|null */
     public ?int $asistencia = null;
@@ -81,33 +69,21 @@ class Toma extends Entity
     public ?string $tipo_movimiento = null;
 
     /** @var Curso|null (fk toma.curso _m:o curso.id) */
-    public ?Curso $curso_ = null;
-
-    /** @var string|null */
-    public ?string $curso__ = null;
+    public ?\Fines2\Curso $curso_ = null;
 
     /** @var Persona|null (fk toma.docente _m:o persona.id) */
-    public ?Persona $docente_ = null;
-
-    /** @var string|null */
-    public ?string $docente__ = null;
+    public ?\Fines2\Persona $docente_ = null;
 
     /** @var PlanillaDocente|null (fk toma.planilla_docente _m:o planilla_docente.id) */
-    public ?PlanillaDocente $planilla_docente_ = null;
-
-    /** @var string|null */
-    public ?string $planilla_docente__ = null;
+    public ?\Fines2\PlanillaDocente $planilla_docente_ = null;
 
     /** @var Persona|null (fk toma.reemplazo _m:o persona.id) */
-    public ?Persona $reemplazo_ = null;
-
-    /** @var string|null */
-    public ?string $reemplazo__ = null;
+    public ?\Fines2\Persona $reemplazo_ = null;
 
     /** @var int|null */
-    public ?int $asignacionPlanillaDocente_Count = null;
+    public ?int $AsignacionPlanillaDocente_Count = null;
 
     /** @var AsignacionPlanillaDocente[] (ref asignacion_planilla_docente.toma _m:o toma.id) */
-    public array $asignacionPlanillaDocente_ = [];
+    public array $AsignacionPlanillaDocente_ = [];
 
 }
