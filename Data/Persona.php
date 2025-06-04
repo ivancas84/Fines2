@@ -23,8 +23,9 @@ class Persona extends Entity
         $this->toma_reemplazo_ = [];
     }
 
-    public function setFromTree(array $treeData)
-    {    }    /** @var DateTime|null */
+    
+
+    /** @var DateTime|null */
     public ?DateTime $alta = null;
 
     /** @var int|null */

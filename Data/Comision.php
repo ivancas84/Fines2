@@ -23,7 +23,15 @@ class Comision extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var DateTime|null */
+    {
+    $calendario_ = null;
+    $comision_siguiente_ = null;
+    $modalidad_ = null;
+    $planificacion_ = null;
+    $sede_ = null;
+    }
+
+    /** @var DateTime|null */
     public ?DateTime $alta = null;
 
     /** @var int|null */

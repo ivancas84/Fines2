@@ -18,7 +18,11 @@ class Telefono extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var DateTime|null */
+    {
+    $persona_ = null;
+    }
+
+    /** @var DateTime|null */
     public ?DateTime $eliminado = null;
 
     /** @var string|null */

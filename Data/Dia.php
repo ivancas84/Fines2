@@ -19,7 +19,10 @@ class Dia extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    }
+
+    /** @var string|null */
     public ?string $dia = null;
 
     /** @var string|null */

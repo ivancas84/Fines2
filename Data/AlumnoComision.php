@@ -18,7 +18,12 @@ class AlumnoComision extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var int|null */
+    {
+    $alumno_ = null;
+    $comision_ = null;
+    }
+
+    /** @var int|null */
     public ?int $activo = null;
 
     /** @var string|null */

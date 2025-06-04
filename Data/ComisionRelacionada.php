@@ -18,7 +18,12 @@ class ComisionRelacionada extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    $comision_ = null;
+    $relacion_ = null;
+    }
+
+    /** @var string|null */
     public ?string $comision = null;
 
     /** @var string|null */

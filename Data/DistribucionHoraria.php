@@ -18,7 +18,11 @@ class DistribucionHoraria extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var int|null */
+    {
+    $disposicion_ = null;
+    }
+
+    /** @var int|null */
     public ?int $dia = null;
 
     /** @var string|null */

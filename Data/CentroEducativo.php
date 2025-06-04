@@ -19,7 +19,11 @@ class CentroEducativo extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    $domicilio_ = null;
+    }
+
+    /** @var string|null */
     public ?string $cue = null;
 
     /** @var string|null */

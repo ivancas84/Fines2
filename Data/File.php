@@ -19,7 +19,10 @@ class File extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    }
+
+    /** @var string|null */
     public ?string $content = null;
 
     /** @var DateTime|null */

@@ -18,7 +18,12 @@ class DetallePersona extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    $archivo_ = null;
+    $persona_ = null;
+    }
+
+    /** @var string|null */
     public ?string $archivo = null;
 
     /** @var string|null */

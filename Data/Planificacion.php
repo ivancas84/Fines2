@@ -20,7 +20,11 @@ class Planificacion extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    $plan_ = null;
+    }
+
+    /** @var string|null */
     public ?string $anio = null;
 
     /** @var string|null */

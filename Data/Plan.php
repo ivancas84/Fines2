@@ -20,7 +20,10 @@ class Plan extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    }
+
+    /** @var string|null */
     public ?string $distribucion_horaria = null;
 
     /** @var string|null */

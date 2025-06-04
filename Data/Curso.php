@@ -21,7 +21,13 @@ class Curso extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var DateTime|null */
+    {
+    $asignatura_ = null;
+    $comision_ = null;
+    $disposicion_ = null;
+    }
+
+    /** @var DateTime|null */
     public ?DateTime $alta = null;
 
     /** @var string|null */

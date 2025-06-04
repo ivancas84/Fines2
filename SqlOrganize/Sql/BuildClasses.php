@@ -50,6 +50,9 @@ class BuildClasses
 
             fwrite($file, "    public function setFromTree(array \$treeData)\n");
             fwrite($file, "    {\n");
+            foreach ($entityMetadata->tree as $fieldId => $relation) {
+                fwrite($file, "    \$" . $relation->fieldName . "_ = null;\n");
+            }
             fwrite($file, "    }\n\n");
 
             // Propiedades de campos
@@ -64,8 +67,6 @@ class BuildClasses
                 if (!empty($relation->parentId) || !in_array($relation->fieldName, $entityMetadata->getFieldNames())) {
                     continue;
                 }
-
-                $refFieldName = (strpos($relation->fieldName, $relation->refEntityName) !== false) ? "" : $relation->fieldName . "_";
 
                 if (in_array($relation->fieldName, $entityMetadata->unique)) {
                     // Relación one-to-one

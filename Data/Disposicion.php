@@ -22,7 +22,12 @@ class Disposicion extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    $asignatura_ = null;
+    $planificacion_ = null;
+    }
+
+    /** @var string|null */
     public ?string $asignatura = null;
 
     /** @var int|null */

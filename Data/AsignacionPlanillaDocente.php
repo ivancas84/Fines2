@@ -18,7 +18,12 @@ class AsignacionPlanillaDocente extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    $planilla_docente_ = null;
+    $toma_ = null;
+    }
+
+    /** @var string|null */
     public ?string $comentario = null;
 
     /** @var string|null */

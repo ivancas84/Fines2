@@ -21,7 +21,13 @@ class Alumno extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    $persona_ = null;
+    $plan_ = null;
+    $resolucion_inscripcion_ = null;
+    }
+
+    /** @var string|null */
     public ?string $adeuda_deudores = null;
 
     /** @var string|null */

@@ -19,7 +19,10 @@ class Modalidad extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    }
+
+    /** @var string|null */
     public ?string $id = null;
 
     /** @var string|null */

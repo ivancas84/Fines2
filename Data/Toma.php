@@ -19,7 +19,14 @@ class Toma extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var DateTime|null */
+    {
+    $curso_ = null;
+    $docente_ = null;
+    $planilla_docente_ = null;
+    $reemplazo_ = null;
+    }
+
+    /** @var DateTime|null */
     public ?DateTime $alta = null;
 
     /** @var string|null */

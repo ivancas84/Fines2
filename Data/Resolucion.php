@@ -19,7 +19,10 @@ class Resolucion extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var DateTime|null */
+    {
+    }
+
+    /** @var DateTime|null */
     public ?DateTime $anio = null;
 
     /** @var string|null */

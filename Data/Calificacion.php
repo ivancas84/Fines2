@@ -18,7 +18,13 @@ class Calificacion extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    $alumno_ = null;
+    $curso_ = null;
+    $disposicion_ = null;
+    }
+
+    /** @var string|null */
     public ?string $alumno = null;
 
     /** @var int|null */

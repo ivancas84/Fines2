@@ -19,7 +19,10 @@ class TipoSede extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    }
+
+    /** @var string|null */
     public ?string $descripcion = null;
 
     /** @var string|null */

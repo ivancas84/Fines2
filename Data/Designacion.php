@@ -18,7 +18,13 @@ class Designacion extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var DateTime|null */
+    {
+    $cargo_ = null;
+    $persona_ = null;
+    $sede_ = null;
+    }
+
+    /** @var DateTime|null */
     public ?DateTime $alta = null;
 
     /** @var string|null */

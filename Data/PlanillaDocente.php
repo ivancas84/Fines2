@@ -21,7 +21,10 @@ class PlanillaDocente extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var DateTime|null */
+    {
+    }
+
+    /** @var DateTime|null */
     public ?DateTime $fecha_consejo = null;
 
     /** @var DateTime|null */

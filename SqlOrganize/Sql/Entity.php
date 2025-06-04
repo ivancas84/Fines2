@@ -235,6 +235,19 @@ abstract class Entity
         }
     }
 
+    public function setFromTree(array $treeData){
+        $this->setFromArray($treeData);
+        $entityMetadata = $this->_db->getEntityMetadata($this->_entityName);
+        foreach($entityMetadata->tree as $tree){
+            if(array_key_exists($tree->fieldName . "_", $treeData)){
+                $refEntityMetadata = $this->_db->getEntityMetadata($tree->refEntityName);
+                $className = $refEntityMetadata->getClassName();
+                $obj = new $className($this->_db);
+                $obj->setFromTree($treeData);
+            }
+        }
+    }
+
     /**
      * Seteo solo de valores no nulos
      */

@@ -21,7 +21,14 @@ class Sede extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var DateTime|null */
+    {
+    $centro_educativo_ = null;
+    $domicilio_ = null;
+    $organizacion_ = null;
+    $tipo_sede_ = null;
+    }
+
+    /** @var DateTime|null */
     public ?DateTime $alta = null;
 
     /** @var DateTime|null */

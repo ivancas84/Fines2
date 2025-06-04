@@ -18,7 +18,12 @@ class Horario extends Entity
     }
 
     public function setFromTree(array $treeData)
-    {    }    /** @var string|null */
+    {
+    $curso_ = null;
+    $dia_ = null;
+    }
+
+    /** @var string|null */
     public ?string $curso = null;
 
     /** @var string|null */
