@@ -82,13 +82,13 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['alumno']->fields['anio_inscripcion'] = Field::getInstance('alumno', 'anio_inscripcion', 'smallint', 'short');
+        $this->entities['alumno']->fields['anio_inscripcion'] = Field::getInstance('alumno', 'anio_inscripcion', 'smallint', 'int');
         $this->entities['alumno']->fields['anio_inscripcion']->checks = [
-            'type' => 'short',
+            'type' => 'int',
         ];
-        $this->entities['alumno']->fields['anio_inscripcion_completo'] = Field::getInstance('alumno', 'anio_inscripcion_completo', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['anio_inscripcion_completo'] = Field::getInstance('alumno', 'anio_inscripcion_completo', 'tinyint', 'int');
         $this->entities['alumno']->fields['anio_inscripcion_completo']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
         ];
         $this->entities['alumno']->fields['comentarios'] = Field::getInstance('alumno', 'comentarios', 'text', 'string');
         $this->entities['alumno']->fields['comentarios']->checks = [
@@ -99,9 +99,9 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['alumno']->fields['confirmado_direccion'] = Field::getInstance('alumno', 'confirmado_direccion', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['confirmado_direccion'] = Field::getInstance('alumno', 'confirmado_direccion', 'tinyint', 'int');
         $this->entities['alumno']->fields['confirmado_direccion']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['alumno']->fields['creado'] = Field::getInstance('alumno', 'creado', 'timestamp', 'DateTime');
@@ -210,9 +210,9 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['alumno']->fields['previas_completas'] = Field::getInstance('alumno', 'previas_completas', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['previas_completas'] = Field::getInstance('alumno', 'previas_completas', 'tinyint', 'int');
         $this->entities['alumno']->fields['previas_completas']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['alumno']->fields['resolucion_inscripcion'] = Field::getInstance('alumno', 'resolucion_inscripcion', 'varchar', 'string');
@@ -227,32 +227,32 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['alumno']->fields['semestre_ingreso'] = Field::getInstance('alumno', 'semestre_ingreso', 'smallint', 'short');
+        $this->entities['alumno']->fields['semestre_ingreso'] = Field::getInstance('alumno', 'semestre_ingreso', 'smallint', 'int');
         $this->entities['alumno']->fields['semestre_ingreso']->checks = [
-            'type' => 'short',
+            'type' => 'int',
         ];
-        $this->entities['alumno']->fields['semestre_inscripcion'] = Field::getInstance('alumno', 'semestre_inscripcion', 'smallint', 'short');
+        $this->entities['alumno']->fields['semestre_inscripcion'] = Field::getInstance('alumno', 'semestre_inscripcion', 'smallint', 'int');
         $this->entities['alumno']->fields['semestre_inscripcion']->checks = [
-            'type' => 'short',
+            'type' => 'int',
         ];
-        $this->entities['alumno']->fields['tiene_certificado'] = Field::getInstance('alumno', 'tiene_certificado', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['tiene_certificado'] = Field::getInstance('alumno', 'tiene_certificado', 'tinyint', 'int');
         $this->entities['alumno']->fields['tiene_certificado']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
-        $this->entities['alumno']->fields['tiene_constancia'] = Field::getInstance('alumno', 'tiene_constancia', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['tiene_constancia'] = Field::getInstance('alumno', 'tiene_constancia', 'tinyint', 'int');
         $this->entities['alumno']->fields['tiene_constancia']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
-        $this->entities['alumno']->fields['tiene_dni'] = Field::getInstance('alumno', 'tiene_dni', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['tiene_dni'] = Field::getInstance('alumno', 'tiene_dni', 'tinyint', 'int');
         $this->entities['alumno']->fields['tiene_dni']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
-        $this->entities['alumno']->fields['tiene_partida'] = Field::getInstance('alumno', 'tiene_partida', 'tinyint', 'byte');
+        $this->entities['alumno']->fields['tiene_partida'] = Field::getInstance('alumno', 'tiene_partida', 'tinyint', 'int');
         $this->entities['alumno']->fields['tiene_partida']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['alumno_comision'] = EntityMetadata::getInstance('alumno_comision', 'alu1');
@@ -351,9 +351,9 @@ class Schema extends ISchema
         $this->entities['alumno_comision']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
         $this->entities['alumno_comision']->relations['tipo_sede']->parentId = 'sede';
 
-        $this->entities['alumno_comision']->fields['activo'] = Field::getInstance('alumno_comision', 'activo', 'tinyint', 'byte');
+        $this->entities['alumno_comision']->fields['activo'] = Field::getInstance('alumno_comision', 'activo', 'tinyint', 'int');
         $this->entities['alumno_comision']->fields['activo']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
         ];
         $this->entities['alumno_comision']->fields['alumno'] = Field::getInstance('alumno_comision', 'alumno', 'varchar', 'string');
         $this->entities['alumno_comision']->fields['alumno']->alias = 'alu';
@@ -413,9 +413,9 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['alumno_comision']->fields['pfid'] = Field::getInstance('alumno_comision', 'pfid', 'int', 'uint');
+        $this->entities['alumno_comision']->fields['pfid'] = Field::getInstance('alumno_comision', 'pfid', 'int', 'int');
         $this->entities['alumno_comision']->fields['pfid']->checks = [
-            'type' => 'uint',
+            'type' => 'int',
         ];
         $this->entities['asignacion_planilla_docente'] = EntityMetadata::getInstance('asignacion_planilla_docente', 'asig');
         $this->entities['asignacion_planilla_docente']->pk = ['id'];
@@ -593,9 +593,9 @@ class Schema extends ISchema
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $this->entities['asignacion_planilla_docente']->fields['reclamo'] = Field::getInstance('asignacion_planilla_docente', 'reclamo', 'tinyint', 'byte');
+        $this->entities['asignacion_planilla_docente']->fields['reclamo'] = Field::getInstance('asignacion_planilla_docente', 'reclamo', 'tinyint', 'int');
         $this->entities['asignacion_planilla_docente']->fields['reclamo']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['asignacion_planilla_docente']->fields['toma'] = Field::getInstance('asignacion_planilla_docente', 'toma', 'varchar', 'string');
@@ -678,9 +678,9 @@ class Schema extends ISchema
 
         $this->entities['calendario']->om = [];
         $this->entities['calendario']->om['comision_'] = EntityRef::getInstance('calendario', 'comision');
-        $this->entities['calendario']->fields['anio'] = Field::getInstance('calendario', 'anio', 'year', 'short');
+        $this->entities['calendario']->fields['anio'] = Field::getInstance('calendario', 'anio', 'year', 'DateTime');
         $this->entities['calendario']->fields['anio']->checks = [
-            'type' => 'short',
+            'type' => 'DateTime',
             'required' => '1',
         ];
         $this->entities['calendario']->fields['descripcion'] = Field::getInstance('calendario', 'descripcion', 'varchar', 'string');
@@ -715,9 +715,9 @@ class Schema extends ISchema
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $this->entities['calendario']->fields['semestre'] = Field::getInstance('calendario', 'semestre', 'smallint', 'short');
+        $this->entities['calendario']->fields['semestre'] = Field::getInstance('calendario', 'semestre', 'smallint', 'int');
         $this->entities['calendario']->fields['semestre']->checks = [
-            'type' => 'short',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['calificacion'] = EntityMetadata::getInstance('calificacion', 'cali');
@@ -882,14 +882,14 @@ class Schema extends ISchema
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $this->entities['calificacion']->fields['archivado'] = Field::getInstance('calificacion', 'archivado', 'tinyint', 'byte');
+        $this->entities['calificacion']->fields['archivado'] = Field::getInstance('calificacion', 'archivado', 'tinyint', 'int');
         $this->entities['calificacion']->fields['archivado']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
-        $this->entities['calificacion']->fields['crec'] = Field::getInstance('calificacion', 'crec', 'decimal', 'decimal');
+        $this->entities['calificacion']->fields['crec'] = Field::getInstance('calificacion', 'crec', 'decimal', 'float');
         $this->entities['calificacion']->fields['crec']->checks = [
-            'type' => 'decimal',
+            'type' => 'float',
         ];
         $this->entities['calificacion']->fields['curso'] = Field::getInstance('calificacion', 'curso', 'varchar', 'string');
         $this->entities['calificacion']->fields['curso']->alias = 'cur';
@@ -937,21 +937,21 @@ class Schema extends ISchema
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $this->entities['calificacion']->fields['nota1'] = Field::getInstance('calificacion', 'nota1', 'decimal', 'decimal');
+        $this->entities['calificacion']->fields['nota1'] = Field::getInstance('calificacion', 'nota1', 'decimal', 'float');
         $this->entities['calificacion']->fields['nota1']->checks = [
-            'type' => 'decimal',
+            'type' => 'float',
         ];
-        $this->entities['calificacion']->fields['nota2'] = Field::getInstance('calificacion', 'nota2', 'decimal', 'decimal');
+        $this->entities['calificacion']->fields['nota2'] = Field::getInstance('calificacion', 'nota2', 'decimal', 'float');
         $this->entities['calificacion']->fields['nota2']->checks = [
-            'type' => 'decimal',
+            'type' => 'float',
         ];
-        $this->entities['calificacion']->fields['nota3'] = Field::getInstance('calificacion', 'nota3', 'decimal', 'decimal');
+        $this->entities['calificacion']->fields['nota3'] = Field::getInstance('calificacion', 'nota3', 'decimal', 'float');
         $this->entities['calificacion']->fields['nota3']->checks = [
-            'type' => 'decimal',
+            'type' => 'float',
         ];
-        $this->entities['calificacion']->fields['nota_final'] = Field::getInstance('calificacion', 'nota_final', 'decimal', 'decimal');
+        $this->entities['calificacion']->fields['nota_final'] = Field::getInstance('calificacion', 'nota_final', 'decimal', 'float');
         $this->entities['calificacion']->fields['nota_final']->checks = [
-            'type' => 'decimal',
+            'type' => 'float',
         ];
         $this->entities['calificacion']->fields['observaciones'] = Field::getInstance('calificacion', 'observaciones', 'text', 'string');
         $this->entities['calificacion']->fields['observaciones']->checks = [
@@ -1125,14 +1125,14 @@ class Schema extends ISchema
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $this->entities['comision']->fields['apertura'] = Field::getInstance('comision', 'apertura', 'tinyint', 'byte');
+        $this->entities['comision']->fields['apertura'] = Field::getInstance('comision', 'apertura', 'tinyint', 'int');
         $this->entities['comision']->fields['apertura']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
-        $this->entities['comision']->fields['autorizada'] = Field::getInstance('comision', 'autorizada', 'tinyint', 'byte');
+        $this->entities['comision']->fields['autorizada'] = Field::getInstance('comision', 'autorizada', 'tinyint', 'int');
         $this->entities['comision']->fields['autorizada']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['comision']->fields['calendario'] = Field::getInstance('comision', 'calendario', 'varchar', 'string');
@@ -1257,9 +1257,9 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['comision']->fields['publicada'] = Field::getInstance('comision', 'publicada', 'tinyint', 'byte');
+        $this->entities['comision']->fields['publicada'] = Field::getInstance('comision', 'publicada', 'tinyint', 'int');
         $this->entities['comision']->fields['publicada']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['comision']->fields['sede'] = Field::getInstance('comision', 'sede', 'varchar', 'string');
@@ -1923,15 +1923,15 @@ class Schema extends ISchema
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $this->entities['dia']->fields['numero'] = Field::getInstance('dia', 'numero', 'smallint', 'short');
+        $this->entities['dia']->fields['numero'] = Field::getInstance('dia', 'numero', 'smallint', 'int');
         $this->entities['dia']->fields['numero']->checks = [
-            'type' => 'short',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['disposicion'] = EntityMetadata::getInstance('disposicion', 'disp');
         $this->entities['disposicion']->pk = ['id'];
         $this->entities['disposicion']->fk = ['asignatura', 'planificacion'];
-        $this->entities['disposicion']->notNull = ['asignatura', 'id', 'planificacion'];
+        $this->entities['disposicion']->notNull = ['asignatura', 'horas_catedra', 'id', 'planificacion'];
 
         $this->entities['disposicion']->tree = [];
         $this->entities['disposicion']->tree['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
@@ -1965,6 +1965,11 @@ class Schema extends ISchema
         $this->entities['disposicion']->fields['asignatura']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
+        ];
+        $this->entities['disposicion']->fields['horas_catedra'] = Field::getInstance('disposicion', 'horas_catedra', 'int', 'int');
+        $this->entities['disposicion']->fields['horas_catedra']->checks = [
+            'type' => 'int',
+            'required' => '1',
         ];
         $this->entities['disposicion']->fields['id'] = Field::getInstance('disposicion', 'id', 'varchar', 'string');
         $this->entities['disposicion']->fields['id']->checks = [
@@ -2283,9 +2288,9 @@ class Schema extends ISchema
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $this->entities['email']->fields['verificado'] = Field::getInstance('email', 'verificado', 'tinyint', 'byte');
+        $this->entities['email']->fields['verificado'] = Field::getInstance('email', 'verificado', 'tinyint', 'int');
         $this->entities['email']->fields['verificado']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['file'] = EntityMetadata::getInstance('file', 'file');
@@ -2327,9 +2332,9 @@ class Schema extends ISchema
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $this->entities['file']->fields['size'] = Field::getInstance('file', 'size', 'int', 'uint');
+        $this->entities['file']->fields['size'] = Field::getInstance('file', 'size', 'int', 'int');
         $this->entities['file']->fields['size']->checks = [
-            'type' => 'uint',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['file']->fields['type'] = Field::getInstance('file', 'type', 'varchar', 'string');
@@ -2553,9 +2558,9 @@ class Schema extends ISchema
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $this->entities['persona']->fields['anio_nacimiento'] = Field::getInstance('persona', 'anio_nacimiento', 'smallint', 'ushort');
+        $this->entities['persona']->fields['anio_nacimiento'] = Field::getInstance('persona', 'anio_nacimiento', 'smallint', 'int');
         $this->entities['persona']->fields['anio_nacimiento']->checks = [
-            'type' => 'ushort',
+            'type' => 'int',
         ];
         $this->entities['persona']->fields['apellidos'] = Field::getInstance('persona', 'apellidos', 'varchar', 'string');
         $this->entities['persona']->fields['apellidos']->checks = [
@@ -2593,13 +2598,13 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['persona']->fields['cuil1'] = Field::getInstance('persona', 'cuil1', 'tinyint', 'byte');
+        $this->entities['persona']->fields['cuil1'] = Field::getInstance('persona', 'cuil1', 'tinyint', 'int');
         $this->entities['persona']->fields['cuil1']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
         ];
-        $this->entities['persona']->fields['cuil2'] = Field::getInstance('persona', 'cuil2', 'tinyint', 'byte');
+        $this->entities['persona']->fields['cuil2'] = Field::getInstance('persona', 'cuil2', 'tinyint', 'int');
         $this->entities['persona']->fields['cuil2']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
         ];
         $this->entities['persona']->fields['departamento'] = Field::getInstance('persona', 'departamento', 'varchar', 'string');
         $this->entities['persona']->fields['departamento']->checks = [
@@ -2619,9 +2624,9 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['persona']->fields['dia_nacimiento'] = Field::getInstance('persona', 'dia_nacimiento', 'tinyint', 'byte');
+        $this->entities['persona']->fields['dia_nacimiento'] = Field::getInstance('persona', 'dia_nacimiento', 'tinyint', 'int');
         $this->entities['persona']->fields['dia_nacimiento']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
         ];
         $this->entities['persona']->fields['domicilio'] = Field::getInstance('persona', 'domicilio', 'varchar', 'string');
         $this->entities['persona']->fields['domicilio']->alias = 'dom';
@@ -2653,9 +2658,9 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['persona']->fields['email_verificado'] = Field::getInstance('persona', 'email_verificado', 'tinyint', 'byte');
+        $this->entities['persona']->fields['email_verificado'] = Field::getInstance('persona', 'email_verificado', 'tinyint', 'int');
         $this->entities['persona']->fields['email_verificado']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['persona']->fields['fecha_nacimiento'] = Field::getInstance('persona', 'fecha_nacimiento', 'date', 'DateTime');
@@ -2680,9 +2685,9 @@ class Schema extends ISchema
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $this->entities['persona']->fields['info_verificada'] = Field::getInstance('persona', 'info_verificada', 'tinyint', 'byte');
+        $this->entities['persona']->fields['info_verificada'] = Field::getInstance('persona', 'info_verificada', 'tinyint', 'int');
         $this->entities['persona']->fields['info_verificada']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['persona']->fields['localidad'] = Field::getInstance('persona', 'localidad', 'varchar', 'string');
@@ -2703,9 +2708,9 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['persona']->fields['mes_nacimiento'] = Field::getInstance('persona', 'mes_nacimiento', 'tinyint', 'byte');
+        $this->entities['persona']->fields['mes_nacimiento'] = Field::getInstance('persona', 'mes_nacimiento', 'tinyint', 'int');
         $this->entities['persona']->fields['mes_nacimiento']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
         ];
         $this->entities['persona']->fields['nacionalidad'] = Field::getInstance('persona', 'nacionalidad', 'varchar', 'string');
         $this->entities['persona']->fields['nacionalidad']->checks = [
@@ -2743,9 +2748,9 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['persona']->fields['sexo'] = Field::getInstance('persona', 'sexo', 'tinyint', 'byte');
+        $this->entities['persona']->fields['sexo'] = Field::getInstance('persona', 'sexo', 'tinyint', 'int');
         $this->entities['persona']->fields['sexo']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
         ];
         $this->entities['persona']->fields['telefono'] = Field::getInstance('persona', 'telefono', 'varchar', 'string');
         $this->entities['persona']->fields['telefono']->checks = [
@@ -2756,9 +2761,9 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['persona']->fields['telefono_verificado'] = Field::getInstance('persona', 'telefono_verificado', 'tinyint', 'byte');
+        $this->entities['persona']->fields['telefono_verificado'] = Field::getInstance('persona', 'telefono_verificado', 'tinyint', 'int');
         $this->entities['persona']->fields['telefono_verificado']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['plan'] = EntityMetadata::getInstance('plan', 'plan');
@@ -2930,9 +2935,9 @@ class Schema extends ISchema
 
         $this->entities['resolucion']->om = [];
         $this->entities['resolucion']->om['alumno_resolucion_inscripcion_'] = EntityRef::getInstance('resolucion_inscripcion', 'alumno');
-        $this->entities['resolucion']->fields['anio'] = Field::getInstance('resolucion', 'anio', 'year', 'short');
+        $this->entities['resolucion']->fields['anio'] = Field::getInstance('resolucion', 'anio', 'year', 'DateTime');
         $this->entities['resolucion']->fields['anio']->checks = [
-            'type' => 'short',
+            'type' => 'DateTime',
         ];
         $this->entities['resolucion']->fields['id'] = Field::getInstance('resolucion', 'id', 'varchar', 'string');
         $this->entities['resolucion']->fields['id']->checks = [
@@ -2964,6 +2969,7 @@ class Schema extends ISchema
         $this->entities['sede'] = EntityMetadata::getInstance('sede', 'sede');
         $this->entities['sede']->pk = ['id'];
         $this->entities['sede']->fk = ['centro_educativo', 'domicilio', 'organizacion', 'tipo_sede'];
+        $this->entities['sede']->unique = ['nombre'];
         $this->entities['sede']->notNull = ['alta', 'id', 'nombre', 'numero'];
 
         $this->entities['sede']->tree = [];
@@ -3345,14 +3351,23 @@ class Schema extends ISchema
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $this->entities['toma']->fields['asistencia'] = Field::getInstance('toma', 'asistencia', 'tinyint', 'byte');
+        $this->entities['toma']->fields['archivo'] = Field::getInstance('toma', 'archivo', 'varchar', 'string');
+        $this->entities['toma']->fields['archivo']->checks = [
+            'type' => 'string',
+        ];
+        $this->entities['toma']->fields['archivo']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+            'nullIfEmpty' => true,
+        ];
+        $this->entities['toma']->fields['asistencia'] = Field::getInstance('toma', 'asistencia', 'tinyint', 'int');
         $this->entities['toma']->fields['asistencia']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
-        $this->entities['toma']->fields['calificacion'] = Field::getInstance('toma', 'calificacion', 'tinyint', 'byte');
+        $this->entities['toma']->fields['calificacion'] = Field::getInstance('toma', 'calificacion', 'tinyint', 'int');
         $this->entities['toma']->fields['calificacion']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['toma']->fields['comentario'] = Field::getInstance('toma', 'comentario', 'varchar', 'string');
@@ -3364,9 +3379,9 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['toma']->fields['confirmada'] = Field::getInstance('toma', 'confirmada', 'tinyint', 'byte');
+        $this->entities['toma']->fields['confirmada'] = Field::getInstance('toma', 'confirmada', 'tinyint', 'int');
         $this->entities['toma']->fields['confirmada']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['toma']->fields['curso'] = Field::getInstance('toma', 'curso', 'varchar', 'string');
@@ -3457,14 +3472,14 @@ class Schema extends ISchema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $this->entities['toma']->fields['sin_planillas'] = Field::getInstance('toma', 'sin_planillas', 'tinyint', 'byte');
+        $this->entities['toma']->fields['sin_planillas'] = Field::getInstance('toma', 'sin_planillas', 'tinyint', 'int');
         $this->entities['toma']->fields['sin_planillas']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
-        $this->entities['toma']->fields['temas_tratados'] = Field::getInstance('toma', 'temas_tratados', 'tinyint', 'byte');
+        $this->entities['toma']->fields['temas_tratados'] = Field::getInstance('toma', 'temas_tratados', 'tinyint', 'int');
         $this->entities['toma']->fields['temas_tratados']->checks = [
-            'type' => 'byte',
+            'type' => 'int',
             'required' => '1',
         ];
         $this->entities['toma']->fields['tipo_movimiento'] = Field::getInstance('toma', 'tipo_movimiento', 'varchar', 'string');

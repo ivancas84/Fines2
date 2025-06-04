@@ -1,0 +1,138 @@
+<?php
+
+namespace SqlOrganize\Sql\Fines2;
+
+use SqlOrganize\Sql\Entity;
+use SqlOrganize\Sql\Db;
+use Exception;
+use DateTime;
+
+class Alumno extends Entity
+{
+
+    public function __construct(Db $db)
+    {
+        $this->_entityName = "alumno";
+        $this->_db = $db;
+        $this->setDefault();
+        $this->alumnoComision_ = [];
+        $this->calificacion_ = [];
+        $this->disposicionPendiente_ = [];
+    }
+
+    public function setFromTree(array $treeData)
+    {    }    /** @var string|null */
+    public ?string $adeuda_deudores = null;
+
+    /** @var string|null */
+    public ?string $adeuda_legajo = null;
+
+    /** @var string|null */
+    public ?string $anio_ingreso = null;
+
+    /** @var int|null */
+    public ?int $anio_inscripcion = null;
+
+    /** @var int|null */
+    public ?int $anio_inscripcion_completo = null;
+
+    /** @var string|null */
+    public ?string $comentarios = null;
+
+    /** @var int|null */
+    public ?int $confirmado_direccion = null;
+
+    /** @var DateTime|null */
+    public ?DateTime $creado = null;
+
+    /** @var string|null */
+    public ?string $documentacion_inscripcion = null;
+
+    /** @var string|null */
+    public ?string $establecimiento_inscripcion = null;
+
+    /** @var string|null */
+    public ?string $estado_inscripcion = null;
+
+    /** @var DateTime|null */
+    public ?DateTime $fecha_titulacion = null;
+
+    /** @var string|null */
+    public ?string $folio = null;
+
+    /** @var string|null */
+    public ?string $id = null;
+
+    /** @var string|null */
+    public ?string $libro = null;
+
+    /** @var string|null */
+    public ?string $libro_folio = null;
+
+    /** @var string|null */
+    public ?string $observaciones = null;
+
+    /** @var string|null */
+    public ?string $persona = null;
+
+    /** @var string|null */
+    public ?string $plan = null;
+
+    /** @var int|null */
+    public ?int $previas_completas = null;
+
+    /** @var string|null */
+    public ?string $resolucion_inscripcion = null;
+
+    /** @var int|null */
+    public ?int $semestre_ingreso = null;
+
+    /** @var int|null */
+    public ?int $semestre_inscripcion = null;
+
+    /** @var int|null */
+    public ?int $tiene_certificado = null;
+
+    /** @var int|null */
+    public ?int $tiene_constancia = null;
+
+    /** @var int|null */
+    public ?int $tiene_dni = null;
+
+    /** @var int|null */
+    public ?int $tiene_partida = null;
+
+    /** @var Persona|null (fk alumno.persona _o:o persona.id) */
+    public ?Persona $persona_ = null;
+
+    /** @var Plan|null (fk alumno.plan _m:o plan.id) */
+    public ?Plan $plan_ = null;
+
+    /** @var string|null */
+    public ?string $plan__ = null;
+
+    /** @var Resolucion|null (fk alumno.resolucion_inscripcion _m:o resolucion.id) */
+    public ?Resolucion $resolucion_inscripcion_ = null;
+
+    /** @var string|null */
+    public ?string $resolucion_inscripcion__ = null;
+
+    /** @var int|null */
+    public ?int $alumnoComision_Count = null;
+
+    /** @var AlumnoComision[] (ref alumno_comision.alumno _m:o alumno.id) */
+    public array $alumnoComision_ = [];
+
+    /** @var int|null */
+    public ?int $calificacion_Count = null;
+
+    /** @var Calificacion[] (ref calificacion.alumno _m:o alumno.id) */
+    public array $calificacion_ = [];
+
+    /** @var int|null */
+    public ?int $disposicionPendiente_Count = null;
+
+    /** @var DisposicionPendiente[] (ref disposicion_pendiente.alumno _m:o alumno.id) */
+    public array $disposicionPendiente_ = [];
+
+}

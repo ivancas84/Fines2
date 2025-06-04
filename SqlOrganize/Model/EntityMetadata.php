@@ -5,6 +5,7 @@ namespace SqlOrganize\Model;
 class EntityMetadata
 {
     public string $name;
+
     public string $alias;
     public ?string $schema = null;
     

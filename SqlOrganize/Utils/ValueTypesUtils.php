@@ -4,6 +4,19 @@ namespace SqlOrganize\Utils;
 
 class ValueTypesUtils
 {
+    public static function generateGuid(): string
+    {
+        return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
+    }
+
+
+
     /**
      * Convierte un string a Title Case usando configuración es-AR
      */
@@ -20,7 +33,7 @@ class ValueTypesUtils
     {
         $titleCase = self::toTitleCase($str);
         $clean = str_replace([' ', '_'], '', $titleCase);
-        return lcfirst($clean);
+        return ucfirst($clean);
     }
 
     /**

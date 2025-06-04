@@ -26,6 +26,13 @@ $configModel->pass = DB_PASS_FINES;
 $configModel->namespace = "Fines2";
 $configModel->schemaClassPath = "C:\\xampp\\htdocs\\Fines2\\Model";
 $configModel->schemaBuilderClassPath = "C:\\xampp\\htdocs\\Fines2\\Model";
+$configModel->dataClassesPath = "C:\\xampp\\htdocs\\Fines2\\Data\\";
+
+require_once MAIN_PATH . 'SqlOrganizeMy/Sql/DbMy.php';
+require_once MAIN_PATH . 'SqlOrganize/Sql/Entity.php';
+require_once MAIN_PATH . 'Model/Schema.php';
+require_once MAIN_PATH . 'Data/Persona.php';
+
 
 
 

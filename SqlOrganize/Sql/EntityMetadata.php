@@ -2,6 +2,10 @@
 
 namespace SqlOrganize\Sql;
 
+require_once MAIN_PATH . 'SqlOrganize/Utils/ValueTypesUtils.php';
+
+use SqlOrganize\Utils\ValueTypesUtils;
+
 class EntityMetadata
 {
     public Db $db;
@@ -21,7 +25,7 @@ class EntityMetadata
     public function getClassName(): string
     {
         return empty($this->_className) 
-            ? str_to_camel_case($this->name) 
+            ? ValueTypesUtils::toCamelCase($this->name) 
             : $this->_className;
     }
     

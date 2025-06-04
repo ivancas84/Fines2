@@ -182,91 +182,49 @@ abstract class BuildSchema
 
         $f->dataType = $c->DATA_TYPE;
         
-        switch ($c->DATA_TYPE) {
-            case "varbinary":
-            case "binary":
-                if ($f->maxLength == 1) {
-                    $f->type = "byte";
-                } else {
-                    $f->type = "Byte[]";
-                }
-                break;
-
-            case "image":
-            case "rowversion":
-                $f->type = "Byte[]";
-                break;
-
-            case "money":
-            case "smallmoney":
-            case "numeric":
-            case "decimal":
-                $f->type = "decimal";
-                break;
-
-            case "varchar":
-            case "char":
-            case "nchar":
-            case "nvarchar":
-            case "text":
-            case "mediumtext":
-            case "tinytext":
-            case "longtext":
-                $f->type = "string";
-                break;
-
-            case "real":
-                $f->type = "Single";
-                break;
-
-            case "float":
-                $f->type = "Double";
-                break;
-
-            case "bit":
-                $f->type = "bool";
-                break;
-
-            case "datetime":
-            case "datetime2":
-            case "smalldatetime":
-            case "timestamp":
-            case "date":
-            case "time":
-                $f->type = "DateTime";
-                break;
-
-            case "smallint":
-            case "year":
-                $f->type = ($c->IS_UNSIGNED == 1) ? "ushort" : "short";
-                break;
-
-            case "int":
-            case "mediumint":
-                $f->type = ($c->IS_UNSIGNED == 1) ? "uint" : "int";
-                break;
-
-            case "tinyint":
+        switch (strtolower($c->DATA_TYPE)) {
+             case "tinyint":
                 if ($f->maxLength == 1) {
                     $f->type = "bool";
                 } else {
-                    $f->type = "byte";
+                    $f->type = "int";
                 }
                 break;
 
+            case "smallint":
+            case "mediumint":
+            case "int":
+            case "integer":
             case "bigint":
-                $f->type = ($c->IS_UNSIGNED == 1) ? "ulong" : "long";
+                $f->type = "int";
+                break;
+           
+            case "float":
+            case "double":
+            case "decimal":
+                $f->type = "float";
+                break;
+            
+            case "char":
+            case "varchar":
+            case "text":
+            case "enum":
+            case "set":
+            case "blob":
+            case "tinyblob":
+                $f->type = "string";
                 break;
 
-            case "uniqueidentifier":
-                $f->type = "Guid";
+            case "date":
+            case "datetime":
+            case "timestamp":
+            case "time":
+            case "year":
+                $f->type = "DateTime";
                 break;
 
-            case "sql_variant":
-            case "table":
-            case "cursor":
-            case "xml":
-                $f->type = "object";
+            case "json":
+                $f->type = "array";
                 break;
 
             default:

@@ -24,6 +24,8 @@ class Config
 
     public string $idSource = "field_name";
 
+    public string $dataClassesPath = "";
+
     /**
      * Nombre del identificador único de las tablas
      * 
