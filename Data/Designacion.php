@@ -41,12 +41,12 @@ class Designacion extends Entity
     public ?string $sede = null;
 
     /** @var Cargo|null (fk designacion.cargo _m:o cargo.id) */
-    public ?\Fines2\Cargo $cargo_ = null;
+    public ?\Fines2\Cargo_ $cargo_ = null;
 
     /** @var Persona|null (fk designacion.persona _m:o persona.id) */
-    public ?\Fines2\Persona $persona_ = null;
+    public ?\Fines2\Persona_ $persona_ = null;
 
     /** @var Sede|null (fk designacion.sede _m:o sede.id) */
-    public ?\Fines2\Sede $sede_ = null;
+    public ?\Fines2\Sede_ $sede_ = null;
 
 }

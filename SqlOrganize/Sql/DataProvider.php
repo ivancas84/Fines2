@@ -15,6 +15,31 @@ class DataProvider {
     }
 
 
+    public function fetchEntitiesByParams(string $entityName, array $params, string $conn = "AND"): array 
+    {
+        // Create instance to get table name
+        $obj = new $entityName();
+        
+        // Build the WHERE clause
+        $whereClauses = [];
+        foreach ($params as $key => $value) {
+            $whereClauses[] = "$key = :$key";
+        }
+        
+        $whereClause = implode(" $conn ", $whereClauses);
+        
+        // Build final SQL query
+        $sql = "SELECT DISTINCT id FROM " . $obj->getEntityName();
+        
+        if (!empty($whereClause)) {
+            $sql .= " WHERE " . $whereClause;
+        }
+        
+        return $this->fetchEntitiesBySqlId($entityName, $sql, );
+            
+    }
+
+
     /**
      * SQL debe consultar el id en la primera columna
      * 
@@ -25,9 +50,8 @@ class DataProvider {
      *       WHERE curso = :cursos";
      *   $tomas = $dataProvider->fetchEntitiesByNamedSql("toma", $sql, ["cursos"=>$ids_cursos]);
      */
-    public function fetchEntitiesByNamedSql(string $entityName, string $sql, ?array $params = null): array {
-        $ids = $this->fetchColumnByNamedSql($sql, 0, $params);
-
+    public function fetchEntitiesBySqlId(string $entityName, string $sql, ?array $params = null): array {
+        $ids = $this->fetchColumnBySql($sql, 0, $params);
         return $this->fetchEntitiesByIds($entityName, ...$ids);
     }
 
@@ -68,42 +92,7 @@ class DataProvider {
         return $response; // Ya es array asociativo, no se necesita deserializar
     }
 
-    /**
-    * Ejecuta SQL y devuelve array asociativo (version simple utilizar solo tipos simples en parametros)
-    * 
-    * @example
-    * // Con DateTime (se puede pasar DateTime o string)
-    * $filteredUsers = $this->fetchDataBySql(
-    *     "SELECT id, name, email, created_at FROM users WHERE role = ? AND created_at > ?", 
-    *     ['admin', new DateTime('2024-01-01')]
-    * );
-    *
-    * @example
-    * // Con parámetros nombrados
-    * $users = $this->fetchDataBySql(
-    *     "SELECT * FROM users WHERE role = :role AND department = :dept", 
-    *     [':role' => 'admin', ':dept' => 'IT']
-    * );
-    */
-    public function fetchDataBySql(string $sql, ?array $params = null): array {
-        $stmt = $this->db->getPdo()->prepare($sql);
-        $stmt->execute($params ?? []);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
  
-    /**
-     * Ejecuta SQL y devuelve columna
-     * version simple, no utilizar array en parametros
-     
-     */    
-    public function fetchColumnBySql(string $sql, int $columnIndex = 0, ?array $params = null): array 
-    {
-        $stmt = $this->db->getPdo()->prepare($sql);
-        $stmt->execute($params ?? []);
-        return $stmt->fetchAll(PDO::FETCH_COLUMN, $columnIndex);
-    }
-   // Versión alternativa más simple si prefieres usar named parameters
 
 /**
  * Procesa parámetros con soporte para arrays, expandiendo arrays a parámetros nombrados
@@ -137,9 +126,11 @@ private function processArrayParameters(string $sql, array $params): array
 }
 
 /**
- * Versión alternativa usando parámetros nombrados para mayor claridad
+ * Consulta de columna
+ * 
+ * @param $params array asociativo
  */
-public function fetchColumnByNamedSql(string $sql, int $columnIndex = 0, ?array $params = null): array
+public function fetchColumnBySql(string $sql, int $columnIndex = 0, ?array $params = null): array
 {
     if ($params === null) {
         $stmt = $this->db->getPdo()->prepare($sql);
@@ -156,8 +147,11 @@ public function fetchColumnByNamedSql(string $sql, int $columnIndex = 0, ?array 
 
     /**
      * Fetch data with support for array parameters in SQL queries
+     * 
+     * @param
+     * $params array asociativo
      */
-    public function fetchDataByNamedSql(string $sql, ?array $params = null): array
+    public function fetchDataBySql(string $sql, ?array $params = null): array
     {
         if ($params === null) {
             $stmt = $this->db->getPdo()->prepare($sql);

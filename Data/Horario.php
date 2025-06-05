@@ -32,9 +32,9 @@ class Horario extends Entity
     public ?string $id = null;
 
     /** @var Curso|null (fk horario.curso _m:o curso.id) */
-    public ?\Fines2\Curso $curso_ = null;
+    public ?\Fines2\Curso_ $curso_ = null;
 
     /** @var Dia|null (fk horario.dia _m:o dia.id) */
-    public ?\Fines2\Dia $dia_ = null;
+    public ?\Fines2\Dia_ $dia_ = null;
 
 }

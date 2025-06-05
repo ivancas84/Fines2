@@ -29,6 +29,6 @@ class DistribucionHoraria extends Entity
     public ?string $id = null;
 
     /** @var Disposicion|null (fk distribucion_horaria.disposicion _m:o disposicion.id) */
-    public ?\Fines2\Disposicion $disposicion_ = null;
+    public ?\Fines2\Disposicion_ $disposicion_ = null;
 
 }

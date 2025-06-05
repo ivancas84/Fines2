@@ -63,12 +63,12 @@ class BuildClasses
                 if (in_array($relation->fieldName, $entityMetadata->unique)) {
                     // Relación one-to-one
                     fwrite($file, "    /** @var " . $entities[$relation->refEntityName]->getClassName() . "|null (fk " . $entityName . "." . $relation->fieldName . " _o:o " . $relation->refEntityName . ".id) */\n");
-                    fwrite($file, "    public ?\\" .  $config->namespace . "\\" . $entities[$relation->refEntityName]->getClassName() . " \$" . $relation->fieldName . "_ = null;\n");
+                    fwrite($file, "    public ?\\" .  $config->namespace . "\\" . $entities[$relation->refEntityName]->getClassName() . "_ \$" . $relation->fieldName . "_ = null;\n");
                     fwrite($file, "\n");
                 } else {
                     // Relación many-to-one
                     fwrite($file, "    /** @var " . $entities[$relation->refEntityName]->getClassName() . "|null (fk " . $entityName . "." . $relation->fieldName . " _m:o " . $relation->refEntityName . ".id) */\n");
-                    fwrite($file, "    public ?\\" . $config->namespace . "\\" . $entities[$relation->refEntityName]->getClassName() . " \$" . $relation->fieldName . "_ = null;\n");
+                    fwrite($file, "    public ?\\" . $config->namespace . "\\" . $entities[$relation->refEntityName]->getClassName() . "_ \$" . $relation->fieldName . "_ = null;\n");
                     fwrite($file, "\n");   
                 
                 }
@@ -77,7 +77,7 @@ class BuildClasses
             // Relaciones one-to-one inversas
             foreach ($entityMetadata->oo as $id => $rref) {
                 fwrite($file, "    /** @var " . $entities[$rref->entityName]->getClassName() . "|null (ref " . $rref->entityName . "." . $rref->fieldName . " _o:o " . $entityName . ".id) */\n");
-                fwrite($file, "    public ?\\" .  $config->namespace . "\\" . $entities[$rref->entityName]->getClassName() . " \$" . $id . " = null;\n");
+                fwrite($file, "    public ?\\" .  $config->namespace . "\\" . $entities[$rref->entityName]->getClassName() . "_ \$" . $id . " = null;\n");
                 fwrite($file, "\n");
             }
 
@@ -93,6 +93,23 @@ class BuildClasses
 
             fwrite($file, "}\n");
             fclose($file);
+
+            
+            $filePath = $config->dataClassesPath . $entityMetadata->getClassName() . "_.php";
+            if (file_exists($filePath)) continue;
+            $file = fopen($filePath, 'w');
+            fwrite($file, "<?php\n");
+            fwrite($file, "\n");
+            fwrite($file, "namespace " . $config->namespace . ";\n");           
+            fwrite($file, "\n");
+            fwrite($file, "use \\" . $config->namespace . "\\" . $entityMetadata->getClassName() . ";\n");           
+            fwrite($file, "\n");
+            fwrite($file, "use SqlOrganize\\Sql\\Entity;\n");
+            fwrite($file, "use Exception;\n");
+            fwrite($file, "use DateTime;\n\n");
+            fwrite($file, "class " . $entityMetadata->getClassName() . "_ extends " . $entityMetadata->getClassName() . "\n");
+            fwrite($file, "{\n\n");
+            fwrite($file, "}\n\n");
         }
     }
 

@@ -52,7 +52,7 @@ abstract class Entity
 
     // Índice dentro de una colección
     // Facilita la impresión del número de fila, por ejemplo
-    public int $index = 0;
+    public int $_index = 0;
 
     public function __construct()
     {

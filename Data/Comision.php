@@ -76,19 +76,19 @@ class Comision extends Entity
     public ?string $turno = null;
 
     /** @var Calendario|null (fk comision.calendario _m:o calendario.id) */
-    public ?\Fines2\Calendario $calendario_ = null;
+    public ?\Fines2\Calendario_ $calendario_ = null;
 
     /** @var Comision|null (fk comision.comision_siguiente _m:o comision.id) */
-    public ?\Fines2\Comision $comision_siguiente_ = null;
+    public ?\Fines2\Comision_ $comision_siguiente_ = null;
 
     /** @var Modalidad|null (fk comision.modalidad _m:o modalidad.id) */
-    public ?\Fines2\Modalidad $modalidad_ = null;
+    public ?\Fines2\Modalidad_ $modalidad_ = null;
 
     /** @var Planificacion|null (fk comision.planificacion _m:o planificacion.id) */
-    public ?\Fines2\Planificacion $planificacion_ = null;
+    public ?\Fines2\Planificacion_ $planificacion_ = null;
 
     /** @var Sede|null (fk comision.sede _m:o sede.id) */
-    public ?\Fines2\Sede $sede_ = null;
+    public ?\Fines2\Sede_ $sede_ = null;
 
     /** @var int|null */
     public ?int $AlumnoComision_Count = null;

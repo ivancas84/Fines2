@@ -29,9 +29,9 @@ class DisposicionPendiente extends Entity
     public ?string $modo = null;
 
     /** @var Alumno|null (fk disposicion_pendiente.alumno _m:o alumno.id) */
-    public ?\Fines2\Alumno $alumno_ = null;
+    public ?\Fines2\Alumno_ $alumno_ = null;
 
     /** @var Disposicion|null (fk disposicion_pendiente.disposicion _m:o disposicion.id) */
-    public ?\Fines2\Disposicion $disposicion_ = null;
+    public ?\Fines2\Disposicion_ $disposicion_ = null;
 
 }

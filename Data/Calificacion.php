@@ -59,12 +59,12 @@ class Calificacion extends Entity
     public ?int $porcentaje_asistencia = null;
 
     /** @var Alumno|null (fk calificacion.alumno _m:o alumno.id) */
-    public ?\Fines2\Alumno $alumno_ = null;
+    public ?\Fines2\Alumno_ $alumno_ = null;
 
     /** @var Curso|null (fk calificacion.curso _m:o curso.id) */
-    public ?\Fines2\Curso $curso_ = null;
+    public ?\Fines2\Curso_ $curso_ = null;
 
     /** @var Disposicion|null (fk calificacion.disposicion _m:o disposicion.id) */
-    public ?\Fines2\Disposicion $disposicion_ = null;
+    public ?\Fines2\Disposicion_ $disposicion_ = null;
 
 }

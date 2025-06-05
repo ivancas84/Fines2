@@ -34,7 +34,7 @@ class Planificacion extends Entity
     public ?string $semestre = null;
 
     /** @var Plan|null (fk planificacion.plan _m:o plan.id) */
-    public ?\Fines2\Plan $plan_ = null;
+    public ?\Fines2\Plan_ $plan_ = null;
 
     /** @var int|null */
     public ?int $Comision_Count = null;

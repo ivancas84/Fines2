@@ -22,7 +22,7 @@ class TomaDAO
             WHERE calendario = :calendario
         ";
 
-        return $dataProvider->fetchEntitiesByNamedSql("toma", $sql, ["calendario" => $calendario]);
+        return $dataProvider->fetchEntitiesBySqlId("toma", $sql, ["calendario" => $calendario]);
     }
 
 }

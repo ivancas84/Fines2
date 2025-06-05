@@ -33,7 +33,7 @@ class CentroEducativo extends Entity
     public ?string $observaciones = null;
 
     /** @var Domicilio|null (fk centro_educativo.domicilio _m:o domicilio.id) */
-    public ?\Fines2\Domicilio $domicilio_ = null;
+    public ?\Fines2\Domicilio_ $domicilio_ = null;
 
     /** @var int|null */
     public ?int $Sede_Count = null;

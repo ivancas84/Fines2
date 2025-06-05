@@ -101,13 +101,13 @@ class Alumno extends Entity
     public ?int $tiene_partida = null;
 
     /** @var Persona|null (fk alumno.persona _o:o persona.id) */
-    public ?\Fines2\Persona $persona_ = null;
+    public ?\Fines2\Persona_ $persona_ = null;
 
     /** @var Plan|null (fk alumno.plan _m:o plan.id) */
-    public ?\Fines2\Plan $plan_ = null;
+    public ?\Fines2\Plan_ $plan_ = null;
 
     /** @var Resolucion|null (fk alumno.resolucion_inscripcion _m:o resolucion.id) */
-    public ?\Fines2\Resolucion $resolucion_inscripcion_ = null;
+    public ?\Fines2\Resolucion_ $resolucion_inscripcion_ = null;
 
     /** @var int|null */
     public ?int $AlumnoComision_Count = null;

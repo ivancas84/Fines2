@@ -110,10 +110,10 @@ class Persona extends Entity
     public ?int $telefono_verificado = null;
 
     /** @var Domicilio|null (fk persona.domicilio _m:o domicilio.id) */
-    public ?\Fines2\Domicilio $domicilio_ = null;
+    public ?\Fines2\Domicilio_ $domicilio_ = null;
 
     /** @var Alumno|null (ref alumno.persona _o:o persona.id) */
-    public ?\Fines2\Alumno $Alumno_ = null;
+    public ?\Fines2\Alumno_ $Alumno_ = null;
 
     /** @var int|null */
     public ?int $Designacion_Count = null;

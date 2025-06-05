@@ -35,6 +35,6 @@ class Email extends Entity
     public ?int $verificado = null;
 
     /** @var Persona|null (fk email.persona _m:o persona.id) */
-    public ?\Fines2\Persona $persona_ = null;
+    public ?\Fines2\Persona_ $persona_ = null;
 
 }

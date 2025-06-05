@@ -35,9 +35,9 @@ class AsignacionPlanillaDocente extends Entity
     public ?string $toma = null;
 
     /** @var PlanillaDocente|null (fk asignacion_planilla_docente.planilla_docente _m:o planilla_docente.id) */
-    public ?\Fines2\PlanillaDocente $planilla_docente_ = null;
+    public ?\Fines2\PlanillaDocente_ $planilla_docente_ = null;
 
     /** @var Toma|null (fk asignacion_planilla_docente.toma _m:o toma.id) */
-    public ?\Fines2\Toma $toma_ = null;
+    public ?\Fines2\Toma_ $toma_ = null;
 
 }

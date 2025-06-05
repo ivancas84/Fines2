@@ -9,11 +9,12 @@ require_once MAIN_PATH . 'SqlOrganizeMy/Model/requires.php';
 require_once MAIN_PATH . 'SqlOrganize/Sql/requires.php';
 require_once MAIN_PATH . 'SqlOrganizeMy/Sql/requires.php';
 require_once MAIN_PATH . 'schema.php';
+require_once MAIN_PATH . 'schema_.php';
 
 use SqlOrganize\Model\BuildClasses;
-use SqlOrganize\Sql\Fines2\Schema;
+use Fines2\Schema_;
 use Fines2\MainConfig;
 
-BuildClasses::Build(MainConfig::getConfigModel(), Schema::getEntities());
+BuildClasses::Build(MainConfig::getConfigModel(), Schema_::getEntities());
 
 echo "Fin";

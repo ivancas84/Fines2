@@ -26,9 +26,9 @@ class ComisionRelacionada extends Entity
     public ?string $relacion = null;
 
     /** @var Comision|null (fk comision_relacionada.comision _m:o comision.id) */
-    public ?\Fines2\Comision $comision_ = null;
+    public ?\Fines2\Comision_ $comision_ = null;
 
     /** @var Comision|null (fk comision_relacionada.relacion _m:o comision.id) */
-    public ?\Fines2\Comision $relacion_ = null;
+    public ?\Fines2\Comision_ $relacion_ = null;
 
 }

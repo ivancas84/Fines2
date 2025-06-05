@@ -50,13 +50,13 @@ class Curso extends Entity
     public ?string $observaciones = null;
 
     /** @var Asignatura|null (fk curso.asignatura _m:o asignatura.id) */
-    public ?\Fines2\Asignatura $asignatura_ = null;
+    public ?\Fines2\Asignatura_ $asignatura_ = null;
 
     /** @var Comision|null (fk curso.comision _m:o comision.id) */
-    public ?\Fines2\Comision $comision_ = null;
+    public ?\Fines2\Comision_ $comision_ = null;
 
     /** @var Disposicion|null (fk curso.disposicion _m:o disposicion.id) */
-    public ?\Fines2\Disposicion $disposicion_ = null;
+    public ?\Fines2\Disposicion_ $disposicion_ = null;
 
     /** @var int|null */
     public ?int $Calificacion_Count = null;

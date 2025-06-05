@@ -12,7 +12,7 @@ require_once MAIN_PATH . 'Dao2/TomaDAO.php';
 
 use SqlOrganize\Sql\DbMy;
 use Fines2\Schema_;
-use SqlOrganize\Sql\Fines2\MainConfig;
+use Fines2\MainConfig;
 
 
 DbMy::initInstance(MainConfig::getConfigDb(), Schema_::getEntities());

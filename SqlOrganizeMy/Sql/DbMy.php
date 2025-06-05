@@ -48,6 +48,7 @@ class DbMy extends Db
 
         foreach(self::$instance->entities as $entityMetadata){
             require_once rtrim($config->mainPath, '/') . '/Data/' . $entityMetadata->getClassName() .'.php';
+            require_once rtrim($config->mainPath, '/') . '/Data/' . $entityMetadata->getClassName() .'_.php';
         }
     }
 

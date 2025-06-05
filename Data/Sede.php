@@ -59,16 +59,16 @@ class Sede extends Entity
     public ?string $tipo_sede = null;
 
     /** @var CentroEducativo|null (fk sede.centro_educativo _m:o centro_educativo.id) */
-    public ?\Fines2\CentroEducativo $centro_educativo_ = null;
+    public ?\Fines2\CentroEducativo_ $centro_educativo_ = null;
 
     /** @var Domicilio|null (fk sede.domicilio _m:o domicilio.id) */
-    public ?\Fines2\Domicilio $domicilio_ = null;
+    public ?\Fines2\Domicilio_ $domicilio_ = null;
 
     /** @var Sede|null (fk sede.organizacion _m:o sede.id) */
-    public ?\Fines2\Sede $organizacion_ = null;
+    public ?\Fines2\Sede_ $organizacion_ = null;
 
     /** @var TipoSede|null (fk sede.tipo_sede _m:o tipo_sede.id) */
-    public ?\Fines2\TipoSede $tipo_sede_ = null;
+    public ?\Fines2\TipoSede_ $tipo_sede_ = null;
 
     /** @var int|null */
     public ?int $Comision_Count = null;

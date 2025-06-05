@@ -32,6 +32,6 @@ class Contralor extends Entity
     public ?string $planilla_docente = null;
 
     /** @var PlanillaDocente|null (fk contralor.planilla_docente _m:o planilla_docente.id) */
-    public ?\Fines2\PlanillaDocente $planilla_docente_ = null;
+    public ?\Fines2\PlanillaDocente_ $planilla_docente_ = null;
 
 }

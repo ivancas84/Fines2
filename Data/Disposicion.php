@@ -36,10 +36,10 @@ class Disposicion extends Entity
     public ?string $planificacion = null;
 
     /** @var Asignatura|null (fk disposicion.asignatura _m:o asignatura.id) */
-    public ?\Fines2\Asignatura $asignatura_ = null;
+    public ?\Fines2\Asignatura_ $asignatura_ = null;
 
     /** @var Planificacion|null (fk disposicion.planificacion _m:o planificacion.id) */
-    public ?\Fines2\Planificacion $planificacion_ = null;
+    public ?\Fines2\Planificacion_ $planificacion_ = null;
 
     /** @var int|null */
     public ?int $Calificacion_Count = null;
