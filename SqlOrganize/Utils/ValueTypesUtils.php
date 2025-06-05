@@ -1,7 +1,7 @@
 <?php
 
 namespace SqlOrganize\Utils;
-
+ use DateTimeInterface;
 class ValueTypesUtils
 {
     public static function generateGuid(): string
@@ -315,6 +315,26 @@ class ValueTypesUtils
         return hash('sha256', $input);
     }
 
+
+    public static function toString($var): string {
+    if ($var instanceof DateTimeInterface) {
+        return $var->format('Y-m-d H:i:s');
+    } elseif (is_string($var)) {
+        return $var;
+    } elseif (is_scalar($var) || is_null($var)) {
+        return strval($var);
+    } elseif (is_object($var)) {
+        if (method_exists($var, '__toString')) {
+            return $var->__toString();
+        } else {
+            return json_encode($var);
+        }
+    } elseif (is_array($var)) {
+        return json_encode($var);
+    } else {
+        return '';
+    }
+}
 
     /**
      * Convierte array asociativo a string de pares clave-valor

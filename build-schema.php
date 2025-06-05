@@ -7,6 +7,8 @@ require_once MAIN_PATH . 'SqlOrganize/Model/requires.php';
 require_once MAIN_PATH . 'SqlOrganizeMy/Model/requires.php';
 
 use SqlOrganize\Model\BuildSchemaMy;
+use Fines2\MainConfig;
+
 
 $schema = new BuildSchemaMy(MainConfig::getConfigModel());
 $schema->createSchema();

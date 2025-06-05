@@ -25,8 +25,14 @@ class EntityMetadata
     public function getClassName(): string
     {
         return empty($this->_className) 
-            ? ValueTypesUtils::toCamelCase($this->name) 
+            ? ValueTypesUtils::toCamelCase($this->name)
             : $this->_className;
+    }
+
+    public function getClassNameWithNamespace(): string
+    {
+        $namespace = (!empty($this->db->config->namespace)) ? "\\".$this->db->config->namespace ."\\" : "";
+        return $namespace . $this->getClassName();
     }
     
     public function setClassName(string $className): void

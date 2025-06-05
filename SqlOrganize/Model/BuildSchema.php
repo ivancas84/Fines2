@@ -206,8 +206,10 @@ abstract class BuildSchema
             case "datetime":
             case "timestamp":
             case "time":
-            case "year":
                 $f->type = "DateTime";
+                break;
+            case "year":
+                $f->type = "int";
                 break;
 
             case "json":

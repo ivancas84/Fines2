@@ -12,7 +12,7 @@ require_once MAIN_PATH . 'schema.php';
 
 use SqlOrganize\Model\BuildClasses;
 use SqlOrganize\Sql\Fines2\Schema;
-use SqlOrganize\Sql\Fines2\MainConfig;
+use Fines2\MainConfig;
 
 BuildClasses::Build(MainConfig::getConfigModel(), Schema::getEntities());
 

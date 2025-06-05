@@ -1,6 +1,6 @@
 <?php
 
-namespace SqlOrganize\Sql\Fines2;
+namespace Fines2;
 
 use SqlOrganize\Sql\EntityMetadata;
 use SqlOrganize\Sql\Field;
@@ -671,9 +671,9 @@ class Schema
 
         $entities['calendario']->om = [];
         $entities['calendario']->om['Comision_'] = EntityRef::getInstance('calendario', 'comision');
-        $entities['calendario']->fields['anio'] = Field::getInstance('calendario', 'anio', 'year', 'DateTime');
+        $entities['calendario']->fields['anio'] = Field::getInstance('calendario', 'anio', 'year', 'int');
         $entities['calendario']->fields['anio']->checks = [
-            'type' => 'DateTime',
+            'type' => 'int',
             'required' => '1',
         ];
         $entities['calendario']->fields['descripcion'] = Field::getInstance('calendario', 'descripcion', 'varchar', 'string');
@@ -1924,7 +1924,7 @@ class Schema
         $entities['disposicion'] = EntityMetadata::getInstance('disposicion', 'disp');
         $entities['disposicion']->pk = ['id'];
         $entities['disposicion']->fk = ['asignatura', 'planificacion'];
-        $entities['disposicion']->notNull = ['asignatura', 'id', 'planificacion'];
+        $entities['disposicion']->notNull = ['asignatura', 'horas_catedra', 'id', 'planificacion'];
 
         $entities['disposicion']->tree = [];
         $entities['disposicion']->tree['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
@@ -1958,6 +1958,11 @@ class Schema
         $entities['disposicion']->fields['asignatura']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
+        ];
+        $entities['disposicion']->fields['horas_catedra'] = Field::getInstance('disposicion', 'horas_catedra', 'int', 'int');
+        $entities['disposicion']->fields['horas_catedra']->checks = [
+            'type' => 'int',
+            'required' => '1',
         ];
         $entities['disposicion']->fields['id'] = Field::getInstance('disposicion', 'id', 'varchar', 'string');
         $entities['disposicion']->fields['id']->checks = [
@@ -2923,9 +2928,9 @@ class Schema
 
         $entities['resolucion']->om = [];
         $entities['resolucion']->om['Alumno_resolucion_inscripcion_'] = EntityRef::getInstance('resolucion_inscripcion', 'alumno');
-        $entities['resolucion']->fields['anio'] = Field::getInstance('resolucion', 'anio', 'year', 'DateTime');
+        $entities['resolucion']->fields['anio'] = Field::getInstance('resolucion', 'anio', 'year', 'int');
         $entities['resolucion']->fields['anio']->checks = [
-            'type' => 'DateTime',
+            'type' => 'int',
         ];
         $entities['resolucion']->fields['id'] = Field::getInstance('resolucion', 'id', 'varchar', 'string');
         $entities['resolucion']->fields['id']->checks = [
@@ -2957,6 +2962,7 @@ class Schema
         $entities['sede'] = EntityMetadata::getInstance('sede', 'sede');
         $entities['sede']->pk = ['id'];
         $entities['sede']->fk = ['centro_educativo', 'domicilio', 'organizacion', 'tipo_sede'];
+        $entities['sede']->unique = ['nombre'];
         $entities['sede']->notNull = ['alta', 'id', 'nombre', 'numero'];
 
         $entities['sede']->tree = [];
@@ -3337,6 +3343,15 @@ class Schema
         $entities['toma']->fields['alta']->checks = [
             'type' => 'DateTime',
             'required' => '1',
+        ];
+        $entities['toma']->fields['archivo'] = Field::getInstance('toma', 'archivo', 'varchar', 'string');
+        $entities['toma']->fields['archivo']->checks = [
+            'type' => 'string',
+        ];
+        $entities['toma']->fields['archivo']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+            'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['asistencia'] = Field::getInstance('toma', 'asistencia', 'tinyint', 'int');
         $entities['toma']->fields['asistencia']->checks = [

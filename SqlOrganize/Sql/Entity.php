@@ -26,11 +26,16 @@ abstract class Entity
 
     public Db $_db;
 
-    public string $_label = '';
 
     public function getLabel(): string 
     { 
-        return $this->_label; 
+        $entityMetadata = $this->_db->GetEntityMetadata($this->_entityName);
+        $ret = "";
+
+        foreach($entityMetadata->main as $fieldName)
+            $ret .= ValueTypesUtils::toString($this->get($fieldName)) . " ";
+
+        return trim($ret); 
     }
     
 
@@ -464,7 +469,7 @@ abstract class Entity
         }
         
         if (strpos($defaultStr, "max") !== false) {
-            $connection = $this->_db->connection();
+            $connection = $this->_db->getPdo();
             $sql = $this->_db->createSelectQueries()->maxValue($this->_entityName, $field->name);
             $stmt = $connection->prepare($sql);
             $stmt->execute();
@@ -489,7 +494,7 @@ abstract class Entity
         
         if ($field->isUnique()) {
             if (!$this->isNullOrEmpty($fieldName)) {
-                $connection = $this->_db->connection();
+                $connection = $this->_db->getPdo();
                 $sql = $this->_db->createSelectQueries()->idKey($this->_entityName, $fieldName);
                 $value = $this->get($fieldName);
                 

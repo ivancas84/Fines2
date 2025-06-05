@@ -8,16 +8,19 @@ use SqlOrganize\Model\Column;
 
 class BuildSchemaMy extends BuildSchema
 {
-    
-
-    protected function getTableNames(): array
-    {
-        try {
-            $pdo = new PDO("mysql:host=" . DB_HOST_FINES . ";dbname=" . DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES, [
+    private function getPdo(){
+         $pdo = new PDO("mysql:host=" . $this->config->host . ";dbname=" . $this->config->dbName, $this->config->user, $this->config->pass, [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ]);
             $pdo->exec("SET NAMES 'utf8mb3'");
+            return $pdo;
+    }
+
+    protected function getTableNames(): array
+    {
+        try {
+            $pdo = $this->getPdo();
 
             $sql = "
                 SELECT TABLE_NAME
@@ -27,7 +30,7 @@ class BuildSchemaMy extends BuildSchema
             ";
             
             $stmt = $pdo->prepare($sql);
-            $stmt->bindValue(':dbName', DB_NAME_FINES);
+            $stmt->bindValue(':dbName', $this->config->dbName);
             $stmt->execute();
             
             $result = [];
@@ -45,10 +48,7 @@ class BuildSchemaMy extends BuildSchema
     protected function getColumns(string $tableName): array
     {
         try {
-            $pdo = new PDO("mysql:host=" . DB_HOST_FINES . ";dbname=" . DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-            ]);
+            $pdo = $this->getPdo();
             
             $sql = "
                 SELECT 
@@ -90,7 +90,7 @@ class BuildSchemaMy extends BuildSchema
             ";
             
             $stmt = $pdo->prepare($sql);
-            $stmt->bindValue(':dbName', DB_NAME_FINES);
+            $stmt->bindValue(':dbName', $this->config->dbName);
             $stmt->bindParam(':tableName', $tableName);
             $stmt->execute();
             
@@ -127,10 +127,7 @@ class BuildSchemaMy extends BuildSchema
     protected function getInfoUnique(string $tableName): array
     {
         try {
-            $pdo = new PDO("mysql:host=" . $this->config->host . ";dbname=" . $this->config->dbName, $this->config->user, $this->config->pass, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-            ]);
+            $pdo = $this->getPdo();
             
             
             $sql = "

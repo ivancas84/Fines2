@@ -20,6 +20,9 @@ class Toma extends Entity
     /** @var DateTime|null */
     public ?DateTime $alta = null;
 
+    /** @var string|null */
+    public ?string $archivo = null;
+
     /** @var int|null */
     public ?int $asistencia = null;
 

@@ -23,6 +23,9 @@ class Disposicion extends Entity
     /** @var string|null */
     public ?string $asignatura = null;
 
+    /** @var int|null */
+    public ?int $horas_catedra = null;
+
     /** @var string|null */
     public ?string $id = null;
 

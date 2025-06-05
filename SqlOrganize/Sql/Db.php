@@ -27,10 +27,10 @@ abstract class Db
     {
         $this->config = $config;
         $this->initEntities($entities);
-        $this->createConnection();
+        $this->initPdo();
     }
 
-    protected abstract function createConnection();
+    protected abstract function initPdo();
     
     protected function initEntities(array $entities){
         $this->entities = $entities;
@@ -46,7 +46,7 @@ abstract class Db
 
   
     // Get the PDO connection
-    public function getConnection(): PDO
+    public function getPdo(): PDO
     {
         return $this->pdo;
     }
@@ -189,16 +189,7 @@ abstract class Db
         return $this->entities[$entityName];
     }
     
-    /**
-     * Conexion con la base de datos
-     */
-    public function Connection(): PDO {
-        return new PDO("mysql:host=" . DB_HOST_FINES . ";dbname=" . DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-            ]);
-            $pdo->exec("SET NAMES 'utf8mb3'");
-    }
+  
     
 
     public function CreateDataProvider(): DataProvider

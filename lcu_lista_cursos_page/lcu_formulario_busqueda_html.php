@@ -7,7 +7,7 @@
             <?php foreach ($calendarios as $calendario) : ?>
                 <option value="<?php echo esc_attr($calendario->id); ?>" 
                     <?php selected($selected_calendario, $calendario->id); ?>>
-                    <?php echo esc_html($calendario->anio . "-" . $calendario->semestre . " " . $calendario->descripcion); ?>
+                    <?php echo esc_html($calendario->getLabel()); ?>
                 </option>
             <?php endforeach; ?>
 

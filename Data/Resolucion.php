@@ -17,8 +17,8 @@ class Resolucion extends Entity
         $this->Alumno_resolucion_inscripcion_ = [];
     }
 
-    /** @var DateTime|null */
-    public ?DateTime $anio = null;
+    /** @var int|null */
+    public ?int $anio = null;
 
     /** @var string|null */
     public ?string $id = null;

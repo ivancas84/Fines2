@@ -1,9 +1,13 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
+//require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/class/PdoFines.php');
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/db-config.php');
+
+
+use \SqlOrganize\Sql\DbMy;
 
 add_submenu_page(
     'fines-plugin', 
@@ -15,9 +19,13 @@ add_submenu_page(
   );
 
 function lcu_lista_cursos_page() {
+
+    $db = DbMy::getInstance();
+    $dataProvider = $db->CreateDataProvider();
+
     $pdo = new PdoFines();
 
-	$calendarios = $pdo->calendarios();
+	$calendarios = $dataProvider->fetchAllEntities("calendario");
 	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : '';
     $selected_order = isset($_GET['order_by']) ? sanitize_text_field($_GET['order_by']) : 'tramo';
 

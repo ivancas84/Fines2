@@ -15,22 +15,38 @@ class DataProvider {
     }
 
 
-    public function fetchEntitiesByIds(string $entityName, ...$ids): array {
-        $data = $this->fetchTreeByIds($entityName, ...$ids);
-        $entityMetadata = $this->db->getEntityMetadata($entityName);
+    /**
+     * SQL debe consultar el id en la primera columna
+     * 
+     * @example
+     *   $sql = "
+     *       SELECT DISTINCT id 
+     *       FROM toma
+     *       WHERE curso = :cursos";
+     *   $tomas = $dataProvider->fetchEntitiesByNamedSql("toma", $sql, ["cursos"=>$ids_cursos]);
+     */
+    public function fetchEntitiesByNamedSql(string $entityName, string $sql, ?array $params = null): array {
+        $ids = $this->fetchColumnByNamedSql($sql, 0, $params);
 
-        $className = $this->db->config->namespace."\\".$entityMetadata->getClassName();
+        return $this->fetchEntitiesByIds($entityName, ...$ids);
+    }
+
+    public function fetchEntitiesByIds(string $entityName, ...$ids): array {
+        $treeData = $this->fetchTreeByIds($entityName, ...$ids);
+        return $this->treeDataToEntities($entityName, $treeData);
+    }
+
+    private function treeDataToEntities(string $entityName, array $treeData){
+        $className = $this->db->getEntityMetadata($entityName)->getClassNameWithNamespace();
 
         $response = [];
-        foreach($data as $d) {
+        foreach($treeData as $d) {
             $obj = new $className;
             $obj->ssetFromTree($d);
             $response[] = $obj;
         }
 
         return $response;
-
-
     }
 
     /**
@@ -53,35 +69,149 @@ class DataProvider {
     }
 
     /**
-     * Ejecuta SQL y devuelve array asociativo
-     */
+    * Ejecuta SQL y devuelve array asociativo (version simple utilizar solo tipos simples en parametros)
+    * 
+    * @example
+    * // Con DateTime (se puede pasar DateTime o string)
+    * $filteredUsers = $this->fetchDataBySql(
+    *     "SELECT id, name, email, created_at FROM users WHERE role = ? AND created_at > ?", 
+    *     ['admin', new DateTime('2024-01-01')]
+    * );
+    *
+    * @example
+    * // Con parámetros nombrados
+    * $users = $this->fetchDataBySql(
+    *     "SELECT * FROM users WHERE role = :role AND department = :dept", 
+    *     [':role' => 'admin', ':dept' => 'IT']
+    * );
+    */
     public function fetchDataBySql(string $sql, ?array $params = null): array {
-        $stmt = $this->db->connection()->prepare($sql);
+        $stmt = $this->db->getPdo()->prepare($sql);
         $stmt->execute($params ?? []);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+ 
+    /**
+     * Ejecuta SQL y devuelve columna
+     * version simple, no utilizar array en parametros
+     
+     */    
+    public function fetchColumnBySql(string $sql, int $columnIndex = 0, ?array $params = null): array 
+    {
+        $stmt = $this->db->getPdo()->prepare($sql);
+        $stmt->execute($params ?? []);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN, $columnIndex);
+    }
+   // Versión alternativa más simple si prefieres usar named parameters
+
+/**
+ * Procesa parámetros con soporte para arrays, expandiendo arrays a parámetros nombrados
+ */
+private function processArrayParameters(string $sql, array $params): array
+{
+    $processedParams = [];
+    $processedSql = $sql;
+
+    foreach ($params as $key => $value) {
+        if (is_array($value)) {
+            if (empty($value)) {
+                // Array vacío - reemplazar con condición siempre falsa
+                $processedSql = str_replace(":$key", 'NULL', $processedSql);
+            } else {
+                // Crear parámetros nombrados para cada elemento
+                $namedParams = [];
+                foreach ($value as $i => $arrayValue) {
+                    $paramName = "{$key}_{$i}";
+                    $namedParams[] = ":$paramName";
+                    $processedParams[$paramName] = $arrayValue;
+                }
+                $processedSql = str_replace(":$key", implode(',', $namedParams), $processedSql);
+            }
+        } else {
+            $processedParams[$key] = $value;
+        }
+    }
+
+    return [$processedSql, $processedParams];
+}
+
+/**
+ * Versión alternativa usando parámetros nombrados para mayor claridad
+ */
+public function fetchColumnByNamedSql(string $sql, int $columnIndex = 0, ?array $params = null): array
+{
+    if ($params === null) {
+        $stmt = $this->db->getPdo()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_COLUMN, $columnIndex);
+    }
+
+    [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
+
+    $stmt = $this->db->getPdo()->prepare($processedSql);
+    $stmt->execute($processedParams);
+    return $stmt->fetchAll(PDO::FETCH_COLUMN, $columnIndex);
+}
+
+    /**
+     * Fetch data with support for array parameters in SQL queries
+     */
+    public function fetchDataByNamedSql(string $sql, ?array $params = null): array
+    {
+        if ($params === null) {
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
+
+        $stmt = $this->db->getPdo()->prepare($processedSql);
+        $stmt->execute($processedParams);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function fetchAllEntities(string $entityName): array
+    {
+        $treeData = $this->fetchAllTree($entityName);
+        return $this->treeDataToEntities($entityName, $treeData);
+    }
+
+    public function fetchAllTree($entityName){
+        $data = $this->fetchAll($entityName);
+        $treeData = [];
+        foreach($data as $d){
+            $treeData[] = $this->valuesTree($entityName, $d);
+        }
+        return $treeData;
+    }
+    
+    public function fetchAll(string $entityName): array 
+    {
+        $sql = $this->db->createSelectQueries()->selectAll($entityName);
+        $stmt = $this->db->getPdo()->prepare($sql);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
      * Consulta por IDs
      */
-    public function fetchDataByIds(string $entityName, ...$ids): array {
+    public function fetchDataByIds(string $entityName, ...$ids): array
+    {
         $ids = array_unique($ids);
         if (empty($ids)) return [];
 
-        $placeholders = [];
-        $params = [];
-        foreach ($ids as $index => $id) {
-            $param = ":id$index";
-            $placeholders[] = $param;
-            $params[$param] = $id;
-        }
-
         $entityMetadata = $this->db->GetEntityMetadata($entityName);
         $sql = $this->db->createSelectQueries()->selectAll($entityName);
-        $sql .= " WHERE " . $entityMetadata->Pt() . "." . $this->db->config->idName . " IN (" . implode(", ", $placeholders) . ")";
+        $sql .= " WHERE " . $entityMetadata->Pt() . "." . $this->db->config->idName . " IN (:ids)";
 
-        $stmt = $this->db->connection()->prepare($sql);
-        $stmt->execute($params);
+        [$processedSql, $processedParams] = $this->processArrayParameters($sql, ['ids' => $ids]);
+
+        $stmt = $this->db->getPdo()->prepare($processedSql);
+        $stmt->execute($processedParams);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (count($rows) !== count($ids)) {
