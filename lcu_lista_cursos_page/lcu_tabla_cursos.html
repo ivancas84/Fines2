@@ -7,10 +7,14 @@
             <th>Comisión</th>
             <th>Tramo</th>
             <th>Asignatura</th>
+            <th>Hs Cat Curso/Disp</th>
+
             <th>Docente</th>
             <th>Teléfono</th>
             <th>Fecha Toma</th>
             <th>Planilla Docente</th>
+            <th>Id Toma</th>
+
             <th>Opciones</th>
         </tr>
     </thead>
@@ -26,10 +30,13 @@
                 <td><?= esc_html($curso->comision_?->pfid); ?></td>
                 <td><?= esc_html($curso->disposicion_?->planificacion_?->getTramo()); ?></td>
                 <td><?= esc_html($curso->disposicion_?->asignatura_?->getLabel()); ?></td>
+                <td><?= esc_html($curso->horas_catedra . "/" . $curso->disposicion_?->horas_catedra); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->docente_?->getLabel()); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->docente_?->telefono); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->fecha_toma?->format('Y-m-d')); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->planilla_docente_?->numero); ?></td>
+                <td><?= esc_html($curso->toma_activa_?->id); ?></td>
+
                 <td>
                     <a href="<?= esc_url($detalle_comision_url); ?>" class="button">Detalle Comisión</a> 
                     <a href="<?= esc_url($administrar_tomas_url); ?>" class="button">Administrar Tomas</a> 

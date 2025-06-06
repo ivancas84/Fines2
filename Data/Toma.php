@@ -14,7 +14,6 @@ class Toma extends Entity
         $this->_entityName = "toma";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->AsignacionPlanillaDocente_ = [];
     }
 
     /** @var DateTime|null */
@@ -22,12 +21,6 @@ class Toma extends Entity
 
     /** @var string|null */
     public ?string $archivo = null;
-
-    /** @var int|null */
-    public ?int $asistencia = null;
-
-    /** @var int|null */
-    public ?int $calificacion = null;
 
     /** @var string|null */
     public ?string $comentario = null;
@@ -59,14 +52,14 @@ class Toma extends Entity
     /** @var string|null */
     public ?string $planilla_docente = null;
 
+    /** @var int|null */
+    public ?int $reclamo = null;
+
     /** @var string|null */
     public ?string $reemplazo = null;
 
     /** @var int|null */
     public ?int $sin_planillas = null;
-
-    /** @var int|null */
-    public ?int $temas_tratados = null;
 
     /** @var string|null */
     public ?string $tipo_movimiento = null;
@@ -82,11 +75,5 @@ class Toma extends Entity
 
     /** @var Persona|null (fk toma.reemplazo _m:o persona.id) */
     public ?\Fines2\Persona_ $reemplazo_ = null;
-
-    /** @var int|null */
-    public ?int $AsignacionPlanillaDocente_Count = null;
-
-    /** @var AsignacionPlanillaDocente[] (ref asignacion_planilla_docente.toma _m:o toma.id) */
-    public array $AsignacionPlanillaDocente_ = [];
 
 }

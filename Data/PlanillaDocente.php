@@ -14,7 +14,6 @@ class PlanillaDocente extends Entity
         $this->_entityName = "planilla_docente";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->AsignacionPlanillaDocente_ = [];
         $this->Contralor_ = [];
         $this->Toma_ = [];
     }
@@ -36,12 +35,6 @@ class PlanillaDocente extends Entity
 
     /** @var string|null */
     public ?string $observaciones = null;
-
-    /** @var int|null */
-    public ?int $AsignacionPlanillaDocente_Count = null;
-
-    /** @var AsignacionPlanillaDocente[] (ref asignacion_planilla_docente.planilla_docente _m:o planilla_docente.id) */
-    public array $AsignacionPlanillaDocente_ = [];
 
     /** @var int|null */
     public ?int $Contralor_Count = null;
