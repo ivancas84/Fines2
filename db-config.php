@@ -8,6 +8,7 @@ require_once MAIN_PATH . 'SqlOrganizeMy/Sql/requires.php';
 require_once MAIN_PATH . 'schema.php';
 require_once MAIN_PATH . 'schema_.php';
 require_once MAIN_PATH . 'Dao2/TomaDAO.php';
+require_once MAIN_PATH . 'Dao2/CursoDAO.php';
 
 
 use SqlOrganize\Sql\DbMy;

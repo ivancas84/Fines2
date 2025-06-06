@@ -4,6 +4,45 @@ namespace SqlOrganize\Utils;
  use DateTimeInterface;
 class ValueTypesUtils
 {
+
+/**
+ * Crea un diccionario de objetos indexado por la concatenación de propiedades.
+ *
+ * @template T
+ * @param iterable $objects Array de objetos
+ * @param string ...$propertyNames Nombres de las propiedades a concatenar como clave
+ * @return array<string, mixed> Diccionario clave → objeto
+ */
+public static function dictOfObjByPropertyNames(iterable $objects, string ...$propertyNames): array {
+    $result = [];
+
+    foreach ($objects as $obj) {
+        $values = [];
+
+        foreach ($propertyNames as $propName) {
+            // Accede a la propiedad (si es pública o mediante __get)
+            if (is_object($obj)) {
+                $value = null;
+
+                // Soporta objetos con propiedades públicas o __get
+                if (property_exists($obj, $propName)) {
+                    $value = $obj->$propName;
+                } elseif (method_exists($obj, '__get')) {
+                    $value = $obj->$propName;
+                }
+
+                $values[] = strval($value);
+            }
+        }
+
+        $key = implode('~', $values);
+        $result[$key] = $obj;
+    }
+
+    return $result;
+}
+
+
     public static function generateGuid(): string
     {
         return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',

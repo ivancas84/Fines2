@@ -175,6 +175,21 @@ abstract class Entity
         $this->$fieldName = $value;
     }
 
+    public function setFkObj(string $fieldName, Entity $value): void
+    {   
+        $this->set($fieldName . "_", $value);
+        $this->set($fieldName, $value->get($this->_db->config->idName));
+    }
+
+    /**
+     * @todo Falta consultar la entrada relacionada y asignarla a $fieldName . "_"
+     */
+    public function setFkValue(string $fieldName, $value): void
+    {   
+        $this->set($fieldName, $value);
+
+    }
+
     /**
      * Seteo "lento" con conversión de tipos
      */
@@ -246,7 +261,7 @@ abstract class Entity
         foreach($entityMetadata->tree as $tree){
             if(array_key_exists($tree->fieldName . "_", $treeData)){
                 $refEntityMetadata = $this->_db->getEntityMetadata($tree->refEntityName);
-                $className = $this->_db->config->namespace."\\".$refEntityMetadata->getClassName();
+                $className = $refEntityMetadata->getClassNameWithNamespace()."_";
                 $obj = new $className($this->_db);
                 $obj->ssetFromTree($treeData[$tree->fieldName . "_"]);
                 $this->set($tree->fieldName . "_", $obj);

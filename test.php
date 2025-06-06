@@ -1,63 +1,58 @@
 <?php
 
-
+define("CALENDARIO_ID", "202502110007");
 require_once __DIR__ . '/db-config.php';
 
+function esc_html($var){
+    return $var;
+}  
+
+function admin_url($var){
+    return $var;
+}  
+
+function esc_url($var){
+    return $var;
+}   
+
 use \Fines2\TomaDAO;
+use \Fines2\CursoDAO;
+use \SqlOrganize\Utils\ValueTypesUtils;
+
 use \SqlOrganize\Sql\DbMy;
 
+$calendario_id = CALENDARIO_ID;
 
-$db = DbMy::getInstance();
-$data = $db->CreateDataProvider()->fetchAll("calendario");
-print_r($data);
-die();
-/*
-
-$personas = $db->CreateDataProvider()->fetchEntitiesByIds("persona", '10');
-
-echo "<pre>";
-
-foreach($personas as $persona) {
-    print_r($persona->domicilio_->toArray());
-}*/
-
+$cursos = CursoDAO::CursosActivosConTomasActivasByCalendario($calendario_id);
 ?>
-<table border="1" cellpadding="5">
+
+
+<h2>Comisiones Consultadas</h2>
+
+<table class="wp-list-table widefat striped">
     <thead>
         <tr>
             <th>Sede</th>
-            <th>Persona</th>
-            <th>Documento</th>
-            <th>Curso</th>
             <th>Comisión</th>
-            <th>Planilla</th>
+            <th>Tramo</th>
+            <th>Asignatura</th>
+            <th>Docente</th>
+            <th>Teléfono</th>
             <th>Fecha Toma</th>
+            <th>Opciones</th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach ($tomas as $toma): ?>
+        <?php foreach ($cursos as $curso): ?>
+
             <tr>
-                <td>
-                    <?= htmlspecialchars($toma->curso_?->comision_?->sede_?->getLabel()) ?>
-                </td>
-                <td>
-                    <?= htmlspecialchars($toma->docente_?->apellidos . ', ' . $toma->docente_?->nombres) ?>
-                </td>
-                <td>
-                    <?= htmlspecialchars($toma->docente_?->numero_documento) ?>
-                </td>
-                <td>
-                    <?= htmlspecialchars($toma->comision_?->curso_?->nombre ?? 'N/A') ?>
-                </td>
-                <td>
-                    <?= htmlspecialchars($toma->comision_?->nombre ?? 'N/A') ?>
-                </td>
-                <td>
-                    <?= htmlspecialchars($toma->planilla_docente_?->nombre ?? 'N/A') ?>
-                </td>
-                <td>
-                    <?= $toma->fecha ? $toma->fecha->format('Y-m-d') : '—' ?>
-                </td>
+                <td><?= esc_html($curso->comision_?->sede_?->nombre); ?></td>
+                <td><?= esc_html($curso->comision_?->pfid); ?></td>
+                <td><?= esc_html($curso->disposicion_?->planificacion_?->getTramo()); ?></td>
+                <td><?= esc_html($curso->disposicion_?->asignatura_?->getLabel()); ?></td>
+                <td><?= esc_html($curso->toma_activa_?->docente_?->getLabel()); ?></td>
+                <td><?= esc_html($curso->toma_activa_?->docente_?->telefono); ?></td>
+                <td><?= esc_html($curso->toma_activa_?->fecha_toma?->format('Y-m-d')); ?></td>
             </tr>
         <?php endforeach; ?>
     </tbody>

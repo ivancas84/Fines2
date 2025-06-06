@@ -16,6 +16,8 @@ class Schema_
         $entities["comision"]->main = ["division"];
         $entities["sede"]->main = ["nombre"];
         $entities["calendario"]->main = ["anio", "semestre", "descripcion"];
+        $entities["asignatura"]->main = ["nombre", "codigo"];
+        $entities["persona"]->main = ["nombres", "apellidos","numero_documento"];
 
         return $entities;
     }

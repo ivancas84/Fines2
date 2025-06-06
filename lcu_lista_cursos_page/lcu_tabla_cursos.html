@@ -10,6 +10,7 @@
             <th>Docente</th>
             <th>Teléfono</th>
             <th>Fecha Toma</th>
+            <th>Planilla Docente</th>
             <th>Opciones</th>
         </tr>
     </thead>
@@ -21,13 +22,14 @@
             <? $cargar_alumnos_url = admin_url('admin.php?page=fines-plugin-cac&comision_id=' . $curso->comision); ?>
 
             <tr>
-                <td><?= esc_html($curso->sede_nombre); ?></td>
-                <td><?= esc_html($curso->comision_pfid); ?></td>
-                <td><?= esc_html($curso->tramo); ?></td>
-                <td><?= esc_html($curso->asignatura_detalle); ?></td>
-                <td><?= esc_html($curso->docente_detalle); ?></td>
-                <td><?= esc_html($curso->telefono); ?></td>
-                <td><?= esc_html($curso->fecha_toma); ?></td>
+                <td><?= esc_html($curso->comision_?->sede_?->nombre); ?></td>
+                <td><?= esc_html($curso->comision_?->pfid); ?></td>
+                <td><?= esc_html($curso->disposicion_?->planificacion_?->getTramo()); ?></td>
+                <td><?= esc_html($curso->disposicion_?->asignatura_?->getLabel()); ?></td>
+                <td><?= esc_html($curso->toma_activa_?->docente_?->getLabel()); ?></td>
+                <td><?= esc_html($curso->toma_activa_?->docente_?->telefono); ?></td>
+                <td><?= esc_html($curso->toma_activa_?->fecha_toma?->format('Y-m-d')); ?></td>
+                <td><?= esc_html($curso->toma_activa_?->planilla_docente_?->numero); ?></td>
                 <td>
                     <a href="<?= esc_url($detalle_comision_url); ?>" class="button">Detalle Comisión</a> 
                     <a href="<?= esc_url($administrar_tomas_url); ?>" class="button">Administrar Tomas</a> 

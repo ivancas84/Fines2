@@ -8,6 +8,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/db-config.php');
 
 
 use \SqlOrganize\Sql\DbMy;
+use \Fines2\CursoDAO;
+
 
 add_submenu_page(
     'fines-plugin', 
@@ -27,7 +29,6 @@ function lcu_lista_cursos_page() {
 
 	$calendarios = $dataProvider->fetchAllEntities("calendario");
 	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : '';
-    $selected_order = isset($_GET['order_by']) ? sanitize_text_field($_GET['order_by']) : 'tramo';
 
     if(!$selected_calendario){
         $selected_calendario = $calendarios[0]->id;
@@ -38,18 +39,12 @@ function lcu_lista_cursos_page() {
     echo "<div class=\"wrap\">";
     
     include plugin_dir_path(__FILE__) . 'lcu_formulario_busqueda_html.php';
+ 
+    $cursos = CursoDAO::CursosActivosConTomasActivasByCalendario($calendario_id);
 
-    switch ($selected_order){
-        case "tramo":
-            $order_by = "ORDER BY tramo ASC";
-            break;
+    foreach($cursos as $curso){
 
-        default:
-            $order_by = "";
     }
-    
-    $cursos = $pdo->cursosConTomasActivas($calendario_id, $order_by);
-
     if ($cursos) {
         include plugin_dir_path(__FILE__) . 'lcu_tabla_cursos.html';
     } else {

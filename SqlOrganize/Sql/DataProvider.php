@@ -61,7 +61,7 @@ class DataProvider {
     }
 
     private function treeDataToEntities(string $entityName, array $treeData){
-        $className = $this->db->getEntityMetadata($entityName)->getClassNameWithNamespace();
+        $className = $this->db->getEntityMetadata($entityName)->getClassNameWithNamespace() . "_";
 
         $response = [];
         foreach($treeData as $d) {
