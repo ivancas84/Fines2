@@ -42,6 +42,20 @@ public static function dictOfObjByPropertyNames(iterable $objects, string ...$pr
     return $result;
 }
 
+public static function arrayOfName(iterable $objects, string $name): array
+{
+    $result = [];
+
+    foreach ($objects as $object) {
+        if (is_object($object) && property_exists($object, $name)) {
+            $result[] = $object->$name;
+        } elseif (is_array($object) && array_key_exists($name, $object)) {
+            $result[] = $object[$name];
+        }
+    }
+
+    return $result;
+}
 
     public static function generateGuid(): string
     {
@@ -210,19 +224,6 @@ public static function dictOfObjByPropertyNames(iterable $objects, string ...$pr
         return $acronym;
     }
 
-    /**
-     * Abre URL en el navegador por defecto
-     */
-    public static function openBrowser(string $url): void
-    {
-        if (PHP_OS_FAMILY === 'Windows') {
-            exec("start \"\" \"$url\"");
-        } elseif (PHP_OS_FAMILY === 'Darwin') {
-            exec("open \"$url\"");
-        } elseif (PHP_OS_FAMILY === 'Linux') {
-            exec("xdg-open \"$url\"");
-        }
-    }
 
     /**
      * Quita los caracteres no numéricos de un string
@@ -292,22 +293,6 @@ public static function dictOfObjByPropertyNames(iterable $objects, string ...$pr
         }
         
         return false;
-    }
-
-    /**
-     * Codifica datos a base64
-     */
-    public static function encodeToBase64(string $data): string
-    {
-        return base64_encode($data);
-    }
-
-    /**
-     * Decodifica datos desde base64
-     */
-    public static function decodeFrom64(string $encodedData): string
-    {
-        return base64_decode($encodedData);
     }
 
     /**
@@ -389,24 +374,6 @@ public static function dictOfObjByPropertyNames(iterable $objects, string ...$pr
     }
 }
 
-// Funciones auxiliares globales para usar como extensiones
-if (!function_exists('str_to_title_case')) {
-    function str_to_title_case(string $str): string {
-        return ValueTypesUtils::toTitleCase($str);
-    }
-}
-
-if (!function_exists('str_to_camel_case')) {
-    function str_to_camel_case(string $str): string {
-        return ValueTypesUtils::toCamelCase($str);
-    }
-}
-
-if (!function_exists('str_remove_last_char')) {
-    function str_remove_last_char(string $s, string $c): string {
-        return ValueTypesUtils::removeLastChar($s, $c);
-    }
-}
 
 if (!function_exists('str_substring_between')) {
     function str_substring_between(string $value, string $a, string $b): string {

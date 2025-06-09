@@ -15,6 +15,14 @@ class DataProvider {
     }
 
 
+    public function fetchEntityByUnique(string $entityName, array $uniqueParams){
+        $sql = $this->db->CreateSelectQueries()->unique($entityName, $uniqueParams);
+        $ids = $this->fetchColumnBySql($sql, 0, $uniqueParams);
+        $entities =  $this->fetchEntitiesByIds($entityName, ...$ids);
+        if(count($entities) > 1) throw new Exception("El resultado no es unico");
+        if(count($entities) == 1) return $entities[0];
+        return null;
+    }
     public function fetchEntitiesByParams(string $entityName, array $params, string $conn = "AND"): array 
     {
         // Create instance to get table name
@@ -201,9 +209,8 @@ public function fetchColumnBySql(string $sql, int $columnIndex = 0, ?array $para
         $entityMetadata = $this->db->GetEntityMetadata($entityName);
         $sql = $this->db->createSelectQueries()->selectAll($entityName);
         $sql .= " WHERE " . $entityMetadata->Pt() . "." . $this->db->config->idName . " IN (:ids)";
-
+        $sql .= " ORDER BY FIELD(" . $entityMetadata->Pt() . "." . $this->db->config->idName . ", :ids)";
         [$processedSql, $processedParams] = $this->processArrayParameters($sql, ['ids' => $ids]);
-
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -14,6 +14,8 @@
             <th>Fecha Toma</th>
             <th>Planilla Docente</th>
             <th>Id Toma</th>
+            <th>Id Curso</th>
+
 
             <th>Opciones</th>
         </tr>
@@ -36,6 +38,7 @@
                 <td><?= esc_html($curso->toma_activa_?->fecha_toma?->format('Y-m-d')); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->planilla_docente_?->numero); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->id); ?></td>
+                <td><?= esc_html($curso->id); ?></td>
 
                 <td>
                     <a href="<?= esc_url($detalle_comision_url); ?>" class="button">Detalle Comisión</a> 

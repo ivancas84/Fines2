@@ -2,15 +2,23 @@
 header('Content-Type: text/html; charset=utf-8');
 mb_internal_encoding('UTF-8');
 
+require_once __DIR__ . '/db-config.php';
+$file = RUTA_BASE . '/comisiones.txt';
 
-require_once 'includes/db_config.php';
-require_once 'includes/queries_fines.php';
-require_once 'class/PdoFines.php';;
+use \SqlOrganize\Sql\DbMy;
+use \SqlOrganize\Utils\ValueTypesUtils;
+
+$db = DbMy::getInstance();
+
+$dataProvider = $db->CreateDataProvider();
+
 
 $pdoFines = new PdoFines(DB_HOST_FINES, DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES);
 
-$pfidComisiones = $pdoFines->pfidsComisionesByCalendario(CALENDARIO_ID);
 
+$comisiones = $dataProvider->fetchEntitiesByParams("comision", ["calendario"=>CALENDARIO_ID]);
+
+$pfids = ValueTypesUtils::arrayOfName($comisiones, "pfid");
 // Path to your JSON file
 $file = RUTA_BASE . '/comisiones.txt';
 $dataText = file_get_contents($file);
@@ -21,6 +29,7 @@ $dias = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"]; // Assuming these
 
 foreach (array_filter(explode(PHP_EOL, $dataText)) as $line) {
     
+    $modifyQueries = $db->CreateModifyQueries();
     if ($procesar_docente) {
         // Procesar docente
         if (strpos($line, "*") !== false) {
@@ -41,22 +50,18 @@ foreach (array_filter(explode(PHP_EOL, $dataText)) as $line) {
             if (!empty($matches)) {
                 $cuil = $matches[0];
                 $cuilParts = explode("-", $cuil);
-                $id = $pdoFines->idPersonaByDni($cuilParts[1] ?? '');
 
-                if (empty($id)) {
+                $persona = $dataProvider->fetchEntityByUnique("persona", ["numero_documento"=>$cuilParts[1]]);
+
+                if (empty($$persona)) {
                     echo "No existe docente " . $cuil . "<br/>";
                     continue;
                 } else {
                     echo "Ya existe docente en la base de datos " . $cuil . "<br/>";
                 }
 
-                // Update cuil
-                $result = $pdoFines->updateCuilById(implode("", $cuilParts), $id);
-                if ($result) {
-                    echo "CUIL actualizado.". "<br/>";
-                } else {
-                    echo "CUIL no actualizado (no existe ID o mismo CUIL)." . "<br/>";
-                }
+                $persona->cuil = implode("", $cuilParts);
+                $modifyQueries->buildUpdateKeySqlById($persona, "cuil");
             } else {
                 echo "No hay match para $line <br>";
             }

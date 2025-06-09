@@ -41,6 +41,12 @@ abstract class ModifyQueries
         return sprintf("p%d_", $this->parameterCounter++);
     }
 
+    protected function buildPersistEntitySql(Entity $entity){
+    }
+
+    
+    protected abstract function generateUpdateSql(string $entityName, array $row, string $prefix): string;
+
 
     protected function buildUpdateSqlFromArray($entityName, array $row)
     {
@@ -48,13 +54,13 @@ abstract class ModifyQueries
 
         $sql = $this->generateUpdateSql($entityName, $row, $prefix);
 
-        $idField = $this->db->getEntityMetadata($entityName)->map($this->db->config->id);
-        $sql .= sprintf("WHERE %s = :%s%s;\n", $idField, $prefix, $this->db->config->id);
+        $idField = $this->db->getEntityMetadata($entityName)->map($this->db->config->idName);
+        $sql .= sprintf("WHERE %s = :%s%s;\n", $idField, $prefix, $this->db->config->idName);
 
-        $this->parameters[$prefix . $this->db->config->id] = $row[$this->db->config->id];
+        $this->parameters[$prefix . $this->db->config->idName] = $row[$this->db->config->idName];
         $this->detail[] = [
             'EntityName' => $entityName,
-            'Id' => $row[$this->db->config->id],
+            'Id' => $row[$this->db->config->idName],
             'Action' => 'update'
         ];
 
@@ -62,7 +68,55 @@ abstract class ModifyQueries
         return $sql;
     }
 
-    protected abstract function generateUpdateSql(string $entityName, array $row, string $prefix): string;
+     /**
+     * Construye una consulta SQL UPDATE para actualizar un campo específico por ID
+     *
+     * @param string $entityName Nombre de la entidad
+     * @param string $key Campo a actualizar
+     * @param mixed $value Nuevo valor
+     * @param mixed $id ID del registro
+     * @return string SQL generado
+     */
+    public function buildUpdateKeyValueSqlById($entityName, $key, $value, $id) 
+    {
+        $prefix = $this->getNextPrefix();
+        $entityMetadata = $this->db->getEntityMetadata($entityName);
+        $idMap = $entityMetadata->map($this->db->config->idName);
+        
+        $sql = "UPDATE {$entityMetadata->alias} SET {$key} = :{$prefix}Key " .
+               "FROM {$entityMetadata->getSchemaNameAlias()} " .
+               "WHERE {$idMap} = :{$prefix}Id";
+        
+        // Almacenar parámetros
+        $this->parameters[$prefix . 'Key'] = $value;
+        $this->parameters[$prefix . 'Id'] = $id;
+        
+        // Agregar al detalle
+        $this->detail[] = [$entityName, $id, 'update'];
+        
+        // Agregar al SQL builder
+        $this->sqlBuilder .= $sql . ";\n";
+        
+        return $sql;
+    }
+
+       /**
+     * Construye una consulta SQL UPDATE para actualizar un campo específico usando una entidad
+     *
+     * @param Entity $entity Entidad con los datos
+     * @param string $key Campo a actualizar
+     * @return string SQL generado
+     */
+    public function buildUpdateKeySqlById(Entity $entity, $key) 
+    {
+        return $this->buildUpdateKeyValueSqlById(
+            $entity->_entityName, 
+            $key, 
+            $entity->get($key), 
+            $entity->get($this->db->config->idName)
+        );
+    }
+    
 
     public function buildInsertSql($data)
     {
@@ -88,7 +142,7 @@ abstract class ModifyQueries
 
         $this->detail[] = [
             'EntityName' => $entityName,
-            'Id' => is_object($data) ? $data->get($this->db->config->id) : $data[$this->db->config->id],
+            'Id' => is_object($data) ? $data->get($this->db->config->idName) : $data[$this->db->config->idName],
             'Action' => 'insert'
         ];
 
@@ -101,7 +155,7 @@ abstract class ModifyQueries
         $prefix = $this->getNextPrefix();
 
         $metadata = $this->db->getEntityMetadata($entityName);
-        $idField = $this->db->GetEntityMetadata($entityName)->map($this->db->config->id);
+        $idField = $this->db->GetEntityMetadata($entityName)->map($this->db->config->idName);
 
         foreach ($ids as $id) {
             $this->detail[] = [
