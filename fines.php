@@ -34,6 +34,8 @@ function fines_plugin_menu() {
     
     include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_administrar_persona_page.php';
 
+    include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_administrar_comision_page.php';
+
 
 
     add_submenu_page(
@@ -46,14 +48,7 @@ function fines_plugin_menu() {
     );
 
 
-    add_submenu_page(
-      'fines-plugin', //debe coincidir con el slug del menu
-      'Administrar Comisión', // Título de la página
-      'Administrar Comisión', //Título del menú
-      'edit_posts', // Permisos
-      'fines-plugin-administrar-comision-page',  // Slug del submenú
-      'ac_administrar_comision_page' // Función que muestra la página del submenu
-  );
+
 
   add_submenu_page(
     'fines-plugin', //debe coincidir con el slug del menu
@@ -244,7 +239,6 @@ include_once plugin_dir_path(__FILE__) . 'dp_detalle_persona_page/dp_detalle_per
 
 include_once plugin_dir_path(__FILE__) . 'ap_administrar_persona_page/ap_administrar_persona_page.php';
 
-include_once plugin_dir_path(__FILE__) . 'ac_administrar_comision_page/ac_administrar_comision_page.php';
 
 include_once plugin_dir_path(__FILE__) . 'as_administrar_sede_page/as_administrar_sede_page.php';
 

@@ -68,6 +68,12 @@ class DataProvider {
         return $this->treeDataToEntities($entityName, $treeData);
     }
 
+    public function fetchEntityById(string $entityName, $id): ?array {
+        $entities = $this->fetchEntitiesByIds($entityName, $id);
+        if(count($entities)) return $entities[0];
+        return null;
+    }
+
     private function treeDataToEntities(string $entityName, array $treeData){
         $className = $this->db->getEntityMetadata($entityName)->getClassNameWithNamespace() . "_";
 

@@ -10,5 +10,12 @@ class Planificacion_ extends Planificacion
         return ($this->anio ?? "?") . "°" . ($this->semestre ?? "?") . "C";
     }
 
+    public function getLabel(): string {
+        return ($this->plan_?->orientacion ?? "?") . " " 
+        . ($this->plan_?->resolucion  ?? "?") . " "
+        . ($this->anio  ?? "?") . "/"
+        . ($this->semestre  ?? "?");
+    }
+
 }
 
