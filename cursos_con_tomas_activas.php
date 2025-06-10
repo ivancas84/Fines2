@@ -4,7 +4,6 @@
 require_once __DIR__ . '/db-config.php';
 
 use SqlOrganize\Sql\DbMy;
-use Fines2\CursoDAO;
 
 
 

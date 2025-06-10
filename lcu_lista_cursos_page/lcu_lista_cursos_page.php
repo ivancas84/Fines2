@@ -8,7 +8,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/db-config.php');
 
 
 use \SqlOrganize\Sql\DbMy;
-use \Fines2\CursoDAO;
+use \Fines2\Curso_;
 
 
 add_submenu_page(
@@ -40,7 +40,7 @@ function lcu_lista_cursos_page() {
     
     include plugin_dir_path(__FILE__) . 'lcu_formulario_busqueda_html.php';
  
-    $cursos = CursoDAO::CursosActivosConTomasActivasByCalendario($calendario_id);
+    $cursos = Curso_::CursosActivosConTomasActivasByCalendario($calendario_id);
 
     foreach($cursos as $curso){
 

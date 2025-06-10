@@ -3,7 +3,7 @@
 require_once __DIR__ . '/db-config.php';
 
 use \Fines2\Comision_;
-use \Fines2\CalendarioDAO;
+use \Fines2\Calendario_;
 use \Fines2\SedeDAO;
 use \Fines2\ModalidadDAO;
 use \Fines2\PlanificacionDAO;
@@ -25,7 +25,7 @@ function ac2_administrar_comision_page() {
 
     $comision_id = isset($_GET['comision_id']) ? $_GET['comision_id'] : null;
 
-    $calendarios = CalendarioDAO::calendarios();
+    $calendarios = Calendario_::calendarios();
     $sedes = SedeDAO::sedes462();
     $modalidades = ModalidadDAO::modalidades();
     $planificaciones = PlanificacionDAO::planificaciones();

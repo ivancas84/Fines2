@@ -5,10 +5,6 @@ require_once __DIR__ . '/db-config.php';
 
 
 use \Fines2\TomaDAO;
-use \Fines2\CursoDAO;
-use \SqlOrganize\Utils\ValueTypesUtils;
-
-use \SqlOrganize\Sql\DbMy;
 
 $calendario_id = CALENDARIO_ID;
 
