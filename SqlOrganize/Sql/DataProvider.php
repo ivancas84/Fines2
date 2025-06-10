@@ -68,7 +68,7 @@ class DataProvider {
         return $this->treeDataToEntities($entityName, $treeData);
     }
 
-    public function fetchEntityById(string $entityName, $id): ?array {
+    public function fetchEntityById(string $entityName, $id): ?object {
         $entities = $this->fetchEntitiesByIds($entityName, $id);
         if(count($entities)) return $entities[0];
         return null;
