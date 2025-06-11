@@ -215,6 +215,8 @@ function fines_plugin_menu() {
 
   }
 
+include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_comision_admin_handle.php';
+
 
 include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_persona_admin_handle.php';
 include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_alumno_admin_handle.php';

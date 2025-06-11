@@ -21,7 +21,8 @@ add_submenu_page(
       'ac2_administrar_comision_page' // Función que muestra la página del submenu
   );
   
-function ac2_administrar_comision_page() {
+    function ap2_administrar_persona_page() {
+
     $message = !empty($_GET['message']) ? $_GET['message'] : null;
     if($message) echo "<div class='notice notice-success is-dismissible'><p>{$message}</p></div>";
 
@@ -32,18 +33,11 @@ function ac2_administrar_comision_page() {
     $modalidades = Modalidad_::modalidades();
     $planificaciones = Planificacion_::planificaciones();
 
-    if(isset($comision_id)){
-        $dataProvider = DbMy::getInstance()->CreateDataProvider();
+    $comision = (empty($persona_id)) ? new Comision_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityById("comision", $persona_id);
+    include plugin_dir_path(__FILE__) . 'ac2_comision_form.html';
 
-        $comision = $dataProvider->fetchEntityById("comision", $comision_id);
-        include plugin_dir_path(__FILE__) . 'ac2_comision_form.html';
-
+    if(!empty($comision))
         ac2_init_cursos($comision->id);
-        
-    } else {
-        $comision = new Comision_();
-        include plugin_dir_path(__FILE__) . 'ac2_comision_form.html';
-    } 
 }
 
 function ac2_init_cursos($comision_id) {
@@ -61,7 +55,7 @@ function ac2_init_cursos($comision_id) {
 
 //include plugin_dir_path(__FILE__) . 'ac2_curso_modify_handle.php';
 
-//  include plugin_dir_path(__FILE__) . 'ac2_curso_add_handle.php';
+//include plugin_dir_path(__FILE__) . 'ac2_curso_add_handle.php';
 
 
 

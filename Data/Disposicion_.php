@@ -4,33 +4,20 @@ namespace Fines2;
 
 use \Fines2\Disposicion;
 use SqlOrganize\Sql\DbMy;
+use SqlOrganize\Utils\ValueTypesUtils;
 
 
 class Disposicion_ extends Disposicion
 {
 
     public function getLabel(): string {
-        $label = $disposicion->asignatura_->nombre . " " . 
-            $disposicion->planificacion_->anio . "/" .
-            $disposicion->planificacion_->semestre . " " .
-            $disposicion->planificacion_->plan_->resolucion . " ";
-
-        if(!empty($$disposicion->planificacion_->plan_->orientacion )){
-            
-        }
-
+        return ($disposicion->asignatura_?->nombre ?? "?"). " " . 
+            ($disposicion->planificacion_?->anio ?? "?"). "/" .
+            ($disposicion->planificacion_?->semestre ?? "?") . " " .
+            ($disposicion->planificacion_?->plan_?->resolucion ?? "?") . " " . 
+            ValueTypesUtils::acronym($disposicion->planificacion_?->plan_?->orientacion ?? ""); 
     }
 
-    CONCAT(
-                    asignatura.nombre, ' ', 
-                    planificacion.anio, '/', planificacion.semestre, ' ', plan.resolucion, ' ', 
-                    UPPER(
-                        CONCAT( 
-                            LEFT(SUBSTRING_INDEX(plan.orientacion, ' ', 1), 1), 
-                            LEFT(SUBSTRING_INDEX(SUBSTRING_INDEX(plan.orientacion, ' ', -2), ' ', 1), 1),
-                            LEFT(SUBSTRING_INDEX(plan.orientacion, ' ', -1), 1) 
-                        )
-                    )) AS Label
 
     public static function disposicionesActuales(): array {
         $db = DbMy::getInstance();
