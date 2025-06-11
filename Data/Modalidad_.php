@@ -4,12 +4,18 @@ namespace Fines2;
 
 use \Fines2\Modalidad;
 
-use SqlOrganize\Sql\Entity;
-use Exception;
-use DateTime;
+use SqlOrganize\Sql\DbMy;
 
 class Modalidad_ extends Modalidad
 {
+    public static function modalidades(): array{
+        $db = DbMy::getInstance();
+
+        $dataProvider = $db->CreateDataProvider();
+
+        $sql = "SELECT * FROM modalidad ORDER BY nombre ASC";
+        return $dataProvider->fetchEntitiesBySqlId("modalidad", $sql);
+    }
 
 }
 

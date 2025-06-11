@@ -22,7 +22,7 @@
                     <? foreach ($disposiciones as $disposicion) : ?>
                         <option value="<? echo esc_attr($disposicion->id); ?>" 
                             <? selected($curso->disposicion, $disposicion->id); ?>>
-                            <? echo esc_html($disposicion->Label); ?>
+                            <? echo esc_html($disposicion->getLabel()); ?>
                         </option>
                     <? endforeach; ?>
                  </select>

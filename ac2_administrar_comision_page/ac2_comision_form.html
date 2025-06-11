@@ -10,8 +10,8 @@
             <option value="">-- Seleccione --</option>
             <? foreach ($calendarios as $calendario) : ?>
                 <option value="<? echo esc_attr($calendario->id); ?>" 
-                    <? selected($selected_calendario, $calendario->id); ?>>
-                    <? echo esc_html($calendario->anio . "-" . $calendario->semestre . " " . $calendario->descripcion); ?>
+                    <? selected($comision->calendario, $calendario->id); ?>>
+                    <? echo esc_html($calendario->getLabel()); ?>
                 </option>
             <? endforeach; ?>
         </select>
@@ -24,7 +24,7 @@
             <option value="">-- Seleccione --</option>
             <? foreach ($sedes as $sede) : ?>
                 <option value="<? echo esc_attr($sede->id); ?>" 
-                    <? selected($selected_sede, $sede->id); ?>>
+                    <? selected($comision->sede, $sede->id); ?>>
                     <? echo esc_html($sede->numero . "-" . $sede->nombre); ?>
                 </option>
             <? endforeach; ?>
@@ -38,7 +38,7 @@
             <option value="">-- Seleccione --</option>
             <? foreach ($modalidades as $modalidad) : ?>
                 <option value="<? echo esc_attr($modalidad->id); ?>" 
-                    <? selected($selected_modalidad, $modalidad->id); ?>>
+                    <? selected($comision->modalidad, $modalidad->id); ?>>
                     <? echo esc_html($modalidad->nombre); ?>
                 </option>
             <? endforeach; ?>
@@ -52,8 +52,8 @@
             <option value="">-- Seleccione --</option>
             <? foreach ($planificaciones as $planificacion) : ?>
                 <option value="<? echo esc_attr($planificacion->id); ?>" 
-                    <? selected($selected_planificacion, $planificacion->id); ?>>
-                    <? echo esc_html($planificacion->label); ?>
+                    <? selected($comision->planificacion, $planificacion->id); ?>>
+                    <? echo esc_html($planificacion->getLabel()); ?>
                 </option>
             <? endforeach; ?>
         </select>
@@ -64,46 +64,46 @@
         <label for="turno">Turno:</label>
         <select name="turno" id="turno">
             <option value="">-- Seleccione --</option>
-            <option value="Mañana" <?= $selected_turno == 'Mañana' ? 'selected' : '' ?>>Mañana</option>
-            <option value="Tarde" <?= $selected_turno == 'Tarde' ? 'selected' : '' ?>>Tarde</option>
-            <option value="Vespertino" <?= $selected_turno == 'Vespertino' ? 'selected' : '' ?>>Vespertino</option>
+            <option value="Mañana" <?= $comision->turno == 'Mañana' ? 'selected' : '' ?>>Mañana</option>
+            <option value="Tarde" <?= $comision->turno == 'Tarde' ? 'selected' : '' ?>>Tarde</option>
+            <option value="Vespertino" <?= $comision->turno == 'Vespertino' ? 'selected' : '' ?>>Vespertino</option>
         </select>
     </p>
 
     <!-- Campo División -->
     <p>
         <label for="division">División:</label>
-        <input type="text" name="division" id="division" value="<?= $division ?? '' ?>" />
+        <input type="text" name="division" id="division" value="<?= $comision->division ?? '' ?>" />
     </p>
 
     <!-- Campo PFID -->
     <p>
         <label for="pfid">PFID:</label>
-        <input type="text" name="pfid" id="pfid" value="<?= $pfid ?? '' ?>" />
+        <input type="text" name="pfid" id="pfid" value="<?= $comision->pfid ?? '' ?>" />
     </p>
 
     <!-- Campo Autorizada -->
     <p>
         <label for="autorizada">Autorizada:</label>
-        <input type="checkbox" name="autorizada" id="autorizada" <?= $autorizada ? 'checked' : '' ?> />
+        <input type="checkbox" name="autorizada" id="autorizada" <?= $comision->autorizada ? 'checked' : '' ?> />
     </p>
 
     <!-- Campo Apertura -->
     <p>
         <label for="apertura">Apertura:</label>
-        <input type="checkbox" name="apertura" id="apertura" <?= $apertura ? 'checked' : '' ?> />
+        <input type="checkbox" name="apertura" id="apertura" <?= $comision->apertura ? 'checked' : '' ?> />
     </p>
 
     <!-- Campo Publicada -->
     <p>
         <label for="publicada">Publicada:</label>
-        <input type="checkbox" name="publicada" id="publicada" <?= $publicada ? 'checked' : '' ?> />
+        <input type="checkbox" name="publicada" id="publicada" <?= $comision->publicada ? 'checked' : '' ?> />
     </p>
 
     <!-- Campo Observaciones -->
     <p>
         <label for="observaciones">Observaciones:</label>
-        <textarea name="observaciones" id="observaciones" rows="4"><?= $observaciones ?? '' ?></textarea>
+        <textarea name="observaciones" id="observaciones" rows="4"><?= $comision->observaciones ?? '' ?></textarea>
     </p>
 
     <!-- Botones -->

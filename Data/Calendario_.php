@@ -7,6 +7,11 @@ use SqlOrganize\Sql\DbMy;
 
 class Calendario_ extends Calendario
 {
+
+    public function getLabel(): string {
+        return $this->anio . "-" . $this->semestre . " " . $this->descripcion;
+    }
+
     public static function calendarios(): array{
         $db = DbMy::getInstance();
 

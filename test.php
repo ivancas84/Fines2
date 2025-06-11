@@ -3,13 +3,13 @@
 define("CALENDARIO_ID", "202502110007");
 require_once __DIR__ . '/db-config.php';
 
+use \SqlOrganize\Sql\DbMy;
 
-use \Fines2\TomaDAO;
+$dataProvider = DbMy::getInstance()->CreateDataProvider();
 
-$calendario_id = CALENDARIO_ID;
+$entities = $dataProvider->fetchEntitiesByParams("curso", ["comision"=>"67cb7b00e0347"]);
 
-$tomas = TomaDAO::TomasContralorByCalendario($calendario_id);
-echo "<pre>";
-foreach($tomas as $toma){
-    print_r($toma->docente_->toArray());
+foreach($entities as $entity){
+    print_r($entity->toArray());
+
 }
