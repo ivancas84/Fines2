@@ -5,6 +5,7 @@ namespace SqlOrganize\Sql;
 use PDO;
 use Exception;
 use InvalidArgumentException;
+use SqlOrganize\Utils\ValueTypesUtils;
 
 abstract class ModifyQueries
 {
@@ -41,31 +42,93 @@ abstract class ModifyQueries
         return sprintf("p%d_", $this->parameterCounter++);
     }
 
-    protected function buildPersistEntitySql(Entity $entity){
+    public function buildPersistSql(Entity $data)
+    {
+        $this->buildPersistSqlFromArray($data->_entityName, $data->toArray());
     }
+
+    public function buildPersistSqlFromArray($entityName, array $data){
+        $existingRow = $this->db->CreateDataProvider()->fetchDataByUnique($entityName, $data);
+
+        if (!empty($existingRow)) {
+            $data[$this->db->config->idName] = $existingRow[$this->db->config->idName];
+
+            $compareParams = new CompareParams();
+            $compareParams->ignoreNonExistent = true;
+            $compareParams->ignoreNull = false;
+            $compareParams->data = $existingRow;
+
+            if (!empty($this->db->compare($entityName, $data, $compareParams))) {
+                return $this->buildUpdateSqlFromArray($entityName, $data);
+            }
+
+            return; // registro idéntico
+        }
+
+        return $this->buildInsertSqlFromArray($entityName, $data);
+    }
+
 
     
     protected abstract function generateUpdateSql(string $entityName, array $row, string $prefix): string;
 
+    public function buildPersistSqlByStatus(Entity $data)
+    {
+        if ($data->_status === 1) // pedido existe y no fue modificado
+            return;
 
-    protected function buildUpdateSqlFromArray($entityName, array $row)
+        if ($data->_status > -1)
+            $this->buildUpdateSql($data);
+        else
+            $this->buildInsertSql($data);
+    }
+
+
+    protected function buildUpdateSqlFromArray(string $entityName, array $data): void
     {
         $prefix = $this->getNextPrefix();
 
-        $sql = $this->generateUpdateSql($entityName, $row, $prefix);
+        $sql = $this->generateUpdateSql($entityName, $data, $prefix);
 
         $idField = $this->db->getEntityMetadata($entityName)->map($this->db->config->idName);
         $sql .= sprintf("WHERE %s = :%s%s;\n", $idField, $prefix, $this->db->config->idName);
 
-        $this->parameters[$prefix . $this->db->config->idName] = $row[$this->db->config->idName];
+        $this->parameters[$prefix . $this->db->config->idName] = $data[$this->db->config->idName];
         $this->detail[] = [
             'EntityName' => $entityName,
-            'Id' => $row[$this->db->config->idName],
+            'Id' => $data[$this->db->config->idName],
             'Action' => 'update'
         ];
 
         $this->sqlBuilder .= $sql . "\n";
-        return $sql;
+    }
+
+    //@todo se puede definir una sola consulta con IN?
+    protected function buildUpdateSqlFromArrayByIds(string $entityName, array $data, ...$ids): void
+    {
+        foreach ($ids as $id) {
+            $data[$this->db->config->idName] = $id;
+            $this->buildUpdateSqlFromArray($entityName, $id);
+        }
+    }
+
+    public function buildUpdateSqlByCompare(Entity $entityToUpdate, Entity $entityToCompare){
+        return $this->buildUpdateSqlFromArrayByCompare($entityToUpdate->_entityName, $entityToUpdate->toArray(), $entityToCompare->toArray());
+    }
+
+    public function buildUpdateSqlFromArrayByCompare(string $entityName, array $dataToUpdate, array $dataToCompare)
+    {
+        $dataToUpdate[$this->db->config->idName] = $dataToCompare[$this->db->config->idName];
+
+        $cmp = new CompareParams();
+        $cmp->ignoreNonExistent = true;
+        $cmp->ignoreNull = false;
+        $cmp->data = $dataToCompare;
+
+        if (!empty($this->db->compare($entityName, $dataToUpdate, $cmp)))
+            return $this->buildUpdateSqlFromArray($entityName, $dataToUpdate);
+
+        return ''; // registro idéntico
     }
 
      /**
@@ -92,7 +155,12 @@ abstract class ModifyQueries
         $this->parameters[$prefix . 'Id'] = $id;
         
         // Agregar al detalle
-        $this->detail[] = [$entityName, $id, 'update'];
+        
+        $this->detail[] = [
+            'EntityName' => $entityName,
+            'Id' => $id,
+            'Action' => 'update'
+        ];
         
         // Agregar al SQL builder
         $this->sqlBuilder .= $sql . ";\n";
@@ -117,16 +185,40 @@ abstract class ModifyQueries
         );
     }
     
+    public function buildUpdateKeyValueSqlByIds($entityName, $key, $value, ...$ids): void
+    {
+        $prefix = $this->getNextPrefix();
+        $entityMetadata = $this->db->getEntityMetadata($entityName);
+        $idMap = $entityMetadata->map($this->db->config->idName);
 
-    public function buildInsertSql($data)
+        $sql = "UPDATE {$entityMetadata->alias} SET {$key} = :{$prefix}Key " .
+               "FROM {$entityMetadata->getSchemaNameAlias()} " .
+               "WHERE {$idMap} IN (:{$prefix}Ids)";
+
+        foreach ($ids as $id) {
+            $this->detail[] = [
+                'EntityName' => $entityName,
+                'Id' => $id,
+                'Action' => 'update'
+            ];
+        }
+
+        $this->parameters[$prefix . 'Key'] = $value;
+        $this->parameters[$prefix . 'Ids'] = $ids;
+
+        $this->sqlBuilder .= $sql . ";\n";
+    }
+
+    public function buildInsertSql(Entity $entity): void{
+        $this->buildInsertSqlFromArray($entity->_entityName, $entity->toArray());
+    }
+
+    public function buildInsertSqlFromArray(string $entityName, array $data): void
     {
         $prefix = $this->getNextPrefix();
 
-        $row = is_object($data) ? $data->toDict() : $data;
-        $entityName = is_object($data) ? $data->entityName : $data['entityName'];
-
         $validFields = $this->db->fieldNamesAdmin($entityName);
-        $filteredRow = array_filter($row, function($key) use ($validFields) {
+        $filteredRow = array_filter($data, function($key) use ($validFields) {
             return in_array($key, $validFields);
         }, ARRAY_FILTER_USE_KEY);
 
@@ -142,20 +234,84 @@ abstract class ModifyQueries
 
         $this->detail[] = [
             'EntityName' => $entityName,
-            'Id' => is_object($data) ? $data->get($this->db->config->idName) : $data[$this->db->config->idName],
+            'Id' => $data[$this->db->config->idName],
             'Action' => 'insert'
         ];
+
+        $this->sqlBuilder .= $sql . "\n";
+    }
+
+    public function buildInsertSqlIfNotExists(Entity $entity): object{
+        return $this->buildInsertSqlFromArrayIfNotExists($entity->_entityName, $entity->toArray());
+    }
+
+    public function buildInsertSqlFromArrayIfNotExists(string $entityName, array $data): object
+    {
+        $existingRow = $this->db->CreateDataProvider()->fetchDataByUnique($entityName, $data);
+        if(empty($existingRow)){
+            $this->buildInsertSqlFromArray($entityName, $data);
+            return $this->detail[count($this->detail)-1]["Id"];
+        }
+
+        return $existingRow[$this->db->config->idName];
+    }
+
+    public function buildInsertSqlFromArrayIfNotExistsExceptionByCompare(string $entityName, array $data, CompareParams $compare){
+        $existingRow = $this->db->CreateDataProvider()->fetchDataByUnique($entityName, $data);
+        if(empty($existingRow)){
+            $this->buildInsertSqlFromArray($entityName, $data);
+        } else {
+            $compare->data = $existingRow;
+            $compare = $this->db->compare($entityName, $data, $compare);
+
+            if(!empty($compare))
+                throw new Exception("Comparacion diferente " . ValueTypesUtils::toStringDict($compare));
+        }
+    }
+
+    public function buildUpdateSql(Entity $data)
+    {
+        $this->buildUpdateSqlFromArray($data->_entityName, $data->toArray());
+    }
+
+    public function buildDeleteSql(Entity $entity): void {
+        $this->buildDeleteSqlById($entity->_entityName, $entity->get($this->db->config->idName));
+    }
+
+    public function buildDeleteSqlById($entityName, $id = null)
+    {
+        $prefix = $this->getNextPrefix();
+        $metadata = $this->db->getEntityMetadata($entityName);
+        $idMap = $metadata->map($this->db->config->idName);
+
+        if (!empty($id)){
+            $this->detail[] = [
+                'EntityName' => $entityName,
+                'Id' => $id,
+                'Action' => 'delete'
+            ];
+        }
+
+        $this->parameters[$prefix . 'Id'] = $id;
+
+        $sql = sprintf("DELETE %s FROM %s %s WHERE %s = (:%sId);\n",
+            $metadata->alias,
+            $metadata->name,
+            $metadata->alias,
+            $idMap,
+            $prefix
+        );
 
         $this->sqlBuilder .= $sql . "\n";
         return $sql;
     }
 
-    public function buildDeleteSqlByIds($entityName, ...$ids)
+    public function buildDeleteSqlByIds($entityName, ...$ids): void
     {
         $prefix = $this->getNextPrefix();
 
         $metadata = $this->db->getEntityMetadata($entityName);
-        $idField = $this->db->GetEntityMetadata($entityName)->map($this->db->config->idName);
+        $idField = $metadata->map($this->db->config->idName);
 
         foreach ($ids as $id) {
             $this->detail[] = [
@@ -176,10 +332,9 @@ abstract class ModifyQueries
         );
 
         $this->sqlBuilder .= $sql . "\n";
-        return $sql;
     }
 
-    public function execute(PDO $connection, $transaction = null)
+    public function _execute(PDO $connection)
     {
         $sql = $this->sqlBuilder;
         
@@ -196,19 +351,35 @@ abstract class ModifyQueries
         return $stmt->rowCount();
     }
 
-    public function process(PDO $connection, $transaction = null)
+    public function execute()
+    {
+            $pdo = $this->db->getPdo();
+            $this->_execute($pdo);
+    }
+
+    public function process()
     {
         try {
-            $this->execute($connection, $transaction);
-            if ($transaction !== null) {
-                $transaction->commit();
-            }
+            $pdo = $this->db->getPdo();
+            $pdo->beginTransaction();
+            $this->_execute($pdo);
+            $pdo->commit();
         } catch (Exception $ex) {
-            if ($transaction !== null) {
-                $transaction->rollBack();
-            }
+            $pdo->rollBack();
             throw $ex;
         }
+    }
+
+    public function removeCache()
+    {
+        /*if (!empty($this->detail)) {
+            $this->db->cache?->remove('queries');
+            foreach ($this->detail as $detail) {
+                $entityName = $detail['EntityName'] ?? $detail[0];
+                $id = $detail['Id'] ?? $detail[1];
+                $this->db->cache?->remove($entityName . $id);
+            }
+        }*/
     }
 
 }

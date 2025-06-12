@@ -666,23 +666,12 @@ abstract class Entity
     
     public function persist()
     {
-        /*$connection = $this->_db->connection();
         $modifyQueries = $this->_db->CreateModifyQueries();
         $modifyQueries->buildPersistSql($this);
-        $modifyQueries->execute($connection);
-        return $this->get($this->_db->config->idName);*/
+        $modifyQueries->execute();
+        return $this->get($this->_db->config->idName);
     }
 
-    public function queryUnique()
-    {
-        /*$sql = $this->_db->CreateSelectQueries()->unique($this);
-        $connection = $this->_db->connection();
-        
-        $stmt = $connection->prepare($sql);
-        $stmt->execute($this->toArray());
-        
-        return $stmt->fetch(PDO::FETCH_ASSOC);*/
-    }
 
     // Métodos auxiliares
 

@@ -8,13 +8,26 @@ use \Fines2\Comision_;
 
 function ac2_comision_admin_handle() {
 
-    initialize_handle("fines-plugin-ac2", "ac2_comision_admin", "comision_id", $_POST["comision_id"]);
+    $comision_id = $_POST["comision_id"];
+    initialize_handle("fines-plugin-ac2", "ac2_comision_admin", "comision_id", $comision_id);
 
     $comision = Entity::createFromArray("\Fines2\Comision_", $_POST);
     $comision->id = $_POST["comision_id"];
-
+    if(!$comision->check()) {
+        wp_redirect(admin_url("admin.php?page=fines-plugin-ac2&comision_id=$comision_id&message=Error al verificar datos de comision"));
+        exit;
+    }
     $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
+    $modifyQueries->buildPersistSql($comision);
 
+    $db = DbMy::getInstance();
+
+    $pdo = $db->getPdo();
+    $transaction = $pdo->beginTransaction();
+    $modifyQueries->process($pdo, $transaction);
+
+
+    /*
     // Insertar curso si no existe
     $disposiciones = $wpdb->get_results(
         $wpdb->prepare(
@@ -54,5 +67,5 @@ function ac2_comision_admin_handle() {
     }
 
     echo json_encode([ 'success' => true, 'message' => $proceso . ' completa.', 'comision_id' => $comision_id ]);
-    die();
+    die();*/
 }

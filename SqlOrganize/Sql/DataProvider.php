@@ -15,6 +15,15 @@ class DataProvider {
     }
 
 
+    public function fetchDataByUnique(string $entityName, array $uniqueParams){
+        $sql = $this->db->CreateSelectQueries()->unique($entityName, $uniqueParams);
+        $ids = $this->fetchColumnBySql($sql, 0, $uniqueParams);
+        $entities =  $this->fetchDataByIds($entityName, ...$ids);
+        if(count($entities) > 1) throw new Exception("El resultado no es unico");
+        if(count($entities) == 1) return $entities[0];
+        return null;
+    }
+
     public function fetchEntityByUnique(string $entityName, array $uniqueParams){
         $sql = $this->db->CreateSelectQueries()->unique($entityName, $uniqueParams);
         $ids = $this->fetchColumnBySql($sql, 0, $uniqueParams);

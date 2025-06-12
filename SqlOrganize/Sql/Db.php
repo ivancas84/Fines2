@@ -27,7 +27,6 @@ abstract class Db
     {
         $this->config = $config;
         $this->initEntities($entities);
-        $this->initPdo();
     }
 
     protected abstract function initPdo();
@@ -48,6 +47,7 @@ abstract class Db
     // Get the PDO connection
     public function getPdo(): PDO
     {
+        if(empty($this->pdo)) $this->initPdo();
         return $this->pdo;
     }
     
@@ -244,5 +244,69 @@ abstract class Db
             'fieldName' => $fieldName,
             'refEntityName' => $refEntityName
         ];
+    }
+
+    public function compare(string $entityName, array $source, CompareParams $cp): array
+    {
+        $dict1 = $source;
+        $dict2 = $cp->data;
+        $response = [];
+        
+        if (!empty($cp->ignoreFields)) {
+            foreach ($cp->ignoreFields as $key) {
+                unset($dict1[$key]);
+                unset($dict2[$key]);
+            }
+        }
+        
+        if (!empty($cp->fieldsToCompare)) {
+            foreach ($this->fieldNames($entityName) as $fieldName) {
+                if (!in_array($fieldName, $cp->fieldsToCompare)) {
+                    unset($dict1[$fieldName]);
+                    unset($dict2[$fieldName]);
+                }
+            }
+        }
+        
+        foreach ($this->FieldNames($entityName) as $fieldName) {
+            if ($cp->ignoreNonExistent && (!array_key_exists($fieldName, $dict1) || !array_key_exists($fieldName, $dict2))) {
+                continue;
+            }
+            
+            if ($cp->ignoreNull && (!array_key_exists($fieldName, $dict2) || empty($dict2[$fieldName]))) {
+                continue;
+            }
+            
+            if (!array_key_exists($fieldName, $dict1) && array_key_exists($fieldName, $dict2)) {
+                $response[$fieldName] = $dict2[$fieldName];
+                continue;
+            }
+            
+            if (array_key_exists($fieldName, $dict1) && !array_key_exists($fieldName, $dict2)) {
+                $response[$fieldName] = "UNDEFINED";
+                continue;
+            }
+            
+            if (empty($dict1[$fieldName]) && empty($dict2[$fieldName])) {
+                continue;
+            }
+            
+            if (empty($dict1[$fieldName]) && !empty($dict2[$fieldName])) {
+                $response[$fieldName] = $dict2[$fieldName];
+                continue;
+            }
+            
+            if (!empty($dict1[$fieldName]) && empty($dict2[$fieldName])) {
+                $response[$fieldName] = $dict2[$fieldName];
+                continue;
+            }
+            
+            if (strtolower(trim((string)$dict1[$fieldName])) !== strtolower(trim((string)$dict2[$fieldName]))) {
+                $response[$fieldName] = $dict2[$fieldName];
+                continue;
+            }
+        }
+        
+        return $response;
     }
 }

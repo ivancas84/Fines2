@@ -42,6 +42,15 @@ public static function dictOfObjByPropertyNames(iterable $objects, string ...$pr
     return $result;
 }
 
+public static function toStringDict(array $param): string {
+    $dictionaryString = '{';
+    foreach ($param as $key => $value) {
+        $dictionaryString .= $key . ' : ' . ($value !== null ? $value : 'null') . ', ';
+    }
+    return rtrim($dictionaryString, ', ') . '}';
+}
+
+
 public static function arrayOfName(iterable $objects, string $name): array
 {
     $result = [];

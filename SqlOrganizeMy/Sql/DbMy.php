@@ -21,7 +21,7 @@ class DbMy extends Db
      * 
      * @param array|null $entities 
      * 
-     * @example
+     * @example<
      * $connectionString = "server=127.0.0.1;uid=root;pwd=12345;database=test"
      */
     protected function __construct(Config $config, array $entities)
