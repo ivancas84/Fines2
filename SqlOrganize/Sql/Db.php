@@ -246,10 +246,8 @@ abstract class Db
         ];
     }
 
-    public function compare(string $entityName, array $source, CompareParams $cp): array
+    public function compare(string $entityName, array $dict1, array $dict2, CompareParams $cp): array
     {
-        $dict1 = $source;
-        $dict2 = $cp->data;
         $response = [];
         
         if (!empty($cp->ignoreFields)) {

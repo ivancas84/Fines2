@@ -1,5 +1,7 @@
 <?php
 namespace SqlOrganize\Sql;
+use SqlOrganize\Utils\ValueTypesUtils;
+
 
 class ModifyQueriesMy extends ModifyQueries
 {

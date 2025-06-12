@@ -52,8 +52,6 @@ class DataProvider {
         if (!empty($whereClause)) {
             $sql .= " WHERE " . $whereClause;
         }
-
-        echo $sql;
         
         return $this->fetchEntitiesBySqlId($entityName, $sql, $params);
             

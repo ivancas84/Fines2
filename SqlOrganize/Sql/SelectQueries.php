@@ -329,4 +329,37 @@ abstract class SelectQueries
      * Get next value - each engine should implement this differently
      */
     abstract public function getNextValue(string $entityName, string $fieldName): mixed;
+
+    /**
+     * Procesa parámetros con soporte para arrays, expandiendo arrays a parámetros nombrados
+     * Si por ejemplo como parametro recibo ["ids" => ["1", "2", "3"]] entonces genera un nuevo array de parametros ["ids0" = "1", "ids1" = "2", "ids2" = "3"]
+     * Y en el sql reemplaza el string ":ids" por ":id0, :id1, :id2".
+     */
+    public function processArrayParameters(string $sql, array $params): array
+    {
+        $processedParams = [];
+        $processedSql = $sql;
+
+        foreach ($params as $key => $value) {
+            if (is_array($value)) {
+                if (empty($value)) {
+                    // Array vacío - reemplazar con condición siempre falsa
+                    $processedSql = str_replace(":$key", 'NULL', $processedSql);
+                } else {
+                    // Crear parámetros nombrados para cada elemento
+                    $namedParams = [];
+                    foreach ($value as $i => $arrayValue) {
+                        $paramName = "{$key}_{$i}";
+                        $namedParams[] = ":$paramName";
+                        $processedParams[$paramName] = $arrayValue;
+                    }
+                    $processedSql = str_replace(":$key", implode(',', $namedParams), $processedSql);
+                }
+            } else {
+                $processedParams[$key] = $value;
+            }
+        }
+
+        return [$processedSql, $processedParams];
+    }
 }

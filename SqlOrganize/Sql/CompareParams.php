@@ -5,11 +5,6 @@ namespace SqlOrganize\Sql;
 class CompareParams
 {
     /**
-     * Datos a comparar
-     */
-    public array $data = [];
-
-    /**
      * Campos a ignorar en la comparación
      */
     public ?array $ignoreFields = null;
@@ -30,13 +25,11 @@ class CompareParams
     public ?array $fieldsToCompare = null;
 
     public function __construct(
-        array $data = [],
         ?array $ignoreFields = null,
         bool $ignoreNull = false,
         bool $ignoreNonExistent = false,
         ?array $fieldsToCompare = null
     ) {
-        $this->data = $data;
         $this->ignoreFields = $ignoreFields;
         $this->ignoreNull = $ignoreNull;
         $this->ignoreNonExistent = $ignoreNonExistent;
