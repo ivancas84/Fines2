@@ -16,14 +16,14 @@ function ac2_comision_admin_handle() {
     $comision->reset();
 
     if(!$comision->check()) {
-        wp_redirect(admin_url("admin.php?page=fines-plugin-ac2&comision_id=$comision_id&message=".$comision->getLogging()->__toString()));
+        wp_redirect_handle("fines-plugin-ac2", "comision_id", $comision_id, $comision->getLogging()->__toString());
         exit;
     }
+
     $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
     $modifyQueries->buildPersistSql($comision);
     $modifyQueries->process();
-    wp_redirect(admin_url("admin.php?page=fines-plugin-ac2&comision_id=$comision_id&message=Registro realizado"));
-
+    wp_redirect_handle("fines-plugin-ac2", "comision_id", $comision_id, "Registro realizado");
 
     /*
     // Insertar curso si no existe

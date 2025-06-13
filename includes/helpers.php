@@ -29,7 +29,7 @@ function wp_html_form_declare($handleName){
     <input type="text" name="honeypot" style="display: none;">';
 }
 
-function initialize_handle($page_name, $handle_name, $field_id){
+function wp_initialize_handle($page_name, $handle_name, $field_id){
         $field_value = $_REQUEST[$field_id];
 
     if (!current_user_can('edit_posts')) {
@@ -48,6 +48,10 @@ function initialize_handle($page_name, $handle_name, $field_id){
     }
 
     return $field_value;
+}
+
+function wp_redirect_handle($page_name, $field_id, $field_value, $message = ""){
+    wp_redirect(admin_url("admin.php?page=$page_name&$field_id=$field_value&message=$message"));
 }
 
 function sanitize_or_null_text_field($value) {

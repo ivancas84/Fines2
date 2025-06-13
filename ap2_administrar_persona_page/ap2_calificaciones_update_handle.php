@@ -15,12 +15,12 @@ add_action('admin_post_ap2_calificaciones_update', 'ap2_calificaciones_update_ha
 
 function ap2_calificaciones_update_handle() {
 
-    $persona_id = $_POST['persona_id'];
+    $persona_id = wp_initialize_handle("fines-plugin-ap2", "ap2_calificaciones_update", "persona_id");
     $_POST["persona"] = $persona_id;
 
     $alumno_id = $_POST['alumno_id'];
 
-    initialize_handle("fines-plugin-ap2", "ap2_calificaciones_update", "persona_id", $persona_id);
+    
 
     $i = 0;
     while (array_key_exists("calificacion_id".($i+1), $_POST));

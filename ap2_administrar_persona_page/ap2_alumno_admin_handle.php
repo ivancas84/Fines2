@@ -15,12 +15,10 @@ add_action('admin_post_ap2_alumno_admin', 'ap2_alumno_admin_handle');
 
 function ap2_alumno_admin_handle() {
 
-    $persona_id = $_POST['persona_id'];
+    $persona_id = wp_initialize_handle("fines-plugin-ap2", "ap2_alumno_admin", "persona_id");
     $_POST["persona"] = $persona_id;
 
     $alumno_id = $_POST['alumno_id'];
-
-    initialize_handle("fines-plugin-ap2", "ap2_alumno_admin", "persona_id", $persona_id);
 
     sanitize_or_null_text_fields_from_array($_POST, [
         "persona_id", "alumno_id", 'estado_inscripcion', 
