@@ -13,7 +13,6 @@ function ac2_comision_admin_handle() {
     $comision_id = initialize_handle("fines-plugin-ac2", "ac2_comision_admin", "comision_id");
     $comision = new Comision_();
     $comision->ssetFromArray($_POST);
-    $comision->id = $_POST["comision_id"];
     $comision->reset();
 
     if(!$comision->check()) {

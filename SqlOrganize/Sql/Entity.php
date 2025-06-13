@@ -113,11 +113,6 @@ class Entity
         return null;
     }
 
-    public static function createFromArray(string $className, $source, $prefix = ""){
-        $obj = new $className();
-        $obj->setFromArray($source, $prefix);
-        return $obj;
-    }
     /**
      * Asignar propiedades sin utilizar serialización
      */
@@ -605,7 +600,7 @@ class Entity
     }
 
     /**
-     * Comparación de arrays
+     * Comparación de entidades
      */
     public function compare(Entity $entity, CompareParams $cp): array
     {
