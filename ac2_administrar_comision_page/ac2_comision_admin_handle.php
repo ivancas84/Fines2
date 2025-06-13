@@ -5,12 +5,11 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/db-config.php';
 add_action('admin_post_ac2_comision_admin', 'ac2_comision_admin_handle');
 
 use \SqlOrganize\Sql\DbMy;
-use \SqlOrganize\Sql\Entity;
 use \Fines2\Comision_;
 
 function ac2_comision_admin_handle() {
 
-    $comision_id = initialize_handle("fines-plugin-ac2", "ac2_comision_admin", "comision_id");
+    $comision_id = wp_initialize_handle("fines-plugin-ac2", "ac2_comision_admin", "comision_id");
     $comision = new Comision_();
     $comision->ssetFromArray($_POST);
     $comision->reset();
