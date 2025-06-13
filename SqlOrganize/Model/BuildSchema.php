@@ -221,8 +221,7 @@ abstract class BuildSchema
                 break;
         }
 
-        if (!empty($c->COLUMN_DEFAULT) && 
-            !empty($c->COLUMN_DEFAULT) && 
+        if (!is_null($c->COLUMN_DEFAULT) &&             
             $c->COLUMN_DEFAULT !== "NULL") {
             $f->defaultValue = $c->COLUMN_DEFAULT;
         }
@@ -259,7 +258,7 @@ abstract class BuildSchema
             $f->defaultValue = ValueTypesUtils::toBool($f->defaultValue);
         }
 
-        if ($f->type == "string" && $f->defaultValue !== null) {
+        if ($f->type == "string" && !empty($f->defaultValue)) {
             $f->defaultValue = trim($f->defaultValue, "'");
         }
     }
@@ -422,8 +421,9 @@ public function createSchema(): void
             foreach ($this->fields[$entityName] as $fieldName => $field) {
                 fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}'] = Field::getInstance('{$entityName}', '{$fieldName}', '{$field->dataType}', '{$field->type}');\n");
 
-                if (!empty($field->defaultValue)) {
-                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->defaultValue = '{$field->defaultValue}';\n");
+                if (!is_null($field->defaultValue)) {
+                    $defaultValue = ($field->type == "bool") ? (ValueTypesUtils::toBool($field->defaultValue) ? "true" : "false") : "'{$field->defaultValue}'";
+                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->defaultValue = $defaultValue;\n");
                 }
                 if (!empty($field->alias)) {
                     fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->alias = '{$field->alias}';\n");

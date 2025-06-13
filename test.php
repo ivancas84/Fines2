@@ -10,8 +10,12 @@ use \Fines2\Comision_;
 $comision = DbMy::getInstance()->CreateDataProvider()->fetchEntityById("comision", "67cb7b00e0347");
 $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
 
-$comision->observaciones = "quiero actualizar 2";
+$comision->autorizada = false;
 $modifyQueries->buildPersistSql($comision);
+if(!$comision->check()){
+    echo "<h1>ERROR</h1>";
+    echo $comision->getLogging()->__toString();
+}
 $modifyQueries->process();
 $comision = DbMy::getInstance()->CreateDataProvider()->fetchEntityById("comision", "67cb7b00e0347");
 

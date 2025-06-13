@@ -93,6 +93,7 @@ class Schema
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['confirmado_direccion'] = Field::getInstance('alumno', 'confirmado_direccion', 'tinyint', 'bool');
+        $entities['alumno']->fields['confirmado_direccion']->defaultValue = false;
         $entities['alumno']->fields['confirmado_direccion']->checks = [
             'type' => 'bool',
             'required' => '1',
@@ -204,6 +205,7 @@ class Schema
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['previas_completas'] = Field::getInstance('alumno', 'previas_completas', 'tinyint', 'bool');
+        $entities['alumno']->fields['previas_completas']->defaultValue = false;
         $entities['alumno']->fields['previas_completas']->checks = [
             'type' => 'bool',
             'required' => '1',
@@ -229,21 +231,25 @@ class Schema
             'type' => 'int',
         ];
         $entities['alumno']->fields['tiene_certificado'] = Field::getInstance('alumno', 'tiene_certificado', 'tinyint', 'bool');
+        $entities['alumno']->fields['tiene_certificado']->defaultValue = false;
         $entities['alumno']->fields['tiene_certificado']->checks = [
             'type' => 'bool',
             'required' => '1',
         ];
         $entities['alumno']->fields['tiene_constancia'] = Field::getInstance('alumno', 'tiene_constancia', 'tinyint', 'bool');
+        $entities['alumno']->fields['tiene_constancia']->defaultValue = false;
         $entities['alumno']->fields['tiene_constancia']->checks = [
             'type' => 'bool',
             'required' => '1',
         ];
         $entities['alumno']->fields['tiene_dni'] = Field::getInstance('alumno', 'tiene_dni', 'tinyint', 'bool');
+        $entities['alumno']->fields['tiene_dni']->defaultValue = false;
         $entities['alumno']->fields['tiene_dni']->checks = [
             'type' => 'bool',
             'required' => '1',
         ];
         $entities['alumno']->fields['tiene_partida'] = Field::getInstance('alumno', 'tiene_partida', 'tinyint', 'bool');
+        $entities['alumno']->fields['tiene_partida']->defaultValue = false;
         $entities['alumno']->fields['tiene_partida']->checks = [
             'type' => 'bool',
             'required' => '1',
@@ -345,6 +351,7 @@ class Schema
         $entities['alumno_comision']->relations['tipo_sede']->parentId = 'sede';
 
         $entities['alumno_comision']->fields['activo'] = Field::getInstance('alumno_comision', 'activo', 'tinyint', 'bool');
+        $entities['alumno_comision']->fields['activo']->defaultValue = false;
         $entities['alumno_comision']->fields['activo']->checks = [
             'type' => 'bool',
         ];
@@ -683,6 +690,7 @@ class Schema
             'removeMultipleSpaces' => true,
         ];
         $entities['calificacion']->fields['archivado'] = Field::getInstance('calificacion', 'archivado', 'tinyint', 'bool');
+        $entities['calificacion']->fields['archivado']->defaultValue = false;
         $entities['calificacion']->fields['archivado']->checks = [
             'type' => 'bool',
             'required' => '1',
@@ -926,11 +934,13 @@ class Schema
             'required' => '1',
         ];
         $entities['comision']->fields['apertura'] = Field::getInstance('comision', 'apertura', 'tinyint', 'bool');
+        $entities['comision']->fields['apertura']->defaultValue = false;
         $entities['comision']->fields['apertura']->checks = [
             'type' => 'bool',
             'required' => '1',
         ];
         $entities['comision']->fields['autorizada'] = Field::getInstance('comision', 'autorizada', 'tinyint', 'bool');
+        $entities['comision']->fields['autorizada']->defaultValue = false;
         $entities['comision']->fields['autorizada']->checks = [
             'type' => 'bool',
             'required' => '1',
@@ -1058,6 +1068,7 @@ class Schema
             'nullIfEmpty' => true,
         ];
         $entities['comision']->fields['publicada'] = Field::getInstance('comision', 'publicada', 'tinyint', 'bool');
+        $entities['comision']->fields['publicada']->defaultValue = false;
         $entities['comision']->fields['publicada']->checks = [
             'type' => 'bool',
             'required' => '1',
@@ -1767,6 +1778,7 @@ class Schema
             'removeMultipleSpaces' => true,
         ];
         $entities['disposicion']->fields['horas_catedra'] = Field::getInstance('disposicion', 'horas_catedra', 'int', 'int');
+        $entities['disposicion']->fields['horas_catedra']->defaultValue = '0';
         $entities['disposicion']->fields['horas_catedra']->checks = [
             'type' => 'int',
             'required' => '1',
@@ -2089,6 +2101,7 @@ class Schema
             'removeMultipleSpaces' => true,
         ];
         $entities['email']->fields['verificado'] = Field::getInstance('email', 'verificado', 'tinyint', 'bool');
+        $entities['email']->fields['verificado']->defaultValue = false;
         $entities['email']->fields['verificado']->checks = [
             'type' => 'bool',
             'required' => '1',
@@ -2459,6 +2472,7 @@ class Schema
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['email_verificado'] = Field::getInstance('persona', 'email_verificado', 'tinyint', 'bool');
+        $entities['persona']->fields['email_verificado']->defaultValue = false;
         $entities['persona']->fields['email_verificado']->checks = [
             'type' => 'bool',
             'required' => '1',
@@ -2486,6 +2500,7 @@ class Schema
             'removeMultipleSpaces' => true,
         ];
         $entities['persona']->fields['info_verificada'] = Field::getInstance('persona', 'info_verificada', 'tinyint', 'bool');
+        $entities['persona']->fields['info_verificada']->defaultValue = false;
         $entities['persona']->fields['info_verificada']->checks = [
             'type' => 'bool',
             'required' => '1',
@@ -2562,6 +2577,7 @@ class Schema
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['telefono_verificado'] = Field::getInstance('persona', 'telefono_verificado', 'tinyint', 'bool');
+        $entities['persona']->fields['telefono_verificado']->defaultValue = false;
         $entities['persona']->fields['telefono_verificado']->checks = [
             'type' => 'bool',
             'required' => '1',
@@ -3167,6 +3183,7 @@ class Schema
             'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['confirmada'] = Field::getInstance('toma', 'confirmada', 'tinyint', 'bool');
+        $entities['toma']->fields['confirmada']->defaultValue = false;
         $entities['toma']->fields['confirmada']->checks = [
             'type' => 'bool',
             'required' => '1',
@@ -3248,6 +3265,7 @@ class Schema
             'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['reclamo'] = Field::getInstance('toma', 'reclamo', 'tinyint', 'bool');
+        $entities['toma']->fields['reclamo']->defaultValue = false;
         $entities['toma']->fields['reclamo']->checks = [
             'type' => 'bool',
             'required' => '1',
@@ -3265,6 +3283,7 @@ class Schema
             'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['sin_planillas'] = Field::getInstance('toma', 'sin_planillas', 'tinyint', 'bool');
+        $entities['toma']->fields['sin_planillas']->defaultValue = false;
         $entities['toma']->fields['sin_planillas']->checks = [
             'type' => 'bool',
             'required' => '1',

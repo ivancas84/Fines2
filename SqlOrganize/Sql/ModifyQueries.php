@@ -353,6 +353,8 @@ abstract class ModifyQueries
             return 0;   
         
         $stmt = $connection->prepare($sql);
+
+        //en mysql DateTimeInterface requiere que se pase a string, si en los demas motores no hay que hacer lo mismo, se puede pasar a la subclase
         foreach ($this->parameters as $key => $value) {
             if ($value instanceof DateTimeInterface) {
                 // Format to a standard datetime string

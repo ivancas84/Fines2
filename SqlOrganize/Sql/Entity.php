@@ -402,6 +402,8 @@ class Entity
         $this->resetField($idField);
     }
 
+    
+
     /**
      * Convertir propiedades simples a array
      */
@@ -553,7 +555,8 @@ class Entity
         $this->getLogging()->clearByKey($fieldName);
         
         $field = $this->_db->field($this->_entityName, $fieldName);
-        $validation = new Validation($this->get($fieldName));
+        $value = $this->get($fieldName);
+        $validation = new Validation($value);
         $validation->clear();
         
         foreach ($field->checks as $checkMethod => $param) {
@@ -562,8 +565,10 @@ class Entity
                     $validation->type((string)$param);
                     break;
                 case "required":
-                    if (ValueTypesUtils::toBool($param)) {
+                    if($field->type != "bool") {                    
                         $validation->required();
+                    } else if(is_null($value)){
+                        $validation->errors[] = ["msg" => "Valor nulo o vacío", "type" => "required"];
                     }
                     break;
             }

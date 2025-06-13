@@ -11,10 +11,11 @@ use \Fines2\Comision_;
 function ac2_comision_admin_handle() {
 
     $comision_id = initialize_handle("fines-plugin-ac2", "ac2_comision_admin", "comision_id");
-
     $comision = new Comision_();
     $comision->ssetFromArray($_POST);
     $comision->id = $_POST["comision_id"];
+    $comision->reset();
+
     if(!$comision->check()) {
         wp_redirect(admin_url("admin.php?page=fines-plugin-ac2&comision_id=$comision_id&message=".$comision->getLogging()->__toString()));
         exit;
