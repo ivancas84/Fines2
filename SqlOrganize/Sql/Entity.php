@@ -277,7 +277,6 @@ class Entity
             }
         }
 
-
     }
 
     /**
@@ -608,68 +607,9 @@ class Entity
     /**
      * Comparación de arrays
      */
-    public function compare(CompareParams $cp): array
+    public function compare(Entity $entity, CompareParams $cp): array
     {
-        $dict1 = $this->toArray();
-        $dict2 = $cp->data;
-        $response = [];
-        
-        if (!empty($cp->ignoreFields)) {
-            foreach ($cp->ignoreFields as $key) {
-                unset($dict1[$key]);
-                unset($dict2[$key]);
-            }
-        }
-        
-        if (!empty($cp->fieldsToCompare)) {
-            foreach ($this->_db->fieldNames($this->_entityName) as $fieldName) {
-                if (!in_array($fieldName, $cp->fieldsToCompare)) {
-                    unset($dict1[$fieldName]);
-                    unset($dict2[$fieldName]);
-                }
-            }
-        }
-        
-        foreach ($this->_db->FieldNames($this->_entityName) as $fieldName) {
-            if ($cp->ignoreNonExistent && (!array_key_exists($fieldName, $dict1) || !array_key_exists($fieldName, $dict2))) {
-                continue;
-            }
-            
-            if ($cp->ignoreNull && (!array_key_exists($fieldName, $dict2) || empty($dict2[$fieldName]))) {
-                continue;
-            }
-            
-            if (!array_key_exists($fieldName, $dict1) && array_key_exists($fieldName, $dict2)) {
-                $response[$fieldName] = $dict2[$fieldName];
-                continue;
-            }
-            
-            if (array_key_exists($fieldName, $dict1) && !array_key_exists($fieldName, $dict2)) {
-                $response[$fieldName] = "UNDEFINED";
-                continue;
-            }
-            
-            if (empty($dict1[$fieldName]) && empty($dict2[$fieldName])) {
-                continue;
-            }
-            
-            if (empty($dict1[$fieldName]) && !empty($dict2[$fieldName])) {
-                $response[$fieldName] = $dict2[$fieldName];
-                continue;
-            }
-            
-            if (!empty($dict1[$fieldName]) && empty($dict2[$fieldName])) {
-                $response[$fieldName] = $dict2[$fieldName];
-                continue;
-            }
-            
-            if (strtolower(trim((string)$dict1[$fieldName])) !== strtolower(trim((string)$dict2[$fieldName]))) {
-                $response[$fieldName] = $dict2[$fieldName];
-                continue;
-            }
-        }
-        
-        return $response;
+        return $this->_db->compare($this->_entityName, $this->toArray(), $entity->toArray(), $cp);
     }
 
     

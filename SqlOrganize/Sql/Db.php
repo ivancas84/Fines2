@@ -286,17 +286,8 @@ abstract class Db
                 continue;
             }
             
-            
             $value1 = $dict1[$fieldName];
             $value2 = $dict2[$fieldName];
-
-            // Normalize DateTime to ISO format
-            if ($value1 instanceof DateTimeInterface) {
-                $value1 = $value1->format('Y-m-d H:i:s');
-            }
-            if ($value2 instanceof DateTimeInterface) {
-                $value2 = $value2->format('Y-m-d H:i:s');
-            }
 
             if (empty($value1) && empty($value2)) {
                 continue;
@@ -312,6 +303,13 @@ abstract class Db
                 continue;
             }
             
+              // Normalize DateTime to ISO format
+            if ($value1 instanceof DateTimeInterface) {
+                $value1 = $value1->format('Y-m-d H:i:s');
+            }
+            if ($value2 instanceof DateTimeInterface) {
+                $value2 = $value2->format('Y-m-d H:i:s');
+            }
             if (strtolower(trim((string)$value1)) !== strtolower(trim((string)$value2))) {
                 $response[$fieldName] = $value2;
                 continue;
