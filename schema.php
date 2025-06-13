@@ -79,9 +79,9 @@ class Schema
         $entities['alumno']->fields['anio_inscripcion']->checks = [
             'type' => 'int',
         ];
-        $entities['alumno']->fields['anio_inscripcion_completo'] = Field::getInstance('alumno', 'anio_inscripcion_completo', 'tinyint', 'int');
+        $entities['alumno']->fields['anio_inscripcion_completo'] = Field::getInstance('alumno', 'anio_inscripcion_completo', 'tinyint', 'bool');
         $entities['alumno']->fields['anio_inscripcion_completo']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
         ];
         $entities['alumno']->fields['comentarios'] = Field::getInstance('alumno', 'comentarios', 'text', 'string');
         $entities['alumno']->fields['comentarios']->checks = [
@@ -92,9 +92,9 @@ class Schema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['alumno']->fields['confirmado_direccion'] = Field::getInstance('alumno', 'confirmado_direccion', 'tinyint', 'int');
+        $entities['alumno']->fields['confirmado_direccion'] = Field::getInstance('alumno', 'confirmado_direccion', 'tinyint', 'bool');
         $entities['alumno']->fields['confirmado_direccion']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['alumno']->fields['creado'] = Field::getInstance('alumno', 'creado', 'timestamp', 'DateTime');
@@ -203,9 +203,9 @@ class Schema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['alumno']->fields['previas_completas'] = Field::getInstance('alumno', 'previas_completas', 'tinyint', 'int');
+        $entities['alumno']->fields['previas_completas'] = Field::getInstance('alumno', 'previas_completas', 'tinyint', 'bool');
         $entities['alumno']->fields['previas_completas']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['alumno']->fields['resolucion_inscripcion'] = Field::getInstance('alumno', 'resolucion_inscripcion', 'varchar', 'string');
@@ -228,24 +228,24 @@ class Schema
         $entities['alumno']->fields['semestre_inscripcion']->checks = [
             'type' => 'int',
         ];
-        $entities['alumno']->fields['tiene_certificado'] = Field::getInstance('alumno', 'tiene_certificado', 'tinyint', 'int');
+        $entities['alumno']->fields['tiene_certificado'] = Field::getInstance('alumno', 'tiene_certificado', 'tinyint', 'bool');
         $entities['alumno']->fields['tiene_certificado']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
-        $entities['alumno']->fields['tiene_constancia'] = Field::getInstance('alumno', 'tiene_constancia', 'tinyint', 'int');
+        $entities['alumno']->fields['tiene_constancia'] = Field::getInstance('alumno', 'tiene_constancia', 'tinyint', 'bool');
         $entities['alumno']->fields['tiene_constancia']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
-        $entities['alumno']->fields['tiene_dni'] = Field::getInstance('alumno', 'tiene_dni', 'tinyint', 'int');
+        $entities['alumno']->fields['tiene_dni'] = Field::getInstance('alumno', 'tiene_dni', 'tinyint', 'bool');
         $entities['alumno']->fields['tiene_dni']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
-        $entities['alumno']->fields['tiene_partida'] = Field::getInstance('alumno', 'tiene_partida', 'tinyint', 'int');
+        $entities['alumno']->fields['tiene_partida'] = Field::getInstance('alumno', 'tiene_partida', 'tinyint', 'bool');
         $entities['alumno']->fields['tiene_partida']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['alumno_comision'] = EntityMetadata::getInstance('alumno_comision', 'alu1');
@@ -344,9 +344,9 @@ class Schema
         $entities['alumno_comision']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
         $entities['alumno_comision']->relations['tipo_sede']->parentId = 'sede';
 
-        $entities['alumno_comision']->fields['activo'] = Field::getInstance('alumno_comision', 'activo', 'tinyint', 'int');
+        $entities['alumno_comision']->fields['activo'] = Field::getInstance('alumno_comision', 'activo', 'tinyint', 'bool');
         $entities['alumno_comision']->fields['activo']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
         ];
         $entities['alumno_comision']->fields['alumno'] = Field::getInstance('alumno_comision', 'alumno', 'varchar', 'string');
         $entities['alumno_comision']->fields['alumno']->alias = 'alu';
@@ -682,9 +682,9 @@ class Schema
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['calificacion']->fields['archivado'] = Field::getInstance('calificacion', 'archivado', 'tinyint', 'int');
+        $entities['calificacion']->fields['archivado'] = Field::getInstance('calificacion', 'archivado', 'tinyint', 'bool');
         $entities['calificacion']->fields['archivado']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['calificacion']->fields['crec'] = Field::getInstance('calificacion', 'crec', 'decimal', 'float');
@@ -925,14 +925,14 @@ class Schema
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $entities['comision']->fields['apertura'] = Field::getInstance('comision', 'apertura', 'tinyint', 'int');
+        $entities['comision']->fields['apertura'] = Field::getInstance('comision', 'apertura', 'tinyint', 'bool');
         $entities['comision']->fields['apertura']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
-        $entities['comision']->fields['autorizada'] = Field::getInstance('comision', 'autorizada', 'tinyint', 'int');
+        $entities['comision']->fields['autorizada'] = Field::getInstance('comision', 'autorizada', 'tinyint', 'bool');
         $entities['comision']->fields['autorizada']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['comision']->fields['calendario'] = Field::getInstance('comision', 'calendario', 'varchar', 'string');
@@ -1057,9 +1057,9 @@ class Schema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['comision']->fields['publicada'] = Field::getInstance('comision', 'publicada', 'tinyint', 'int');
+        $entities['comision']->fields['publicada'] = Field::getInstance('comision', 'publicada', 'tinyint', 'bool');
         $entities['comision']->fields['publicada']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['comision']->fields['sede'] = Field::getInstance('comision', 'sede', 'varchar', 'string');
@@ -2088,9 +2088,9 @@ class Schema
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['email']->fields['verificado'] = Field::getInstance('email', 'verificado', 'tinyint', 'int');
+        $entities['email']->fields['verificado'] = Field::getInstance('email', 'verificado', 'tinyint', 'bool');
         $entities['email']->fields['verificado']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['file'] = EntityMetadata::getInstance('file', 'file');
@@ -2458,9 +2458,9 @@ class Schema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['persona']->fields['email_verificado'] = Field::getInstance('persona', 'email_verificado', 'tinyint', 'int');
+        $entities['persona']->fields['email_verificado'] = Field::getInstance('persona', 'email_verificado', 'tinyint', 'bool');
         $entities['persona']->fields['email_verificado']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['persona']->fields['fecha_nacimiento'] = Field::getInstance('persona', 'fecha_nacimiento', 'date', 'DateTime');
@@ -2485,9 +2485,9 @@ class Schema
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['persona']->fields['info_verificada'] = Field::getInstance('persona', 'info_verificada', 'tinyint', 'int');
+        $entities['persona']->fields['info_verificada'] = Field::getInstance('persona', 'info_verificada', 'tinyint', 'bool');
         $entities['persona']->fields['info_verificada']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['persona']->fields['localidad'] = Field::getInstance('persona', 'localidad', 'varchar', 'string');
@@ -2561,9 +2561,9 @@ class Schema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['persona']->fields['telefono_verificado'] = Field::getInstance('persona', 'telefono_verificado', 'tinyint', 'int');
+        $entities['persona']->fields['telefono_verificado'] = Field::getInstance('persona', 'telefono_verificado', 'tinyint', 'bool');
         $entities['persona']->fields['telefono_verificado']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['plan'] = EntityMetadata::getInstance('plan', 'plan');
@@ -3166,9 +3166,9 @@ class Schema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['toma']->fields['confirmada'] = Field::getInstance('toma', 'confirmada', 'tinyint', 'int');
+        $entities['toma']->fields['confirmada'] = Field::getInstance('toma', 'confirmada', 'tinyint', 'bool');
         $entities['toma']->fields['confirmada']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['toma']->fields['curso'] = Field::getInstance('toma', 'curso', 'varchar', 'string');
@@ -3247,9 +3247,9 @@ class Schema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['toma']->fields['reclamo'] = Field::getInstance('toma', 'reclamo', 'tinyint', 'int');
+        $entities['toma']->fields['reclamo'] = Field::getInstance('toma', 'reclamo', 'tinyint', 'bool');
         $entities['toma']->fields['reclamo']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['toma']->fields['reemplazo'] = Field::getInstance('toma', 'reemplazo', 'varchar', 'string');
@@ -3264,9 +3264,9 @@ class Schema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['toma']->fields['sin_planillas'] = Field::getInstance('toma', 'sin_planillas', 'tinyint', 'int');
+        $entities['toma']->fields['sin_planillas'] = Field::getInstance('toma', 'sin_planillas', 'tinyint', 'bool');
         $entities['toma']->fields['sin_planillas']->checks = [
-            'type' => 'int',
+            'type' => 'bool',
             'required' => '1',
         ];
         $entities['toma']->fields['tipo_movimiento'] = Field::getInstance('toma', 'tipo_movimiento', 'varchar', 'string');

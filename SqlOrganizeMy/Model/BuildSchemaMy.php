@@ -50,43 +50,46 @@ class BuildSchemaMy extends BuildSchema
         try {
             $pdo = $this->getPdo();
             
-            $sql = "
-                SELECT 
-                    col.TABLE_NAME,
-                    col.COLUMN_NAME,
-                    col.COLUMN_DEFAULT,
-                    CASE WHEN col.IS_NULLABLE = 'YES' THEN 1 ELSE 0 END AS IS_NULLABLE,
-                    col.DATA_TYPE,
-                    col.CHARACTER_MAXIMUM_LENGTH,
-                    col.NUMERIC_PRECISION,
-                    col.NUMERIC_SCALE,
-                    CASE WHEN col.COLUMN_TYPE LIKE '%unsigned%' THEN 1 ELSE 0 END AS IS_UNSIGNED,
-                    MAX(kcu.REFERENCED_TABLE_NAME) AS REFERENCED_TABLE_NAME,
-                    MAX(kcu.REFERENCED_COLUMN_NAME) AS REFERENCED_COLUMN_NAME,
-                    MAX(CASE WHEN tc.CONSTRAINT_TYPE = 'PRIMARY KEY' THEN 1 ELSE 0 END) AS IS_PRIMARY_KEY,
-                    MAX(CASE WHEN tc.CONSTRAINT_TYPE = 'FOREIGN KEY' THEN 1 ELSE 0 END) AS IS_FOREIGN_KEY
-                FROM information_schema.columns col
-                LEFT JOIN information_schema.KEY_COLUMN_USAGE kcu
-                    ON col.TABLE_SCHEMA = kcu.TABLE_SCHEMA
-                AND col.TABLE_NAME = kcu.TABLE_NAME
-                AND col.COLUMN_NAME = kcu.COLUMN_NAME
-                LEFT JOIN information_schema.TABLE_CONSTRAINTS tc
-                    ON tc.TABLE_SCHEMA = kcu.TABLE_SCHEMA
-                AND tc.TABLE_NAME = kcu.TABLE_NAME
-                AND tc.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME
-                WHERE col.TABLE_SCHEMA = :dbName 
-                AND col.TABLE_NAME = :tableName
-                GROUP BY 
-                    col.TABLE_NAME,
-                    col.COLUMN_NAME,
-                    col.COLUMN_DEFAULT,
-                    col.IS_NULLABLE,
-                    col.DATA_TYPE,
-                    col.CHARACTER_MAXIMUM_LENGTH,
-                    col.NUMERIC_PRECISION,
-                    col.NUMERIC_SCALE,
-                    col.COLUMN_TYPE
-                ORDER BY col.COLUMN_NAME;
+            $sql = "SELECT
+    col.TABLE_NAME,
+    col.COLUMN_NAME,
+    col.COLUMN_DEFAULT,
+    CASE WHEN col.IS_NULLABLE = 'YES' THEN 1 ELSE 0 END AS IS_NULLABLE,
+    col.DATA_TYPE,
+    col.CHARACTER_MAXIMUM_LENGTH,
+    col.NUMERIC_PRECISION,
+    col.NUMERIC_SCALE,
+    CASE WHEN col.COLUMN_TYPE LIKE '%unsigned%' THEN 1 ELSE 0 END AS IS_UNSIGNED,
+    CASE
+        WHEN col.DATA_TYPE = 'tinyint' AND col.NUMERIC_PRECISION = 3 AND col.COLUMN_TYPE LIKE 'tinyint(1)%'
+        THEN 1 ELSE 0
+    END AS IS_BOOLEAN,
+    MAX(kcu.REFERENCED_TABLE_NAME) AS REFERENCED_TABLE_NAME,
+    MAX(kcu.REFERENCED_COLUMN_NAME) AS REFERENCED_COLUMN_NAME,
+    MAX(CASE WHEN tc.CONSTRAINT_TYPE = 'PRIMARY KEY' THEN 1 ELSE 0 END) AS IS_PRIMARY_KEY,
+    MAX(CASE WHEN tc.CONSTRAINT_TYPE = 'FOREIGN KEY' THEN 1 ELSE 0 END) AS IS_FOREIGN_KEY
+FROM information_schema.columns col
+LEFT JOIN information_schema.KEY_COLUMN_USAGE kcu
+    ON col.TABLE_SCHEMA = kcu.TABLE_SCHEMA
+    AND col.TABLE_NAME = kcu.TABLE_NAME
+    AND col.COLUMN_NAME = kcu.COLUMN_NAME
+LEFT JOIN information_schema.TABLE_CONSTRAINTS tc
+    ON tc.TABLE_SCHEMA = kcu.TABLE_SCHEMA
+    AND tc.TABLE_NAME = kcu.TABLE_NAME
+    AND tc.CONSTRAINT_NAME = kcu.CONSTRAINT_NAME
+WHERE col.TABLE_SCHEMA = :dbName
+AND col.TABLE_NAME = :tableName
+GROUP BY
+    col.TABLE_NAME,
+    col.COLUMN_NAME,
+    col.COLUMN_DEFAULT,
+    col.IS_NULLABLE,
+    col.DATA_TYPE,
+    col.CHARACTER_MAXIMUM_LENGTH,
+    col.NUMERIC_PRECISION,
+    col.NUMERIC_SCALE,
+    col.COLUMN_TYPE
+ORDER BY col.COLUMN_NAME;
             ";
             
             $stmt = $pdo->prepare($sql);
@@ -110,6 +113,8 @@ class BuildSchemaMy extends BuildSchema
                 $column->REFERENCED_COLUMN_NAME = $row['REFERENCED_COLUMN_NAME'];
                 $column->IS_PRIMARY_KEY = $row['IS_PRIMARY_KEY'];
                 $column->IS_FOREIGN_KEY = $row['IS_FOREIGN_KEY'];
+                $column->IS_BOOLEAN = $row['IS_BOOLEAN'];
+
                 
                 // Para compatibilidad con el método defineField
                 $column->MAX_LENGTH = $row['CHARACTER_MAXIMUM_LENGTH'];

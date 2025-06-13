@@ -1,6 +1,5 @@
 <h1>Editar Comisión</h1>
-<form id="ac2-comision-admin" method="POST">
-    <? wp_nonce_field("ac_comision_admin_action", "ac_comision_admin_nonce"); ?>
+<?php wp_html_form_declare("ac2_comision_admin") ?>
     <input type="hidden" name="comision_id" id="comision_id" value="<?= $comision->id ?? '' ?>" />
 
     <!-- Campo Calendario -->
@@ -110,9 +109,4 @@
     <p>
         <button type="submit" class='button'>Guardar</button>
     </p>
-
-    <!-- Honeypot -->
-    <input type="text" name="honeypot" style="display: none;">
-
-    <div id="ac-form-message"></div>
 </form>

@@ -17,7 +17,7 @@ class ModifyQueriesMy extends ModifyQueries
     {
         $e = $this->db->getEntityMetadata($entityName);
 
-        $sql = "UPDATE {$e->alias} SET\n";
+        $sql = "UPDATE {$e->getSchemaNameAlias()} SET\n";
         
         $fieldNames = $this->db->fieldNamesAdmin($entityName);
 
@@ -29,7 +29,7 @@ class ModifyQueriesMy extends ModifyQueries
         }
         
         $sql = ValueTypesUtils::removeLastChar($sql, ',');
-        $sql .= " FROM {$e->getSchemaNameAlias()}\n";
+        $sql .= "\n";
         
         return $sql;
     }

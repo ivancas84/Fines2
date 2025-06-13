@@ -127,6 +127,10 @@ private function processArrayParameters(string $sql, array $params): array
     $processedSql = $sql;
 
     foreach ($params as $key => $value) {
+        if (strpos($sql, ":$key") === false) {
+            continue;
+        }
+
         if (is_array($value)) {
             if (empty($value)) {
                 // Array vacío - reemplazar con condición siempre falsa
@@ -230,7 +234,6 @@ public function fetchColumnBySql(string $sql, int $columnIndex = 0, ?array $para
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         if (count($rows) !== count($ids)) {
             throw new Exception("La consulta no devolvió todos los registros. ¿Están correctos los IDs?");
         }

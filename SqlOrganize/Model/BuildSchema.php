@@ -171,7 +171,7 @@ abstract class BuildSchema
         
         switch (strtolower($c->DATA_TYPE)) {
              case "tinyint":
-                if ($f->maxLength == 1) {
+                if ($c->IS_BOOLEAN || $f->maxLength == 1) {
                     $f->type = "bool";
                 } else {
                     $f->type = "int";
@@ -328,7 +328,7 @@ public function createSchema(): void
     $sw = fopen($schemaSourcePath, 'w');
 
     fwrite($sw, "<?php\n\n");
-    fwrite($sw, "namespace SqlOrganize\\Sql\\" . $this->config->namespace . ";\n\n");
+    fwrite($sw, "namespace " . $this->config->namespace . ";\n\n");
 
     fwrite($sw, "use SqlOrganize\\Sql\\EntityMetadata;\n");
     fwrite($sw, "use SqlOrganize\\Sql\\Field;\n\n");

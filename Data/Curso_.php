@@ -52,7 +52,7 @@ class Curso_ extends Curso
     public static function CursosActivosConTomasActivasByCalendario($calendario): array {
         
         $cursos = self::CursosActivosByCalendario($calendario);
-        $tomasActivas = TomaDAO::TomasActivasByCalendario($calendario);
+        $tomasActivas = Toma_::TomasActivasByCalendario($calendario);
         $tomasActivas = ValueTypesUtils::dictOfObjByPropertyNames($tomasActivas, "curso");
 
         foreach($cursos as &$curso){

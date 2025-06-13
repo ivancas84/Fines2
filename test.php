@@ -7,7 +7,12 @@ use \SqlOrganize\Sql\DbMy;
 use \SqlOrganize\Sql\Entity;
 use \Fines2\Comision_;
 
-$comision_ = ["id"=>1,"division"=>"A"];
-$comision = Entity::createFromArray("\Fines2\Comision_", $comision_);
-    
+$comision = DbMy::getInstance()->CreateDataProvider()->fetchEntityById("comision", "67cb7b00e0347");
+$modifyQueries = DbMy::getInstance()->CreateModifyQueries();
+
+$comision->observaciones = "quiero actualizar 2";
+$modifyQueries->buildPersistSql($comision);
+$modifyQueries->process();
+$comision = DbMy::getInstance()->CreateDataProvider()->fetchEntityById("comision", "67cb7b00e0347");
+
 print_r($comision->toArray());

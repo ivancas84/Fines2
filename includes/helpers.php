@@ -16,7 +16,22 @@ function html_select($fieldName, $options, $values){
     echo "</select>";
 }
 
-function initialize_handle($page_name, $handle_name, $field_id, $field_value){
+function wp_page_message(){
+    $message = !empty($_REQUEST['message']) ? $_REQUEST['message'] : null;
+    if($message) echo "<div class='notice notice-success is-dismissible'><p>{$message}</p></div>";
+}
+
+function wp_html_form_declare($handleName){
+    echo '
+    <form id="' . $handleName . '" method="POST" action="admin-post.php">';
+    wp_nonce_field($handleName . '_action', $handleName . '_nonce'); 
+    echo '<input type="hidden" name="action" value="' . $handleName . '">
+    <input type="text" name="honeypot" style="display: none;">';
+}
+
+function initialize_handle($page_name, $handle_name, $field_id){
+        $field_value = $_REQUEST[$field_id];
+
     if (!current_user_can('edit_posts')) {
         wp_redirect(admin_url("admin.php?page=$page_name&$field_id=$field_value&message=No tienes permisos suficientes"));
         exit;
@@ -31,6 +46,8 @@ function initialize_handle($page_name, $handle_name, $field_id, $field_value){
         wp_redirect(admin_url("admin.php?page=$page_name&$field_id=$field_value&message=Detección de spam"));
         exit;
     }
+
+    return $field_value;
 }
 
 function sanitize_or_null_text_field($value) {

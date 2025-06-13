@@ -28,6 +28,7 @@ class Column
     public int $IS_UNIQUE_KEY = 0;
     public int $CONSTRAINT_NAME = 0;
     public int $IS_FOREIGN_KEY = 0;
+    public int $IS_BOOLEAN = 0;
     public int $IS_UNSIGNED = 0;
     
     public string $COLUMN_TYPE;

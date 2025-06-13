@@ -21,20 +21,18 @@ add_submenu_page(
       'ac2_administrar_comision_page' // Función que muestra la página del submenu
   );
   
-    function ap2_administrar_persona_page() {
+    function ac2_administrar_comision_page() {
 
-    $message = !empty($_GET['message']) ? $_GET['message'] : null;
-    if($message) echo "<div class='notice notice-success is-dismissible'><p>{$message}</p></div>";
+        wp_page_message();
+        $comision_id = isset($_GET['comision_id']) ? $_GET['comision_id'] : null;
 
-    $comision_id = isset($_GET['comision_id']) ? $_GET['comision_id'] : null;
+        $calendarios = Calendario_::calendarios();
+        $sedes = Sede_::sedes462();
+        $modalidades = Modalidad_::modalidades();
+        $planificaciones = Planificacion_::planificaciones();
 
-    $calendarios = Calendario_::calendarios();
-    $sedes = Sede_::sedes462();
-    $modalidades = Modalidad_::modalidades();
-    $planificaciones = Planificacion_::planificaciones();
-
-    $comision = (empty($persona_id)) ? new Comision_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityById("comision", $persona_id);
-    include plugin_dir_path(__FILE__) . 'ac2_comision_form.html';
+        $comision = (empty($comision_id)) ? new Comision_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityById("comision", $comision_id);
+        include plugin_dir_path(__FILE__) . 'ac2_comision_form.html';
 
     if(!empty($comision))
         ac2_init_cursos($comision->id);

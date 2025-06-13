@@ -74,9 +74,9 @@ abstract class SelectQueries
         }
 
         $sql = "SELECT DISTINCT ";
-        $sql .= $this->sqlFieldsSimple($entityName);
+        $sql .= $this->sqlFieldsSimple($entityName) . " 
+";
         $sql .= $this->sqlFrom($entityName);
-        $sql .= " WITH (NOLOCK)";
         $sql .= " WHERE " . $w;
 
         return $sql;
@@ -124,7 +124,10 @@ abstract class SelectQueries
         $metadata = $this->db->getEntityMetadata($entityName);
         $sql = "";
 
+        $sql .= $metadata->map($this->db->config->idName) . ", ";
         foreach ($metadata->getFieldNames() as $fieldName) {
+            if($fieldName == $metadata->map($this->db->config->idName))
+                continue;
             $sql .= $metadata->map($fieldName) . ", ";
         }
         

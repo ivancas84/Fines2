@@ -1,5 +1,7 @@
 <?php
 
+require_once $_SERVER['DOCUMENT_ROOT'] . '/db-config.php';
+
 add_action('admin_post_ac2_comision_admin', 'ac2_comision_admin_handle');
 
 use \SqlOrganize\Sql\DbMy;
@@ -8,23 +10,19 @@ use \Fines2\Comision_;
 
 function ac2_comision_admin_handle() {
 
-    $comision_id = $_POST["comision_id"];
-    initialize_handle("fines-plugin-ac2", "ac2_comision_admin", "comision_id", $comision_id);
+    $comision_id = initialize_handle("fines-plugin-ac2", "ac2_comision_admin", "comision_id");
 
-    $comision = Entity::createFromArray("\Fines2\Comision_", $_POST);
+    $comision = new Comision_();
+    $comision->ssetFromArray($_POST);
     $comision->id = $_POST["comision_id"];
     if(!$comision->check()) {
-        wp_redirect(admin_url("admin.php?page=fines-plugin-ac2&comision_id=$comision_id&message=Error al verificar datos de comision"));
+        wp_redirect(admin_url("admin.php?page=fines-plugin-ac2&comision_id=$comision_id&message=".$comision->getLogging()->__toString()));
         exit;
     }
     $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
     $modifyQueries->buildPersistSql($comision);
-
-    $db = DbMy::getInstance();
-
-    $pdo = $db->getPdo();
-    $transaction = $pdo->beginTransaction();
-    $modifyQueries->process($pdo, $transaction);
+    $modifyQueries->process();
+    wp_redirect(admin_url("admin.php?page=fines-plugin-ac2&comision_id=$comision_id&message=Registro realizado"));
 
 
     /*

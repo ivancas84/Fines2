@@ -6,6 +6,7 @@ use PDO;
 use Exception;
 use InvalidArgumentException;
 use SqlOrganize\Utils\ValueTypesUtils;
+use DateTimeInterface;
 
 abstract class ModifyQueries
 {
@@ -66,9 +67,10 @@ abstract class ModifyQueries
      */
     public function buildPersistSql(Entity $data): void
     {
+        $id = $this->buildPersistSql_($data->_entityName, $data->toArray());
         $data->set(
             $this->db->config->idName, 
-            $this->buildPersistSql_($data->_entityName, $data->toArray())
+            $id
         );
     }
 
@@ -77,9 +79,9 @@ abstract class ModifyQueries
      * 
      * @return id persistido
      */
-    public function buildPersistSql_($entityName, array $data): object {
+    public function buildPersistSql_($entityName, array $data): mixed {
+        
         $existingRow = $this->db->CreateDataProvider()->fetchDataByUnique($entityName, $data);
-
         if (!empty($existingRow)) {
             $data[$this->db->config->idName] = $existingRow[$this->db->config->idName];
 
@@ -261,7 +263,7 @@ abstract class ModifyQueries
 
         $this->sqlBuilder .= $sql . "\n";
     }
-
+    
     public function buildInsertSqlIfNotExists(Entity $entity): void {
         $entity->sset(
             $this->db->config->idName, 
@@ -269,7 +271,7 @@ abstract class ModifyQueries
         );
     }
 
-    public function buildInsertSqlIfNotExists_(string $entityName, array $data): object
+    public function buildInsertSqlIfNotExists_(string $entityName, array $data): mixed
     {
         $existingRow = $this->db->CreateDataProvider()->fetchDataByUnique($entityName, $data);
         if(empty($existingRow)){
@@ -341,12 +343,22 @@ abstract class ModifyQueries
         $this->sqlBuilder .= ";\n";
     }
 
-    public function _execute(PDO $connection)
+    /** 
+    * @todo el control de DateTimeInterface ex propio de cada motor de base de datos, deeria estar en la subclase, y puede que se defina en otro contexto como por ejemplo al asignar el parametro
+    */
+    public function _execute(PDO $connection): int
     {
         $sql = $this->sqlBuilder;
+        if(empty($sql))
+            return 0;   
         
         $stmt = $connection->prepare($sql);
         foreach ($this->parameters as $key => $value) {
+            if ($value instanceof DateTimeInterface) {
+                // Format to a standard datetime string
+                $value = $value->format('Y-m-d H:i:s');
+            }
+
             $stmt->bindValue(':' . $key, $value);
         }
         

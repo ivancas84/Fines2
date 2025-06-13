@@ -18,14 +18,21 @@ use ReflectionProperty;
 /**
  * Comportamiento general para las clases de datos
  */
-abstract class Entity
+class Entity
 {
     public string $_entityName = '';
 
-    public Logging $_logging;
+    protected Logging $_logging;
 
     public Db $_db;
 
+
+    public function getLogging(){
+        if(empty($this->_logging))
+            $this->_logging = new Logging();
+
+        return $this->_logging;
+    }
 
     public function getLabel(): string 
     { 
@@ -54,10 +61,7 @@ abstract class Entity
     // Facilita la impresión del número de fila, por ejemplo
     public int $_index = 0;
 
-    public function __construct()
-    {
-        $this->_logging = new Logging();
-    }
+   
 
     /**
      * Crear instancia de T a partir del id
@@ -533,12 +537,12 @@ abstract class Entity
 
     public function check(): bool
     {
-        $this->_logging->clear();
+        $this->getLogging()->clear();
         foreach ($this->_db->fieldNames($this->_entityName) as $fieldName) {
             $this->checkField($fieldName);
         }
         
-        return !$this->_logging->hasErrors();
+        return !$this->getLogging()->hasErrors();
     }
 
     /**
@@ -546,7 +550,7 @@ abstract class Entity
      */
     public function checkField(string $fieldName): bool
     {
-        $this->_logging->clearByKey($fieldName);
+        $this->getLogging()->clearByKey($fieldName);
         
         $field = $this->_db->field($this->_entityName, $fieldName);
         $validation = new Validation($this->get($fieldName));
@@ -566,7 +570,7 @@ abstract class Entity
         }
         
         foreach ($validation->errors as $error) {
-            $this->_logging->addErrorLog($fieldName, $error['type'], $error['msg']);
+            $this->getLogging()->addErrorLog($fieldName, $error['type'], $error['msg']);
         }
         
         return !$validation->hasErrors();
