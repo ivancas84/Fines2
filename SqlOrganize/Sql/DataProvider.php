@@ -36,7 +36,6 @@ class DataProvider {
     public function fetchEntitiesByParams(string $entityName, array $params, string $conn = "AND"): array 
     {
         [$sql, $params] = $this->db->CreateSelectQueries()->params($entityName, $params, $conn);
-        echo $sql;
         return $this->fetchEntitiesBySqlId($entityName, $sql, $params);
             
     }
