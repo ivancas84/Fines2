@@ -19,6 +19,9 @@ abstract class SelectQueries
         $this->db = $db;
     }
 
+
+
+
     /**
      * Definir sql a partir de los campos unicos de una entidad
      * 
@@ -332,6 +335,29 @@ abstract class SelectQueries
      * Get next value - each engine should implement this differently
      */
     abstract public function getNextValue(string $entityName, string $fieldName): mixed;
+
+    public function params($entityName, array $params, string $conn = "AND"): array {
+        
+        $className = $this->db->getEntityMetadata($entityName)->getClassNameWithNamespace() . "_";
+        $obj = new $className;
+        
+        // Build the WHERE clause
+        $whereClauses = [];
+        foreach ($params as $key => $value) {
+            $whereClauses[] = (is_array($value)) ?  "$key IN (:$key)" : "$key = :$key";
+        }
+        
+        $whereClause = implode(" $conn ", $whereClauses);
+        
+        // Build final SQL query
+        $sql = "SELECT DISTINCT id FROM " . $obj->_entityName;
+        
+        if (!empty($whereClause)) {
+            $sql .= " WHERE " . $whereClause;
+        }
+
+        return $this->processArrayParameters($sql, $params);
+    }
 
     /**
      * Procesa parámetros con soporte para arrays, expandiendo arrays a parámetros nombrados

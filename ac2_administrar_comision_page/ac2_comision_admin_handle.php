@@ -6,63 +6,52 @@ add_action('admin_post_ac2_comision_admin', 'ac2_comision_admin_handle');
 
 use \SqlOrganize\Sql\DbMy;
 use \Fines2\Comision_;
+use \Fines2\Curso_;
+use \SqlOrganize\Utils\ValueTypesUtils;
 
 function ac2_comision_admin_handle() {
 
-    $comision_id = wp_initialize_handle("fines-plugin-ac2", "ac2_comision_admin", "comision_id");
-    $comision = new Comision_();
-    $comision->ssetFromArray($_POST);
-    $comision->reset();
+    try {
+        $db = DbMy::getInstance();
+        
+        $comision_id = wp_initialize_handle("fines-plugin-ac2", "ac2_comision_admin", "comision_id");
+        $comision = new Comision_();
+        $comision->ssetFromArray($_POST);
+        $comision->id = $comision_id;
+        $comision->reset();
 
-    if(!$comision->check()) {
-        wp_redirect_handle("fines-plugin-ac2", "comision_id", $comision_id, $comision->getLogging()->__toString());
-        exit;
-    }
-
-    $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
-    $modifyQueries->buildPersistSql($comision);
-    $modifyQueries->process();
-    wp_redirect_handle("fines-plugin-ac2", "comision_id", $comision_id, "Registro realizado");
-
-    /*
-    // Insertar curso si no existe
-    $disposiciones = $wpdb->get_results(
-        $wpdb->prepare(
-            "SELECT id, asignatura, horas_catedra FROM disposicion WHERE planificacion = %s",
-            $planificacion_id
-        ),
-        ARRAY_A
-    );
-    
-    foreach ($disposiciones as $disposicion) {
-        $curso_existente = $wpdb->get_var(
-            $wpdb->prepare(
-                "SELECT COUNT(*) FROM curso WHERE comision = %s AND disposicion = %s",
-                $comision_id,
-                $disposicion['id']
-            )
-        );
-
-        if ($curso_existente == 0) {
-            $curso_id = uniqid();
-            $insert_result = $wpdb->insert(
-                'curso',
-                [
-                    'id' => $curso_id,
-                    'horas_catedra' => $disposicion['horas_catedra'],
-                    'comision' => $comision_id,
-                    'disposicion' => $disposicion['id'],
-                    'asignatura' => $disposicion['asignatura'],
-                ],
-                ['%s', '%d', '%s', '%s', '%s']
-            );
-            if(!$insert_result) {
-                echo json_encode(['success' => false, 'message' => 'Error al crear cursos: ' .  $wpdb->last_error]);
-                die();
-            }
+        if(!$comision->check()) {
+            wp_redirect_handle("fines-plugin-ac2", "comision_id", $comision_id, $comision->getLogging()->__toString());
+            exit;
         }
-    }
 
-    echo json_encode([ 'success' => true, 'message' => $proceso . ' completa.', 'comision_id' => $comision_id ]);
-    die();*/
+        $modifyQueries = $db->CreateModifyQueries();
+        $modifyQueries->buildPersistSql($comision);
+
+        $dataProvider = $db->CreateDataProvider();
+
+        $disposiciones = $dataProvider->fetchEntitiesByParams("disposicion", ["planificacion" => $comision->planificacion]);
+        $idDisposiciones = ValueTypesUtils::arrayOfName($disposiciones, "id");
+        $cursosExistentes = $dataProvider->fetchEntitiesByParams("curso", ["comision" => $comision->id, "disposicion" => $idDisposiciones]);
+        $cursosExistentes = ValueTypesUtils::dictOfObjByPropertyNames($cursosExistentes, "disposicion");
+
+        $i = 0;
+        foreach($disposiciones as $disposicion){
+            if(array_key_exists($disposicion->id, $cursosExistentes))
+                continue;
+
+            $i++;
+            $curso = new Curso_();
+            $curso->horas_catedra = $disposicion->horas_catedra;
+            $curso->disposicion = $disposicion->id;
+            $curso->asignatura = $disposicion->asignatura;
+            $modifyQueries->buildInsertSql($curso);
+        }
+
+        $modifyQueries->process();
+
+        wp_redirect_handle("fines-plugin-ac2", "comision_id", $comision_id, "Comision y $i cursos registrados");
+    } catch (Exception $ex){
+        wp_redirect_handle("fines-plugin-ac2", "comision_id", $comision_id, $ex->getMessage());
+    }
 }

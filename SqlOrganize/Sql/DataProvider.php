@@ -32,27 +32,11 @@ class DataProvider {
         if(count($entities) == 1) return $entities[0];
         return null;
     }
+    
     public function fetchEntitiesByParams(string $entityName, array $params, string $conn = "AND"): array 
     {
-        
-        $className = $this->db->getEntityMetadata($entityName)->getClassNameWithNamespace() . "_";
-        $obj = new $className;
-        
-        // Build the WHERE clause
-        $whereClauses = [];
-        foreach ($params as $key => $value) {
-            $whereClauses[] = "$key = :$key";
-        }
-        
-        $whereClause = implode(" $conn ", $whereClauses);
-        
-        // Build final SQL query
-        $sql = "SELECT DISTINCT id FROM " . $obj->_entityName;
-        
-        if (!empty($whereClause)) {
-            $sql .= " WHERE " . $whereClause;
-        }
-        
+        [$sql, $params] = $this->db->CreateSelectQueries()->params($entityName, $params, $conn);
+        echo $sql;
         return $this->fetchEntitiesBySqlId($entityName, $sql, $params);
             
     }
