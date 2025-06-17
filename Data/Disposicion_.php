@@ -11,11 +11,11 @@ class Disposicion_ extends Disposicion
 {
 
     public function getLabel(): string {
-        return ($disposicion->asignatura_?->nombre ?? "?"). " " . 
-            ($disposicion->planificacion_?->anio ?? "?"). "/" .
-            ($disposicion->planificacion_?->semestre ?? "?") . " " .
-            ($disposicion->planificacion_?->plan_?->resolucion ?? "?") . " " . 
-            ValueTypesUtils::acronym($disposicion->planificacion_?->plan_?->orientacion ?? ""); 
+        return ($this->asignatura_?->nombre ?? "?"). " " . 
+            ($this->planificacion_?->anio ?? "?"). "/" .
+            ($this->planificacion_?->semestre ?? "?") . " " .
+            ($this->planificacion_?->plan_?->resolucion ?? "?") . " " . 
+            ValueTypesUtils::acronym($this->planificacion_?->plan_?->orientacion ?? ""); 
     }
 
 

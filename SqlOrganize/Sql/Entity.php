@@ -608,7 +608,7 @@ class Entity
     }
 
     
-    public function persist()
+    public function persist(): mixed
     {
         $modifyQueries = $this->_db->CreateModifyQueries();
         $modifyQueries->buildPersistSql($this);
@@ -616,6 +616,19 @@ class Entity
         return $this->get($this->_db->config->idName);
     }
 
+    public function update(): void
+    {
+        $modifyQueries = $this->_db->CreateModifyQueries();
+        $modifyQueries->buildUpdateSql($this);
+        $modifyQueries->execute();
+    }
+
+    public function insert(): void
+    {
+        $modifyQueries = $this->_db->CreateModifyQueries();
+        $modifyQueries->buildInsertSql($this);
+        $modifyQueries->execute();
+    }
 
     // Métodos auxiliares
 

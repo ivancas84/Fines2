@@ -1,7 +1,6 @@
 <h1>Editar Comisión</h1>
-<?php wp_html_form_declare("ac2_comision_admin") ?>
-    <input type="hidden" name="comision_id" id="comision_id" value="<?= $comision->id ?? '' ?>" />
-
+<form method="POST" action="admin-post.php">
+    <?php wp_html_init_form("ac2_comision_admin", "comision_id", $comision->id); ?>
     <!-- Campo Calendario -->
     <p>
         <label for="calendario">Calendario:</label>

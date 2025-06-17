@@ -21,12 +21,18 @@ function wp_page_message(){
     if($message) echo "<div class='notice notice-success is-dismissible'><p>{$message}</p></div>";
 }
 
-function wp_html_form_declare($handleName){
-    echo '
-    <form id="' . $handleName . '" method="POST" action="admin-post.php">';
+/**
+ * Declarar formulario sin ajax
+ * 
+ * @example
+ * <?php wp_html_init_form("ac2_cursos_admin", "comision_id", $comision->id); ?>
+ */
+function wp_html_init_form($handleName, $fieldIdName, $fieldIdValue){
+
     wp_nonce_field($handleName . '_action', $handleName . '_nonce'); 
-    echo '<input type="hidden" name="action" value="' . $handleName . '">
-    <input type="text" name="honeypot" style="display: none;">';
+    echo '<input type="text" name="honeypot" style="display: none;">
+    <input type="hidden" name="action" value="' . $handleName . '">
+    <input type="hidden" name="' . $fieldIdName . '" value="' . esc_attr($fieldIdValue) . '">"';    
 }
 
 function wp_initialize_handle($page_name, $handle_name, $field_id){
