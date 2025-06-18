@@ -22,7 +22,7 @@
     </thead>
     <tbody>
         <? foreach ($cursos as $curso): ?>
-            <? $detalle_comision_url = admin_url('admin.php?page=fines-plugin-administrar-comision-page&comision_id=' . $curso->comision); ?>
+            <? $detalle_comision_url = admin_url('admin.php?page=fines-plugin-ac2&comision_id=' . $curso->comision); ?>
             <? $administrar_tomas_url = admin_url('admin.php?page=fines-plugin-administrar-toma-comision&comision_id=' . $curso->comision); ?>
             <? $cargar_planilla_calificacion_url = admin_url('admin.php?page=fines-plugin-ppc&curso_id=' . $curso->id); ?>
             <? $cargar_alumnos_url = admin_url('admin.php?page=fines-plugin-cac&comision_id=' . $curso->comision); ?>
