@@ -1,63 +1,58 @@
-<h1>Informe <?=$persona['apellidos']?>, <?=$persona['nombres']?> <?=$persona['numero_documento']?></h1>
+<h1>Informe <?=$persona->getLabel() ?></h1>
 
-<form id="ap2-persona-admin" method="POST" action="admin-post.php">
-    <input type="hidden" name="action" value="ap2_persona_admin">
+<form  method="POST" action="admin-post.php">
+    <?php wp_html_init_form("ap3_persona_admin", "persona_id", $persona->id); ?>
 
-    <?php wp_nonce_field("ap2_persona_admin_action", "ap2_persona_admin_nonce"); ?>
-    
-    <input type="hidden" name="persona_id" id="persona_id" value="<?= $persona['persona_id'] ?? '' ?>" />
-
-    <input type="text" name="honeypot" style="display: none;">
 
     <div class="form-grid">
         <div class="form-group">
             <label for="nombres">Nombres:</label>
-            <input type="text" id="nombres" name="nombres" value="<?=$persona['nombres']?>" required>
+            <input type="text" id="nombres" name="nombres" value="<?=$persona->nombres?>" required>
         </div>
 
         <div class="form-group">
             <label for="apellidos">Apellidos:</label>
-            <input type="text" id="apellidos" name="apellidos" value="<?=$persona['apellidos']?>">
+            <input type="text" id="apellidos" name="apellidos" value="<?=$persona->apellidos?>">
         </div>
 
         <div class="form-group">
             <label for="fecha_nacimiento">Fecha de Nacimiento (formato MM/DD/YYYY):</label>
-            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="<?=$persona['fecha_nacimiento']?>">
+            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="<?=$persona->fecha_nacimiento?>">
         </div>
 
         <div class="form-group">
             <label for="numero_documento">Número de Documento:</label>
-            <input type="text" id="numero_documento" name="numero_documento" value="<?=$persona['numero_documento']?>" required>
+            <input type="text" id="numero_documento" name="numero_documento" value="<?=$persona->numero_documento?>" required>
         </div>
 
         <div class="form-group">
             <label for="cuil">CUIL:</label>
-            <input type="text" id="cuil" name="cuil" value="<?=$persona['cuil']?>">
+            <input type="text" id="cuil" name="cuil" value="<?=$persona->cuil?>">
         </div>
 
         <div class="form-group">
             <label for="genero">Género:</label>
-            <input type="text" id="genero" name="genero" value="<?=$persona['genero']?>">
+            <input type="text" id="genero" name="genero" value="<?=$persona->genero?>">
         </div>
 
         <div class="form-group">
             <label for="telefono">Teléfono:</label>
-            <input type="text" id="telefono" name="telefono" value="<?=$persona['telefono']?>">
+            <input type="text" id="telefono" name="telefono" value="<?=$persona->telefono?>">
         </div>
 
         <div class="form-group">
             <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="<?=$persona['email']?>">
+            <input type="email" id="email" name="email" value="<?=$persona->email?>">
         </div>
 
         <div class="form-group">
             <label for="email_abc">Email ABC:</label>
-            <input type="email" id="email_abc" name="email_abc" value="<?=$persona['email_abc']?>">
+            <input type="email" id="email_abc" name="email_abc" value="<?=$persona->email_abc?>">
         </div>
 
         <div class="form-group">
             <label for="lugar_nacimiento">Lugar de Nacimiento:</label>
-            <input type="text" id="lugar_nacimiento" name="lugar_nacimiento" value="<?=$persona['lugar_nacimiento']?>">
+            <input type="text" id="lugar_nacimiento" name="lugar_nacimiento" value="<?=$persona->lugar_nacimiento?>">
         </div>
     </div>
 

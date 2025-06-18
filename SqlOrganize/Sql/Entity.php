@@ -26,6 +26,7 @@ class Entity
 
     public Db $_db;
 
+    public string $_label = ""; 
 
     public function getLogging(){
         if(empty($this->_logging))
@@ -48,99 +49,54 @@ class Entity
 
     // Status (propiedad opcional para indicar estado)
     // Los estados básicos son:
-    //  - 0: Sin guardar.
-    //  - 1: Guardada.
+    //  * 0: Sin guardar.
+    //  * 1: Guardada.
     //
     // Se puede extender a varios estados, habitualmente:
-    //  - Valores menores a 0: Indican que no existen en la base de datos.
-    //  - 0: Existe en la base de datos pero fue modificado.
-    //  - 1: Existe en la base de datos y no fue modificado.
-    public int $_status = 0;
+    //  * -2 No se sabe si existe o no
+    //  * -1 No existe en la base de datos
+    //  * 0: Existe en la base de datos pero fue modificado.
+    //  * 1: Existe en la base de datos y no fue modificado.
+    public int $_status = -1;
 
     // Índice dentro de una colección
     // Facilita la impresión del número de fila, por ejemplo
     public int $_index = 0;
 
    
-
-    /**
-     * Crear instancia de T a partir del id
-     */
-    public static function createFromId(string $className, $id)
-    {
+    public static function createById(string $className, mixed $id): Entity {
         $obj = new $className();
-        return $obj->_db->createDataProvider()->fetchEntityById($obj->_entityName, $id);
-    }
+        $fetched = $obj->_db->createDataProvider()->fetchEntityById($obj->_entityName, $id);
 
-    public static function queryFromId(string $className, $id)
-    {
-        $obj = new $className();
-        $connection = $obj->_db->connection();
-        $sql = $obj->_db->createSelectQueries()->byId($obj->_entityName);
-        
-        $stmt = $connection->prepare($sql);
-        $stmt->execute(['Id' => $id]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($result) {
-            $newObj = new $className();
-            $newObj->set($result);
-            return $newObj;
+        if (!$fetched) {
+            throw new Exception("No record found for ID");
         }
-        return null;
+
+        $fetched->_status = 1;
+        return $fetched;
     }
 
     /**
-     * Crear instancia de T utilizando serialización a partir de key > value únicos
+     * Si se desea llamar a traves de un objeto utilizar $param = get_object_vars($param)
+     * Si se desea llamar a traves de una entidad utilizar $entity->toArray();
      */
-    public static function createFromValue(string $className, string $key, $value)
-    {
-        $obj = new $className();
-        $connection = $obj->_db->connection();
-        $sql = $obj->_db->createSelectQueries()->byKey($obj->_entityName, $key);
-        
-        $stmt = $connection->prepare($sql);
-        $stmt->execute(['Key' => $value]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($result) {
-            $newObj = new $className();
-            $newObj->set($result);
-            return $newObj;
-        }
-        return null;
-    }
+    public static function createByUnique(string $className, array $param): Entity {
+        $obj = new $className;
+        $fetched = $obj->_db->createDataProvider()->fetchEntityByUnique($obj->_entityName, $param);
 
-    /**
-     * Asignar propiedades sin utilizar serialización
-     */
-    public static function createFromObj(string $className, $source)
-    {
-        $obj = new $className();
-        
-        $sourceReflection = new ReflectionClass($source);
-        $destReflection = new ReflectionClass($className);
-        
-        $sourceProperties = $sourceReflection->getProperties();
-        $destProperties = $destReflection->getProperties();
-        
-        foreach ($destProperties as $destProp) {
-            $destProp->setAccessible(true);
-            
-            foreach ($sourceProperties as $sourceProp) {
-                $sourceProp->setAccessible(true);
-                
-                if ($sourceProp->getName() === $destProp->getName()) {
-                    $destProp->setValue($obj, $sourceProp->getValue($source));
-                    break;
-                }
-            }
+        if ($fetched) {
+            $fetched->ssetFromArray($param);
+            $fetched->_status = 1;
+            return $fetched;
+        } else {
+            $obj->ssetFromArray($param);
+            $obj->status = -1;
         }
-        
+
         return $obj;
     }
 
-    public static function createNull(string $className, string $fieldName = "label", ?string $fieldValue = null)
+    public static function createNull(string $className, string $fieldName = "_label", ?string $fieldValue = null)
     {
         $obj = new $className();
         $obj->set("id", null);
@@ -149,15 +105,10 @@ class Entity
         return $obj;
     }
 
-    public static function createEmpty(string $className)
-    {
-        return new $className();
-    }
-
-    public static function createEmptyWithStatus(string $className, int $status = -1)
+    public static function createEmpty(string $className, int $status = -1)
     {
         $obj = new $className();
-        $obj->setStatus($status);
+        $obj->_status = $status;
         return $obj;
     }
 
@@ -172,14 +123,19 @@ class Entity
     /**
      * Asignar valor a propiedad
      */
-    public function set(string $fieldName, $value): void
+    public function set(string $fieldName, $value, $changeStatus = true): void
     {
+        if($value == $fieldName)
+            return;
+        
         $this->$fieldName = $value;
+        if($changeStatus && $this->_status > 0)
+            $this->_status = 0;
     }
 
     public function setFkObj(string $fieldName, Entity $value): void
     {   
-        $this->set($fieldName . "_", $value);
+        $this->set($fieldName . "_", $value, false);
         $this->set($fieldName, $value->get($this->_db->config->idName));
     }
 
@@ -366,13 +322,6 @@ class Entity
         }
     }
 
-    /**
-     * Copia superficial
-     */
-    public function shallowCopy()
-    {
-        return clone $this;
-    }
 
     /**
      * Resetear valores
@@ -582,7 +531,7 @@ class Entity
         
         if (!empty($id)) {
             $className = get_class($this);
-            $entity = self::createFromId($className, $id);
+            $entity = self::createById($className, $id);
             $this->setFromArray($entity->toArray());
         }
     }
@@ -608,9 +557,21 @@ class Entity
     
     public function persist(): mixed
     {
+    
         $modifyQueries = $this->_db->CreateModifyQueries();
         $modifyQueries->buildPersistSql($this);
         $modifyQueries->execute();
+        return $this->get($this->_db->config->idName);
+    }
+
+    public function persistByStatus(): mixed
+    {
+        if($this->_status == 0) {
+            $this->update();
+        } elseif($this->_status < 0) {
+            $this->insert();
+        } 
+
         return $this->get($this->_db->config->idName);
     }
 

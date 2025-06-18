@@ -40,7 +40,7 @@ function lcu_lista_cursos_page() {
     
     include plugin_dir_path(__FILE__) . 'lcu_formulario_busqueda_html.php';
  
-    $cursos = Curso_::CursosActivosConTomasActivasByCalendario($calendario_id);
+    $cursos = Curso_::CursosActivosConsActivasByCalendario($calendario_id);
 
     foreach($cursos as $curso){
 

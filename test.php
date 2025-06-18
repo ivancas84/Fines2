@@ -9,22 +9,13 @@ use \SqlOrganize\Utils\ValueTypesUtils;
 use \Fines2\Comision_;
 
 $db = DbMy::getInstance();
-$dataProvider = $db->CreateDataProvider(); 
-$comision = DbMy::getInstance()->CreateDataProvider()->fetchEntityById("comision", "67cb7b00e0347");
-
-$disposiciones = $dataProvider->fetchEntitiesByParams("disposicion", ["planificacion" => $comision->planificacion]);
-$idDisposiciones = ValueTypesUtils::arrayOfName($disposiciones, "id");
-
+$comision = Entity::createById("\Fines2\Comision_", "67cb7b00e0347");
 echo "<pre>";
-echo "<h1>comision</h1>";
-
+echo "ESTADO: " . $comision->_status . "<br>";
 print_r($comision->toArray());
-
-echo "<h1>idDisposiciones</h1>";
-print_r($idDisposiciones);
-echo "<h1>Cursos</h1>";
-$cursos_existentes = $dataProvider->fetchEntitiesByParams("curso", ["comision" => $comision->id, "disposicion" => $idDisposiciones]);
-
-foreach($cursos_existentes as $ce){
-    print_r($ce->toArray());
-}
+$comision->set("division","CCC");
+echo "ESTADO: " . $comision->_status . "<br>";
+print_r($comision->toArray());
+$comision = new Comision_();
+echo "ESTADO: " . $comision->_status . "<br>";
+print_r($comision->toArray());

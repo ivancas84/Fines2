@@ -1,7 +1,7 @@
 <?php
 
 namespace SqlOrganize\Utils;
- use DateTimeInterface;
+use DateTimeInterface;
 class ValueTypesUtils
 {
 
