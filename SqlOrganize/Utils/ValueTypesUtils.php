@@ -381,6 +381,20 @@ public static function arrayOfName(iterable $objects, string $name): array
         }
         return implode(', ', $pairs);
     }
+
+    public static function filterArrayBySuffix(array $input, string $suffix): array {
+        $result = [];
+        $suffixLength = strlen($suffix);
+
+        foreach ($input as $key => $value) {
+            if (substr($key, -$suffixLength) === $suffix) {
+                $newKey = substr($key, 0, -$suffixLength);
+                $result[$newKey] = $value;
+            }
+        }
+
+        return $result;
+    }
 }
 
 

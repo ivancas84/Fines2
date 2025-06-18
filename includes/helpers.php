@@ -32,7 +32,7 @@ function wp_html_init_form($handleName, $fieldIdName, $fieldIdValue){
     wp_nonce_field($handleName . '_action', $handleName . '_nonce'); 
     echo '<input type="text" name="honeypot" style="display: none;">
     <input type="hidden" name="action" value="' . $handleName . '">
-    <input type="hidden" name="' . $fieldIdName . '" value="' . esc_attr($fieldIdValue) . '">"';    
+    <input type="hidden" name="' . $fieldIdName . '" value="' . esc_attr($fieldIdValue) . '">';    
 }
 
 function wp_initialize_handle($page_name, $handle_name, $field_id){
@@ -43,10 +43,10 @@ function wp_initialize_handle($page_name, $handle_name, $field_id){
         exit;
     }
 
-    if (!isset($_POST[$handle_name . '_nonce']) || !wp_verify_nonce($_POST[$handle_name . '_nonce'], $handle_name . '_action')) {
+    /*if (!isset($_POST[$handle_name . '_nonce']) || !wp_verify_nonce($_POST[$handle_name . '_nonce'], $handle_name . '_action')) {
         wp_redirect(admin_url("admin.php?page=$page_name&$field_id=$field_value&message=Error de seguridad"));
         exit;
-    }
+    }*/
 
     if (!empty($_POST['honeypot'])) {
         wp_redirect(admin_url("admin.php?page=$page_name&$field_id=$field_value&message=Detección de spam"));

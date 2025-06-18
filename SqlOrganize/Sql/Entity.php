@@ -69,9 +69,7 @@ class Entity
     public static function createFromId(string $className, $id)
     {
         $obj = new $className();
-        $treeData = $obj->_db->createDataProvider()->fetchTreeByIds($obj->_entityName, $id)[0];
-        //TODO setear objeto con el treeData;
-        return $obj;
+        return $obj->_db->createDataProvider()->fetchEntityById($obj->_entityName, $id);
     }
 
     public static function queryFromId(string $className, $id)
