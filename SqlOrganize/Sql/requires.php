@@ -14,6 +14,4 @@ require_once MAIN_PATH . 'SqlOrganize/Sql/Logging.php';
 require_once MAIN_PATH . 'SqlOrganize/Sql/ModifyQueries.php';
 require_once MAIN_PATH . 'SqlOrganize/Sql/SelectQueries.php';
 require_once MAIN_PATH . 'SqlOrganize/Sql/Validation.php';
-
-
 require_once MAIN_PATH . 'SqlOrganize/Utils/ValueTypesUtils.php';

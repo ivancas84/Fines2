@@ -9,8 +9,12 @@ use \SqlOrganize\Utils\ValueTypesUtils;
 use \Fines2\Comision_;
 
 $db = DbMy::getInstance();
-$comision = Entity::createById("\Fines2\Comision_", "67cb7b00e0347");
+$planes = $db->CreateDataProvider()->fetchAllEntities("plan");
 echo "<pre>";
+
+print_r($planes->toArray());
+
+$comision = Entity::createById("\Fines2\Comision_", "67cb7b00e0347");
 echo "ESTADO: " . $comision->_status . "<br>";
 print_r($comision->toArray());
 $comision->set("division","CCC");

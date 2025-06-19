@@ -15,10 +15,10 @@ class DataProvider {
     }
 
 
-    public function fetchDataByUnique(string $entityName, array $uniqueParams){
+    public function fetchAssocByUnique(string $entityName, array $uniqueParams){
         $sql = $this->db->CreateSelectQueries()->unique($entityName, $uniqueParams);
-        $ids = $this->fetchColumnBySql($sql, 0, $uniqueParams);
-        $entities =  $this->fetchDataByIds($entityName, ...$ids);
+        $ids = $this->fetchAllColumn($sql, 0, $uniqueParams);
+        $entities =  $this->fetchAllAssocByIds($entityName, ...$ids);
         if(count($entities) > 1) throw new Exception("El resultado no es unico");
         if(count($entities) == 1) return $entities[0];
         return null;
@@ -26,17 +26,17 @@ class DataProvider {
 
     public function fetchEntityByUnique(string $entityName, array $uniqueParams){
         $sql = $this->db->CreateSelectQueries()->unique($entityName, $uniqueParams);
-        $ids = $this->fetchColumnBySql($sql, 0, $uniqueParams);
-        $entities =  $this->fetchEntitiesByIds($entityName, ...$ids);
+        $ids = $this->fetchAllColumn($sql, 0, $uniqueParams);
+        $entities =  $this->fetchAllEntitiesByIds($entityName, ...$ids);
         if(count($entities) > 1) throw new Exception("El resultado no es unico");
         if(count($entities) == 1) return $entities[0];
         return null;
     }
     
-    public function fetchEntitiesByParams(string $entityName, array $params, string $conn = "AND"): array 
+    public function fetchAllEntitiesByParams(string $entityName, array $params, string $conn = "AND"): array 
     {
         [$sql, $params] = $this->db->CreateSelectQueries()->params($entityName, $params, $conn);
-        return $this->fetchEntitiesBySqlId($entityName, $sql, $params);
+        return $this->fetchAllEntitiesBySqlId($entityName, $sql, $params);
             
     }
 
@@ -51,18 +51,24 @@ class DataProvider {
      *       WHERE curso = :cursos";
      *   $tomas = $dataProvider->fetchEntitiesByNamedSql("toma", $sql, ["cursos"=>$ids_cursos]);
      */
-    public function fetchEntitiesBySqlId(string $entityName, string $sql, ?array $params = null): array {
-        $ids = $this->fetchColumnBySql($sql, 0, $params);
-        return $this->fetchEntitiesByIds($entityName, ...$ids);
+    public function fetchAllEntitiesBySqlId(string $entityName, string $sql, ?array $params = null): array {
+        $ids = $this->fetchAllColumn($sql, 0, $params);
+        return $this->fetchAllEntitiesByIds($entityName, ...$ids);
     }
 
-    public function fetchEntitiesByIds(string $entityName, ...$ids): array {
-        $treeData = $this->fetchTreeByIds($entityName, ...$ids);
+    public function fetchEntityBySqlId(string $entityName, string $sql, ?array $params = null): ?Entity {
+        $entities = $this->fetchAllEntitiesBySqlId($entityName, $sql, $params);
+        if(count($entities)) return $entities[0];
+        return null;
+    }
+
+    public function fetchAllEntitiesByIds(string $entityName, ...$ids): array {
+        $treeData = $this->fetchAllTreeByIds($entityName, ...$ids);
         return $this->treeDataToEntities($entityName, $treeData);
     }
 
     public function fetchEntityById(string $entityName, $id): ?object {
-        $entities = $this->fetchEntitiesByIds($entityName, $id);
+        $entities = $this->fetchAllEntitiesByIds($entityName, $id);
         if(count($entities)) return $entities[0];
         return null;
     }
@@ -83,8 +89,8 @@ class DataProvider {
     /**
      * Devuelve entidades a partir de ids
      */
-    public function fetchTreeByIds(string $entityName, ...$ids): array {
-        $rawEntities = $this->fetchDataByIds($entityName, ...$ids);
+    public function fetchAllTreeByIds(string $entityName, ...$ids): array {
+        $rawEntities = $this->fetchAllAssocByIds($entityName, ...$ids);
 
         // Inicializar relaciones en null
         $fieldNamesRel = $this->db->fieldNamesRel($entityName);
@@ -141,7 +147,7 @@ private function processArrayParameters(string $sql, array $params): array
  * 
  * @param $params array asociativo
  */
-public function fetchColumnBySql(string $sql, int $columnIndex = 0, ?array $params = null): array
+public function fetchAllColumn(string $sql, int $columnIndex = 0, ?array $params = null): array
 {
     if ($params === null) {
         $stmt = $this->db->getPdo()->prepare($sql);
@@ -162,7 +168,7 @@ public function fetchColumnBySql(string $sql, int $columnIndex = 0, ?array $para
      * @param
      * $params array asociativo
      */
-    public function fetchDataBySql(string $sql, ?array $params = null): array
+    public function fetchAllAssocSql(string $sql, ?array $params = null): array
     {
         if ($params === null) {
             $stmt = $this->db->getPdo()->prepare($sql);
@@ -177,6 +183,22 @@ public function fetchColumnBySql(string $sql, int $columnIndex = 0, ?array $para
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function fetchAssocSql(string $sql, ?array $params = null): ?array
+    {
+        if ($params === null) {
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
+
+        $stmt = $this->db->getPdo()->prepare($processedSql);
+        $stmt->execute($processedParams);
+        $response = $stmt->fetch(PDO::FETCH_ASSOC);
+        return ($response === false) ? null : $response;
+    }
+
 
     public function fetchAllEntities(string $entityName): array
     {
@@ -185,7 +207,7 @@ public function fetchColumnBySql(string $sql, int $columnIndex = 0, ?array $para
     }
 
     public function fetchAllTree($entityName){
-        $data = $this->fetchAll($entityName);
+        $data = $this->fetchAllAssoc($entityName);
         $treeData = [];
         foreach($data as $d){
             $treeData[] = $this->valuesTree($entityName, $d);
@@ -193,7 +215,7 @@ public function fetchColumnBySql(string $sql, int $columnIndex = 0, ?array $para
         return $treeData;
     }
     
-    public function fetchAll(string $entityName): array 
+    public function fetchAllAssoc(string $entityName): array 
     {
         $sql = $this->db->createSelectQueries()->selectAll($entityName);
         $stmt = $this->db->getPdo()->prepare($sql);
@@ -204,7 +226,7 @@ public function fetchColumnBySql(string $sql, int $columnIndex = 0, ?array $para
     /**
      * Consulta por IDs
      */
-    public function fetchDataByIds(string $entityName, ...$ids): array
+    public function fetchAllAssocByIds(string $entityName, ...$ids): array
     {
         $ids = array_unique($ids);
         if (empty($ids)) return [];

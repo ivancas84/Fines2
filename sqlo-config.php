@@ -22,8 +22,9 @@ class MainConfig
         $configDb->dbName = DB_NAME_FINES2;
         $configDb->user = DB_USER_FINES2;
         $configDb->pass = DB_PASS_FINES2;
-        $configDb->mainPath = MAIN_PATH;
         $configDb->namespace = "Fines2";
+        $configDb->dataClassesPath = MAIN_PATH . "Model" . DIRECTORY_SEPARATOR;
+
         return $configDb;
     }
 
@@ -35,7 +36,7 @@ class MainConfig
         $configModel->pass = DB_PASS_FINES2;
         $configModel->namespace = "Fines2";
         $configModel->schemaClassPath = "C:\\xampp\\htdocs\\Fines2\\";
-        $configModel->dataClassesPath = "C:\\xampp\\htdocs\\Fines2\\Data\\";
+        $configModel->dataClassesPath = "C:\\xampp\\htdocs\\Fines2\\Model\\";
         return $configModel;
 
     }
