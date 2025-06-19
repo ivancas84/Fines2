@@ -14,11 +14,15 @@ class DataProvider {
         $this->db = $db;
     }
 
+    public function fetchAllEntitiesByIds(string $entityName, ...$ids): array {
+        $treeData = $this->fetchAllTreeByIds($entityName, ...$ids);
+        return $this->treeDataToEntities($entityName, $treeData);
+    }
 
-    public function fetchAssocByUnique(string $entityName, array $uniqueParams){
+    public function fetchByUnique(string $entityName, array $uniqueParams){
         $sql = $this->db->CreateSelectQueries()->unique($entityName, $uniqueParams);
-        $ids = $this->fetchAllColumn($sql, 0, $uniqueParams);
-        $entities =  $this->fetchAllAssocByIds($entityName, ...$ids);
+        $ids = $this->fetchAllColumnSqlByParams($sql, 0, $uniqueParams);
+        $entities =  $this->fetchAllByIds($entityName, ...$ids);
         if(count($entities) > 1) throw new Exception("El resultado no es unico");
         if(count($entities) == 1) return $entities[0];
         return null;
@@ -26,45 +30,11 @@ class DataProvider {
 
     public function fetchEntityByUnique(string $entityName, array $uniqueParams){
         $sql = $this->db->CreateSelectQueries()->unique($entityName, $uniqueParams);
-        $ids = $this->fetchAllColumn($sql, 0, $uniqueParams);
+        $ids = $this->fetchAllColumnSqlByParams($sql, 0, $uniqueParams);
         $entities =  $this->fetchAllEntitiesByIds($entityName, ...$ids);
         if(count($entities) > 1) throw new Exception("El resultado no es unico");
         if(count($entities) == 1) return $entities[0];
         return null;
-    }
-    
-    public function fetchAllEntitiesByParams(string $entityName, array $params, string $conn = "AND"): array 
-    {
-        [$sql, $params] = $this->db->CreateSelectQueries()->params($entityName, $params, $conn);
-        return $this->fetchAllEntitiesBySqlId($entityName, $sql, $params);
-            
-    }
-
-
-    /**
-     * SQL debe consultar el id en la primera columna
-     * 
-     * @example
-     *   $sql = "
-     *       SELECT DISTINCT id 
-     *       FROM toma
-     *       WHERE curso = :cursos";
-     *   $tomas = $dataProvider->fetchEntitiesByNamedSql("toma", $sql, ["cursos"=>$ids_cursos]);
-     */
-    public function fetchAllEntitiesBySqlId(string $entityName, string $sql, ?array $params = null): array {
-        $ids = $this->fetchAllColumn($sql, 0, $params);
-        return $this->fetchAllEntitiesByIds($entityName, ...$ids);
-    }
-
-    public function fetchEntityBySqlId(string $entityName, string $sql, ?array $params = null): ?Entity {
-        $entities = $this->fetchAllEntitiesBySqlId($entityName, $sql, $params);
-        if(count($entities)) return $entities[0];
-        return null;
-    }
-
-    public function fetchAllEntitiesByIds(string $entityName, ...$ids): array {
-        $treeData = $this->fetchAllTreeByIds($entityName, ...$ids);
-        return $this->treeDataToEntities($entityName, $treeData);
     }
 
     public function fetchEntityById(string $entityName, $id): ?object {
@@ -72,103 +42,14 @@ class DataProvider {
         if(count($entities)) return $entities[0];
         return null;
     }
-
-    private function treeDataToEntities(string $entityName, array $treeData){
-        $className = $this->db->getEntityMetadata($entityName)->getClassNameWithNamespace() . "_";
-
-        $response = [];
-        foreach($treeData as $d) {
-            $obj = new $className;
-            $obj->ssetFromTree($d);
-            $response[] = $obj;
-        }
-
-        return $response;
-    }
-
-    /**
-     * Devuelve entidades a partir de ids
-     */
-    public function fetchAllTreeByIds(string $entityName, ...$ids): array {
-        $rawEntities = $this->fetchAllAssocByIds($entityName, ...$ids);
-
-        // Inicializar relaciones en null
-        $fieldNamesRel = $this->db->fieldNamesRel($entityName);
-
-        $response = [];
-
-        // Reorganizar en forma de árbol
-        foreach ($rawEntities as &$row) {
-            $response[] = $this->valuesTree($entityName, $row);
-        }
-
-        return $response; // Ya es array asociativo, no se necesita deserializar
-    }
-
- 
-
-/**
- * Procesa parámetros con soporte para arrays, expandiendo arrays a parámetros nombrados
- */
-private function processArrayParameters(string $sql, array $params): array
-{
-    $processedParams = [];
-    $processedSql = $sql;
-
-    foreach ($params as $key => $value) {
-        if (strpos($sql, ":$key") === false) {
-            continue;
-        }
-
-        if (is_array($value)) {
-            if (empty($value)) {
-                // Array vacío - reemplazar con condición siempre falsa
-                $processedSql = str_replace(":$key", 'NULL', $processedSql);
-            } else {
-                // Crear parámetros nombrados para cada elemento
-                $namedParams = [];
-                foreach ($value as $i => $arrayValue) {
-                    $paramName = "{$key}_{$i}";
-                    $namedParams[] = ":$paramName";
-                    $processedParams[$paramName] = $arrayValue;
-                }
-                $processedSql = str_replace(":$key", implode(',', $namedParams), $processedSql);
-            }
-        } else {
-            $processedParams[$key] = $value;
-        }
-    }
-
-    return [$processedSql, $processedParams];
-}
-
-/**
- * Consulta de columna
- * 
- * @param $params array asociativo
- */
-public function fetchAllColumn(string $sql, int $columnIndex = 0, ?array $params = null): array
-{
-    if ($params === null) {
-        $stmt = $this->db->getPdo()->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_COLUMN, $columnIndex);
-    }
-
-    [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
-
-    $stmt = $this->db->getPdo()->prepare($processedSql);
-    $stmt->execute($processedParams);
-    return $stmt->fetchAll(PDO::FETCH_COLUMN, $columnIndex);
-}
-
+    
     /**
      * Fetch data with support for array parameters in SQL queries
      * 
      * @param
      * $params array asociativo
      */
-    public function fetchAllAssocSql(string $sql, ?array $params = null): array
+    public function fetchAllSqlByParams(string $sql, ?array $params = null): array
     {
         if ($params === null) {
             $stmt = $this->db->getPdo()->prepare($sql);
@@ -183,50 +64,10 @@ public function fetchAllColumn(string $sql, int $columnIndex = 0, ?array $params
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function fetchAssocSql(string $sql, ?array $params = null): ?array
-    {
-        if ($params === null) {
-            $stmt = $this->db->getPdo()->prepare($sql);
-            $stmt->execute();
-            return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-
-        [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
-
-        $stmt = $this->db->getPdo()->prepare($processedSql);
-        $stmt->execute($processedParams);
-        $response = $stmt->fetch(PDO::FETCH_ASSOC);
-        return ($response === false) ? null : $response;
-    }
-
-
-    public function fetchAllEntities(string $entityName): array
-    {
-        $treeData = $this->fetchAllTree($entityName);
-        return $this->treeDataToEntities($entityName, $treeData);
-    }
-
-    public function fetchAllTree($entityName){
-        $data = $this->fetchAllAssoc($entityName);
-        $treeData = [];
-        foreach($data as $d){
-            $treeData[] = $this->valuesTree($entityName, $d);
-        }
-        return $treeData;
-    }
-    
-    public function fetchAllAssoc(string $entityName): array 
-    {
-        $sql = $this->db->createSelectQueries()->selectAll($entityName);
-        $stmt = $this->db->getPdo()->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    /**
+     /**
      * Consulta por IDs
      */
-    public function fetchAllAssocByIds(string $entityName, ...$ids): array
+    public function fetchAllByIds(string $entityName, ...$ids): array
     {
         $ids = array_unique($ids);
         if (empty($ids)) return [];
@@ -281,4 +122,172 @@ public function fetchAllColumn(string $sql, int $columnIndex = 0, ?array $params
             }
         }
     }
+
+
+    public function fetchAllEntitiesByParams(string $entityName, array $params, string $conn = "AND"): array 
+    {
+        [$sql, $params] = $this->db->CreateSelectQueries()->params($entityName, $params, $conn);
+        return $this->fetchAllEntitiesBySqlId($entityName, $sql, $params);
+            
+    }
+
+    /**
+     * SQL debe consultar el id en la primera columna
+     * 
+     * @example
+     *   $sql = "
+     *       SELECT DISTINCT id 
+     *       FROM toma
+     *       WHERE curso = :cursos";
+     *   $tomas = $dataProvider->fetchEntitiesByNamedSql("toma", $sql, ["cursos"=>$ids_cursos]);
+     */
+    public function fetchAllEntitiesBySqlId(string $entityName, string $sql, ?array $params = null): array {
+        $ids = $this->fetchAllColumnSqlByParams($sql, 0, $params);
+        return $this->fetchAllEntitiesByIds($entityName, ...$ids);
+    }
+
+    public function fetchEntityBySqlId(string $entityName, string $sql, ?array $params = null): ?Entity {
+        $entities = $this->fetchAllEntitiesBySqlId($entityName, $sql, $params);
+        if(count($entities)) return $entities[0];
+        return null;
+    }
+
+    
+
+
+
+    private function treeDataToEntities(string $entityName, array $treeData){
+        $className = $this->db->getEntityMetadata($entityName)->getClassNameWithNamespace() . "_";
+
+        $response = [];
+        foreach($treeData as $d) {
+            $obj = new $className;
+            $obj->ssetFromTree($d);
+            $response[] = $obj;
+        }
+
+        return $response;
+    }
+
+    /**
+     * Devuelve entidades a partir de ids
+     */
+    public function fetchAllTreeByIds(string $entityName, ...$ids): array {
+        $rawEntities = $this->fetchAllByIds($entityName, ...$ids);
+
+        // Inicializar relaciones en null
+        $fieldNamesRel = $this->db->fieldNamesRel($entityName);
+
+        $response = [];
+
+        // Reorganizar en forma de árbol
+        foreach ($rawEntities as &$row) {
+            $response[] = $this->valuesTree($entityName, $row);
+        }
+
+        return $response; // Ya es array asociativo, no se necesita deserializar
+    }
+
+ 
+
+    /**
+     * Procesa parámetros con soporte para arrays, expandiendo arrays a parámetros nombrados
+     */
+    private function processArrayParameters(string $sql, array $params): array
+    {
+        $processedParams = [];
+        $processedSql = $sql;
+
+        foreach ($params as $key => $value) {
+            if (strpos($sql, ":$key") === false) {
+                continue;
+            }
+
+            if (is_array($value)) {
+                if (empty($value)) {
+                    // Array vacío - reemplazar con condición siempre falsa
+                    $processedSql = str_replace(":$key", 'NULL', $processedSql);
+                } else {
+                    // Crear parámetros nombrados para cada elemento
+                    $namedParams = [];
+                    foreach ($value as $i => $arrayValue) {
+                        $paramName = "{$key}_{$i}";
+                        $namedParams[] = ":$paramName";
+                        $processedParams[$paramName] = $arrayValue;
+                    }
+                    $processedSql = str_replace(":$key", implode(',', $namedParams), $processedSql);
+                }
+            } else {
+                $processedParams[$key] = $value;
+            }
+        }
+
+        return [$processedSql, $processedParams];
+    }
+
+    /**
+     * Consulta de columna
+     * 
+     * @param $params array asociativo
+     */
+    public function fetchAllColumnSqlByParams(string $sql, int $columnIndex = 0, ?array $params = null): array
+    {
+        if ($params === null) {
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_COLUMN, $columnIndex);
+        }
+
+        [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
+
+        $stmt = $this->db->getPdo()->prepare($processedSql);
+        $stmt->execute($processedParams);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN, $columnIndex);
+    }
+
+    
+
+    public function fetchSqlByParams(string $sql, ?array $params = null): ?array
+    {
+        if ($params === null) {
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
+
+        $stmt = $this->db->getPdo()->prepare($processedSql);
+        $stmt->execute($processedParams);
+        $response = $stmt->fetch(PDO::FETCH_ASSOC);
+        return ($response === false) ? null : $response;
+    }
+
+
+    public function fetchAllEntities(string $entityName): array
+    {
+        $treeData = $this->fetchAllTree($entityName);
+        return $this->treeDataToEntities($entityName, $treeData);
+    }
+
+    public function fetchAllTree($entityName){
+        $data = $this->fetchAll($entityName);
+        $treeData = [];
+        foreach($data as $d){
+            $treeData[] = $this->valuesTree($entityName, $d);
+        }
+        return $treeData;
+    }
+    
+    public function fetchAll(string $entityName): array 
+    {
+        $sql = $this->db->createSelectQueries()->selectAll($entityName);
+        $stmt = $this->db->getPdo()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+   
+
+    
 }

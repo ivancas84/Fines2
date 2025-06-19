@@ -85,11 +85,9 @@ class Entity
         $fetched = $obj->_db->createDataProvider()->fetchEntityByUnique($obj->_entityName, $param);
 
         if ($fetched) {
-            $fetched->ssetFromArray($param);
             $fetched->_status = 1;
             return $fetched;
         } else {
-            $obj->ssetFromArray($param);
             $obj->status = -1;
         }
 

@@ -12,6 +12,7 @@ function ap3_persona_admin_handle() {
         $_POST["id"] = wp_initialize_handle("fines-plugin-ap3", "ap2_persona_admin", "persona_id");
 
         /** @var Persona_ */ $persona = Entity::createByUnique("\Fines2\Persona_", $_POST);
+        $persona->ssetFromArray($_POST);
         $persona->reset();
         if(!$persona->check())
             throw new Exception($persona->getLogging()->__toString());
