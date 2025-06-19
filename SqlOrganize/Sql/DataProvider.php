@@ -14,6 +14,45 @@ class DataProvider {
         $this->db = $db;
     }
 
+    /**
+     * Consulta por IDs
+     */
+    public function fetchAllByIds(string $entityName, ...$ids): array
+    {
+        $ids = array_unique($ids);
+        if (empty($ids)) return [];
+
+        $sql = $this->db->createSelectQueries()->byIdsAll($entityName);
+        [$processedSql, $processedParams] = $this->processArrayParameters($sql, ['ids' => $ids]);
+        $stmt = $this->db->getPdo()->prepare($processedSql);
+        $stmt->execute($processedParams);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (count($rows) !== count($ids)) {
+            throw new Exception("La consulta no devolvió todos los registros. ¿Están correctos los IDs?");
+        }
+
+        return $rows;
+    }
+
+    /**
+     * Devuelve entidades a partir de ids
+     */
+    public function fetchAllTreeByIds(string $entityName, ...$ids): array {
+        $rawEntities = $this->fetchAllByIds($entityName, ...$ids);
+
+        // Inicializar relaciones en null
+        $fieldNamesRel = $this->db->fieldNamesRel($entityName);
+
+        $response = [];
+
+        // Reorganizar en forma de árbol
+        foreach ($rawEntities as &$row) {
+            $response[] = $this->valuesTree($entityName, $row);
+        }
+
+        return $response; // Ya es array asociativo, no se necesita deserializar
+    }
+
     public function fetchAllEntitiesByIds(string $entityName, ...$ids): array {
         $treeData = $this->fetchAllTreeByIds($entityName, ...$ids);
         return $this->treeDataToEntities($entityName, $treeData);
@@ -23,8 +62,7 @@ class DataProvider {
         $sql = $this->db->CreateSelectQueries()->unique($entityName, $uniqueParams);
         $ids = $this->fetchAllColumnSqlByParams($sql, 0, $uniqueParams);
         $entities =  $this->fetchAllByIds($entityName, ...$ids);
-        if(count($entities) > 1) throw new Exception("El resultado no es unico");
-        if(count($entities) == 1) return $entities[0];
+        if(count($entities) >= 1) return $entities[0];
         return null;
     }
 
@@ -64,28 +102,7 @@ class DataProvider {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-     /**
-     * Consulta por IDs
-     */
-    public function fetchAllByIds(string $entityName, ...$ids): array
-    {
-        $ids = array_unique($ids);
-        if (empty($ids)) return [];
 
-        $entityMetadata = $this->db->GetEntityMetadata($entityName);
-        $sql = $this->db->createSelectQueries()->selectAll($entityName);
-        $sql .= " WHERE " . $entityMetadata->Pt() . "." . $this->db->config->idName . " IN (:ids)";
-        $sql .= " ORDER BY FIELD(" . $entityMetadata->Pt() . "." . $this->db->config->idName . ", :ids)";
-        [$processedSql, $processedParams] = $this->processArrayParameters($sql, ['ids' => $ids]);
-        $stmt = $this->db->getPdo()->prepare($processedSql);
-        $stmt->execute($processedParams);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        if (count($rows) !== count($ids)) {
-            throw new Exception("La consulta no devolvió todos los registros. ¿Están correctos los IDs?");
-        }
-
-        return $rows;
-    }
 
     /**
      * Armar árbol de valores
@@ -169,24 +186,7 @@ class DataProvider {
         return $response;
     }
 
-    /**
-     * Devuelve entidades a partir de ids
-     */
-    public function fetchAllTreeByIds(string $entityName, ...$ids): array {
-        $rawEntities = $this->fetchAllByIds($entityName, ...$ids);
-
-        // Inicializar relaciones en null
-        $fieldNamesRel = $this->db->fieldNamesRel($entityName);
-
-        $response = [];
-
-        // Reorganizar en forma de árbol
-        foreach ($rawEntities as &$row) {
-            $response[] = $this->valuesTree($entityName, $row);
-        }
-
-        return $response; // Ya es array asociativo, no se necesita deserializar
-    }
+    
 
  
 

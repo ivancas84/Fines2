@@ -165,6 +165,17 @@ abstract class SelectQueries
         return $sql;
     }
 
+    public function byIdsAll($entityName)
+    {
+        $metadata = $this->db->getEntityMetadata($entityName);
+
+        $sql = $this->selectAll($entityName);
+        $sql .= " WHERE " . $metadata->Pt() . "." . $this->db->config->idName . " IN (:ids)";
+        $sql .= " ORDER BY FIELD(" . $metadata->Pt() . "." . $this->db->config->idName . ", :ids)";
+
+        return $sql;
+    }
+
     public function byKey($entityName, $key)
     {
         $sql = "SELECT DISTINCT ";
