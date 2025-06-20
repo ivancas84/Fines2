@@ -135,7 +135,7 @@ abstract class SelectQueries
     /**
      * @example
      *     $sql = $this->selectJoin($entityName);
-     *     $sql .= $this->idsConditionOrder($entityName);
+     *     $sql .= $this->whereIdsWithOrder($entityName);
      */
     public function whereIdsWithOrder($entityName)
     {
@@ -296,7 +296,33 @@ abstract class SelectQueries
         
         $whereClause = implode(" $conn ", $whereClauses);
         
-        return (!empty($whereClause)) ? " WHERE " . $whereClause : "";
+        return " WHERE " . $whereClause ;
+    }
+
+    public function whereParamsWithOrder(array $params = [], string $conn = "AND"): string {
+        if(empty($params)) {
+            return "";
+        }
+        
+        $whereClauses = [];
+
+        foreach ($params as $key => $value) {
+            $whereClauses[] = (is_array($value)) ?  "$key IN (:$key)" : "$key = :$key";
+        }
+        
+        $whereClause = implode(" $conn ", $whereClauses);
+
+        reset($params);
+        $firstKey = key($params);
+        $firstValue = $params[$firstKey];
+
+        $orderByClause = "";
+        // Only build ORDER BY FIELD if it's an array with at least two values
+        if (is_array($firstValue) && count($firstValue) > 1) {
+            $orderByClause = " ORDER BY FIELD($firstKey, :$firstKey)";
+        }
+
+        return " WHERE " . $whereClause . $orderByClause;
     }
 
 }

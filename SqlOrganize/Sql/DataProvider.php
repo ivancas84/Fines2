@@ -113,7 +113,7 @@ class DataProvider {
     {
         $selectQueries = $this->db->createSelectQueries();
         $sql = $selectQueries->selectJoin($entityName);
-        $sql .= $selectQueries->whereParams($params);
+        $sql .= $selectQueries->whereParamsWithOrder($params);
 
         [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
         $stmt = $this->db->getPdo()->prepare($processedSql);
