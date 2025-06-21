@@ -7,6 +7,11 @@ require_once MAIN_PATH . 'SqlOrganize/Sql/requires.php';
 require_once MAIN_PATH . 'SqlOrganizeMy/Sql/requires.php';
 require_once MAIN_PATH . 'schema.php';
 require_once MAIN_PATH . 'schema_.php';
+require_once MAIN_PATH . 'DataAccess/AlumnoDAO.php';;
+require_once MAIN_PATH . 'DataAccess/CalificacionDAO.php';;
+require_once MAIN_PATH . 'DataAccess/CursoDAO.php';;
+require_once MAIN_PATH . 'DataAccess/TomaDAO.php';;
+
 
 
 use SqlOrganize\Sql\DbMy;

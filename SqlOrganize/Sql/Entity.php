@@ -66,7 +66,7 @@ class Entity
    
     public static function createById(string $className, mixed $id): Entity {
         $obj = new $className();
-        $fetched = $obj->_db->createDataProvider()->fetchEntityById($obj->_entityName, $id);
+        $fetched = $obj->_db->createDataProvider()->fetchEntityByParams($obj->_entityName, ["id" => $id]);
 
         if (!$fetched) {
             throw new Exception("No record found for ID");

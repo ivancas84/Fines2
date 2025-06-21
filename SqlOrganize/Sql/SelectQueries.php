@@ -283,15 +283,18 @@ abstract class SelectQueries
      */
     abstract public function getNextValue(string $entityName, string $fieldName): mixed;
 
-    public function whereParams(array $params = [], string $conn = "AND"): string {
+    public function whereParams(string $entityName, array $params = [], string $conn = "AND"): string {
         
         if(empty($params)) {
             return "";
         }
+
+        $metadata = $this->db->getEntityMetadata($entityName);
+        
         
         $whereClauses = [];
         foreach ($params as $key => $value) {
-            $whereClauses[] = (is_array($value)) ?  "$key IN (:$key)" : "$key = :$key";
+            $whereClauses[] = (is_array($value)) ?  $metadata->Pt() . ".$key IN (:$key)" : $metadata->Pt() . ".$key = :$key";
         }
         
         $whereClause = implode(" $conn ", $whereClauses);
@@ -299,7 +302,43 @@ abstract class SelectQueries
         return " WHERE " . $whereClause ;
     }
 
-    public function whereParamsWithOrder(array $params = [], string $conn = "AND"): string {
+    /**
+     * @param string $entityName Nombre de la entidad
+     * @param array $params Array de parametros a filtrar, deben ser solo columnas de $entityName
+     * @param string $conn Conector entre las condiciones, por defecto "AND"
+     */
+    public function whereParamsWithOrder($entityName, array $params = [], string $conn = "AND"): string {
+        if(empty($params)) {
+            return "";
+        }
+
+        $metadata = $this->db->getEntityMetadata($entityName);
+        $whereClauses = [];
+
+        foreach ($params as $key => $value) {
+            $whereClauses[] = (is_array($value)) ?  $metadata->Pt() . ".$key IN (:$key)" : $metadata->Pt() . ".$key = :$key";
+        }
+        
+        $whereClause = implode(" $conn ", $whereClauses);
+
+        reset($params);
+        $firstKey = key($params);
+        $firstValue = $params[$firstKey];
+
+        $orderByClause = "";
+        // Only build ORDER BY FIELD if it's an array with at least two values
+        if (is_array($firstValue) && count($firstValue) > 1) {
+            $orderByClause = " ORDER BY FIELD(" . $metadata->Pt() . ".$firstKey, :$firstKey)";
+        }
+
+        return " WHERE " . $whereClause . $orderByClause;
+    }
+
+
+    /**
+     * Auxiliar de whereParamsWithOrder que no toma en cuenta el nombre de la entidad
+     */
+    public function whereParamsWithOrder_(array $params = [], string $conn = "AND"): string {
         if(empty($params)) {
             return "";
         }

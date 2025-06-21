@@ -50,7 +50,7 @@ class DataProvider {
         }
     }
 
-    private function treeDataToEntities(string $entityName, array $treeData){
+    private function treeDataToEntities(string $entityName, array $treeData): array{
         $response = [];
         foreach($treeData as $d) {
             $response[] = $this->treeRowToEntity($entityName, $d);
@@ -113,8 +113,7 @@ class DataProvider {
     {
         $selectQueries = $this->db->createSelectQueries();
         $sql = $selectQueries->selectJoin($entityName);
-        $sql .= $selectQueries->whereParamsWithOrder($params);
-
+        $sql .= $selectQueries->whereParamsWithOrder($entityName, $params);
         [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
@@ -239,6 +238,8 @@ class DataProvider {
     /**
      * SQL debe consultar el id en la primera columna
      * 
+     * La forma mas sencilla de hacer consultas a la base de datos abtrayendo del esquema es mediante este metodo
+     * Solo se debe definir un sql que retorne el id de la entidad en la primera columna y se definira un metodo que arme el arbol de entidades.
      * @example
      *   $sql = "
      *       SELECT DISTINCT id 

@@ -1,5 +1,6 @@
 <?php
 
+namespace Fines2;
 
 class CalificacionDAO
 {

@@ -8,7 +8,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/db-config.php');
 
 
 use \SqlOrganize\Sql\DbMy;
-use \Fines2\Curso_;
+use \Fines2\CursoDAO;
 
 
 add_submenu_page(
@@ -27,7 +27,7 @@ function lcu_lista_cursos_page() {
 
     $pdo = new PdoFines();
 
-	$calendarios = $dataProvider->fetchAllEntities("calendario");
+	$calendarios = $dataProvider->fetchAllEntitiesByParams("calendario");
 	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : '';
 
     if(!$selected_calendario){
@@ -40,7 +40,7 @@ function lcu_lista_cursos_page() {
     
     include plugin_dir_path(__FILE__) . 'lcu_formulario_busqueda_html.php';
  
-    $cursos = Curso_::CursosActivosConsActivasByCalendario($calendario_id);
+    $cursos = CursoDAO::CursosActivosConTomasActivasByCalendario($calendario_id);
 
     foreach($cursos as $curso){
 
