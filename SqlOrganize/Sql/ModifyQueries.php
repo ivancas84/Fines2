@@ -81,7 +81,7 @@ abstract class ModifyQueries
      */
     public function buildPersistSql_($entityName, array $data): mixed {
         
-        $existingRow = $this->db->CreateDataProvider()->fetchDataByUnique($entityName, $data);
+        $existingRow = $this->db->CreateDataProvider()->fetchByUnique($entityName, $data);
         if (!empty($existingRow)) {
             $data[$this->db->config->idName] = $existingRow[$this->db->config->idName];
 
@@ -273,7 +273,7 @@ abstract class ModifyQueries
 
     public function buildInsertSqlIfNotExists_(string $entityName, array $data): mixed
     {
-        $existingRow = $this->db->CreateDataProvider()->fetchDataByUnique($entityName, $data);
+        $existingRow = $this->db->CreateDataProvider()->fetchByUnique($entityName, $data);
         if(empty($existingRow)){
             $this->buildInsertSql_($entityName, $data);
             return $this->detail[count($this->detail)-1]["Id"];
@@ -283,7 +283,7 @@ abstract class ModifyQueries
     }
 
     public function buildInsertSqlIfNotExistsOrCompare_(string $entityName, array $data, CompareParams $compare){
-        $existingRow = $this->db->CreateDataProvider()->fetchDataByUnique($entityName, $data);
+        $existingRow = $this->db->CreateDataProvider()->fetchByUnique($entityName, $data);
         if(empty($existingRow)){
             $this->buildInsertSql_($entityName, $data);
         } else {

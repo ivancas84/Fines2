@@ -30,7 +30,7 @@ add_submenu_page(
             $modalidades = Modalidad_::modalidades();
             $planificaciones = Planificacion_::planificaciones();
 
-            $comision = (empty($comision_id)) ? new Comision_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityById("comision", $comision_id);
+            $comision = (empty($comision_id)) ? new Comision_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("comision", ["id" =>$comision_id]);
             include plugin_dir_path(__FILE__) . 'ac2_comision_form.html';
 
         if(!empty($comision))

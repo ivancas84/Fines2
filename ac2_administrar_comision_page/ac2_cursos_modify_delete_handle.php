@@ -19,6 +19,7 @@ function ac2_cursos_modify_delete_handle() {
             $i = $_POST["delete_index"];
             $curso_id = $_POST["curso_id" . $i];
             $modifyQueries->buildDeleteSqlById("curso", $curso_id);
+            $modifyQueries->execute();
             wp_redirect_handle("fines-plugin-ac2", "comision_id", $comision_id, "Curso eliminado");
             exit;
         } 
@@ -28,7 +29,7 @@ function ac2_cursos_modify_delete_handle() {
         while (isset($_POST["curso_id$i"])) {
             $cursoData = ValueTypesUtils::filterArrayBySuffix($_POST, $i);
 
-            $curso = Entity::createFromId("\Fines2\Curso_", $cursoData["curso_id"]);
+            $curso = Entity::createById("\Fines2\Curso_", $cursoData["curso_id"]);
             $curso->setFromArray($cursoData);
             $curso->update();
             $i++;
