@@ -30,9 +30,9 @@ function ac2_comision_admin_handle() {
 
         $dataProvider = $db->CreateDataProvider();
 
-        $disposiciones = $dataProvider->fetchEntitiesByParams("disposicion", ["planificacion" => $comision->planificacion]);
+        $disposiciones = $dataProvider->fetchAllEntitiesByParams("disposicion", ["planificacion" => $comision->planificacion]);
         $idDisposiciones = ValueTypesUtils::arrayOfName($disposiciones, "id");
-        $cursosExistentes = $dataProvider->fetchEntitiesByParams("curso", ["comision" => $comision->id, "disposicion" => $idDisposiciones]);
+        $cursosExistentes = $dataProvider->fetchAllEntitiesByParams("curso", ["comision" => $comision->id, "disposicion" => $idDisposiciones]);
         $cursosExistentes = ValueTypesUtils::dictOfObjByPropertyNames($cursosExistentes, "disposicion");
 
         $i = 0;

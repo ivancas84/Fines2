@@ -16,7 +16,7 @@ $dataProvider = $db->CreateDataProvider();
 $pdoFines = new PdoFines(DB_HOST_FINES, DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES);
 
 
-$comisiones = $dataProvider->fetchEntitiesByParams("comision", ["calendario"=>CALENDARIO_ID]);
+$comisiones = $dataProvider->fetchAllEntitiesByParams("comision", ["calendario"=>CALENDARIO_ID]);
 
 $pfids = ValueTypesUtils::arrayOfName($comisiones, "pfid");
 // Path to your JSON file

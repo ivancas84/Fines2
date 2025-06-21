@@ -245,7 +245,7 @@ class DataProvider {
      *       SELECT DISTINCT id 
      *       FROM toma
      *       WHERE curso = :cursos";
-     *   $tomas = $dataProvider->fetchEntitiesByNamedSql("toma", $sql, ["cursos"=>$ids_cursos]);
+     *   $tomas = $dataProvider->fetchAllEntitiesBySqlId("toma", $sql, ["cursos"=>$ids_cursos]);
      */
     public function fetchAllEntitiesBySqlId(string $entityName, string $sql, ?array $params = null): array {
         $ids = $this->fetchAllColumnSqlByParams($sql, 0, $params);

@@ -42,7 +42,7 @@ add_submenu_page(
 
         $dataProvider = DbMy::getInstance()->CreateDataProvider();
 
-        $cursos = $dataProvider->fetchEntitiesByParams("curso", ["comision"=>$comision->id]);
+        $cursos = $dataProvider->fetchAllEntitiesByParams("curso", ["comision"=>$comision->id]);
         if($cursos)
             include plugin_dir_path(__FILE__) . 'ac2_curso_table_form.html';
         else 

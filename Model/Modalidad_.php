@@ -14,7 +14,7 @@ class Modalidad_ extends Modalidad
         $dataProvider = $db->CreateDataProvider();
 
         $sql = "SELECT * FROM modalidad ORDER BY nombre ASC";
-        return $dataProvider->fetchEntitiesBySqlId("modalidad", $sql);
+        return $dataProvider->fetchAllEntitiesBySqlId("modalidad", $sql);
     }
 
 }

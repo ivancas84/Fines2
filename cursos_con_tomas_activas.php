@@ -11,7 +11,7 @@ $db = DbMy::getInstance();
 
 
 
-$personas = $db->CreateDataProvider()->fetchEntitiesByIds("persona", '10');
+$personas = $db->CreateDataProvider()->fetchAllEntitiesByParams("persona", ["id" =>'10']);
 
 echo "<pre>";
 
