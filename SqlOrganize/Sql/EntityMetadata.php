@@ -125,9 +125,14 @@ class EntityMetadata
      */
     public array $id = [];
     
-    /** @var array<string, Field> */
+    /** 
+     * Todos los fields de la entidad
+     * @var array<string, Field> */
     public array $fields = [];
     
+    /** 
+     * Nombre de todos los fields de la entidad (incluye fk)
+     * @var array<string, Field> */
     public function getFieldNames(): array
     {
         return array_keys($this->fields);
@@ -167,7 +172,7 @@ class EntityMetadata
      */
     public function Fields(): array
     {
-        return $this->_Fields($this->getFieldNames());
+        return $this->fields;
     }
     
     /**

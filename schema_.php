@@ -19,6 +19,9 @@ class Schema_
         $entities["asignatura"]->main = ["nombre", "codigo"];
         $entities["persona"]->main = ["nombres", "apellidos","numero_documento"];
 
+        foreach ($entities as $entity)
+            $entity->fields["id"]->defaultValue = "uniqid";
+        
         return $entities;
     }
 }

@@ -302,12 +302,22 @@ abstract class SelectQueries
         return " WHERE " . $whereClause ;
     }
 
+    public function whereParamsWithOrder($entityName, array $params = [], array $orderBy, string $conn = "AND"): string {
+        if(empty($orderBy)){
+            return $this->whereParamsWithOrderField($entityName, $params, $conn);
+        } else {
+            $sql = $this->whereParams($entityName, $params, $conn);
+            $sql .= $this->orderBy($entityName, $orderBy);
+            return $sql;
+        }
+    }
+
     /**
      * @param string $entityName Nombre de la entidad
      * @param array $params Array de parametros a filtrar, deben ser solo columnas de $entityName
      * @param string $conn Conector entre las condiciones, por defecto "AND"
      */
-    public function whereParamsWithOrder($entityName, array $params = [], string $conn = "AND"): string {
+    public function whereParamsWithOrderField($entityName, array $params = [], string $conn = "AND"): string {
         if(empty($params)) {
             return "";
         }
@@ -335,33 +345,61 @@ abstract class SelectQueries
     }
 
 
+
     /**
-     * Auxiliar de whereParamsWithOrder que no toma en cuenta el nombre de la entidad
+     * @param string $entityName Nombre de la entidad
+     * @param array $params Array asociativo de parametros a ordenar, ejemplo ["column" => "ASC", "column2" => "DESC"] deben ser solo columnas de la entidad principal $entityName
+     * @param string $conn Conector entre las condiciones, por defecto "AND"
      */
-    public function whereParamsWithOrder_(array $params = [], string $conn = "AND"): string {
+    public function orderBy(string $entityName, array $params = []): string {
         if(empty($params)) {
             return "";
         }
-        
-        $whereClauses = [];
+
+        $metadata = $this->db->getEntityMetadata($entityName);
+        $orderByClauses = [];
 
         foreach ($params as $key => $value) {
-            $whereClauses[] = (is_array($value)) ?  "$key IN (:$key)" : "$key = :$key";
-        }
-        
-        $whereClause = implode(" $conn ", $whereClauses);
-
-        reset($params);
-        $firstKey = key($params);
-        $firstValue = $params[$firstKey];
-
-        $orderByClause = "";
-        // Only build ORDER BY FIELD if it's an array with at least two values
-        if (is_array($firstValue) && count($firstValue) > 1) {
-            $orderByClause = " ORDER BY FIELD($firstKey, :$firstKey)";
+            $orderByClauses[] =$metadata->Pt() . ".$key $value";
         }
 
-        return " WHERE " . $whereClause . $orderByClause;
+        return " ORDER BY " . implode(", ", $orderByClauses);
+    }
+
+
+    /**
+     * Procesa parámetros con soporte para arrays, expandiendo arrays a parámetros nombrados
+     */
+    public function processArrayParameters(string $sql, array $params = []): array
+    {
+        $processedParams = [];
+        $processedSql = $sql;
+
+        foreach ($params as $key => $value) {
+            if (strpos($sql, ":$key") === false) {
+                continue;
+            }
+
+            if (is_array($value)) {
+                if (empty($value)) {
+                    // Array vacío - reemplazar con condición siempre falsa
+                    $processedSql = str_replace(":$key", 'NULL', $processedSql);
+                } else {
+                    // Crear parámetros nombrados para cada elemento
+                    $namedParams = [];
+                    foreach ($value as $i => $arrayValue) {
+                        $paramName = "{$key}_{$i}";
+                        $namedParams[] = ":$paramName";
+                        $processedParams[$paramName] = $arrayValue;
+                    }
+                    $processedSql = str_replace(":$key", implode(',', $namedParams), $processedSql);
+                }
+            } else {
+                $processedParams[$key] = $value;
+            }
+        }
+
+        return [$processedSql, $processedParams];
     }
 
 }

@@ -68,61 +68,21 @@ class DataProvider {
         return $obj;
     }
 
-    
-
- 
-
-    /**
-     * Procesa parámetros con soporte para arrays, expandiendo arrays a parámetros nombrados
-     */
-    private function processArrayParameters(string $sql, array $params = []): array
-    {
-        $processedParams = [];
-        $processedSql = $sql;
-
-        foreach ($params as $key => $value) {
-            if (strpos($sql, ":$key") === false) {
-                continue;
-            }
-
-            if (is_array($value)) {
-                if (empty($value)) {
-                    // Array vacío - reemplazar con condición siempre falsa
-                    $processedSql = str_replace(":$key", 'NULL', $processedSql);
-                } else {
-                    // Crear parámetros nombrados para cada elemento
-                    $namedParams = [];
-                    foreach ($value as $i => $arrayValue) {
-                        $paramName = "{$key}_{$i}";
-                        $namedParams[] = ":$paramName";
-                        $processedParams[$paramName] = $arrayValue;
-                    }
-                    $processedSql = str_replace(":$key", implode(',', $namedParams), $processedSql);
-                }
-            } else {
-                $processedParams[$key] = $value;
-            }
-        }
-
-        return [$processedSql, $processedParams];
-    }
-
-    
-
-    public function fetchAllByParams(string $entityName, array $params = []): array
+    public function fetchAllByParams(string $entityName, array $params = [], array $orderBy = []): array
     {
         $selectQueries = $this->db->createSelectQueries();
         $sql = $selectQueries->selectJoin($entityName);
-        $sql .= $selectQueries->whereParamsWithOrder($entityName, $params);
-        [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
+        $sql .= $selectQueries->whereParamsWithOrder($entityName, $params, $orderBy);
+        
+        [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function fetchAllTreeByParams(string $entityName, array $params = []): array
+    public function fetchAllTreeByParams(string $entityName, array $params = [], array $orderBy): array
     {
-        $rawEntities = $this->fetchAllByParams($entityName, $params);
+        $rawEntities = $this->fetchAllByParams($entityName, $params, $orderBy);
 
         $response = [];
 
@@ -134,8 +94,8 @@ class DataProvider {
         return $response; // Ya es array asociativo, no se necesita deserializar
     }
 
-    public function fetchAllEntitiesByParams(string $entityName, array $params = []): array {
-        $treeData = $this->fetchAllTreeByParams($entityName, $params);
+    public function fetchAllEntitiesByParams(string $entityName, array $params = [], $orderBy = []): array {
+        $treeData = $this->fetchAllTreeByParams($entityName, $params, $orderBy);
         return $this->treeDataToEntities($entityName, $treeData);
     }
 
@@ -148,7 +108,7 @@ class DataProvider {
         $selectQueries = $this->db->CreateSelectQueries();
         $sql = $selectQueries->select($entityName);
         $sql .= $selectQueries->whereUnique($entityName, $uniqueParams);
-        [$processedSql, $processedParams] = $this->processArrayParameters($sql, $uniqueParams);
+        [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $uniqueParams);
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -163,7 +123,7 @@ class DataProvider {
         $selectQueries = $this->db->CreateSelectQueries();
         $sql = $selectQueries->selectJoin($entityName);
         $sql .= $selectQueries->whereUnique($entityName, $uniqueParams);
-         [$processedSql, $processedParams] = $this->processArrayParameters($sql, $uniqueParams);
+         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $uniqueParams);
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -186,13 +146,14 @@ class DataProvider {
      */
     public function fetchAllSqlByParams(string $sql, ?array $params = null): array
     {
+        
         if ($params === null) {
             $stmt = $this->db->getPdo()->prepare($sql);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
+        [$processedSql, $processedParams] = $$this->db->createSelectQueries()->processArrayParameters($sql, $params);
 
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
@@ -207,7 +168,7 @@ class DataProvider {
             return $stmt->fetch(PDO::FETCH_ASSOC);
         }
 
-        [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
+        [$processedSql, $processedParams] = $this->db->CreateSelectQueries()->processArrayParameters($sql, $params);
 
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
@@ -228,7 +189,7 @@ class DataProvider {
             return $stmt->fetchAll(PDO::FETCH_COLUMN, $columnIndex);
         }
 
-        [$processedSql, $processedParams] = $this->processArrayParameters($sql, $params);
+        [$processedSql, $processedParams] = $this->db->CreateSelectQueries()->processArrayParameters($sql, $params);
 
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);

@@ -7,22 +7,14 @@ use \SqlOrganize\Sql\DbMy;
 use \SqlOrganize\Sql\Entity;
 use \SqlOrganize\Utils\ValueTypesUtils;
 use \Fines2\Comision_;
-
-$db = DbMy::getInstance();
-$planes = $db->CreateDataProvider()->fetchAllEntitiesByParams("comision", ["id" => ['089929c7-97df-4f06-8437-2e1bcc512945', "67cb7b00e0347"]]);
+use \Fines2\SedeDAO;
 echo "<pre>";
 
-foreach($planes as $plan){
-    print_r($plan->toArray());
-}
+$db = DbMy::getInstance();
+$dataProvider = $db->CreateDataProvider();
+$comisiones = $dataProvider->fetchAllEntitiesByParams("comision", ["id" => ['089929c7-97df-4f06-8437-2e1bcc512945', "67cb7b00e0347"]], ["division"=>"ASC", "planificacion" => "ASC", "calendario" => "ASC"]);
 
+$ids_sedes = ValueTypesUtils::arrayOfName($comisiones, "sede");
+$referentesLabel = SedeDAO::referentesLabelByIdSedes($ids_sedes);
 
-$comision = Entity::createById("\Fines2\Comision_", "67cb7b00e0347");
-echo "ESTADO: " . $comision->_status . "<br>";
-print_r($comision->toArray());
-$comision->set("division","CCC");
-echo "ESTADO: " . $comision->_status . "<br>";
-print_r($comision->toArray());
-$comision = new Comision_();
-echo "ESTADO: " . $comision->_status . "<br>";
-print_r($comision->toArray());
+print_r($referentesLabel);

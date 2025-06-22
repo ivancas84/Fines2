@@ -18,5 +18,15 @@ class Sede_ extends Sede
                 ORDER BY nombre ASC";
         return $dataProvider->fetchAllEntitiesBySqlId("sede", $sql);
     }
+
+    public ?string $designaciones = null;
+    
+    public function getLabel(): string {
+        return $this->nombre . " (" . $this->numero . ")";
+    }
+
+
+
+
 }
 

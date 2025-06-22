@@ -4,13 +4,14 @@ namespace Fines2;
 
 use SqlOrganize\Sql\DbMy;
 use SqlOrganize\Sql\Entity;
+use Fines2\CalificacionDAO;
 
 class AlumnoDAO
 {
     public static function estados_inscripcion(): array {
         $sql = "SELECT DISTINCT estado_inscripcion FROM alumno ORDER BY estado_inscripcion";
         
-        return DbMy::getInstance()->CreateDataProvider()->fetchAllColumn($sql, 0);
+        return DbMy::getInstance()->CreateDataProvider()->fetchAllColumnSqlByParams($sql, 0);
     }
 
     public static function alumnoByNumeroDocumento($numero_documento): ?Entity {
@@ -38,9 +39,11 @@ class AlumnoDAO
 
 
     public static function reestructurarCalificacionesByAlumno($alumno){
+        $db = DbMy::getInstance();
+        $modifyQueries = $db->CreateModifyQueries();
         $idsCalificacionesDesaprobadas = CalificacionDAO::idsCalificacionesDesaprobadasByAlumno($alumno['alumno_id']);
         if(!empty($idsCalificacionesDesaprobadas)){
-            CalificacionDAO::deleteCalificacionesByIds($idsCalificacionesDesaprobadas);
+            //$modifyQueries->buildDeleteSqlByIds("calificacion", ...$idsCalificacionesDesaprobadas);)
         }
 
         if(!empty($alumno["plan"])){

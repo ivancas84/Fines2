@@ -42,6 +42,7 @@ public static function dictOfObjByPropertyNames(iterable $objects, string ...$pr
     return $result;
 }
 
+
 public static function toStringDict(array $param): string {
     $dictionaryString = '{';
     foreach ($param as $key => $value) {
@@ -395,13 +396,61 @@ public static function arrayOfName(iterable $objects, string $name): array
 
         return $result;
     }
+
+
+
+
+public static function getPropertyValue($obj, string $propName) {
+    if (is_array($obj) && array_key_exists($propName, $obj)) {
+        return $obj[$propName];
+    }
+
+    if (is_object($obj)) {
+        // Check if public property
+        if (isset($obj->$propName)) {
+            return $obj->$propName;
+        }
+
+        // Check if getter method
+        $method = 'get' . ucfirst($propName);
+        if (method_exists($obj, $method)) {
+            return $obj->$method();
+        }
+    }
+
+    throw new InvalidArgumentException("Property '$propName' not found in object or array.");
 }
 
+/**
+ * Agrupa elementos por el valor de una propiedad.
+ *
+ * @template T
+ * @template V
+ * @param iterable<V> $source
+ * @param string $propName
+ * @return array<T, list<V>>
+ */
+public static function dictOfListByPropertyName(iterable $source, string $propName): array {
+    $response = [];
+
+    foreach ($source as $obj) {
+        $val = self::getPropertyValue($obj, $propName);
+
+        if (!array_key_exists($val, $response)) {
+            $response[$val] = [];
+        }
+
+        $response[$val][] = $obj;
+    }
+
+    return $response;
+}
+
+}
 
 if (!function_exists('str_substring_between')) {
     function str_substring_between(string $value, string $a, string $b): string {
         return ValueTypesUtils::substringBetween($value, $a, $b);
     }
 }
-
 ?>

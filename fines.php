@@ -29,12 +29,13 @@ function fines_plugin_menu() {
   
     include_once plugin_dir_path(__FILE__) . 'lc_lista_comisiones_page/lc_lista_comisiones_page.php';
 
+    include_once plugin_dir_path(__FILE__) . 'lc2_lista_comisiones_page/lc2_lista_comisiones_page.php';
 
-    include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
+    //include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
     
-    include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_administrar_persona_page.php';
+    //include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_administrar_persona_page.php';
 
-    include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_administrar_comision_page.php';
+    //include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_administrar_comision_page.php';
 
 
 

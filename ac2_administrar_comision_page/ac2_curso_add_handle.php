@@ -10,7 +10,6 @@ function ac2_curso_add_handle() {
         $comision_id = wp_initialize_handle("fines-plugin-ac2", "ac2_curso_add_handle", "comision_id");
 
         $curso = new Curso_();
-        $curso->id = uniqid();
         $curso->comision = $comision_id;
         $curso->setFromArray($_POST);
         $curso->insert();

@@ -1,0 +1,45 @@
+<h2>Comisiones Consultadas</h2>
+
+<table class="wp-list-table widefat striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Domicilio</th>
+            <th>PFID</th>
+            <th>Planificación</th>
+            <th>Resolución</th>
+            <th>Autorizada</th>
+            <th>Apertura</th>
+            <th>Turno</th>
+            <th>Referentes</th>
+            <th>Lista de Alumnos</th>
+        </tr>
+    </thead>
+    <tbody>
+        <? foreach ($comisiones as $comision): ?>
+            <? $detalle_comision_url = admin_url('admin.php?page=fines-plugin-ac2&comision_id=' . $comision->id); ?>
+            <? $lista_alumnos_url = admin_url('admin.php?page=fines-plugin-lista-alumnos&comision_id=' . $comision->id); ?>
+            <? $rindex_url = admin_url('admin.php?page=fines-plugin-rindex-division-page&comision_pfid=' . $comision->pfid); ?>
+            <? $detalle_division_url = admin_url('admin.php?page=fines-plugin-detalle-persona-division-page&comision_pfid=' . $comision->pfid); ?>
+            <? $administrar_tomas_url = admin_url('admin.php?page=fines-plugin-administrar-toma-comision&comision_id=' . $comision->id); ?>
+            <tr>
+                <td><?= esc_html($comision->sede_?->getLabel() ?? "?"); ?></td>
+                <td><?= esc_html($comision->sede_?->domicilio?->getLabel() ?? "?"); ?></td>
+                <td><?= esc_html($comision->pfid); ?></td>
+                <td><?= esc_html($comision->planificacion_?->getLabel() ?? "?"); ?></td>
+                <td><?= esc_html($comision->resolucion_->getLabel() ?? "?"); ?></td>
+                <td><?= esc_html(boolToSiNo($comision->autorizada)); ?></td>
+                <td><?= esc_html(boolToSiNo($comision->apertura)); ?></td>
+                <td><?= esc_html($comision->turno); ?></td>
+                <td><?= $referentesLabel[$comision->sede] ?? 'Sin referentes' ?></td>
+                <td>
+                    <a href="<?= esc_url($detalle_comision_url); ?>" class="button">Detalle</a> 
+                    <a href="<?= esc_url($rindex_url); ?>" class="button">Rindex</a> 
+                    <a href="<?= esc_url($lista_alumnos_url); ?>" class="button">Alumnos</a>
+                    <a href="<?= esc_url($administrar_tomas_url); ?>" class="button">Tomas</a>
+
+                </td>
+            </tr>
+        <? endforeach; ?>
+    </tbody>
+</table>
