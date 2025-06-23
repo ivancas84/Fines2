@@ -7,7 +7,6 @@
             <th>Domicilio</th>
             <th>PFID</th>
             <th>Planificación</th>
-            <th>Resolución</th>
             <th>Autorizada</th>
             <th>Apertura</th>
             <th>Turno</th>
@@ -24,10 +23,9 @@
             <? $administrar_tomas_url = admin_url('admin.php?page=fines-plugin-administrar-toma-comision&comision_id=' . $comision->id); ?>
             <tr>
                 <td><?= esc_html($comision->sede_?->getLabel() ?? "?"); ?></td>
-                <td><?= esc_html($comision->sede_?->domicilio?->getLabel() ?? "?"); ?></td>
+                <td><?= esc_html($comision->sede_?->domicilio_?->getLabel() ?? "?"); ?></td>
                 <td><?= esc_html($comision->pfid); ?></td>
                 <td><?= esc_html($comision->planificacion_?->getLabel() ?? "?"); ?></td>
-                <td><?= esc_html($comision->resolucion_->getLabel() ?? "?"); ?></td>
                 <td><?= esc_html(boolToSiNo($comision->autorizada)); ?></td>
                 <td><?= esc_html(boolToSiNo($comision->apertura)); ?></td>
                 <td><?= esc_html($comision->turno); ?></td>

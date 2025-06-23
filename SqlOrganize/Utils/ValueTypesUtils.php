@@ -176,7 +176,8 @@ public static function arrayOfName(iterable $objects, string $name): array
         }
         
         if (is_numeric($value)) {
-            return (float)$value != 0;
+            $ret =  (bool)($value != 0);
+            return $ret;
         }
         
         if (is_bool($value)) {
@@ -418,7 +419,7 @@ public static function getPropertyValue($obj, string $propName) {
         }
     }
 
-    throw new InvalidArgumentException("Property '$propName' not found in object or array.");
+    throw new \InvalidArgumentException("Property '$propName' not found in object or array.");
 }
 
 /**

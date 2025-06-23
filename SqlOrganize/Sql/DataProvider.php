@@ -73,7 +73,6 @@ class DataProvider {
         $selectQueries = $this->db->createSelectQueries();
         $sql = $selectQueries->selectJoin($entityName);
         $sql .= $selectQueries->whereParamsWithOrder($entityName, $params, $orderBy);
-        
         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);

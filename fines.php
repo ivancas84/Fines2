@@ -23,21 +23,28 @@ add_action('init', 'register_fines_shortcodes');
 
 add_action('admin_menu', 'fines_plugin_menu'); //function fines_plugin_menu to display the menu
 
+add_filter('admin_footer_text', '__return_empty_string');
+add_filter('update_footer', '__return_empty_string', 11);
 
 function fines_plugin_menu() {
 	
-  
-    include_once plugin_dir_path(__FILE__) . 'lc_lista_comisiones_page/lc_lista_comisiones_page.php';
+    add_menu_page(
+      'Administración Fines', //Título de la Página
+      'Fines', // Título del menú
+      'edit_posts', // Permisos
+      'fines-plugin', // Slug del menú
+      'lc2_lista_comisiones_page', // Función que muestra la página principal del plugin
+      'dashicons-admin-generic', // Icono del menú
+      1 // Posición en el menú
+  );
 
     include_once plugin_dir_path(__FILE__) . 'lc2_lista_comisiones_page/lc2_lista_comisiones_page.php';
 
-    //include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
+    include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
     
-    //include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_administrar_persona_page.php';
+    include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_administrar_persona_page.php';
 
-    //include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_administrar_comision_page.php';
-
-
+    include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_administrar_comision_page.php';
 
     add_submenu_page(
       'fines-plugin', //debe coincidir con el slug del menu

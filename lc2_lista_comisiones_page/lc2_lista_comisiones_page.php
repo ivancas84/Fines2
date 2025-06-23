@@ -1,22 +1,12 @@
 <?php
 
+
+
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
 
-use Fines2\DataAccess\SedeDAO;
+use Fines2\DesignacionDAO;
 use SqlOrganize\Sql\DbMy;
 use SqlOrganize\Utils\ValueTypesUtils;
-
-/*
-add_menu_page(
-    'Administración Fines', //Título de la Página
-    'Fines', // Título del menú
-    'edit_posts', // Permisos
-    'fines-plugin', // Slug del menú
-    'lc2_lista_comisiones_page', // Función que muestra la página principal del plugin
-    'dashicons-admin-generic', // Icono del menú
-    2 // Posición en el menú
-
-);*/
 
 
 
@@ -39,12 +29,13 @@ function lc2_lista_comisiones_page() {
 	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : '';
     $filter_autorizada = isset($_GET['autorizada']) ? true : false;
     
+
     include plugin_dir_path(__FILE__) . 'lc2_formulario_busqueda_html.php';
 
     if (isset($_GET['submit']) && !empty($_GET['calendario'])) {
-            $comisiones = $dataProvider->fetchAllEntitiesByParams("comision", $_POST, ["pfid" => "ASC"]);
+            $comisiones = $dataProvider->fetchAllEntitiesByParams("comision", $_GET, ["pfid" => "ASC"]);
             $ids_sedes = ValueTypesUtils::arrayOfName($comisiones, "sede");
-            $referentesLabel = SedeDAO::referentesLabelByIdSedes($ids_sedes);
+            $referentesLabel = DesignacionDAO::referentesLabelByIdSedes($ids_sedes);
             
             if (!empty($comisiones)) {
                 include plugin_dir_path(__FILE__) . 'lc2_tabla_comisiones.html';

@@ -40,6 +40,10 @@ class Entity
         $entityMetadata = $this->_db->GetEntityMetadata($this->_entityName);
         $ret = "";
 
+        if(empty($this->main)){
+            return $this->get($this->_db->config->idName);
+        }
+        
         foreach($entityMetadata->main as $fieldName)
             $ret .= ValueTypesUtils::toString($this->get($fieldName)) . " ";
 
@@ -123,7 +127,7 @@ class Entity
      */
     public function set(string $fieldName, $value, $changeStatus = true): void
     {
-        if($value == $fieldName)
+        if($value == $this->$fieldName)
             return;
         
         $this->$fieldName = $value;
@@ -170,7 +174,8 @@ class Entity
                 
             case "bool":
             case "boolean":
-                $this->set($fieldName, ValueTypesUtils::toBool($value));
+                $val = ValueTypesUtils::toBool($value);
+                $this->set($fieldName, $val);
                 break;
                 
             case "DateTime":
@@ -444,37 +449,7 @@ class Entity
         return (int)preg_replace('/\D/', '', (string)$field->defaultValue);
     }
 
-    /**
-     * Validación de campos
-     */
-    protected function validateField(string $fieldName): string
-    {
-        $field = $this->_db->field($this->_entityName, $fieldName);
-        
-        if ($field->isRequired()) {
-            if ($this->isNullOrEmpty($fieldName)) {
-                return "Debe completar valor.";
-            }
-        }
-        
-        if ($field->isUnique()) {
-            if (!$this->isNullOrEmpty($fieldName)) {
-                $connection = $this->_db->getPdo();
-                $sql = $this->_db->createSelectQueries()->idKey($this->_entityName, $fieldName);
-                $value = $this->get($fieldName);
-                
-                $stmt = $connection->prepare($sql);
-                $stmt->execute(['Key' => $value]);
-                $id = $stmt->fetchColumn();
-                
-                if (!empty($id) && !$this->get($this->_db->config->idName) == $id) {
-                    return "Valor existente.";
-                }
-            }
-        }
-        
-        return "";
-    }
+   
 
     public function check(): bool
     {

@@ -283,26 +283,7 @@ abstract class SelectQueries
      */
     abstract public function getNextValue(string $entityName, string $fieldName): mixed;
 
-    public function whereParams(string $entityName, array $params = [], string $conn = "AND"): string {
-        
-        if(empty($params)) {
-            return "";
-        }
-
-        $metadata = $this->db->getEntityMetadata($entityName);
-        
-        
-        $whereClauses = [];
-        foreach ($params as $key => $value) {
-            $whereClauses[] = (is_array($value)) ?  $metadata->Pt() . ".$key IN (:$key)" : $metadata->Pt() . ".$key = :$key";
-        }
-        
-        $whereClause = implode(" $conn ", $whereClauses);
-        
-        return " WHERE " . $whereClause ;
-    }
-
-    public function whereParamsWithOrder($entityName, array $params = [], array $orderBy, string $conn = "AND"): string {
+        public function whereParamsWithOrder($entityName, array $params = [], array $orderBy, string $conn = "AND"): string {
         if(empty($orderBy)){
             return $this->whereParamsWithOrderField($entityName, $params, $conn);
         } else {
@@ -312,24 +293,49 @@ abstract class SelectQueries
         }
     }
 
+    protected function _whereParams(string $entityName, array $params = [], string $conn = "AND"): string {
+        if(empty($params)) {
+            return "";
+        }
+
+        $metadata = $this->db->getEntityMetadata($entityName);
+        $fieldNames = $metadata->getFieldNames();
+        
+        $whereClauses = [];
+        $exists = false;
+
+        foreach ($params as $key => $value) {
+            if(in_array($key, $fieldNames) === false) {
+                continue; // Skip keys that are not valid field names
+            }
+            $exists = true;
+            $whereClauses[] = (is_array($value)) ?  $metadata->Pt() . ".$key IN (:$key)" : $metadata->Pt() . ".$key = :$key";
+        }
+        if(!$exists) {
+            return ""; // No valid parameters to filter
+        }
+        return implode(" $conn ", $whereClauses);
+    }
+
+    public function whereParams(string $entityName, array $params = [], string $conn = "AND"): string {
+        if(empty($params)) {
+            return "";
+        }
+        return " WHERE " . $this->_whereParams($entityName, $params, $conn);
+    }
+
+
+
     /**
      * @param string $entityName Nombre de la entidad
      * @param array $params Array de parametros a filtrar, deben ser solo columnas de $entityName
      * @param string $conn Conector entre las condiciones, por defecto "AND"
      */
     public function whereParamsWithOrderField($entityName, array $params = [], string $conn = "AND"): string {
-        if(empty($params)) {
-            return "";
-        }
-
-        $metadata = $this->db->getEntityMetadata($entityName);
-        $whereClauses = [];
-
-        foreach ($params as $key => $value) {
-            $whereClauses[] = (is_array($value)) ?  $metadata->Pt() . ".$key IN (:$key)" : $metadata->Pt() . ".$key = :$key";
-        }
         
-        $whereClause = implode(" $conn ", $whereClauses);
+        
+        $whereClause = $this->_whereParams($entityName, $params, $conn);
+        $metadata = $this->db->getEntityMetadata($entityName);
 
         reset($params);
         $firstKey = key($params);
