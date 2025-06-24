@@ -11,10 +11,12 @@ use \Fines2\DesignacionDAO;
 echo "<pre>";
 $db = DbMy::getInstance();
 $dataProvider = $db->CreateDataProvider();
+
+$calendarios = $dataProvider->fetchAllEntitiesByParams("calendario");
+
 $comisiones = $dataProvider->fetchAllEntitiesByParams("comision", ["page"=>"fines-plugin-lc2","calendario"=>"202502110007"], ["pfid" => "ASC"]);
-foreach($comisiones as $comision) {
-    print_r($comision->toArray());
-}
+
 $calendarios = $dataProvider->fetchAllEntitiesByParams("calendario",[], ["anio" => "DESC", "semestre" => "DESC"]);
-$ids_sedes = ValueTypesUtils::arrayOfName($comisiones, "sede");
-$referentesLabel = DesignacionDAO::referentesLabelByIdSedes($ids_sedes);
+foreach($calendarios as $c) {
+    print_r($c->toArray());
+}

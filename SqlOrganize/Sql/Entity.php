@@ -135,7 +135,7 @@ class Entity
             $this->_status = 0;
     }
 
-    public function setFkObj(string $fieldName, Entity $value): void
+    public function setFk(string $fieldName, Entity $value): void
     {   
         $this->set($fieldName . "_", $value, false);
         $this->set($fieldName, $value->get($this->_db->config->idName));

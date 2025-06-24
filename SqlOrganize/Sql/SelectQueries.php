@@ -333,11 +333,12 @@ abstract class SelectQueries
      */
     public function whereParamsWithOrderField($entityName, array $params = [], string $conn = "AND"): string {
         
-        
+        if(empty($params)) {
+            return "";
+        }
         $whereClause = $this->_whereParams($entityName, $params, $conn);
         $metadata = $this->db->getEntityMetadata($entityName);
 
-        reset($params);
         $firstKey = key($params);
         $firstValue = $params[$firstKey];
 

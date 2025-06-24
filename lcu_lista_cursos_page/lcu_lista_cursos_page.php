@@ -9,6 +9,8 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/db-config.php');
 
 use \SqlOrganize\Sql\DbMy;
 use \Fines2\CursoDAO;
+use \Fines2\TomaDAO;
+
 
 
 add_submenu_page(
@@ -27,7 +29,7 @@ function lcu_lista_cursos_page() {
 
     $pdo = new PdoFines();
 
-	$calendarios = $dataProvider->fetchAllEntitiesByParams("calendario");
+    $calendarios = $dataProvider->fetchAllEntitiesByParams("calendario",[], ["anio" => "DESC", "semestre" => "DESC"]);
 	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : '';
 
     if(!$selected_calendario){

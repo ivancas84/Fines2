@@ -68,10 +68,9 @@ class DataProvider {
         return $obj;
     }
 
-    public function fetchAllByParams(string $entityName, array $params = [], array $orderBy = []): array
+    protected function _fetchAllByParams(string $sql, string $entityName, array $params = [], array $orderBy = []): array
     {
         $selectQueries = $this->db->createSelectQueries();
-        $sql = $selectQueries->selectJoin($entityName);
         $sql .= $selectQueries->whereParamsWithOrder($entityName, $params, $orderBy);
         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);
         $stmt = $this->db->getPdo()->prepare($processedSql);
@@ -79,9 +78,23 @@ class DataProvider {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function fetchAllJoinByParams(string $entityName, array $params = [], array $orderBy = []): array
+    {
+        $selectQueries = $this->db->createSelectQueries();
+        $sql = $selectQueries->selectJoin($entityName);
+        return $this->_fetchAllByParams($sql, $entityName, $params, $orderBy);
+    }
+
+    public function fetchAllByParams(string $entityName, array $params = [], array $orderBy = []): array
+    {
+        $selectQueries = $this->db->createSelectQueries();
+        $sql = $selectQueries->select($entityName);
+        return $this->_fetchAllByParams($sql, $entityName, $params, $orderBy);
+    }
+
     public function fetchAllTreeByParams(string $entityName, array $params = [], array $orderBy): array
     {
-        $rawEntities = $this->fetchAllByParams($entityName, $params, $orderBy);
+        $rawEntities = $this->fetchAllJoinByParams($entityName, $params, $orderBy);
 
         $response = [];
 

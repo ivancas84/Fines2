@@ -49,7 +49,7 @@ public static function CursosByCalendario($calendario): array {
 
         foreach($cursos as &$curso){
             if(array_key_exists($curso->id, $tomasActivas))
-                $curso->setFkObj("toma_activa", $tomasActivas[$curso->id]);
+                $curso->setFk("toma_activa", $tomasActivas[$curso->id]);
         }
 
         return $cursos;
