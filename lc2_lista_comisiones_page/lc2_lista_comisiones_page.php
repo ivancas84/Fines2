@@ -26,23 +26,23 @@ function lc2_lista_comisiones_page() {
 
 	$calendarios = $dataProvider->fetchAllEntitiesByParams("calendario",[], ["anio" => "DESC", "semestre" => "DESC"]);
 
-	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : '';
+	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : $calendarios[0]->id;
     $filter_autorizada = isset($_GET['autorizada']) ? true : false;
     
+    $params = [
+        "calendario" => $selected_calendario,
+        "autorizada" => $filter_autorizada
+    ];
 
     include plugin_dir_path(__FILE__) . 'lc2_formulario_busqueda_html.php';
 
-    if (isset($_GET['submit']) && !empty($_GET['calendario'])) {
-            $comisiones = $dataProvider->fetchAllEntitiesByParams("comision", $_GET, ["pfid" => "ASC"]);
-            $ids_sedes = ValueTypesUtils::arrayOfName($comisiones, "sede");
-            $referentesLabel = DesignacionDAO::referentesLabelByIdSedes($ids_sedes);
-            
-            if (!empty($comisiones)) {
-                include plugin_dir_path(__FILE__) . 'lc2_tabla_comisiones.html';
-            } else {
-                echo "<p>No se encontraron comisiones para este calendario.</p>";
-            }
+    $comisiones = $dataProvider->fetchAllEntitiesByParams("comision", $params, ["pfid" => "ASC"]);
+    $ids_sedes = ValueTypesUtils::arrayOfName($comisiones, "sede");
+    $referentesLabel = DesignacionDAO::referentesLabelByIdSedes($ids_sedes);
+    
+    if (!empty($comisiones)) {
+        include plugin_dir_path(__FILE__) . 'lc2_tabla_comisiones.html';
+    } else {
+        echo "<p>No se encontraron comisiones para este calendario.</p>";
     }
-
-    echo "</div>";
 }
