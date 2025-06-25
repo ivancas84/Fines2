@@ -1,22 +1,90 @@
 <?php
 
+require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
+
+use Fines2\DesignacionDAO;
+use SqlOrganize\Sql\DbMy;
+use SqlOrganize\Utils\ValueTypesUtils;
+
+
 add_submenu_page(
     null, 
     'Procesar Planilla Calificación',
     'Procesar Planilla Calificación', 
     'edit_posts', 
-    'fines-plugin-ppc', 
-    'ppc_procesar_planilla_calificacion_page'
+    'fines-plugin-ppc2', 
+    'ppc2_procesar_planilla_calificacion_page'
   );
 
+  
+function ppc2_procesar_planilla_calificacion_page() {
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
+    $pdo = new PdoFines();
+    $curso = $pdo->cursoById(sanitize_text_field($_GET['curso_id']), PDO::FETCH_ASSOC);
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/class/PdoFines.php');
+    if(empty($curso)) throw new Exception("No se ha encontrado el curso");
+ 
+    if (!isset($_POST['submit']) || empty($_POST['data']) || empty($_POST['format'])) {
+        include plugin_dir_path(__FILE__) . 'ppc_form.html';
+        return;
+    }
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/class/ProgramaFines.php');
+    $rawData = trim($_POST['data']);
+    $format = $_POST['format'];
+    $result = Tools::excelParse($rawData);
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/class/Tools.php');
+    echo "<h2>Alumnos que no serán evaluados de la Planilla</h2>";
+    $alumnosComisionCalificacionPF = ppc_definir_datos_calificaciones($result, $format);
+
+    $alumnosComision = $pdo->alumnosByComision($curso["comision_id"], PDO::FETCH_ASSOC);
+    $alumnosComision = Tools::organizeArrayByKey($alumnosComision, "numero_documento");
+
+    $calificaciones = $pdo->calificacionesAprobadasByDisposicionAndDnis($curso["disposicion_id"], array_keys($alumnosComision), PDO::FETCH_ASSOC);
+    $calificaciones = Tools::organizeArrayByKey($calificaciones, "numero_documento");
+
+    echo "<h2>Procesando Calificaciones</h2>";
+    echo "<pre>";
+    $i = 0;
+    foreach($alumnosComisionCalificacionPF as $numero_documento => $data) {
+
+        $i++;
+        echo "<br><br>Alumno: " . $i . ";<br>";
+        print_r($data);
+
+        $alumno_id = ppc_verificar_alumno_comision($pdo, $numero_documento, $alumnosComision, $data, $curso["comision_id"], $curso["plan_id"]);
+
+        ppc_verificar_alumno_calificacion($pdo, $numero_documento, $alumno_id, $calificaciones, $data["calificacion"], $curso["curso_id"], $curso["disposicion_id"]);   
+        
+        echo "<br><br>";
+    }
+    echo "</pre>";
+
+    echo "<p>Recibido. Muchas gracias.</p>";
+    echo "<p><strong>Los siguientes Alumnos activos figuran desaprobados. Por favor controlar.</strong></p>";
+    echo "<p>Si el alumno indicado a continuación está aprobado, por favor, responder este email indicando la nota!</p>";
+
+    $alumnosDesaprobados = [];
+
+    foreach($alumnosComision as $numero_documento => $ac){
+        if(
+            array_key_exists($numero_documento, $alumnosComisionCalificacionPF)
+            || array_key_exists($numero_documento, $calificaciones)
+        ) continue;
+
+
+        array_push($alumnosDesaprobados, $ac);
+    }
+
+    usort($alumnosDesaprobados, function ($a, $b) {
+        return strcmp($a['apellidos'], $b['apellidos']);
+    });
+
+
+    foreach($alumnosDesaprobados as $ad){
+      echo $ad["apellidos"] . ", " . $ad["nombres"] . " DNI " . $ad["numero_documento"] . "<br>";
+    }
+
+}
 
 function ppc_insertar_alumno($pdo, $persona_id, $plan_id) {
     $alumno["id"] = uniqid();
@@ -153,73 +221,4 @@ function ppc_definir_datos_calificaciones($result, $format) {
     } 
 
     return $alumnosComisionCalificacionPF;
-}
-
-function ppc_procesar_planilla_calificacion_page() {
-
-    $pdo = new PdoFines();
-    $curso = $pdo->cursoById(sanitize_text_field($_GET['curso_id']), PDO::FETCH_ASSOC);
-
-    if(empty($curso)) throw new Exception("No se ha encontrado el curso");
- 
-    if (!isset($_POST['submit']) || empty($_POST['data']) || empty($_POST['format'])) {
-        include plugin_dir_path(__FILE__) . 'ppc_form.html';
-        return;
-    }
-
-    $rawData = trim($_POST['data']);
-    $format = $_POST['format'];
-    $result = Tools::excelParse($rawData);
-
-    echo "<h2>Alumnos que no serán evaluados de la Planilla</h2>";
-    $alumnosComisionCalificacionPF = ppc_definir_datos_calificaciones($result, $format);
-
-    $alumnosComision = $pdo->alumnosByComision($curso["comision_id"], PDO::FETCH_ASSOC);
-    $alumnosComision = Tools::organizeArrayByKey($alumnosComision, "numero_documento");
-
-    $calificaciones = $pdo->calificacionesAprobadasByDisposicionAndDnis($curso["disposicion_id"], array_keys($alumnosComision), PDO::FETCH_ASSOC);
-    $calificaciones = Tools::organizeArrayByKey($calificaciones, "numero_documento");
-
-    echo "<h2>Procesando Calificaciones</h2>";
-    echo "<pre>";
-    $i = 0;
-    foreach($alumnosComisionCalificacionPF as $numero_documento => $data) {
-
-        $i++;
-        echo "<br><br>Alumno: " . $i . ";<br>";
-        print_r($data);
-
-        $alumno_id = ppc_verificar_alumno_comision($pdo, $numero_documento, $alumnosComision, $data, $curso["comision_id"], $curso["plan_id"]);
-
-        ppc_verificar_alumno_calificacion($pdo, $numero_documento, $alumno_id, $calificaciones, $data["calificacion"], $curso["curso_id"], $curso["disposicion_id"]);   
-        
-        echo "<br><br>";
-    }
-    echo "</pre>";
-
-    echo "<p>Recibido. Muchas gracias.</p>";
-    echo "<p><strong>Los siguientes Alumnos activos figuran desaprobados. Por favor controlar.</strong></p>";
-    echo "<p>Si el alumno indicado a continuación está aprobado, por favor, responder este email indicando la nota!</p>";
-
-    $alumnosDesaprobados = [];
-
-    foreach($alumnosComision as $numero_documento => $ac){
-        if(
-            array_key_exists($numero_documento, $alumnosComisionCalificacionPF)
-            || array_key_exists($numero_documento, $calificaciones)
-        ) continue;
-
-
-        array_push($alumnosDesaprobados, $ac);
-    }
-
-    usort($alumnosDesaprobados, function ($a, $b) {
-        return strcmp($a['apellidos'], $b['apellidos']);
-    });
-
-
-    foreach($alumnosDesaprobados as $ad){
-      echo $ad["apellidos"] . ", " . $ad["nombres"] . " DNI " . $ad["numero_documento"] . "<br>";
-    }
-
 }

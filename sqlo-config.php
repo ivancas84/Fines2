@@ -10,6 +10,7 @@ define("DB_HOST_FINES2", "localhost");
 define("DB_NAME_FINES2", "planfi10_20204");
 define("DB_USER_FINES2", "root");
 define("DB_PASS_FINES2", "");
+define("CALENDARIO_ID2", "202502110007");
 
 require_once MAIN_PATH . 'SqlOrganize/Sql/Config.php';
 require_once MAIN_PATH . 'SqlOrganize/Model/Config.php';

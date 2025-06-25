@@ -23,8 +23,14 @@ add_action('init', 'register_fines_shortcodes');
 
 add_action('admin_menu', 'fines_plugin_menu'); //function fines_plugin_menu to display the menu
 
+// Remove the WordPress admin bar
 add_filter('admin_footer_text', '__return_empty_string');
 add_filter('update_footer', '__return_empty_string', 11);
+
+// Enqueue the Dashicons style for the admin area
+add_action('admin_enqueue_scripts', function () {
+    wp_enqueue_style('dashicons');
+});
 
 function fines_plugin_menu() {
 	
@@ -220,6 +226,8 @@ function fines_plugin_menu() {
       'taa_transferir_alumnos_activos_page'
     );
 
+
+    include_once plugin_dir_path(__FILE__) . 'mo_mas_opciones/mo_mas_opciones_page.php';
 
   }
 

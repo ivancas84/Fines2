@@ -10,6 +10,11 @@ use DateTime;
 
 class Comision_ extends Comision
 {
-
+    public function getLabel(): string
+    {
+        return ($this->pfid ?? "S/N") . " " . 
+        ($this->sede_->getLabel() ?? "?") . " " .  
+        ($this->planificacion_->getLabel() ?? "?");
+    }
 }
 

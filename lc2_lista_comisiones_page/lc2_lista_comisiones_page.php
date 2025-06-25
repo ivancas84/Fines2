@@ -31,8 +31,11 @@ function lc2_lista_comisiones_page() {
     
     $params = [
         "calendario" => $selected_calendario,
-        "autorizada" => $filter_autorizada
     ];
+
+    if($filter_autorizada) {
+        $params["autorizada"] = true;
+    }
 
     include plugin_dir_path(__FILE__) . 'lc2_formulario_busqueda_html.php';
 

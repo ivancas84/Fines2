@@ -447,6 +447,84 @@ public static function dictOfListByPropertyName(iterable $source, string $propNa
     return $response;
 }
 
+/**
+     * Convierte un array asociativo a un diccionario indexado por una clave específica.
+     *
+     * @param array $array Array asociativo a convertir.
+     * @param string $key Clave por la cual indexar el diccionario.
+     * @return array Diccionario indexado por la clave especificada.
+     */
+ public static function arrayNumToDictByKey(array $array, string $key): array {
+        $result = array();
+        foreach ($array as $item) {
+            if (isset($item[$key])) {
+                $result[$item[$key]] = $item;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Parsea datos de Excel ignorando prefijos en los encabezados.
+     *
+     * @param string $rawData Datos en formato de texto tabulado.
+     * @param string $ignore Prefijo a ignorar en los encabezados.
+     * @return array Datos parseados como array asociativo.
+     */
+    public static function excelParseIgnorePrefix(string $rawData, string $ignore = "_"): array {
+        $lines = preg_split("/\r\n|\n|\r/", trim($rawData));
+    
+        if (empty($lines)) {
+            return [];
+        }
+    
+        $rows = array_map(fn($line) => array_map('trim', explode("\t", $line)), $lines);
+    
+        $headers = array_shift($rows);
+    
+        // Filter headers and store the indices to keep
+        $validIndexes = [];
+        $validHeaders = [];
+        foreach ($headers as $index => $header) {
+            if (strpos($header, $ignore) !== 0) {
+                $validIndexes[] = $index;
+                $validHeaders[] = $header;
+            }
+        }
+    
+        $result = [];
+        foreach ($rows as $row) {
+            $assocRow = [];
+            foreach ($validIndexes as $i => $index) {
+                $assocRow[$validHeaders[$i]] = $row[$index] ?? null;
+            }
+            $result[] = $assocRow;
+        }
+    
+        return $result;
+    }
+    
+
+    public static function excelParse(string $rawData): array {
+        $lines = preg_split("/\r\n|\n|\r/", trim($rawData));
+    
+        $rows = array_map(function($line) {
+            return array_map('trim', explode("\t", $line));
+        }, $lines);
+    
+        $headers = array_shift($rows);
+        $result = [];
+    
+        foreach ($rows as $row) {
+            if (count($headers) === count($row)) {
+                $result[] = array_combine($headers, $row);
+            }
+            // If headers and row count mismatch, row is ignored
+        }
+    
+        return $result;
+    }
+
 }
 
 if (!function_exists('str_substring_between')) {

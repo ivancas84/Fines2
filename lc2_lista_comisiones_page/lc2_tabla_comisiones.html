@@ -1,5 +1,4 @@
-<h2>Comisiones Consultadas</h2>
-
+<h2>Comisiones Consultadas <?=count($comisiones)?></h2>
 <table class="wp-list-table widefat striped">
     <thead>
         <tr>
@@ -17,6 +16,7 @@
     <tbody>
         <? foreach ($comisiones as $comision): ?>
             <? $detalle_comision_url = admin_url('admin.php?page=fines-plugin-ac2&comision_id=' . $comision->id); ?>
+            <? $cargar_alumnos_url = admin_url('admin.php?page=fines-plugin-cac2&comision_id=' . $comision->id); ?>
             <? $lista_alumnos_url = admin_url('admin.php?page=fines-plugin-lista-alumnos&comision_id=' . $comision->id); ?>
             <? $rindex_url = admin_url('admin.php?page=fines-plugin-rindex-division-page&comision_pfid=' . $comision->pfid); ?>
             <? $detalle_division_url = admin_url('admin.php?page=fines-plugin-detalle-persona-division-page&comision_pfid=' . $comision->pfid); ?>
@@ -31,7 +31,8 @@
                 <td><?= esc_html($comision->turno); ?></td>
                 <td><?= $referentesLabel[$comision->sede] ?? 'Sin referentes' ?></td>
                 <td>
-                    <a href="<?= esc_url($detalle_comision_url); ?>" class="button">Detalle</a> 
+                    <a href="<?= esc_url($detalle_comision_url); ?>" title="Detalle" class="button"><span  class="dashicons dashicons-edit"></span></a> 
+                    <a href="<?= esc_url($cargar_alumnos_url); ?>" title="Cargar" class="button"><span  class="dashicons dashicons-buddicons-buddypress-logo"></span></a> 
                     <a href="<?= esc_url($rindex_url); ?>" class="button">Rindex</a> 
                     <a href="<?= esc_url($lista_alumnos_url); ?>" class="button">Alumnos</a>
                     <a href="<?= esc_url($administrar_tomas_url); ?>" class="button">Tomas</a>

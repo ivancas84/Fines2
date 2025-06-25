@@ -92,6 +92,7 @@ class Entity
             $fetched->_status = 1;
             return $fetched;
         } else {
+            $obj->ssetFromArray($param);
             $obj->status = -1;
         }
 

@@ -2,96 +2,49 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/class/PdoFines.php');
-
-require_once($_SERVER['DOCUMENT_ROOT'] . '/class/ProgramaFines.php');
-
-require_once($_SERVER['DOCUMENT_ROOT'] . '/class/Tools.php');
-
-require_once($_SERVER['DOCUMENT_ROOT'] . '/Dao/AlumnoDAO.php');
-
-require_once($_SERVER['DOCUMENT_ROOT'] . '/Dao/PersonaDAO.php');
+use SqlOrganize\Sql\Entity;
+use Fines2\Persona_;
+use SqlOrganize\Sql\DbMy;
+use SqlOrganize\Sql\Entity as SqlEntity;
+use SqlOrganize\Utils\ValueTypesUtils;
 
 add_submenu_page(
     null, 
     'Cargar Alumnos Comisión',
     'Cargar Alumnos Comisión', 
     'edit_posts', 
-    'fines-plugin-cac', 
+    'fines-plugin-cac2', 
     'cac_cargar_alumnos_comision_page'
 );
 
-  
-function cac_insertar_alumno($alumno, $persona_id, $plan_id) {
-    $alumno["id"] = uniqid();
-    $alumno["persona"] =  $persona_id;
-    $alumno["plan"] = $plan_id;
+function cac2_cargar_alumnos_comision_page() {
+    wp_page_message();
 
-    AlumnoDAO::insertAlumnoArray($alumno);
-    echo " - Alumno insertado id ". $alumno["id"];
+    $db = DbMy::getInstance();
 
-    return $alumno["id"];
-}
-
-
-function cac_insertar_alumno_comision($pdo, $alumno_id, $comision_id) {
-    $ac = [];
-    $ac["id"] = uniqid();
-    $ac["alumno"] = $alumno_id;
-    $ac["comision"] = $comision_id;
-    $ac["estado"] = "Ingresante";
-    $ac["observaciones"] = "Importado desde lista de alumnos";
-
-    echo " - Alumno ingresante a la comision id " . $ac["id"];
-    $pdo->insertAlumnoComisionPrincipalArray($ac);
-}
-
-
-function cac_insertar_persona($data) {
-    $data["id"] = uniqid();
-    PersonaDAO::insertPersonaArray($data);
-    echo " - Persona insertada id ". $data["id"] . "<br>";
-    return $data["id"];
-}
-
-
-
-function cac_imprimir_comisiones_alumno($pdo, $alumno_id) {
-    $comisiones = $pdo->comisionesByAlumno($alumno_id, PDO::FETCH_ASSOC);
-    foreach($comisiones as $comision){
-        echo " - Existe en comision " . ((empty($comision["pfid"])) ? $comision["division"] : $comision["pfid"]) . " " . $comision["periodo"] . " " . $comision["tramo"] . "<br>";
-    }
-}
-
-
-function cac_cargar_alumnos_comision_page() {
-    $pdo = new PdoFines();
-    $comision = $pdo->comisionById(sanitize_text_field($_GET['comision_id']), PDO::FETCH_ASSOC);
-
+    $dataProvider = $db->CreateDataProvider();
+    
+    $comision = $dataProvider->fetchEntityByParams("comision", ["id" => $_GET['comision_id']]);
     if(empty($comision)) throw new Exception("No se ha encontrado la comision");
  
     if (!isset($_POST['submit']) || empty($_POST['data'])) {
-        include plugin_dir_path(__FILE__) . 'cac_form.html';
+        include plugin_dir_path(__FILE__) . 'cac2_form.html';
         return;
     }
 
-    echo "<h1>Cargar Alumnos a la Comision</h1>";
-    
-    print_r($comision);
-
     $rawData = trim($_POST['data']);
-    $alumnosData = Tools::excelParseIgnorePrefix($rawData);
+    $alumnosData = ValueTypesUtils::excelParseIgnorePrefix($rawData);
     echo "<h2>Cantidad de alumnos a procesar ". count($alumnosData) . "</h2>";
     $dnisProcesados = [];
-    $alumnosComision = $pdo->alumnosByComision($comision["comision_id"], PDO::FETCH_ASSOC);
-    $alumnosComision = Tools::organizeArrayByKey($alumnosComision, "numero_documento");
+    $alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["comision" => $comision["comision_id"]]);
+    $alumnosComision = ValueTypesUtils::arrayNumToDictByKey($alumnosComision, "numero_documento");
 
     $i = 0;
 
     foreach($alumnosData as $data){
         $i++;
         echo "<br><br>Alumno: " . $i . ";<br>";
-        $cuilDni = Tools::cuilDni($data["cuil_dni"]);
+        $cuilDni = Persona_::cuilDni($data["cuil_dni"]);
         if(empty($cuilDni["dni"])){
             echo $data["apellidos"] . " " . $data["nombres"] . "<br>";
             echo "DNI vacío, no se procesará el alumno<br>";
@@ -111,12 +64,10 @@ function cac_cargar_alumnos_comision_page() {
         echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["numero_documento"] . "<br>";
 
         try {
-
-            $persona = PersonaDAO::personaByNumeroDocumento($data["numero_documento"], PDO::FETCH_ASSOC);
-                
-            if(empty($persona)){ //no existe persona, crearla
-                $data["persona_id"] = cac_insertar_persona($data);
-            } else { //existe persona, verificar datos
+            $persona = Entity::createByUnique("persona", $data);
+            if($persona->_status < 0) //no existe persona, crearla
+                $persona->insert();
+            else { //existe persona, verificar datos
                 if(!Tools::nombreParecido($persona, $data))
                     throw new Exception("El nombre registrado de la persona es diferente " . $persona["nombres"] . " " . $persona["apellidos"]);
                 $data["persona_id"] = $persona["id"];
@@ -148,13 +99,13 @@ function cac_cargar_alumnos_comision_page() {
                     print_r($actualizaciones);
                     echo "</pre>";        
                 }
-                cac_imprimir_comisiones_alumno($pdo, $data["alumno_id"]);
+                cac2_imprimir_comisiones_alumno($pdo, $data["alumno_id"]);
             }
 
             if(array_key_exists($data["numero_documento"], $alumnosComision)){ //existe alumno en la comision
                 echo " - Alumno ya existe en la comision<br>";
             } else { 
-                cac_insertar_alumno_comision($pdo, $data["alumno_id"], $comision["comision_id"]);
+                cac2_insertar_alumno_comision($pdo, $data["alumno_id"], $comision["comision_id"]);
             }
         
         } catch (Exception $e) {
@@ -168,3 +119,41 @@ function cac_cargar_alumnos_comision_page() {
 
 
 }
+
+  
+function cac2_insertar_alumno($alumno, $persona_id, $plan_id) {
+    $alumno["id"] = uniqid();
+    $alumno["persona"] =  $persona_id;
+    $alumno["plan"] = $plan_id;
+
+    AlumnoDAO::insertAlumnoArray($alumno);
+    echo " - Alumno insertado id ". $alumno["id"];
+
+    return $alumno["id"];
+}
+
+
+function cac_insertar_alumno_comision($pdo, $alumno_id, $comision_id) {
+    $ac = [];
+    $ac["id"] = uniqid();
+    $ac["alumno"] = $alumno_id;
+    $ac["comision"] = $comision_id;
+    $ac["estado"] = "Ingresante";
+    $ac["observaciones"] = "Importado desde lista de alumnos";
+
+    echo " - Alumno ingresante a la comision id " . $ac["id"];
+    $pdo->insertAlumnoComisionPrincipalArray($ac);
+}
+
+
+
+
+
+function cac_imprimir_comisiones_alumno($pdo, $alumno_id) {
+    $comisiones = $pdo->comisionesByAlumno($alumno_id, PDO::FETCH_ASSOC);
+    foreach($comisiones as $comision){
+        echo " - Existe en comision " . ((empty($comision["pfid"])) ? $comision["division"] : $comision["pfid"]) . " " . $comision["periodo"] . " " . $comision["tramo"] . "<br>";
+    }
+}
+
+
