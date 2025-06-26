@@ -15,6 +15,7 @@ class Comision_ extends Comision
         return ($this->pfid ?? "S/N") . " " . 
         ($this->sede_->getLabel() ?? "?") . " " .  
         ($this->planificacion_->getLabel() ?? "?");
+        ($this->calendario_->getLabel() ?? "?");
     }
 }
 

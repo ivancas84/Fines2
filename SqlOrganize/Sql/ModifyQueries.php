@@ -132,17 +132,13 @@ abstract class ModifyQueries
         $this->sqlBuilder .= $sql . "\n";
     }
 
-    public function buildUpdateSqlByCompare(Entity $entityToUpdate, Entity $entityToCompare){
-        return $this->buildUpdateSqlByCompare_($entityToUpdate->_entityName, $entityToUpdate->toArray(), $entityToCompare->toArray());
+    public function buildUpdateSqlByCompare(Entity $entityToUpdate, Entity $entityToCompare, ?CompareParams $cmp = null){
+        return $this->buildUpdateSqlByCompare_($entityToUpdate->_entityName, $entityToUpdate->toArray(), $entityToCompare->toArray(), $cmp);
     }
 
-    public function buildUpdateSqlByCompare_(string $entityName, array $dataToUpdate, array $dataToCompare): void
+    public function buildUpdateSqlByCompare_(string $entityName, array $dataToUpdate, array $dataToCompare, ?CompareParams $cmp = null): void
     {
         $dataToUpdate[$this->db->config->idName] = $dataToCompare[$this->db->config->idName];
-
-        $cmp = new CompareParams();
-        $cmp->ignoreNonExistent = true;
-        $cmp->ignoreNull = false;
 
         if (!empty($this->db->compare($entityName, $dataToUpdate, $dataToCompare, $cmp)))
             $this->buildUpdateSql_($entityName, $dataToUpdate);

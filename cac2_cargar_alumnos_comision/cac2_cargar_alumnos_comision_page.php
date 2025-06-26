@@ -4,8 +4,12 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
 
 use SqlOrganize\Sql\Entity;
 use Fines2\Persona_;
+use Fines2\Alumno_;
+use Fines2\AlumnoComision_;
+use Fines2\Comision_;
+
 use SqlOrganize\Sql\DbMy;
-use SqlOrganize\Sql\Entity as SqlEntity;
+use SqlOrganize\Sql\Entity;
 use SqlOrganize\Utils\ValueTypesUtils;
 
 add_submenu_page(
@@ -24,7 +28,7 @@ function cac2_cargar_alumnos_comision_page() {
 
     $dataProvider = $db->CreateDataProvider();
     
-    $comision = $dataProvider->fetchEntityByParams("comision", ["id" => $_GET['comision_id']]);
+    /** @var Comision_ */ $comision = $dataProvider->fetchEntityByParams("comision", ["id" => $_GET['comision_id']]);
     if(empty($comision)) throw new Exception("No se ha encontrado la comision");
  
     if (!isset($_POST['submit']) || empty($_POST['data'])) {
@@ -63,56 +67,75 @@ function cac2_cargar_alumnos_comision_page() {
 
             echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["numero_documento"] . "<br>";
 
-            $persona = Entity::createByUnique("persona", $data);
+            /** @var Persona_ */ $persona = Entity::createByUnique("persona", $data);
             if($persona->_status < 0) //no existe persona, crearla
                 $modifyQueries->buildInsertSql($persona);
             else { //existe persona, verificar datos
-                $personaAux = clone $persona;
-                $personaAux->sset($persona);
+                
                 if(!Tools::nombreParecido($persona->toArray(), $data))
                     throw new Exception("El nombre registrado de la persona es diferente " . $persona["nombres"] . " " . $persona["apellidos"]);
                
-                $modifyQueries->buildUpdateSqlByCompare()
-               
-               
-                    $data["persona_id"] = $persona["id"];
-                $actualizaciones = PersonaDAO::compareAndUpdatePersonaArray($persona, $data);
-                if(empty($actualizaciones)){
-                    echo " - Persona ya existe, no se actualiza id ". $data["persona_id"] . "<br>";
+                $personaAux = clone $persona;
+                $personaAux->ssetFromArray($data);
+                $compareResult = $personaAux->compare($persona);
+                if(empty($compareResult)){
+                    echo " - Persona ya existe, no se actualiza id ". $persona->id . "<br>";
                 } else {
-                    echo " - Persona actualizada id ". $data["persona_id"] . "<br>";
+                    $modifyQueries->buildUpdateSql($persona);
+                    echo " - Persona actualizada id ". $persona->id . "<br>";
                     echo "<pre>";
-                    print_r($actualizaciones);
+                    print_r($compareResult);
                     echo "</pre>";        
                 }
                    
             }
 
-            $alumno = AlumnoDAO::alumnoByNumeroDocumento($data["numero_documento"], PDO::FETCH_ASSOC);
+            /** @var Alumno_ */ $alumno = Entity::createByUnique("alumno", ["persona" => $persona->id]);
         
-            if(empty($alumno)){  //no existe el alumno, verificar si existe persona
-                $data["alumno_id"] = cac_insertar_alumno($data, $data["persona_id"], $plan_id);
+            if($alumno->_status < 0) { //no existe el alumno, verificar si existe persona
+                $modifyQueries->buildInsertSql($alumno);
             } else {
-                $actualizaciones = AlumnoDAO::compareAndUpdateAlumnoArray($alumno, $data);
-                $data["alumno_id"] = $alumno["id"];
-                $actualizaciones = PersonaDAO::compareAndUpdatePersonaArray($persona, $data);
-                if(empty($actualizaciones)){
-                    echo " - Alumno ya existe, no se actualiza id ". $data["alumno_id"] . "<br>";
-                } else {
-                    echo " - Alumno actualizado id ". $data["alumno_id"] . "<br>";
+                $alumnoAux = clone $alumno; //clonar para no modificar el original
+                $alumnoAux->ssetFromArray($data);
+                $compareResult = $alumno->compare($alumnoAux);
+                if(empty($compareResult)){ //no hay cambios
+                    echo " - Alumno ya existe, no se actualiza id ". $alumno->id . "<br>";
+                } else { //hay cambios, actualizar
+                    $modifyQueries->buildUpdateSql($alumno);
+                    echo " - Alumno actualizado id ". $alumno->id . "<br>";
                     echo "<pre>";
-                    print_r($actualizaciones);
+                    print_r($compareResult);
                     echo "</pre>";        
                 }
-                cac2_imprimir_comisiones_alumno($pdo, $data["alumno_id"]);
+
+                /** @var Comision_[] */ $comisiones = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["alumno" => $alumno->id]);
+                $existeEnComision = false;
+                if(!empty($comisiones)) {
+                    echo " - Alumno cargado en " . count($comisiones) . " comisiones: <br>";
+                    foreach($comisiones as $com){
+                       echo " -- " . $com->getLabel();;
+                       if($com->id == $comision->id) {
+                            $existeEnComision = true;
+                            echo " (ya existe en la comision actual)";
+                       }
+                       echo "<br>";
+                    }
+                } else {
+                    echo " - Alumno no tiene comisiones<br>";
+                }
             }
 
-            if(array_key_exists($data["numero_documento"], $alumnosComision)){ //existe alumno en la comision
-                echo " - Alumno ya existe en la comision<br>";
-            } else { 
-                cac2_insertar_alumno_comision($pdo, $data["alumno_id"], $comision["comision_id"]);
+            if(!$existeEnComision){
+                $alumno_comision = new AlumnoComision_();
+                $alumno_comision->alumno = $alumno->id;
+                $alumno_comision->comision = $comision->id;
+                $alumno_comision->estado = "Ingresante";
+                $alumno_comision->observaciones = "Importado desde lista de alumnos";
+                $modifyQueries->buildInsertSql($alumno_comision);
+                echo " - Alumno ingresante a la comision id ". $alumno_comision->id . "<br>";
             }
-        
+
+            $modifyQueries->process();
         } catch (Exception $e) {
             echo $e->getMessage() . "<br>";
             continue;
@@ -121,44 +144,4 @@ function cac2_cargar_alumnos_comision_page() {
         echo "<br><br>";
     }
     echo "</pre>";
-
-
 }
-
-  
-function cac2_insertar_alumno($alumno, $persona_id, $plan_id) {
-    $alumno["id"] = uniqid();
-    $alumno["persona"] =  $persona_id;
-    $alumno["plan"] = $plan_id;
-
-    AlumnoDAO::insertAlumnoArray($alumno);
-    echo " - Alumno insertado id ". $alumno["id"];
-
-    return $alumno["id"];
-}
-
-
-function cac_insertar_alumno_comision($pdo, $alumno_id, $comision_id) {
-    $ac = [];
-    $ac["id"] = uniqid();
-    $ac["alumno"] = $alumno_id;
-    $ac["comision"] = $comision_id;
-    $ac["estado"] = "Ingresante";
-    $ac["observaciones"] = "Importado desde lista de alumnos";
-
-    echo " - Alumno ingresante a la comision id " . $ac["id"];
-    $pdo->insertAlumnoComisionPrincipalArray($ac);
-}
-
-
-
-
-
-function cac_imprimir_comisiones_alumno($pdo, $alumno_id) {
-    $comisiones = $pdo->comisionesByAlumno($alumno_id, PDO::FETCH_ASSOC);
-    foreach($comisiones as $comision){
-        echo " - Existe en comision " . ((empty($comision["pfid"])) ? $comision["division"] : $comision["pfid"]) . " " . $comision["periodo"] . " " . $comision["tramo"] . "<br>";
-    }
-}
-
-
