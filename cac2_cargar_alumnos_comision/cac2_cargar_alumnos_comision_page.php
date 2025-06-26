@@ -9,7 +9,6 @@ use Fines2\AlumnoComision_;
 use Fines2\Comision_;
 
 use SqlOrganize\Sql\DbMy;
-use SqlOrganize\Sql\Entity;
 use SqlOrganize\Utils\ValueTypesUtils;
 
 add_submenu_page(
