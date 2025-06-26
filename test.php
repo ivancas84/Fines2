@@ -12,11 +12,14 @@ echo "<pre>";
 $db = DbMy::getInstance();
 $dataProvider = $db->CreateDataProvider();
 
-$calendarios = $dataProvider->fetchAllEntitiesByParams("calendario");
-
-$comisiones = $dataProvider->fetchAllEntitiesByParams("comision", ["page"=>"fines-plugin-lc2","calendario"=>"202502110007"], ["pfid" => "ASC"]);
-
 $calendarios = $dataProvider->fetchAllEntitiesByParams("calendario",[], ["anio" => "DESC", "semestre" => "DESC"]);
-foreach($calendarios as $c) {
-    print_r($c->toArray());
-}
+
+/** @var Persona_  */ $persona = $dataProvider->fetchEntityByParams("persona", ["numero_documento" => "31073351"]);
+/** @var Persona_  */ $personaCopy = clone $persona;
+
+$personaCopy->nombres = "Roberto";
+$personaCopy->apellidos = "Castañares";
+$personaCopy->descripcion_domicilio = "Calle Falsa 123";
+$response = $persona->compare($personaCopy);
+print_r($response);
+

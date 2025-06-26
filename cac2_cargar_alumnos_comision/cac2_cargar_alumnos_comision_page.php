@@ -42,35 +42,40 @@ function cac2_cargar_alumnos_comision_page() {
     $i = 0;
 
     foreach($alumnosData as $data){
-        $i++;
-        echo "<br><br>Alumno: " . $i . ";<br>";
-        $cuilDni = Persona_::cuilDni($data["cuil_dni"]);
-        if(empty($cuilDni["dni"])){
-            echo $data["apellidos"] . " " . $data["nombres"] . "<br>";
-            echo "DNI vacío, no se procesará el alumno<br>";
-            continue;
-        }
-
-        if(in_array($cuilDni["dni"], $dnisProcesados)){
-            echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["dni"] . "<br>";
-            echo "DNI ya procesado, no se procesará el alumno<br>";
-            continue;
-        }
-        $dnisProcesados[] = $cuilDni["dni"];
-
-        $data["numero_documento"] = $cuilDni["dni"];
-        $data["cuil"] = $cuilDni["cuil"];
-
-        echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["numero_documento"] . "<br>";
-
         try {
+            $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
+            $i++;
+            echo "<br><br>Alumno: " . $i . ";<br>";
+            $cuilDni = Persona_::cuilDni($data["cuil_dni"]);
+            if(empty($cuilDni["dni"])){
+                echo $data["apellidos"] . " " . $data["nombres"] . "<br>";
+                throw new Exception("DNI vacío, no se procesará el alumno");
+            }
+
+            if(in_array($cuilDni["dni"], $dnisProcesados)){
+                echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["dni"] . "<br>";
+                throw new Exception("DNI ya procesado, no se procesará el alumno");
+            }
+            $dnisProcesados[] = $cuilDni["dni"];
+
+            $data["numero_documento"] = $cuilDni["dni"];
+            $data["cuil"] = $cuilDni["cuil"];
+
+            echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["numero_documento"] . "<br>";
+
             $persona = Entity::createByUnique("persona", $data);
             if($persona->_status < 0) //no existe persona, crearla
-                $persona->insert();
+                $modifyQueries->buildInsertSql($persona);
             else { //existe persona, verificar datos
-                if(!Tools::nombreParecido($persona, $data))
+                $personaAux = clone $persona;
+                $personaAux->sset($persona);
+                if(!Tools::nombreParecido($persona->toArray(), $data))
                     throw new Exception("El nombre registrado de la persona es diferente " . $persona["nombres"] . " " . $persona["apellidos"]);
-                $data["persona_id"] = $persona["id"];
+               
+                $modifyQueries->buildUpdateSqlByCompare()
+               
+               
+                    $data["persona_id"] = $persona["id"];
                 $actualizaciones = PersonaDAO::compareAndUpdatePersonaArray($persona, $data);
                 if(empty($actualizaciones)){
                     echo " - Persona ya existe, no se actualiza id ". $data["persona_id"] . "<br>";

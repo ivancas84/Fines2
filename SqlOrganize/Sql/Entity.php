@@ -523,7 +523,7 @@ class Entity
     /**
      * Comparación de entidades
      */
-    public function compare(Entity $entity, CompareParams $cp): array
+    public function compare(Entity $entity, ?CompareParams $cp = null): array
     {
         return $this->_db->compare($this->_entityName, $this->toArray(), $entity->toArray(), $cp);
     }
