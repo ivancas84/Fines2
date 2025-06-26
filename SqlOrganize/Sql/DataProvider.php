@@ -165,7 +165,7 @@ class DataProvider {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
-        [$processedSql, $processedParams] = $$this->db->createSelectQueries()->processArrayParameters($sql, $params);
+        [$processedSql, $processedParams] = $this->db->createSelectQueries()->processArrayParameters($sql, $params);
 
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
