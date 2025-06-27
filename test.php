@@ -12,14 +12,11 @@ echo "<pre>";
 $db = DbMy::getInstance();
 $dataProvider = $db->CreateDataProvider();
 
-$calendarios = $dataProvider->fetchAllEntitiesByParams("calendario",[], ["anio" => "DESC", "semestre" => "DESC"]);
 
-/** @var Persona_  */ $persona = $dataProvider->fetchEntityByParams("persona", ["numero_documento" => "31073351"]);
-/** @var Persona_  */ $personaCopy = clone $persona;
 
-$personaCopy->nombres = "Roberto";
-$personaCopy->apellidos = "Castañares";
-$personaCopy->descripcion_domicilio = "Calle Falsa 123";
-$response = $persona->compare($personaCopy);
-print_r($response);
+$persona = new \Fines2\Persona_();
+
+echo gettype($persona->email_verificado);
+echo 
+
 

@@ -113,7 +113,7 @@ ORDER BY col.COLUMN_NAME;
                 $column->REFERENCED_COLUMN_NAME = $row['REFERENCED_COLUMN_NAME'];
                 $column->IS_PRIMARY_KEY = $row['IS_PRIMARY_KEY'];
                 $column->IS_FOREIGN_KEY = $row['IS_FOREIGN_KEY'];
-                $column->IS_BOOLEAN = $row['IS_BOOLEAN'];
+                $column->IS_BOOLEAN = $row['IS_BOOLEAN'] ?? 0;
 
                 
                 // Para compatibilidad con el método defineField

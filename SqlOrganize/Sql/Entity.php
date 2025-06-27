@@ -128,8 +128,10 @@ class Entity
      */
     public function set(string $fieldName, $value, $changeStatus = true): void
     {
-        if($value == $this->$fieldName)
+        if($value === $this->$fieldName){
+
             return;
+        }
         
         $this->$fieldName = $value;
         if($changeStatus && $this->_status > 0)
