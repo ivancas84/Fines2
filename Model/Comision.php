@@ -14,21 +14,16 @@ class Comision extends Entity
         $this->_entityName = "comision";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->AlumnoComision_ = [];
-        $this->Comision_comision_siguiente_ = [];
-        $this->ComisionRelacionada_ = [];
-        $this->ComisionRelacionada_relacion_ = [];
-        $this->Curso_ = [];
     }
 
     /** @var DateTime|null */
     public ?DateTime $alta = null;
 
-    /** @var int|null */
-    public ?int $apertura = null;
+    /** @var bool|null */
+    public ?bool $apertura = null;
 
-    /** @var int|null */
-    public ?int $autorizada = null;
+    /** @var bool|null */
+    public ?bool $autorizada = null;
 
     /** @var string|null */
     public ?string $calendario = null;
@@ -66,8 +61,8 @@ class Comision extends Entity
     /** @var string|null */
     public ?string $planificacion = null;
 
-    /** @var int|null */
-    public ?int $publicada = null;
+    /** @var bool|null */
+    public ?bool $publicada = null;
 
     /** @var string|null */
     public ?string $sede = null;

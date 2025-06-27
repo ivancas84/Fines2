@@ -14,9 +14,6 @@ class Sede extends Entity
         $this->_entityName = "sede";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Comision_ = [];
-        $this->Designacion_ = [];
-        $this->Sede_organizacion_ = [];
     }
 
     /** @var DateTime|null */

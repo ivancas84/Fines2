@@ -14,12 +14,6 @@ class Persona extends Entity
         $this->_entityName = "persona";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Designacion_ = [];
-        $this->DetallePersona_ = [];
-        $this->Email_ = [];
-        $this->Telefono_ = [];
-        $this->Toma_docente_ = [];
-        $this->Toma_reemplazo_ = [];
     }
 
     /** @var DateTime|null */
@@ -64,8 +58,8 @@ class Persona extends Entity
     /** @var string|null */
     public ?string $email_abc = null;
 
-    /** @var int|null */
-    public ?int $email_verificado = null;
+    /** @var bool|null */
+    public ?bool $email_verificado = null;
 
     /** @var DateTime|null */
     public ?DateTime $fecha_nacimiento = null;
@@ -76,8 +70,8 @@ class Persona extends Entity
     /** @var string|null */
     public ?string $id = null;
 
-    /** @var int|null */
-    public ?int $info_verificada = null;
+    /** @var bool|null */
+    public ?bool $info_verificada = null;
 
     /** @var string|null */
     public ?string $localidad = null;
@@ -106,8 +100,8 @@ class Persona extends Entity
     /** @var string|null */
     public ?string $telefono = null;
 
-    /** @var int|null */
-    public ?int $telefono_verificado = null;
+    /** @var bool|null */
+    public ?bool $telefono_verificado = null;
 
     /** @var Domicilio|null (fk persona.domicilio _m:o domicilio.id) */
     public ?\Fines2\Domicilio_ $domicilio_ = null;

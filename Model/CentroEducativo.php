@@ -14,7 +14,6 @@ class CentroEducativo extends Entity
         $this->_entityName = "centro_educativo";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Sede_ = [];
     }
 
     /** @var string|null */

@@ -14,7 +14,6 @@ class Modalidad extends Entity
         $this->_entityName = "modalidad";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Comision_ = [];
     }
 
     /** @var string|null */

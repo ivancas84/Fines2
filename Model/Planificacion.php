@@ -14,8 +14,6 @@ class Planificacion extends Entity
         $this->_entityName = "planificacion";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Comision_ = [];
-        $this->Disposicion_ = [];
     }
 
     /** @var string|null */

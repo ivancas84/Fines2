@@ -14,9 +14,6 @@ class Alumno extends Entity
         $this->_entityName = "alumno";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->AlumnoComision_ = [];
-        $this->Calificacion_ = [];
-        $this->DisposicionPendiente_ = [];
     }
 
     /** @var string|null */
@@ -31,14 +28,14 @@ class Alumno extends Entity
     /** @var int|null */
     public ?int $anio_inscripcion = null;
 
-    /** @var int|null */
-    public ?int $anio_inscripcion_completo = null;
+    /** @var bool|null */
+    public ?bool $anio_inscripcion_completo = null;
 
     /** @var string|null */
     public ?string $comentarios = null;
 
-    /** @var int|null */
-    public ?int $confirmado_direccion = null;
+    /** @var bool|null */
+    public ?bool $confirmado_direccion = null;
 
     /** @var DateTime|null */
     public ?DateTime $creado = null;
@@ -76,8 +73,8 @@ class Alumno extends Entity
     /** @var string|null */
     public ?string $plan = null;
 
-    /** @var int|null */
-    public ?int $previas_completas = null;
+    /** @var bool|null */
+    public ?bool $previas_completas = null;
 
     /** @var string|null */
     public ?string $resolucion_inscripcion = null;
@@ -88,17 +85,17 @@ class Alumno extends Entity
     /** @var int|null */
     public ?int $semestre_inscripcion = null;
 
-    /** @var int|null */
-    public ?int $tiene_certificado = null;
+    /** @var bool|null */
+    public ?bool $tiene_certificado = null;
 
-    /** @var int|null */
-    public ?int $tiene_constancia = null;
+    /** @var bool|null */
+    public ?bool $tiene_constancia = null;
 
-    /** @var int|null */
-    public ?int $tiene_dni = null;
+    /** @var bool|null */
+    public ?bool $tiene_dni = null;
 
-    /** @var int|null */
-    public ?int $tiene_partida = null;
+    /** @var bool|null */
+    public ?bool $tiene_partida = null;
 
     /** @var Persona|null (fk alumno.persona _o:o persona.id) */
     public ?\Fines2\Persona_ $persona_ = null;

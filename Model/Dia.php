@@ -14,7 +14,6 @@ class Dia extends Entity
         $this->_entityName = "dia";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Horario_ = [];
     }
 
     /** @var string|null */

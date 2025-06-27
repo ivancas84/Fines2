@@ -14,8 +14,6 @@ class Asignatura extends Entity
         $this->_entityName = "asignatura";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Curso_ = [];
-        $this->Disposicion_ = [];
     }
 
     /** @var string|null */

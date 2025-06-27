@@ -14,7 +14,6 @@ class Resolucion extends Entity
         $this->_entityName = "resolucion";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Alumno_resolucion_inscripcion_ = [];
     }
 
     /** @var int|null */

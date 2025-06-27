@@ -14,8 +14,6 @@ class Plan extends Entity
         $this->_entityName = "plan";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Alumno_ = [];
-        $this->Planificacion_ = [];
     }
 
     /** @var string|null */

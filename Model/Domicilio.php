@@ -14,9 +14,6 @@ class Domicilio extends Entity
         $this->_entityName = "domicilio";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->CentroEducativo_ = [];
-        $this->Persona_ = [];
-        $this->Sede_ = [];
     }
 
     /** @var string|null */

@@ -14,7 +14,6 @@ class File extends Entity
         $this->_entityName = "file";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->DetallePersona_archivo_ = [];
     }
 
     /** @var string|null */

@@ -25,8 +25,8 @@ class Toma extends Entity
     /** @var string|null */
     public ?string $comentario = null;
 
-    /** @var int|null */
-    public ?int $confirmada = null;
+    /** @var bool|null */
+    public ?bool $confirmada = null;
 
     /** @var string|null */
     public ?string $curso = null;
@@ -52,14 +52,14 @@ class Toma extends Entity
     /** @var string|null */
     public ?string $planilla_docente = null;
 
-    /** @var int|null */
-    public ?int $reclamo = null;
+    /** @var bool|null */
+    public ?bool $reclamo = null;
 
     /** @var string|null */
     public ?string $reemplazo = null;
 
-    /** @var int|null */
-    public ?int $sin_planillas = null;
+    /** @var bool|null */
+    public ?bool $sin_planillas = null;
 
     /** @var string|null */
     public ?string $tipo_movimiento = null;

@@ -14,7 +14,6 @@ class TipoSede extends Entity
         $this->_entityName = "tipo_sede";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Sede_ = [];
     }
 
     /** @var string|null */

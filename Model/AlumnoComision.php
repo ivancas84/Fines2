@@ -16,8 +16,8 @@ class AlumnoComision extends Entity
         $this->setDefault();
     }
 
-    /** @var int|null */
-    public ?int $activo = null;
+    /** @var bool|null */
+    public ?bool $activo = null;
 
     /** @var string|null */
     public ?string $alumno = null;

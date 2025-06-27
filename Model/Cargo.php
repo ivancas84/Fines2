@@ -14,7 +14,6 @@ class Cargo extends Entity
         $this->_entityName = "cargo";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Designacion_ = [];
     }
 
     /** @var string|null */

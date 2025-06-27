@@ -14,10 +14,6 @@ class Disposicion extends Entity
         $this->_entityName = "disposicion";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Calificacion_ = [];
-        $this->Curso_ = [];
-        $this->DisposicionPendiente_ = [];
-        $this->DistribucionHoraria_ = [];
     }
 
     /** @var string|null */

@@ -14,9 +14,6 @@ class Curso extends Entity
         $this->_entityName = "curso";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Calificacion_ = [];
-        $this->Horario_ = [];
-        $this->Toma_ = [];
     }
 
     /** @var DateTime|null */

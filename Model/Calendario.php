@@ -14,7 +14,6 @@ class Calendario extends Entity
         $this->_entityName = "calendario";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Comision_ = [];
     }
 
     /** @var int|null */

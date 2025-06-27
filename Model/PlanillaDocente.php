@@ -14,8 +14,6 @@ class PlanillaDocente extends Entity
         $this->_entityName = "planilla_docente";
         $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
         $this->setDefault();
-        $this->Contralor_ = [];
-        $this->Toma_ = [];
     }
 
     /** @var DateTime|null */

@@ -19,8 +19,8 @@ class Calificacion extends Entity
     /** @var string|null */
     public ?string $alumno = null;
 
-    /** @var int|null */
-    public ?int $archivado = null;
+    /** @var bool|null */
+    public ?bool $archivado = null;
 
     /** @var float|null */
     public ?float $crec = null;
