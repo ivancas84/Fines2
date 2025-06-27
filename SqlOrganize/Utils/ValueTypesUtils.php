@@ -447,6 +447,7 @@ public static function dictOfListByPropertyName(iterable $source, string $propNa
     return $response;
 }
 
+
 /**
      * Convierte un array asociativo a un diccionario indexado por una clave específica.
      *

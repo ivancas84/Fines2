@@ -40,7 +40,7 @@ function cac2_cargar_alumnos_comision_page() {
     echo "<h2>Cantidad de alumnos a procesar ". count($alumnosData) . "</h2>";
     $dnisProcesados = [];
     $alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["comision" => $comision->id]);
-    $alumnosComision = ValueTypesUtils::arrayNumToDictByKey($alumnosComision, "numero_documento");
+    $alumnosComision = ValueTypesUtils::dictOfObjByPropertyNames($alumnosComision, "numero_documento");
 
     $i = 0;
 
@@ -66,7 +66,7 @@ function cac2_cargar_alumnos_comision_page() {
 
             echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["numero_documento"] . "<br>";
 
-            /** @var Persona_ */ $persona = Entity::createByUnique("persona", $data);
+            /** @var Persona_ */ $persona = Entity::createByUnique("\Fines2\Persona_", $data);
             if($persona->_status < 0) //no existe persona, crearla
                 $modifyQueries->buildInsertSql($persona);
             else { //existe persona, verificar datos
@@ -89,7 +89,7 @@ function cac2_cargar_alumnos_comision_page() {
                    
             }
 
-            /** @var Alumno_ */ $alumno = Entity::createByUnique("alumno", ["persona" => $persona->id]);
+            /** @var Alumno_ */ $alumno = Entity::createByUnique("\Fines2\Alumno_", ["persona" => $persona->id]);
         
             if($alumno->_status < 0) { //no existe el alumno, verificar si existe persona
                 $modifyQueries->buildInsertSql($alumno);
