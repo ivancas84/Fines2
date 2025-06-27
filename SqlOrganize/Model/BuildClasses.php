@@ -40,11 +40,6 @@ class BuildClasses
             fwrite($file, "        \$this->_entityName = \"" . $entityName . "\";\n");
             fwrite($file, "        \$this->_db = " . $config->dbClass . "::getInstance();\n");
             fwrite($file, "        \$this->setDefault();\n");
-            
-            // Inicializar collections para relaciones one-to-many
-            foreach ($entityMetadata->om as $id => $rref) {
-                fwrite($file, "        \$this->" . $id . " = [];\n");
-            }
             fwrite($file, "    }\n\n");
 
             // Propiedades de campos
