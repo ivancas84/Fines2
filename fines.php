@@ -42,7 +42,7 @@ function fines_plugin_menu() {
       'lc2_lista_comisiones_page', // Función que muestra la página principal del plugin
       'dashicons-admin-generic', // Icono del menú
       1 // Posición en el menú
-  );
+    );
 
     include_once plugin_dir_path(__FILE__) . 'lc2_lista_comisiones_page/lc2_lista_comisiones_page.php';
 
@@ -108,11 +108,7 @@ function fines_plugin_menu() {
     'pfpd_procesar_docentes_pf_page'
   );
 
-
-
   include_once plugin_dir_path(__FILE__) . 'ppc_procesar_planilla_calificacion_page/ppc_procesar_planilla_calificacion_page.php';
-
-  include_once plugin_dir_path(__FILE__) . 'cac_cargar_alumnos_comision/cac_cargar_alumnos_comision_page.php';
 
     add_submenu_page(
 		null, 
@@ -226,9 +222,9 @@ function fines_plugin_menu() {
       'taa_transferir_alumnos_activos_page'
     );
 
-
     include_once plugin_dir_path(__FILE__) . 'mo_mas_opciones/mo_mas_opciones_page.php';
 
+    include_once plugin_dir_path(__FILE__) . 'cac2_cargar_alumnos_comision/cac2_cargar_alumnos_comision_page.php';
   }
 
 include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_comision_admin_handle.php';

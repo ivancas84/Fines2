@@ -17,7 +17,7 @@ add_submenu_page(
     'Cargar Alumnos Comisión', 
     'edit_posts', 
     'fines-plugin-cac2', 
-    'cac_cargar_alumnos_comision_page'
+    'cac2_cargar_alumnos_comision_page'
 );
 
 function cac2_cargar_alumnos_comision_page() {
@@ -39,7 +39,7 @@ function cac2_cargar_alumnos_comision_page() {
     $alumnosData = ValueTypesUtils::excelParseIgnorePrefix($rawData);
     echo "<h2>Cantidad de alumnos a procesar ". count($alumnosData) . "</h2>";
     $dnisProcesados = [];
-    $alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["comision" => $comision["comision_id"]]);
+    $alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["comision" => $comision->id]);
     $alumnosComision = ValueTypesUtils::arrayNumToDictByKey($alumnosComision, "numero_documento");
 
     $i = 0;
@@ -49,7 +49,7 @@ function cac2_cargar_alumnos_comision_page() {
             $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
             $i++;
             echo "<br><br>Alumno: " . $i . ";<br>";
-            $cuilDni = Persona_::cuilDni($data["cuil_dni"]);
+            $cuilDni = Persona_::cuilDni($data["dni_cuil"]);
             if(empty($cuilDni["dni"])){
                 echo $data["apellidos"] . " " . $data["nombres"] . "<br>";
                 throw new Exception("DNI vacío, no se procesará el alumno");
@@ -134,7 +134,9 @@ function cac2_cargar_alumnos_comision_page() {
                 echo " - Alumno ingresante a la comision id ". $alumno_comision->id . "<br>";
             }
 
-            $modifyQueries->process();
+            echo "Fin procesamiento";
+
+            //$modifyQueries->process();
         } catch (Exception $e) {
             echo $e->getMessage() . "<br>";
             continue;
