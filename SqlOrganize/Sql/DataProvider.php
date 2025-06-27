@@ -132,14 +132,8 @@ class DataProvider {
      * @return  Entity|null Retorna Entity con relaciones
      */
     public function fetchEntityByUnique(string $entityName, array $uniqueParams): ?Entity {
-        $selectQueries = $this->db->CreateSelectQueries();
-        $sql = $selectQueries->selectJoin($entityName);
-        $sql .= $selectQueries->whereUnique($entityName, $uniqueParams);
-         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $uniqueParams);
-        $stmt = $this->db->getPdo()->prepare($processedSql);
-        $stmt->execute($processedParams);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($row === false) return null;
+        $row = $this->fetchByUnique($entityName, $uniqueParams);
+        if (empty($row)) return null;
         $treeRow = $this->valuesTree($entityName, $row);
         return $this->treeRowToEntity($entityName, $treeRow);
     }
