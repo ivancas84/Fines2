@@ -12,12 +12,25 @@ add_submenu_page(
     'Procesar Planilla Calificación',
     'Procesar Planilla Calificación', 
     'edit_posts', 
-    'fines-plugin-ppc2', 
-    'ppc2_procesar_planilla_calificacion_page'
+    'fines-plugin-ppc3', 
+    'ppc3_procesar_planilla_calificacion_page'
   );
 
   
-function ppc2_procesar_planilla_calificacion_page() {
+function ppc3_procesar_planilla_calificacion_page() {
+    wp_page_message();
+
+    $db = DbMy::getInstance();
+
+    $dataProvider = $db->CreateDataProvider();
+    
+    /** @var Curso_ */ $curso = $dataProvider->fetchEntityByParams("comision", ["id" => $_GET['comision_id']]);
+    if(empty($comision)) throw new Exception("No se ha encontrado la comision");
+ 
+    echo "<h1>Cargar alumnos en comisión " . $comision->getLabel() . "</h1>";
+
+
+
 
     $pdo = new PdoFines();
     $curso = $pdo->cursoById(sanitize_text_field($_GET['curso_id']), PDO::FETCH_ASSOC);
