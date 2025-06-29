@@ -2,8 +2,54 @@
 
 namespace Fines2;
 
+use SqlOrganize\Sql\DbMy;
+
 class CalificacionDAO
 {
+
+    /**
+     * @return Calificacion_[]
+     */
+    public static function calificacionesAprobadasByDisposicionAndDnis(mixed $disposicion, array $numero_documento): array {
+
+        $sql = "
+            SELECT DISTINCT calificacion.id
+            FROM calificacion
+            INNER JOIN alumno ON (calificacion.alumno = alumno.id)
+            INNER JOIN persona ON (persona.id = alumno.persona)
+            WHERE (nota_final >= 7 OR crec >= 4)
+            AND calificacion.disposicion = :disposicion
+            AND persona.numero_documento IN (:numero_documento)
+        ";  
+
+        return DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", ["disposicion" => $disposicion, "numero_documento"=>$numero_documento] );
+    }
+
+
+    function calificacionesAprobadasByDisposicionAndDnis_($disposicion_id, $numeros_documento, $fetchMode = PDO::FETCH_OBJ) {
+        // Step 1: Create placeholders
+        $placeholders = [];
+        for ($i = 0; $i < count($numeros_documento); $i++)
+            $placeholders[] = ":doc$i";
+
+        $stmt = $this->pdo->prepare("
+            SELECT DISTINCT calificacion.id, calificacion.nota_final, calificacion.crec, calificacion.curso, calificacion.id AS calificacion_id, alumno.id AS alumno_id, persona.id AS persona_id, persona.numero_documento AS numero_documento
+            FROM calificacion
+            INNER JOIN alumno ON (calificacion.alumno = alumno.id)
+            INNER JOIN persona ON (persona.id = alumno.persona)
+            WHERE (nota_final >= 7 OR crec >= 4)
+            AND calificacion.disposicion = :idDisposicion
+            AND persona.numero_documento IN (" . implode(',', $placeholders) . ")");
+
+        $stmt->bindParam(':idDisposicion', $disposicion_id, PDO::PARAM_STR); // Bind as a string
+
+        for ($i = 0; $i < count($numeros_documento); $i++)
+            $stmt->bindValue(":doc$i", $numeros_documento[$i], PDO::PARAM_STR);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll($fetchMode);
+    }
 
     public static function idsCalificacionesDesaprobadasByAlumno($alumno_id)
     {

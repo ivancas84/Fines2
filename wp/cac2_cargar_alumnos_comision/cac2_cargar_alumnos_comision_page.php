@@ -66,64 +66,26 @@ function cac2_cargar_alumnos_comision_page() {
 
             echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["numero_documento"] . "<br>";
 
-            /** @var Persona_ */ $persona = Entity::createByUnique("\Fines2\Persona_", $data);
-            if($persona->_status < 0) {//no existe persona, crearla
-                $modifyQueries->buildInsertSql($persona);
-                echo ' - Persona agregada, id '. $persona->id . '<a target="_blank" href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines-plugin-administrar-persona-page&persona_id=' . $persona->id . '">Ver</a><br>';
+            /** @var Persona_ */ $persona = Persona_::createAndPersistByUnique("Fines2\Persona_", $data, true);
+            $data["persona"] = $persona->id;
+            $data["plan"] = $comision->planificacion_->plan;
             
-            } else { //existe persona, verificar datos
-                
-                if(!Tools::nombreParecido($persona->toArray(), $data))
-                    throw new Exception("El nombre registrado de la persona es diferente " . $persona["nombres"] . " " . $persona["apellidos"]);
-               
-                $personaAux = clone $persona;
-                $personaAux->ssetFromArray($data);
-                $compareResult = $personaAux->compare($persona);
-                if(empty($compareResult)){
-                    echo ' - Persona ya existe, no se actualiza id '. $persona->id . '<a target="_blank" href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines-plugin-administrar-persona-page&persona_id=' . $persona->id . '">Ver</a><br>';
-                } else {
-                    $modifyQueries->buildUpdateSql($persona);
-                    echo " - Persona actualizada id ". $persona->id . "<br>";
-                    echo "<pre>";
-                    print_r($compareResult);
-                    echo "</pre>";        
-                }
-                   
-            }
-
+            /** @var Alumno_ */ $alumno = Alumno_::createAndPersistByUnique("\Fines2\Alumno_", $data, true);
             $existeEnComision = false;
-            /** @var Alumno_ */ $alumno = Entity::createByUnique("\Fines2\Alumno_", ["persona" => $persona->id]);
-            $alumno->plan = $comision->planificacion_->plan;
-            if($alumno->_status < 0) { //no existe el alumno, verificar si existe persona
-                $modifyQueries->buildInsertSql($alumno);
-            } else {
-                $alumnoAux = clone $alumno; //clonar para no modificar el original
-                $alumno->ssetFromArray($data);
-                $compareResult = $alumno->compare($alumnoAux);
-                if(empty($compareResult)){ //no hay cambios
-                    echo " - Alumno ya existe, no se actualiza id ". $alumno->id . "<br>";
-                } else { //hay cambios, actualizar
-                    $modifyQueries->buildUpdateSql($alumno);
-                    echo " - Alumno actualizado id ". $alumno->id . "<br>";
-                    echo "<pre>";
-                    print_r($compareResult);
-                    echo "</pre>";        
-                }
 
-                /** @var Comision_[] */ $comisiones = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["alumno" => $alumno->id]);
-                if(!empty($comisiones)) {
-                    echo " - Alumno cargado en " . count($comisiones) . " comisiones: <br>";
-                    foreach($comisiones as $com){
-                       echo " -- " . $com->getLabel();;
-                       if($com->id == $comision->id) {
-                            $existeEnComision = true;
-                            echo " (ya existe en la comision actual)";
-                       }
-                       echo "<br>";
+            /** @var Comision_[] */ $comisiones = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["alumno" => $alumno->id]);
+            if(!empty($comisiones)) {
+                echo " - Alumno cargado en " . count($comisiones) . " comisiones: <br>";
+                foreach($comisiones as $com){
+                    echo " -- " . $com->getLabel();;
+                    if($com->id == $comision->id) {
+                        $existeEnComision = true;
+                        echo " (ya existe en la comision actual)";
                     }
-                } else {
-                    echo " - Alumno no tiene comisiones<br>";
+                    echo "<br>";
                 }
+            } else {
+                echo " - Alumno no tiene comisiones<br>";
             }
 
             if(!$existeEnComision){

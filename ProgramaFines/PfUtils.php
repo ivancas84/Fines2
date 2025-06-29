@@ -48,7 +48,13 @@ class PfUtils
             if(str_contains($key, "Nombre")){
                 $data = array_merge($data, self::parseFirstColumnCalificacionPF($value));
             } else if(str_contains($key, "Final")){
-                $data["calificacion"] = self::formatCalificacionValue($value);
+                $value = intval(trim($value));
+                if($value < 7){
+                    throw new Exception("Calificación vacía o menor a 7");
+                }
+
+                $data["calificacion"] = $value;
+
             }
         }
 
@@ -60,14 +66,7 @@ class PfUtils
 
     }
 
-    public static function formatCalificacionValue($value){
-        $value = intval(trim($value));
-        if($value < 7){
-            throw new Exception("Calificación vacía o menor a 7");
-        }
-
-        return $value;
-    }
+    
     
 
     public function __construct($pfUser, $pfPassword)

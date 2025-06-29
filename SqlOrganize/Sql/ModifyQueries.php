@@ -109,6 +109,7 @@ abstract class ModifyQueries
             $this->buildInsertSql($data);
     }
 
+
     public function buildUpdateSql(Entity $data): void
     {
         $this->buildUpdateSql_($data->_entityName, $data->toArray());
@@ -338,6 +339,8 @@ abstract class ModifyQueries
         $this->sqlBuilder .= $this->processArrayParameters($entityName, "delete", $sql, ["{$prefix}Ids" => $ids]);
         $this->sqlBuilder .= ";\n";
     }
+
+
 
     /** 
     * @todo el control de DateTimeInterface ex propio de cada motor de base de datos, deeria estar en la subclase, y puede que se defina en otro contexto como por ejemplo al asignar el parametro
