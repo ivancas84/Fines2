@@ -1,6 +1,11 @@
 <?php
 
-class ProgramaFines
+namespace ProgramaFines;
+
+use Exception;
+use DateTime;
+
+class PfUtils
 {
     private $client;
 

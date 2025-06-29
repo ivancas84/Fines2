@@ -41,9 +41,7 @@ function cac2_cargar_alumnos_comision_page() {
     $alumnosData = ValueTypesUtils::excelParseIgnorePrefix($rawData);
     echo "<h2>Cantidad de alumnos a procesar ". count($alumnosData) . "</h2>";
     $dnisProcesados = [];
-    $alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["comision" => $comision->id]);
-    $alumnosComision = ValueTypesUtils::dictOfObjByPropertyNames($alumnosComision, "numero_documento");
-
+    
     $i = 0;
 
     foreach($alumnosData as $data){

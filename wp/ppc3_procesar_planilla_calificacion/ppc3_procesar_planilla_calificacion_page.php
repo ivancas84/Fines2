@@ -3,6 +3,7 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
 
 use Fines2\DesignacionDAO;
+use ProgramaFines\PfUtils;
 use SqlOrganize\Sql\DbMy;
 use SqlOrganize\Utils\ValueTypesUtils;
 
@@ -24,19 +25,11 @@ function ppc3_procesar_planilla_calificacion_page() {
 
     $dataProvider = $db->CreateDataProvider();
     
-    /** @var Curso_ */ $curso = $dataProvider->fetchEntityByParams("comision", ["id" => $_GET['comision_id']]);
-    if(empty($comision)) throw new Exception("No se ha encontrado la comision");
- 
-    echo "<h1>Cargar alumnos en comisión " . $comision->getLabel() . "</h1>";
-
-
-
-
-    $pdo = new PdoFines();
-    $curso = $pdo->cursoById(sanitize_text_field($_GET['curso_id']), PDO::FETCH_ASSOC);
-
+    /** @var Curso_ */ $curso = $dataProvider->fetchEntityByParams("curso", ["id" => $_GET['curso_id']]);
     if(empty($curso)) throw new Exception("No se ha encontrado el curso");
  
+    echo "<h1>Cargar calificaciones en curso " . $curso->getLabel() . "</h1>";
+
     if (!isset($_POST['submit']) || empty($_POST['data']) || empty($_POST['format'])) {
         include plugin_dir_path(__FILE__) . 'ppc_form.html';
         return;
@@ -45,12 +38,13 @@ function ppc3_procesar_planilla_calificacion_page() {
     $rawData = trim($_POST['data']);
     $format = $_POST['format'];
     $result = Tools::excelParse($rawData);
+    echo "<h2>Cantidad de alumnos a procesar ". count($result) . "</h2>";
 
     echo "<h2>Alumnos que no serán evaluados de la Planilla</h2>";
-    $alumnosComisionCalificacionPF = ppc_definir_datos_calificaciones($result, $format);
+    $alumnosComisionCalificacionPF = ppc3_definir_datos_calificaciones($result, $format);
 
-    $alumnosComision = $pdo->alumnosByComision($curso["comision_id"], PDO::FETCH_ASSOC);
-    $alumnosComision = Tools::organizeArrayByKey($alumnosComision, "numero_documento");
+    $alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["comision" => $curso->comision]);
+    $alumnosComision = ValueTypesUtils::dictOfObjByPropertyNames($alumnosComision, "numero_documento");
 
     $calificaciones = $pdo->calificacionesAprobadasByDisposicionAndDnis($curso["disposicion_id"], array_keys($alumnosComision), PDO::FETCH_ASSOC);
     $calificaciones = Tools::organizeArrayByKey($calificaciones, "numero_documento");
@@ -214,7 +208,7 @@ function ppc_verificar_alumno_calificacion($pdo, $numero_documento, $alumno_id, 
     }
 }
 
-function ppc_definir_datos_calificaciones($result, $format) {
+function ppc3_definir_datos_calificaciones($result, $format) {
     
     $alumnosComisionCalificacionPF = [];
 
@@ -222,7 +216,7 @@ function ppc_definir_datos_calificaciones($result, $format) {
         try {
 
             if($format == "pf"){ 
-                $data = ProgramaFines::parseRowCalificacionPF($row);
+                $data = PfUtils::parseRowCalificacionPF($row);
                 $alumnosComisionCalificacionPF[$data["numero_documento"]] = $data;
             }
 

@@ -17,6 +17,5 @@ $dataProvider = $db->CreateDataProvider();
 $persona = new \Fines2\Persona_();
 
 echo gettype($persona->email_verificado);
-echo 
 
 
