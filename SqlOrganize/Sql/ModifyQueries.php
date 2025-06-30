@@ -35,6 +35,16 @@ abstract class ModifyQueries
         $this->db = $db ?? throw new InvalidArgumentException('Database instance cannot be null');
     }
 
+    public function getDetailAction(string $entityName, mixed $id): ?string {
+        $count = count($this->detail)-1;
+        for($i= $count; $i >= 0; $i--){
+            if($this->detail[$i]["EntityName"] == $entityName && $this->detail[$i]["Id"] == $id){
+                return $this->detail[$i]["Action"];
+            }
+        }
+        return null;
+    }
+
     /**
      * Generates a unique prefix for parameters to avoid conflicts
      */
@@ -77,25 +87,21 @@ abstract class ModifyQueries
     /**
      * Persistencia de array, 
      * 
-     * @return id persistido
+     * @return mixed id persistido
      */
-    public function buildPersistSql_($entityName, array $data): mixed {
+    public function buildPersistSql_($entityName, array $data, ?CompareParams $cp = null): mixed {
         
         $existingRow = $this->db->CreateDataProvider()->fetchByUnique($entityName, $data);
         if (!empty($existingRow)) {
             $data[$this->db->config->idName] = $existingRow[$this->db->config->idName];
 
-            $compareParams = new CompareParams();
-            $compareParams->ignoreNonExistent = true;
-            $compareParams->ignoreNull = false;
-
-            if (!empty($this->db->compare($entityName, $data, $existingRow, $compareParams)))
+            if (!empty($this->db->compare($entityName, $data, $existingRow, $cp)))
                 $this->buildUpdateSql_($entityName, $data);
             
         } else {
             $this->buildInsertSql_($entityName, $data);
         }
-        return $data[$this->db->config->idName]; // registro idéntico
+        return $data[$this->db->config->idName]; 
     }
 
     public function buildPersistSqlByStatus(Entity $data): void

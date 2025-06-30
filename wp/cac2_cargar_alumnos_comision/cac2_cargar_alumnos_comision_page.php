@@ -2,7 +2,6 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
 
-use SqlOrganize\Sql\Entity;
 use Fines2\Persona_;
 use Fines2\Alumno_;
 use Fines2\AlumnoComision_;
@@ -69,34 +68,15 @@ function cac2_cargar_alumnos_comision_page() {
             /** @var Persona_ */ $persona = Persona_::createAndPersistByUnique("Fines2\Persona_", $data, true);
             $data["persona"] = $persona->id;
             $data["plan"] = $comision->planificacion_->plan;
-            
-            /** @var Alumno_ */ $alumno = Alumno_::createAndPersistByUnique("\Fines2\Alumno_", $data, true);
-            $existeEnComision = false;
+            $idAlumno = $modifyQueries->buildPersistSql_("alumno", $data);
 
-            /** @var Comision_[] */ $comisiones = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["alumno" => $alumno->id]);
-            if(!empty($comisiones)) {
-                echo " - Alumno cargado en " . count($comisiones) . " comisiones: <br>";
-                foreach($comisiones as $com){
-                    echo " -- " . $com->getLabel();;
-                    if($com->id == $comision->id) {
-                        $existeEnComision = true;
-                        echo " (ya existe en la comision actual)";
-                    }
-                    echo "<br>";
-                }
-            } else {
-                echo " - Alumno no tiene comisiones<br>";
-            }
+            AlumnoComision_::imprimirComisionesByAlumno($idAlumno);
 
-            if(!$existeEnComision){
-                $alumno_comision = new AlumnoComision_();
-                $alumno_comision->alumno = $alumno->id;
-                $alumno_comision->comision = $comision->id;
-                $alumno_comision->estado = "Ingresante";
-                $alumno_comision->observaciones = "Importado desde lista de alumnos";
-                $modifyQueries->buildInsertSql($alumno_comision);
-                echo " - Alumno ingresante a la comision id ac ". $alumno_comision->id . "<br>";
-            }
+            $modifyQueries->buildInsertSqlIfNotExists_("alumno_comision", [
+                "alumno"=>$idAlumno, 
+                "comision"=>$curso->comision, 
+                "estado"=>($modifyQueries->getDetailAction("alumno", $idAlumno) == "insert") ? "Ingresante" : "Incorporado", 
+                "observaciones" => "Importado desde lista de alumnos"]);
 
             if(isset($alumno->anio_inscripcion) 
                 && isset($alumno->anio_ingreso) 
