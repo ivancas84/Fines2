@@ -43,6 +43,10 @@ class Calificacion_ extends Calificacion
                 echo ' - Ya estaba aprobado con '. $calificacion->crec . ' crec<br>';
             }
 
+            if(!empty($calificacion->curso) && $calificacion->curso != $idCurso ){
+                echo ' - Estaba en otro curso  '. $calificacion->curso . ' crec<br>';
+            }
+
             $calificacion->alumno = $idAlumno;
             $calificacion->disposicion = $idDisposicion;
             $calificacion->curso = $idCurso;

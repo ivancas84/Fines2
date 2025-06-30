@@ -593,7 +593,7 @@ class Entity
         return $entity;
     }
 
-    public static function createAndInsertByUnique(string $className, array $data, bool $echo = false): Entity {
+    public static function createAndInsertIfNotExistsByUnique(string $className, array $data, bool $echo = false): Entity {
         $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
         /** @var Entity */ $entity = self::createByUnique($className, $data);
     

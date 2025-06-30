@@ -45,13 +45,6 @@ function ppc3_procesar_planilla_calificacion_page() {
     $result = Tools::excelParse($rawData);
     echo "<h2>Cantidad de alumnos a procesar ". count($result) . "</h2>";
 
-    $alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["comision" => $curso->comision]);
-    $alumnosComision = ValueTypesUtils::dictOfObjByPropertyNames($alumnosComision, "numero_documento");
-    $dnisComision = array_keys($alumnosComision);
-
-    $calificaciones = CalificacionDAO::calificacionesAprobadasByDisposicionAndDnis($curso->disposicion, $dnisComision);
-    $calificaciones = ValueTypesUtils::dictOfObjByPropertyNames($calificaciones, "numero_documento");
-
     $i = 0;
     foreach($result as $row) {
         try {
@@ -60,19 +53,19 @@ function ppc3_procesar_planilla_calificacion_page() {
             if($format == "pf"){
                 echo " - " . $row["Apellido, Nombre DNI"]; 
                 $row = PfUtils::parseRowCalificacionPF($row);
+            } 
 
-                /** @var Persona_ */ $persona = Persona_::createAndPersistByUnique("\\Fines2\\Persona_", $row, true);
+            /** @var Persona_ */ $persona = Persona_::createAndPersistByUnique("\\Fines2\\Persona_", $row, true);
 
-                /** @var Alumno_ */ $alumno = Alumno_::createAndPersistByUnique("\\Fines2\\Alumno_", ["persona"=>$persona->id, "plan"=>$curso->comision_->planificacion_->plan]);
+            /** @var Alumno_ */ $alumno = Alumno_::createAndPersistByUnique("\\Fines2\\Alumno_", ["persona"=>$persona->id, "plan"=>$curso->comision_->planificacion_->plan]);
             
-                AlumnoComision_::createAndInsertByUnique("\\Fines2\\AlumnoComision_", [
-                    "alumno"=>$alumno->id, 
-                    "comision"=>$curso->comision, 
-                    "estado"=>($alumno->_status < 0) ? "Ingresante" : "Incorporado", 
-                    "observaciones" => "Importado desde planilla de calificación"]);
+            AlumnoComision_::createAndInsertIfNotExistsByUnique("\\Fines2\\AlumnoComision_", [
+                "alumno"=>$alumno->id, 
+                "comision"=>$curso->comision, 
+                "estado"=>($alumno->_status < 0) ? "Ingresante" : "Incorporado", 
+                "observaciones" => "Importado desde planilla de calificación"]);
 
-                Calificacion_::createAndPersistAprobadaByUnique($alumno->id, $curso->disposicion, $curso->id, $data["calificacion"]);
-            }
+            Calificacion_::createAndPersistAprobadaByUnique($alumno->id, $curso->disposicion, $curso->id, $data["calificacion"]);
 
         } catch (Exception $e) {
             echo "- " . $e->getMessage() . "<br><br>";
