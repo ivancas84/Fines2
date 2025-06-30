@@ -28,6 +28,8 @@ class Entity
 
     public string $_label = ""; 
 
+    /** @var array<string, mixed> */ public array $_changeLog = [];
+
     public function getLogging(){
         if(empty($this->_logging))
             $this->_logging = new Logging();
@@ -129,11 +131,11 @@ class Entity
     public function set(string $fieldName, $value, $changeStatus = true): void
     {
         if($value === $this->$fieldName){
-
             return;
         }
         
         $this->$fieldName = $value;
+        $this->_changeLog[$fieldName] = $value;
         if($changeStatus && $this->_status > 0)
             $this->_status = 0;
     }
@@ -565,46 +567,8 @@ class Entity
         $modifyQueries->execute();
     }
 
-    public static function createAndPersistByUnique(string $className, array $data, bool $echo = false): Entity {
-        $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
-        /** @var Entity */ $entity = self::createByUnique($className, $data);
     
-        if($entity->_status < 0) { //no existe el alumno, verificar si existe persona
-            $modifyQueries->buildInsertSql($entity);
-        } else {
-            $entityAux = clone $entity; //clonar para no modificar el original
-            $entity->ssetFromArray($data);
-            $compareResult = $entity->compare($entityAux);
-            if(empty($compareResult)){ //no hay cambios
-                if($echo) echo " - " . $className . " existe, no se actualiza id ". $entity->get("id") . "<br>";
-            } else { //hay cambios, actualizar
-                $modifyQueries->buildUpdateSql($entity);
-                if($echo){
-                    echo " - " . $className . " actualizado id ". $entity->get("id") . "<br>";
-                    echo "<pre>";
-                    print_r($compareResult);
-                    echo "</pre>";
-                }        
-            }
-        }
 
-        $modifyQueries->process();
-
-        return $entity;
-    }
-
-    public static function createAndInsertIfNotExistsByUnique(string $className, array $data, bool $echo = false): Entity {
-        $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
-        /** @var Entity */ $entity = self::createByUnique($className, $data);
-    
-        if($entity->_status < 0) { //no existe el alumno, verificar si existe persona
-            $modifyQueries->buildInsertSql($entity);
-        } 
-
-        $modifyQueries->process();
-
-        return $entity;
-    }
 
   
     

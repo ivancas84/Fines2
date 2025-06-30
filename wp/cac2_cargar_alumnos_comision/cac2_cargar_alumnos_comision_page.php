@@ -65,25 +65,37 @@ function cac2_cargar_alumnos_comision_page() {
 
             echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["numero_documento"] . "<br>";
 
-            /** @var Persona_ */ $persona = Persona_::createAndPersistByUnique("Fines2\Persona_", $data, true);
-            $data["persona"] = $persona->id;
-            $data["plan"] = $comision->planificacion_->plan;
-            $idAlumno = $modifyQueries->buildPersistSql_("alumno", $data);
 
-            AlumnoComision_::imprimirComisionesByAlumno($idAlumno);
 
-            $modifyQueries->buildInsertSqlIfNotExists_("alumno_comision", [
-                "alumno"=>$idAlumno, 
-                "comision"=>$curso->comision, 
-                "estado"=>($modifyQueries->getDetailAction("alumno", $idAlumno) == "insert") ? "Ingresante" : "Incorporado", 
-                "observaciones" => "Importado desde lista de alumnos"]);
+            /** @var Persona_ */ $persona = Persona_::createByUnique("Fines2\Persona_", $data);
+            if ($persona->_status === 0){
+                if(!Persona_::nombreParecido($persona->toArray(), $data))
+                    throw new Exception("El nombre registrado de la persona es diferente " . $persona->getLabel());
+                $modifyQueries->buildUpdateSql($persona);
+            }
+            else if ($persona->_status < 0)
+                $modifyQueries->buildInsertSql($persona);
 
+            /** @var Alumno_ */ $alumno = Alumno_::createByUnique("Fines2\Alumno_", $data);
+            $alumno->set("persona", $persona->id);
+            $alumno->set("plan", $comision->planificacion_->plan);
+            $modifyQueries->buildPersistSqlByStatus($alumno);
+
+            /** @var AlumnoComision_ */ $alumnoComision = AlumnoComision_::createByUnique("Fines2\Alumno_", $data);
+            $alumnoComision->set("alumno", $alumno->id);
+            $alumnoComision->set("comision", $curso->comision);
+
+            if ($alumnoComision->_status < 0){
+                $alumnoComision->set("estado", ($modifyQueries->getDetailAction("alumno", $alumno->id) == "insert") ? "Ingresante" : "Incorporado");
+                $alumnoComision->set("observaciones", "Importado desde lista de alumnos");
+                $modifyQueries->buildInsertSql($persona);
+            }
+                
             if(isset($alumno->anio_inscripcion) 
                 && isset($alumno->anio_ingreso) 
                 && ($alumno->anio_ingreso < $alumno->anio_inscripcion)){
                     echo " - Alumno tiene anio_ingreso menor a anio_inscripcion<br>";
             }
-
 
             $modifyQueries->process();
         } catch (Exception $e) {

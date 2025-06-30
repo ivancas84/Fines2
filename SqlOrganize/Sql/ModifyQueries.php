@@ -109,7 +109,7 @@ abstract class ModifyQueries
         if ($data->_status === 1) // pedido existe y no fue modificado
             return;
 
-        if ($data->_status == 0)
+        if ($data->_status === 0)
             $this->buildUpdateSql($data);
         else
             $this->buildInsertSql($data);

@@ -52,20 +52,44 @@ function ppc3_procesar_planilla_calificacion_page() {
             echo "<br><br>Calificación: " . $i . ";<br>";
             if($format == "pf"){
                 echo " - " . $row["Apellido, Nombre DNI"]; 
-                $row = PfUtils::parseRowCalificacionPF($row);
+                $data = PfUtils::parseRowCalificacionPF($row);
             } 
 
-            /** @var Persona_ */ $persona = Persona_::createAndPersistByUnique("\\Fines2\\Persona_", $row, true);
+            /** @var Persona_ */ $persona = Persona_::createByUnique("Fines2\Persona_", $data);
+            if ($persona->_status === 0){
+                if(!Persona_::nombreParecido($persona->toArray(), $data))
+                    throw new Exception("El nombre registrado de la persona es diferente " . $persona->getLabel());
+                $modifyQueries->buildUpdateSql($persona);
+            }
+            else if ($persona->_status < 0)
+                $modifyQueries->buildInsertSql($persona);
 
-            /** @var Alumno_ */ $alumno = Alumno_::createAndPersistByUnique("\\Fines2\\Alumno_", ["persona"=>$persona->id, "plan"=>$curso->comision_->planificacion_->plan]);
-            
-            AlumnoComision_::createAndInsertIfNotExistsByUnique("\\Fines2\\AlumnoComision_", [
-                "alumno"=>$alumno->id, 
-                "comision"=>$curso->comision, 
-                "estado"=>($alumno->_status < 0) ? "Ingresante" : "Incorporado", 
-                "observaciones" => "Importado desde planilla de calificación"]);
+            /** @var Alumno_ */ $alumno = Alumno_::createByUnique("Fines2\Alumno_", $data);
+            $alumno->set("persona", $persona->id);
+            $alumno->set("plan", $comision->planificacion_->plan);
+            $modifyQueries->buildPersistSqlByStatus($alumno);
 
-            Calificacion_::createAndPersistAprobadaByUnique($alumno->id, $curso->disposicion, $curso->id, $data["calificacion"]);
+            /** @var AlumnoComision_ */ $alumnoComision = AlumnoComision_::createByUnique("Fines2\Alumno_", $data);
+            $alumnoComision->set("alumno", $alumno->id);
+            $alumnoComision->set("comision", $curso->comision);
+
+            if ($alumnoComision->_status < 0){
+                $alumnoComision->set("estado", ($modifyQueries->getDetailAction("alumno", $alumno->id) == "insert") ? "Ingresante" : "Incorporado");
+                $alumnoComision->set("observaciones", "Importado desde lista de alumnos");
+                $modifyQueries->buildInsertSql($persona);
+            }
+
+            /** @var Calificacion_ */ $calificacion = $dataProvider->fetchEntityByParams("calificacion", ["alumno" => $alumno->id, "disposicion" => $curso->disposicion]);
+            if(empty($calificacion)){
+                $calificacion = new Calificacion_();
+            } else {
+                $calificacion->_status = 1;
+            }
+            $calificacion->set("alumno", $idAlumno);
+            $calificacion->set("disposicion", $idDisposicion);
+            $calificacion->set("curso", $idCurso);
+            $calificacion->setNotaAprobada($nota);
+            $modifyQueries->buildPersistSqlByStatus($calificacion);
 
         } catch (Exception $e) {
             echo "- " . $e->getMessage() . "<br><br>";

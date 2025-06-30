@@ -72,40 +72,6 @@ class Persona_ extends Persona
         return array_merge($response, $this->_db->compare($this->_entityName, $e1, $e2, $cp));
     }
 
-    public static function createAndPersistByUnique(string $className, array $data, bool $echo = false): Entity {
-        $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
-
-        /** @var Persona_ */ $persona = Entity::createByUnique("\Fines2\Persona_", $data);
-        if($persona->_status < 0) {//no existe persona, crearla
-            $modifyQueries->buildInsertSql($persona);
-            if($echo) echo ' - Persona agregada, id '. $persona->id . '<a target="_blank" href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines-plugin-administrar-persona-page&persona_id=' . $persona->id . '">Ver</a><br>';
-        
-        } else { //existe persona, verificar datos
-            
-            if(!self::nombreParecido($persona->toArray(), $data))
-                throw new Exception("El nombre registrado de la persona es diferente " . $persona["nombres"] . " " . $persona["apellidos"]);
-            
-            $personaAux = clone $persona;
-            $personaAux->ssetFromArray($data);
-            $compareResult = $personaAux->compare($persona);
-            if(empty($compareResult)){
-                if($echo) echo ' - Persona ya existe, no se actualiza id '. $persona->id . '<a target="_blank" href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines-plugin-administrar-persona-page&persona_id=' . $persona->id . '">Ver</a><br>';
-            } else {
-                $modifyQueries->buildUpdateSql($persona);
-                if($echo){
-                    echo " - Persona actualizada id ". $persona->id . "<br>";
-                    echo "<pre>";
-                    print_r($compareResult);
-                    echo "</pre>";        
-                }
-            }
-                
-        }
-
-        $modifyQueries->process();
-
-        return $persona;
-    }
 
 }
 
