@@ -79,6 +79,7 @@ class Entity
         }
 
         $fetched->_status = 1;
+        $obj->_changeLog = [];
         return $fetched;
     }
 
@@ -92,12 +93,14 @@ class Entity
 
         if ($fetched) {
             $fetched->_status = 1;
+            $fetched->_changeLog = [];
             return $fetched;
         } else {
             $obj->ssetFromArray($param);
             $obj->_status = -1;
         }
 
+        $obj->_changeLog = [];
         return $obj;
     }
 
@@ -114,6 +117,7 @@ class Entity
     {
         $obj = new $className();
         $obj->_status = $status;
+        $obj->_changeLog = [];
         return $obj;
     }
 

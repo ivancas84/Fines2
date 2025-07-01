@@ -53,6 +53,23 @@ abstract class ModifyQueries
         }
     }
 
+    public function toArray(){
+        return [
+            "sqlBuilder" => $this->sqlBuilder,
+            "parameters" => $this->parameters,
+            "parameterCounter" => $this->parameterCounter,
+            "detail" => $this->detail,
+        ];
+    }
+
+    public function fromArray(array $data){
+        $this->sqlBuilder = $data["sqlBuilder"];
+        $this->parameters = $data["parameters"];
+        $this->parameterCounter = $data["parameterCounter"];
+        $this->detail = $data["detail"];
+
+    }
+
 
 
     /**
