@@ -45,6 +45,16 @@ abstract class ModifyQueries
         return null;
     }
 
+    public  function printDetail(): void {
+        foreach ($this->detail as $index => $element) {
+            foreach ($element as $key => $value) {
+                echo "- $key : $value <br>";
+            }
+        }
+    }
+
+
+
     /**
      * Generates a unique prefix for parameters to avoid conflicts
      */

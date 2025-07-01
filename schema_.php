@@ -18,6 +18,7 @@ class Schema_
         $entities["calendario"]->main = ["anio", "semestre", "descripcion"];
         $entities["asignatura"]->main = ["nombre", "codigo"];
         $entities["persona"]->main = ["nombres", "apellidos","numero_documento"];
+        $entities["alumno_comision"]->uniqueMultiple = [["alumno","comision"]];
 
         foreach ($entities as $entity)
             $entity->fields["id"]->defaultValue = "uniqid";

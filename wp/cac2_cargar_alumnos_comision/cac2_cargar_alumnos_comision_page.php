@@ -66,7 +66,6 @@ function cac2_cargar_alumnos_comision_page() {
             echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["numero_documento"] . "<br>";
 
 
-
             /** @var Persona_ */ $persona = Persona_::createByUnique("Fines2\Persona_", $data);
             if ($persona->_status === 0){
                 if(!Persona_::nombreParecido($persona->toArray(), $data))
@@ -76,19 +75,16 @@ function cac2_cargar_alumnos_comision_page() {
             else if ($persona->_status < 0)
                 $modifyQueries->buildInsertSql($persona);
 
-            /** @var Alumno_ */ $alumno = Alumno_::createByUnique("Fines2\Alumno_", $data);
-            $alumno->set("persona", $persona->id);
+            /** @var Alumno_ */ $alumno = Alumno_::createByUnique("Fines2\Alumno_", ["persona"=>$persona->id]);
             $alumno->set("plan", $comision->planificacion_->plan);
             $modifyQueries->buildPersistSqlByStatus($alumno);
 
-            /** @var AlumnoComision_ */ $alumnoComision = AlumnoComision_::createByUnique("Fines2\Alumno_", $data);
-            $alumnoComision->set("alumno", $alumno->id);
-            $alumnoComision->set("comision", $curso->comision);
+            /** @var AlumnoComision_ */ $alumnoComision = AlumnoComision_::createByUnique("Fines2\AlumnoComision_", ["alumno" => $alumno->id, "comision" => $comision->id]);
 
             if ($alumnoComision->_status < 0){
                 $alumnoComision->set("estado", ($modifyQueries->getDetailAction("alumno", $alumno->id) == "insert") ? "Ingresante" : "Incorporado");
                 $alumnoComision->set("observaciones", "Importado desde lista de alumnos");
-                $modifyQueries->buildInsertSql($persona);
+                $modifyQueries->buildInsertSql($alumnoComision);
             }
                 
             if(isset($alumno->anio_inscripcion) 
@@ -97,7 +93,11 @@ function cac2_cargar_alumnos_comision_page() {
                     echo " - Alumno tiene anio_ingreso menor a anio_inscripcion<br>";
             }
 
-            $modifyQueries->process();
+            echo "<h2>Detalle de cambios</h2>";
+            echo "<pre>";
+            print_r($modifyQueries->detail);
+            echo "</pre>";
+            //$modifyQueries->process();
         } catch (Exception $e) {
             echo $e->getMessage() . "<br>";
             continue;

@@ -121,6 +121,10 @@ class DataProvider {
         $sql = $selectQueries->select($entityName);
         $sql .= $selectQueries->whereUnique($entityName, $uniqueParams);
         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $uniqueParams);
+        echo "<pre>";
+        echo $processedSql;
+        print_r($processedParams);
+        echo "</pre>";
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);

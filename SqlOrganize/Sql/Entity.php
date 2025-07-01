@@ -87,7 +87,7 @@ class Entity
      * Si se desea llamar a traves de una entidad utilizar $entity->toArray();
      */
     public static function createByUnique(string $className, array $param): Entity {
-        $obj = new $className;
+        /** @var Entity */ $obj = new $className;
         $fetched = $obj->_db->createDataProvider()->fetchEntityByUnique($obj->_entityName, $param);
 
         if ($fetched) {
@@ -95,7 +95,7 @@ class Entity
             return $fetched;
         } else {
             $obj->ssetFromArray($param);
-            $obj->status = -1;
+            $obj->_status = -1;
         }
 
         return $obj;
