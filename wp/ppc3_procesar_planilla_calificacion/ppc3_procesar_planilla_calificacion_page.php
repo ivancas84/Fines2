@@ -3,15 +3,12 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
 
 use Fines2\Calificacion_;
-use Fines2\CalificacionDAO;
 use Fines2\Curso_;
 use Fines2\Persona_;
 use Fines2\Alumno_;
 use Fines2\AlumnoComision_;
-use Fines2\DesignacionDAO;
 use ProgramaFines\PfUtils;
 use SqlOrganize\Sql\DbMy;
-use SqlOrganize\Utils\ValueTypesUtils;
 
 add_submenu_page(
     null, 
