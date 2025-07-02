@@ -100,7 +100,6 @@ class Entity
             $obj->_status = -1;
         }
 
-        $obj->_changeLog = [];
         return $obj;
     }
 

@@ -227,6 +227,9 @@ function fines_plugin_menu() {
     include_once plugin_dir_path(__FILE__) . 'cac2_cargar_alumnos_comision/cac2_cargar_alumnos_comision_page.php';
   }
 
+include_once plugin_dir_path(__FILE__) . 'cac2_cargar_alumnos_comision/cac2_process_handle.php';
+
+
 include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_comision_admin_handle.php';
 include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_cursos_modify_delete_handle.php';
 include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_curso_add_handle.php';

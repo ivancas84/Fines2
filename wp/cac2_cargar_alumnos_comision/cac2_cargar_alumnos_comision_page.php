@@ -32,7 +32,7 @@ function cac2_cargar_alumnos_comision_page() {
     echo "<h1>Cargar alumnos en comisión " . $comision->getLabel() . "</h1>";
 
     if (!isset($_POST['submit']) || empty($_POST['data'])) {
-        include plugin_dir_path(__FILE__) . 'ppc_form.html';
+        include plugin_dir_path(__FILE__) . 'cac2_form.html';
         return;
     }
 
@@ -43,32 +43,33 @@ function cac2_cargar_alumnos_comision_page() {
     
     $i = 0;
 
-    foreach($alumnosData as $data){
+    $existenDatos = false;
+    foreach($alumnosData as $ad){
         try {
             $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
             $i++;
             echo "<strong>Alumno: " . $i . ";</strong><br>";
-            $cuilDni = Persona_::cuilDni($data["dni_cuil"]);
+            $cuilDni = Persona_::cuilDni($ad["dni_cuil"]);
             if(empty($cuilDni["dni"])){
-                echo $data["apellidos"] . " " . $data["nombres"] . "<br>";
+                echo $ad["apellidos"] . " " . $ad["nombres"] . "<br>";
                 throw new Exception("DNI vacío, no se procesará el alumno");
             }
 
             if(in_array($cuilDni["dni"], $dnisProcesados)){
-                echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["dni"] . "<br>";
+                echo $ad["apellidos"] . " " . $ad["nombres"] . " " . $ad["dni"] . "<br>";
                 throw new Exception("DNI ya procesado, no se procesará el alumno");
             }
             $dnisProcesados[] = $cuilDni["dni"];
 
-            $data["numero_documento"] = $cuilDni["dni"];
-            $data["cuil"] = $cuilDni["cuil"];
+            $ad["numero_documento"] = $cuilDni["dni"];
+            $ad["cuil"] = $cuilDni["cuil"];
 
-            echo $data["apellidos"] . " " . $data["nombres"] . " " . $data["numero_documento"] . "<br>";
+            echo $ad["apellidos"] . " " . $ad["nombres"] . " " . $ad["numero_documento"] . "<br>";
 
 
-            /** @var Persona_ */ $persona = Persona_::createByUnique("Fines2\Persona_", $data);
+            /** @var Persona_ */ $persona = Persona_::createByUnique("Fines2\Persona_", $ad);
             if ($persona->_status === 0){
-                if(!Persona_::nombreParecido($persona->toArray(), $data))
+                if(!Persona_::nombreParecido($persona->toArray(), $ad))
                     throw new Exception("El nombre registrado de la persona es diferente " . $persona->getLabel());
                 $modifyQueries->buildUpdateSql($persona);
                 
@@ -116,13 +117,21 @@ function cac2_cargar_alumnos_comision_page() {
             }
             echo "</pre>";
 
-            $modifyQueries->process();
         } catch (Exception $e) {
             echo $e->getMessage() . "<br>";
             continue;
         }
         
         echo "<br><br>";
+        if(!empty($modifyQueries->detail)){
+            $existenDatos = true;
+        }
+    }
+
+    if($existenDatos){
+        include plugin_dir_path(__FILE__) . 'cac2_form_process.html';
+    } else {
+        echo "No existen datos para registrar";
     }
 
 }

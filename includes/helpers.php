@@ -36,7 +36,7 @@ function wp_html_init_form($handleName, $fieldIdName, $fieldIdValue){
 }
 
 function wp_initialize_handle($page_name, $handle_name, $field_id){
-        $field_value = $_REQUEST[$field_id];
+    $field_value = $_REQUEST[$field_id];
 
     if (!current_user_can('edit_posts')) {
         wp_redirect(admin_url("admin.php?page=$page_name&$field_id=$field_value&message=No tienes permisos suficientes"));
