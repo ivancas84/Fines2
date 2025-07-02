@@ -60,7 +60,7 @@ function ppc3_procesar_planilla_calificacion_page() {
 
             /** @var Alumno_ */ $alumno = AlumnoDAO::createAndPersistByPersonaAndPlan($modifyQueries, $persona->id, $comision->planificacion_->plan); 
 
-           AlumnoComisionDAO::createAndPersist($modifyQueries, $alumno->id, $comision->id, "Importado desde planilla de calificaciones");
+           /** @var AlumnoComision_ */ $alumnoComision = AlumnoComisionDAO::createAndPersist($modifyQueries, $alumno->id, $comision->id, "Importado desde planilla de calificaciones");
 
             /** @var Calificacion_ */ $calificacion = $dataProvider->fetchEntityByParams("calificacion", ["alumno" => $alumno->id, "disposicion" => $curso->disposicion]);
             if(empty($calificacion)){
@@ -73,6 +73,12 @@ function ppc3_procesar_planilla_calificacion_page() {
             $calificacion->set("curso", $idCurso);
             $calificacion->setNotaAprobada($nota);
             $modifyQueries->buildPersistSqlByStatus($calificacion);
+
+            echo $modifyQueries->htmlDetail();
+            echo $persona->htmlChangeLog();
+            echo $alumno->htmlChangeLog();
+            echo $alumnoComision->htmlChangeLog();
+            echo $calificacion->htmlChangeLog();
 
         } catch (Exception $e) {
             echo "- " . $e->getMessage() . "<br><br>";
