@@ -45,12 +45,16 @@ abstract class ModifyQueries
         return null;
     }
 
-    public  function printDetail(): void {
-        foreach ($this->detail as $index => $element) {
-            foreach ($element as $key => $value) {
-                echo "- $key : $value <br>";
-            }
+    public  function htmlDetail(): string {
+        $html = "<p><strong>Detalle de persistencia</strong></p>";
+        if(!empty($this->detail)){
+            $html .= "<pre>";
+            $html .= print_r($this->detail, true);
+            $html .= "</pre>";
+        } else {
+            $html .= "<p>No existe persistencia</p>";
         }
+        return $html;
     }
 
     public function toArray(){

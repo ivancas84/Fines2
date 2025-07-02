@@ -5,9 +5,18 @@ namespace Fines2;
 use SqlOrganize\Sql\DbMy;
 use SqlOrganize\Sql\Entity;
 use Fines2\CalificacionDAO;
+use Fines2\Alumno_;
+use SqlOrganize\Sql\ModifyQueries;
 
 class AlumnoDAO
 {
+    public static function createAndPersistByPersonaAndPlan(ModifyQueries $modifyQueries, string $persona_id, ?string $plan_id): Alumno_{
+        /** @var Alumno_ */ $alumno = Alumno_::createByUnique("Fines2\Alumno_", ["persona"=>$persona_id]);
+        $alumno->set("plan", $plan_id);
+        $modifyQueries->buildPersistSqlByStatus($alumno);
+        return $alumno;
+    }
+    
     public static function estados_inscripcion(): array {
         $sql = "SELECT DISTINCT estado_inscripcion FROM alumno ORDER BY estado_inscripcion";
         

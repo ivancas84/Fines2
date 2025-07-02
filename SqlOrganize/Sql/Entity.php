@@ -30,6 +30,18 @@ class Entity
 
     /** @var array<string, mixed> */ public array $_changeLog = [];
 
+    public function htmlChangeLog(): string{
+        $html = "<p><strong>changelog $this->_entityName </strong></p>";
+        if(!empty($this->_changeLog)){
+            $html .= "<pre>";
+            $html .= print_r($this->_changeLog, true);
+            $html .= "</pre>";
+        } else {
+            $html .= "<p>changeLog vacío</p>";
+        }
+        return $html;
+    }
+
     public function getLogging(){
         if(empty($this->_logging))
             $this->_logging = new Logging();

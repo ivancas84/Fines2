@@ -7,6 +7,9 @@ use Fines2\Curso_;
 use Fines2\Persona_;
 use Fines2\Alumno_;
 use Fines2\AlumnoComision_;
+use Fines2\AlumnoComisionDAO;
+use Fines2\AlumnoDAO;
+use Fines2\PersonaDAO;
 use ProgramaFines\PfUtils;
 use SqlOrganize\Sql\DbMy;
 
@@ -33,48 +36,31 @@ function ppc3_procesar_planilla_calificacion_page() {
     echo "<h1>Cargar calificaciones en curso " . $curso->getLabel() . "</h1>";
 
     if (!isset($_POST['submit']) || empty($_POST['data']) || empty($_POST['format'])) {
-        include plugin_dir_path(__FILE__) . 'ppc_form.html';
+        include plugin_dir_path(__FILE__) . 'ppc3_form.html';
         return;
     }
 
     $rawData = trim($_POST['data']);
     $format = $_POST['format'];
     $result = Tools::excelParse($rawData);
-    echo "<h2>Cantidad de alumnos a procesar ". count($result) . "</h2>";
+    echo "<h2>Cantidad de calificaciones a procesar ". count($result) . "</h2>";
 
     $i = 0;
     foreach($result as $row) {
         try {
             $i++;
-            echo "<br><br>Calificación: " . $i . ";<br>";
+            $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
+            echo "<strong>Calificación: " . $i . ";</strong><br>";
             if($format == "pf"){
                 echo " - " . $row["Apellido, Nombre DNI"]; 
                 $data = PfUtils::parseRowCalificacionPF($row);
             } 
 
-            /** @var Persona_ */ $persona = Persona_::createByUnique("Fines2\Persona_", $data);
-            if ($persona->_status === 0){
-                if(!Persona_::nombreParecido($persona->toArray(), $data))
-                    throw new Exception("El nombre registrado de la persona es diferente " . $persona->getLabel());
-                $modifyQueries->buildUpdateSql($persona);
-            }
-            else if ($persona->_status < 0)
-                $modifyQueries->buildInsertSql($persona);
+            /** @var Persona_ */ $persona = PersonaDAO::createAndPersist($modifyQueries, $data);
 
-            /** @var Alumno_ */ $alumno = Alumno_::createByUnique("Fines2\Alumno_", $data);
-            $alumno->set("persona", $persona->id);
-            $alumno->set("plan", $comision->planificacion_->plan);
-            $modifyQueries->buildPersistSqlByStatus($alumno);
+            /** @var Alumno_ */ $alumno = AlumnoDAO::createAndPersistByPersonaAndPlan($modifyQueries, $persona->id, $comision->planificacion_->plan); 
 
-            /** @var AlumnoComision_ */ $alumnoComision = AlumnoComision_::createByUnique("Fines2\Alumno_", $data);
-            $alumnoComision->set("alumno", $alumno->id);
-            $alumnoComision->set("comision", $curso->comision);
-
-            if ($alumnoComision->_status < 0){
-                $alumnoComision->set("estado", ($modifyQueries->getDetailAction("alumno", $alumno->id) == "insert") ? "Ingresante" : "Incorporado");
-                $alumnoComision->set("observaciones", "Importado desde lista de alumnos");
-                $modifyQueries->buildInsertSql($persona);
-            }
+           AlumnoComisionDAO::createAndPersist($modifyQueries, $alumno->id, $comision->id, "Importado desde planilla de calificaciones");
 
             /** @var Calificacion_ */ $calificacion = $dataProvider->fetchEntityByParams("calificacion", ["alumno" => $alumno->id, "disposicion" => $curso->disposicion]);
             if(empty($calificacion)){
