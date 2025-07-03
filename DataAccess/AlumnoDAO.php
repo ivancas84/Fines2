@@ -10,7 +10,7 @@ use SqlOrganize\Sql\ModifyQueries;
 
 class AlumnoDAO
 {
-    public static function createAndPersistByPersonaAndPlan(ModifyQueries $modifyQueries, string $persona_id, ?string $plan_id): Alumno_{
+    public static function createAndPersist(ModifyQueries $modifyQueries, string $persona_id, ?string $plan_id): Alumno_{
         /** @var Alumno_ */ $alumno = Alumno_::createByUnique("Fines2\Alumno_", ["persona"=>$persona_id]);
         $alumno->set("plan", $plan_id);
         $modifyQueries->buildPersistSqlByStatus($alumno);

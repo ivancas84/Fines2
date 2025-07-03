@@ -13,10 +13,7 @@
             <th>Teléfono</th>
             <th>Fecha Toma</th>
             <th>Planilla Docente</th>
-            <th>Id Toma</th>
-            <th>Id Curso</th>
-
-
+            <th>Ids</th>
             <th>Opciones</th>
         </tr>
     </thead>
@@ -24,27 +21,29 @@
         <? foreach ($cursos as $curso): ?>
             <? $detalle_comision_url = admin_url('admin.php?page=fines-plugin-ac2&comision_id=' . $curso->comision); ?>
             <? $administrar_tomas_url = admin_url('admin.php?page=fines-plugin-administrar-toma-comision&comision_id=' . $curso->comision); ?>
-            <? $cargar_planilla_calificacion_url = admin_url('admin.php?page=fines-plugin-ppc&curso_id=' . $curso->id); ?>
+            <? $cargar_planilla_calificacion_url = admin_url('admin.php?page=fines-plugin-ppc3&curso_id=' . $curso->id); ?>
             <? $cargar_alumnos_url = admin_url('admin.php?page=fines-plugin-cac&comision_id=' . $curso->comision); ?>
 
             <tr>
                 <td><?= esc_html($curso->comision_?->sede_?->nombre); ?></td>
                 <td><?= esc_html($curso->comision_?->pfid); ?></td>
                 <td><?= esc_html($curso->disposicion_?->planificacion_?->getTramo()); ?></td>
-                <td><?= esc_html($curso->disposicion_?->asignatura_?->getLabel()); ?></td>
+                <td><?= esc_html($curso->disposicion_?->getLabel()); ?></td>
                 <td><?= esc_html($curso->horas_catedra . "/" . $curso->disposicion_?->horas_catedra); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->docente_?->getLabel()); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->docente_?->telefono); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->fecha_toma?->format('Y-m-d')); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->planilla_docente_?->numero); ?></td>
-                <td><?= esc_html($curso->toma_activa_?->id); ?></td>
-                <td><?= esc_html($curso->id); ?></td>
+                <td>Toma <?= esc_html($curso->toma_activa_?->id); ?><br>
+                    Curso <?= esc_html($curso->id); ?><br>
+                    Comisión <?= esc_html($curso->comision); ?>
+                </td>
 
                 <td>
-                    <a href="<?= esc_url($detalle_comision_url); ?>" class="button">Detalle Comisión</a> 
-                    <a href="<?= esc_url($administrar_tomas_url); ?>" class="button">Administrar Tomas</a> 
-                    <a href="<?= esc_url($cargar_planilla_calificacion_url); ?>" class="button">Cargar Planillas Calificación</a> 
-                    <a href="<?= esc_url($cargar_alumnos_url); ?>" class="button">Cargar Alumnos</a> 
+                    <a href="<?= esc_url($detalle_comision_url); ?>" title="Detalle Comisión" class="button"><span  class="dashicons dashicons-tag"></span></a> 
+                    <a href="<?= esc_url($administrar_tomas_url); ?>" title="Administrar Tomas" class="button"><span  class="dashicons dashicons-businessperson"></span></a>
+                    <a href="<?= esc_url($cargar_planilla_calificacion_url); ?>" title="Cargar Planilla de Calificación" class="button"><span  class="dashicons dashicons-media-spreadsheet"></span></a>
+                    <a href="<?= esc_url($cargar_alumnos_url); ?>" title="Cargar Alumnos" class="button"><span  class="dashicons dashicons-groups"></span></a>
                 </td>
             </tr>
         <? endforeach; ?>

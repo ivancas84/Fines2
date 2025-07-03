@@ -225,9 +225,12 @@ function fines_plugin_menu() {
     include_once plugin_dir_path(__FILE__) . 'mo_mas_opciones/mo_mas_opciones_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'cac2_cargar_alumnos_comision/cac2_cargar_alumnos_comision_page.php';
+
+    include_once plugin_dir_path(__FILE__) . 'ppc3_procesar_planilla_calificacion/ppc3_procesar_planilla_calificacion_page.php';
   }
 
 include_once plugin_dir_path(__FILE__) . 'cac2_cargar_alumnos_comision/cac2_process_handle.php';
+include_once plugin_dir_path(__FILE__) . 'ppc3_procesar_planilla_calificacion/ppc3_process_handle.php';
 
 
 include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_comision_admin_handle.php';

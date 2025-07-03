@@ -14,7 +14,7 @@ class DesignacionDAO {
                 AND designacion.hasta IS NULL;";
 
         return DbMy::getInstance()->CreateDataProvider()
-            ->fetchAllEntitiesBySqlId("designacion", $sql, ["cargo" => Cargo_::$referente_id, "sede" => $ids_sedes]);
+            ->fetchAllEntitiesBySqlId("\Fines2\Designacion_", $sql, ["cargo" => Cargo_::$referente_id, "sede" => $ids_sedes]);
     }
 
      public static function referentesLabelByIdSedes(array $ids_sedes): array {

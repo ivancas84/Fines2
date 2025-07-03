@@ -8,7 +8,21 @@ use SqlOrganize\Sql\ModifyQueries;
 class CalificacionDAO
 {
 
-
+    public static function createAndPersist(ModifyQueries $modifyQueries, int $nota, string $idAlumno, string $idDisposicion, ?string $idCurso): Calificacion_{
+        $dataProvider = DbMy::getInstance()->CreateDataProvider();
+        /** @var Calificacion_ */ $calificacion = $dataProvider->fetchEntityByParams("\Fines2\Calificacion_", ["alumno" => $idAlumno, "disposicion" => $idDisposicion]);
+        if(empty($calificacion)){
+            $calificacion = new Calificacion_();
+        } else {
+            $calificacion->_status = 1;
+        }
+        $calificacion->set("alumno", $idAlumno);
+        $calificacion->set("disposicion", $idDisposicion);
+        $calificacion->set("curso", $idCurso);
+        $calificacion->setNotaAprobada($nota);
+        $modifyQueries->buildPersistSqlByStatus($calificacion);
+        return $calificacion;
+    }
 
     /**
      * @return Calificacion_[]
@@ -25,7 +39,7 @@ class CalificacionDAO
             AND persona.numero_documento IN (:numero_documento)
         ";  
 
-        return DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", ["disposicion" => $disposicion, "numero_documento"=>$numero_documento] );
+        return DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("\Fines2\Calificacion_", ["disposicion" => $disposicion, "numero_documento"=>$numero_documento] );
     }
 
 

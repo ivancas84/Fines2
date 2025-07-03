@@ -28,7 +28,7 @@ function cac2_cargar_alumnos_comision_page() {
 
     $dataProvider = $db->CreateDataProvider();
     
-    /** @var Comision_ */ $comision = $dataProvider->fetchEntityByParams("comision", ["id" => $_GET['comision_id']]);
+    /** @var Comision_ */ $comision = $dataProvider->fetchEntityByParams("\Fines2\Comision_", ["id" => $_GET['comision_id']]);
     if(empty($comision)) throw new Exception("No se ha encontrado la comision");
  
     echo "<h1>Cargar alumnos en comisión " . $comision->getLabel() . "</h1>";
@@ -70,7 +70,7 @@ function cac2_cargar_alumnos_comision_page() {
 
             /** @var Persona_ */ $persona = PersonaDAO::createAndPersist($modifyQueries, $ad);
 
-            /** @var Alumno_ */ $alumno = AlumnoDAO::createAndPersistByPersonaAndPlan($modifyQueries, $persona->id, $comision->planificacion_->plan); 
+            /** @var Alumno_ */ $alumno = AlumnoDAO::createAndPersist($modifyQueries, $persona->id, $comision->planificacion_->plan); 
             
             /** @var AlumnoComision_ */ $alumnoComision = AlumnoComisionDAO::createAndPersist($modifyQueries, $alumno->id, $comision->id, "Importado desde lista de alumnos");
                 

@@ -30,7 +30,7 @@ add_submenu_page(
             $modalidades = Modalidad_::modalidades();
             $planificaciones = Planificacion_::planificaciones();
 
-            $comision = (empty($comision_id)) ? new Comision_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("comision", ["id" =>$comision_id]);
+            $comision = (empty($comision_id)) ? new Comision_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("\Fines2\Comision_", ["id" =>$comision_id]);
             include plugin_dir_path(__FILE__) . 'ac2_comision_form.html';
 
         if(!empty($comision))
@@ -42,7 +42,7 @@ add_submenu_page(
 
         $dataProvider = DbMy::getInstance()->CreateDataProvider();
 
-        $cursos = $dataProvider->fetchAllEntitiesByParams("curso", ["comision"=>$comision->id]);
+        $cursos = $dataProvider->fetchAllEntitiesByParams("\Fines2\Curso_", ["comision"=>$comision->id]);
         if($cursos)
             include plugin_dir_path(__FILE__) . 'ac2_curso_table_form.html';
         else 

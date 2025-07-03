@@ -1,12 +1,9 @@
 <h1>Procesar Calificaciones</h1>
-<p>Copiar y pegar desde una planilla de calificación</p>
+<p>Copiar y pegar desde una planilla de calificación (abrirla desde word)</p>
+<p>Copiar y pegar desde excel, agregar encabezados nombres, apellidos, numero_documento y nota (el resto ignorarlos)</p>
 <form method="POST">
     <input type="hidden" name="page" value="fines-plugin-ppc" />
-    
-    <p>
-        <label>Curso:</label>
-        <span><?=$curso["asignatura_nombre"]?> <?=$curso["pfid"]?></span>
-    </p>
+  
     <p>
         <label for="format">Formato:</label>
         <select name="format" id="format">
@@ -16,7 +13,7 @@
     </p>
     <p>
         <label for="busqueda">Datos:</label>
-        <textarea name="data" id="data" value="<?= esc_attr($data);?>"></textarea>
+        <textarea name="data" id="data"></textarea>
     </p>
     
     <p>

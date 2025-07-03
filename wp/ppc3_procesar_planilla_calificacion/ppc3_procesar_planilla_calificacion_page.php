@@ -9,6 +9,7 @@ use Fines2\Alumno_;
 use Fines2\AlumnoComision_;
 use Fines2\AlumnoComisionDAO;
 use Fines2\AlumnoDAO;
+use Fines2\CalificacionDAO;
 use Fines2\PersonaDAO;
 use ProgramaFines\PfUtils;
 use SqlOrganize\Sql\DbMy;
@@ -30,7 +31,7 @@ function ppc3_procesar_planilla_calificacion_page() {
 
     $dataProvider = $db->CreateDataProvider();
     
-    /** @var Curso_ */ $curso = $dataProvider->fetchEntityByParams("curso", ["id" => $_GET['curso_id']]);
+    /** @var Curso_ */ $curso = $dataProvider->fetchEntityByParams("\Fines2\Curso_", ["id" => $_GET['curso_id']]);
     if(empty($curso)) throw new Exception("No se ha encontrado el curso");
  
     echo "<h1>Cargar calificaciones en curso " . $curso->getLabel() . "</h1>";
@@ -42,47 +43,49 @@ function ppc3_procesar_planilla_calificacion_page() {
 
     $rawData = trim($_POST['data']);
     $format = $_POST['format'];
-    $result = Tools::excelParse($rawData);
+    $result = Tools::excelParseIgnorePrefix($rawData);
     echo "<h2>Cantidad de calificaciones a procesar ". count($result) . "</h2>";
 
     $i = 0;
-    foreach($result as $row) {
+    $existenDatos = false;
+
+    foreach($result as $data) {
         try {
             $i++;
             $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
             echo "<strong>Calificación: " . $i . ";</strong><br>";
             if($format == "pf"){
-                echo " - " . $row["Apellido, Nombre DNI"]; 
-                $data = PfUtils::parseRowCalificacionPF($row);
+                echo " - " . $data["Apellido, Nombre DNI"]; 
+                $data = PfUtils::parseRowCalificacionPF($data);
             } 
+
 
             /** @var Persona_ */ $persona = PersonaDAO::createAndPersist($modifyQueries, $data);
 
-            /** @var Alumno_ */ $alumno = AlumnoDAO::createAndPersistByPersonaAndPlan($modifyQueries, $persona->id, $comision->planificacion_->plan); 
+            /** @var Alumno_ */ $alumno = AlumnoDAO::createAndPersist($modifyQueries, $persona->id, $curso->comision_->planificacion_->plan); 
 
-           /** @var AlumnoComision_ */ $alumnoComision = AlumnoComisionDAO::createAndPersist($modifyQueries, $alumno->id, $comision->id, "Importado desde planilla de calificaciones");
+           /** @var AlumnoComision_ */ $alumnoComision = AlumnoComisionDAO::createAndPersist($modifyQueries, $alumno->id, $curso->comision_->id, "Importado desde planilla de calificaciones");
 
-            /** @var Calificacion_ */ $calificacion = $dataProvider->fetchEntityByParams("calificacion", ["alumno" => $alumno->id, "disposicion" => $curso->disposicion]);
-            if(empty($calificacion)){
-                $calificacion = new Calificacion_();
-            } else {
-                $calificacion->_status = 1;
-            }
-            $calificacion->set("alumno", $idAlumno);
-            $calificacion->set("disposicion", $idDisposicion);
-            $calificacion->set("curso", $idCurso);
-            $calificacion->setNotaAprobada($nota);
-            $modifyQueries->buildPersistSqlByStatus($calificacion);
+            /** @var Calificacion_ */ $calificacion = CalificacionDAO::createAndPersist($modifyQueries, $data["nota"], $alumno->id, $curso->disposicion, $curso->id);
 
             echo $modifyQueries->htmlDetail();
             echo $persona->htmlChangeLog();
             echo $alumno->htmlChangeLog();
             echo $alumnoComision->htmlChangeLog();
             echo $calificacion->htmlChangeLog();
-
+            
+            if(!empty($modifyQueries->detail)){
+                $existenDatos = true;
+            }
         } catch (Exception $e) {
             echo "- " . $e->getMessage() . "<br><br>";
         }
+    }
+
+    if($existenDatos){
+        include plugin_dir_path(__FILE__) . 'ppc3_form_process.html';
+    } else {
+        echo "No existen datos para registrar";
     }
       
 }

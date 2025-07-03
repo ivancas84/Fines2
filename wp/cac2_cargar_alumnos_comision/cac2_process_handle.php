@@ -19,7 +19,7 @@ function cac2_process_handle() {
 
     $dataProvider = $db->CreateDataProvider();
     
-    /** @var Comision_ */ $comision = $dataProvider->fetchEntityByParams("comision", ["id" => $comision_id]);
+    /** @var Comision_ */ $comision = $dataProvider->fetchEntityByParams("\Fines2\Comision_", ["id" => $comision_id]);
     if(empty($comision)) throw new Exception("No se ha encontrado la comision");
  
     $data = trim($_POST['data']);

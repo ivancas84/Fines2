@@ -50,18 +50,17 @@ class DataProvider {
         }
     }
 
-    private function treeDataToEntities(string $entityName, array $treeData): array{
+    private function treeDataToEntities(string $className, array $treeData): array{
         $response = [];
         foreach($treeData as $d) {
-            $response[] = $this->treeRowToEntity($entityName, $d);
+            $response[] = $this->treeRowToEntity($className, $d);
         }
 
         return $response;
     }
 
-    private function treeRowToEntity(string $entityName, array $treeRow): ?Entity {
+    private function treeRowToEntity(string $className, array $treeRow): ?Entity {
         if(empty($treeRow)) return null;
-        $className = $this->db->getEntityMetadata($entityName)->getClassNameWithNamespace() . "_";
 
         $obj = new $className;
         $obj->ssetFromTree($treeRow);
@@ -106,9 +105,10 @@ class DataProvider {
         return $response; // Ya es array asociativo, no se necesita deserializar
     }
 
-    public function fetchAllEntitiesByParams(string $entityName, array $params = [], $orderBy = []): array {
-        $treeData = $this->fetchAllTreeByParams($entityName, $params, $orderBy);
-        return $this->treeDataToEntities($entityName, $treeData);
+    public function fetchAllEntitiesByParams(string $className, array $params = [], $orderBy = []): array {
+        /** @var Entity */ $class = new $className();
+        $treeData = $this->fetchAllTreeByParams($class->_entityName, $params, $orderBy);
+        return $this->treeDataToEntities($className, $treeData);
     }
 
 
@@ -131,15 +131,16 @@ class DataProvider {
      * consulta de entidad por parámetros únicos
      * @return  Entity|null Retorna Entity con relaciones
      */
-    public function fetchEntityByUnique(string $entityName, array $uniqueParams): ?Entity {
-        $row = $this->fetchByUnique($entityName, $uniqueParams);
+    public function fetchEntityByUnique(string $className, array $uniqueParams): ?Entity {
+        /** @var Entity */ $class = new $className;
+        $row = $this->fetchByUnique($class->_entityName, $uniqueParams);
         if (empty($row)) return null;
-        $treeRow = $this->valuesTree($entityName, $row);
-        return $this->treeRowToEntity($entityName, $treeRow);
+        $treeRow = $this->valuesTree($class->_entityName, $row);
+        return $this->treeRowToEntity($className, $treeRow);
     }
 
-    public function fetchEntityByParams(string $entityName, array $params): ?Entity {
-        $entities = $this->fetchAllEntitiesByParams($entityName, $params);
+    public function fetchEntityByParams(string $className, array $params): ?Entity {
+        $entities = $this->fetchAllEntitiesByParams($className, $params);
         if(count($entities)) return $entities[0];
         return null;
     }
@@ -212,15 +213,15 @@ class DataProvider {
      *       SELECT DISTINCT id 
      *       FROM toma
      *       WHERE curso = :cursos";
-     *   $tomas = $dataProvider->fetchAllEntitiesBySqlId("toma", $sql, ["cursos"=>$ids_cursos]);
+     *   $tomas = $dataProvider->fetchAllEntitiesBySqlId("\Fines2\Toma_", $sql, ["cursos"=>$ids_cursos]);
      */
-    public function fetchAllEntitiesBySqlId(string $entityName, string $sql, ?array $params = null): array {
+    public function fetchAllEntitiesBySqlId(string $className, string $sql, ?array $params = null): array {
         $ids = $this->fetchAllColumnSqlByParams($sql, 0, $params);
-        return $this->fetchAllEntitiesByParams($entityName, ["id" => $ids]);
+        return $this->fetchAllEntitiesByParams($className, ["id" => $ids]);
     }
 
-    public function fetchEntityBySqlId(string $entityName, string $sql, ?array $params = null): ?Entity {
-        $entities = $this->fetchAllEntitiesBySqlId($entityName, $sql, $params);
+    public function fetchEntityBySqlId(string $className, string $sql, ?array $params = null): ?Entity {
+        $entities = $this->fetchAllEntitiesBySqlId($className, $sql, $params);
         if(count($entities)) return $entities[0];
         return null;
     }

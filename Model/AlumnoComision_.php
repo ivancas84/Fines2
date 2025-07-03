@@ -14,7 +14,7 @@ class AlumnoComision_ extends AlumnoComision
 {
 
     public static function imprimirComisionesByAlumno(string $idAlumno){
-        /** @var Comision_[] */ $comisiones = DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesByParams("alumno_comision", ["alumno" => $idAlumno]);
+        /** @var Comision_[] */ $comisiones = DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesByParams("\Fines2\Alumno_comision_", ["alumno" => $idAlumno]);
         if(!empty($comisiones)) {
             echo " - Alumno cargado en " . count($comisiones) . " comisiones: <br>";
             foreach($comisiones as $com)

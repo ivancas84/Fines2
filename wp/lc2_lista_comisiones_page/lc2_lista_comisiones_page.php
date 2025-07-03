@@ -24,7 +24,7 @@ function lc2_lista_comisiones_page() {
     $db = DbMy::getInstance();
     $dataProvider = $db->CreateDataProvider();
 
-	$calendarios = $dataProvider->fetchAllEntitiesByParams("calendario",[], ["anio" => "DESC", "semestre" => "DESC"]);
+	$calendarios = $dataProvider->fetchAllEntitiesByParams("\Fines2\Calendario_",[], ["anio" => "DESC", "semestre" => "DESC"]);
 
 	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : $calendarios[0]->id;
     $filter_autorizada = isset($_GET['autorizada']) ? true : false;
@@ -39,7 +39,7 @@ function lc2_lista_comisiones_page() {
 
     include plugin_dir_path(__FILE__) . 'lc2_formulario_busqueda_html.php';
 
-    $comisiones = $dataProvider->fetchAllEntitiesByParams("comision", $params, ["pfid" => "ASC"]);
+    $comisiones = $dataProvider->fetchAllEntitiesByParams("\Fines2\Comision_", $params, ["pfid" => "ASC"]);
     $ids_sedes = ValueTypesUtils::arrayOfName($comisiones, "sede");
     $referentesLabel = DesignacionDAO::referentesLabelByIdSedes($ids_sedes);
     

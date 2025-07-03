@@ -84,7 +84,7 @@ class Entity
    
     public static function createById(string $className, mixed $id): Entity {
         $obj = new $className();
-        $fetched = $obj->_db->createDataProvider()->fetchEntityByParams($obj->_entityName, ["id" => $id]);
+        $fetched = $obj->_db->createDataProvider()->fetchEntityByParams($className, ["id" => $id]);
 
         if (!$fetched) {
             throw new Exception("No record found for ID");
@@ -101,7 +101,7 @@ class Entity
      */
     public static function createByUnique(string $className, array $param): Entity {
         /** @var Entity */ $obj = new $className;
-        $fetched = $obj->_db->createDataProvider()->fetchEntityByUnique($obj->_entityName, $param);
+        $fetched = $obj->_db->createDataProvider()->fetchEntityByUnique($className, $param);
 
         if ($fetched) {
             $fetched->_status = 1;

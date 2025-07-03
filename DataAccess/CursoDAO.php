@@ -21,7 +21,7 @@ public static function CursosByCalendario($calendario): array {
             AND comision.calendario = :calendario
         ";
 
-        return $dataProvider->fetchAllEntitiesBySqlId("curso", $sql, ["calendario" => $calendario]);
+        return $dataProvider->fetchAllEntitiesBySqlId("\Fines2\Curso_", $sql, ["calendario" => $calendario]);
     }
 
     public static function CursosActivosByCalendario($calendario): array {
@@ -38,7 +38,7 @@ public static function CursosByCalendario($calendario): array {
             AND comision.calendario = :calendario
         ";
 
-        return $dataProvider->fetchAllEntitiesBySqlId("curso", $sql, ["calendario" => $calendario]);
+        return $dataProvider->fetchAllEntitiesBySqlId("\Fines2\Curso_", $sql, ["calendario" => $calendario]);
     }
 
     public static function CursosActivosConTomasActivasByCalendario($calendario): array {
@@ -55,4 +55,5 @@ public static function CursosByCalendario($calendario): array {
         return $cursos;
 
     }
+
 }

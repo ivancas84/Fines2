@@ -41,6 +41,10 @@ class PfUtils
         ];
     }
 
+    /**
+     * parsear un elemnto de la planilla de calificaciones del programa fines para dividir el contenido en
+     * nombres, apellidos y nota
+     */
     public static function parseRowCalificacionPF($row)
     {
         $data = array();
@@ -53,7 +57,7 @@ class PfUtils
                     throw new Exception("Calificación vacía o menor a 7");
                 }
 
-                $data["calificacion"] = $value;
+                $data["nota"] = $value;
 
             }
         }
