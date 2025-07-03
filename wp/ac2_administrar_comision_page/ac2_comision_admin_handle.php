@@ -42,9 +42,13 @@ function ac2_comision_admin_handle() {
 
             $i++;
             $curso = new Curso_();
+            $curso->setFk("comision", $comision);
             $curso->horas_catedra = $disposicion->horas_catedra;
             $curso->disposicion = $disposicion->id;
             $curso->asignatura = $disposicion->asignatura;
+            $curso->reset();
+            if(!$curso->check())
+                throw new Exception($curso->getLogging()->__toString());
             $modifyQueries->buildInsertSql($curso);
         }
 
