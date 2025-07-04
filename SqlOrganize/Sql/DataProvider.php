@@ -62,7 +62,7 @@ class DataProvider {
     private function treeRowToEntity(string $className, array $treeRow): ?Entity {
         if(empty($treeRow)) return null;
 
-        $obj = new $className;
+        /**  @var Entity */ $obj = new $className;
         $obj->ssetFromTree($treeRow);
         return $obj;
     }

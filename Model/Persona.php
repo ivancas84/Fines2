@@ -103,46 +103,46 @@ class Persona extends Entity
     /** @var bool|null */
     public ?bool $telefono_verificado = null;
 
-    /** @var Domicilio|null (fk persona.domicilio _m:o domicilio.id) */
+    /** @var \Fines2\Domicilio_|null (fk persona.domicilio _m:o domicilio.id) */
     public ?\Fines2\Domicilio_ $domicilio_ = null;
 
-    /** @var Alumno|null (ref alumno.persona _o:o persona.id) */
-    public ?\Fines2\Alumno_ $Alumno_ = null;
+    /** @var \Fines2\Alumno|null (ref alumno.persona _o:o persona.id) */
+    public ?\Fines2\Alumno $Alumno_ = null;
 
     /** @var int|null */
     public ?int $Designacion_Count = null;
 
-    /** @var Designacion[] (ref designacion.persona _m:o persona.id) */
+    /** @var \Fines2\Designacion_[] (ref designacion.persona _m:o persona.id) */
     public array $Designacion_ = [];
 
     /** @var int|null */
     public ?int $DetallePersona_Count = null;
 
-    /** @var DetallePersona[] (ref detalle_persona.persona _m:o persona.id) */
+    /** @var \Fines2\DetallePersona[] (ref detalle_persona.persona _m:o persona.id) */
     public array $DetallePersona_ = [];
 
     /** @var int|null */
     public ?int $Email_Count = null;
 
-    /** @var Email[] (ref email.persona _m:o persona.id) */
+    /** @var \Fines2\Email[] (ref email.persona _m:o persona.id) */
     public array $Email_ = [];
 
     /** @var int|null */
     public ?int $Telefono_Count = null;
 
-    /** @var Telefono[] (ref telefono.persona _m:o persona.id) */
+    /** @var \Fines2\Telefono[] (ref telefono.persona _m:o persona.id) */
     public array $Telefono_ = [];
 
     /** @var int|null */
     public ?int $Toma_docente_Count = null;
 
-    /** @var Toma[] (ref toma.docente _m:o persona.id) */
+    /** @var \Fines2\Toma[] (ref toma.docente _m:o persona.id) */
     public array $Toma_docente_ = [];
 
     /** @var int|null */
     public ?int $Toma_reemplazo_Count = null;
 
-    /** @var Toma[] (ref toma.reemplazo _m:o persona.id) */
+    /** @var \Fines2\Toma[] (ref toma.reemplazo _m:o persona.id) */
     public array $Toma_reemplazo_ = [];
 
 }

@@ -43,19 +43,19 @@ class Domicilio extends Entity
     /** @var int|null */
     public ?int $CentroEducativo_Count = null;
 
-    /** @var CentroEducativo[] (ref centro_educativo.domicilio _m:o domicilio.id) */
+    /** @var \Fines2\CentroEducativo_[] (ref centro_educativo.domicilio _m:o domicilio.id) */
     public array $CentroEducativo_ = [];
 
     /** @var int|null */
     public ?int $Persona_Count = null;
 
-    /** @var Persona[] (ref persona.domicilio _m:o domicilio.id) */
+    /** @var \Fines2\Persona_[] (ref persona.domicilio _m:o domicilio.id) */
     public array $Persona_ = [];
 
     /** @var int|null */
     public ?int $Sede_Count = null;
 
-    /** @var Sede[] (ref sede.domicilio _m:o domicilio.id) */
+    /** @var \Fines2\Sede_[] (ref sede.domicilio _m:o domicilio.id) */
     public array $Sede_ = [];
 
 }

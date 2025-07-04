@@ -28,7 +28,7 @@ class AlumnoDAO
                 FROM alumno
                 INNER JOIN persona ON alumno.persona = persona.id
                 WHERE persona.numero_documento = :numero_documento";
-        return DbMy::getInstance()->CreateDataProvider()->fetchEntityBySqlId("alumno", $sql, ['numero_documento' => $numero_documento]);
+        return DbMy::getInstance()->CreateDataProvider()->fetchEntityBySqlId("\Fines2\Alumno_", $sql, ['numero_documento' => $numero_documento]);
     }
 
     public static function tramo($alumno){

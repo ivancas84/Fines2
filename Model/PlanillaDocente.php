@@ -37,13 +37,13 @@ class PlanillaDocente extends Entity
     /** @var int|null */
     public ?int $Contralor_Count = null;
 
-    /** @var Contralor[] (ref contralor.planilla_docente _m:o planilla_docente.id) */
+    /** @var \Fines2\Contralor[] (ref contralor.planilla_docente _m:o planilla_docente.id) */
     public array $Contralor_ = [];
 
     /** @var int|null */
     public ?int $Toma_Count = null;
 
-    /** @var Toma[] (ref toma.planilla_docente _m:o planilla_docente.id) */
+    /** @var \Fines2\Toma[] (ref toma.planilla_docente _m:o planilla_docente.id) */
     public array $Toma_ = [];
 
 }

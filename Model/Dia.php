@@ -28,7 +28,7 @@ class Dia extends Entity
     /** @var int|null */
     public ?int $Horario_Count = null;
 
-    /** @var Horario[] (ref horario.dia _m:o dia.id) */
+    /** @var \Fines2\Horario[] (ref horario.dia _m:o dia.id) */
     public array $Horario_ = [];
 
 }

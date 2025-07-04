@@ -97,31 +97,31 @@ class Alumno extends Entity
     /** @var bool|null */
     public ?bool $tiene_partida = null;
 
-    /** @var Persona|null (fk alumno.persona _o:o persona.id) */
+    /** @var \Fines2\Persona_|null (fk alumno.persona _o:o persona.id) */
     public ?\Fines2\Persona_ $persona_ = null;
 
-    /** @var Plan|null (fk alumno.plan _m:o plan.id) */
-    public ?\Fines2\Plan_ $plan_ = null;
+    /** @var \Fines2\Plan|null (fk alumno.plan _m:o plan.id) */
+    public ?\Fines2\Plan $plan_ = null;
 
-    /** @var Resolucion|null (fk alumno.resolucion_inscripcion _m:o resolucion.id) */
-    public ?\Fines2\Resolucion_ $resolucion_inscripcion_ = null;
+    /** @var \Fines2\Resolucion|null (fk alumno.resolucion_inscripcion _m:o resolucion.id) */
+    public ?\Fines2\Resolucion $resolucion_inscripcion_ = null;
 
     /** @var int|null */
     public ?int $AlumnoComision_Count = null;
 
-    /** @var AlumnoComision[] (ref alumno_comision.alumno _m:o alumno.id) */
+    /** @var \Fines2\AlumnoComision_[] (ref alumno_comision.alumno _m:o alumno.id) */
     public array $AlumnoComision_ = [];
 
     /** @var int|null */
     public ?int $Calificacion_Count = null;
 
-    /** @var Calificacion[] (ref calificacion.alumno _m:o alumno.id) */
+    /** @var \Fines2\Calificacion_[] (ref calificacion.alumno _m:o alumno.id) */
     public array $Calificacion_ = [];
 
     /** @var int|null */
     public ?int $DisposicionPendiente_Count = null;
 
-    /** @var DisposicionPendiente[] (ref disposicion_pendiente.alumno _m:o alumno.id) */
+    /** @var \Fines2\DisposicionPendiente[] (ref disposicion_pendiente.alumno _m:o alumno.id) */
     public array $DisposicionPendiente_ = [];
 
 }

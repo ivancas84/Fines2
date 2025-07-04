@@ -14,6 +14,7 @@ class EntityMetadata
     public ?string $schema = null;
     
     private ?string $_className = null;
+    private ?string $_qualifiedClassName = null;
     
     public static function getInstance($name, $alias){
         $em = new EntityMetadata();
@@ -29,8 +30,9 @@ class EntityMetadata
             : $this->_className;
     }
 
-    public function getClassNameWithNamespace(): string
+    public function getQualifiedClassName(): string
     {
+        if(!empty($this->_qualifiedClassName)) return $this->_qualifiedClassName;
         $namespace = (!empty($this->db->config->namespace)) ? "\\".$this->db->config->namespace ."\\" : "";
         return $namespace . $this->getClassName();
     }
@@ -38,6 +40,10 @@ class EntityMetadata
     public function setClassName(string $className): void
     {
         $this->_className = $className;
+    }
+
+    public function setQualifiedClassName(string $qualifiedClassName){
+        $this->_qualifiedClassName = $qualifiedClassName;
     }
     
     /** @var string[] */

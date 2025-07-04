@@ -34,13 +34,13 @@ class Plan extends Entity
     /** @var int|null */
     public ?int $Alumno_Count = null;
 
-    /** @var Alumno[] (ref alumno.plan _m:o plan.id) */
+    /** @var \Fines2\Alumno[] (ref alumno.plan _m:o plan.id) */
     public array $Alumno_ = [];
 
     /** @var int|null */
     public ?int $Planificacion_Count = null;
 
-    /** @var Planificacion[] (ref planificacion.plan _m:o plan.id) */
+    /** @var \Fines2\Planificacion_[] (ref planificacion.plan _m:o plan.id) */
     public array $Planificacion_ = [];
 
 }

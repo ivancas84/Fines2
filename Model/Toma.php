@@ -64,16 +64,16 @@ class Toma extends Entity
     /** @var string|null */
     public ?string $tipo_movimiento = null;
 
-    /** @var Curso|null (fk toma.curso _m:o curso.id) */
+    /** @var \Fines2\Curso_|null (fk toma.curso _m:o curso.id) */
     public ?\Fines2\Curso_ $curso_ = null;
 
-    /** @var Persona|null (fk toma.docente _m:o persona.id) */
+    /** @var \Fines2\Persona_|null (fk toma.docente _m:o persona.id) */
     public ?\Fines2\Persona_ $docente_ = null;
 
-    /** @var PlanillaDocente|null (fk toma.planilla_docente _m:o planilla_docente.id) */
-    public ?\Fines2\PlanillaDocente_ $planilla_docente_ = null;
+    /** @var \Fines2\PlanillaDocente|null (fk toma.planilla_docente _m:o planilla_docente.id) */
+    public ?\Fines2\PlanillaDocente $planilla_docente_ = null;
 
-    /** @var Persona|null (fk toma.reemplazo _m:o persona.id) */
+    /** @var \Fines2\Persona_|null (fk toma.reemplazo _m:o persona.id) */
     public ?\Fines2\Persona_ $reemplazo_ = null;
 
 }

@@ -40,10 +40,10 @@ class AlumnoComision extends Entity
     /** @var int|null */
     public ?int $pfid = null;
 
-    /** @var Alumno|null (fk alumno_comision.alumno _m:o alumno.id) */
-    public ?\Fines2\Alumno_ $alumno_ = null;
+    /** @var \Fines2\Alumno|null (fk alumno_comision.alumno _m:o alumno.id) */
+    public ?\Fines2\Alumno $alumno_ = null;
 
-    /** @var Comision|null (fk alumno_comision.comision _m:o comision.id) */
+    /** @var \Fines2\Comision_|null (fk alumno_comision.comision _m:o comision.id) */
     public ?\Fines2\Comision_ $comision_ = null;
 
 }

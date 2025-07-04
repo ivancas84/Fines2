@@ -46,31 +46,31 @@ class Curso extends Entity
     /** @var string|null */
     public ?string $observaciones = null;
 
-    /** @var Asignatura|null (fk curso.asignatura _m:o asignatura.id) */
-    public ?\Fines2\Asignatura_ $asignatura_ = null;
+    /** @var \Fines2\Asignatura|null (fk curso.asignatura _m:o asignatura.id) */
+    public ?\Fines2\Asignatura $asignatura_ = null;
 
-    /** @var Comision|null (fk curso.comision _m:o comision.id) */
+    /** @var \Fines2\Comision_|null (fk curso.comision _m:o comision.id) */
     public ?\Fines2\Comision_ $comision_ = null;
 
-    /** @var Disposicion|null (fk curso.disposicion _m:o disposicion.id) */
+    /** @var \Fines2\Disposicion_|null (fk curso.disposicion _m:o disposicion.id) */
     public ?\Fines2\Disposicion_ $disposicion_ = null;
 
     /** @var int|null */
     public ?int $Calificacion_Count = null;
 
-    /** @var Calificacion[] (ref calificacion.curso _m:o curso.id) */
+    /** @var \Fines2\Calificacion_[] (ref calificacion.curso _m:o curso.id) */
     public array $Calificacion_ = [];
 
     /** @var int|null */
     public ?int $Horario_Count = null;
 
-    /** @var Horario[] (ref horario.curso _m:o curso.id) */
+    /** @var \Fines2\Horario[] (ref horario.curso _m:o curso.id) */
     public array $Horario_ = [];
 
     /** @var int|null */
     public ?int $Toma_Count = null;
 
-    /** @var Toma[] (ref toma.curso _m:o curso.id) */
+    /** @var \Fines2\Toma[] (ref toma.curso _m:o curso.id) */
     public array $Toma_ = [];
 
 }

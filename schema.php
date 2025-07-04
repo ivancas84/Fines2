@@ -15,7 +15,7 @@ use SqlOrganize\Sql\EntityRef;
  */
 class Schema
 {
-    public static function getEntities()
+    public static function getEntities(): array
     {
         $entities = [];
         $entities['alumno'] = EntityMetadata::getInstance('alumno', 'alum');

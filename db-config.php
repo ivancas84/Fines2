@@ -23,3 +23,17 @@ use Fines2\MainConfig;
 
 DbMy::initInstance(MainConfig::getConfigDb(), Schema_::getEntities());
 
+require_once MAIN_PATH . 'Model_/AlumnoComision_.php';
+require_once MAIN_PATH . 'Model_/Calendario_.php';
+require_once MAIN_PATH . 'Model_/Calificacion_.php';
+require_once MAIN_PATH . 'Model_/Cargo_.php';
+require_once MAIN_PATH . 'Model_/CentroEducativo_.php';
+require_once MAIN_PATH . 'Model_/Comision_.php';
+require_once MAIN_PATH . 'Model_/Curso_.php';
+require_once MAIN_PATH . 'Model_/Designacion_.php';
+require_once MAIN_PATH . 'Model_/Disposicion_.php';
+require_once MAIN_PATH . 'Model_/Domicilio_.php';
+require_once MAIN_PATH . 'Model_/Modalidad_.php';
+require_once MAIN_PATH . 'Model_/Persona_.php';
+require_once MAIN_PATH . 'Model_/Planificacion_.php';
+require_once MAIN_PATH . 'Model_/Sede_.php';

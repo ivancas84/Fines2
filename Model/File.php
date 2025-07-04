@@ -37,7 +37,7 @@ class File extends Entity
     /** @var int|null */
     public ?int $DetallePersona_archivo_Count = null;
 
-    /** @var DetallePersona[] (ref detalle_persona.archivo _m:o file.id) */
+    /** @var \Fines2\DetallePersona[] (ref detalle_persona.archivo _m:o file.id) */
     public array $DetallePersona_archivo_ = [];
 
 }

@@ -34,7 +34,7 @@ class Email extends Entity
     /** @var bool|null */
     public ?bool $verificado = null;
 
-    /** @var Persona|null (fk email.persona _m:o persona.id) */
+    /** @var \Fines2\Persona_|null (fk email.persona _m:o persona.id) */
     public ?\Fines2\Persona_ $persona_ = null;
 
 }

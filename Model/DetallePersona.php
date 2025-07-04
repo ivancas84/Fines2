@@ -40,10 +40,10 @@ class DetallePersona extends Entity
     /** @var string|null */
     public ?string $tipo = null;
 
-    /** @var File|null (fk detalle_persona.archivo _m:o file.id) */
-    public ?\Fines2\File_ $archivo_ = null;
+    /** @var \Fines2\File|null (fk detalle_persona.archivo _m:o file.id) */
+    public ?\Fines2\File $archivo_ = null;
 
-    /** @var Persona|null (fk detalle_persona.persona _m:o persona.id) */
+    /** @var \Fines2\Persona_|null (fk detalle_persona.persona _m:o persona.id) */
     public ?\Fines2\Persona_ $persona_ = null;
 
 }

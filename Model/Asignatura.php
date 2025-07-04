@@ -37,13 +37,13 @@ class Asignatura extends Entity
     /** @var int|null */
     public ?int $Curso_Count = null;
 
-    /** @var Curso[] (ref curso.asignatura _m:o asignatura.id) */
+    /** @var \Fines2\Curso_[] (ref curso.asignatura _m:o asignatura.id) */
     public array $Curso_ = [];
 
     /** @var int|null */
     public ?int $Disposicion_Count = null;
 
-    /** @var Disposicion[] (ref disposicion.asignatura _m:o asignatura.id) */
+    /** @var \Fines2\Disposicion_[] (ref disposicion.asignatura _m:o asignatura.id) */
     public array $Disposicion_ = [];
 
 }

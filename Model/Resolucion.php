@@ -31,7 +31,7 @@ class Resolucion extends Entity
     /** @var int|null */
     public ?int $Alumno_resolucion_inscripcion_Count = null;
 
-    /** @var Alumno[] (ref alumno.resolucion_inscripcion _m:o resolucion.id) */
+    /** @var \Fines2\Alumno[] (ref alumno.resolucion_inscripcion _m:o resolucion.id) */
     public array $Alumno_resolucion_inscripcion_ = [];
 
 }

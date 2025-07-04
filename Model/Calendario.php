@@ -40,7 +40,7 @@ class Calendario extends Entity
     /** @var int|null */
     public ?int $Comision_Count = null;
 
-    /** @var Comision[] (ref comision.calendario _m:o calendario.id) */
+    /** @var \Fines2\Comision_[] (ref comision.calendario _m:o calendario.id) */
     public array $Comision_ = [];
 
 }

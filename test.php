@@ -13,9 +13,8 @@ $db = DbMy::getInstance();
 $dataProvider = $db->CreateDataProvider();
 
 
-
-$persona = new \Fines2\Persona_();
-
-echo gettype($persona->email_verificado);
-
-
+$calendarios = $dataProvider->fetchAllEntitiesByParams("\\Fines2\\Calendario_");
+foreach($calendarios as $calendario){
+    echo $calendario->getLabel();
+    echo "<br>";    
+}

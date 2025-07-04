@@ -31,13 +31,13 @@ class CentroEducativo extends Entity
     /** @var string|null */
     public ?string $observaciones = null;
 
-    /** @var Domicilio|null (fk centro_educativo.domicilio _m:o domicilio.id) */
+    /** @var \Fines2\Domicilio_|null (fk centro_educativo.domicilio _m:o domicilio.id) */
     public ?\Fines2\Domicilio_ $domicilio_ = null;
 
     /** @var int|null */
     public ?int $Sede_Count = null;
 
-    /** @var Sede[] (ref sede.centro_educativo _m:o centro_educativo.id) */
+    /** @var \Fines2\Sede_[] (ref sede.centro_educativo _m:o centro_educativo.id) */
     public array $Sede_ = [];
 
 }

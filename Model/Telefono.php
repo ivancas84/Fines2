@@ -37,7 +37,7 @@ class Telefono extends Entity
     /** @var string|null */
     public ?string $tipo = null;
 
-    /** @var Persona|null (fk telefono.persona _m:o persona.id) */
+    /** @var \Fines2\Persona_|null (fk telefono.persona _m:o persona.id) */
     public ?\Fines2\Persona_ $persona_ = null;
 
 }

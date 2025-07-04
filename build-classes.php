@@ -14,7 +14,10 @@ require_once MAIN_PATH . 'schema_.php';
 use SqlOrganize\Model\BuildClasses;
 use Fines2\Schema_;
 use Fines2\MainConfig;
+use SqlOrganize\Sql\DbMy;
 
-BuildClasses::Build(MainConfig::getConfigModel(), Schema_::getEntities());
+DbMy::createInstance(MainConfig::getConfigDb(), Schema_::getEntities());
+$db = DbMy::getInstance();
+BuildClasses::Build(MainConfig::getConfigModel(), $db->entities);
 
 echo "Fin";

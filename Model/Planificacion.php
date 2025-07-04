@@ -31,19 +31,19 @@ class Planificacion extends Entity
     /** @var string|null */
     public ?string $semestre = null;
 
-    /** @var Plan|null (fk planificacion.plan _m:o plan.id) */
-    public ?\Fines2\Plan_ $plan_ = null;
+    /** @var \Fines2\Plan|null (fk planificacion.plan _m:o plan.id) */
+    public ?\Fines2\Plan $plan_ = null;
 
     /** @var int|null */
     public ?int $Comision_Count = null;
 
-    /** @var Comision[] (ref comision.planificacion _m:o planificacion.id) */
+    /** @var \Fines2\Comision_[] (ref comision.planificacion _m:o planificacion.id) */
     public array $Comision_ = [];
 
     /** @var int|null */
     public ?int $Disposicion_Count = null;
 
-    /** @var Disposicion[] (ref disposicion.planificacion _m:o planificacion.id) */
+    /** @var \Fines2\Disposicion_[] (ref disposicion.planificacion _m:o planificacion.id) */
     public array $Disposicion_ = [];
 
 }

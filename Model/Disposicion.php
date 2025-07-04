@@ -31,34 +31,34 @@ class Disposicion extends Entity
     /** @var string|null */
     public ?string $planificacion = null;
 
-    /** @var Asignatura|null (fk disposicion.asignatura _m:o asignatura.id) */
-    public ?\Fines2\Asignatura_ $asignatura_ = null;
+    /** @var \Fines2\Asignatura|null (fk disposicion.asignatura _m:o asignatura.id) */
+    public ?\Fines2\Asignatura $asignatura_ = null;
 
-    /** @var Planificacion|null (fk disposicion.planificacion _m:o planificacion.id) */
+    /** @var \Fines2\Planificacion_|null (fk disposicion.planificacion _m:o planificacion.id) */
     public ?\Fines2\Planificacion_ $planificacion_ = null;
 
     /** @var int|null */
     public ?int $Calificacion_Count = null;
 
-    /** @var Calificacion[] (ref calificacion.disposicion _m:o disposicion.id) */
+    /** @var \Fines2\Calificacion_[] (ref calificacion.disposicion _m:o disposicion.id) */
     public array $Calificacion_ = [];
 
     /** @var int|null */
     public ?int $Curso_Count = null;
 
-    /** @var Curso[] (ref curso.disposicion _m:o disposicion.id) */
+    /** @var \Fines2\Curso_[] (ref curso.disposicion _m:o disposicion.id) */
     public array $Curso_ = [];
 
     /** @var int|null */
     public ?int $DisposicionPendiente_Count = null;
 
-    /** @var DisposicionPendiente[] (ref disposicion_pendiente.disposicion _m:o disposicion.id) */
+    /** @var \Fines2\DisposicionPendiente[] (ref disposicion_pendiente.disposicion _m:o disposicion.id) */
     public array $DisposicionPendiente_ = [];
 
     /** @var int|null */
     public ?int $DistribucionHoraria_Count = null;
 
-    /** @var DistribucionHoraria[] (ref distribucion_horaria.disposicion _m:o disposicion.id) */
+    /** @var \Fines2\DistribucionHoraria[] (ref distribucion_horaria.disposicion _m:o disposicion.id) */
     public array $DistribucionHoraria_ = [];
 
 }

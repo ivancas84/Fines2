@@ -242,7 +242,7 @@ class Entity
         foreach($entityMetadata->tree as $tree){
             if(array_key_exists($tree->fieldName . "_", $treeData)){
                 $refEntityMetadata = $this->_db->getEntityMetadata($tree->refEntityName);
-                $className = $refEntityMetadata->getClassNameWithNamespace()."_";
+                $className = $refEntityMetadata->getQualifiedClassName()."_";
                 $obj = new $className($this->_db);
                 $obj->ssetFromTree($treeData[$tree->fieldName . "_"]);
                 $this->set($tree->fieldName . "_", $obj);

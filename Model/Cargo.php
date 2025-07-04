@@ -25,7 +25,7 @@ class Cargo extends Entity
     /** @var int|null */
     public ?int $Designacion_Count = null;
 
-    /** @var Designacion[] (ref designacion.cargo _m:o cargo.id) */
+    /** @var \Fines2\Designacion_[] (ref designacion.cargo _m:o cargo.id) */
     public array $Designacion_ = [];
 
 }

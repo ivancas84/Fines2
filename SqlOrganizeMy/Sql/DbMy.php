@@ -38,18 +38,24 @@ class DbMy extends Db
     }
 
         // Accessor
-    public static function getInstance(): DB
+    public static function getInstance(): DbMy
     {
         return self::$instance;
     }
 
-    public static function initInstance(?Config $config, array $entities){
+    public static function createInstance(?Config $config, array $entities): DbMy{
         self::$instance = new DbMy($config, $entities);
+        return self::$instance;
+    }
+
+    public static function initInstance(?Config $config, array $entities): DbMy{
+        self::createInstance($config, $entities);
 
         foreach(self::$instance->entities as $entityMetadata){
             require_once rtrim($config->dataClassesPath, '/') . '/' . $entityMetadata->getClassName() .'.php';
-            require_once rtrim($config->dataClassesPath, '/') . '/' . $entityMetadata->getClassName() .'_.php';
         }
+
+        return self::$instance;
     }
 
 
