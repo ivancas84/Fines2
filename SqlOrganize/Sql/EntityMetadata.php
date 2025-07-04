@@ -29,10 +29,10 @@ class EntityMetadata
             : $this->_className;
     }
 
-    public function getClassNameWithNamespace(): string
+    public function getQualifiedClassName(): string
     {
         $namespace = (!empty($this->db->config->namespace)) ? "\\".$this->db->config->namespace ."\\" : "";
-        return $namespace . $this->getClassName();
+        return $namespace . $this->getClassName() . "_";
     }
     
     public function setClassName(string $className): void
@@ -197,12 +197,12 @@ class EntityMetadata
         $this->_oor = [];
         $this->_om = [];
         
-        foreach ($this->db->entities as $entityName => $entity) {
-            foreach ($entity->fk as $fieldName) {
+        foreach ($this->db->entitiesMetadata as $entityName => $entityMetadata) {
+            foreach ($entityMetadata->fk as $fieldName) {
                 $field = $this->db->Field($entityName, $fieldName);
                 if ($field->refEntityName === $this->name) {
                     $this->_ref[] = $field;
-                    if (in_array($field->name, $entity->unique)) {
+                    if (in_array($field->name, $entityMetadata->unique)) {
                         $this->_oor[] = $field;
                     } else {
                         $this->_om[] = $field;

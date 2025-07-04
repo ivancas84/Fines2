@@ -31,7 +31,7 @@ function ppc3_procesar_planilla_calificacion_page() {
 
     $dataProvider = $db->CreateDataProvider();
     
-    /** @var Curso_ */ $curso = $dataProvider->fetchEntityByParams("\Fines2\Curso_", ["id" => $_GET['curso_id']]);
+    /** @var Curso_ */ $curso = $dataProvider->fetchEntityByParams("curso", ["id" => $_GET['curso_id']]);
     if(empty($curso)) throw new Exception("No se ha encontrado el curso");
  
     echo "<h1>Cargar calificaciones en curso " . $curso->getLabel() . "</h1>";

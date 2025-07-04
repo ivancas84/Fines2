@@ -13,9 +13,10 @@ $db = DbMy::getInstance();
 $dataProvider = $db->CreateDataProvider();
 
 
+$data = $dataProvider->fetchAllEntitiesByParams("planificacion");
+for ($i = 0; $i < count($data); $i++){
+    echo $i . " " . $data[$i]->getLabel() . "<br>";
+}
 
-$persona = new \Fines2\Persona_();
-
-echo gettype($persona->email_verificado);
 
 

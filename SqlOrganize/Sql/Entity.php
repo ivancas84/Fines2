@@ -17,6 +17,7 @@ use ReflectionProperty;
 
 /**
  * Comportamiento general para las clases de datos
+ *  
  */
 class Entity
 {
@@ -82,54 +83,40 @@ class Entity
     public int $_index = 0;
 
    
-    public static function createById(string $className, mixed $id): Entity {
-        $obj = new $className();
-        $fetched = $obj->_db->createDataProvider()->fetchEntityByParams($className, ["id" => $id]);
+    public function initById(mixed $id): Entity {
+        $fetched = $this->_db->createDataProvider()->fetchEntityByParams($this->_entityName, ["id" => $id]);
 
         if (!$fetched) {
             throw new Exception("No record found for ID");
         }
 
         $fetched->_status = 1;
-        $obj->_changeLog = [];
+        $this->_changeLog = [];
         return $fetched;
     }
 
-    /**
-     * Si se desea llamar a traves de un objeto utilizar $param = get_object_vars($param)
-     * Si se desea llamar a traves de una entidad utilizar $entity->toArray();
-     */
-    public static function createByUnique(string $className, array $param): Entity {
-        /** @var Entity */ $obj = new $className;
-        $fetched = $obj->_db->createDataProvider()->fetchEntityByUnique($className, $param);
-
+    public function initByUnique(array $param){
+        $fetched = $this->_db->createDataProvider()->fetchEntityByUnique($this->_entityName, $param);
         if ($fetched) {
-            $fetched->_status = 1;
-            $fetched->_changeLog = [];
-            return $fetched;
+            $this->ssetFromArray($fetched->toArray());
+            $this->_status = 1;
+            $this->_changeLog = [];
         } else {
-            $obj->ssetFromArray($param);
-            $obj->_status = -1;
+            $this->ssetFromArray($param);
+            $this->_status = -1;
         }
-
-        return $obj;
     }
 
-    public static function createNull(string $className, string $fieldName = "_label", ?string $fieldValue = null)
-    {
-        $obj = new $className();
-        $obj->set("id", null);
-        $fieldValue = $fieldValue ?? "-Seleccione " . ucwords($obj->_entityName) . "-";
-        $obj->set($fieldName, $fieldValue);
-        return $obj;
+    public function initNull(string $fieldName = "_label", ?string $fieldValue = null){
+        $this->set("id", null);
+        $fieldValue = $fieldValue ?? "-Seleccione " . ucwords($this->_entityName) . "-";
+        $this->set($fieldName, $fieldValue);
     }
 
-    public static function createEmpty(string $className, int $status = -1)
+    public function clear(int $status = -1)
     {
-        $obj = new $className();
-        $obj->_status = $status;
-        $obj->_changeLog = [];
-        return $obj;
+        $this->_status = $status;
+        $this->_changeLog = [];
     }
 
     /**
@@ -242,7 +229,7 @@ class Entity
         foreach($entityMetadata->tree as $tree){
             if(array_key_exists($tree->fieldName . "_", $treeData)){
                 $refEntityMetadata = $this->_db->getEntityMetadata($tree->refEntityName);
-                $className = $refEntityMetadata->getClassNameWithNamespace()."_";
+                $className = $refEntityMetadata->getQualifiedClassName();
                 $obj = new $className($this->_db);
                 $obj->ssetFromTree($treeData[$tree->fieldName . "_"]);
                 $this->set($tree->fieldName . "_", $obj);
@@ -523,9 +510,7 @@ class Entity
         $id = $this->get("id");
         
         if (!empty($id)) {
-            $className = get_class($this);
-            $entity = self::createById($className, $id);
-            $this->setFromArray($entity->toArray());
+            $this->initById($id);
         }
     }
 

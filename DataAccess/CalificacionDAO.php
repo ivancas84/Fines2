@@ -10,7 +10,7 @@ class CalificacionDAO
 
     public static function createAndPersist(ModifyQueries $modifyQueries, int $nota, string $idAlumno, string $idDisposicion, ?string $idCurso): Calificacion_{
         $dataProvider = DbMy::getInstance()->CreateDataProvider();
-        /** @var Calificacion_ */ $calificacion = $dataProvider->fetchEntityByParams("\Fines2\Calificacion_", ["alumno" => $idAlumno, "disposicion" => $idDisposicion]);
+        /** @var Calificacion_ */ $calificacion = $dataProvider->fetchEntityByParams("calificacion", ["alumno" => $idAlumno, "disposicion" => $idDisposicion]);
         if(empty($calificacion)){
             $calificacion = new Calificacion_();
         } else {
@@ -39,7 +39,7 @@ class CalificacionDAO
             AND persona.numero_documento IN (:numero_documento)
         ";  
 
-        return DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("\Fines2\Calificacion_", ["disposicion" => $disposicion, "numero_documento"=>$numero_documento] );
+        return DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["disposicion" => $disposicion, "numero_documento"=>$numero_documento] );
     }
 
 

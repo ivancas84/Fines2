@@ -23,7 +23,7 @@ function ap3_administrar_persona_page() {
     wp_page_message();
     $persona_id = isset($_GET['persona_id']) ? $_GET['persona_id'] : null;
 
-    $persona = (empty($persona_id)) ? new Persona_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("\Fines2\Persona_", ["id" =>$persona_id]);
+    $persona = (empty($persona_id)) ? new Persona_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("persona", ["id" =>$persona_id]);
 
     include plugin_dir_path(__FILE__) . 'ap3_persona_admin_form.html';
 
@@ -38,7 +38,8 @@ function ap3_administrar_persona_page() {
 
     $planes = $dataProvider->fetchAllEntities("plan");
 
-    $alumno = Entity::createByUnique("\Fines2\Alumno_", ["persona" => $persona->id])
+    $alumno = new Alumno_();
+    $alumno->initByUnique(["persona" => $persona->id]);
 
     include plugin_dir_path(__FILE__) . 'ap3_alumno_admin_form.html';
 

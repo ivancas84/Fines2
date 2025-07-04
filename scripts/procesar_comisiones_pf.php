@@ -16,7 +16,7 @@ $dataProvider = $db->CreateDataProvider();
 $pdoFines = new PdoFines(DB_HOST_FINES, DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES);
 
 
-$comisiones = $dataProvider->fetchAllEntitiesByParams("\Fines2\Comision_", ["calendario"=>CALENDARIO_ID]);
+$comisiones = $dataProvider->fetchAllEntitiesByParams("comision", ["calendario"=>CALENDARIO_ID]);
 
 $pfids = ValueTypesUtils::arrayOfName($comisiones, "pfid");
 // Path to your JSON file
@@ -51,9 +51,9 @@ foreach (array_filter(explode(PHP_EOL, $dataText)) as $line) {
                 $cuil = $matches[0];
                 $cuilParts = explode("-", $cuil);
 
-                $persona = $dataProvider->fetchEntityByUnique("\Fines2\Persona_", ["numero_documento"=>$cuilParts[1]]);
+                /** @var \Fines2\Persona_ */ $persona = $dataProvider->fetchEntityByUnique("persona", ["numero_documento"=>$cuilParts[1]]);
 
-                if (empty($$persona)) {
+                if (empty($persona)) {
                     echo "No existe docente " . $cuil . "<br/>";
                     continue;
                 } else {

@@ -6,7 +6,7 @@ use SqlOrganize\Sql\DbMy;
 
 $db = DbMy::getInstance();
 
-$personas = $db->CreateDataProvider()->fetchAllEntitiesByParams("\Fines2\Persona_", ["id" =>'10']);
+$personas = $db->CreateDataProvider()->fetchAllEntitiesByParams("persona", ["id" =>'10']);
 
 echo "<pre>";
 

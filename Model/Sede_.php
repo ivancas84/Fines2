@@ -16,7 +16,7 @@ class Sede_ extends Sede
         $sql = "SELECT id 
                 FROM sede WHERE centro_educativo = '6047d36d50316'  
                 ORDER BY nombre ASC";
-        return $dataProvider->fetchAllEntitiesBySqlId("\Fines2\Sede_", $sql);
+        return $dataProvider->fetchAllEntitiesBySqlId("sede", $sql);
     }
 
     public ?string $designaciones = null;

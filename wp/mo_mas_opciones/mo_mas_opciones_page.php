@@ -24,7 +24,7 @@ function mo_mas_opciones_page() {
 
     wp_page_message();
 
-    $comision = (empty($comision_id)) ? new Comision_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("\Fines2\Comision_", ["id" =>$comision_id]);
+    $comision = (empty($comision_id)) ? new Comision_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("comision", ["id" =>$comision_id]);
     include plugin_dir_path(__FILE__) . 'mo_mas_opciones_page.html';
 }
 

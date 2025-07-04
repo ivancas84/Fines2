@@ -6,7 +6,7 @@ use PDO;
 use PDOException;
 use DateTimeInterface;
 /**
- * Contenedor principal de SqlOrganize
+ * Mapeo de la base de datos. Contenedor principal de SqlOrganize.
  * 
  * Db utiliza y es utilizado como herramienta en varios patrones de diseño: AbstractFactory, AbstractCreator, AbstractBuilder, Singleton.
  * Una implementación de Db para un determinado motor de base de datos, sera el ConcreteFactory (Ej DbMy extends Db).
@@ -18,26 +18,35 @@ abstract class Db
 {
 
     /** @var array<string, EntityMetadata> */
-    public array $entities;
+    public array $entitiesMetadata;
 
     public PDO $pdo;
     public Config $config;
     
-    protected function __construct(Config $config, array $entities)
+    /**
+     * El constructor recibe un conjunto de metadatos de entidades (EntityMetadata[] $entitiesMetadata).
+     * Se recorre $entitiesMetadata para inicializar la propiedad $_db de cada una de ellas
+     * Cada entidad posee un conjunto de fields (FieldMetadata) 
+     * Se recorre $fieldsMetadata para inicializar la propiedad $_db de cada una de ellas
+     * De esta forma toda la estructura accede a la misma Db
+     * 
+     * @param EntityMetadata[] $entitiesMetadata
+     */
+    protected function __construct(Config $config, array $entitiesMetadata)
     {
         $this->config = $config;
-        $this->initEntities($entities);
+        $this->initEntitiesMetadata($entitiesMetadata);
     }
 
     protected abstract function initPdo();
     
-    protected function initEntities(array $entities){
-        $this->entities = $entities;
+    protected function initEntitiesMetadata(array $entities){
+        $this->entitiesMetadata = $entities;
 
-        foreach ($this->entities as $entity) {
-            $entity->db = $this;
+        foreach ($this->entitiesMetadata as $entityMetadata) {
+            $entityMetadata->db = $this;
             
-            foreach ($entity->fields as $field) {
+            foreach ($entityMetadata->fields as $field) {
                 $field->db = $this;
             }
         }
@@ -58,11 +67,11 @@ abstract class Db
      */
     public function FieldsEntity(string $entityName): array
     {
-        if (!array_key_exists($entityName, $this->entities)) {
+        if (!array_key_exists($entityName, $this->entitiesMetadata)) {
             throw new \Exception("La entidad " . $entityName . " no existe");
         }
         
-        return $this->entities[$entityName]->fields;
+        return $this->entitiesMetadata[$entityName]->fields;
     }
     
     /**
@@ -82,7 +91,7 @@ abstract class Db
      */
     public function EntityNames(): array
     {
-        return array_keys($this->entities);
+        return array_keys($this->entitiesMetadata);
     }
     
     /**
@@ -182,11 +191,11 @@ abstract class Db
      */
     public function GetEntityMetadata(string $entityName): EntityMetadata
     {
-        if (!array_key_exists($entityName, $this->entities)) {
+        if (!array_key_exists($entityName, $this->entitiesMetadata)) {
             throw new \Exception("La entidad " . $entityName . " no existe");
         }
         
-        return $this->entities[$entityName];
+        return $this->entitiesMetadata[$entityName];
     }
     
   

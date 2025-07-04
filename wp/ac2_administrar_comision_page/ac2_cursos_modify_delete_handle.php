@@ -29,7 +29,8 @@ function ac2_cursos_modify_delete_handle() {
         while (isset($_POST["curso_id$i"])) {
             $cursoData = ValueTypesUtils::filterArrayBySuffix($_POST, $i);
 
-            $curso = Entity::createById("\Fines2\Curso_", $cursoData["curso_id"]);
+            $curso = new Curso_();
+            $curso->initById($cursoData["curso_id"]);
             $curso->setFromArray($cursoData);
             $curso->update();
             $i++;

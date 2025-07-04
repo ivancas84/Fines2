@@ -29,7 +29,7 @@ function lcu_lista_cursos_page() {
 
     $pdo = new PdoFines();
 
-    $calendarios = $dataProvider->fetchAllEntitiesByParams("\Fines2\Calendario_",[], ["anio" => "DESC", "semestre" => "DESC"]);
+    $calendarios = $dataProvider->fetchAllEntitiesByParams("calendario",[], ["anio" => "DESC", "semestre" => "DESC"]);
 	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : '';
 
     if(!$selected_calendario){

@@ -28,7 +28,7 @@ class Planificacion_ extends Planificacion
                 INNER JOIN plan ON planificacion.plan = plan.id 
                 ORDER BY plan.resolucion, plan.orientacion, planificacion.anio, planificacion.semestre";
 
-        $entities = $dataProvider->fetchAllEntitiesBySqlId("\Fines2\Planificacion_", $sql);
+        $entities = $dataProvider->fetchAllEntitiesBySqlId("planificacion", $sql);
         return $entities;
     }
 

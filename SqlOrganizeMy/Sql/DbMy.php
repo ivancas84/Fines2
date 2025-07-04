@@ -2,6 +2,7 @@
 
 namespace SqlOrganize\Sql;
 
+use Exception;
 use PDO;
 
 /**
@@ -40,13 +41,14 @@ class DbMy extends Db
         // Accessor
     public static function getInstance(): DB
     {
+        if(empty(self::$instance)) throw new Exception("Instancia no inicializada, ejecute initInstance");
         return self::$instance;
     }
 
     public static function initInstance(?Config $config, array $entities){
         self::$instance = new DbMy($config, $entities);
 
-        foreach(self::$instance->entities as $entityMetadata){
+        foreach(self::$instance->entitiesMetadata as $entityMetadata){
             require_once rtrim($config->dataClassesPath, '/') . '/' . $entityMetadata->getClassName() .'.php';
             require_once rtrim($config->dataClassesPath, '/') . '/' . $entityMetadata->getClassName() .'_.php';
         }

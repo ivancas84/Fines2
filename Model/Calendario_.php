@@ -20,6 +20,6 @@ class Calendario_ extends Calendario
         $sql = "SELECT id
                 FROM calendario 
                 ORDER BY anio DESC, semestre DESC";
-        return $dataProvider->fetchAllEntitiesBySqlId("\Fines2\Calendario_", $sql);
+        return $dataProvider->fetchAllEntitiesBySqlId("calendario", $sql);
     }
 }

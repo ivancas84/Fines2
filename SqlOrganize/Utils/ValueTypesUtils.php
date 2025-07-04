@@ -83,8 +83,9 @@ public static function arrayOfName(iterable $objects, string $name): array
     /**
      * Convierte un string a Title Case usando configuración es-AR
      */
-    public static function toTitleCase(string $str): string
+    public static function toTitleCase(?string $str): string
     {
+        if(empty($str)) return "";
         $str = str_replace('_', ' ', $str);
         return mb_convert_case($str, MB_CASE_TITLE, 'UTF-8');
     }

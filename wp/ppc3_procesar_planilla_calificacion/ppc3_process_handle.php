@@ -21,7 +21,7 @@ function ppc3_process_handle() {
 
     $dataProvider = $db->CreateDataProvider();
     
-    /** @var Curso_ */ $curso = $dataProvider->fetchEntityByParams("\Fines2\Curso_", ["id" => $curso_id]);
+    /** @var Curso_ */ $curso = $dataProvider->fetchEntityByParams("curso", ["id" => $curso_id]);
     if(empty($curso)) throw new Exception("No se ha encontrado el curso");
  
     if (!isset($_POST['submit']) || empty($_POST['data']) || empty($_POST['format'])) {

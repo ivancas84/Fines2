@@ -34,7 +34,7 @@ class Disposicion_ extends Disposicion
             ORDER BY asignatura.nombre, planificacion.anio, planificacion.semestre, plan.resolucion, plan.orientacion ASC;
         ";
 
-        return $dataProvider->fetchAllEntitiesBySqlId("\Fines2\Disposicion_", $sql);
+        return $dataProvider->fetchAllEntitiesBySqlId("disposicion", $sql);
     }
 
 }

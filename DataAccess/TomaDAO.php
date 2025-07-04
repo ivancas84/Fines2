@@ -21,7 +21,7 @@ public static function TomasByCalendario($calendario): array {
             WHERE calendario = :calendario
         ";
 
-        return $dataProvider->fetchAllEntitiesBySqlId("\Fines2\Toma_", $sql, ["calendario" => $calendario]);
+        return $dataProvider->fetchAllEntitiesBySqlId("toma", $sql, ["calendario" => $calendario]);
     }
 
 
@@ -39,7 +39,7 @@ public static function TomasByCalendario($calendario): array {
             WHERE calendario = :calendario
         ";
 
-        return $dataProvider->fetchAllEntitiesBySqlId("\Fines2\Toma_", $sql, ["calendario" => $calendario]);
+        return $dataProvider->fetchAllEntitiesBySqlId("toma", $sql, ["calendario" => $calendario]);
     }
 
     public static function TomaActivaByCurso($curso_id): Toma_{
@@ -58,7 +58,7 @@ public static function TomasByCalendario($calendario): array {
             AND curso.id = :curso_id
         ";
 
-        return $dataProvider->fetchEntityBySqlId("\Fines2\Toma_", $sql, ["curso_id" => $curso_id]);
+        return $dataProvider->fetchEntityBySqlId("toma", $sql, ["curso_id" => $curso_id]);
     }
 
     public static function TomasContralorByCalendario($calendario): array {
@@ -79,6 +79,6 @@ public static function TomasByCalendario($calendario): array {
             ORDER BY persona.numero_documento ASC;
         ";
 
-        return $dataProvider->fetchAllEntitiesBySqlId("\Fines2\Toma_", $sql, ["calendario" => $calendario]);
+        return $dataProvider->fetchAllEntitiesBySqlId("toma", $sql, ["calendario" => $calendario]);
     }
 }

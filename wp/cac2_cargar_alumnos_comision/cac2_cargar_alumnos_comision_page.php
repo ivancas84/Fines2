@@ -28,7 +28,7 @@ function cac2_cargar_alumnos_comision_page() {
 
     $dataProvider = $db->CreateDataProvider();
     
-    /** @var Comision_ */ $comision = $dataProvider->fetchEntityByParams("\Fines2\Comision_", ["id" => $_GET['comision_id']]);
+    /** @var Comision_ */ $comision = $dataProvider->fetchEntityByParams("comision", ["id" => $_GET['comision_id']]);
     if(empty($comision)) throw new Exception("No se ha encontrado la comision");
  
     echo "<h1>Cargar alumnos en comisión " . $comision->getLabel() . "</h1>";
