@@ -33,12 +33,12 @@ function ppc3_process_handle() {
     $format = $_POST['format'];
     $result = Tools::excelParse($rawData);
    
-    foreach($result as $row) {
+    foreach($result as $data) {
         try {
             $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
             if($format == "pf"){
                 try {
-                    $data = PfUtils::parseRowCalificacionPF($row);
+                    $data = PfUtils::parseRowCalificacionPF($data);
                 } catch(Exception $ex){
                     continue;
                 }
@@ -46,11 +46,11 @@ function ppc3_process_handle() {
 
             /** @var Persona_ */ $persona = PersonaDAO::createAndPersist($modifyQueries, $data);
 
-            /** @var Alumno_ */ $alumno = AlumnoDAO::createAndPersist($modifyQueries, $persona->id, $comision->planificacion_->plan); 
+            /** @var Alumno_ */ $alumno = AlumnoDAO::createAndPersist($modifyQueries, $persona->id, $curso->comision_->planificacion_->plan); 
 
-           /** @var AlumnoComision_ */ $alumnoComision = AlumnoComisionDAO::createAndPersist($modifyQueries, $alumno->id, $comision->id, "Importado desde planilla de calificaciones");
+           /** @var AlumnoComision_ */ $alumnoComision = AlumnoComisionDAO::createAndPersist($modifyQueries, $alumno->id, $curso->comision_->id, "Importado desde planilla de calificaciones");
 
-            /** @var Calificacion_ */ $calificacion = CalificacionDAO::createAndPersist($modifyQueries, $nota, $alumno->id, $curso->disposicion, $curso->id);
+            /** @var Calificacion_ */ $calificacion = CalificacionDAO::createAndPersist($modifyQueries, $data["nota"], $alumno->id, $curso->disposicion, $curso->id);
 
             $modifyQueries->process();
             wp_redirect_handle("fines-plugin-ppc3", "curso_id", $curso->id, "Registro realizado");  

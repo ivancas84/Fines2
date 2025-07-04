@@ -63,7 +63,7 @@ class DataProvider {
         if(empty($treeRow)) return null;
 
         $className = $this->db->GetEntityMetadata($entityName)->getQualifiedClassName();
-        $obj = new $className;
+        /** @var Entity */ $obj = new $className;
         $obj->ssetFromTree($treeRow);
         return $obj;
     }

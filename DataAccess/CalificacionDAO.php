@@ -15,7 +15,9 @@ class CalificacionDAO
             $calificacion = new Calificacion_();
         } else {
             $calificacion->_status = 1;
+            $calificacion->_changeLog = [];
         }
+
         $calificacion->set("alumno", $idAlumno);
         $calificacion->set("disposicion", $idDisposicion);
         $calificacion->set("curso", $idCurso);

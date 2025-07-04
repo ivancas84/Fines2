@@ -34,9 +34,12 @@ class Entity
     public function htmlChangeLog(): string{
         $html = "<p><strong>changelog $this->_entityName </strong></p>";
         if(!empty($this->_changeLog)){
-            $html .= "<pre>";
-            $html .= print_r($this->_changeLog, true);
-            $html .= "</pre>";
+            $html .= "<dl>";
+            foreach($this->_changeLog as $fieldName => $value){
+                $html .= "<dt>" . $fieldName . "</dt>";
+                $html .= "<dd>" . gettype($value) . " " . ValueTypesUtils::toString($value) . " --- " . gettype($this->get($fieldName)) . " " . ValueTypesUtils::toString($this->get($fieldName)) . "</dd>";
+            }
+            $html .= "</dl>";
         } else {
             $html .= "<p>changeLog vacío</p>";
         }
@@ -132,14 +135,17 @@ class Entity
      */
     public function set(string $fieldName, $value, $changeStatus = true): void
     {
-        if($value === $this->$fieldName){
+        if($value == $this->$fieldName){
             return;
+        }
+
+        if (!($value instanceof Entity)) {
+            $this->_changeLog[$fieldName] = $this->$fieldName;
+
+            if ($changeStatus && $this->_status > 0) $this->_status = 0;
         }
         
         $this->$fieldName = $value;
-        $this->_changeLog[$fieldName] = $value;
-        if($changeStatus && $this->_status > 0)
-            $this->_status = 0;
     }
 
     public function setFk(string $fieldName, Entity $value): void
