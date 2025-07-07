@@ -39,12 +39,12 @@ function fines_plugin_menu() {
       'Fines', // Título del menú
       'edit_posts', // Permisos
       'fines-plugin', // Slug del menú
-      'lc2_lista_comisiones_page', // Función que muestra la página principal del plugin
+      'fines-plugin-lc2', // Función que muestra la página principal del plugin
       'dashicons-admin-generic', // Icono del menú
       1 // Posición en el menú
     );
 
-    include_once plugin_dir_path(__FILE__) . 'lc2_lista_comisiones_page/lc2_lista_comisiones_page.php';
+    include_once plugin_dir_path(__FILE__) . 'lc2_lista_comisiones/lc2_lista_comisiones_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
     
@@ -231,6 +231,7 @@ function fines_plugin_menu() {
 
 include_once plugin_dir_path(__FILE__) . 'cac2_cargar_alumnos_comision/cac2_process_handle.php';
 include_once plugin_dir_path(__FILE__) . 'ppc3_procesar_planilla_calificacion/ppc3_process_handle.php';
+include_once plugin_dir_path(__FILE__) . 'lc2_lista_comisiones/lc2_comision_delete_handle.php';
 
 
 include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_comision_admin_handle.php';

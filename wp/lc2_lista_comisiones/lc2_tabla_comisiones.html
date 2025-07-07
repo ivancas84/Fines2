@@ -31,12 +31,18 @@
                 <td><?= esc_html($comision->turno); ?></td>
                 <td><?= $referentesLabel[$comision->sede] ?? 'Sin referentes' ?></td>
                 <td>
-                    <a href="<?= esc_url($detalle_comision_url); ?>" title="Detalle" class="button"><span  class="dashicons dashicons-edit"></span></a> 
-                    <a href="<?= esc_url($cargar_alumnos_url); ?>" title="Cargar" class="button"><span  class="dashicons dashicons-buddicons-buddypress-logo"></span></a> 
-                    <a href="<?= esc_url($rindex_url); ?>" class="button">Rindex</a> 
+                    <a href="<?= esc_url($detalle_comision_url); ?>" title="Detalle" ><button type="button"><span  class="dashicons dashicons-edit"></span></button> </a>
+                    <a href="<?= esc_url($cargar_alumnos_url); ?>" title="Cargar" ><button type="button"><span  class="dashicons dashicons-buddicons-buddypress-logo"></span></button></a> 
+                    <a href="<?= esc_url($rindex_url); ?>" title="Rindex" ><button type="button"><span  class="dashicons dashicons-media-spreadsheet"></span></button></a> 
                     <a href="<?= esc_url($lista_alumnos_url); ?>" class="button">Alumnos</a>
                     <a href="<?= esc_url($administrar_tomas_url); ?>" class="button">Tomas</a>
-
+                    <form action="<?='/comision_delete.php'?>" target="_blank" method="POST" onsubmit="return confirm('Are you sure?');" style="display:inline;">
+                        <?php wp_html_init_form("lc2_comision_delete", "calendario_id", $selected_calendario); ?>
+                        <input type="hidden" name="comision_id" value="<?=$comision->id?>">
+                        <button  type="submit" style="color:red;" title="Eliminar">
+                            <span  class="dashicons dashicons-remove"></span>
+                         </button>
+      </form>
                 </td>
             </tr>
         <? endforeach; ?>

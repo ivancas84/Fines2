@@ -10,9 +10,13 @@ use DateTimeInterface;
 
 abstract class ModifyQueries
 {
-    private $sqlBuilder = "";
+    private $sql = "";
     private $parameterCounter = 0;
 
+
+    public function getSql(){
+        return $this->sql;
+    }
     /**
      * Detalle de elementos persistidos.
      * Permite identificar rápidamente todas las entidades modificadas en la base de datos.
@@ -59,7 +63,7 @@ abstract class ModifyQueries
 
     public function toArray(){
         return [
-            "sqlBuilder" => $this->sqlBuilder,
+            "sql" => $this->sql,
             "parameters" => $this->parameters,
             "parameterCounter" => $this->parameterCounter,
             "detail" => $this->detail,
@@ -67,7 +71,7 @@ abstract class ModifyQueries
     }
 
     public function fromArray(array $data){
-        $this->sqlBuilder = $data["sqlBuilder"];
+        $this->sql = $data["sql"];
         $this->parameters = $data["parameters"];
         $this->parameterCounter = $data["parameterCounter"];
         $this->detail = $data["detail"];
@@ -167,7 +171,7 @@ abstract class ModifyQueries
             'Action' => 'update'
         ];
 
-        $this->sqlBuilder .= $sql . "\n";
+        $this->sql .= $sql . "\n";
     }
 
     public function buildUpdateSqlByCompare(Entity $entityToUpdate, Entity $entityToCompare, ?CompareParams $cmp = null){
@@ -231,7 +235,7 @@ abstract class ModifyQueries
         ];
         
         // Agregar al SQL builder
-        $this->sqlBuilder .= $sql . ";\n";
+        $this->sql .= $sql . ";\n";
     }
 
     public function buildUpdateKeyValueSqlByIds($entityName, $key, $value, ...$ids): void
@@ -244,8 +248,8 @@ abstract class ModifyQueries
                "FROM {$entityMetadata->getSchemaNameAlias()} " .
                "WHERE {$idMap} IN (:{$prefix}Ids)";
 
-        $this->sqlBuilder .= $this->processArrayParameters($entityName, "update", $sql, [$prefix . 'Key' => $value, "{$prefix}Ids" => $ids]);
-        $this->sqlBuilder .= ";\n";
+        $this->sql .= $this->processArrayParameters($entityName, "update", $sql, [$prefix . 'Key' => $value, "{$prefix}Ids" => $ids]);
+        $this->sql .= ";\n";
     }
 
     protected function buildUpdateSqlByIds_(string $entityName, array $data, ...$ids): void
@@ -257,8 +261,8 @@ abstract class ModifyQueries
             WHERE {$idMap} IN (:{$prefix}Ids)";
 
         
-        $this->sqlBuilder .= $this->processArrayParameters($entityName, "update", $sql, ["{$prefix}Ids" => $ids]);
-        $this->sqlBuilder .= ";\n";
+        $this->sql .= $this->processArrayParameters($entityName, "update", $sql, ["{$prefix}Ids" => $ids]);
+        $this->sql .= ";\n";
     }
 
     /**
@@ -295,7 +299,7 @@ abstract class ModifyQueries
             'Action' => 'insert'
         ];
 
-        $this->sqlBuilder .= $sql . "\n";
+        $this->sql .= $sql . "\n";
     }
     
     public function buildInsertSqlIfNotExists(Entity $entity): void {
@@ -347,7 +351,7 @@ abstract class ModifyQueries
 
         $this->parameters[$prefix . 'Id'] = $id;
 
-        $sql = sprintf("DELETE %s FROM %s %s WHERE %s = (:%sId);\n",
+        $sql = sprintf("DELETE %s FROM %s %s WHERE %s = :%sId;\n",
             $metadata->alias,
             $metadata->name,
             $metadata->alias,
@@ -355,7 +359,7 @@ abstract class ModifyQueries
             $prefix
         );
 
-        $this->sqlBuilder .= $sql . "\n";
+        $this->sql .= $sql . "\n";
         return $sql;
     }
 
@@ -373,8 +377,7 @@ abstract class ModifyQueries
             $prefix
         );
 
-        $this->sqlBuilder .= $this->processArrayParameters($entityName, "delete", $sql, ["{$prefix}Ids" => $ids]);
-        $this->sqlBuilder .= ";\n";
+        $this->sql .= $this->processArrayParameters($entityName, "delete", $sql, ["{$prefix}Ids" => $ids]);
     }
 
 
@@ -384,7 +387,7 @@ abstract class ModifyQueries
     */
     public function _execute(PDO $connection): int
     {
-        $sql = $this->sqlBuilder;
+        $sql = $this->sql;
         if(empty($sql))
             return 0;   
         
@@ -405,6 +408,7 @@ abstract class ModifyQueries
             $errorInfo = $stmt->errorInfo();
             throw new Exception("SQL Error: " . $errorInfo[2]);
         }
+       
         return $stmt->rowCount();
     }
 

@@ -135,17 +135,15 @@ class Entity
      */
     public function set(string $fieldName, $value, $changeStatus = true): void
     {
-        if($value == $this->$fieldName){
-            return;
-        }
+        if(!ValueTypesUtils::valuesAreEqual($value, $this->$fieldName)){
+            if (!($value instanceof Entity)) {
+                $this->_changeLog[$fieldName] = $this->$fieldName;
 
-        if (!($value instanceof Entity)) {
-            $this->_changeLog[$fieldName] = $this->$fieldName;
-
-            if ($changeStatus && $this->_status > 0) $this->_status = 0;
+                if ($changeStatus && $this->_status > 0) $this->_status = 0;
+            }
+            
+            $this->$fieldName = $value;
         }
-        
-        $this->$fieldName = $value;
     }
 
     public function setFk(string $fieldName, Entity $value): void

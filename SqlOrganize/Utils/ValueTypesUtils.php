@@ -5,6 +5,47 @@ use DateTimeInterface;
 class ValueTypesUtils
 {
 
+    public static function valuesAreEqual($a, $b): bool
+    {
+        // Both null
+        if (is_null($a) && is_null($b)) {
+            return true;
+        }
+
+        // Only one null
+        if (is_null($a) || is_null($b)) {
+            return false;
+        }
+
+        // Compare DateTimeInterface
+        if ($a instanceof \DateTimeInterface && $b instanceof \DateTimeInterface) {
+            return $a->getTimestamp() === $b->getTimestamp();
+        }
+
+        // Compare numerics loosely
+        if (is_numeric($a) && is_numeric($b)) {
+            return $a == $b;
+        }
+
+        // Compare arrays by value
+        if (is_array($a) && is_array($b)) {
+            return $a == $b;
+        }
+
+        // Compare other objects
+        if (is_object($a) && is_object($b)) {
+            if (get_class($a) === get_class($b) && method_exists($a, '__toString')) {
+                return (string)$a === (string)$b;
+            }
+
+            return $a == $b; // fallback (may be unsafe depending on object)
+        }
+
+        // Fallback strict compare
+        return $a === $b;
+    }
+
+
 /**
  * Crea un diccionario de objetos indexado por la concatenación de propiedades.
  *
