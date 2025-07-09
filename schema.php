@@ -3034,7 +3034,7 @@ class Schema
         $entities['toma'] = EntityMetadata::getInstance('toma', 'toma');
         $entities['toma']->pk = ['id'];
         $entities['toma']->fk = ['curso', 'docente', 'planilla_docente', 'reemplazo'];
-        $entities['toma']->notNull = ['alta', 'confirmada', 'curso', 'id', 'reclamo', 'sin_planillas', 'tipo_movimiento'];
+        $entities['toma']->notNull = ['alta', 'confirmada', 'curso', 'id', 'reclamo', 'tipo_movimiento'];
 
         $entities['toma']->tree = [];
         $entities['toma']->tree['curso'] = EntityTree::getInstance('curso', 'curso', 'id');
@@ -3230,6 +3230,15 @@ class Schema
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
+        $entities['toma']->fields['estado_planilla'] = Field::getInstance('toma', 'estado_planilla', 'varchar', 'string');
+        $entities['toma']->fields['estado_planilla']->checks = [
+            'type' => 'string',
+        ];
+        $entities['toma']->fields['estado_planilla']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+            'nullIfEmpty' => true,
+        ];
         $entities['toma']->fields['fecha_toma'] = Field::getInstance('toma', 'fecha_toma', 'date', 'DateTime');
         $entities['toma']->fields['fecha_toma']->checks = [
             'type' => 'DateTime',
@@ -3281,12 +3290,6 @@ class Schema
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
-        ];
-        $entities['toma']->fields['sin_planillas'] = Field::getInstance('toma', 'sin_planillas', 'tinyint', 'bool');
-        $entities['toma']->fields['sin_planillas']->defaultValue = false;
-        $entities['toma']->fields['sin_planillas']->checks = [
-            'type' => 'bool',
-            'required' => '1',
         ];
         $entities['toma']->fields['tipo_movimiento'] = Field::getInstance('toma', 'tipo_movimiento', 'varchar', 'string');
         $entities['toma']->fields['tipo_movimiento']->checks = [

@@ -8,6 +8,7 @@ use \SqlOrganize\Sql\Entity;
 use \SqlOrganize\Utils\ValueTypesUtils;
 use \Fines2\Comision_;
 use \Fines2\DesignacionDAO;
+use Fines2\TomaDAO;
 use SqlOrganize\Sql\ModifyQueries;
 
 echo "<pre>";
@@ -16,11 +17,17 @@ $dataProvider = $db->CreateDataProvider();
 $comision_id = 'a199f325-7d76-496d-9467-0a79ccafe104';
 $db = DbMy::getInstance();
 $dataProvider = $db->CreateDataProvider();
-$sql = "SELECT DISTINCT CONCAT(persona.email, ', ', persona.email_abc) 
-        FROM toma 
-        INNER JOIN persona ON toma.docente = persona.id
-        INNER JOIN curso ON (toma.curso = curso.id)
-        INNER JOIN comision ON (curso.comision = comision.id)
-        WHERE comision.calendario = :calendario ";
-$emails = $dataProvider->fetchAllColumnSqlByParams($sql, 0, ["calendario"=>CALENDARIO_ID]);
+$tomas = TomaDAO::TomasActivasByCalendario(CALENDARIO_ID);
+
+$emails = [];
+foreach ($tomas as $toma){
+    if(!empty($toma->docente_->email) && !in_array($toma->docente_->email, $tomas))
+        array_push($emails, $toma->docente_->email);
+
+    if(!empty($toma->docente_->email_abc) && !in_array($toma->docente_->email_abc, $tomas))
+        array_push($emails, $toma->docente_->email_abc);
+        
+}
+
+
 echo implode(", ", $emails);

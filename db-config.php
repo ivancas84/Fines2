@@ -15,6 +15,7 @@ require_once MAIN_PATH . 'DataAccess/CursoDAO.php';
 require_once MAIN_PATH . 'DataAccess/DesignacionDAO.php';
 require_once MAIN_PATH . 'DataAccess/PersonaDAO.php';
 require_once MAIN_PATH . 'DataAccess/TomaDAO.php';
+require_once MAIN_PATH . 'ProgramaFines/PfUtils.php';
 
 
 use SqlOrganize\Sql\DbMy;

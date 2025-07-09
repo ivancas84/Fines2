@@ -40,6 +40,9 @@ class Toma extends Entity
     /** @var string|null */
     public ?string $estado_contralor = null;
 
+    /** @var string|null */
+    public ?string $estado_planilla = null;
+
     /** @var DateTime|null */
     public ?DateTime $fecha_toma = null;
 
@@ -57,9 +60,6 @@ class Toma extends Entity
 
     /** @var string|null */
     public ?string $reemplazo = null;
-
-    /** @var bool|null */
-    public ?bool $sin_planillas = null;
 
     /** @var string|null */
     public ?string $tipo_movimiento = null;

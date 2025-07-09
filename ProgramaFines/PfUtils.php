@@ -62,7 +62,7 @@ class PfUtils
             }
         }
 
-        if(empty($data["nombres"]) || empty($data["apellidos"]) || empty($data["calificacion"])){
+        if(empty($data["nombres"]) || empty($data["apellidos"]) || empty($data["nota"])){
             throw new Exception("Datos incompletos en la fila.");
         }
 
