@@ -25,9 +25,6 @@ class Toma extends Entity
     /** @var string|null */
     public ?string $comentario = null;
 
-    /** @var bool|null */
-    public ?bool $confirmada = null;
-
     /** @var string|null */
     public ?string $curso = null;
 

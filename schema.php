@@ -3034,7 +3034,7 @@ class Schema
         $entities['toma'] = EntityMetadata::getInstance('toma', 'toma');
         $entities['toma']->pk = ['id'];
         $entities['toma']->fk = ['curso', 'docente', 'planilla_docente', 'reemplazo'];
-        $entities['toma']->notNull = ['alta', 'confirmada', 'curso', 'id', 'reclamo', 'tipo_movimiento'];
+        $entities['toma']->notNull = ['alta', 'curso', 'id', 'reclamo', 'tipo_movimiento'];
 
         $entities['toma']->tree = [];
         $entities['toma']->tree['curso'] = EntityTree::getInstance('curso', 'curso', 'id');
@@ -3181,12 +3181,6 @@ class Schema
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
-        ];
-        $entities['toma']->fields['confirmada'] = Field::getInstance('toma', 'confirmada', 'tinyint', 'bool');
-        $entities['toma']->fields['confirmada']->defaultValue = false;
-        $entities['toma']->fields['confirmada']->checks = [
-            'type' => 'bool',
-            'required' => '1',
         ];
         $entities['toma']->fields['curso'] = Field::getInstance('toma', 'curso', 'varchar', 'string');
         $entities['toma']->fields['curso']->alias = 'cur';
