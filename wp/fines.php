@@ -39,7 +39,7 @@ function fines_plugin_menu() {
       'Fines', // Título del menú
       'edit_posts', // Permisos
       'fines-plugin', // Slug del menú
-      'fines-plugin-lc2', // Función que muestra la página principal del plugin
+      'lc2_lista_comisiones_page', // Función que muestra la página principal del plugin
       'dashicons-admin-generic', // Icono del menú
       1 // Posición en el menú
     );

@@ -218,9 +218,9 @@ abstract class ModifyQueries
         $entityMetadata = $this->db->getEntityMetadata($entityName);
         $idMap = $entityMetadata->map($this->db->config->idName);
         
-        $sql = "UPDATE {$entityMetadata->alias} SET {$key} = :{$prefix}Key " .
-               "FROM {$entityMetadata->getSchemaNameAlias()} " .
-               "WHERE {$idMap} = :{$prefix}Id";
+        $sql = "UPDATE {$entityMetadata->getSchemaName()} 
+                SET {$key} = :{$prefix}Key 
+                WHERE {$idMap} = :{$prefix}Id";
         
         // Almacenar parámetros
         $this->parameters[$prefix . 'Key'] = $value;

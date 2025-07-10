@@ -13,6 +13,7 @@
             <th>Teléfono</th>
             <th>Fecha Toma</th>
             <th>Planilla Docente</th>
+            <th>Estado Planilla</th>
             <th>Ids</th>
             <th>Opciones</th>
         </tr>
@@ -23,6 +24,7 @@
             <? $administrar_tomas_url = admin_url('admin.php?page=fines-plugin-administrar-toma-comision&comision_id=' . $curso->comision); ?>
             <? $cargar_planilla_calificacion_url = admin_url('admin.php?page=fines-plugin-ppc3&curso_id=' . $curso->id); ?>
             <? $cargar_alumnos_url = admin_url('admin.php?page=fines-plugin-cac&comision_id=' . $curso->comision); ?>
+            <? $cambiar_estado_planilla = "/scripts/cambiar_estado_planilla.php?toma_id=" . $curso->toma_activa_?->id . '&estado=entregada'; ?>
 
             <tr>
                 <td><?= esc_html($curso->comision_?->sede_?->nombre); ?></td>
@@ -34,6 +36,7 @@
                 <td><?= esc_html($curso->toma_activa_?->docente_?->telefono); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->fecha_toma?->format('Y-m-d')); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->planilla_docente_?->numero); ?></td>
+                <td><?= esc_html($curso->toma_activa_?->estado_planilla); ?></td>
                 <td>Toma <?= esc_html($curso->toma_activa_?->id); ?><br>
                     Curso <?= esc_html($curso->id); ?><br>
                     Comisión <?= esc_html($curso->comision); ?>
@@ -44,6 +47,7 @@
                     <a href="<?= esc_url($administrar_tomas_url); ?>" title="Administrar Tomas" class="button"><span  class="dashicons dashicons-businessperson"></span></a>
                     <a href="<?= esc_url($cargar_planilla_calificacion_url); ?>" title="Cargar Planilla de Calificación" class="button"><span  class="dashicons dashicons-media-spreadsheet"></span></a>
                     <a href="<?= esc_url($cargar_alumnos_url); ?>" title="Cargar Alumnos" class="button"><span  class="dashicons dashicons-groups"></span></a>
+                    <a href="<?= esc_url($cambiar_estado_planilla); ?>" target="_blank" title="Cargar Alumnos" class="button"><span  class="dashicons dashicons-yes"></span></a>
                 </td>
             </tr>
         <? endforeach; ?>
