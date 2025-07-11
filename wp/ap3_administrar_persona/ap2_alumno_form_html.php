@@ -1,12 +1,5 @@
 <form id="ap2-alumno-admin" action="admin-post.php" method="POST">
-    <?php wp_nonce_field("ap2_alumno_admin_action", "ap2_alumno_admin_nonce"); ?>
-    <input type="hidden" name="action" value="ap2_alumno_admin">
-    <input type="text" name="honeypot" style="display: none;">
-    <input type="hidden" name="persona_id" id="persona_id" value="<?= $persona['persona_id'] ?? '' ?>" />
-
-    <?php html_hidden_inputs($alumno, ['alumno_id', 'resolucion_inscripcion',
-        'adeuda_deudores','adeuda_legajo', 'documentacion_inscripcion','libro_folio','libro',
-        'folio','comentarios']); ?>
+    <?php wp_html_init_form("ap3_alumno_admin", "persona_id", $persona->id); ?>
 
     <div class="form-grid">
         <div class="form-group">
@@ -16,7 +9,7 @@
                 <option value="">-- Seleccione --</option>
                 <?php foreach ($estados_inscripcion as $estado) : ?>
                     <option value="<?php echo esc_attr($estado); ?>" 
-                        <?php selected($alumno['estado_inscripcion'], $estado); ?>>
+                        <?php selected($alumno->estado_inscripcion, $estado); ?>>
                         <?php echo esc_html($estado); ?>
                     </option>
                 <?php endforeach; ?>
@@ -28,9 +21,9 @@
             <select name="plan" id="plan">
                 <option value="">-- Seleccione --</option>
                 <?php foreach ($planes as $plan) : ?>
-                    <option value="<?php echo esc_attr($plan['id']); ?>" 
-                        <?php selected($alumno['plan'], $plan['id']); ?>>
-                        <?php echo esc_html($plan['orientacion'] . "-" . $plan['resolucion']); ?>
+                    <option value="<?php echo esc_attr($plan->id); ?>" 
+                        <?php selected($alumno->plan, $plan->id); ?>>
+                        <?php echo esc_html($plan->orientacion . "-" . $plan->resolucion); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -39,55 +32,55 @@
         <div class="form-group">
             <label for="anio_ingreso">Año de Ingreso:</label>
             <select id="anio_ingreso" name="anio_ingreso">
-                <option value="1" <?= $alumno['anio_ingreso'] == 1 ? 'selected' : '' ?>>1</option>
-                <option value="2" <?= $alumno['anio_ingreso'] == 2 ? 'selected' : '' ?>>2</option>
-                <option value="3" <?= $alumno['anio_ingreso'] == 3 ? 'selected' : '' ?>>3</option>
+                <option value="1" <?= $alumno->anio_ingreso == 1 ? 'selected' : '' ?>>1</option>
+                <option value="2" <?= $alumno->anio_ingreso == 2 ? 'selected' : '' ?>>2</option>
+                <option value="3" <?= $alumno->anio_ingreso == 3 ? 'selected' : '' ?>>3</option>
             </select>
         </div>
         <div class="form-group">
             <label for="semestre_ingreso">Semestre de Ingreso:</label>
             <select id="semestre_ingreso" name="semestre_ingreso">
-                <option value="1" <?= $alumno['semestre_ingreso'] == 1 ? 'selected' : '' ?>>1</option>
-                <option value="2" <?= $alumno['semestre_ingreso'] == 2 ? 'selected' : '' ?>>2</option>
+                <option value="1" <?= $alumno->semestre_ingreso == 1 ? 'selected' : '' ?>>1</option>
+                <option value="2" <?= $alumno->semestre_ingreso == 2 ? 'selected' : '' ?>>2</option>
             </select>
         </div>
         
 
     <div class="form-group">
         <label for="anio_inscripcion">Año de Inscripción:</label>
-        <input type="number" id="anio_inscripcion" name="anio_inscripcion" value="<?=$alumno['anio_inscripcion']?>">
+        <input type="number" id="anio_inscripcion" name="anio_inscripcion" value="<?=$alumno->anio_inscripcion?>">
     </div>
 
     <div class="form-group">
         <label for="semestre_inscripcion">Semestre de Inscripción:</label>
-        <input type="number" id="semestre_inscripcion" name="semestre_inscripcion" value="<?=$alumno['semestre_inscripcion']?>">
+        <input type="number" id="semestre_inscripcion" name="semestre_inscripcion" value="<?=$alumno->semestre_inscripcion?>">
     </div>
 
     <div class="form-group">
         <label for="establecimiento_inscripcion">Establecimiento:</label>
-        <input type="text" id="establecimiento_inscripcion" name="establecimiento_inscripcion" value="<?=$alumno['establecimiento_inscripcion']?>">
+        <input type="text" id="establecimiento_inscripcion" name="establecimiento_inscripcion" value="<?=$alumno->establecimiento_inscripcion?>">
     </div>
 
     <div class="form-group">
         <label for="fecha_titulacion">Fecha de Titulación:</label>
-        <input type="date" id="fecha_titulacion" name="fecha_titulacion" value="<?=$alumno['fecha_titulacion']?>">
+        <input type="date" id="fecha_titulacion" name="fecha_titulacion" value="<?=$alumno->fecha_titulacion?->format('Y-m-d')?>">
     </div>
 
     <div class="form-group" style="grid-column: span 2;">
         <label for="observaciones">Observaciones:</label>
-        <textarea id="observaciones" name="observaciones"><?=$alumno['observaciones']?></textarea>
+        <textarea id="observaciones" name="observaciones"><?=$alumno->observaciones?></textarea>
     </div>
 
 </div>
     <h3>Legajo</h3>
     <p> El legajo se actualiza desde el drive según la estructura establecida.</p>
     <div class="checkbox-grid">
-        <label><input type="checkbox" name="tiene_dni" value="1" <?= $alumno['tiene_dni'] ? 'checked' : '' ?>> Tiene DNI</label>
-        <label><input type="checkbox" name="tiene_constancia" value="1" <?= $alumno['tiene_constancia'] ? 'checked' : '' ?>> Tiene Constancia</label>
-        <label><input type="checkbox" name="tiene_certificado" value="1" <?= $alumno['tiene_certificado'] ? 'checked' : '' ?>> Tiene Certificado</label>
-        <label><input type="checkbox" name="previas_completas" value="1" <?= $alumno['previas_completas'] ? 'checked' : '' ?>> Previas Completas</label>
-        <label><input type="checkbox" name="tiene_partida" value="1" <?= $alumno['tiene_partida'] ? 'checked' : '' ?>> Tiene Partida</label>
-        <label><input type="checkbox" name="confirmado_direccion" value="1" <?= $alumno['confirmado_direccion'] ? 'checked' : '' ?>> Confirmado por Dirección</label>
+        <label><input type="checkbox" name="tiene_dni" value="1" <?= $alumno->tiene_dni ? 'checked' : '' ?>> Tiene DNI</label>
+        <label><input type="checkbox" name="tiene_constancia" value="1" <?= $alumno->tiene_constancia ? 'checked' : '' ?>> Tiene Constancia</label>
+        <label><input type="checkbox" name="tiene_certificado" value="1" <?= $alumno->tiene_certificado ? 'checked' : '' ?>> Tiene Certificado</label>
+        <label><input type="checkbox" name="previas_completas" value="1" <?= $alumno->previas_completas ? 'checked' : '' ?>> Previas Completas</label>
+        <label><input type="checkbox" name="tiene_partida" value="1" <?= $alumno->tiene_partida ? 'checked' : '' ?>> Tiene Partida</label>
+        <label><input type="checkbox" name="confirmado_direccion" value="1" <?= $alumno->confirmado_direccion ? 'checked' : '' ?>> Confirmado por Dirección</label>
     </div>
 
 

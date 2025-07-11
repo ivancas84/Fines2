@@ -48,7 +48,7 @@ function fines_plugin_menu() {
 
     include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
     
-    include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_administrar_persona_page.php';
+    include_once plugin_dir_path(__FILE__) . 'ap3_administrar_persona/ap3_administrar_persona_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_administrar_comision_page.php';
 
@@ -239,8 +239,6 @@ include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_curs
 include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_curso_add_handle.php';
 
 
-include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_persona_admin_handle.php';
-include_once plugin_dir_path(__FILE__) . 'ap2_administrar_persona_page/ap2_alumno_admin_handle.php';
 
 
 include_once plugin_dir_path(__FILE__) . 'includes/helpers.php';

@@ -398,7 +398,8 @@ abstract class SelectQueries
 
 
     /**
-     * Procesa parámetros con soporte para arrays, expandiendo arrays a parámetros nombrados
+     * Filtra y redefine parámetros 
+     * Expande valores de arrays a parámetros nombrados
      */
     public function processArrayParameters(string $sql, array $params = []): array
     {

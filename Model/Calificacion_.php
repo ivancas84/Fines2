@@ -20,5 +20,11 @@ class Calificacion_ extends Calificacion
             $this->set("nota_final", $nota);
     }
 
+    public function cssBackgroundColor(): string {
+
+        return (intval($this->nota_final) < 7 && intval($this->crec) < 4) ? "background-color: #FFDDDD;" // Red pastel
+                        : "background-color: #DDFFDD;"; // Green pastel
+    }
+
 }
 

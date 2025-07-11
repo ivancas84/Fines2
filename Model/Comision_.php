@@ -17,5 +17,7 @@ class Comision_ extends Comision
         ($this->planificacion_?->getLabel() ?? "?");
         ($this->calendario_?->getLabel() ?? "?");
     }
+
+    
 }
 

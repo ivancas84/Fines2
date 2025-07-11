@@ -98,9 +98,9 @@ public static function arrayOfName(iterable $objects, string $name): array
     $result = [];
 
     foreach ($objects as $object) {
-        if (is_object($object) && property_exists($object, $name)) {
+        if (is_object($object) && property_exists($object, $name) && !is_null($object->$name)) {
             $result[] = $object->$name;
-        } elseif (is_array($object) && array_key_exists($name, $object)) {
+        } elseif (is_array($object) && array_key_exists($name, $object) && !is_null($object[$name])) {
             $result[] = $object[$name];
         }
     }

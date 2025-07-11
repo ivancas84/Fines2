@@ -89,9 +89,10 @@ abstract class ModifyQueries
     }
 
     /**
-     * Procesa parametros del sql, carga atributos parameters y detail
+     * Procesa parametros del sql y redefine el sql para procesarlo correctamente
+     * Carga atributos sql, parameters y detail.
      */
-    private function processArrayParameters($entityName, $action, $sql, $parameters): string{
+    private function processArrayParameters($entityName, $action, $sql, $parameters): void{
         [$processedSql, $processedArray] = $this->db->CreateSelectQueries()->processArrayParameters($sql, $parameters);
 
         foreach ($processedArray as $key => $value) {
@@ -104,7 +105,7 @@ abstract class ModifyQueries
             
         }
 
-        return $processedSql;
+        $this->sql .= $processedSql;
     }
 
     /**
@@ -246,10 +247,9 @@ abstract class ModifyQueries
 
         $sql = "UPDATE {$entityMetadata->alias} SET {$key} = :{$prefix}Key " .
                "FROM {$entityMetadata->getSchemaNameAlias()} " .
-               "WHERE {$idMap} IN (:{$prefix}Ids)";
+               "WHERE {$idMap} IN (:{$prefix}Ids);\n";
 
-        $this->sql .= $this->processArrayParameters($entityName, "update", $sql, [$prefix . 'Key' => $value, "{$prefix}Ids" => $ids]);
-        $this->sql .= ";\n";
+        $this->processArrayParameters($entityName, "update", $sql, [$prefix . 'Key' => $value, "{$prefix}Ids" => $ids]);
     }
 
     protected function buildUpdateSqlByIds_(string $entityName, array $data, ...$ids): void
@@ -258,11 +258,9 @@ abstract class ModifyQueries
         $entityMetadata = $this->db->getEntityMetadata($entityName);
         $idMap = $entityMetadata->Map($this->db->config->idName);
         $sql = $this->generateUpdateSql($entityName, $data, $prefix) . "
-            WHERE {$idMap} IN (:{$prefix}Ids)";
+            WHERE {$idMap} IN (:{$prefix}Ids);\n";
 
-        
-        $this->sql .= $this->processArrayParameters($entityName, "update", $sql, ["{$prefix}Ids" => $ids]);
-        $this->sql .= ";\n";
+        $this->processArrayParameters($entityName, "update", $sql, ["{$prefix}Ids" => $ids]);
     }
 
     /**
@@ -377,7 +375,7 @@ abstract class ModifyQueries
             $prefix
         );
 
-        $this->sql .= $this->processArrayParameters($entityName, "delete", $sql, ["{$prefix}Ids" => $ids]);
+        $this->processArrayParameters($entityName, "delete", $sql, ["{$prefix}Ids" => $ids]);
     }
 
 

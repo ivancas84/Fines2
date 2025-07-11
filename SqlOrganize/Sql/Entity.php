@@ -86,19 +86,19 @@ class Entity
     public int $_index = 0;
 
    
-    public function initById(mixed $id): Entity {
+    public function initById(mixed $id): void {
         $fetched = $this->_db->createDataProvider()->fetchEntityByParams($this->_entityName, ["id" => $id]);
 
         if (!$fetched) {
             throw new Exception("No record found for ID");
         }
 
-        $fetched->_status = 1;
+        $this->ssetFromArray($fetched->toArray());
+        $this->_status = 1;
         $this->_changeLog = [];
-        return $fetched;
     }
 
-    public function initByUnique(array $param){
+    public function initByUnique(array $param): void{
         $fetched = $this->_db->createDataProvider()->fetchEntityByUnique($this->_entityName, $param);
         if ($fetched) {
             $this->ssetFromArray($fetched->toArray());

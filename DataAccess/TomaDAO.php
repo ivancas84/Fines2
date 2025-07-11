@@ -7,7 +7,7 @@ use SqlOrganize\Sql\DbMy;
 class TomaDAO
 {
 
-public static function TomasByCalendario($calendario): array {
+    public static function TomasByCalendario($calendario): array {
         $db = DbMy::getInstance();
 
         $dataProvider = $db->CreateDataProvider();
@@ -69,14 +69,29 @@ public static function TomasByCalendario($calendario): array {
             SELECT DISTINCT toma.id 
             FROM toma
             INNER JOIN curso ON (toma.curso = curso.id)
-            INNER JOIN comision ON (curso.comision = comision.id)
-            INNER JOIN calendario ON (comision.calendario = calendario.id)
             WHERE (toma.estado = 'Aprobada') 
             AND toma.estado_contralor = 'Pasar'
             AND curso.id = :curso_id
         ";
 
         return $dataProvider->fetchEntityBySqlId("toma", $sql, ["curso_id" => $curso_id]);
+    }
+
+    public static function TomasActivasByCursos(string ...$ids_cursos): array {
+         $db = DbMy::getInstance();
+
+        $dataProvider = $db->CreateDataProvider();
+
+        $sql = "
+            SELECT DISTINCT toma.id 
+            FROM toma
+            INNER JOIN curso ON (toma.curso = curso.id)
+            WHERE (toma.estado = 'Aprobada') 
+            AND toma.estado_contralor = 'Pasar'
+            AND curso.id IN (:ids_cursos)
+        ";
+
+        return $dataProvider->fetchAllEntitiesBySqlId("toma", $sql, ["ids_cursos" => $ids_cursos]);
     }
 
     public static function TomasContralorByCalendario($calendario): array {

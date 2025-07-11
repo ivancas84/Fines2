@@ -18,6 +18,8 @@ class Curso_ extends Curso
         ($this->comision_?->sede_?->getLabel() ?? "?") . " " . 
         ($this->comision_?->pfid ?? "S/N");
     }
+
+    
     
     
 }

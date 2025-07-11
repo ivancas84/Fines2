@@ -4,6 +4,7 @@ namespace Fines2;
 
 use SqlOrganize\Sql\DbMy;
 use SqlOrganize\Sql\ModifyQueries;
+use SqlOrganize\Utils\ValueTypesUtils;
 
 class CalificacionDAO
 {
@@ -27,6 +28,17 @@ class CalificacionDAO
     }
 
     /**
+     * @return string[]
+     */
+    public static function idsCalificacionesDesaprobadasByAlumno($alumno_id): array
+    {
+        $sql = "SELECT DISTINCT id 
+            FROM calificacion
+            WHERE (nota_final < 7 OR nota_final IS NULL) AND (crec < 4 OR crec IS NULL) AND alumno = :alumno_id";
+        return DbMy::getInstance()->CreateDataProvider()->fetchAllColumnSqlByParams($sql, 0, ["alumno_id"=>$alumno_id]);
+    }
+
+    /**
      * @return Calificacion_[]
      */
     public static function calificacionesAprobadasByDisposicionAndDnis(mixed $disposicion, array $numero_documento): array {
@@ -44,6 +56,108 @@ class CalificacionDAO
         return DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["disposicion" => $disposicion, "numero_documento"=>$numero_documento] );
     }
 
+    /**
+     * @return Calificacion_[]
+     */
+    public static function calificacionesAprobadasByAlumnoPlanTramo(string $alumno, string $plan, string $tramo_short): array {
+
+        $sql = "
+            SELECT DISTINCT calificacion.id
+            FROM calificacion
+            INNER JOIN alumno ON (calificacion.alumno = alumno.id)
+            INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+            INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
+            INNER JOIN plan ON (planificacion.plan = plan.id)
+            WHERE alumno = :alumno AND plan.id = :plan 
+            AND CONCAT(planificacion.anio, planificacion.semestre) >= :tramo_short
+            AND (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
+        ";  
+
+        /** @var Calificacion_[] */ $calificaciones = DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno, "plan"=>$plan, "tramo_short"=>$tramo_short] );
+        return self::CompletarTomaActivaEnCalificaciones($calificaciones);
+
+    }
+
+    /**
+     * @return Calificacion_[]
+     */
+    public static function calificacionesByAlumnoPlanTramo(string $alumno, string $plan, string $tramo_short): array {
+
+        $sql = "
+            SELECT DISTINCT calificacion.id
+            FROM calificacion
+            INNER JOIN alumno ON (calificacion.alumno = alumno.id)
+            INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+            INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
+            INNER JOIN plan ON (planificacion.plan = plan.id)
+            WHERE alumno = :alumno AND plan.id = :plan AND CONCAT(planificacion.anio, planificacion.semestre) >= :tramo_short
+        ";  
+
+        /** @var Calificacion_[] */ $calificaciones = DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno, "plan"=>$plan, "tramo_short"=>$tramo_short] );
+        return self::CompletarTomaActivaEnCalificaciones($calificaciones);
+
+    }
+
+    /**
+     * @return Calificacion_[]
+     */
+    public static function calificacionesAprobadasByAlumnoNotInPlan(string $alumno, string $plan): array {
+
+        $sql = "
+            SELECT DISTINCT calificacion.id
+            FROM calificacion
+            INNER JOIN alumno ON (calificacion.alumno = alumno.id)
+            INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+            INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
+            INNER JOIN plan ON (planificacion.plan = plan.id)
+            WHERE alumno = :alumno AND plan.id != :plan AND (nota_final >= 7 OR crec >= 4)
+        ";  
+
+        /** @var Calificacion_[] */ $calificaciones = DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno, "plan"=>$plan] );
+        return self::CompletarTomaActivaEnCalificaciones($calificaciones);
+
+    }
+
+    
+
+    /**
+     * @return Calificacion_[]
+     */
+    public static function CompletarTomaActivaEnCalificaciones($calificaciones): array {
+        $db = DbMy::getInstance();
+
+        /** @var string[] */$idsCursos = ValueTypesUtils::arrayOfName($calificaciones, "curso");
+
+        if(empty($idsCursos)) return [];
+        echo "voy";
+        echo "<pre>";
+
+        print_r($idsCursos);
+        $tomasActivas = TomaDAO::TomasActivasByCursos(...$idsCursos);
+        $tomasActivas = ValueTypesUtils::dictOfObjByPropertyNames($tomasActivas, "curso");
+
+        foreach($calificaciones as &$calificacion){
+            if(!empty(($calificacion->curso_) && array_key_exists($calificacion->curso_->id, $tomasActivas)))
+                $calificacion->curso_->setFk("toma_activa", $tomasActivas[$calificacion->curso_->id]);
+        }
+
+        return $calificaciones;
+    }
+
+
+        
+
+
+
+
+
+    /** @todo CONVERTIR A NUEVO FORMATO LOS SIGUIENTES METODOS OBSOLETOS**/
+    /** @todo CONVERTIR A NUEVO FORMATO LOS SIGUIENTES METODOS OBSOLETOS**/
+    /** @todo CONVERTIR A NUEVO FORMATO LOS SIGUIENTES METODOS OBSOLETOS**/
+    /** @todo CONVERTIR A NUEVO FORMATO LOS SIGUIENTES METODOS OBSOLETOS**/
+    /** @todo CONVERTIR A NUEVO FORMATO LOS SIGUIENTES METODOS OBSOLETOS**/
+    /** @todo CONVERTIR A NUEVO FORMATO LOS SIGUIENTES METODOS OBSOLETOS**/
+    /** @todo CONVERTIR A NUEVO FORMATO LOS SIGUIENTES METODOS OBSOLETOS**/
 
     function calificacionesAprobadasByDisposicionAndDnis_($disposicion_id, $numeros_documento, $fetchMode = PDO::FETCH_OBJ) {
         // Step 1: Create placeholders
@@ -70,20 +184,10 @@ class CalificacionDAO
         return $stmt->fetchAll($fetchMode);
     }
 
-    public static function idsCalificacionesDesaprobadasByAlumno($alumno_id)
-    {
-        $pdo = new PdoFines();
-        $query = "SELECT DISTINCT id 
-            FROM calificacion
-            WHERE (nota_final < 7 OR nota_final IS NULL) AND (crec < 4 OR crec IS NULL) AND alumno = :alumno_id";
-        $stmt = $pdo->pdo->prepare($query);
-        $stmt->bindParam(':alumno_id', $alumno_id, PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    
 
 
-    public static function calificacionesAprobadasByAlumnoPlanTramo($alumno_id, $plan_id, $tramo)
+    /*public static function calificacionesAprobadasByAlumnoPlanTramo($alumno_id, $plan_id, $tramo)
     {
         $sql = "
          SELECT DISTINCT CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
@@ -124,84 +228,8 @@ class CalificacionDAO
         $stmt = $pdo->pdo->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    }*/
 
 
-    public static function calificacionesByAlumnoPlanTramo($alumno_id, $plan_id, $tramo){
-        $sql = "
-        SELECT DISTINCT CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
-            calificacion.id,
-            calificacion.disposicion,
-            calificacion.nota_final, 
-            calificacion.crec, 
-            CONCAT(planificacion.anio, planificacion.semestre) AS tramo, 
-            planificacion.anio AS anio, planificacion.semestre AS semestre,
-            plan.orientacion, 
-            plan.resolucion,
-            asignatura.nombre,
-            comision.pfid,
-            CONCAT(calendario.anio, '-', calendario.semestre) AS periodo,
-            CONCAT(toma_activa.nombres, ' ', toma_activa.apellidos, ' ', toma_activa.numero_documento) AS docente                    
-        FROM calificacion 
-        INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
-        INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
-        INNER JOIN plan ON (planificacion.plan = plan.id)
-        INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id)
-        LEFT JOIN curso ON (calificacion.curso = curso.id)
-        LEFT JOIN comision ON (curso.comision = comision.id)				
-        LEFT JOIN calendario ON (comision.calendario = calendario.id)			
-        LEFT JOIN (
-            SELECT toma.curso, persona.nombres, persona.apellidos, persona.numero_documento 
-            FROM toma 
-            INNER JOIN persona ON (toma.docente = persona.id)
-            WHERE estado = 'Aprobada' 
-            AND estado_contralor != 'Modificar'
-        ) AS toma_activa ON (toma_activa.curso = curso.id)
-        WHERE alumno = '$alumno_id' AND plan.id = '$plan_id' AND CONCAT(planificacion.anio, planificacion.semestre) >= '$tramo'
-        ORDER BY planificacion.anio, planificacion.semestre
-        LIMIT 100
-        ";
-        $pdo = new PdoFines();
-        $stmt = $pdo->pdo->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
 
-
-    public static function calificacionesAprobadasByAlumnoNotInPlan($alumno_id, $plan_id){
-        $sql = "
-        SELECT DISTINCT CONCAT(asignatura.codigo, planificacion.anio, planificacion.semestre) AS detalle_asignatura,
-            calificacion.nota_final, 
-            calificacion.crec, 
-            CONCAT(planificacion.anio, planificacion.semestre) AS tramo, 
-            plan.orientacion, 
-            plan.resolucion,
-            asignatura.nombre,
-            comision.pfid,
-            CONCAT(calendario.anio, '-', calendario.semestre) AS periodo,
-            CONCAT(toma_activa.nombres, ' ', toma_activa.apellidos, ' ', toma_activa.numero_documento) AS docente                    
-        FROM calificacion 
-        INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
-        INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
-        INNER JOIN plan ON (planificacion.plan = plan.id)
-        INNER JOIN asignatura ON (disposicion.asignatura = asignatura.id)
-        LEFT JOIN curso ON (calificacion.curso = curso.id)
-        LEFT JOIN comision ON (curso.comision = comision.id)				
-        LEFT JOIN calendario ON (comision.calendario = calendario.id)			
-        LEFT JOIN (
-            SELECT toma.curso, persona.nombres, persona.apellidos, persona.numero_documento 
-            FROM toma 
-            INNER JOIN persona ON (toma.docente = persona.id)
-            WHERE estado = 'Aprobada' 
-            AND estado_contralor != 'Modificar'
-        ) AS toma_activa ON (toma_activa.curso = curso.id)
-        WHERE alumno = '$alumno_id' AND plan.id != '$plan_id' AND (nota_final >= 7 OR crec >= 4)
-        ORDER BY planificacion.anio, planificacion.semestre
-        LIMIT 100
-        ";
-        $pdo = new PdoFines();
-        $stmt = $pdo->pdo->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
 }

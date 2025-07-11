@@ -2,11 +2,12 @@
 
 namespace Fines2;
 
-use SqlOrganize\Sql\DbMy;
-use SqlOrganize\Sql\Entity;
-use Fines2\CalificacionDAO;
-use Fines2\Alumno_;
-use SqlOrganize\Sql\ModifyQueries;
+use \SqlOrganize\Sql\DbMy;
+use \SqlOrganize\Sql\Entity;
+use \Fines2\CalificacionDAO;
+use \Fines2\DisposicionDAO;
+use \Fines2\Alumno_;
+use \SqlOrganize\Sql\ModifyQueries;
 
 class AlumnoDAO
 {
@@ -48,46 +49,35 @@ class AlumnoDAO
     }
 
 
-    public static function reestructurarCalificacionesByAlumno($alumno){
+    public static function reestructurarCalificacionesByAlumno(Alumno_ $alumno){
         $db = DbMy::getInstance();
         $modifyQueries = $db->CreateModifyQueries();
-        $idsCalificacionesDesaprobadas = CalificacionDAO::idsCalificacionesDesaprobadasByAlumno($alumno['alumno_id']);
+        /** @var string[] */ $idsCalificacionesDesaprobadas = CalificacionDAO::idsCalificacionesDesaprobadasByAlumno($alumno->id);
         if(!empty($idsCalificacionesDesaprobadas)){
-            //$modifyQueries->buildDeleteSqlByIds("calificacion", ...$idsCalificacionesDesaprobadas);)
+            $modifyQueries->buildDeleteSqlByIds("calificacion", ...$idsCalificacionesDesaprobadas);
         }
 
-        if(!empty($alumno["plan"])){
-            if(!empty($alumno["anio_ingreso"])){
-                $tramo = $alumno["anio_ingreso"];
-                    if(!empty($alumno["semestre_ingreso"]))
-                        $tramo .= $alumno["semestre_ingreso"];
-                    else 
-                        $tramo .= "1";
-            } else {
-                $tramo = "11";
-            }
+        if(!empty($alumno->plan)){
+            /** @var string */ $tramo = $alumno->getTramoShort();
+            /** @var Calificacion_[] */ $calificacionesAprobadas = CalificacionDAO::calificacionesAprobadasByAlumnoPlanTramo($alumno->id, $alumno->plan, $tramo);
+            /** @var Disposicion_[] */ $disposiciones =  DisposicionDAO::disposicionesByPlanTramo($alumno->plan, $tramo);
 
-            $calificacionesAprobadas = CalificacionDAO::calificacionesAprobadasByAlumnoPlanTramo($alumno['alumno_id'], $alumno['plan'], $tramo);
-            $disposiciones = DisposicionDAO::disposicionesByPlanTramo($alumno['plan'], $tramo);
-
-            $count = 0;
+            $countInsert = 0;
             foreach($disposiciones as $disposicion){
                 $existe = false;
                 foreach($calificacionesAprobadas as $calificacion){
-                    if($calificacion["disposicion"] == $disposicion["disposicion_id"])
+                    if($calificacion->disposicion == $disposicion->id)
                     {
                         $existe = true;
                         break;
                     }   
                 }
                 if(!$existe){
-                    $count++;
-                    PdoFines::InsertFields_("calificacion", CalificacionDAO::getFields(), array(
-                        'calificacion_id' => uniqid(),
-                        'disposicion' => $disposicion["disposicion_id"],
-                        'archivado' => 0,
-                        'alumno' => $alumno['alumno_id']
-                    ));
+                    $countInsert++;
+                    $cal = new Calificacion_();
+                    $cal->disposicion = $disposicion->id;
+                    $cal->archivado = false;
+                    $cal->insert();
                 }
             }
             

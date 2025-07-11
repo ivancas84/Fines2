@@ -16,8 +16,8 @@
         </div>
 
         <div class="form-group">
-            <label for="fecha_nacimiento">Fecha de Nacimiento (formato MM/DD/YYYY):</label>
-            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="<?=$persona->fecha_nacimiento?>">
+            <label for="fecha_nacimiento">Fecha de Nacimiento (OJO CON EL FORMATO):</label>
+            <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" value="<?=$persona->fecha_nacimiento?->format('Y-m-d')?>">
         </div>
 
         <div class="form-group">
