@@ -13,8 +13,7 @@ add_submenu_page(
 
 use \Fines2\Persona_;
 use \Fines2\Alumno_;
-
-
+use Fines2\AlumnoDAO;
 use \SqlOrganize\Sql\DbMy;
 use \SqlOrganize\Sql\Entity;
 
@@ -23,7 +22,7 @@ function ap3_administrar_persona_page() {
     wp_page_message();
     $persona_id = isset($_GET['persona_id']) ? $_GET['persona_id'] : null;
 
-    $persona = (empty($persona_id)) ? new Persona_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("persona", ["id" =>$persona_id]);
+    /** @var Persona_ */ $persona = (empty($persona_id)) ? new Persona_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("persona", ["id" =>$persona_id]);
 
     include plugin_dir_path(__FILE__) . 'ap3_persona_admin_form.html';
 
@@ -34,19 +33,17 @@ function ap3_administrar_persona_page() {
     //***** Campos de alumno *****/
     $dataProvider = DbMy::getInstance()->CreateDataProvider();
 
-    $estados_inscripcion = Alumno_::estados_inscripcion();
 
-    $planes = $dataProvider->fetchAllEntities("plan");
+    $estados_inscripcion = $dataProvider->fetchAllColumnByParams("alumno", "estado_inscripcion", [], ["estado_inscripcion"=>"ASC"]);
+    $planes = $dataProvider->fetchAllEntitiesByParams("plan");
 
     $alumno = new Alumno_();
     $alumno->initByUnique(["persona" => $persona->id]);
 
     include plugin_dir_path(__FILE__) . 'ap3_alumno_admin_form.html';
 
-    if($alumno->status < 0)
+    if($alumno->_status < 0)
         return;
-
-
 
 
     //***** CALIFICACIONES *****/

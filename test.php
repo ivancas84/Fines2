@@ -16,5 +16,6 @@ $dataProvider = $db->CreateDataProvider();
 $comision_id = 'a199f325-7d76-496d-9467-0a79ccafe104';
 $db = DbMy::getInstance();
 $dataProvider = $db->CreateDataProvider();
-$cursos = $dataProvider->fetchAllByParams("calendario", [], ["fin"=>"desc"]);
+$cursos = $dataProvider->fetchAllColumnByParams("toma", "estado", [], ["estado"=>"DESC"]);
+echo "<pre>";
 print_r($cursos);

@@ -187,6 +187,15 @@ abstract class SelectQueries
         return $sql;
     }
 
+    public function selectField($entityName, $fieldName)
+    {
+        $metadata = $this->db->getEntityMetadata($entityName);
+        $sql = "SELECT DISTINCT " . $metadata->alias . "." . $fieldName . "\n";
+        $sql .= $this->from($entityName);
+
+        return $sql;
+    }
+
     public function selectIdJoin($entityName)
     {
         $metadata = $this->db->getEntityMetadata($entityName);
@@ -283,7 +292,13 @@ abstract class SelectQueries
      */
     abstract public function getNextValue(string $entityName, string $fieldName): mixed;
 
-        public function whereParamsWithOrder($entityName, array $params = [], array $orderBy, string $conn = "AND"): string {
+    /**
+     * @param string $entityName Nombre de la entidad
+     * @param array $params Array de parametros a filtrar, deben ser solo columnas de $entityName ["fieldName"=>"value", ...]
+     * @param array $orderBy Array de parametros a ordenar, deben ser solo columnas de $entityName, ["fieldName"=>"ASC", ...]
+     * @param string $conn Conector entre las condiciones, por defecto "AND"
+     */
+    public function whereParamsWithOrder($entityName, array $params = [], array $orderBy, string $conn = "AND"): string {
         if(empty($orderBy)){
             return $this->whereParamsWithOrderField($entityName, $params, $conn);
         } else {
@@ -293,6 +308,10 @@ abstract class SelectQueries
         }
     }
 
+    /**
+     * Definir condicion
+     * Solo procesa campos de la entidad (sin joins)
+     */
     protected function _whereParams(string $entityName, array $params = [], string $conn = "AND"): string {
         if(empty($params)) {
             return "";
@@ -317,6 +336,10 @@ abstract class SelectQueries
         return implode(" $conn ", $whereClauses);
     }
 
+    /**
+     * Definir condicion
+     * Solo procesa campos de la entidad (sin joins)
+     */
     public function whereParams(string $entityName, array $params = [], string $conn = "AND"): string {
         if(empty($params)) {
             return "";

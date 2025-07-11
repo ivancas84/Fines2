@@ -68,14 +68,20 @@ class DataProvider {
         return $obj;
     }
 
-    protected function _fetchAllByParams(string $sql, string $entityName, array $params = [], array $orderBy = []): array
+    /**
+     * @param string $entityName Nombre de la entidad
+     * @param array $params Array de parametros a filtrar, deben ser solo columnas de $entityName ["fieldName"=>"value", ...]
+     * @param array $orderBy Array de parametros a ordenar, deben ser solo columnas de $entityName, ["fieldName"=>"ASC", ...]
+     * @param string $conn Conector entre las condiciones, por defecto "AND"
+     */
+    protected function _fetchAllByParams(string $sql, string $entityName, array $params = [], array $orderBy = [], $fetchMode = PDO::FETCH_ASSOC): array
     {
         $selectQueries = $this->db->createSelectQueries();
         $sql .= $selectQueries->whereParamsWithOrder($entityName, $params, $orderBy);
         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll($fetchMode);
     }
 
     public function fetchAllJoinByParams(string $entityName, array $params = [], array $orderBy = []): array
@@ -182,6 +188,14 @@ class DataProvider {
         return ($response === false) ? null : $response;
     }
 
+    /**
+     * 
+     */
+    public function fetchAllColumnByParams($entityName, $fieldName, ?array $params = null, ?array $orderBy = null){
+        $selectQueries = $this->db->createSelectQueries();
+        $sql = $selectQueries->selectField($entityName, $fieldName);
+        return $this->_fetchAllByParams($sql, $entityName, $params, $orderBy, PDO::FETCH_COLUMN);
+    }
     /**
      * Consulta de columna
      * 
