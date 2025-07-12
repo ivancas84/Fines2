@@ -129,10 +129,6 @@ class CalificacionDAO
         /** @var string[] */$idsCursos = ValueTypesUtils::arrayOfName($calificaciones, "curso");
 
         if(empty($idsCursos)) return [];
-        echo "voy";
-        echo "<pre>";
-
-        print_r($idsCursos);
         $tomasActivas = TomaDAO::TomasActivasByCursos(...$idsCursos);
         $tomasActivas = ValueTypesUtils::dictOfObjByPropertyNames($tomasActivas, "curso");
 

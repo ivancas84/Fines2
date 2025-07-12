@@ -69,16 +69,11 @@ class Entity
     }
     
 
-    // Status (propiedad opcional para indicar estado)
-    // Los estados básicos son:
-    //  * 0: Sin guardar.
-    //  * 1: Guardada.
-    //
-    // Se puede extender a varios estados, habitualmente:
+    // Status (propiedad opcional para indicar estado). Uso  habitual:
     //  * -2 No se sabe si existe o no
-    //  * -1 No existe en la base de datos
-    //  * 0: Existe en la base de datos pero fue modificado.
-    //  * 1: Existe en la base de datos y no fue modificado.
+    //  * -1 No existe en la base de datos (insert)
+    //  * 0: Existe en la base de datos pero fue modificado (update)
+    //  * 1: Existe en la base de datos y no fue modificado
     public int $_status = -1;
 
     // Índice dentro de una colección
@@ -566,9 +561,9 @@ class Entity
 
     public function insert(): void
     {
-        $modifyQueries = $this->_db->CreateModifyQueries();
-        $modifyQueries->buildInsertSql($this);
-        $modifyQueries->execute();
+            $modifyQueries = $this->_db->CreateModifyQueries();
+            $modifyQueries->buildInsertSql($this);
+            $modifyQueries->execute();
     }
 
     

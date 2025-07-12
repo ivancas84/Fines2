@@ -33,20 +33,6 @@ class AlumnoDAO
         return DbMy::getInstance()->CreateDataProvider()->fetchEntityBySqlId("alumno", $sql, ['numero_documento' => $numero_documento]);
     }
 
-    public static function tramo($alumno){
-
-        if(!empty($alumno["anio_ingreso"])){
-                $tramo = $alumno["anio_ingreso"];
-                    if(!empty($alumno["semestre_ingreso"]))
-                        $tramo .= $alumno["semestre_ingreso"];
-                    else 
-                        $tramo .= "1";
-
-                return $tramo;
-        } 
-        
-        return "11";
-    }
 
 
     public static function reestructurarCalificacionesByAlumno(Alumno_ $alumno){

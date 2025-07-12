@@ -52,12 +52,12 @@ function ap3_administrar_persona_page() {
     //***** CALIFICACIONES *****/
     AlumnoDAO::reestructurarCalificacionesByAlumno($alumno);
 
-    $tramo = AlumnoDAO::tramo($alumno);
+    $tramo = $alumno->getTramoShort();
 
-    if(!empty($alumno["plan"])){
+    if(!empty($alumno->plan)){
         $calificaciones = CalificacionDAO::calificacionesByAlumnoPlanTramo($alumno->id, $alumno->plan, $tramo);
         if ($calificaciones) {
-            include plugin_dir_path(__FILE__) . 'ap3_calificaciones_table.html';
+            include plugin_dir_path(__FILE__) . 'ap3_calificaciones_table_html.php';
         } else {
             echo "<p>No se encontraron calificaciones para este alumno.</p>";
         }

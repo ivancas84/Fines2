@@ -10,6 +10,8 @@ use DateTime;
 
 class Asignatura_ extends Asignatura
 {
-
+    public function getLabel(): string{
+        return $this->nombre . " " . $this->codigo ?? "?";
+    }
 }
 

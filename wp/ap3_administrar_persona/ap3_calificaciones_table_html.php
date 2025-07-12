@@ -5,6 +5,8 @@
         <thead>
             <tr>
                 <th>Asignatura</th>
+                <th>Tramo</th>
+
                 <th>Nota Final</th>
                 <th>Crec</th>
                 <th>Pfid</th>
@@ -19,7 +21,8 @@
                 <td style="display:none;">
                     <input type="hidden" name="calificacion_id<?=$i?>" value="<?= esc_attr($cal->id) ?>">
                 </td>
-                <td><?= esc_html($cal->disposicion_->getLabel()) ?></td>
+                <td><?= esc_html($cal->disposicion_->asignatura_->getLabel()) ?></td>
+                <td><?= esc_html($cal->disposicion_->planificacion_->getTramo()) ?></td>
                 <td>
                     <input type="number" step="1" name="nota_final<?=$i?>" value="<?= round($cal->nota_final) ?>">
                 </td>
@@ -30,9 +33,11 @@
                 <td><?= esc_html($cal->curso_?->comision_?->calendario_?->getLabel() ?? "?") ?></td>
                 <td><?= esc_html($cal->curso_?->toma_activa_?->docente_?->getLabel() ?? "?") ?></td>
                 <td>
-                    <input type="text" name="observaciones<?=$i?>" value="<?= round($cal->observaciones) ?>">
+                    <textarea name="observaciones<?=$i?>">
+                        <?=$cal->observaciones?>
+                    </textarea>
                 </td>
-            </tr>>
+            </tr>
         <?php endfor; ?>
     </tbody>
 </table>
