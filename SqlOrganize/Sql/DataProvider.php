@@ -129,8 +129,9 @@ class DataProvider {
         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $uniqueParams);
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return ($row === false) ? null : $row;
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if(count($rows) > 1) throw new Exception("Consulta por campos unicos retorno más de un resultado");
+        return (count($rows) == 0) ? null : $rows[0];
     }
 
     /**

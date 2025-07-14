@@ -8,14 +8,21 @@ use \SqlOrganize\Sql\Entity;
 use \SqlOrganize\Utils\ValueTypesUtils;
 use \Fines2\Comision_;
 use \Fines2\DesignacionDAO;
+use Fines2\Persona_;
 use SqlOrganize\Sql\ModifyQueries;
 
 echo "<pre>";
 $db = DbMy::getInstance();
 $dataProvider = $db->CreateDataProvider();
-$comision_id = 'a199f325-7d76-496d-9467-0a79ccafe104';
-$db = DbMy::getInstance();
-$dataProvider = $db->CreateDataProvider();
-$cursos = $dataProvider->fetchAllColumnByParams("toma", "estado", [], ["estado"=>"DESC"]);
+$row = [
+    "id" => "6087762195862",
+    "numero_documento" => "31073351",
+    "cuil" => "",
+    "email" => "palmieriagustina954@gmail.com",
+    "email_abc" => "", 
+];
+
+$persona = new Persona_();
+$persona->initByUnique($row);
 echo "<pre>";
-print_r($cursos);
+print_r($persona->toArray());

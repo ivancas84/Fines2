@@ -37,7 +37,7 @@ abstract class SelectQueries
                 $k = str_replace('$', '', $key);
 
                 if ($k == $fieldName) {
-                    if ($value === null) {
+                    if (empty($value)) {
                         continue; // por el momento se ignoran los campos unicos nulos!!!
                         $whereUniqueList[] = $k . " IS NULL";
                         break;
@@ -407,7 +407,8 @@ abstract class SelectQueries
         $processedSql = $sql;
 
         foreach ($params as $key => $value) {
-            if (strpos($sql, ":$key") === false) {
+            // Match exact :key with word boundary
+            if (!preg_match('/(?<!\w):' . preg_quote($key, '/') . '\b/', $sql)) {
                 continue;
             }
 

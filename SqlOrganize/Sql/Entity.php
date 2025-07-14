@@ -3,7 +3,6 @@
 namespace SqlOrganize\Sql;
 
 use SqlOrganize\Sql\Db;
-use SqlOrganize\Sql\EntityMetadata;
 use SqlOrganize\Sql\Logging;
 use SqlOrganize\Sql\Field;
 use SqlOrganize\Sql\Validation;

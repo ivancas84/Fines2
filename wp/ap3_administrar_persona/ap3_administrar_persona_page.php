@@ -43,7 +43,7 @@ function ap3_administrar_persona_page() {
     $alumno = new Alumno_();
     $alumno->initByUnique(["persona" => $persona->id]);
 
-    include plugin_dir_path(__FILE__) . 'ap2_alumno_form_html.php';
+    include plugin_dir_path(__FILE__) . 'ap3_alumno_form_html.php';
 
     if($alumno->_status < 0)
         return;

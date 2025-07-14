@@ -229,14 +229,19 @@ function fines_plugin_menu() {
     include_once plugin_dir_path(__FILE__) . 'ppc3_procesar_planilla_calificacion/ppc3_procesar_planilla_calificacion_page.php';
   }
 
-include_once plugin_dir_path(__FILE__) . 'cac2_cargar_alumnos_comision/cac2_process_handle.php';
-include_once plugin_dir_path(__FILE__) . 'ppc3_procesar_planilla_calificacion/ppc3_process_handle.php';
-include_once plugin_dir_path(__FILE__) . 'lc2_lista_comisiones/lc2_comision_delete_handle.php';
+  include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_comision_admin_handle.php';
+  include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_cursos_modify_delete_handle.php';
+  include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_curso_add_handle.php';
+
+  include_once plugin_dir_path(__FILE__) . 'ap3_administrar_persona/ap3_calificaciones_update_handle.php';
+  include_once plugin_dir_path(__FILE__) . 'ap3_administrar_persona/ap3_persona_admin_handle.php';
+  include_once plugin_dir_path(__FILE__) . 'ap3_administrar_persona/ap3_alumno_admin_handle.php';
+
+  include_once plugin_dir_path(__FILE__) . 'cac2_cargar_alumnos_comision/cac2_process_handle.php';
+  include_once plugin_dir_path(__FILE__) . 'ppc3_procesar_planilla_calificacion/ppc3_process_handle.php';
+  include_once plugin_dir_path(__FILE__) . 'lc2_lista_comisiones/lc2_comision_delete_handle.php';
 
 
-include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_comision_admin_handle.php';
-include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_cursos_modify_delete_handle.php';
-include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_curso_add_handle.php';
 
 
 

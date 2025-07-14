@@ -2,13 +2,9 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
 
-
 add_action('admin_post_ap3_calificaciones_update', 'ap3_calificaciones_update_handle');
 
 use Fines2\Calificacion_;
-use \SqlOrganize\Sql\DbMy;
-use \Fines2\Comision_;
-use \Fines2\Curso_;
 use \SqlOrganize\Utils\ValueTypesUtils;
 
 function ap3_calificaciones_update_handle() {
@@ -17,14 +13,14 @@ function ap3_calificaciones_update_handle() {
         $persona_id = wp_initialize_handle("fines-plugin-ap3", "ap3_calificaciones_update", "persona_id");
   
         $i = 0;
+        $countActualizados = 0;
 
         while (isset($_POST["calificacion_id$i"])) {
             $calificacionData = ValueTypesUtils::filterArrayBySuffix($_POST, $i);
 
             $calificacion = new Calificacion_();
-            $calificacion->initById($calificacionData["curso_id"]);
-            $calificacion->ssetFromArray($cursoData);
-            $countActualizados = 0;
+            $calificacion->initById($calificacionData["calificacion_id"]);
+            $calificacion->ssetFromArray($calificacionData);
             if($calificacion->_status < 1){
                 $calificacion->update();
                 $countActualizados++;
@@ -32,7 +28,7 @@ function ap3_calificaciones_update_handle() {
             $i++;
         }
 
-        wp_redirect_handle("fines-plugin-ap3", "persona_id", $persona_id, $ex->getMessage());
+        wp_redirect_handle("fines-plugin-ap3", "persona_id", $persona_id, $countActualizados . " registros actualizados");
 
     
     } catch (Exception $ex) {

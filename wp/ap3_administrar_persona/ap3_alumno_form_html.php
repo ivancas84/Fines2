@@ -1,6 +1,5 @@
-<form id="ap2-alumno-admin" action="admin-post.php" method="POST">
+<form id="ap3-alumno-admin" action="admin-post.php" method="POST">
     <?php wp_html_init_form("ap3_alumno_admin", "persona_id", $persona->id); ?>
-
     <div class="form-grid">
         <div class="form-group">
             
@@ -83,6 +82,7 @@
         <label><input type="checkbox" name="confirmado_direccion" value="1" <?= $alumno->confirmado_direccion ? 'checked' : '' ?>> Confirmado por Dirección</label>
     </div>
 
+    <input type="hidden" name="alumno_id" value="<?= esc_attr($alumno->id); ?>"/>
 
     <button type="submit" class="submit-btn">Guardar Cambios</button>
 

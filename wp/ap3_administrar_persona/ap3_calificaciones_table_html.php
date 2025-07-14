@@ -1,5 +1,5 @@
 <form method="post" action="admin-post.php">    
-    <?php wp_html_init_form("ap3_calificaciones_modify", "alumno_id", $alumno->id); ?>
+    <?php wp_html_init_form("ap3_calificaciones_update", "persona_id", $persona->id); ?>
 
     <table border="1" cellpadding="5" cellspacing="0">
         <thead>
@@ -33,9 +33,7 @@
                 <td><?= esc_html($cal->curso_?->comision_?->calendario_?->getLabel() ?? "?") ?></td>
                 <td><?= esc_html($cal->curso_?->toma_activa_?->docente_?->getLabel() ?? "?") ?></td>
                 <td>
-                    <textarea name="observaciones<?=$i?>">
-                        <?=$cal->observaciones?>
-                    </textarea>
+                    <textarea name="observaciones<?=$i?>"><?=$cal->observaciones?></textarea>
                 </td>
             </tr>
         <?php endfor; ?>
