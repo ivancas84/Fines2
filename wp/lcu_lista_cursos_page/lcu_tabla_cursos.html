@@ -10,6 +10,8 @@
             <th>Hs Cat Curso/Disp</th>
 
             <th>Docente</th>
+            <th>Email</th>
+            <th>Email ABC</th>
             <th>Teléfono</th>
             <th>Fecha Toma</th>
             <th>Planilla Docente</th>
@@ -25,6 +27,7 @@
             <? $cargar_planilla_calificacion_url = admin_url('admin.php?page=fines-plugin-ppc3&curso_id=' . $curso->id); ?>
             <? $cargar_alumnos_url = admin_url('admin.php?page=fines-plugin-cac&comision_id=' . $curso->comision); ?>
             <? $cambiar_estado_planilla = "/scripts/cambiar_estado_planilla.php?toma_id=" . $curso->toma_activa_?->id . '&estado=entregada'; ?>
+            <? $administrar_persona_url = admin_url('admin.php?page=fines-plugin-ap3&persona_id=' . $curso->toma_activa_?->docente_?->id); ?>
 
             <tr>
                 <td><?= esc_html($curso->comision_?->sede_?->nombre); ?></td>
@@ -32,7 +35,9 @@
                 <td><?= esc_html($curso->disposicion_?->planificacion_?->getTramo()); ?></td>
                 <td><?= esc_html($curso->disposicion_?->getLabel()); ?></td>
                 <td><?= esc_html($curso->horas_catedra . "/" . $curso->disposicion_?->horas_catedra); ?></td>
-                <td><?= esc_html($curso->toma_activa_?->docente_?->getLabel()); ?></td>
+                <td><a href="<?=$administrar_persona_url?>"><?= esc_html($curso->toma_activa_?->docente_?->getLabel()); ?></a></td>
+                <td><?= esc_html($curso->toma_activa_?->docente_?->email); ?></td>
+                <td><?= esc_html($curso->toma_activa_?->docente_?->email_abc); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->docente_?->telefono); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->fecha_toma?->format('Y-m-d')); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->planilla_docente_?->numero); ?></td>

@@ -11,6 +11,7 @@ use Fines2\CalificacionDAO;
 use Fines2\PersonaDAO;
 use ProgramaFines\PfUtils;
 use SqlOrganize\Sql\DbMy;
+use SqlOrganize\Utils\ValueTypesUtils;
 
 add_action('admin_post_ppc3_process', 'ppc3_process_handle');
 
@@ -31,7 +32,7 @@ function ppc3_process_handle() {
 
     $rawData = trim($_POST['data']);
     $format = $_POST['format'];
-    $result = Tools::excelParse($rawData);
+    $result = ValueTypesUtils::excelParse($rawData);
    
     foreach($result as $data) {
         try {
