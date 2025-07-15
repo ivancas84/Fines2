@@ -10,3 +10,4 @@ function add_shortcode(string $var, callable $call){
 function add_action(string $var, callable $call){
   return $var;
 }
+

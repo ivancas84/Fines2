@@ -1,3 +1,5 @@
+<h3>Calificaciones <?=$titulo_calificaciones?></h3>
+<p>Los cambios sólo tendrán efecto en las calificaciones aprobadas.</p>
 <form method="post" action="admin-post.php">    
     <?php wp_html_init_form("ap3_calificaciones_update", "persona_id", $persona->id); ?>
 
@@ -6,7 +8,7 @@
             <tr>
                 <th>Asignatura</th>
                 <th>Tramo</th>
-
+                <th>Plan</th>
                 <th>Nota Final</th>
                 <th>Crec</th>
                 <th>Pfid</th>
@@ -23,6 +25,7 @@
                 </td>
                 <td><?= esc_html($cal->disposicion_->asignatura_->getLabel()) ?></td>
                 <td><?= esc_html($cal->disposicion_->planificacion_->getTramo()) ?></td>
+                <td><?= esc_html($cal->disposicion_->planificacion_->plan_->getLabel()) ?></td>
                 <td>
                     <input type="number" step="1" name="nota_final<?=$i?>" value="<?= round($cal->nota_final) ?>">
                 </td>
@@ -40,5 +43,22 @@
     </tbody>
 </table>
 
-    <button type="submit">Actualizar Calificaciones</button>
+    <button type="submit" style="
+    margin-top: 15px;
+    background-color: #0073aa;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+"
+    onmouseover="this.style.backgroundColor='#005177'"
+    onmouseout="this.style.backgroundColor='#0073aa'"
+>
+    ✅ Actualizar Calificaciones
+</button>
+
 </form>

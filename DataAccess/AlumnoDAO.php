@@ -35,9 +35,8 @@ class AlumnoDAO
 
 
 
-    public static function reestructurarCalificacionesByAlumno(Alumno_ $alumno){
+    public static function reestructurarCalificacionesByAlumno(ModifyQueries $modifyQueries, Alumno_ $alumno){
         $db = DbMy::getInstance();
-        $modifyQueries = $db->CreateModifyQueries();
         /** @var string[] */ $idsCalificacionesDesaprobadas = CalificacionDAO::idsCalificacionesDesaprobadasByAlumno($alumno->id);
         if(!empty($idsCalificacionesDesaprobadas)){
             $modifyQueries->buildDeleteSqlByIds("calificacion", ...$idsCalificacionesDesaprobadas);
@@ -61,9 +60,10 @@ class AlumnoDAO
                 if(!$existe){
                     $countInsert++;
                     $cal = new Calificacion_();
+                    $cal->alumno = $alumno->id;
                     $cal->disposicion = $disposicion->id;
                     $cal->archivado = false;
-                    $cal->insert();
+                    $modifyQueries->buildInsertSql($cal);
                 }
             }
             

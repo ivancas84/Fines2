@@ -128,7 +128,7 @@ class CalificacionDAO
 
         /** @var string[] */$idsCursos = ValueTypesUtils::arrayOfName($calificaciones, "curso");
 
-        if(empty($idsCursos)) return [];
+        if(empty($idsCursos)) return $calificaciones;
         $tomasActivas = TomaDAO::TomasActivasByCursos(...$idsCursos);
         $tomasActivas = ValueTypesUtils::dictOfObjByPropertyNames($tomasActivas, "curso");
 
