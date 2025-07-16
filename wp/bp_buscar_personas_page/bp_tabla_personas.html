@@ -13,8 +13,7 @@
     </thead>
     <tbody>
         <?php foreach ($personas as $persona): ?>
-            <?php $detalle_persona_url = admin_url('admin.php?page=fines-plugin-administrar-persona-page&persona_id=' . $persona->id); ?>
-            <?php $detalle_persona_url2 = admin_url('admin.php?page=fines-plugin-ap3&persona_id=' . $persona->id); ?>
+            <?php $detalle_persona_url = admin_url('admin.php?page=fines-plugin-ap3&persona_id=' . $persona->id); ?>
 
             <tr>
                 <td><?= esc_html($persona->nombres); ?></td>
@@ -24,8 +23,7 @@
                 <td><?= esc_html($persona->email); ?></td>
                 <td><?= esc_html($persona->email_abc); ?></td>
                 <td>
-                    <a href="<?= esc_url($detalle_persona_url); ?>" class="button">Detalle</a> 
-                    <a href="<?= esc_url($detalle_persona_url2); ?>" class="button">Detalle 2</a>
+                    <a href="<?= esc_url($detalle_persona_url); ?>" class="button">Detalle</a>
                 </td>
             </tr>
         <?php endforeach; ?>

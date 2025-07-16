@@ -16,6 +16,8 @@ use \Fines2\Calificacion_;
 use \Fines2\CalificacionDAO;
 use \Fines2\Alumno_;
 use \Fines2\AlumnoDAO;
+use \Fines2\DetallePersona_;
+
 use \SqlOrganize\Sql\DbMy;
 use \SqlOrganize\Sql\Entity;
 
@@ -74,6 +76,16 @@ function ap3_administrar_persona_page() {
              echo "<p>No se encontraron calificaciones adicionales para este alumno.</p>";
         }    
     }
+
+
+    //***** DETALLE PERSONA *****/
+    /** @var DetallePersona_ */ $detalles = $dataProvider->fetchAllEntitiesByParams("detalle_persona", ["persona"=>$persona->id]);
+    if ($detalles) {
+        include plugin_dir_path(__FILE__) . 'ap3_detalles_table_html.php';
+    } else {
+            echo "<p>No se detalles.</p>";
+    }
+
 
 }
 
