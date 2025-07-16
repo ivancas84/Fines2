@@ -155,7 +155,7 @@ class CalificacionDAO
     /** @todo CONVERTIR A NUEVO FORMATO LOS SIGUIENTES METODOS OBSOLETOS**/
     /** @todo CONVERTIR A NUEVO FORMATO LOS SIGUIENTES METODOS OBSOLETOS**/
 
-    function calificacionesAprobadasByDisposicionAndDnis_($disposicion_id, $numeros_documento, $fetchMode = PDO::FETCH_OBJ) {
+    /*function calificacionesAprobadasByDisposicionAndDnis_($disposicion_id, $numeros_documento, $fetchMode = PDO::FETCH_OBJ) {
         // Step 1: Create placeholders
         $placeholders = [];
         for ($i = 0; $i < count($numeros_documento); $i++)
@@ -178,7 +178,7 @@ class CalificacionDAO
         $stmt->execute();
 
         return $stmt->fetchAll($fetchMode);
-    }
+    }*/
 
     
 

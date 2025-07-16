@@ -76,6 +76,7 @@ class DataProvider {
      */
     protected function _fetchAllByParams(string $sql, string $entityName, array $params = [], array $orderBy = [], $fetchMode = PDO::FETCH_ASSOC): array
     {
+        echo $sql;
         $selectQueries = $this->db->createSelectQueries();
         $sql .= $selectQueries->whereParamsWithOrder($entityName, $params, $orderBy);
         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);

@@ -14,15 +14,8 @@ use SqlOrganize\Sql\ModifyQueries;
 echo "<pre>";
 $db = DbMy::getInstance();
 $dataProvider = $db->CreateDataProvider();
-$row = [
-    "id" => "6087762195862",
-    "numero_documento" => "31073351",
-    "cuil" => "",
-    "email" => "palmieriagustina954@gmail.com",
-    "email_abc" => "", 
-];
 
-$persona = new Persona_();
-$persona->initByUnique($row);
+$alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision",["comision"=>"67ae39904e572"]);
+
 echo "<pre>";
-print_r($persona->toArray());
+print_r($alumnosComision);

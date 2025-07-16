@@ -28,6 +28,7 @@
             <? $cargar_alumnos_url = admin_url('admin.php?page=fines-plugin-cac&comision_id=' . $curso->comision); ?>
             <? $cambiar_estado_planilla = "/scripts/cambiar_estado_planilla.php?toma_id=" . $curso->toma_activa_?->id . '&estado=entregada'; ?>
             <? $administrar_persona_url = admin_url('admin.php?page=fines-plugin-ap3&persona_id=' . $curso->toma_activa_?->docente_?->id); ?>
+            <? $lista_alumnos_curso_url = admin_url('admin.php?page=fines-plugin-lacu&curso_id=' . $curso->id); ?>
 
             <tr>
                 <td><?= esc_html($curso->comision_?->sede_?->nombre); ?></td>

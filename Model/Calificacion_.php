@@ -20,6 +20,14 @@ class Calificacion_ extends Calificacion
             $this->set("nota_final", $nota);
     }
 
+    public function getNotaAprobada(){
+        if($this->nota_final >= 7)
+            return $this->nota_final;
+        
+        if($this->crec >= 4)
+            return $this->crec - "c";
+    }
+
     public function cssBackgroundColor(): string {
 
         return (intval($this->nota_final) < 7 && intval($this->crec) < 4) ? "background-color: #FFDDDD;" // Red pastel

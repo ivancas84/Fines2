@@ -44,6 +44,9 @@ function fines_plugin_menu() {
       1 // Posición en el menú
     );
 
+    include_once plugin_dir_path(__FILE__) . 'lac_lista_alumnos_comision/lac_lista_alumnos_comision_page.php';
+    include_once plugin_dir_path(__FILE__) . 'lacu_lista_alumnos_curso/lacu_lista_alumnos_curso_page.php';
+
     include_once plugin_dir_path(__FILE__) . 'lc2_lista_comisiones/lc2_lista_comisiones_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
