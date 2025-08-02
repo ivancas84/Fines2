@@ -1,4 +1,3 @@
-<h2>Comisiones Consultadas <?=count($alumnosComision)?></h2>
 <table class="wp-list-table widefat striped">
     <thead>
         <tr>

@@ -11,6 +11,7 @@ use Fines2\AlumnoComisionDAO;
 use Fines2\AlumnoDAO;
 use Fines2\CalificacionDAO;
 use Fines2\PersonaDAO;
+use Fines2\TomaDAO;
 use ProgramaFines\PfUtils;
 use SqlOrganize\Sql\DbMy;
 
@@ -34,8 +35,12 @@ function ppc3_procesar_planilla_calificacion_page() {
     /** @var Curso_ */ $curso = $dataProvider->fetchEntityByParams("curso", ["id" => $_GET['curso_id']]);
     if(empty($curso)) throw new Exception("No se ha encontrado el curso");
  
-    echo "<h1>Cargar calificaciones en curso " . $curso->getLabel() . "</h1>";
+    $toma_activa_ = TomaDAO::TomaActivaByCurso($curso->id);
+    $curso->setFk("toma_activa", $toma_activa_);
 
+    echo "<h2>Cargar calificaciones curso</h2>";
+    echo "<p><strong>" . $curso->getLabel() . " " . $curso->comision_?->calendario_?->getLabel() . "</strong></p>";
+    echo "<p>" . $curso->toma_activa_?->docente_?->getLabel() . "</p>";
     if (!isset($_POST['submit']) || empty($_POST['data']) || empty($_POST['format'])) {
         include plugin_dir_path(__FILE__) . 'ppc3_form.html';
         return;

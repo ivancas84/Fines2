@@ -1,6 +1,10 @@
-<h1>Procesar Calificaciones</h1>
-<p>Copiar y pegar desde una planilla de calificación (abrirla desde word)</p>
-<p>Copiar y pegar desde excel, agregar encabezados nombres, apellidos, numero_documento y nota (el resto ignorarlos)</p>
+<ul>
+    <li>Copiar y pegar desde una planilla de calificación (abrirla desde word)</li>
+    <li>Copiar y pegar desde excel, agregar encabezados nombres, apellidos, numero_documento y nota (el resto ignorarlos)</li>
+</ul>
+<p><a href="<?= esc_url(admin_url('admin.php?page=fines-plugin-lacu&curso_id=' . $curso->id))?>" class="button" title="Calificaciones por curso">
+    <span class="dashicons dashicons-paperclip"></span>
+</a> <a href="<?= esc_url('/scripts/cambiar_estado_planilla.php?toma_id=' . $curso->toma_activa_?->id . '&estado=entregada') ?>" target="_blank" title="Cambiar entregada" class="button"><span  class="dashicons dashicons-yes"></span></a></p>
 <form method="POST">
     <input type="hidden" name="page" value="fines-plugin-ppc" />
   

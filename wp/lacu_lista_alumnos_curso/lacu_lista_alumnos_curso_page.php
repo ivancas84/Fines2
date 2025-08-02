@@ -17,7 +17,7 @@ add_submenu_page(
     'Lista alumnos curso', // Título de la página
     'Lista alumnos curso', //Título del menú
     'edit_posts', // Permisos
-    'fines-plugin-lac',  // Slug del submenú
+    'fines-plugin-lacu',  // Slug del submenú
     'lacu_lista_alumnos_curso_page' // Función que muestra la página del submenu
 );
 
@@ -37,12 +37,13 @@ function lacu_lista_alumnos_curso_page() {
      $calificaciones = ValueTypesUtils::dictOfObjByPropertyNames($calificaciones, "alumno");
 
     foreach($alumnosComision as $ac){
-        if(in_array($ac->alumno, $calificaciones)){
+        if(array_key_exists($ac->alumno, $calificaciones)){
             $ac->_label = $calificaciones[$ac->alumno]->getNotaAprobada();
         }
     }
 
     echo "<h3> Alumnos curso " . $curso->getLabel() . "</h3>";
+    echo "<p>Cantidad de alumnos aprobados " . count($calificaciones) . "</p>";
     if(empty($alumnosComision)){
         echo "El curso no tiene alumnos cargados";
     } else {

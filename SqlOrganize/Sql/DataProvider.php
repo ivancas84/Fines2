@@ -76,7 +76,6 @@ class DataProvider {
      */
     protected function _fetchAllByParams(string $sql, string $entityName, array $params = [], array $orderBy = [], $fetchMode = PDO::FETCH_ASSOC): array
     {
-        echo $sql;
         $selectQueries = $this->db->createSelectQueries();
         $sql .= $selectQueries->whereParamsWithOrder($entityName, $params, $orderBy);
         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);
@@ -99,7 +98,7 @@ class DataProvider {
         return $this->_fetchAllByParams($sql, $entityName, $params, $orderBy);
     }
 
-    public function fetchAllTreeByParams(string $entityName, array $params = [], array $orderBy): array
+    public function fetchAllTreeByParams(string $entityName, array $params = [], array $orderBy = []): array
     {
         $rawEntities = $this->fetchAllJoinByParams($entityName, $params, $orderBy);
 
@@ -113,7 +112,7 @@ class DataProvider {
         return $response; // Ya es array asociativo, no se necesita deserializar
     }
 
-    public function fetchAllEntitiesByParams(string $entityName, array $params = [], $orderBy = []): array {
+    public function fetchAllEntitiesByParams(string $entityName, array $params = [], array $orderBy = []): array {
         $treeData = $this->fetchAllTreeByParams($entityName, $params, $orderBy);
         return $this->treeDataToEntities($entityName, $treeData);
     }
@@ -193,7 +192,7 @@ class DataProvider {
     /**
      * 
      */
-    public function fetchAllColumnByParams($entityName, $fieldName, ?array $params = null, ?array $orderBy = null){
+    public function fetchAllColumnByParams($entityName, $fieldName, array $params = [], array $orderBy = []){
         $selectQueries = $this->db->createSelectQueries();
         $sql = $selectQueries->selectField($entityName, $fieldName);
         return $this->_fetchAllByParams($sql, $entityName, $params, $orderBy, PDO::FETCH_COLUMN);

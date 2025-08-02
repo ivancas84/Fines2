@@ -398,6 +398,9 @@ abstract class ModifyQueries
                 $value = $value->format('Y-m-d H:i:s');
             }
 
+            if(is_array($value))
+                throw new Exception("Array value detected for key {$key}. Array parameters are not supported in this context.");
+
             $stmt->bindValue(':' . $key, $value);
         }
         

@@ -26,7 +26,6 @@
             <? $administrar_tomas_url = admin_url('admin.php?page=fines-plugin-administrar-toma-comision&comision_id=' . $curso->comision); ?>
             <? $cargar_planilla_calificacion_url = admin_url('admin.php?page=fines-plugin-ppc3&curso_id=' . $curso->id); ?>
             <? $cargar_alumnos_url = admin_url('admin.php?page=fines-plugin-cac&comision_id=' . $curso->comision); ?>
-            <? $cambiar_estado_planilla = "/scripts/cambiar_estado_planilla.php?toma_id=" . $curso->toma_activa_?->id . '&estado=entregada'; ?>
             <? $administrar_persona_url = admin_url('admin.php?page=fines-plugin-ap3&persona_id=' . $curso->toma_activa_?->docente_?->id); ?>
             <? $lista_alumnos_curso_url = admin_url('admin.php?page=fines-plugin-lacu&curso_id=' . $curso->id); ?>
 
@@ -53,7 +52,16 @@
                     <a href="<?= esc_url($administrar_tomas_url); ?>" title="Administrar Tomas" class="button"><span  class="dashicons dashicons-businessperson"></span></a>
                     <a href="<?= esc_url($cargar_planilla_calificacion_url); ?>" title="Cargar Planilla de Calificación" class="button"><span  class="dashicons dashicons-media-spreadsheet"></span></a>
                     <a href="<?= esc_url($cargar_alumnos_url); ?>" title="Cargar Alumnos" class="button"><span  class="dashicons dashicons-groups"></span></a>
-                    <a href="<?= esc_url($cambiar_estado_planilla); ?>" target="_blank" title="Cargar Alumnos" class="button"><span  class="dashicons dashicons-yes"></span></a>
+                    <a href="<?= esc_url('/scripts/cambiar_estado_planilla.php?toma_id=' . $curso->toma_activa_?->id . '&estado=entregada') ?>" target="_blank" title="Cambiar entregada" class="button"><span  class="dashicons dashicons-yes"></span></a>
+                    <a href="<?= esc_url(admin_url('admin.php?page=fines-plugin-lacu&curso_id=' . $curso->id))?>" class="button" title="Calificaciones por curso">
+                        <span class="dashicons dashicons-paperclip"></span>
+                    </a>
+                    <a onclick="return confirm('¿Eliminar calificaciones?');" href="<?= esc_url('/scripts/eliminar_calificaciones_curso.php?curso_id=' . $curso->id) ?>" target="_blank" title="Eliminar calificaciones" class="button">
+                        <span  class="dashicons dashicons-database-remove"></span>
+                    </a>
+                    <a onclick="return confirm('¿Eliminar alumnos de la comisión?');" href="<?= esc_url('/scripts/eliminar_alumnos_comision.php?comision_id=' . $curso->comision) ?>" target="_blank" title="Eliminar alumnos comisión" class="button">
+                        <span  class="dashicons dashicons-no"></span>
+                    </a>
                 </td>
             </tr>
         <? endforeach; ?>
