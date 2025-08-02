@@ -41,7 +41,7 @@ class CalificacionDAO
     /**
      * @return Calificacion_[]
      */
-    public static function calificacionesAprobadasByDisposicionAndDnis(mixed $disposicion, array $numero_documento): array {
+    public static function calificacionesAprobadasByDisposicionAndDnis(mixed $disposicion, array $dnis): array {
 
         $sql = "
             SELECT DISTINCT calificacion.id
@@ -53,7 +53,7 @@ class CalificacionDAO
             AND persona.numero_documento IN (:numero_documento)
         ";  
 
-        return DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["disposicion" => $disposicion, "numero_documento"=>$numero_documento] );
+        return DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["disposicion" => $disposicion, "numero_documento"=>$dnis] );
     }
 
     /**

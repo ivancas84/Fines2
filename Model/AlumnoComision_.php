@@ -13,6 +13,8 @@ use DateTime;
 class AlumnoComision_ extends AlumnoComision
 {
 
+    /** @var string[] */ public array $notas = [];
+
     public static function imprimirComisionesByAlumno(string $idAlumno){
         /** @var Comision_[] */ $comisiones = DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesByParams("alumno_comision", ["alumno" => $idAlumno]);
         if(!empty($comisiones)) {

@@ -55,6 +55,8 @@ function fines_plugin_menu() {
 
     include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_administrar_comision_page.php';
 
+    include_once plugin_dir_path(__FILE__) . 'rdc_rindex_comision/rdc_rindex_comision_page.php';
+
     add_submenu_page(
       'fines-plugin', //debe coincidir con el slug del menu
       'Buscar Personas', // Título de la página
