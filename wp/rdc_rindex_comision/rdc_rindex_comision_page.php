@@ -32,7 +32,7 @@ function rdc_rindex_comision_page() {
     $comision_id = $_GET["comision_id"];
 
     /** @var Comision_ */ $comision = $dataProvider->fetchEntityByParams("comision", ["id" => $comision_id]);
-    /** @var AlumnoComision_[] */ $alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["comision"=>$comision_id, "activo"=>true]);
+    /** @var AlumnoComision_[] */ $alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["comision"=>$comision_id]);
     /** @var string[] */ $dnis = [];
 
     foreach($alumnosComision as $alumnoComision) {
