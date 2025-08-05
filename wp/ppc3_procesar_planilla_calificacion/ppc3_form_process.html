@@ -1,5 +1,6 @@
 <form method="POST" action="admin-post.php">
     <?php wp_html_init_form("ppc3_process", "curso_id", $curso->id); ?>
+
     <input type="hidden" name="data" value="<?=esc_attr($rawData);?>"></textarea>
     <input type="hidden" name="format" value="<?=esc_attr($format);?>"></textarea>
     
