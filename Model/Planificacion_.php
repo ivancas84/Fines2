@@ -18,6 +18,20 @@ class Planificacion_ extends Planificacion
         . ($this->semestre  ?? "?");
     }
 
+    public function getTramoSiguiente(): array {
+        $a = intval($this->anio);
+        $s = intval($this->semestre);
+        if($s == 2) {
+            $a++;
+            $s = 1;
+        } else {
+            $s = 2;
+        }
+        return [
+            "anio" => strval($a),
+            "semestre" => $s
+        ];
+    }
     public static function planificaciones(): array{
         $db = DbMy::getInstance();
 

@@ -206,6 +206,15 @@ abstract class SelectQueries
         return $sql;
     }
 
+    public function selectCount($entityName)
+    {
+        $metadata = $this->db->getEntityMetadata($entityName);
+        $sql = "SELECT COUNT(DISTINCT " . $metadata->alias . "." . $this->db->config->idName . ") AS count\n";
+        $sql .= $this->from($entityName);
+
+        return $sql;
+    }
+
     /**
      * Definir campos a consultar
      */

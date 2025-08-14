@@ -1,3 +1,6 @@
+<?php use \Fines2\CalificacionDAO; ?>
+<?php use \SqlOrganize\Utils\ValueTypesUtils; ?>
+
 <h2>Comisiones Consultadas</h2>
 
 <table class="wp-list-table widefat striped">
@@ -16,12 +19,22 @@
             <th>Fecha Toma</th>
             <th>Planilla Docente</th>
             <th>Estado Planilla</th>
+            <th>Aprobados</th>
             <th>Ids</th>
             <th>Opciones</th>
         </tr>
     </thead>
     <tbody>
         <? foreach ($cursos as $curso): ?>
+        <?
+    /** @var AlumnoComision_[] */ $alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["comision"=> $curso->comision_?->id]);
+    $dnis = [];
+    foreach($alumnosComision as $ac){
+        array_push($dnis, $ac->alumno_->persona_?->numero_documento);
+    }
+     /** @var Calificacion_[] */ $calificaciones = CalificacionDAO::calificacionesAprobadasByDisposicionAndDnis($curso->disposicion, $dnis);
+     $calificaciones = ValueTypesUtils::dictOfObjByPropertyNames($calificaciones, "alumno");
+?>
             <? $detalle_comision_url = admin_url('admin.php?page=fines-plugin-ac2&comision_id=' . $curso->comision); ?>
             <? $administrar_tomas_url = admin_url('admin.php?page=fines-plugin-administrar-toma-comision&comision_id=' . $curso->comision); ?>
             <? $cargar_planilla_calificacion_url = admin_url('admin.php?page=fines-plugin-ppc3&curso_id=' . $curso->id); ?>
@@ -42,9 +55,11 @@
                 <td><?= esc_html($curso->toma_activa_?->fecha_toma?->format('Y-m-d')); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->planilla_docente_?->numero); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->estado_planilla); ?></td>
+                <td><?= esc_html(count($calificaciones)); ?></td>
                 <td>Toma <?= esc_html($curso->toma_activa_?->id); ?><br>
                     Curso <?= esc_html($curso->id); ?><br>
-                    Comisión <?= esc_html($curso->comision); ?>
+                    Comisión <?= esc_html($curso->comision); ?><br>
+                    Sede <?= esc_html($curso->comision_?->sede); ?>
                 </td>
 
                 <td>

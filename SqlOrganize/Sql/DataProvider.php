@@ -98,6 +98,18 @@ class DataProvider {
         return $this->_fetchAllByParams($sql, $entityName, $params, $orderBy);
     }
 
+    public function countByParams(string $entityName, array $params = []): int
+    {
+        $selectQueries = $this->db->createSelectQueries();
+        $sql = $selectQueries->selectCount($entityName);
+        $sql .= $selectQueries->whereParams($entityName, $params);
+        [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);
+        $stmt = $this->db->getPdo()->prepare($processedSql);
+        $stmt->execute($processedParams);
+        return (int)$stmt->fetchColumn();
+
+    }
+
     public function fetchAllTreeByParams(string $entityName, array $params = [], array $orderBy = []): array
     {
         $rawEntities = $this->fetchAllJoinByParams($entityName, $params, $orderBy);

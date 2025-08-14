@@ -151,8 +151,9 @@ class Entity
      */
     public function setFkValue(string $fieldName, $value): void
     {   
-        $this->set($fieldName, $value);
-
+        $entityName = $this->_db->field($this->_entityName, $fieldName)->refEntityName;
+        $v = $this->_db->CreateDataProvider()->fetchEntityByParams($entityName, [$this->_db->config->idName => $value]);
+        $this->setFk($fieldName, $v);
     }
 
     /**

@@ -10,6 +10,9 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/db-config.php');
 use \SqlOrganize\Sql\DbMy;
 use \Fines2\CursoDAO;
 use \Fines2\TomaDAO;
+use \Fines2\CalificacionDAO;
+use SqlOrganize\Utils\ValueTypesUtils;
+
 
 
 
@@ -44,9 +47,6 @@ function lcu_lista_cursos_page() {
  
     $cursos = CursoDAO::CursosActivosConTomasActivasByCalendario($calendario_id);
 
-    foreach($cursos as $curso){
-
-    }
     if ($cursos) {
         include plugin_dir_path(__FILE__) . 'lcu_tabla_cursos.html';
     } else {
