@@ -417,13 +417,201 @@ class Schema
         $entities['alumno_comision']->fields['pfid']->checks = [
             'type' => 'int',
         ];
-        $entities['asignatura'] = EntityMetadata::getInstance('asignatura', 'asig');
+        $entities['asignacion_planilla_docente'] = EntityMetadata::getInstance('asignacion_planilla_docente', 'asig');
+        $entities['asignacion_planilla_docente']->pk = ['id'];
+        $entities['asignacion_planilla_docente']->fk = ['planilla_docente', 'toma'];
+        $entities['asignacion_planilla_docente']->notNull = ['id', 'insertado', 'planilla_docente', 'reclamo', 'toma'];
+
+        $entities['asignacion_planilla_docente']->tree = [];
+        $entities['asignacion_planilla_docente']->tree['planilla_docente'] = EntityTree::getInstance('planilla_docente', 'planilla_docente', 'id');
+
+        $entities['asignacion_planilla_docente']->tree['toma'] = EntityTree::getInstance('toma', 'toma', 'id');
+        $entities['asignacion_planilla_docente']->tree['toma']->children = [];
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso'] = EntityTree::getInstance('curso', 'curso', 'id');
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children = [];
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision'] = EntityTree::getInstance('comision', 'comision', 'id');
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children = [];
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
+
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['comision_siguiente'] = EntityTree::getInstance('comision_siguiente', 'comision', 'id');
+
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['modalidad'] = EntityTree::getInstance('modalidad', 'modalidad', 'id');
+
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['planificacion'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['planificacion']->children = [];
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['planificacion']->children['plan'] = EntityTree::getInstance('plan', 'plan', 'id');
+
+
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede'] = EntityTree::getInstance('sede', 'sede', 'id');
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children = [];
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children['centro_educativo'] = EntityTree::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children['centro_educativo']->children = [];
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children['centro_educativo']->children['domicilio_cen'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
+
+
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children['domicilio'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
+
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children['organizacion'] = EntityTree::getInstance('organizacion', 'sede', 'id');
+
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['comision']->children['sede']->children['tipo_sede'] = EntityTree::getInstance('tipo_sede', 'tipo_sede', 'id');
+
+
+
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['disposicion'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['disposicion']->children = [];
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['disposicion']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
+
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['disposicion']->children['planificacion_dis'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['disposicion']->children['planificacion_dis']->children = [];
+        $entities['asignacion_planilla_docente']->tree['toma']->children['curso']->children['disposicion']->children['planificacion_dis']->children['plan_pla'] = EntityTree::getInstance('plan', 'plan', 'id');
+
+
+
+
+        $entities['asignacion_planilla_docente']->tree['toma']->children['docente'] = EntityTree::getInstance('docente', 'persona', 'id');
+        $entities['asignacion_planilla_docente']->tree['toma']->children['docente']->children = [];
+        $entities['asignacion_planilla_docente']->tree['toma']->children['docente']->children['domicilio_doc'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
+
+
+        $entities['asignacion_planilla_docente']->tree['toma']->children['planilla_docente_tom'] = EntityTree::getInstance('planilla_docente', 'planilla_docente', 'id');
+
+        $entities['asignacion_planilla_docente']->tree['toma']->children['reemplazo'] = EntityTree::getInstance('reemplazo', 'persona', 'id');
+        $entities['asignacion_planilla_docente']->tree['toma']->children['reemplazo']->children = [];
+        $entities['asignacion_planilla_docente']->tree['toma']->children['reemplazo']->children['domicilio_ree'] = EntityTree::getInstance('domicilio', 'domicilio', 'id');
+
+
+
+        $entities['asignacion_planilla_docente']->relations = [];
+        $entities['asignacion_planilla_docente']->relations['planilla_docente'] = EntityRelation::getInstance('planilla_docente', 'planilla_docente', 'id');
+
+        $entities['asignacion_planilla_docente']->relations['toma'] = EntityRelation::getInstance('toma', 'toma', 'id');
+
+        $entities['asignacion_planilla_docente']->relations['curso'] = EntityRelation::getInstance('curso', 'curso', 'id');
+        $entities['asignacion_planilla_docente']->relations['curso']->parentId = 'toma';
+
+        $entities['asignacion_planilla_docente']->relations['comision'] = EntityRelation::getInstance('comision', 'comision', 'id');
+        $entities['asignacion_planilla_docente']->relations['comision']->parentId = 'curso';
+
+        $entities['asignacion_planilla_docente']->relations['calendario'] = EntityRelation::getInstance('calendario', 'calendario', 'id');
+        $entities['asignacion_planilla_docente']->relations['calendario']->parentId = 'comision';
+
+        $entities['asignacion_planilla_docente']->relations['comision_siguiente'] = EntityRelation::getInstance('comision_siguiente', 'comision', 'id');
+        $entities['asignacion_planilla_docente']->relations['comision_siguiente']->parentId = 'comision';
+
+        $entities['asignacion_planilla_docente']->relations['modalidad'] = EntityRelation::getInstance('modalidad', 'modalidad', 'id');
+        $entities['asignacion_planilla_docente']->relations['modalidad']->parentId = 'comision';
+
+        $entities['asignacion_planilla_docente']->relations['planificacion'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $entities['asignacion_planilla_docente']->relations['planificacion']->parentId = 'comision';
+
+        $entities['asignacion_planilla_docente']->relations['plan'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $entities['asignacion_planilla_docente']->relations['plan']->parentId = 'planificacion';
+
+        $entities['asignacion_planilla_docente']->relations['sede'] = EntityRelation::getInstance('sede', 'sede', 'id');
+        $entities['asignacion_planilla_docente']->relations['sede']->parentId = 'comision';
+
+        $entities['asignacion_planilla_docente']->relations['centro_educativo'] = EntityRelation::getInstance('centro_educativo', 'centro_educativo', 'id');
+        $entities['asignacion_planilla_docente']->relations['centro_educativo']->parentId = 'sede';
+
+        $entities['asignacion_planilla_docente']->relations['domicilio_cen'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $entities['asignacion_planilla_docente']->relations['domicilio_cen']->parentId = 'centro_educativo';
+
+        $entities['asignacion_planilla_docente']->relations['domicilio'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $entities['asignacion_planilla_docente']->relations['domicilio']->parentId = 'sede';
+
+        $entities['asignacion_planilla_docente']->relations['organizacion'] = EntityRelation::getInstance('organizacion', 'sede', 'id');
+        $entities['asignacion_planilla_docente']->relations['organizacion']->parentId = 'sede';
+
+        $entities['asignacion_planilla_docente']->relations['tipo_sede'] = EntityRelation::getInstance('tipo_sede', 'tipo_sede', 'id');
+        $entities['asignacion_planilla_docente']->relations['tipo_sede']->parentId = 'sede';
+
+        $entities['asignacion_planilla_docente']->relations['disposicion'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
+        $entities['asignacion_planilla_docente']->relations['disposicion']->parentId = 'curso';
+
+        $entities['asignacion_planilla_docente']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $entities['asignacion_planilla_docente']->relations['asignatura']->parentId = 'disposicion';
+
+        $entities['asignacion_planilla_docente']->relations['planificacion_dis'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
+        $entities['asignacion_planilla_docente']->relations['planificacion_dis']->parentId = 'disposicion';
+
+        $entities['asignacion_planilla_docente']->relations['plan_pla'] = EntityRelation::getInstance('plan', 'plan', 'id');
+        $entities['asignacion_planilla_docente']->relations['plan_pla']->parentId = 'planificacion_dis';
+
+        $entities['asignacion_planilla_docente']->relations['docente'] = EntityRelation::getInstance('docente', 'persona', 'id');
+        $entities['asignacion_planilla_docente']->relations['docente']->parentId = 'toma';
+
+        $entities['asignacion_planilla_docente']->relations['domicilio_doc'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $entities['asignacion_planilla_docente']->relations['domicilio_doc']->parentId = 'docente';
+
+        $entities['asignacion_planilla_docente']->relations['planilla_docente_tom'] = EntityRelation::getInstance('planilla_docente', 'planilla_docente', 'id');
+        $entities['asignacion_planilla_docente']->relations['planilla_docente_tom']->parentId = 'toma';
+
+        $entities['asignacion_planilla_docente']->relations['reemplazo'] = EntityRelation::getInstance('reemplazo', 'persona', 'id');
+        $entities['asignacion_planilla_docente']->relations['reemplazo']->parentId = 'toma';
+
+        $entities['asignacion_planilla_docente']->relations['domicilio_ree'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
+        $entities['asignacion_planilla_docente']->relations['domicilio_ree']->parentId = 'reemplazo';
+
+        $entities['asignacion_planilla_docente']->fields['comentario'] = Field::getInstance('asignacion_planilla_docente', 'comentario', 'varchar', 'string');
+        $entities['asignacion_planilla_docente']->fields['comentario']->checks = [
+            'type' => 'string',
+        ];
+        $entities['asignacion_planilla_docente']->fields['comentario']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+            'nullIfEmpty' => true,
+        ];
+        $entities['asignacion_planilla_docente']->fields['id'] = Field::getInstance('asignacion_planilla_docente', 'id', 'varchar', 'string');
+        $entities['asignacion_planilla_docente']->fields['id']->checks = [
+            'type' => 'string',
+            'required' => '1',
+        ];
+        $entities['asignacion_planilla_docente']->fields['id']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+        ];
+        $entities['asignacion_planilla_docente']->fields['insertado'] = Field::getInstance('asignacion_planilla_docente', 'insertado', 'timestamp', 'DateTime');
+        $entities['asignacion_planilla_docente']->fields['insertado']->defaultValue = 'current_timestamp()';
+        $entities['asignacion_planilla_docente']->fields['insertado']->checks = [
+            'type' => 'DateTime',
+            'required' => '1',
+        ];
+        $entities['asignacion_planilla_docente']->fields['planilla_docente'] = Field::getInstance('asignacion_planilla_docente', 'planilla_docente', 'varchar', 'string');
+        $entities['asignacion_planilla_docente']->fields['planilla_docente']->alias = 'pla';
+        $entities['asignacion_planilla_docente']->fields['planilla_docente']->refEntityName = 'planilla_docente';
+        $entities['asignacion_planilla_docente']->fields['planilla_docente']->refFieldName = 'id';
+        $entities['asignacion_planilla_docente']->fields['planilla_docente']->checks = [
+            'type' => 'string',
+            'required' => '1',
+        ];
+        $entities['asignacion_planilla_docente']->fields['planilla_docente']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+        ];
+        $entities['asignacion_planilla_docente']->fields['reclamo'] = Field::getInstance('asignacion_planilla_docente', 'reclamo', 'tinyint', 'bool');
+        $entities['asignacion_planilla_docente']->fields['reclamo']->defaultValue = false;
+        $entities['asignacion_planilla_docente']->fields['reclamo']->checks = [
+            'type' => 'bool',
+            'required' => '1',
+        ];
+        $entities['asignacion_planilla_docente']->fields['toma'] = Field::getInstance('asignacion_planilla_docente', 'toma', 'varchar', 'string');
+        $entities['asignacion_planilla_docente']->fields['toma']->alias = 'tom';
+        $entities['asignacion_planilla_docente']->fields['toma']->refEntityName = 'toma';
+        $entities['asignacion_planilla_docente']->fields['toma']->refFieldName = 'id';
+        $entities['asignacion_planilla_docente']->fields['toma']->checks = [
+            'type' => 'string',
+            'required' => '1',
+        ];
+        $entities['asignacion_planilla_docente']->fields['toma']->resets = [
+            'trim' => ' ',
+            'removeMultipleSpaces' => true,
+        ];
+        $entities['asignatura'] = EntityMetadata::getInstance('asignatura', 'asi1');
         $entities['asignatura']->pk = ['id'];
         $entities['asignatura']->unique = ['nombre'];
         $entities['asignatura']->notNull = ['id', 'nombre'];
 
         $entities['asignatura']->om = [];
-        $entities['asignatura']->om['Curso_'] = EntityRef::getInstance('asignatura', 'curso');
         $entities['asignatura']->om['Disposicion_'] = EntityRef::getInstance('asignatura', 'disposicion');
         $entities['asignatura']->fields['clasificacion'] = Field::getInstance('asignatura', 'clasificacion', 'varchar', 'string');
         $entities['asignatura']->fields['clasificacion']->checks = [
@@ -547,8 +735,6 @@ class Schema
 
         $entities['calificacion']->tree['curso'] = EntityTree::getInstance('curso', 'curso', 'id');
         $entities['calificacion']->tree['curso']->children = [];
-        $entities['calificacion']->tree['curso']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
-
         $entities['calificacion']->tree['curso']->children['comision'] = EntityTree::getInstance('comision', 'comision', 'id');
         $entities['calificacion']->tree['curso']->children['comision']->children = [];
         $entities['calificacion']->tree['curso']->children['comision']->children['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
@@ -579,7 +765,7 @@ class Schema
 
         $entities['calificacion']->tree['curso']->children['disposicion_cur'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
         $entities['calificacion']->tree['curso']->children['disposicion_cur']->children = [];
-        $entities['calificacion']->tree['curso']->children['disposicion_cur']->children['asignatura_dis'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
+        $entities['calificacion']->tree['curso']->children['disposicion_cur']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
         $entities['calificacion']->tree['curso']->children['disposicion_cur']->children['planificacion_dis'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
         $entities['calificacion']->tree['curso']->children['disposicion_cur']->children['planificacion_dis']->children = [];
@@ -590,7 +776,7 @@ class Schema
 
         $entities['calificacion']->tree['disposicion'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
         $entities['calificacion']->tree['disposicion']->children = [];
-        $entities['calificacion']->tree['disposicion']->children['asignatura_dis1'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
+        $entities['calificacion']->tree['disposicion']->children['asignatura_dis'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
         $entities['calificacion']->tree['disposicion']->children['planificacion_dis1'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
         $entities['calificacion']->tree['disposicion']->children['planificacion_dis1']->children = [];
@@ -614,9 +800,6 @@ class Schema
         $entities['calificacion']->relations['resolucion_inscripcion']->parentId = 'alumno';
 
         $entities['calificacion']->relations['curso'] = EntityRelation::getInstance('curso', 'curso', 'id');
-
-        $entities['calificacion']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
-        $entities['calificacion']->relations['asignatura']->parentId = 'curso';
 
         $entities['calificacion']->relations['comision'] = EntityRelation::getInstance('comision', 'comision', 'id');
         $entities['calificacion']->relations['comision']->parentId = 'curso';
@@ -657,8 +840,8 @@ class Schema
         $entities['calificacion']->relations['disposicion_cur'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
         $entities['calificacion']->relations['disposicion_cur']->parentId = 'curso';
 
-        $entities['calificacion']->relations['asignatura_dis'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
-        $entities['calificacion']->relations['asignatura_dis']->parentId = 'disposicion_cur';
+        $entities['calificacion']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $entities['calificacion']->relations['asignatura']->parentId = 'disposicion_cur';
 
         $entities['calificacion']->relations['planificacion_dis'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
         $entities['calificacion']->relations['planificacion_dis']->parentId = 'disposicion_cur';
@@ -668,8 +851,8 @@ class Schema
 
         $entities['calificacion']->relations['disposicion'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
 
-        $entities['calificacion']->relations['asignatura_dis1'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
-        $entities['calificacion']->relations['asignatura_dis1']->parentId = 'disposicion';
+        $entities['calificacion']->relations['asignatura_dis'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $entities['calificacion']->relations['asignatura_dis']->parentId = 'disposicion';
 
         $entities['calificacion']->relations['planificacion_dis1'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
         $entities['calificacion']->relations['planificacion_dis1']->parentId = 'disposicion';
@@ -1308,12 +1491,10 @@ class Schema
         ];
         $entities['curso'] = EntityMetadata::getInstance('curso', 'curs');
         $entities['curso']->pk = ['id'];
-        $entities['curso']->fk = ['asignatura', 'comision', 'disposicion'];
+        $entities['curso']->fk = ['comision', 'disposicion'];
         $entities['curso']->notNull = ['alta', 'comision', 'horas_catedra', 'id'];
 
         $entities['curso']->tree = [];
-        $entities['curso']->tree['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
-
         $entities['curso']->tree['comision'] = EntityTree::getInstance('comision', 'comision', 'id');
         $entities['curso']->tree['comision']->children = [];
         $entities['curso']->tree['comision']->children['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
@@ -1344,7 +1525,7 @@ class Schema
 
         $entities['curso']->tree['disposicion'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
         $entities['curso']->tree['disposicion']->children = [];
-        $entities['curso']->tree['disposicion']->children['asignatura_dis'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
+        $entities['curso']->tree['disposicion']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
         $entities['curso']->tree['disposicion']->children['planificacion_dis'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
         $entities['curso']->tree['disposicion']->children['planificacion_dis']->children = [];
@@ -1353,8 +1534,6 @@ class Schema
 
 
         $entities['curso']->relations = [];
-        $entities['curso']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
-
         $entities['curso']->relations['comision'] = EntityRelation::getInstance('comision', 'comision', 'id');
 
         $entities['curso']->relations['calendario'] = EntityRelation::getInstance('calendario', 'calendario', 'id');
@@ -1392,8 +1571,8 @@ class Schema
 
         $entities['curso']->relations['disposicion'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
 
-        $entities['curso']->relations['asignatura_dis'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
-        $entities['curso']->relations['asignatura_dis']->parentId = 'disposicion';
+        $entities['curso']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $entities['curso']->relations['asignatura']->parentId = 'disposicion';
 
         $entities['curso']->relations['planificacion_dis'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
         $entities['curso']->relations['planificacion_dis']->parentId = 'disposicion';
@@ -1410,18 +1589,6 @@ class Schema
         $entities['curso']->fields['alta']->checks = [
             'type' => 'DateTime',
             'required' => '1',
-        ];
-        $entities['curso']->fields['asignatura'] = Field::getInstance('curso', 'asignatura', 'varchar', 'string');
-        $entities['curso']->fields['asignatura']->alias = 'asi';
-        $entities['curso']->fields['asignatura']->refEntityName = 'asignatura';
-        $entities['curso']->fields['asignatura']->refFieldName = 'id';
-        $entities['curso']->fields['asignatura']->checks = [
-            'type' => 'string',
-        ];
-        $entities['curso']->fields['asignatura']->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-            'nullIfEmpty' => true,
         ];
         $entities['curso']->fields['codigo'] = Field::getInstance('curso', 'codigo', 'varchar', 'string');
         $entities['curso']->fields['codigo']->checks = [
@@ -1478,15 +1645,6 @@ class Schema
         $entities['curso']->fields['id']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
-        ];
-        $entities['curso']->fields['ige'] = Field::getInstance('curso', 'ige', 'varchar', 'string');
-        $entities['curso']->fields['ige']->checks = [
-            'type' => 'string',
-        ];
-        $entities['curso']->fields['ige']->resets = [
-            'trim' => ' ',
-            'removeMultipleSpaces' => true,
-            'nullIfEmpty' => true,
         ];
         $entities['curso']->fields['observaciones'] = Field::getInstance('curso', 'observaciones', 'varchar', 'string');
         $entities['curso']->fields['observaciones']->checks = [
@@ -2167,8 +2325,6 @@ class Schema
         $entities['horario']->tree = [];
         $entities['horario']->tree['curso'] = EntityTree::getInstance('curso', 'curso', 'id');
         $entities['horario']->tree['curso']->children = [];
-        $entities['horario']->tree['curso']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
-
         $entities['horario']->tree['curso']->children['comision'] = EntityTree::getInstance('comision', 'comision', 'id');
         $entities['horario']->tree['curso']->children['comision']->children = [];
         $entities['horario']->tree['curso']->children['comision']->children['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
@@ -2199,7 +2355,7 @@ class Schema
 
         $entities['horario']->tree['curso']->children['disposicion'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
         $entities['horario']->tree['curso']->children['disposicion']->children = [];
-        $entities['horario']->tree['curso']->children['disposicion']->children['asignatura_dis'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
+        $entities['horario']->tree['curso']->children['disposicion']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
         $entities['horario']->tree['curso']->children['disposicion']->children['planificacion_dis'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
         $entities['horario']->tree['curso']->children['disposicion']->children['planificacion_dis']->children = [];
@@ -2212,9 +2368,6 @@ class Schema
 
         $entities['horario']->relations = [];
         $entities['horario']->relations['curso'] = EntityRelation::getInstance('curso', 'curso', 'id');
-
-        $entities['horario']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
-        $entities['horario']->relations['asignatura']->parentId = 'curso';
 
         $entities['horario']->relations['comision'] = EntityRelation::getInstance('comision', 'comision', 'id');
         $entities['horario']->relations['comision']->parentId = 'curso';
@@ -2255,8 +2408,8 @@ class Schema
         $entities['horario']->relations['disposicion'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
         $entities['horario']->relations['disposicion']->parentId = 'curso';
 
-        $entities['horario']->relations['asignatura_dis'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
-        $entities['horario']->relations['asignatura_dis']->parentId = 'disposicion';
+        $entities['horario']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $entities['horario']->relations['asignatura']->parentId = 'disposicion';
 
         $entities['horario']->relations['planificacion_dis'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
         $entities['horario']->relations['planificacion_dis']->parentId = 'disposicion';
@@ -2701,6 +2854,7 @@ class Schema
         $entities['planilla_docente']->notNull = ['id', 'insertado', 'numero'];
 
         $entities['planilla_docente']->om = [];
+        $entities['planilla_docente']->om['AsignacionPlanillaDocente_'] = EntityRef::getInstance('planilla_docente', 'asignacion_planilla_docente');
         $entities['planilla_docente']->om['Contralor_'] = EntityRef::getInstance('planilla_docente', 'contralor');
         $entities['planilla_docente']->om['Toma_'] = EntityRef::getInstance('planilla_docente', 'toma');
         $entities['planilla_docente']->fields['fecha_consejo'] = Field::getInstance('planilla_docente', 'fecha_consejo', 'date', 'DateTime');
@@ -3039,8 +3193,6 @@ class Schema
         $entities['toma']->tree = [];
         $entities['toma']->tree['curso'] = EntityTree::getInstance('curso', 'curso', 'id');
         $entities['toma']->tree['curso']->children = [];
-        $entities['toma']->tree['curso']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
-
         $entities['toma']->tree['curso']->children['comision'] = EntityTree::getInstance('comision', 'comision', 'id');
         $entities['toma']->tree['curso']->children['comision']->children = [];
         $entities['toma']->tree['curso']->children['comision']->children['calendario'] = EntityTree::getInstance('calendario', 'calendario', 'id');
@@ -3071,7 +3223,7 @@ class Schema
 
         $entities['toma']->tree['curso']->children['disposicion'] = EntityTree::getInstance('disposicion', 'disposicion', 'id');
         $entities['toma']->tree['curso']->children['disposicion']->children = [];
-        $entities['toma']->tree['curso']->children['disposicion']->children['asignatura_dis'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
+        $entities['toma']->tree['curso']->children['disposicion']->children['asignatura'] = EntityTree::getInstance('asignatura', 'asignatura', 'id');
 
         $entities['toma']->tree['curso']->children['disposicion']->children['planificacion_dis'] = EntityTree::getInstance('planificacion', 'planificacion', 'id');
         $entities['toma']->tree['curso']->children['disposicion']->children['planificacion_dis']->children = [];
@@ -3094,9 +3246,6 @@ class Schema
 
         $entities['toma']->relations = [];
         $entities['toma']->relations['curso'] = EntityRelation::getInstance('curso', 'curso', 'id');
-
-        $entities['toma']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
-        $entities['toma']->relations['asignatura']->parentId = 'curso';
 
         $entities['toma']->relations['comision'] = EntityRelation::getInstance('comision', 'comision', 'id');
         $entities['toma']->relations['comision']->parentId = 'curso';
@@ -3137,8 +3286,8 @@ class Schema
         $entities['toma']->relations['disposicion'] = EntityRelation::getInstance('disposicion', 'disposicion', 'id');
         $entities['toma']->relations['disposicion']->parentId = 'curso';
 
-        $entities['toma']->relations['asignatura_dis'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
-        $entities['toma']->relations['asignatura_dis']->parentId = 'disposicion';
+        $entities['toma']->relations['asignatura'] = EntityRelation::getInstance('asignatura', 'asignatura', 'id');
+        $entities['toma']->relations['asignatura']->parentId = 'disposicion';
 
         $entities['toma']->relations['planificacion_dis'] = EntityRelation::getInstance('planificacion', 'planificacion', 'id');
         $entities['toma']->relations['planificacion_dis']->parentId = 'disposicion';
@@ -3158,6 +3307,8 @@ class Schema
         $entities['toma']->relations['domicilio_ree'] = EntityRelation::getInstance('domicilio', 'domicilio', 'id');
         $entities['toma']->relations['domicilio_ree']->parentId = 'reemplazo';
 
+        $entities['toma']->om = [];
+        $entities['toma']->om['AsignacionPlanillaDocente_'] = EntityRef::getInstance('toma', 'asignacion_planilla_docente');
         $entities['toma']->fields['alta'] = Field::getInstance('toma', 'alta', 'timestamp', 'DateTime');
         $entities['toma']->fields['alta']->defaultValue = 'current_timestamp()';
         $entities['toma']->fields['alta']->checks = [

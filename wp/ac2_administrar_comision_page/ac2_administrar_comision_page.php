@@ -3,12 +3,12 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/db-config.php';
 
 use \Fines2\Comision_;
-use \Fines2\Calendario_;
-use \Fines2\Sede_;
-use \Fines2\Modalidad_;
-use \Fines2\Planificacion_;
-use \Fines2\Disposicion_;
-
+use \Fines2\CalendarioDAO;
+use \Fines2\DisposicionDAO;
+use \Fines2\ModalidadDAO;
+use \Fines2\PlanificacionDAO;
+use \Fines2\SedeDAO;
+use \Fines2\TomaDAO;
 use \SqlOrganize\Sql\DbMy;
 
 add_submenu_page(
@@ -20,37 +20,42 @@ add_submenu_page(
     'ac2_administrar_comision_page' // Función que muestra la página del submenu
 );
   
-    function ac2_administrar_comision_page() {
+function ac2_administrar_comision_page() {
 
-            wp_page_message();
-            $comision_id = isset($_GET['comision_id']) ? $_GET['comision_id'] : null;
+        wp_page_message();
+        $comision_id = isset($_GET['comision_id']) ? $_GET['comision_id'] : null;
 
-            $calendarios = Calendario_::calendarios();
-            $sedes = Sede_::sedes462();
-            $modalidades = Modalidad_::modalidades();
-            $planificaciones = Planificacion_::planificaciones();
+        $calendarios = CalendarioDAO::calendarios();
+        $sedes = SedeDAO::sedes462();
+        $modalidades = ModalidadDAO::modalidades();
+        $planificaciones = PlanificacionDAO::planificaciones();
 
-            $comision = (empty($comision_id)) ? new Comision_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("comision", ["id" =>$comision_id]);
-            include plugin_dir_path(__FILE__) . 'ac2_comision_form.html';
+        $comision = (empty($comision_id)) ? new Comision_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("comision", ["id" =>$comision_id]);
+        include plugin_dir_path(__FILE__) . 'ac2_comision_form.html';
 
-        if(!empty($comision))
-            ac2_init_cursos($comision);
+    if(!empty($comision)) {
+        ac2_init_cursos($comision);
+        ac2_init_tomas($comision);
     }
 
-    function ac2_init_cursos(Comision_ $comision) {
-        $disposiciones = Disposicion_::disposicionesActuales();
+}
 
-        $dataProvider = DbMy::getInstance()->CreateDataProvider();
+function ac2_init_cursos(Comision_ $comision) {
+    $disposiciones = DisposicionDAO::disposicionesActuales();
+    $dataProvider = DbMy::getInstance()->CreateDataProvider();
+    $cursos = $dataProvider->fetchAllEntitiesByParams("curso", ["comision"=>$comision->id]);
+    if($cursos)
+        include plugin_dir_path(__FILE__) . 'ac2_curso_table_form.html';
+    else 
+        echo "<p>No hay cursos para mostrar de la comisión</p>";
+}
 
-        $cursos = $dataProvider->fetchAllEntitiesByParams("curso", ["comision"=>$comision->id]);
-        if($cursos)
-            include plugin_dir_path(__FILE__) . 'ac2_curso_table_form.html';
-        else 
-            echo "<p>No hay cursos para mostrar de la comisión</p>";
-    }
-
-//include plugin_dir_path(__FILE__) . 'ac2_comision_form_handle.php';
-
-//include plugin_dir_path(__FILE__) . 'ac2_curso_modify_handle.php';
-
-//include plugin_dir_path(__FILE__) . 'ac2_curso_add_handle.php';
+function ac2_init_tomas(Comision_ $comision) {
+    $estados = TomaDAO::estados();
+    $tiposMovimientos = TomaDAO::tiposMovimientos();
+    $tomas = TomaDAO::TomasByComision($comision->id);
+    if($tomas)
+        include plugin_dir_path(__FILE__) . 'ac2_tomas_table_form_html.php';
+    else 
+        echo "<p>No hay tomas para mostrar de la comisión</p>";
+}

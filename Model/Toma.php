@@ -73,4 +73,10 @@ class Toma extends Entity
     /** @var Persona|null (fk toma.reemplazo _m:o persona.id) */
     public ?\Fines2\Persona_ $reemplazo_ = null;
 
+    /** @var int|null */
+    public ?int $AsignacionPlanillaDocente_Count = null;
+
+    /** @var AsignacionPlanillaDocente[] (ref asignacion_planilla_docente.toma _m:o toma.id) */
+    public array $AsignacionPlanillaDocente_ = [];
+
 }

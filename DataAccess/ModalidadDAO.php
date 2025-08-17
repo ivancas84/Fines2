@@ -2,11 +2,9 @@
 
 namespace Fines2;
 
-use \Fines2\Modalidad;
-
 use SqlOrganize\Sql\DbMy;
 
-class Modalidad_ extends Modalidad
+class ModalidadDAO
 {
     public static function modalidades(): array{
         $db = DbMy::getInstance();

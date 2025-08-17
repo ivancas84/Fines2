@@ -12,6 +12,8 @@ define("DB_USER_FINES2", "root");
 define("DB_PASS_FINES2", "");
 define("CALENDARIO_ID_ACTUAL", "202508131824");
 define("CALENDARIO_ID_ANTERIOR", "202502110007");
+define("DOCENTES_PATH", "/home/planfi10/domains/planfines2.com.ar/public_html/upload2/docentes.json");
+
 
 require_once MAIN_PATH . 'SqlOrganize/Sql/Config.php';
 require_once MAIN_PATH . 'SqlOrganize/Model/Config.php';

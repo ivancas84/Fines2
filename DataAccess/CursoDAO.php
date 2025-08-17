@@ -8,7 +8,25 @@ use Fines2\TomaDAO;
 class CursoDAO
 {
 
-public static function CursosByCalendario($calendario): array {
+    public static function CursosAutorizadosPublicadosByCalendario($calendario): array {
+        $db = DbMy::getInstance();
+
+        $dataProvider = $db->CreateDataProvider();
+
+        $sql = "
+            SELECT DISTINCT curso.id
+            FROM curso 
+            INNER JOIN comision ON (comision.id = curso.comision)
+            WHERE comision.autorizada = true 
+            AND comision.publicada = true 
+            AND comision.calendario = :calendario
+            ORDER BY comision.pfid ASC;
+        ";
+
+      return $dataProvider->fetchAllEntitiesBySqlId("curso", $sql, ["calendario" => CALENDARIO_ID_ACTUAL]);
+    }
+
+    public static function CursosByCalendario($calendario): array {
         $db = DbMy::getInstance();
 
         $dataProvider = $db->CreateDataProvider();
@@ -33,7 +51,6 @@ public static function CursosByCalendario($calendario): array {
             SELECT DISTINCT curso.id
             FROM curso 
             INNER JOIN comision ON (comision.id = curso.comision)
-            INNER JOIN planificacion ON (planificacion.id = comision.planificacion)
             WHERE comision.autorizada
             AND comision.calendario = :calendario
         ";
@@ -77,5 +94,29 @@ public static function CursosByCalendario($calendario): array {
 
         return $cursos;
     }
+
+    /**
+     * En una comision puede haber cursos de diferente planificacion (por ejemplo aquellos que quedaron pendientes, que hacen dos años en uno o que tienen materias previas).
+     */
+    public static function CursosConTomasAprobadasYPendientesByComision($comision): array {
+        $db = DbMy::getInstance();
+
+        $dataProvider = $db->CreateDataProvider();
+
+        $cursos = $dataProvider->fetchAllEntitiesByParams("curso", ["comision" => $comision]);
+        $id_cursos = ValueTypesUtils::arrayOfName($cursos, "id");
+
+        $tomasActivas = TomaDAO::TomasAprobadasYPendientesByCursos(...$id_cursos);
+        $tomasActivas = ValueTypesUtils::dictOfObjByPropertyNames($tomasActivas, "curso");
+
+        foreach($cursos as &$curso){
+            if(array_key_exists($curso->id, $tomasActivas))
+                $curso->setFk("toma_activa", $tomasActivas[$curso->id]);
+        }
+
+        return $cursos;
+    }
+
+    
 
 }

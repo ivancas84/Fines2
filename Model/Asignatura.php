@@ -35,12 +35,6 @@ class Asignatura extends Entity
     public ?string $perfil = null;
 
     /** @var int|null */
-    public ?int $Curso_Count = null;
-
-    /** @var Curso[] (ref curso.asignatura _m:o asignatura.id) */
-    public array $Curso_ = [];
-
-    /** @var int|null */
     public ?int $Disposicion_Count = null;
 
     /** @var Disposicion[] (ref disposicion.asignatura _m:o asignatura.id) */

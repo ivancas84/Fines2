@@ -7,6 +7,44 @@ use SqlOrganize\Sql\DbMy;
 class TomaDAO
 {
 
+    /**
+     * @return string[]
+     */
+    public static function estados(): array {
+        $db = DbMy::getInstance();
+
+        $dataProvider = $db->CreateDataProvider();
+
+        return $dataProvider->fetchAllColumnByParams("toma", "estado", [], ["estado" => "ASC"]);
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function tiposMovimientos(): array {
+        $db = DbMy::getInstance();
+
+        $dataProvider = $db->CreateDataProvider();
+
+        return $dataProvider->fetchAllColumnByParams("toma", "tipo_movimiento", [], ["tipo_movimiento" => "ASC"]);
+    }
+
+    public static function TomasByComision($idComision): array {
+        $db = DbMy::getInstance();
+
+        $dataProvider = $db->CreateDataProvider();
+
+        $sql = "
+            SELECT DISTINCT toma.id 
+            FROM toma
+            INNER JOIN curso ON (toma.curso = curso.id)
+            INNER JOIN comision ON (curso.comision = comision.id)
+            WHERE comision = :comision
+        ";
+
+        return $dataProvider->fetchAllEntitiesBySqlId("toma", $sql, ["comision" => $idComision]);
+    }
+
     public static function TomasByCalendario($calendario): array {
         $db = DbMy::getInstance();
 
@@ -23,7 +61,6 @@ class TomaDAO
 
         return $dataProvider->fetchAllEntitiesBySqlId("toma", $sql, ["calendario" => $calendario]);
     }
-
 
     public static function TomasActivasByCalendario($calendario): array {
         $db = DbMy::getInstance();
@@ -87,6 +124,23 @@ class TomaDAO
             FROM toma
             INNER JOIN curso ON (toma.curso = curso.id)
             WHERE (toma.estado = 'Aprobada') 
+            AND toma.estado_contralor = 'Pasar'
+            AND curso.id IN (:ids_cursos)
+        ";
+
+        return $dataProvider->fetchAllEntitiesBySqlId("toma", $sql, ["ids_cursos" => $ids_cursos]);
+    }
+
+    public static function TomasAprobadasYPendientesByCursos(string ...$ids_cursos): array {
+         $db = DbMy::getInstance();
+
+        $dataProvider = $db->CreateDataProvider();
+
+        $sql = "
+            SELECT DISTINCT toma.id 
+            FROM toma
+            INNER JOIN curso ON (toma.curso = curso.id)
+            WHERE (toma.estado = 'Aprobada' OR toma.estado = 'Pendiente') 
             AND toma.estado_contralor = 'Pasar'
             AND curso.id IN (:ids_cursos)
         ";

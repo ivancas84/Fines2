@@ -6,14 +6,26 @@ function html_hidden_inputs($values, $fieldNames) {
     }
 }
 
-function html_select($fieldName, $options, $values){
-    echo "<select name='$fieldName'>
+function html_select($fieldName, $options, $value): string{
+    $var = "<select name='$fieldName'>
             <option value=''>-- Seleccione --</option>";
     foreach ($options as $option) {
-        $selected = (isset($values[$fieldName]) && $values[$fieldName] === $option) ? 'selected' : '';
-        echo "<option value='" . esc_attr($option) . "' $selected>" . esc_html($option) . "</option>";
+        $selected = (isset($value) && $value === $option) ? 'selected' : '';
+        $var += "<option value='" . esc_attr($option) . "' $selected>" . esc_html($option) . "</option>";
     }
-    echo "</select>";
+    $var += "</select>";
+    return $var;
+}
+
+function html_select_entity_label(string $fieldName, array $options, mixed $value): string{
+    $var = "<select name='$fieldName'>
+            <option value=''>-- Seleccione --</option>";
+    foreach ($options as $option) {
+        $selected = (isset($value) && $value === $option) ? 'selected' : '';
+        $var += "<option value='" . esc_attr($option) . "' $selected>" . esc_html($option) . "</option>";
+    }
+    $var += "</select>";
+    return $var;
 }
 
 function wp_page_message(){

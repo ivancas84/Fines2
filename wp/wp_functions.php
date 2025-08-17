@@ -1,4 +1,8 @@
 <?php
+
+function esc_url(string $variable){
+    return "some url";
+}
 function plugin_dir_path(string $variable){
 }
 

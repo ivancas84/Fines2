@@ -35,6 +35,12 @@ class PlanillaDocente extends Entity
     public ?string $observaciones = null;
 
     /** @var int|null */
+    public ?int $AsignacionPlanillaDocente_Count = null;
+
+    /** @var AsignacionPlanillaDocente[] (ref asignacion_planilla_docente.planilla_docente _m:o planilla_docente.id) */
+    public array $AsignacionPlanillaDocente_ = [];
+
+    /** @var int|null */
     public ?int $Contralor_Count = null;
 
     /** @var Contralor[] (ref contralor.planilla_docente _m:o planilla_docente.id) */

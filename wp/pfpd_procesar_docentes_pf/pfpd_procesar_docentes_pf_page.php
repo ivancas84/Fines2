@@ -1,5 +1,14 @@
 <?php
 
+add_submenu_page(
+    null, 
+    'Procesar Docentes PF',
+    'Procesar Docentes PF', 
+    'edit_posts', 
+    'fines-plugin-procesar-docentes-pf-page', 
+    'pfpd_procesar_docentes_pf_page'
+  );
+  
 function pfpd_procesar_docentes_pf_page() {
     $wpdb = fines_plugin_db_connect();
 

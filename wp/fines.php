@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 function register_fines_shortcodes() {
   add_shortcode('fines_lista_comisiones', 'lcd_lista_comisiones_direccion_page');
   add_shortcode('fines_rindex_division', 'rdd_rindex_division_direccion_page');
-  add_shortcode('fines_toma_posesion', 'tp_toma_posesion_page');
+  add_shortcode('fines_toma_posesion', 'tp_toma_posesion_shortcode');
 }
 add_action('init', 'register_fines_shortcodes');
 
@@ -104,14 +104,7 @@ function fines_plugin_menu() {
     'cg_constancia_general_page' // Función que muestra la página del submenu
   );
   
-  add_submenu_page(
-    'fines-plugin', 
-    'Procesar Docentes PF',
-    'Procesar Docentes PF', 
-    'edit_posts', 
-    'fines-plugin-procesar-docentes-pf-page', 
-    'pfpd_procesar_docentes_pf_page'
-  );
+  
 
   include_once plugin_dir_path(__FILE__) . 'ppc_procesar_planilla_calificacion_page/ppc_procesar_planilla_calificacion_page.php';
 
@@ -171,13 +164,7 @@ function fines_plugin_menu() {
       'fines-plugin-rindex-division-direccion-page', 
       'rdd_rindex_division_direccion_page');
 
-    add_submenu_page(
-      null, 
-      'Toma de Posesión',
-      'Toma de Posesión', 
-      'edit_posts', 
-      'fines-plugin-toma-posesion-page', 
-      'tp_toma_posesion_page');
+  
 
     add_submenu_page(
       null, 
@@ -215,9 +202,6 @@ function fines_plugin_menu() {
       'atc_administrar_toma_comision_page'
     );
 
-    
-
-
     add_submenu_page(
       null, 
       'Transferir Alumnos Activos',
@@ -228,10 +212,10 @@ function fines_plugin_menu() {
     );
 
     include_once plugin_dir_path(__FILE__) . 'mo_mas_opciones/mo_mas_opciones_page.php';
-
     include_once plugin_dir_path(__FILE__) . 'cac2_cargar_alumnos_comision/cac2_cargar_alumnos_comision_page.php';
-
     include_once plugin_dir_path(__FILE__) . 'ppc3_procesar_planilla_calificacion/ppc3_procesar_planilla_calificacion_page.php';
+    include_once plugin_dir_path(__FILE__) . 'pfpd_procesar_docentes_pf/pfpd_procesar_docentes_pf_page.php';
+    include_once plugin_dir_path(__FILE__) . 'pfpd2_procesar_docentes_pf/pfpd2_procesar_docentes_pf_page.php';
   }
 
   include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_comision_admin_handle.php';
@@ -295,10 +279,7 @@ include_once plugin_dir_path(__FILE__) . 'taa_transferir_alumnos_activos_page/ta
 
 include_once plugin_dir_path(__FILE__) . 'atc_administrar_toma_comision_page/atc_administrar_toma_comision_page.php';
 
-include_once plugin_dir_path(__FILE__) . 'pfpd_procesar_docentes_pf_page/pfpd_procesar_docentes_pf_page.php';
-
-
-include_once plugin_dir_path(__FILE__) . 'tp_toma_posesion_page/tp_toma_posesion_page.php';
+include_once plugin_dir_path(__FILE__) . 'tp_toma_posesion/tp_toma_posesion_shortcode.php';
 
 
 

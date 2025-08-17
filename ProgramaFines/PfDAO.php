@@ -9,45 +9,26 @@ class PfDAO
 {
     private $client;
 
-    public function __construct($pfUser, $pfPassword)
+   //Desde Chrome F12 > Application > Storage > Cookies para obtener el session_id
+   public function __construct(string $sessionId)
     {
         $this->client = curl_init();
-
-        $cookieFile = tempnam(sys_get_temp_dir(), "cookie");
-        curl_setopt($this->client, CURLOPT_COOKIEJAR, $cookieFile);
-        curl_setopt($this->client, CURLOPT_COOKIEFILE, $cookieFile);
         curl_setopt($this->client, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->client, CURLOPT_FOLLOWLOCATION, true);
 
-        // Obtener cookies iniciales
-        curl_setopt($this->client, CURLOPT_URL, "https://www.programafines.ar/");
-        $response = curl_exec($this->client);
+        // Manejo correcto de cookie
+        curl_setopt($this->client, CURLOPT_COOKIE, "PHPSESS=$sessionId");
+    }
 
-        if ($response === false) {
-            throw new Exception("Error en la solicitud inicial: " . curl_error($this->client));
-        }
+    public function request(string $url): string
+    {
+        curl_setopt($this->client, CURLOPT_URL, $url);
+        return curl_exec($this->client);
+    }
 
-        // Login
-        $formData = [
-            'usuario' => $pfUser,
-            'password' => $pfPassword,
-            'button' => 'Entrar'
-        ];
-
-        curl_setopt($this->client, CURLOPT_URL, "https://www.programafines.ar/validar.php");
-        curl_setopt($this->client, CURLOPT_POST, true);
-        curl_setopt($this->client, CURLOPT_POSTFIELDS, http_build_query($formData));
-
-        $response = curl_exec($this->client);
-
-        if ($response === false) {
-            throw new Exception("Error de inicio de sesión: " . curl_error($this->client));
-        }
-
-        $httpCode = curl_getinfo($this->client, CURLINFO_HTTP_CODE);
-        if ($httpCode !== 200) {
-            throw new Exception("Error de inicio de sesión: Código HTTP " . $httpCode);
-        }
+    public function __destruct()
+    {
+        curl_close($this->client);
     }
 
     public function infoListaAlumnos($pfid)

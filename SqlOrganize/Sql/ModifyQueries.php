@@ -219,7 +219,7 @@ abstract class ModifyQueries
         $entityMetadata = $this->db->getEntityMetadata($entityName);
         $idMap = $entityMetadata->map($this->db->config->idName);
         
-        $sql = "UPDATE {$entityMetadata->getSchemaName()} 
+        $sql = "UPDATE {$entityMetadata->getSchemaNameAlias()} 
                 SET {$key} = :{$prefix}Key 
                 WHERE {$idMap} = :{$prefix}Id";
         
@@ -386,6 +386,8 @@ abstract class ModifyQueries
     public function _execute(PDO $connection): int
     {
         $sql = $this->sql;
+
+        
         if(empty($sql))
             return 0;   
         

@@ -12,14 +12,5 @@ class Calendario_ extends Calendario
         return $this->anio . "-" . $this->semestre . " " . $this->descripcion;
     }
 
-    public static function calendarios(): array{
-        $db = DbMy::getInstance();
-
-        $dataProvider = $db->CreateDataProvider();
-
-        $sql = "SELECT id
-                FROM calendario 
-                ORDER BY anio DESC, semestre DESC";
-        return $dataProvider->fetchAllEntitiesBySqlId("calendario", $sql);
-    }
+    
 }

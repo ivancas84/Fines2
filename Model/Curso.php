@@ -20,9 +20,6 @@ class Curso extends Entity
     public ?DateTime $alta = null;
 
     /** @var string|null */
-    public ?string $asignatura = null;
-
-    /** @var string|null */
     public ?string $codigo = null;
 
     /** @var string|null */
@@ -41,13 +38,7 @@ class Curso extends Entity
     public ?string $id = null;
 
     /** @var string|null */
-    public ?string $ige = null;
-
-    /** @var string|null */
     public ?string $observaciones = null;
-
-    /** @var Asignatura|null (fk curso.asignatura _m:o asignatura.id) */
-    public ?\Fines2\Asignatura_ $asignatura_ = null;
 
     /** @var Comision|null (fk curso.comision _m:o comision.id) */
     public ?\Fines2\Comision_ $comision_ = null;

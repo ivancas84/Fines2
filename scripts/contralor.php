@@ -3,16 +3,17 @@ header('Content-Type: text/html; charset=utf-8');
 mb_internal_encoding('UTF-8');
 
 
-require_once __DIR__ . '/db-config.php';
+require_once '../db-config.php';
 
+use Fines2\Toma_;
 use \SqlOrganize\Sql\DbMy;
 use \Fines2\TomaDAO;
 
-$calendario_id = "202502110007";
+$calendario_id = CALENDARIO_ID_ACTUAL;
 
 $db = DbMy::getInstance();
 
-$tomas = TomaDAO::TomasContralorByCalendario($calendario_id);
+/** @var Toma_[] */ $tomas = TomaDAO::TomasContralorByCalendario($calendario_id);
 if(!count($tomas)){
     echo "No hay tomas pendientes para contralor del calendario " . $calendario_id;
     die();
