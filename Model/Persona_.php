@@ -20,6 +20,11 @@ class Persona_ extends Persona
         . ($this->numero_documento  ?? "?");
     }
 
+    public function getNombre(): string {
+        return (mb_strtoupper($this->apellidos) ?? "?") . " " 
+        . (ValueTypesUtils::toTitleCase($this->nombres)  ?? "?");
+    }
+
     public static function cuilDni(string $cuilDni): array {
         $cuilDni = preg_replace('/\D/', '', $cuilDni);
         $return = [ "cuil" => null, "dni" => null, "cuil1" => null, "cuil2" => null ];

@@ -53,6 +53,7 @@ function ac2_init_cursos(Comision_ $comision) {
 function ac2_init_tomas(Comision_ $comision) {
     $estados = TomaDAO::estados();
     $tiposMovimientos = TomaDAO::tiposMovimientos();
+    $estadosContralor = TomaDAO::estadosContralor();
     $tomas = TomaDAO::TomasByComision($comision->id);
     if($tomas)
         include plugin_dir_path(__FILE__) . 'ac2_tomas_table_form_html.php';

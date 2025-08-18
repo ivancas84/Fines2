@@ -29,6 +29,17 @@ class TomaDAO
         return $dataProvider->fetchAllColumnByParams("toma", "tipo_movimiento", [], ["tipo_movimiento" => "ASC"]);
     }
 
+    /**
+     * @return string[]
+     */
+    public static function estadosContralor(): array {
+        $db = DbMy::getInstance();
+
+        $dataProvider = $db->CreateDataProvider();
+
+        return $dataProvider->fetchAllColumnByParams("toma", "estado_contralor", [], ["estado_contralor" => "ASC"]);
+    }
+
     public static function TomasByComision($idComision): array {
         $db = DbMy::getInstance();
 

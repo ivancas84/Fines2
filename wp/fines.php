@@ -53,7 +53,7 @@ function fines_plugin_menu() {
     
     include_once plugin_dir_path(__FILE__) . 'ap3_administrar_persona/ap3_administrar_persona_page.php';
 
-    include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_administrar_comision_page.php';
+    include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision/ac2_administrar_comision_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'rdc_rindex_comision/rdc_rindex_comision_page.php';
 
@@ -218,9 +218,10 @@ function fines_plugin_menu() {
     include_once plugin_dir_path(__FILE__) . 'pfpd2_procesar_docentes_pf/pfpd2_procesar_docentes_pf_page.php';
   }
 
-  include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_comision_admin_handle.php';
-  include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_cursos_modify_delete_handle.php';
-  include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision_page/ac2_curso_add_handle.php';
+  include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision/ac2_comision_admin_handle.php';
+  include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision/ac2_cursos_modify_delete_handle.php';
+  include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision/ac2_tomas_modify_delete_handle.php';
+  include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision/ac2_curso_add_handle.php';
 
   include_once plugin_dir_path(__FILE__) . 'ap3_administrar_persona/ap3_calificaciones_update_handle.php';
   include_once plugin_dir_path(__FILE__) . 'ap3_administrar_persona/ap3_persona_admin_handle.php';
