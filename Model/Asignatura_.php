@@ -11,7 +11,8 @@ use DateTime;
 class Asignatura_ extends Asignatura
 {
     public function getLabel(): string{
-        return $this->nombre . " " . $this->codigo ?? "?";
+        return mb_convert_encoding($this->nombre . " " . $this->codigo ?? "?", 'UTF-8', 'auto');
     }
+
 }
 

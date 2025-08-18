@@ -14,6 +14,14 @@ use SqlOrganize\Utils\ValueTypesUtils;
 
 class Persona_ extends Persona
 {
+
+    public function getEmails(): string {
+        $emails = [];
+        if (!empty(trim($this->email_abc))) array_push($emails, $this->email_abc);
+        if (!empty(trim($this->email))) array_push($emails, $this->email);
+        return implode(", ", $emails);
+    }
+    
     public function getLabel(): string {
         return (mb_strtoupper($this->apellidos) ?? "?") . " " 
         . (ValueTypesUtils::toTitleCase($this->nombres)  ?? "?") . " "
@@ -21,7 +29,7 @@ class Persona_ extends Persona
     }
 
     public function getNombre(): string {
-        return (mb_strtoupper($this->apellidos) ?? "?") . " " 
+        return (ValueTypesUtils::toUpperCase($this->apellidos) ?? "?") . " " 
         . (ValueTypesUtils::toTitleCase($this->nombres)  ?? "?");
     }
 

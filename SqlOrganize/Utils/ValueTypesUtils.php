@@ -131,6 +131,13 @@ public static function arrayOfName(iterable $objects, string $name): array
         return mb_convert_case($str, MB_CASE_TITLE, 'UTF-8');
     }
 
+    public static function toUpperCase(?string $str): string
+    {
+        if(empty($str)) return "";
+        $str = str_replace('_', ' ', $str);
+        return mb_strtoupper($str, "UTF-8");
+    }
+
     /**
      * Convierte un string a camelCase
      */

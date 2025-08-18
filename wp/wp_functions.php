@@ -26,3 +26,7 @@ function add_menu_page($var){
 
 function esc_html($var){
 }
+
+function admin_url($var){
+    return $var;
+}

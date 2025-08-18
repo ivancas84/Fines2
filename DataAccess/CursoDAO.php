@@ -8,6 +8,24 @@ use Fines2\TomaDAO;
 class CursoDAO
 {
 
+    public static function IdCursoByParams($pfid, $calendario, $codigo){
+        $sql = "
+            SELECT curso.id 
+            FROM curso
+            INNER JOIN disposicion ON curso.disposicion = disposicion.id
+            INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+            INNER JOIN comision ON curso.comision = comision.id
+            WHERE comision.pfid = :pfid
+            AND comision.calendario = :calendario
+            AND asignatura.codigo LIKE :codigo
+            ";
+
+        $dataProvider = DbMy::getInstance()->CreateDataProvider();
+        return $dataProvider->fetchValueByParams("curso", "id", ["pfid"=>$pfid, "calendario"=>$calendario, "codigo"=>$codigo]);
+
+
+    }
+
     public static function CursosAutorizadosPublicadosByCalendario($calendario): array {
         $db = DbMy::getInstance();
 

@@ -71,6 +71,12 @@
                     </td>
                     <td>
                         <button type="submit" onclick="return confirm('Está seguro que desea eliminar?');" class="btn-delete-toma" data-index="<?= $i ?>">Eliminar</button>
+                        <a class="button-link"
+                            target="_blank"
+                            href="https://planfines2.com.ar/scripts/generar_toma.php?toma_id=<?= $toma->id ?>"
+                            onclick="return confirm('¿Está seguro que desea generar toma y enviar Email?');">
+                            Generar Toma
+                            </a>
                     </td>
             </tr>
         <?php endfor; ?>
