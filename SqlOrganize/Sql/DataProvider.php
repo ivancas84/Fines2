@@ -96,6 +96,8 @@ class DataProvider {
         $sql .= $selectQueries->whereParamsWithOrder($entityName, $params, $orderBy);
         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);
         $stmt = $this->db->getPdo()->prepare($processedSql);
+        echo $processedSql;
+        print_r($processedParams);
         $stmt->execute($processedParams);
         return $stmt->fetch($fetchMode);
     }
@@ -217,6 +219,25 @@ class DataProvider {
         return ($response === false) ? null : $response;
     }
 
+    public function fetchSqlValueByParams(string $sql, ?array $params = null): mixed
+    {
+        if ($params === null) {
+            $stmt = $this->db->getPdo()->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_COLUMN, 0) ?: null;
+        }
+
+        [$processedSql, $processedParams] = $this->db
+            ->CreateSelectQueries()
+            ->processArrayParameters($sql, $params);
+
+        $stmt = $this->db->getPdo()->prepare($processedSql);
+        $stmt->execute($processedParams);
+
+        $value = $stmt->fetch(PDO::FETCH_COLUMN, 0);
+        return ($value === false) ? null : $value;
+    }
+
     /**
      * 
      */
@@ -224,12 +245,6 @@ class DataProvider {
         $selectQueries = $this->db->createSelectQueries();
         $sql = $selectQueries->selectField($entityName, $fieldName);
         return $this->_fetchAllByParams($sql, $entityName, $params, $orderBy, PDO::FETCH_COLUMN);
-    }
-
-    public function fetchValueByParams($entityName, $fieldName, array $params = [], array $orderBy = []): mixed{
-        $selectQueries = $this->db->createSelectQueries();
-        $sql = $selectQueries->selectField($entityName, $fieldName);
-        return $this->_fetchByParams($sql, $entityName, $params, $orderBy, PDO::FETCH_COLUMN);
     }
 
 

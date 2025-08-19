@@ -42,91 +42,94 @@ function pfpc_procesar_comisiones_pf_page() {
         return;
     }
 
-    $rawData = trim($_POST['data']);
-    $dataText = file_get_contents($file);
+    $dataText = trim($_POST['data']);
 
-    $dict = []; // Equivalent to Dictionary<string, object>
     $procesar_docente = false;
     $dias = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes"]; // Assuming these are the days
     $comisiones = $dataProvider->fetchAllEntitiesByParams("comision", ["calendario"=>CALENDARIO_ID_ACTUAL]);
 
-    $pfids = ValueTypesUtils::arrayOfName($comisiones, "pfid");
+    $pfidComisiones = ValueTypesUtils::arrayOfName($comisiones, "pfid");
+    
+    echo "<pre>";
+    print_r($pfidComisiones);
+    echo "</pre>";
+
     foreach (array_filter(explode(PHP_EOL, $dataText)) as $line) {
         
-        $modifyQueries = $db->CreateModifyQueries();
         if ($procesar_docente) {
             // Procesar docente
             if (strpos($line, "*") !== false) {
-                echo "Docente sin designar en curso " . ($dict["comision__pfid"] ?? '') . " " . ($dict["asignatura__codigo"] ?? '') . "<br/>";
+                echo "-- Docente sin designar en curso " . ($comision_pfid ?? '') . " " . ($asignatura_codigo ?? '') . "<br/>";
+                echo "<br/>";
+                
                 $procesar_docente = false;
                 continue;
             } elseif (strpos($line, "-") === false) {
-                echo "Salto de línea, en curso " . ($dict["comision__pfid"] ?? '') . " " . ($dict["asignatura__codigo"] ?? '') . "<br/>";
+                echo "-- Salto de línea, en curso " . ($comision_pfid ?? '') . " " . ($asignatura_codigo ?? '') . "<br/>";
+                echo "<br/>";
+                
                 continue;
             } else {
-                echo "Procesando docente de curso " . ($dict["comision__pfid"] ?? '') . " " . ($dict["asignatura__codigo"] ?? '') . "<br/>";
                 $procesar_docente = false;
 
-            $line = str_replace("--", "-", $line); //se han encontrado cuils mal escritos con doble guion
+                $line = str_replace("--", "-", $line); //se han encontrado cuils mal escritos con doble guion
 
-            // Extract CUIL
-            preg_match('/\d{2}-\d{8}-\d/', $line, $matches);
-            if (!empty($matches)) {
-                $cuil = $matches[0];
-                $cuilParts = explode("-", $cuil);
+                // Extract CUIL
+                preg_match('/\d{2}-\d{8}-\d/', $line, $matches);
+                if (!empty($matches)) {
+                    $cuil = $matches[0];
+                    $cuilParts = explode("-", $cuil);
 
-                /** @var \Fines2\Persona_ */ $persona = $dataProvider->fetchEntityByUnique("persona", ["numero_documento"=>$cuilParts[1]]);
+                    /** @var \Fines2\Persona_ */ $persona = $dataProvider->fetchEntityByUnique("persona", ["numero_documento"=>$cuilParts[1]]);
 
-                if (empty($persona)) {
-                    echo "No existe docente " . $cuil . "<br/>";
-                    continue;
+                    if (empty($persona)) {
+                        echo "-- No existe docente " . $cuil . "<br/>";
+                        continue;
+                    }
+
+                    $persona->cuil = implode("", $cuilParts);
+                    $modifyQueries = $db->CreateModifyQueries();
+                    $modifyQueries->buildUpdateKeySqlById($persona, "cuil");
+                    //$modifyQueries->execute();
+                    echo "-- CUIL actualizado " . $cuil . "<br/>";
                 } else {
-                    echo "Ya existe docente en la base de datos " . $cuil . "<br/>";
+                    echo "-- No hay match para $line <br>";
                 }
+                echo "<br/>";
 
-                $persona->cuil = implode("", $cuilParts);
-                $modifyQueries->buildUpdateKeySqlById($persona, "cuil");
-            } else {
-                echo "No hay match para $line <br>";
             }
-            continue;
+
         }
-    }
 
-    foreach ($dias as $dia) {
-        if (strpos($line, $dia) !== false) {
-            // Extract values
-            $comision_pfid = substr($line, 0, strpos($line, "/"));
-            $asignatura_codigo = trim(substr($line, strpos($line, "/") + 1, strpos($line, " ") - strpos($line, "/") - 1));
+        foreach ($dias as $dia) {
+            if (strpos($line, $dia) !== false) {
+                $comision_pfid = substr($line, 0, strpos($line, "/"));
+                $asignatura_codigo = trim(substr($line, strpos($line, "/") + 1, strpos($line, " ") - strpos($line, "/") - 1));
 
-            if (strlen($asignatura_codigo) > 5) {
-                $asignatura_codigo = substr($asignatura_codigo, 0, 5);
-            }
+                if (strlen($asignatura_codigo) > 5)
+                    $asignatura_codigo = substr($asignatura_codigo, 0, 5);
 
-            $descripcion_horario = substr($line, strpos($line, $dia));
-            if (in_array($comision_pfid, $pfidComisiones)) {
-                echo "*****************************************<br/>";
+                $descripcion_horario = substr($line, strpos($line, $dia));
+                if (in_array($comision_pfid, $pfidComisiones)) {
+                    echo "Procesando comisión " . $comision_pfid. "<br/>";
+                    echo "--Linea: " . $line . "<br/>";
+                    $id_curso = CursoDAO::IdCursoByParams($comision_pfid, $asignatura_codigo, CALENDARIO_ID_ACTUAL);
+                    if (empty($id_curso)) {
+                        echo "-- No existe curso " . $comision_pfid . " " . $asignatura_codigo . "<br>";
+                        echo "<br/>";
+                        break;
+                    }
 
-                echo "Procesando comisión " . $comision_pfid. "<br/>";
+                    echo "-- Curso existente " . $comision_pfid . " " . $asignatura_codigo . " (" . $id_curso . ")<br>";
 
-                $id_curso = $pdoFines->idCursoByParams($comision_pfid, $asignatura_codigo, CALENDARIO_ID);
-                if (empty($id_curso)) {
-                    echo "No existe curso " . $comision_pfid . " " . $asignatura_codigo . "<br>";
-                    break;
+                    $modifyQueries = $db->CreateModifyQueries();
+                    $modifyQueries->buildUpdateKeyValueSqlById("curso", "descripcion_horario", $descripcion_horario, $id_curso);
+                    $modifyQueries->execute();
+                    echo "-- Horario actualizado " . $descripcion_horario . "<br>";
+                    $procesar_docente = true;
                 }
-
-                echo "Curso existente " . $comision_pfid . " " . $asignatura_codigo . " (" . $id_curso . ")<br>";
-                echo "Voy a actualizar horario " . $descripcion_horario . "<br>";
-                // Update descripcion_horario
-                $result = $pdoFines->updateDescripcionHorarioById($descripcion_horario, $id_curso);
-                if ($result) {
-                    echo "Descripcion horario actualizada.". "<br/>";
-                } else {
-                    echo "Descripcion horario no actualizada (no existe ID o misma DESCRIPCION_HORARIO)<br/>";
-                }
-                $procesar_docente = true;
+                break;
             }
-            break;
         }
     }
       

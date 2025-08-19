@@ -11,7 +11,8 @@ class Disposicion_ extends Disposicion
 {
 
     public function getLabel(): string {
-        return ($this->asignatura_?->nombre ?? "?"). " " . 
+        return ($this->asignatura_?->nombre ?? "?") . " " . 
+            ($this->asignatura_?->codigo ?? "?") . " " . 
             ($this->planificacion_?->anio ?? "?"). "/" .
             ($this->planificacion_?->semestre ?? "?") . " " .
             ($this->planificacion_?->plan_?->resolucion ?? "?") . " " . 

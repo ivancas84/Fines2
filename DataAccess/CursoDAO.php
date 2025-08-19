@@ -8,7 +8,7 @@ use Fines2\TomaDAO;
 class CursoDAO
 {
 
-    public static function IdCursoByParams($pfid, $calendario, $codigo){
+    public static function IdCursoByParams($pfid, $codigo, $calendario){
         $sql = "
             SELECT curso.id 
             FROM curso
@@ -21,8 +21,7 @@ class CursoDAO
             ";
 
         $dataProvider = DbMy::getInstance()->CreateDataProvider();
-        return $dataProvider->fetchValueByParams("curso", "id", ["pfid"=>$pfid, "calendario"=>$calendario, "codigo"=>$codigo]);
-
+        return $dataProvider->fetchSqlValueByParams($sql, ["pfid"=>$pfid, "calendario"=>$calendario, "codigo"=>"%$codigo%"]);
 
     }
 

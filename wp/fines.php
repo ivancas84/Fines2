@@ -46,15 +46,10 @@ function fines_plugin_menu() {
 
     include_once plugin_dir_path(__FILE__) . 'lac_lista_alumnos_comision/lac_lista_alumnos_comision_page.php';
     include_once plugin_dir_path(__FILE__) . 'lacu_lista_alumnos_curso/lacu_lista_alumnos_curso_page.php';
-
     include_once plugin_dir_path(__FILE__) . 'lc2_lista_comisiones/lc2_lista_comisiones_page.php';
-
     include_once plugin_dir_path(__FILE__) . 'lcu_lista_cursos_page/lcu_lista_cursos_page.php';
-    
     include_once plugin_dir_path(__FILE__) . 'ap3_administrar_persona/ap3_administrar_persona_page.php';
-
     include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision/ac2_administrar_comision_page.php';
-
     include_once plugin_dir_path(__FILE__) . 'rdc_rindex_comision/rdc_rindex_comision_page.php';
 
     add_submenu_page(
@@ -216,6 +211,7 @@ function fines_plugin_menu() {
     include_once plugin_dir_path(__FILE__) . 'ppc3_procesar_planilla_calificacion/ppc3_procesar_planilla_calificacion_page.php';
     include_once plugin_dir_path(__FILE__) . 'pfpd_procesar_docentes_pf/pfpd_procesar_docentes_pf_page.php';
     include_once plugin_dir_path(__FILE__) . 'pfpd2_procesar_docentes_pf/pfpd2_procesar_docentes_pf_page.php';
+    include_once plugin_dir_path(__FILE__) . 'pfpc_procesar_comisiones_pf/pfpc_procesar_comisiones_pf_page.php';  
   }
 
   include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision/ac2_comision_admin_handle.php';
