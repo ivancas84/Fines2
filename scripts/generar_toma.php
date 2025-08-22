@@ -174,10 +174,11 @@ try {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
             
-            $toPrimary = "icastaneda@abc.gob.ar";
-            $toSecondary = "";
-            //$toPrimary = $toma->docente_->email_abc;
-            //$toSecondary = $toma->docente_->email;
+            //$toPrimary = "icastaneda@abc.gob.ar";
+            //$toSecondary = "";
+            
+            $toPrimary = $toma->docente_->email_abc;
+            $toSecondary = $toma->docente_->email;
             $bcc = EMAIL_DOCENTES_BCC;
         
             $mail->setFrom(EMAIL_DOCENTES_FROM_ADDRESS);
@@ -189,7 +190,9 @@ try {
 <p><strong>Para confirmar su toma de posesión, necesitamos que responda este email indicando que la información del documento adjunto es correcta.</strong></p>
 <p>Se recuerda que al aceptar su toma de posesión, usted se compromete a:</p>
   <ul>
-    <li>Completar las planillas de finalización en tiempo y forma.</li>
+    <li>Completar las planillas de finalización en tiempo y forma: <strong>FECHA LIMITE DE ENTREGA DE NOTAS 22/12/2025</strong></li>
+    <li>Completar las planillas siguiendo instrucciones: <a href='https://planfines2.com.ar/wp/finalizacion-de-semestre/' target='_blank'>Ver instrucciones</a></li>  
+    <li>Utilizar la última semana de recuperación o intensificación de la enseñanza, 15/12/2025 a 19/12/2025: El objetivo es que el alumno aprenda los contenidos mínimos</li>
     <li>Participar de las mesas de examen cuando se lo requiera.</li>
     <li>Atender a la brevedad cualquier solicitud indicada por el CENS.</li>
   </ul>

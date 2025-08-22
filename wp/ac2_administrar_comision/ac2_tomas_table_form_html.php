@@ -36,7 +36,7 @@
                     </select>
                     </td>
                     <td>
-                        <?= esc_html($toma->docente_?->getNombre()); ?>
+                        <a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines-plugin-ap3&persona_id=<?=$toma->docente_?->id?>"><?= esc_html($toma->docente_?->getNombre()); ?></a>
                     </td>
                     <td>
                         <input type="text" 

@@ -53,6 +53,7 @@ function pfpc_procesar_comisiones_pf_page() {
     echo "<pre>";
     print_r($pfidComisiones);
     echo "</pre>";
+    $id_curso = ""; //coloco para que no tire error
 
     foreach (array_filter(explode(PHP_EOL, $dataText)) as $line) {
         
@@ -88,10 +89,32 @@ function pfpc_procesar_comisiones_pf_page() {
                     }
 
                     $persona->cuil = implode("", $cuilParts);
-                    $modifyQueries = $db->CreateModifyQueries();
-                    $modifyQueries->buildUpdateKeySqlById($persona, "cuil");
-                    //$modifyQueries->execute();
+                    $persona->updateField("cuil");
                     echo "-- CUIL actualizado " . $cuil . "<br/>";
+
+
+                    /** @var Toma_ */ $toma = TomaDAO::TomaAprobadaOPendiente($id_curso);
+                    if(empty($toma)){
+                        try {
+                            $toma = new Toma_();
+                            $toma->docente = $persona->id;
+                            $toma->curso = $id_curso;
+                            $toma->fecha_toma = new DateTime();
+                            $toma->estado = "Pendiente";
+                            $toma->estado_contralor = "Pasar";
+                            $toma->tipo_movimiento = "AI";
+                            $toma->insert();
+                            echo "-- Toma agregada <br/>";
+                        } catch(Exception $ex){
+                            echo "-- Error al agregar toma: " . $ex->getMessage() . "<br/>";
+                        }
+                    }
+
+                    else if($toma->docente != $persona->id) {
+                        echo "-- Los cargos no coinciden<br/>";
+                        continue;
+                    }
+
                 } else {
                     echo "-- No hay match para $line <br>";
                 }

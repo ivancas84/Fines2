@@ -559,6 +559,13 @@ class Entity
         $modifyQueries->execute();
     }
 
+    public function updateField($fieldName): void
+    {
+        $modifyQueries = $this->_db->CreateModifyQueries();
+        $modifyQueries->buildUpdateKeySqlById($this, $fieldName);
+        $modifyQueries->execute();
+    }
+
     public function insert(): void
     {
             $modifyQueries = $this->_db->CreateModifyQueries();

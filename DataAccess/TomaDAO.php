@@ -3,6 +3,7 @@
 namespace Fines2;
 
 use SqlOrganize\Sql\DbMy;
+use SqlOrganize\Sql\Entity;
 
 class TomaDAO
 {
@@ -157,6 +158,22 @@ class TomaDAO
         ";
 
         return $dataProvider->fetchAllEntitiesBySqlId("toma", $sql, ["ids_cursos" => $ids_cursos]);
+    }
+
+
+    public static function TomaAprobadaOPendiente(string $id_curso): ?Entity {
+         $db = DbMy::getInstance();
+
+        $dataProvider = $db->CreateDataProvider();
+
+        $sql = "
+            SELECT DISTINCT toma.id 
+            FROM toma
+            INNER JOIN curso ON (toma.curso = curso.id)
+            WHERE (toma.estado = 'Aprobada' OR toma.estado = 'Pendiente') 
+            AND curso.id = (:id)
+        ";
+        return $dataProvider->fetchEntityBySqlId("toma", $sql, ["id" => $id_curso]);
     }
 
     public static function TomasContralorByCalendario($calendario): array {
