@@ -4,6 +4,7 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/db-config.php';
 
 use \Fines2\Comision_;
 use \Fines2\CalendarioDAO;
+use Fines2\CursoDAO;
 use \Fines2\DisposicionDAO;
 use \Fines2\ModalidadDAO;
 use \Fines2\PlanificacionDAO;
@@ -51,12 +52,18 @@ function ac2_init_cursos(Comision_ $comision) {
 }
 
 function ac2_init_tomas(Comision_ $comision) {
+    $cursos = DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesByParams("curso", ["comision"=>$comision->id]);
     $estados = TomaDAO::estados();
     $tiposMovimientos = TomaDAO::tiposMovimientos();
     $estadosContralor = TomaDAO::estadosContralor();
+    $estadosContralor = TomaDAO::estadosContralor();
+
     $tomas = TomaDAO::TomasByComision($comision->id);
     if($tomas)
         include plugin_dir_path(__FILE__) . 'ac2_tomas_table_form_html.php';
     else 
         echo "<p>No hay tomas para mostrar de la comisión</p>";
+
+    include plugin_dir_path(__FILE__) . 'ac2_toma_add_form_html.php';
+
 }

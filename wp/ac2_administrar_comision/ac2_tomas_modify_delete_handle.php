@@ -25,16 +25,21 @@ function ac2_tomas_modify_delete_handle() {
         } 
 
         $i = 0;
-        $countActualizados = 0;
 
         while (isset($_POST["toma_id$i"])) {
             $tomaData = ValueTypesUtils::filterArrayBySuffix($_POST, $i);
             $toma = new Toma_();
             $toma->initById($tomaData["toma_id"]);
             $toma->ssetFromArray($tomaData);
+            if($_POST["dni_docente$i"] != $toma->docente_?->numero_documento) {
+                $docente = DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("persona", ["numero_documento" => $_POST["dni_docente$i"]]);
+                if(empty($docente)) {
+                    throw new Exception("No se encontró el docente con el DNI proporcionado.");
+                }
+                $toma->setFk("docente", $docente);    
+            }
             if($toma->_status < 1){
                 $toma->update();
-                $countActualizados++;
             }
             $i++;
         }

@@ -6,6 +6,7 @@
     <table border="1">
         <tr>
             <th>Fecha</th>
+            <th>Disposición</th>
             <th>Docente</th>
             <th>DNI</th>
             <th>Contacto</th>
@@ -23,6 +24,16 @@
                             name="fecha_toma<?= $i ?>" 
                             value="<?= $toma->fecha_toma?->format('Y-m-d') ?>" 
                         >
+                    </td>
+                    <td>
+                    <select name="curso<?= $i ?>">
+                        <option value="">-- Seleccione --</option>
+                        <?php foreach ($cursos as $curso) : ?>
+                            <option value="<?= esc_attr($curso->id); ?>" <? selected($toma->curso, $curso->id); ?>>
+                                <?= esc_html($curso->getLabel()); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                     </td>
                     <td>
                         <?= esc_html($toma->docente_?->getNombre()); ?>
