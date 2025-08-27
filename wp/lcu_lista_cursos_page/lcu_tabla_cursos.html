@@ -17,6 +17,7 @@
             <th>Email ABC</th>
             <th>Teléfono</th>
             <th>Fecha Toma</th>
+            <th>Estado</th>
             <th>Planilla Docente</th>
             <th>Estado Planilla</th>
             <th>Aprobados</th>
@@ -53,6 +54,8 @@
                 <td><?= esc_html($curso->toma_activa_?->docente_?->email_abc); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->docente_?->telefono); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->fecha_toma?->format('Y-m-d')); ?></td>
+                <td><?= esc_html($curso->toma_activa_?->estado); ?><br>
+                    <?= esc_html($curso->toma_activa_?->estado_contralor); ?><br></td>
                 <td><?= esc_html($curso->toma_activa_?->planilla_docente_?->numero); ?></td>
                 <td><?= esc_html($curso->toma_activa_?->estado_planilla); ?></td>
                 <td><?= esc_html(count($calificaciones)); ?></td>
