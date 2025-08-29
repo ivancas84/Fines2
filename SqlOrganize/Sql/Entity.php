@@ -132,10 +132,9 @@ class Entity
         if(!ValueTypesUtils::valuesAreEqual($value, $this->$fieldName)){
             if (!($value instanceof Entity)) {
                 $this->_changeLog[$fieldName] = $this->$fieldName;
-
                 if ($changeStatus && $this->_status > 0) $this->_status = 0;
             }
-            
+
             $this->$fieldName = $value;
         }
     }

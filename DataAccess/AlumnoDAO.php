@@ -63,6 +63,8 @@ class AlumnoDAO
                     $cal->alumno = $alumno->id;
                     $cal->disposicion = $disposicion->id;
                     $cal->archivado = false;
+                    $cal->nota_final = 0;
+                    $cal->crec = 0;
                     $modifyQueries->buildInsertSql($cal);
                 }
             }
