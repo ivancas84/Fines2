@@ -12,7 +12,7 @@ use \SqlOrganize\Utils\ValueTypesUtils;
 function ac2_comision_admin_handle() {
 
     try {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
         
         $comision_id = wp_initialize_handle("fines-plugin-ac2", "ac2_comision_admin", "comision_id");
         $comision = new Comision_();

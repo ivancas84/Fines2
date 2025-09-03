@@ -9,7 +9,7 @@ class PlanificacionDAO
 {
  
    public static function planificaciones(): array{
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 

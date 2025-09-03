@@ -2,7 +2,6 @@
 
 namespace SqlOrganize\Sql;
 
-use Exception;
 use PDO;
 
 /**
@@ -14,9 +13,6 @@ use PDO;
 class DbMy extends Db
 {
 
-    private static ?Db $instance = null;
-
-    
     /**
      * Constructor
      * 
@@ -25,7 +21,7 @@ class DbMy extends Db
      * @example<
      * $connectionString = "server=127.0.0.1;uid=root;pwd=12345;database=test"
      */
-    protected function __construct(Config $config, array $entities)
+    public function __construct(Config $config, array $entities)
     {
         parent::__construct($config, $entities);
     }
@@ -36,22 +32,6 @@ class DbMy extends Db
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ]);
         $this->pdo->exec("SET NAMES 'utf8mb3'");
-    }
-
-        // Accessor
-    public static function getInstance(): DB
-    {
-        if(empty(self::$instance)) throw new Exception("Instancia no inicializada, ejecute initInstance");
-        return self::$instance;
-    }
-
-    public static function initInstance(?Config $config, array $entities){
-        self::$instance = new DbMy($config, $entities);
-
-        foreach(self::$instance->entitiesMetadata as $entityMetadata){
-            require_once rtrim($config->dataClassesPath, '/') . '/' . $entityMetadata->getClassName() .'.php';
-            require_once rtrim($config->dataClassesPath, '/') . '/' . $entityMetadata->getClassName() .'_.php';
-        }
     }
 
 

@@ -12,7 +12,7 @@ class DisposicionPendiente extends Entity
     public function __construct()
     {
         $this->_entityName = "disposicion_pendiente";
-        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
+        $this->_db = \App\Context::getFinesDb();
         $this->setDefault();
     }
 

@@ -20,13 +20,13 @@ class CursoDAO
             AND asignatura.codigo LIKE :codigo
             ";
 
-        $dataProvider = DbMy::getInstance()->CreateDataProvider();
+        $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
         return $dataProvider->fetchSqlValueByParams($sql, ["pfid"=>$pfid, "calendario"=>$calendario, "codigo"=>"%$codigo%"]);
 
     }
 
     public static function CursosAutorizadosPublicadosByCalendario($calendario): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -44,7 +44,7 @@ class CursoDAO
     }
 
     public static function CursosByCalendario($calendario): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -60,7 +60,7 @@ class CursoDAO
     }
 
     public static function CursosActivosByCalendario($calendario): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -94,7 +94,7 @@ class CursoDAO
      * En una comision puede haber cursos de diferente planificacion (por ejemplo aquellos que quedaron pendientes, que hacen dos años en uno o que tienen materias previas).
      */
     public static function CursosConTomasActivasByComision($comision): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -116,7 +116,7 @@ class CursoDAO
      * En una comision puede haber cursos de diferente planificacion (por ejemplo aquellos que quedaron pendientes, que hacen dos años en uno o que tienen materias previas).
      */
     public static function CursosConTomasAprobadasYPendientesByComision($comision): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 

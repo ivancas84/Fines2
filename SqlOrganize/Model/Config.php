@@ -55,6 +55,6 @@ class Config
 
     public string $schemaClassPath;
 
-    public string $dbClass = "\SqlOrganize\Sql\DbMy";
+    public string $dbInstance = "Context::getInstance()";
 
 }

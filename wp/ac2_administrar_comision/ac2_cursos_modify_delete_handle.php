@@ -12,7 +12,7 @@ function ac2_cursos_modify_delete_handle() {
     try {
         $comision_id = wp_initialize_handle("fines-plugin-ac2", "ac2_cursos_modify_delete_handle", "comision_id");
         
-        $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
+        $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
 
         //si el campo delete_index esta definido se realizara la eliminación
         if(!empty($_POST["delete_index"])){

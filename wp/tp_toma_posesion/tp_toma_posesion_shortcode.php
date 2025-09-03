@@ -26,7 +26,7 @@ use SqlOrganize\Utils\ValueTypesUtils;
 ///no se incluye codigo de menu porque se utiliza como shortcode
 
 function tp_toma_posesion_shortcode() {
-      /** @var DataProvider */ $dataProvider = DbMy::getInstance()->CreateDataProvider();
+      /** @var DataProvider */ $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
 
   $cursos = CursoDAO::CursosAutorizadosPublicadosByCalendario(CALENDARIO_ID_ACTUAL);  
     echo "<div class=\"wrap\">";

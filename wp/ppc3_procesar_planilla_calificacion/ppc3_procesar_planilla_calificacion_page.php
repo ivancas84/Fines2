@@ -28,7 +28,7 @@ add_submenu_page(
 function ppc3_procesar_planilla_calificacion_page() {
     wp_page_message();
 
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
 
     $dataProvider = $db->CreateDataProvider();
     
@@ -57,7 +57,7 @@ function ppc3_procesar_planilla_calificacion_page() {
     foreach($result as $data) {
         try {
             $i++;
-            $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
+            $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
             echo "<strong>Calificación: " . $i . ";</strong><br>";
             if($format == "pf"){
                 echo " - " . $data["Apellido, Nombre DNI"]; 

@@ -31,7 +31,7 @@ function ac2_administrar_comision_page() {
         $modalidades = ModalidadDAO::modalidades();
         $planificaciones = PlanificacionDAO::planificaciones();
 
-        $comision = (empty($comision_id)) ? new Comision_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("comision", ["id" =>$comision_id]);
+        $comision = (empty($comision_id)) ? new Comision_(): \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityByParams("comision", ["id" =>$comision_id]);
         include plugin_dir_path(__FILE__) . 'ac2_comision_form.html';
 
     if(!empty($comision)) {
@@ -43,7 +43,7 @@ function ac2_administrar_comision_page() {
 
 function ac2_init_cursos(Comision_ $comision) {
     $disposiciones = DisposicionDAO::disposicionesActuales();
-    $dataProvider = DbMy::getInstance()->CreateDataProvider();
+    $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
     $cursos = $dataProvider->fetchAllEntitiesByParams("curso", ["comision"=>$comision->id]);
     if($cursos)
         include plugin_dir_path(__FILE__) . 'ac2_curso_table_form.html';
@@ -52,7 +52,7 @@ function ac2_init_cursos(Comision_ $comision) {
 }
 
 function ac2_init_tomas(Comision_ $comision) {
-    $cursos = DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesByParams("curso", ["comision"=>$comision->id]);
+    $cursos = \App\Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesByParams("curso", ["comision"=>$comision->id]);
     $estados = TomaDAO::estados();
     $tiposMovimientos = TomaDAO::tiposMovimientos();
     $estadosContralor = TomaDAO::estadosContralor();

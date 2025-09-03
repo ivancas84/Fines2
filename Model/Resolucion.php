@@ -12,7 +12,7 @@ class Resolucion extends Entity
     public function __construct()
     {
         $this->_entityName = "resolucion";
-        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
+        $this->_db = \App\Context::getFinesDb();
         $this->setDefault();
     }
 

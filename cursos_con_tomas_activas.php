@@ -4,7 +4,7 @@ require_once __DIR__ . '/db-config.php';
 
 use SqlOrganize\Sql\DbMy;
 
-$db = DbMy::getInstance();
+$db = \App\Context::getFinesDb();
 
 $personas = $db->CreateDataProvider()->fetchAllEntitiesByParams("persona", ["id" =>'10']);
 

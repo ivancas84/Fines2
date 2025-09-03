@@ -11,7 +11,7 @@ use \Fines2\Toma_;
 $calendario_id = "202502110007";
 $planilla_id = 
 
-$db = DbMy::getInstance();
+$db = \App\Context::getFinesDb();
 
 $tomas = Toma_::TomasContralorByCalendario($calendario_id);
 if(!count($tomas)){

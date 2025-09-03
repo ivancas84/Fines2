@@ -12,7 +12,7 @@ class WpwtPsmscStatuses extends Entity
     public function __construct()
     {
         $this->_entityName = "wpwt_psmsc_statuses";
-        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
+        $this->_db = \App\Context::getPedidosDb();
         $this->setDefault();
     }
 

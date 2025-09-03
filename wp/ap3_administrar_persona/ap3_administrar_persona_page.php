@@ -37,7 +37,7 @@ function ap3_administrar_persona_page() {
 
     
     //***** Campos de alumno *****/
-    $dataProvider = DbMy::getInstance()->CreateDataProvider();
+    $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
 
     $estados_inscripcion = $dataProvider->fetchAllColumnByParams("alumno", "estado_inscripcion", [], ["estado_inscripcion"=>"ASC"]);
     $planes = $dataProvider->fetchAllEntitiesByParams("plan");
@@ -52,7 +52,7 @@ function ap3_administrar_persona_page() {
 
 
     //***** CALIFICACIONES *****/
-    $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
+    $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
     AlumnoDAO::reestructurarCalificacionesByAlumno($modifyQueries, $alumno);
     $modifyQueries->process();
 

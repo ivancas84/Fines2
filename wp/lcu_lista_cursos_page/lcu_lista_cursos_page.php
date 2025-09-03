@@ -27,7 +27,7 @@ add_submenu_page(
 
 function lcu_lista_cursos_page() {
 
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
     $dataProvider = $db->CreateDataProvider();
 
     $pdo = new PdoFines();

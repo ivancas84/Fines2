@@ -22,7 +22,7 @@ function ap3_administrar_persona_page() {
     wp_page_message();
     $persona_id = isset($_GET['persona_id']) ? $_GET['persona_id'] : null;
 
-    /** @var Persona_ */ $persona = (empty($persona_id)) ? new Persona_(): DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("persona", ["id" =>$persona_id]);
+    /** @var Persona_ */ $persona = (empty($persona_id)) ? new Persona_(): \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityByParams("persona", ["id" =>$persona_id]);
 
     include plugin_dir_path(__FILE__) . 'ap3_persona_admin_form.html';
 
@@ -31,7 +31,7 @@ function ap3_administrar_persona_page() {
 
     
     //***** Campos de alumno *****/
-    $dataProvider = DbMy::getInstance()->CreateDataProvider();
+    $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
 
 
     $estados_inscripcion = $dataProvider->fetchAllColumnByParams("alumno", "estado_inscripcion", [], ["estado_inscripcion"=>"ASC"]);

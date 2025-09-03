@@ -7,7 +7,7 @@ use SqlOrganize\Sql\DbMy;
 class SedeDAO
 {
     public static function Sedes462(): array{
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 

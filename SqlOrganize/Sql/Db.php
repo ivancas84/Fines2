@@ -32,7 +32,7 @@ abstract class Db
      * 
      * @param EntityMetadata[] $entitiesMetadata
      */
-    protected function __construct(Config $config, array $entitiesMetadata)
+    public function __construct(Config $config, array $entitiesMetadata)
     {
         $this->config = $config;
         $this->initEntitiesMetadata($entitiesMetadata);

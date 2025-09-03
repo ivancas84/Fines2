@@ -26,7 +26,7 @@ add_submenu_page(
 function rdc_rindex_comision_page() {
     wp_page_message();
 
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
     $dataProvider = $db->CreateDataProvider();
 
     $comision_id = $_GET["comision_id"];

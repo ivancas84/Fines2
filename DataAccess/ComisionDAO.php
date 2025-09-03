@@ -20,7 +20,7 @@ class ComisionDAO
             AND calendario.id = :calendario
         ";  
 
-        return DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("comision", $sql, ["calendario"=>$calendarioId] );
+        return \App\Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesBySqlId("comision", $sql, ["calendario"=>$calendarioId] );
     }
    
 }

@@ -10,7 +10,7 @@ class CalificacionDAO
 {
 
     public static function createAndPersist(ModifyQueries $modifyQueries, int $nota, string $idAlumno, string $idDisposicion, ?string $idCurso): Calificacion_{
-        $dataProvider = DbMy::getInstance()->CreateDataProvider();
+        $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
         /** @var Calificacion_ */ $calificacion = $dataProvider->fetchEntityByParams("calificacion", ["alumno" => $idAlumno, "disposicion" => $idDisposicion]);
         if(empty($calificacion)){
             $calificacion = new Calificacion_();
@@ -35,7 +35,7 @@ class CalificacionDAO
         $sql = "SELECT DISTINCT id 
             FROM calificacion
             WHERE (nota_final < 7 OR nota_final IS NULL) AND (crec < 4 OR crec IS NULL) AND alumno = :alumno_id";
-        return DbMy::getInstance()->CreateDataProvider()->fetchAllColumnSqlByParams($sql, 0, ["alumno_id"=>$alumno_id]);
+        return \App\Context::getFinesDb()->CreateDataProvider()->fetchAllColumnSqlByParams($sql, 0, ["alumno_id"=>$alumno_id]);
     }
 
     /**
@@ -53,7 +53,7 @@ class CalificacionDAO
             AND persona.numero_documento IN (:numero_documento)
         ";  
 
-        return DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["disposicion" => $disposicion, "numero_documento"=>$dnis] );
+        return \App\Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["disposicion" => $disposicion, "numero_documento"=>$dnis] );
     }
 
     /**
@@ -73,7 +73,7 @@ class CalificacionDAO
             AND (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
         ";  
 
-        /** @var Calificacion_[] */ $calificaciones = DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno, "plan"=>$plan, "tramo_short"=>$tramo_short] );
+        /** @var Calificacion_[] */ $calificaciones = \App\Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno, "plan"=>$plan, "tramo_short"=>$tramo_short] );
         return self::CompletarTomaActivaEnCalificaciones($calificaciones);
 
     }
@@ -93,7 +93,7 @@ class CalificacionDAO
             WHERE alumno = :alumno AND plan.id = :plan AND CONCAT(planificacion.anio, planificacion.semestre) >= :tramo_short
         ";  
 
-        /** @var Calificacion_[] */ $calificaciones = DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno, "plan"=>$plan, "tramo_short"=>$tramo_short] );
+        /** @var Calificacion_[] */ $calificaciones = \App\Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno, "plan"=>$plan, "tramo_short"=>$tramo_short] );
         return self::CompletarTomaActivaEnCalificaciones($calificaciones);
 
     }
@@ -113,7 +113,7 @@ class CalificacionDAO
             WHERE alumno = :alumno AND plan.id != :plan AND (nota_final >= 7 OR crec >= 4)
         ";  
 
-        /** @var Calificacion_[] */ $calificaciones = DbMy::getInstance()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno, "plan"=>$plan] );
+        /** @var Calificacion_[] */ $calificaciones = \App\Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno, "plan"=>$plan] );
         return self::CompletarTomaActivaEnCalificaciones($calificaciones);
 
     }
@@ -124,7 +124,7 @@ class CalificacionDAO
      * @return Calificacion_[]
      */
     public static function CompletarTomaActivaEnCalificaciones($calificaciones): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         /** @var string[] */$idsCursos = ValueTypesUtils::arrayOfName($calificaciones, "curso");
 

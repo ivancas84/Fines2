@@ -22,7 +22,7 @@ class AlumnoDAO
     public static function estados_inscripcion(): array {
         $sql = "SELECT DISTINCT estado_inscripcion FROM alumno ORDER BY estado_inscripcion";
         
-        return DbMy::getInstance()->CreateDataProvider()->fetchAllColumnSqlByParams($sql, 0);
+        return \App\Context::getFinesDb()->CreateDataProvider()->fetchAllColumnSqlByParams($sql, 0);
     }
 
     public static function alumnoByNumeroDocumento($numero_documento): ?Entity {
@@ -30,13 +30,13 @@ class AlumnoDAO
                 FROM alumno
                 INNER JOIN persona ON alumno.persona = persona.id
                 WHERE persona.numero_documento = :numero_documento";
-        return DbMy::getInstance()->CreateDataProvider()->fetchEntityBySqlId("alumno", $sql, ['numero_documento' => $numero_documento]);
+        return \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityBySqlId("alumno", $sql, ['numero_documento' => $numero_documento]);
     }
 
 
 
     public static function reestructurarCalificacionesByAlumno(ModifyQueries $modifyQueries, Alumno_ $alumno){
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
         /** @var string[] */ $idsCalificacionesDesaprobadas = CalificacionDAO::idsCalificacionesDesaprobadasByAlumno($alumno->id);
         if(!empty($idsCalificacionesDesaprobadas)){
             $modifyQueries->buildDeleteSqlByIds("calificacion", ...$idsCalificacionesDesaprobadas);

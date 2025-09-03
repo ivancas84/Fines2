@@ -3,15 +3,14 @@ header('Content-Type: text/html; charset=utf-8');
 mb_internal_encoding('UTF-8');
 
 
-require_once '../db-config.php';
+require_once '../fines-config.php';
 
-use Fines2\Toma_;
-use \SqlOrganize\Sql\DbMy;
+use \Fines2\Toma_;
 use \Fines2\TomaDAO;
 
 $calendario_id = CALENDARIO_ID_ACTUAL;
 
-$db = DbMy::getInstance();
+$db = App\Context::getFinesDb();
 
 /** @var Toma_[] */ $tomas = TomaDAO::TomasContralorByCalendario($calendario_id);
 if(!count($tomas)){

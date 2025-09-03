@@ -12,7 +12,7 @@ class TomaDAO
      * @return string[]
      */
     public static function estados(): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -23,7 +23,7 @@ class TomaDAO
      * @return string[]
      */
     public static function tiposMovimientos(): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -34,7 +34,7 @@ class TomaDAO
      * @return string[]
      */
     public static function estadosContralor(): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -42,7 +42,7 @@ class TomaDAO
     }
 
     public static function TomasByComision($idComision): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -58,7 +58,7 @@ class TomaDAO
     }
 
     public static function TomasByCalendario($calendario): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -75,7 +75,7 @@ class TomaDAO
     }
 
     public static function TomasActivasByCalendario($calendario): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -92,7 +92,7 @@ class TomaDAO
     }
 
     public static function TomasActivasBySedeAndCalendario($sede, $calendario): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -110,7 +110,7 @@ class TomaDAO
     }
 
     public static function TomaActivaByCurso($curso_id): Toma_{
-         $db = DbMy::getInstance();
+         $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -127,7 +127,7 @@ class TomaDAO
     }
 
     public static function TomasActivasByCursos(string ...$ids_cursos): array {
-         $db = DbMy::getInstance();
+         $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -144,7 +144,7 @@ class TomaDAO
     }
 
     public static function TomasAprobadasYPendientesByCursos(string ...$ids_cursos): array {
-         $db = DbMy::getInstance();
+         $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -162,7 +162,7 @@ class TomaDAO
 
 
     public static function TomaAprobadaOPendiente(string $id_curso): ?Entity {
-         $db = DbMy::getInstance();
+         $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 
@@ -177,7 +177,7 @@ class TomaDAO
     }
 
     public static function TomasContralorByCalendario($calendario): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 

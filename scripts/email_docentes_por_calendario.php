@@ -12,10 +12,10 @@ use Fines2\TomaDAO;
 use SqlOrganize\Sql\ModifyQueries;
 
 echo "<pre>";
-$db = DbMy::getInstance();
+$db = \App\Context::getFinesDb();
 $dataProvider = $db->CreateDataProvider();
 $comision_id = 'a199f325-7d76-496d-9467-0a79ccafe104';
-$db = DbMy::getInstance();
+$db = \App\Context::getFinesDb();
 $dataProvider = $db->CreateDataProvider();
 $tomas = TomaDAO::TomasActivasByCalendario(CALENDARIO_ID);
 

@@ -24,7 +24,7 @@ add_submenu_page(
 function cac2_cargar_alumnos_comision_page() {
     wp_page_message();
 
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
 
     $dataProvider = $db->CreateDataProvider();
     
@@ -48,7 +48,7 @@ function cac2_cargar_alumnos_comision_page() {
     $existenDatos = false;
     foreach($alumnosData as $ad){
         try {
-            $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
+            $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
             $i++;
             echo "<strong>Alumno: " . $i . ";</strong><br>";
             $cuilDni = Persona_::cuilDni($ad["dni_cuil"]);

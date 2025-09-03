@@ -9,7 +9,7 @@ use SqlOrganize\Utils\ValueTypesUtils;
 
 try {
     $comision_id = $_POST["comision_id"];
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
     $dataProvider = $db->CreateDataProvider();
     $modifyQueries = $db->CreateModifyQueries();
     $cursos = $dataProvider->fetchAllEntitiesByParams("curso",["comision" => $comision_id]);

@@ -9,7 +9,7 @@ use SqlOrganize\Sql\DbMy;
 try {
     $toma_id = $_GET["toma_id"];
     $estado = $_GET["estado"] ?? "entregada";
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
     $dataProvider = $db->CreateDataProvider();
     $modifyQueries = $db->CreateModifyQueries();
     $modifyQueries->buildUpdateKeyValueSqlById("toma", "estado_planilla", $estado, $toma_id);

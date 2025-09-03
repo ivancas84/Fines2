@@ -12,7 +12,7 @@ class DistribucionHoraria extends Entity
     public function __construct()
     {
         $this->_entityName = "distribucion_horaria";
-        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
+        $this->_db = \App\Context::getFinesDb();
         $this->setDefault();
     }
 

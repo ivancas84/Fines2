@@ -13,7 +13,7 @@ class DesignacionDAO {
                 AND designacion.sede IN (:sede)
                 AND designacion.hasta IS NULL;";
 
-        return DbMy::getInstance()->CreateDataProvider()
+        return \App\Context::getFinesDb()->CreateDataProvider()
             ->fetchAllEntitiesBySqlId("designacion", $sql, ["cargo" => Cargo_::$referente_id, "sede" => $ids_sedes]);
     }
 

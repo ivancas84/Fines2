@@ -25,7 +25,7 @@ if ($data === null) {
 } 
 
 
-/** @var Db */ $db = DbMy::getInstance();
+/** @var Db */ $db = \App\Context::getFinesDb();
 /** @var DataProvider */ $dataProvider = $db->CreateDataProvider();
 $pfidComisiones = $dataProvider->fetchAllColumnByParams("comision", "pfid", ["calendario" => CALENDARIO_ID_ACTUAL]);
 

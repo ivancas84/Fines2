@@ -8,7 +8,7 @@ $file = RUTA_BASE . '/comisiones.txt';
 use \SqlOrganize\Sql\DbMy;
 use \SqlOrganize\Utils\ValueTypesUtils;
 
-$db = DbMy::getInstance();
+$db = \App\Context::getFinesDb();
 
 $dataProvider = $db->CreateDataProvider();
 

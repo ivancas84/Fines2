@@ -20,7 +20,7 @@ try {
     
     $toma_id = $_GET["toma_id"];
 
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
 
     /** @var DataProvider */ $dataProvider = $db->CreateDataProvider();
 

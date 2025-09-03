@@ -33,7 +33,7 @@ add_submenu_page(
 function pfpc_procesar_comisiones_pf_page() {
     wp_page_message();
 
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
 
     $dataProvider = $db->CreateDataProvider();
 

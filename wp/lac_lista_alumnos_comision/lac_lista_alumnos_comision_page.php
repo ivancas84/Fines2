@@ -23,7 +23,7 @@ function lac_lista_alumnos_comision_page() {
     wp_page_message();
 
     $comision_id = $_GET["comision_id"];
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
     $dataProvider = $db->CreateDataProvider();
     /** @var Comision_ */$comision = $dataProvider->fetchEntityByParams("comision", ["id"=>$comision_id]);
     /** @var AlumnoComision_[] */ $alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["comision"=> $comision_id]);

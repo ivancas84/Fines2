@@ -10,7 +10,7 @@ use SqlOrganize\Sql\ModifyQueries;
 
 try {
     $curso_id = $_GET["curso_id"];
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
     /** @var DataProvider */ $dataProvider = $db->CreateDataProvider();
     /** @var ModifyQueries */ $modifyQueries = $db->CreateModifyQueries();
     $ids = $dataProvider->fetchAllColumnByParams("calificacion", "id", ["curso" => $curso_id]);

@@ -12,7 +12,7 @@ function ac2_tomas_modify_delete_handle() {
     try {
         $comision_id = wp_initialize_handle("fines-plugin-ac2", "ac2_tomas_modify_delete_handle", "comision_id");
         
-        $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
+        $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
 
         //si el campo delete_toma_index esta definido se realizara la eliminación
         if($_POST["delete_toma_index"] != ""){
@@ -32,7 +32,7 @@ function ac2_tomas_modify_delete_handle() {
             $toma->initById($tomaData["toma_id"]);
             $toma->ssetFromArray($tomaData);
             if($_POST["dni_docente$i"] != $toma->docente_?->numero_documento) {
-                $docente = DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("persona", ["numero_documento" => $_POST["dni_docente$i"]]);
+                $docente = \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityByParams("persona", ["numero_documento" => $_POST["dni_docente$i"]]);
                 if(empty($docente)) {
                     throw new Exception("No se encontró el docente con el DNI proporcionado.");
                 }

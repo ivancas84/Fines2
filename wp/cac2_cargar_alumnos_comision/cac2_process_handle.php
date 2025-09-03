@@ -15,7 +15,7 @@ add_action('admin_post_cac2_process', 'cac2_process_handle');
 function cac2_process_handle() {
     $comision_id = wp_initialize_handle("fines-plugin-cac2", "cac2_process", "comision_id");
 
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
 
     $dataProvider = $db->CreateDataProvider();
     
@@ -28,7 +28,7 @@ function cac2_process_handle() {
 
     foreach($alumnosData as $data){
         try {
-            $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
+            $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
             $cuilDni = Persona_::cuilDni($data["dni_cuil"]);
             if(empty($cuilDni["dni"])) 
                 continue;

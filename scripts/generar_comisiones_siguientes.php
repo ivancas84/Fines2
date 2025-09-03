@@ -17,7 +17,7 @@ use SqlOrganize\Sql\ModifyQueries;
 use SqlOrganize\Utils\ValueTypesUtils;
 
     
-$db = DbMy::getInstance();
+$db = \App\Context::getFinesDb();
 /** @var DataProvider */ $dataProvider = $db->CreateDataProvider();
 
 $comisionesAutorizadasSemestreSin32 = ComisionDAO::comisionesAutorizadasSin32ByCalendario(CALENDARIO_ID_ANTERIOR);
@@ -29,7 +29,7 @@ foreach($comisionesAutorizadasSemestreSin32 as $comision) {
     echo "Procesando Comisión: " . $comision->getLabel() . " (" . $comision->id . ")<br>";
     
     $tramoSiguiente = $comision->planificacion_?->getTramoSiguiente();
-      /** @var Planificacion_ */ $nuevaPlanificacion = DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("planificacion", [
+      /** @var Planificacion_ */ $nuevaPlanificacion = \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityByParams("planificacion", [
             "plan" => $comision->planificacion_->plan,
             "anio" => $tramoSiguiente["anio"],
             "semestre" => $tramoSiguiente["semestre"]

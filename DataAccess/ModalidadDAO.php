@@ -7,7 +7,7 @@ use SqlOrganize\Sql\DbMy;
 class ModalidadDAO
 {
     public static function modalidades(): array{
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 

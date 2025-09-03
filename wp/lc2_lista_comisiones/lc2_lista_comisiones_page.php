@@ -22,7 +22,7 @@ add_submenu_page(
 function lc2_lista_comisiones_page() {
     wp_page_message();
 
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
     $dataProvider = $db->CreateDataProvider();
 
 	$calendarios = $dataProvider->fetchAllEntitiesByParams("calendario",[], ["anio" => "DESC", "semestre" => "DESC"]);

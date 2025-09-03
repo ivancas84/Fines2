@@ -17,12 +17,12 @@ class DisposicionDAO {
                 WHERE planificacion.plan = :plan
                 AND CONCAT(planificacion.anio, planificacion.semestre) >= :tramo_short;";
 
-        return DbMy::getInstance()->CreateDataProvider()
+        return \App\Context::getFinesDb()->CreateDataProvider()
             ->fetchAllEntitiesBySqlId("disposicion", $sql, ["plan" => $plan, "tramo_short" => $tramo_short]);
     }
 
     public static function disposicionesActuales(): array {
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 

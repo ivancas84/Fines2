@@ -12,7 +12,7 @@ class WpwtPsmscAttachments extends Entity
     public function __construct()
     {
         $this->_entityName = "wpwt_psmsc_attachments";
-        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
+        $this->_db = \App\Context::getPedidosDb();
         $this->setDefault();
     }
 

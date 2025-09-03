@@ -18,7 +18,7 @@ function lc2_comision_delete_handle() {
     try {
         $calendario_id = wp_initialize_handle("fines-plugin-lc2", "lc2_comision_delete", "calendario_id");
         $comision_id = $_POST["comision_id"];
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
         $dataProvider = $db->CreateDataProvider();
         $modifyQueries = $db->CreateModifyQueries();
         $cursos = $dataProvider->fetchAllEntitiesByParams("curso",["comision" => $comision_id]);

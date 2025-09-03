@@ -25,7 +25,7 @@ function lacu_lista_alumnos_curso_page() {
     wp_page_message();
 
     $curso_id = $_GET["curso_id"];
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
     $dataProvider = $db->CreateDataProvider();
     /** @var Curso_ */$curso = $dataProvider->fetchEntityByParams("curso", ["id"=>$curso_id]);
     /** @var AlumnoComision_[] */ $alumnosComision = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["comision"=> $curso->comision_?->id]);

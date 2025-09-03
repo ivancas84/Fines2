@@ -7,7 +7,7 @@ class CalendarioDAO
 {
 
     public static function calendarios(): array{
-        $db = DbMy::getInstance();
+        $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
 

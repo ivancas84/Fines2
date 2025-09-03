@@ -33,7 +33,7 @@ add_submenu_page(
 function pdpf2_procesar_docentes_pf_page() {
     wp_page_message();
 
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
 
     $dataProvider = $db->CreateDataProvider();
 

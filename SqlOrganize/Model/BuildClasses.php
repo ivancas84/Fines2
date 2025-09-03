@@ -38,7 +38,7 @@ class BuildClasses
             fwrite($file, "    public function __construct()\n");
             fwrite($file, "    {\n");
             fwrite($file, "        \$this->_entityName = \"" . $entityName . "\";\n");
-            fwrite($file, "        \$this->_db = " . $config->dbClass . "::getInstance();\n");
+            fwrite($file, "        \$this->_db = " . $config->dbInstance . ";\n");
             fwrite($file, "        \$this->setDefault();\n");
             fwrite($file, "    }\n\n");
 

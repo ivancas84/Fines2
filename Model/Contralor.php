@@ -12,7 +12,7 @@ class Contralor extends Entity
     public function __construct()
     {
         $this->_entityName = "contralor";
-        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
+        $this->_db = \App\Context::getFinesDb();
         $this->setDefault();
     }
 

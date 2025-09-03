@@ -12,7 +12,7 @@ use SqlOrganize\Utils\ValueTypesUtils;
 
 try {
     $comision_id = $_GET["comision_id"];
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
     /** @var DataProvider */ $dataProvider = $db->CreateDataProvider();
     /** @var ModifyQueries */ $modifyQueries = $db->CreateModifyQueries();
     $cursos_ids = $dataProvider->fetchAllColumnByParams("curso", "id", ["comision" => $comision_id]);

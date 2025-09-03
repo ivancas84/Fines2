@@ -18,7 +18,7 @@ add_action('admin_post_ppc3_process', 'ppc3_process_handle');
 function ppc3_process_handle() {
     $curso_id = wp_initialize_handle("fines-plugin-ppc3", "ppc3_process", "curso_id");
 
-    $db = DbMy::getInstance();
+    $db = \App\Context::getFinesDb();
 
     $dataProvider = $db->CreateDataProvider();
     
@@ -36,7 +36,7 @@ function ppc3_process_handle() {
    
     foreach($result as $data) {
         try {
-            $modifyQueries = DbMy::getInstance()->CreateModifyQueries();
+            $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
             if($format == "pf"){
                 try {
                     $data = PfUtils::parseRowCalificacionPF($data);

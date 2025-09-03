@@ -10,7 +10,7 @@ function ac2_toma_add_handle() {
     try {
         $comision_id = wp_initialize_handle("fines-plugin-ac2", "ac2_toma_add_handle", "comision_id");
 
-        $docente = isset($_POST['dni_docente']) ? DbMy::getInstance()->CreateDataProvider()->fetchEntityByParams("persona", ["numero_documento" => $_POST['dni_docente']]) : null;
+        $docente = isset($_POST['dni_docente']) ? \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityByParams("persona", ["numero_documento" => $_POST['dni_docente']]) : null;
         if(empty($docente)) {
             throw new Exception("No se encontró el docente con el DNI proporcionado.");
         }

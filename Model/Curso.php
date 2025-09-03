@@ -12,7 +12,7 @@ class Curso extends Entity
     public function __construct()
     {
         $this->_entityName = "curso";
-        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
+        $this->_db = \App\Context::getFinesDb();
         $this->setDefault();
     }
 

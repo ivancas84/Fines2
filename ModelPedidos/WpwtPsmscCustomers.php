@@ -12,7 +12,7 @@ class WpwtPsmscCustomers extends Entity
     public function __construct()
     {
         $this->_entityName = "wpwt_psmsc_customers";
-        $this->_db = \SqlOrganize\Sql\DbMy::getInstance();
+        $this->_db = \App\Context::getPedidosDb();
         $this->setDefault();
     }
 
