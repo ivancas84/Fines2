@@ -13,5 +13,6 @@ use SqlOrganize\Sql\ModifyQueries;
 use ProgramaFines\PfDAO;
 
 
-$pf = new PfDAO("f17ac5fc2a0fcc5024e096552f00b77c");
-echo $pf->request("https://programafines.ar/inicial/index4.php?a=46");
+//$pf = new PfDAO("f17ac5fc2a0fcc5024e096552f00b77c");
+//echo $pf->request("https://programafines.ar/inicial/index4.php?a=46");
+DbMy::getInstance();;

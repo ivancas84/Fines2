@@ -42,7 +42,8 @@ class Config
     
     public string $separator = "__";
 
-
+    public string $prefix = "";
+    
     public string $namespace = "";
 
     public string $dataClassesPath = "Model/";

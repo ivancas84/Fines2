@@ -15,6 +15,7 @@ class Config
     public string $user;
     public string $pass;
     
+    public string $prefix = "";
     public array $reservedAlias = [];
     public array $reservedEntities = [];
     public array $dontTreatAsFk = [];
@@ -49,6 +50,8 @@ class Config
     public bool $fkId = true;
     
     public string $separator = "__";
+
+    public string $schemaName = "schema";
 
     public string $schemaClassPath;
 

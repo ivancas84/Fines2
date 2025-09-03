@@ -10,12 +10,12 @@ use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 
 try {
-    $pdo = new PDO("mysql:host=" . DB_HOST_FINES. ";dbname=" . DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES, [
+    $pdo = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
     ]);
 
-    $pdo_pedidos = new PDO("mysql:host=" . DB_HOST_PEDIDOS . ";dbname=" . DB_NAME_PEDIDOS . ";charset=utf8mb4", DB_USER_PEDIDOS, DB_PASS_PEDIDOS, [
+    $pdo_pedidos = new PDO("mysql:host=$db_host_pedidos;dbname=$db_name_pedidos;charset=utf8mb4", $db_user_pedidos, $db_pass_pedidos, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
     ]);
@@ -56,6 +56,7 @@ if (!empty($data['observaciones'])) {
 
 
 function generar_constancia_titulo_tramite($url, $data) {
+    global $rutaUploadPedidos;
     // Create QR Code
 
     $options = new QROptions([
@@ -116,12 +117,12 @@ function generar_constancia_titulo_tramite($url, $data) {
     
 
     // Ensure directories exist
-    if (!file_exists(dirname(PATH_UPLOAD_PEDIDOS.$data["upload_dir"]))) {
-        mkdir(dirname(PATH_UPLOAD_PEDIDOS.$data["upload_dir"]), 0777, true);
+    if (!file_exists(dirname($rutaUploadPedidos.$data["upload_dir"]))) {
+        mkdir(dirname($rutaUploadPedidos.$data["upload_dir"]), 0777, true);
     }
 
     // Save the PDF
-    $pdf->Output(PATH_UPLOAD_PEDIDOS.$data["save_path"], "F"); // Save to file
+    $pdf->Output($rutaUploadPedidos.$data["save_path"], "F"); // Save to file
     // Output PDF
     $pdf->Output($data["filename"], "I"); // Display in browser
 

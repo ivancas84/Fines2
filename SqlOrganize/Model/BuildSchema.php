@@ -4,15 +4,12 @@ namespace SqlOrganize\Model;
 
 use SqlOrganize\Utils\ValueTypesUtils;
 
-
-
 abstract class BuildSchema
 {
     public Config $config;
     public array $tables = [];
     public array $entities = [];
     public array $fields = [];
-
  
     /**
      * Definir datos del esquema y arbol de relaciones
@@ -322,7 +319,7 @@ public function createSchema(): void
         mkdir($this->config->schemaClassPath, 0755, true);
     }
 
-    $schemaFileName = "schema.php";
+    $schemaFileName = str_replace('_', '-', $this->config->schemaName) . ".php";
     $schemaSourcePath = $this->config->schemaClassPath . DIRECTORY_SEPARATOR . $schemaFileName;
     $sw = fopen($schemaSourcePath, 'w');
 
@@ -339,7 +336,7 @@ public function createSchema(): void
     fwrite($sw, " * Esquema de la base de datos\n");
     fwrite($sw, " * Esta clase fue generada por una herramienta, no debe ser modificada.\n");
     fwrite($sw, " */\n");
-    fwrite($sw, "class Schema\n");
+    fwrite($sw, "class "  . str_replace(' ', '', ucwords(str_replace('_', ' ', $this->config->schemaName))). "\n");
     fwrite($sw, "{\n");
     fwrite($sw, "    public static function getEntities()\n");
     fwrite($sw, "    {\n");
