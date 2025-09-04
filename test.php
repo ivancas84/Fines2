@@ -1,7 +1,6 @@
 <?php
 
-define("CALENDARIO_ID", "202502110007");
-require_once __DIR__ . '/db-config.php';
+require_once __DIR__ . '/pedidos-config.php';
 
 use \SqlOrganize\Sql\DbMy;
 use \SqlOrganize\Sql\Entity;
@@ -15,4 +14,11 @@ use ProgramaFines\PfDAO;
 
 //$pf = new PfDAO("f17ac5fc2a0fcc5024e096552f00b77c");
 //echo $pf->request("https://programafines.ar/inicial/index4.php?a=46");
-\App\Context::getFinesDb();;
+$dbp = \App\Context::getPedidosDb();
+$agents = $dbp->CreateDataProvider()->fetchAllEntitiesByParams("wpwt_psmsc_agents");
+foreach($agents as $agent) {
+
+    echo "<pre>";
+    print_r($agent->toArray());
+    echo"</pre>" ;
+}

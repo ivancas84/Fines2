@@ -15,7 +15,7 @@ class Config
     public string $user;
     public string $pass;
     
-    public string $prefix = "";
+    public string $tablePrefix = "";
     public array $reservedAlias = [];
     public array $reservedEntities = [];
     public array $dontTreatAsFk = [];

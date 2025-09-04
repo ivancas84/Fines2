@@ -63,6 +63,7 @@ class Context
         $configModel->schemaClassPath = "C:\\xampp\\htdocs\\Fines2\\";
         $configModel->dataClassesPath = "C:\\xampp\\htdocs\\Fines2\\ModelPedidos\\";
         $configModel->dbInstance = "\App\Context::getPedidosDb()";
+        $configModel->tablePrefix = 'wpwt_psmsc_';
         return $configModel;
     }
 
