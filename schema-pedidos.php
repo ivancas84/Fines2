@@ -18,940 +18,940 @@ class SchemaPedidos
     public static function getEntities()
     {
         $entities = [];
-        $entities['wpwt_psmsc_agents'] = EntityMetadata::getInstance('wpwt_psmsc_agents', 'wpwt');
-        $entities['wpwt_psmsc_agents']->pk = ['id'];
-        $entities['wpwt_psmsc_agents']->fk = ['customer'];
-        $entities['wpwt_psmsc_agents']->notNull = ['id', 'is_active', 'is_agentgroup', 'name', 'role'];
+        $entities['agents'] = EntityMetadata::getInstance('agents', 'agen');
+        $entities['agents']->pk = ['id'];
+        $entities['agents']->fk = ['customer'];
+        $entities['agents']->notNull = ['id', 'is_active', 'is_agentgroup', 'name', 'role'];
 
-        $entities['wpwt_psmsc_agents']->tree = [];
-        $entities['wpwt_psmsc_agents']->tree['customer'] = EntityTree::getInstance('customer', 'wpwt_psmsc_customers', 'id');
+        $entities['agents']->tree = [];
+        $entities['agents']->tree['customer'] = EntityTree::getInstance('customer', 'customers', 'id');
 
-        $entities['wpwt_psmsc_agents']->relations = [];
-        $entities['wpwt_psmsc_agents']->relations['customer'] = EntityRelation::getInstance('customer', 'wpwt_psmsc_customers', 'id');
+        $entities['agents']->relations = [];
+        $entities['agents']->relations['customer'] = EntityRelation::getInstance('customer', 'customers', 'id');
 
-        $entities['wpwt_psmsc_agents']->fields['customer'] = Field::getInstance('wpwt_psmsc_agents', 'customer', 'bigint', 'int');
-        $entities['wpwt_psmsc_agents']->fields['customer']->defaultValue = '0';
-        $entities['wpwt_psmsc_agents']->fields['customer']->alias = 'wpw';
-        $entities['wpwt_psmsc_agents']->fields['customer']->refEntityName = 'wpwt_psmsc_customers';
-        $entities['wpwt_psmsc_agents']->fields['customer']->refFieldName = 'id';
-        $entities['wpwt_psmsc_agents']->fields['customer']->checks = [
+        $entities['agents']->fields['customer'] = Field::getInstance('agents', 'customer', 'bigint', 'int');
+        $entities['agents']->fields['customer']->defaultValue = '0';
+        $entities['agents']->fields['customer']->alias = 'cus';
+        $entities['agents']->fields['customer']->refEntityName = 'customers';
+        $entities['agents']->fields['customer']->refFieldName = 'id';
+        $entities['agents']->fields['customer']->checks = [
             'type' => 'int',
         ];
-        $entities['wpwt_psmsc_agents']->fields['id'] = Field::getInstance('wpwt_psmsc_agents', 'id', 'bigint', 'int');
-        $entities['wpwt_psmsc_agents']->fields['id']->checks = [
+        $entities['agents']->fields['id'] = Field::getInstance('agents', 'id', 'bigint', 'int');
+        $entities['agents']->fields['id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_agents']->fields['is_active'] = Field::getInstance('wpwt_psmsc_agents', 'is_active', 'int', 'int');
-        $entities['wpwt_psmsc_agents']->fields['is_active']->defaultValue = '0';
-        $entities['wpwt_psmsc_agents']->fields['is_active']->checks = [
+        $entities['agents']->fields['is_active'] = Field::getInstance('agents', 'is_active', 'int', 'int');
+        $entities['agents']->fields['is_active']->defaultValue = '0';
+        $entities['agents']->fields['is_active']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_agents']->fields['is_agentgroup'] = Field::getInstance('wpwt_psmsc_agents', 'is_agentgroup', 'int', 'int');
-        $entities['wpwt_psmsc_agents']->fields['is_agentgroup']->defaultValue = '0';
-        $entities['wpwt_psmsc_agents']->fields['is_agentgroup']->checks = [
+        $entities['agents']->fields['is_agentgroup'] = Field::getInstance('agents', 'is_agentgroup', 'int', 'int');
+        $entities['agents']->fields['is_agentgroup']->defaultValue = '0';
+        $entities['agents']->fields['is_agentgroup']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_agents']->fields['name'] = Field::getInstance('wpwt_psmsc_agents', 'name', 'varchar', 'string');
-        $entities['wpwt_psmsc_agents']->fields['name']->checks = [
+        $entities['agents']->fields['name'] = Field::getInstance('agents', 'name', 'varchar', 'string');
+        $entities['agents']->fields['name']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_agents']->fields['name']->resets = [
+        $entities['agents']->fields['name']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_agents']->fields['role'] = Field::getInstance('wpwt_psmsc_agents', 'role', 'int', 'int');
-        $entities['wpwt_psmsc_agents']->fields['role']->defaultValue = '0';
-        $entities['wpwt_psmsc_agents']->fields['role']->checks = [
+        $entities['agents']->fields['role'] = Field::getInstance('agents', 'role', 'int', 'int');
+        $entities['agents']->fields['role']->defaultValue = '0';
+        $entities['agents']->fields['role']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_agents']->fields['unresolved_count'] = Field::getInstance('wpwt_psmsc_agents', 'unresolved_count', 'int', 'int');
-        $entities['wpwt_psmsc_agents']->fields['unresolved_count']->checks = [
+        $entities['agents']->fields['unresolved_count'] = Field::getInstance('agents', 'unresolved_count', 'int', 'int');
+        $entities['agents']->fields['unresolved_count']->checks = [
             'type' => 'int',
         ];
-        $entities['wpwt_psmsc_agents']->fields['user'] = Field::getInstance('wpwt_psmsc_agents', 'user', 'bigint', 'int');
-        $entities['wpwt_psmsc_agents']->fields['user']->defaultValue = '0';
-        $entities['wpwt_psmsc_agents']->fields['user']->checks = [
+        $entities['agents']->fields['user'] = Field::getInstance('agents', 'user', 'bigint', 'int');
+        $entities['agents']->fields['user']->defaultValue = '0';
+        $entities['agents']->fields['user']->checks = [
             'type' => 'int',
         ];
-        $entities['wpwt_psmsc_agents']->fields['workload'] = Field::getInstance('wpwt_psmsc_agents', 'workload', 'int', 'int');
-        $entities['wpwt_psmsc_agents']->fields['workload']->checks = [
+        $entities['agents']->fields['workload'] = Field::getInstance('agents', 'workload', 'int', 'int');
+        $entities['agents']->fields['workload']->checks = [
             'type' => 'int',
         ];
-        $entities['wpwt_psmsc_attachments'] = EntityMetadata::getInstance('wpwt_psmsc_attachments', 'wpw1');
-        $entities['wpwt_psmsc_attachments']->pk = ['id'];
-        $entities['wpwt_psmsc_attachments']->fk = ['ticket_id'];
-        $entities['wpwt_psmsc_attachments']->notNull = ['customer_id', 'date_created', 'file_path', 'id', 'is_active', 'is_image', 'is_uploaded', 'name', 'source', 'source_id', 'ticket_id'];
+        $entities['attachments'] = EntityMetadata::getInstance('attachments', 'atta');
+        $entities['attachments']->pk = ['id'];
+        $entities['attachments']->fk = ['ticket_id'];
+        $entities['attachments']->notNull = ['customer_id', 'date_created', 'file_path', 'id', 'is_active', 'is_image', 'is_uploaded', 'name', 'source', 'source_id', 'ticket_id'];
 
-        $entities['wpwt_psmsc_attachments']->tree = [];
-        $entities['wpwt_psmsc_attachments']->tree['ticket_id'] = EntityTree::getInstance('ticket_id', 'wpwt_psmsc_tickets', 'id');
-        $entities['wpwt_psmsc_attachments']->tree['ticket_id']->children = [];
-        $entities['wpwt_psmsc_attachments']->tree['ticket_id']->children['category'] = EntityTree::getInstance('category', 'wpwt_psmsc_categories', 'id');
+        $entities['attachments']->tree = [];
+        $entities['attachments']->tree['ticket_id'] = EntityTree::getInstance('ticket_id', 'tickets', 'id');
+        $entities['attachments']->tree['ticket_id']->children = [];
+        $entities['attachments']->tree['ticket_id']->children['category'] = EntityTree::getInstance('category', 'categories', 'id');
 
-        $entities['wpwt_psmsc_attachments']->tree['ticket_id']->children['customer'] = EntityTree::getInstance('customer', 'wpwt_psmsc_customers', 'id');
+        $entities['attachments']->tree['ticket_id']->children['customer'] = EntityTree::getInstance('customer', 'customers', 'id');
 
-        $entities['wpwt_psmsc_attachments']->tree['ticket_id']->children['priority'] = EntityTree::getInstance('priority', 'wpwt_psmsc_priorities', 'id');
+        $entities['attachments']->tree['ticket_id']->children['priority'] = EntityTree::getInstance('priority', 'priorities', 'id');
 
-        $entities['wpwt_psmsc_attachments']->tree['ticket_id']->children['status'] = EntityTree::getInstance('status', 'wpwt_psmsc_statuses', 'id');
+        $entities['attachments']->tree['ticket_id']->children['status'] = EntityTree::getInstance('status', 'statuses', 'id');
 
 
-        $entities['wpwt_psmsc_attachments']->relations = [];
-        $entities['wpwt_psmsc_attachments']->relations['ticket_id'] = EntityRelation::getInstance('ticket_id', 'wpwt_psmsc_tickets', 'id');
+        $entities['attachments']->relations = [];
+        $entities['attachments']->relations['ticket_id'] = EntityRelation::getInstance('ticket_id', 'tickets', 'id');
 
-        $entities['wpwt_psmsc_attachments']->relations['category'] = EntityRelation::getInstance('category', 'wpwt_psmsc_categories', 'id');
-        $entities['wpwt_psmsc_attachments']->relations['category']->parentId = 'ticket_id';
+        $entities['attachments']->relations['category'] = EntityRelation::getInstance('category', 'categories', 'id');
+        $entities['attachments']->relations['category']->parentId = 'ticket_id';
 
-        $entities['wpwt_psmsc_attachments']->relations['customer'] = EntityRelation::getInstance('customer', 'wpwt_psmsc_customers', 'id');
-        $entities['wpwt_psmsc_attachments']->relations['customer']->parentId = 'ticket_id';
+        $entities['attachments']->relations['customer'] = EntityRelation::getInstance('customer', 'customers', 'id');
+        $entities['attachments']->relations['customer']->parentId = 'ticket_id';
 
-        $entities['wpwt_psmsc_attachments']->relations['priority'] = EntityRelation::getInstance('priority', 'wpwt_psmsc_priorities', 'id');
-        $entities['wpwt_psmsc_attachments']->relations['priority']->parentId = 'ticket_id';
+        $entities['attachments']->relations['priority'] = EntityRelation::getInstance('priority', 'priorities', 'id');
+        $entities['attachments']->relations['priority']->parentId = 'ticket_id';
 
-        $entities['wpwt_psmsc_attachments']->relations['status'] = EntityRelation::getInstance('status', 'wpwt_psmsc_statuses', 'id');
-        $entities['wpwt_psmsc_attachments']->relations['status']->parentId = 'ticket_id';
+        $entities['attachments']->relations['status'] = EntityRelation::getInstance('status', 'statuses', 'id');
+        $entities['attachments']->relations['status']->parentId = 'ticket_id';
 
-        $entities['wpwt_psmsc_attachments']->fields['customer_id'] = Field::getInstance('wpwt_psmsc_attachments', 'customer_id', 'bigint', 'int');
-        $entities['wpwt_psmsc_attachments']->fields['customer_id']->defaultValue = '0';
-        $entities['wpwt_psmsc_attachments']->fields['customer_id']->checks = [
+        $entities['attachments']->fields['customer_id'] = Field::getInstance('attachments', 'customer_id', 'bigint', 'int');
+        $entities['attachments']->fields['customer_id']->defaultValue = '0';
+        $entities['attachments']->fields['customer_id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_attachments']->fields['date_created'] = Field::getInstance('wpwt_psmsc_attachments', 'date_created', 'datetime', 'DateTime');
-        $entities['wpwt_psmsc_attachments']->fields['date_created']->defaultValue = 'current_timestamp()';
-        $entities['wpwt_psmsc_attachments']->fields['date_created']->checks = [
+        $entities['attachments']->fields['date_created'] = Field::getInstance('attachments', 'date_created', 'datetime', 'DateTime');
+        $entities['attachments']->fields['date_created']->defaultValue = 'current_timestamp()';
+        $entities['attachments']->fields['date_created']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_attachments']->fields['file_path'] = Field::getInstance('wpwt_psmsc_attachments', 'file_path', 'text', 'string');
-        $entities['wpwt_psmsc_attachments']->fields['file_path']->checks = [
+        $entities['attachments']->fields['file_path'] = Field::getInstance('attachments', 'file_path', 'text', 'string');
+        $entities['attachments']->fields['file_path']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_attachments']->fields['file_path']->resets = [
+        $entities['attachments']->fields['file_path']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_attachments']->fields['id'] = Field::getInstance('wpwt_psmsc_attachments', 'id', 'bigint', 'int');
-        $entities['wpwt_psmsc_attachments']->fields['id']->checks = [
+        $entities['attachments']->fields['id'] = Field::getInstance('attachments', 'id', 'bigint', 'int');
+        $entities['attachments']->fields['id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_attachments']->fields['is_active'] = Field::getInstance('wpwt_psmsc_attachments', 'is_active', 'int', 'int');
-        $entities['wpwt_psmsc_attachments']->fields['is_active']->defaultValue = '1';
-        $entities['wpwt_psmsc_attachments']->fields['is_active']->checks = [
+        $entities['attachments']->fields['is_active'] = Field::getInstance('attachments', 'is_active', 'int', 'int');
+        $entities['attachments']->fields['is_active']->defaultValue = '1';
+        $entities['attachments']->fields['is_active']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_attachments']->fields['is_image'] = Field::getInstance('wpwt_psmsc_attachments', 'is_image', 'int', 'int');
-        $entities['wpwt_psmsc_attachments']->fields['is_image']->defaultValue = '0';
-        $entities['wpwt_psmsc_attachments']->fields['is_image']->checks = [
+        $entities['attachments']->fields['is_image'] = Field::getInstance('attachments', 'is_image', 'int', 'int');
+        $entities['attachments']->fields['is_image']->defaultValue = '0';
+        $entities['attachments']->fields['is_image']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_attachments']->fields['is_uploaded'] = Field::getInstance('wpwt_psmsc_attachments', 'is_uploaded', 'int', 'int');
-        $entities['wpwt_psmsc_attachments']->fields['is_uploaded']->defaultValue = '0';
-        $entities['wpwt_psmsc_attachments']->fields['is_uploaded']->checks = [
+        $entities['attachments']->fields['is_uploaded'] = Field::getInstance('attachments', 'is_uploaded', 'int', 'int');
+        $entities['attachments']->fields['is_uploaded']->defaultValue = '0';
+        $entities['attachments']->fields['is_uploaded']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_attachments']->fields['name'] = Field::getInstance('wpwt_psmsc_attachments', 'name', 'varchar', 'string');
-        $entities['wpwt_psmsc_attachments']->fields['name']->checks = [
+        $entities['attachments']->fields['name'] = Field::getInstance('attachments', 'name', 'varchar', 'string');
+        $entities['attachments']->fields['name']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_attachments']->fields['name']->resets = [
+        $entities['attachments']->fields['name']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_attachments']->fields['source'] = Field::getInstance('wpwt_psmsc_attachments', 'source', 'varchar', 'string');
-        $entities['wpwt_psmsc_attachments']->fields['source']->checks = [
+        $entities['attachments']->fields['source'] = Field::getInstance('attachments', 'source', 'varchar', 'string');
+        $entities['attachments']->fields['source']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_attachments']->fields['source']->resets = [
+        $entities['attachments']->fields['source']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_attachments']->fields['source_id'] = Field::getInstance('wpwt_psmsc_attachments', 'source_id', 'bigint', 'int');
-        $entities['wpwt_psmsc_attachments']->fields['source_id']->defaultValue = '0';
-        $entities['wpwt_psmsc_attachments']->fields['source_id']->checks = [
+        $entities['attachments']->fields['source_id'] = Field::getInstance('attachments', 'source_id', 'bigint', 'int');
+        $entities['attachments']->fields['source_id']->defaultValue = '0';
+        $entities['attachments']->fields['source_id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_attachments']->fields['ticket_id'] = Field::getInstance('wpwt_psmsc_attachments', 'ticket_id', 'bigint', 'int');
-        $entities['wpwt_psmsc_attachments']->fields['ticket_id']->defaultValue = '0';
-        $entities['wpwt_psmsc_attachments']->fields['ticket_id']->alias = 'wpw';
-        $entities['wpwt_psmsc_attachments']->fields['ticket_id']->refEntityName = 'wpwt_psmsc_tickets';
-        $entities['wpwt_psmsc_attachments']->fields['ticket_id']->refFieldName = 'id';
-        $entities['wpwt_psmsc_attachments']->fields['ticket_id']->checks = [
+        $entities['attachments']->fields['ticket_id'] = Field::getInstance('attachments', 'ticket_id', 'bigint', 'int');
+        $entities['attachments']->fields['ticket_id']->defaultValue = '0';
+        $entities['attachments']->fields['ticket_id']->alias = 'tic';
+        $entities['attachments']->fields['ticket_id']->refEntityName = 'tickets';
+        $entities['attachments']->fields['ticket_id']->refFieldName = 'id';
+        $entities['attachments']->fields['ticket_id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_categories'] = EntityMetadata::getInstance('wpwt_psmsc_categories', 'wpw2');
-        $entities['wpwt_psmsc_categories']->pk = ['id'];
-        $entities['wpwt_psmsc_categories']->notNull = ['id', 'load_order', 'name'];
+        $entities['categories'] = EntityMetadata::getInstance('categories', 'cate');
+        $entities['categories']->pk = ['id'];
+        $entities['categories']->notNull = ['id', 'load_order', 'name'];
 
-        $entities['wpwt_psmsc_categories']->om = [];
-        $entities['wpwt_psmsc_categories']->om['WpwtPsmscTickets_category_'] = EntityRef::getInstance('category', 'wpwt_psmsc_tickets');
-        $entities['wpwt_psmsc_categories']->fields['id'] = Field::getInstance('wpwt_psmsc_categories', 'id', 'int', 'int');
-        $entities['wpwt_psmsc_categories']->fields['id']->checks = [
+        $entities['categories']->om = [];
+        $entities['categories']->om['Tickets_category_'] = EntityRef::getInstance('category', 'tickets');
+        $entities['categories']->fields['id'] = Field::getInstance('categories', 'id', 'int', 'int');
+        $entities['categories']->fields['id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_categories']->fields['load_order'] = Field::getInstance('wpwt_psmsc_categories', 'load_order', 'int', 'int');
-        $entities['wpwt_psmsc_categories']->fields['load_order']->defaultValue = '1';
-        $entities['wpwt_psmsc_categories']->fields['load_order']->checks = [
+        $entities['categories']->fields['load_order'] = Field::getInstance('categories', 'load_order', 'int', 'int');
+        $entities['categories']->fields['load_order']->defaultValue = '1';
+        $entities['categories']->fields['load_order']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_categories']->fields['name'] = Field::getInstance('wpwt_psmsc_categories', 'name', 'varchar', 'string');
-        $entities['wpwt_psmsc_categories']->fields['name']->checks = [
+        $entities['categories']->fields['name'] = Field::getInstance('categories', 'name', 'varchar', 'string');
+        $entities['categories']->fields['name']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_categories']->fields['name']->resets = [
+        $entities['categories']->fields['name']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_customers'] = EntityMetadata::getInstance('wpwt_psmsc_customers', 'wpw3');
-        $entities['wpwt_psmsc_customers']->pk = ['id'];
-        $entities['wpwt_psmsc_customers']->notNull = ['email', 'id', 'name', 'ticket_count', 'user'];
+        $entities['customers'] = EntityMetadata::getInstance('customers', 'cust');
+        $entities['customers']->pk = ['id'];
+        $entities['customers']->notNull = ['email', 'id', 'name', 'ticket_count', 'user'];
 
-        $entities['wpwt_psmsc_customers']->om = [];
-        $entities['wpwt_psmsc_customers']->om['WpwtPsmscAgents_customer_'] = EntityRef::getInstance('customer', 'wpwt_psmsc_agents');
-        $entities['wpwt_psmsc_customers']->om['WpwtPsmscLogs_modified_by_'] = EntityRef::getInstance('modified_by', 'wpwt_psmsc_logs');
-        $entities['wpwt_psmsc_customers']->om['WpwtPsmscThreads_customer_'] = EntityRef::getInstance('customer', 'wpwt_psmsc_threads');
-        $entities['wpwt_psmsc_customers']->om['WpwtPsmscTickets_customer_'] = EntityRef::getInstance('customer', 'wpwt_psmsc_tickets');
-        $entities['wpwt_psmsc_customers']->fields['email'] = Field::getInstance('wpwt_psmsc_customers', 'email', 'varchar', 'string');
-        $entities['wpwt_psmsc_customers']->fields['email']->checks = [
+        $entities['customers']->om = [];
+        $entities['customers']->om['Agents_customer_'] = EntityRef::getInstance('customer', 'agents');
+        $entities['customers']->om['Logs_modified_by_'] = EntityRef::getInstance('modified_by', 'logs');
+        $entities['customers']->om['Threads_customer_'] = EntityRef::getInstance('customer', 'threads');
+        $entities['customers']->om['Tickets_customer_'] = EntityRef::getInstance('customer', 'tickets');
+        $entities['customers']->fields['email'] = Field::getInstance('customers', 'email', 'varchar', 'string');
+        $entities['customers']->fields['email']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_customers']->fields['email']->resets = [
+        $entities['customers']->fields['email']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_customers']->fields['id'] = Field::getInstance('wpwt_psmsc_customers', 'id', 'bigint', 'int');
-        $entities['wpwt_psmsc_customers']->fields['id']->checks = [
+        $entities['customers']->fields['id'] = Field::getInstance('customers', 'id', 'bigint', 'int');
+        $entities['customers']->fields['id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_customers']->fields['name'] = Field::getInstance('wpwt_psmsc_customers', 'name', 'varchar', 'string');
-        $entities['wpwt_psmsc_customers']->fields['name']->checks = [
+        $entities['customers']->fields['name'] = Field::getInstance('customers', 'name', 'varchar', 'string');
+        $entities['customers']->fields['name']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_customers']->fields['name']->resets = [
+        $entities['customers']->fields['name']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_customers']->fields['ticket_count'] = Field::getInstance('wpwt_psmsc_customers', 'ticket_count', 'int', 'int');
-        $entities['wpwt_psmsc_customers']->fields['ticket_count']->defaultValue = '0';
-        $entities['wpwt_psmsc_customers']->fields['ticket_count']->checks = [
+        $entities['customers']->fields['ticket_count'] = Field::getInstance('customers', 'ticket_count', 'int', 'int');
+        $entities['customers']->fields['ticket_count']->defaultValue = '0';
+        $entities['customers']->fields['ticket_count']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_customers']->fields['user'] = Field::getInstance('wpwt_psmsc_customers', 'user', 'bigint', 'int');
-        $entities['wpwt_psmsc_customers']->fields['user']->checks = [
+        $entities['customers']->fields['user'] = Field::getInstance('customers', 'user', 'bigint', 'int');
+        $entities['customers']->fields['user']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_custom_fields'] = EntityMetadata::getInstance('wpwt_psmsc_custom_fields', 'wpw4');
-        $entities['wpwt_psmsc_custom_fields']->pk = ['id'];
-        $entities['wpwt_psmsc_custom_fields']->notNull = ['id', 'is_personal_info', 'load_order', 'name', 'tl_width'];
+        $entities['custom_fields'] = EntityMetadata::getInstance('custom_fields', 'cus1');
+        $entities['custom_fields']->pk = ['id'];
+        $entities['custom_fields']->notNull = ['id', 'is_personal_info', 'load_order', 'name', 'tl_width'];
 
-        $entities['wpwt_psmsc_custom_fields']->fields['allow_my_profile'] = Field::getInstance('wpwt_psmsc_custom_fields', 'allow_my_profile', 'int', 'int');
-        $entities['wpwt_psmsc_custom_fields']->fields['allow_my_profile']->defaultValue = '1';
-        $entities['wpwt_psmsc_custom_fields']->fields['allow_my_profile']->checks = [
+        $entities['custom_fields']->fields['allow_my_profile'] = Field::getInstance('custom_fields', 'allow_my_profile', 'int', 'int');
+        $entities['custom_fields']->fields['allow_my_profile']->defaultValue = '1';
+        $entities['custom_fields']->fields['allow_my_profile']->checks = [
             'type' => 'int',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['allow_ticket_form'] = Field::getInstance('wpwt_psmsc_custom_fields', 'allow_ticket_form', 'int', 'int');
-        $entities['wpwt_psmsc_custom_fields']->fields['allow_ticket_form']->defaultValue = '1';
-        $entities['wpwt_psmsc_custom_fields']->fields['allow_ticket_form']->checks = [
+        $entities['custom_fields']->fields['allow_ticket_form'] = Field::getInstance('custom_fields', 'allow_ticket_form', 'int', 'int');
+        $entities['custom_fields']->fields['allow_ticket_form']->defaultValue = '1';
+        $entities['custom_fields']->fields['allow_ticket_form']->checks = [
             'type' => 'int',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['char_limit'] = Field::getInstance('wpwt_psmsc_custom_fields', 'char_limit', 'int', 'int');
-        $entities['wpwt_psmsc_custom_fields']->fields['char_limit']->checks = [
+        $entities['custom_fields']->fields['char_limit'] = Field::getInstance('custom_fields', 'char_limit', 'int', 'int');
+        $entities['custom_fields']->fields['char_limit']->checks = [
             'type' => 'int',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['date_display_as'] = Field::getInstance('wpwt_psmsc_custom_fields', 'date_display_as', 'varchar', 'string');
-        $entities['wpwt_psmsc_custom_fields']->fields['date_display_as']->checks = [
+        $entities['custom_fields']->fields['date_display_as'] = Field::getInstance('custom_fields', 'date_display_as', 'varchar', 'string');
+        $entities['custom_fields']->fields['date_display_as']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['date_display_as']->resets = [
+        $entities['custom_fields']->fields['date_display_as']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['date_format'] = Field::getInstance('wpwt_psmsc_custom_fields', 'date_format', 'varchar', 'string');
-        $entities['wpwt_psmsc_custom_fields']->fields['date_format']->checks = [
+        $entities['custom_fields']->fields['date_format'] = Field::getInstance('custom_fields', 'date_format', 'varchar', 'string');
+        $entities['custom_fields']->fields['date_format']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['date_format']->resets = [
+        $entities['custom_fields']->fields['date_format']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['date_range'] = Field::getInstance('wpwt_psmsc_custom_fields', 'date_range', 'varchar', 'string');
-        $entities['wpwt_psmsc_custom_fields']->fields['date_range']->checks = [
+        $entities['custom_fields']->fields['date_range'] = Field::getInstance('custom_fields', 'date_range', 'varchar', 'string');
+        $entities['custom_fields']->fields['date_range']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['date_range']->resets = [
+        $entities['custom_fields']->fields['date_range']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['default_value'] = Field::getInstance('wpwt_psmsc_custom_fields', 'default_value', 'text', 'string');
-        $entities['wpwt_psmsc_custom_fields']->fields['default_value']->checks = [
+        $entities['custom_fields']->fields['default_value'] = Field::getInstance('custom_fields', 'default_value', 'text', 'string');
+        $entities['custom_fields']->fields['default_value']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['default_value']->resets = [
+        $entities['custom_fields']->fields['default_value']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['end_range'] = Field::getInstance('wpwt_psmsc_custom_fields', 'end_range', 'datetime', 'DateTime');
-        $entities['wpwt_psmsc_custom_fields']->fields['end_range']->checks = [
+        $entities['custom_fields']->fields['end_range'] = Field::getInstance('custom_fields', 'end_range', 'datetime', 'DateTime');
+        $entities['custom_fields']->fields['end_range']->checks = [
             'type' => 'DateTime',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['extra_info'] = Field::getInstance('wpwt_psmsc_custom_fields', 'extra_info', 'text', 'string');
-        $entities['wpwt_psmsc_custom_fields']->fields['extra_info']->checks = [
+        $entities['custom_fields']->fields['extra_info'] = Field::getInstance('custom_fields', 'extra_info', 'text', 'string');
+        $entities['custom_fields']->fields['extra_info']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['extra_info']->resets = [
+        $entities['custom_fields']->fields['extra_info']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['field'] = Field::getInstance('wpwt_psmsc_custom_fields', 'field', 'varchar', 'string');
-        $entities['wpwt_psmsc_custom_fields']->fields['field']->checks = [
+        $entities['custom_fields']->fields['field'] = Field::getInstance('custom_fields', 'field', 'varchar', 'string');
+        $entities['custom_fields']->fields['field']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['field']->resets = [
+        $entities['custom_fields']->fields['field']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['id'] = Field::getInstance('wpwt_psmsc_custom_fields', 'id', 'int', 'int');
-        $entities['wpwt_psmsc_custom_fields']->fields['id']->checks = [
+        $entities['custom_fields']->fields['id'] = Field::getInstance('custom_fields', 'id', 'int', 'int');
+        $entities['custom_fields']->fields['id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['is_auto_fill'] = Field::getInstance('wpwt_psmsc_custom_fields', 'is_auto_fill', 'int', 'int');
-        $entities['wpwt_psmsc_custom_fields']->fields['is_auto_fill']->checks = [
+        $entities['custom_fields']->fields['is_auto_fill'] = Field::getInstance('custom_fields', 'is_auto_fill', 'int', 'int');
+        $entities['custom_fields']->fields['is_auto_fill']->checks = [
             'type' => 'int',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['is_personal_info'] = Field::getInstance('wpwt_psmsc_custom_fields', 'is_personal_info', 'int', 'int');
-        $entities['wpwt_psmsc_custom_fields']->fields['is_personal_info']->defaultValue = '0';
-        $entities['wpwt_psmsc_custom_fields']->fields['is_personal_info']->checks = [
-            'type' => 'int',
-            'required' => '1',
-        ];
-        $entities['wpwt_psmsc_custom_fields']->fields['load_order'] = Field::getInstance('wpwt_psmsc_custom_fields', 'load_order', 'int', 'int');
-        $entities['wpwt_psmsc_custom_fields']->fields['load_order']->defaultValue = '1';
-        $entities['wpwt_psmsc_custom_fields']->fields['load_order']->checks = [
+        $entities['custom_fields']->fields['is_personal_info'] = Field::getInstance('custom_fields', 'is_personal_info', 'int', 'int');
+        $entities['custom_fields']->fields['is_personal_info']->defaultValue = '0';
+        $entities['custom_fields']->fields['is_personal_info']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['name'] = Field::getInstance('wpwt_psmsc_custom_fields', 'name', 'varchar', 'string');
-        $entities['wpwt_psmsc_custom_fields']->fields['name']->checks = [
+        $entities['custom_fields']->fields['load_order'] = Field::getInstance('custom_fields', 'load_order', 'int', 'int');
+        $entities['custom_fields']->fields['load_order']->defaultValue = '1';
+        $entities['custom_fields']->fields['load_order']->checks = [
+            'type' => 'int',
+            'required' => '1',
+        ];
+        $entities['custom_fields']->fields['name'] = Field::getInstance('custom_fields', 'name', 'varchar', 'string');
+        $entities['custom_fields']->fields['name']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['name']->resets = [
+        $entities['custom_fields']->fields['name']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['number_type'] = Field::getInstance('wpwt_psmsc_custom_fields', 'number_type', 'varchar', 'string');
-        $entities['wpwt_psmsc_custom_fields']->fields['number_type']->checks = [
+        $entities['custom_fields']->fields['number_type'] = Field::getInstance('custom_fields', 'number_type', 'varchar', 'string');
+        $entities['custom_fields']->fields['number_type']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['number_type']->resets = [
+        $entities['custom_fields']->fields['number_type']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['placeholder_text'] = Field::getInstance('wpwt_psmsc_custom_fields', 'placeholder_text', 'text', 'string');
-        $entities['wpwt_psmsc_custom_fields']->fields['placeholder_text']->checks = [
+        $entities['custom_fields']->fields['placeholder_text'] = Field::getInstance('custom_fields', 'placeholder_text', 'text', 'string');
+        $entities['custom_fields']->fields['placeholder_text']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['placeholder_text']->resets = [
+        $entities['custom_fields']->fields['placeholder_text']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['slug'] = Field::getInstance('wpwt_psmsc_custom_fields', 'slug', 'varchar', 'string');
-        $entities['wpwt_psmsc_custom_fields']->fields['slug']->checks = [
+        $entities['custom_fields']->fields['slug'] = Field::getInstance('custom_fields', 'slug', 'varchar', 'string');
+        $entities['custom_fields']->fields['slug']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['slug']->resets = [
+        $entities['custom_fields']->fields['slug']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['start_range'] = Field::getInstance('wpwt_psmsc_custom_fields', 'start_range', 'datetime', 'DateTime');
-        $entities['wpwt_psmsc_custom_fields']->fields['start_range']->checks = [
+        $entities['custom_fields']->fields['start_range'] = Field::getInstance('custom_fields', 'start_range', 'datetime', 'DateTime');
+        $entities['custom_fields']->fields['start_range']->checks = [
             'type' => 'DateTime',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['time_format'] = Field::getInstance('wpwt_psmsc_custom_fields', 'time_format', 'int', 'int');
-        $entities['wpwt_psmsc_custom_fields']->fields['time_format']->checks = [
+        $entities['custom_fields']->fields['time_format'] = Field::getInstance('custom_fields', 'time_format', 'int', 'int');
+        $entities['custom_fields']->fields['time_format']->checks = [
             'type' => 'int',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['tl_width'] = Field::getInstance('wpwt_psmsc_custom_fields', 'tl_width', 'int', 'int');
-        $entities['wpwt_psmsc_custom_fields']->fields['tl_width']->defaultValue = '100';
-        $entities['wpwt_psmsc_custom_fields']->fields['tl_width']->checks = [
+        $entities['custom_fields']->fields['tl_width'] = Field::getInstance('custom_fields', 'tl_width', 'int', 'int');
+        $entities['custom_fields']->fields['tl_width']->defaultValue = '100';
+        $entities['custom_fields']->fields['tl_width']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['type'] = Field::getInstance('wpwt_psmsc_custom_fields', 'type', 'varchar', 'string');
-        $entities['wpwt_psmsc_custom_fields']->fields['type']->checks = [
+        $entities['custom_fields']->fields['type'] = Field::getInstance('custom_fields', 'type', 'varchar', 'string');
+        $entities['custom_fields']->fields['type']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_custom_fields']->fields['type']->resets = [
+        $entities['custom_fields']->fields['type']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_logs'] = EntityMetadata::getInstance('wpwt_psmsc_logs', 'wpw5');
-        $entities['wpwt_psmsc_logs']->pk = ['id'];
-        $entities['wpwt_psmsc_logs']->fk = ['modified_by'];
-        $entities['wpwt_psmsc_logs']->notNull = ['body', 'date_created', 'id', 'modified_by', 'ref_id', 'type'];
+        $entities['logs'] = EntityMetadata::getInstance('logs', 'logs');
+        $entities['logs']->pk = ['id'];
+        $entities['logs']->fk = ['modified_by'];
+        $entities['logs']->notNull = ['body', 'date_created', 'id', 'modified_by', 'ref_id', 'type'];
 
-        $entities['wpwt_psmsc_logs']->tree = [];
-        $entities['wpwt_psmsc_logs']->tree['modified_by'] = EntityTree::getInstance('modified_by', 'wpwt_psmsc_customers', 'id');
+        $entities['logs']->tree = [];
+        $entities['logs']->tree['modified_by'] = EntityTree::getInstance('modified_by', 'customers', 'id');
 
-        $entities['wpwt_psmsc_logs']->relations = [];
-        $entities['wpwt_psmsc_logs']->relations['modified_by'] = EntityRelation::getInstance('modified_by', 'wpwt_psmsc_customers', 'id');
+        $entities['logs']->relations = [];
+        $entities['logs']->relations['modified_by'] = EntityRelation::getInstance('modified_by', 'customers', 'id');
 
-        $entities['wpwt_psmsc_logs']->fields['body'] = Field::getInstance('wpwt_psmsc_logs', 'body', 'longtext', 'longtext');
-        $entities['wpwt_psmsc_logs']->fields['body']->checks = [
+        $entities['logs']->fields['body'] = Field::getInstance('logs', 'body', 'longtext', 'longtext');
+        $entities['logs']->fields['body']->checks = [
             'type' => 'longtext',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_logs']->fields['date_created'] = Field::getInstance('wpwt_psmsc_logs', 'date_created', 'datetime', 'DateTime');
-        $entities['wpwt_psmsc_logs']->fields['date_created']->checks = [
+        $entities['logs']->fields['date_created'] = Field::getInstance('logs', 'date_created', 'datetime', 'DateTime');
+        $entities['logs']->fields['date_created']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_logs']->fields['id'] = Field::getInstance('wpwt_psmsc_logs', 'id', 'bigint', 'int');
-        $entities['wpwt_psmsc_logs']->fields['id']->checks = [
+        $entities['logs']->fields['id'] = Field::getInstance('logs', 'id', 'bigint', 'int');
+        $entities['logs']->fields['id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_logs']->fields['modified_by'] = Field::getInstance('wpwt_psmsc_logs', 'modified_by', 'bigint', 'int');
-        $entities['wpwt_psmsc_logs']->fields['modified_by']->alias = 'wpw';
-        $entities['wpwt_psmsc_logs']->fields['modified_by']->refEntityName = 'wpwt_psmsc_customers';
-        $entities['wpwt_psmsc_logs']->fields['modified_by']->refFieldName = 'id';
-        $entities['wpwt_psmsc_logs']->fields['modified_by']->checks = [
+        $entities['logs']->fields['modified_by'] = Field::getInstance('logs', 'modified_by', 'bigint', 'int');
+        $entities['logs']->fields['modified_by']->alias = 'mod';
+        $entities['logs']->fields['modified_by']->refEntityName = 'customers';
+        $entities['logs']->fields['modified_by']->refFieldName = 'id';
+        $entities['logs']->fields['modified_by']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_logs']->fields['ref_id'] = Field::getInstance('wpwt_psmsc_logs', 'ref_id', 'bigint', 'int');
-        $entities['wpwt_psmsc_logs']->fields['ref_id']->checks = [
+        $entities['logs']->fields['ref_id'] = Field::getInstance('logs', 'ref_id', 'bigint', 'int');
+        $entities['logs']->fields['ref_id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_logs']->fields['type'] = Field::getInstance('wpwt_psmsc_logs', 'type', 'varchar', 'string');
-        $entities['wpwt_psmsc_logs']->fields['type']->checks = [
+        $entities['logs']->fields['type'] = Field::getInstance('logs', 'type', 'varchar', 'string');
+        $entities['logs']->fields['type']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_logs']->fields['type']->resets = [
+        $entities['logs']->fields['type']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_priorities'] = EntityMetadata::getInstance('wpwt_psmsc_priorities', 'wpw6');
-        $entities['wpwt_psmsc_priorities']->pk = ['id'];
-        $entities['wpwt_psmsc_priorities']->notNull = ['bg_color', 'color', 'id', 'load_order', 'name'];
+        $entities['priorities'] = EntityMetadata::getInstance('priorities', 'prio');
+        $entities['priorities']->pk = ['id'];
+        $entities['priorities']->notNull = ['bg_color', 'color', 'id', 'load_order', 'name'];
 
-        $entities['wpwt_psmsc_priorities']->om = [];
-        $entities['wpwt_psmsc_priorities']->om['WpwtPsmscTickets_priority_'] = EntityRef::getInstance('priority', 'wpwt_psmsc_tickets');
-        $entities['wpwt_psmsc_priorities']->fields['bg_color'] = Field::getInstance('wpwt_psmsc_priorities', 'bg_color', 'varchar', 'string');
-        $entities['wpwt_psmsc_priorities']->fields['bg_color']->checks = [
+        $entities['priorities']->om = [];
+        $entities['priorities']->om['Tickets_priority_'] = EntityRef::getInstance('priority', 'tickets');
+        $entities['priorities']->fields['bg_color'] = Field::getInstance('priorities', 'bg_color', 'varchar', 'string');
+        $entities['priorities']->fields['bg_color']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_priorities']->fields['bg_color']->resets = [
+        $entities['priorities']->fields['bg_color']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_priorities']->fields['color'] = Field::getInstance('wpwt_psmsc_priorities', 'color', 'varchar', 'string');
-        $entities['wpwt_psmsc_priorities']->fields['color']->checks = [
+        $entities['priorities']->fields['color'] = Field::getInstance('priorities', 'color', 'varchar', 'string');
+        $entities['priorities']->fields['color']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_priorities']->fields['color']->resets = [
+        $entities['priorities']->fields['color']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_priorities']->fields['id'] = Field::getInstance('wpwt_psmsc_priorities', 'id', 'int', 'int');
-        $entities['wpwt_psmsc_priorities']->fields['id']->checks = [
+        $entities['priorities']->fields['id'] = Field::getInstance('priorities', 'id', 'int', 'int');
+        $entities['priorities']->fields['id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_priorities']->fields['load_order'] = Field::getInstance('wpwt_psmsc_priorities', 'load_order', 'int', 'int');
-        $entities['wpwt_psmsc_priorities']->fields['load_order']->defaultValue = '1';
-        $entities['wpwt_psmsc_priorities']->fields['load_order']->checks = [
+        $entities['priorities']->fields['load_order'] = Field::getInstance('priorities', 'load_order', 'int', 'int');
+        $entities['priorities']->fields['load_order']->defaultValue = '1';
+        $entities['priorities']->fields['load_order']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_priorities']->fields['name'] = Field::getInstance('wpwt_psmsc_priorities', 'name', 'varchar', 'string');
-        $entities['wpwt_psmsc_priorities']->fields['name']->checks = [
+        $entities['priorities']->fields['name'] = Field::getInstance('priorities', 'name', 'varchar', 'string');
+        $entities['priorities']->fields['name']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_priorities']->fields['name']->resets = [
+        $entities['priorities']->fields['name']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_statuses'] = EntityMetadata::getInstance('wpwt_psmsc_statuses', 'wpw7');
-        $entities['wpwt_psmsc_statuses']->pk = ['id'];
-        $entities['wpwt_psmsc_statuses']->notNull = ['bg_color', 'color', 'id', 'load_order', 'name'];
+        $entities['statuses'] = EntityMetadata::getInstance('statuses', 'stat');
+        $entities['statuses']->pk = ['id'];
+        $entities['statuses']->notNull = ['bg_color', 'color', 'id', 'load_order', 'name'];
 
-        $entities['wpwt_psmsc_statuses']->om = [];
-        $entities['wpwt_psmsc_statuses']->om['WpwtPsmscTickets_status_'] = EntityRef::getInstance('status', 'wpwt_psmsc_tickets');
-        $entities['wpwt_psmsc_statuses']->fields['bg_color'] = Field::getInstance('wpwt_psmsc_statuses', 'bg_color', 'varchar', 'string');
-        $entities['wpwt_psmsc_statuses']->fields['bg_color']->checks = [
+        $entities['statuses']->om = [];
+        $entities['statuses']->om['Tickets_status_'] = EntityRef::getInstance('status', 'tickets');
+        $entities['statuses']->fields['bg_color'] = Field::getInstance('statuses', 'bg_color', 'varchar', 'string');
+        $entities['statuses']->fields['bg_color']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_statuses']->fields['bg_color']->resets = [
+        $entities['statuses']->fields['bg_color']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_statuses']->fields['color'] = Field::getInstance('wpwt_psmsc_statuses', 'color', 'varchar', 'string');
-        $entities['wpwt_psmsc_statuses']->fields['color']->checks = [
+        $entities['statuses']->fields['color'] = Field::getInstance('statuses', 'color', 'varchar', 'string');
+        $entities['statuses']->fields['color']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_statuses']->fields['color']->resets = [
+        $entities['statuses']->fields['color']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_statuses']->fields['id'] = Field::getInstance('wpwt_psmsc_statuses', 'id', 'int', 'int');
-        $entities['wpwt_psmsc_statuses']->fields['id']->checks = [
+        $entities['statuses']->fields['id'] = Field::getInstance('statuses', 'id', 'int', 'int');
+        $entities['statuses']->fields['id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_statuses']->fields['load_order'] = Field::getInstance('wpwt_psmsc_statuses', 'load_order', 'int', 'int');
-        $entities['wpwt_psmsc_statuses']->fields['load_order']->defaultValue = '1';
-        $entities['wpwt_psmsc_statuses']->fields['load_order']->checks = [
+        $entities['statuses']->fields['load_order'] = Field::getInstance('statuses', 'load_order', 'int', 'int');
+        $entities['statuses']->fields['load_order']->defaultValue = '1';
+        $entities['statuses']->fields['load_order']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_statuses']->fields['name'] = Field::getInstance('wpwt_psmsc_statuses', 'name', 'varchar', 'string');
-        $entities['wpwt_psmsc_statuses']->fields['name']->checks = [
+        $entities['statuses']->fields['name'] = Field::getInstance('statuses', 'name', 'varchar', 'string');
+        $entities['statuses']->fields['name']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_statuses']->fields['name']->resets = [
+        $entities['statuses']->fields['name']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_threads'] = EntityMetadata::getInstance('wpwt_psmsc_threads', 'wpw8');
-        $entities['wpwt_psmsc_threads']->pk = ['id'];
-        $entities['wpwt_psmsc_threads']->fk = ['customer', 'ticket'];
-        $entities['wpwt_psmsc_threads']->notNull = ['body', 'date_created', 'date_updated', 'id', 'is_active', 'ticket', 'type'];
+        $entities['threads'] = EntityMetadata::getInstance('threads', 'thre');
+        $entities['threads']->pk = ['id'];
+        $entities['threads']->fk = ['customer', 'ticket'];
+        $entities['threads']->notNull = ['body', 'date_created', 'date_updated', 'id', 'is_active', 'ticket', 'type'];
 
-        $entities['wpwt_psmsc_threads']->tree = [];
-        $entities['wpwt_psmsc_threads']->tree['customer'] = EntityTree::getInstance('customer', 'wpwt_psmsc_customers', 'id');
+        $entities['threads']->tree = [];
+        $entities['threads']->tree['customer'] = EntityTree::getInstance('customer', 'customers', 'id');
 
-        $entities['wpwt_psmsc_threads']->tree['ticket'] = EntityTree::getInstance('ticket', 'wpwt_psmsc_tickets', 'id');
-        $entities['wpwt_psmsc_threads']->tree['ticket']->children = [];
-        $entities['wpwt_psmsc_threads']->tree['ticket']->children['category'] = EntityTree::getInstance('category', 'wpwt_psmsc_categories', 'id');
+        $entities['threads']->tree['ticket'] = EntityTree::getInstance('ticket', 'tickets', 'id');
+        $entities['threads']->tree['ticket']->children = [];
+        $entities['threads']->tree['ticket']->children['category'] = EntityTree::getInstance('category', 'categories', 'id');
 
-        $entities['wpwt_psmsc_threads']->tree['ticket']->children['customer_tic'] = EntityTree::getInstance('customer', 'wpwt_psmsc_customers', 'id');
+        $entities['threads']->tree['ticket']->children['customer_tic'] = EntityTree::getInstance('customer', 'customers', 'id');
 
-        $entities['wpwt_psmsc_threads']->tree['ticket']->children['priority'] = EntityTree::getInstance('priority', 'wpwt_psmsc_priorities', 'id');
+        $entities['threads']->tree['ticket']->children['priority'] = EntityTree::getInstance('priority', 'priorities', 'id');
 
-        $entities['wpwt_psmsc_threads']->tree['ticket']->children['status'] = EntityTree::getInstance('status', 'wpwt_psmsc_statuses', 'id');
+        $entities['threads']->tree['ticket']->children['status'] = EntityTree::getInstance('status', 'statuses', 'id');
 
 
-        $entities['wpwt_psmsc_threads']->relations = [];
-        $entities['wpwt_psmsc_threads']->relations['customer'] = EntityRelation::getInstance('customer', 'wpwt_psmsc_customers', 'id');
+        $entities['threads']->relations = [];
+        $entities['threads']->relations['customer'] = EntityRelation::getInstance('customer', 'customers', 'id');
 
-        $entities['wpwt_psmsc_threads']->relations['ticket'] = EntityRelation::getInstance('ticket', 'wpwt_psmsc_tickets', 'id');
+        $entities['threads']->relations['ticket'] = EntityRelation::getInstance('ticket', 'tickets', 'id');
 
-        $entities['wpwt_psmsc_threads']->relations['category'] = EntityRelation::getInstance('category', 'wpwt_psmsc_categories', 'id');
-        $entities['wpwt_psmsc_threads']->relations['category']->parentId = 'ticket';
+        $entities['threads']->relations['category'] = EntityRelation::getInstance('category', 'categories', 'id');
+        $entities['threads']->relations['category']->parentId = 'ticket';
 
-        $entities['wpwt_psmsc_threads']->relations['customer_tic'] = EntityRelation::getInstance('customer', 'wpwt_psmsc_customers', 'id');
-        $entities['wpwt_psmsc_threads']->relations['customer_tic']->parentId = 'ticket';
+        $entities['threads']->relations['customer_tic'] = EntityRelation::getInstance('customer', 'customers', 'id');
+        $entities['threads']->relations['customer_tic']->parentId = 'ticket';
 
-        $entities['wpwt_psmsc_threads']->relations['priority'] = EntityRelation::getInstance('priority', 'wpwt_psmsc_priorities', 'id');
-        $entities['wpwt_psmsc_threads']->relations['priority']->parentId = 'ticket';
+        $entities['threads']->relations['priority'] = EntityRelation::getInstance('priority', 'priorities', 'id');
+        $entities['threads']->relations['priority']->parentId = 'ticket';
 
-        $entities['wpwt_psmsc_threads']->relations['status'] = EntityRelation::getInstance('status', 'wpwt_psmsc_statuses', 'id');
-        $entities['wpwt_psmsc_threads']->relations['status']->parentId = 'ticket';
+        $entities['threads']->relations['status'] = EntityRelation::getInstance('status', 'statuses', 'id');
+        $entities['threads']->relations['status']->parentId = 'ticket';
 
-        $entities['wpwt_psmsc_threads']->fields['attachments'] = Field::getInstance('wpwt_psmsc_threads', 'attachments', 'text', 'string');
-        $entities['wpwt_psmsc_threads']->fields['attachments']->checks = [
+        $entities['threads']->fields['attachments'] = Field::getInstance('threads', 'attachments', 'text', 'string');
+        $entities['threads']->fields['attachments']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_threads']->fields['attachments']->resets = [
+        $entities['threads']->fields['attachments']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_threads']->fields['body'] = Field::getInstance('wpwt_psmsc_threads', 'body', 'longtext', 'longtext');
-        $entities['wpwt_psmsc_threads']->fields['body']->checks = [
+        $entities['threads']->fields['body'] = Field::getInstance('threads', 'body', 'longtext', 'longtext');
+        $entities['threads']->fields['body']->checks = [
             'type' => 'longtext',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_threads']->fields['browser'] = Field::getInstance('wpwt_psmsc_threads', 'browser', 'varchar', 'string');
-        $entities['wpwt_psmsc_threads']->fields['browser']->checks = [
+        $entities['threads']->fields['browser'] = Field::getInstance('threads', 'browser', 'varchar', 'string');
+        $entities['threads']->fields['browser']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_threads']->fields['browser']->resets = [
+        $entities['threads']->fields['browser']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_threads']->fields['customer'] = Field::getInstance('wpwt_psmsc_threads', 'customer', 'bigint', 'int');
-        $entities['wpwt_psmsc_threads']->fields['customer']->alias = 'wpw';
-        $entities['wpwt_psmsc_threads']->fields['customer']->refEntityName = 'wpwt_psmsc_customers';
-        $entities['wpwt_psmsc_threads']->fields['customer']->refFieldName = 'id';
-        $entities['wpwt_psmsc_threads']->fields['customer']->checks = [
+        $entities['threads']->fields['customer'] = Field::getInstance('threads', 'customer', 'bigint', 'int');
+        $entities['threads']->fields['customer']->alias = 'cus';
+        $entities['threads']->fields['customer']->refEntityName = 'customers';
+        $entities['threads']->fields['customer']->refFieldName = 'id';
+        $entities['threads']->fields['customer']->checks = [
             'type' => 'int',
         ];
-        $entities['wpwt_psmsc_threads']->fields['date_created'] = Field::getInstance('wpwt_psmsc_threads', 'date_created', 'datetime', 'DateTime');
-        $entities['wpwt_psmsc_threads']->fields['date_created']->checks = [
+        $entities['threads']->fields['date_created'] = Field::getInstance('threads', 'date_created', 'datetime', 'DateTime');
+        $entities['threads']->fields['date_created']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_threads']->fields['date_updated'] = Field::getInstance('wpwt_psmsc_threads', 'date_updated', 'datetime', 'DateTime');
-        $entities['wpwt_psmsc_threads']->fields['date_updated']->checks = [
+        $entities['threads']->fields['date_updated'] = Field::getInstance('threads', 'date_updated', 'datetime', 'DateTime');
+        $entities['threads']->fields['date_updated']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_threads']->fields['id'] = Field::getInstance('wpwt_psmsc_threads', 'id', 'bigint', 'int');
-        $entities['wpwt_psmsc_threads']->fields['id']->checks = [
+        $entities['threads']->fields['id'] = Field::getInstance('threads', 'id', 'bigint', 'int');
+        $entities['threads']->fields['id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_threads']->fields['ip_address'] = Field::getInstance('wpwt_psmsc_threads', 'ip_address', 'varchar', 'string');
-        $entities['wpwt_psmsc_threads']->fields['ip_address']->checks = [
+        $entities['threads']->fields['ip_address'] = Field::getInstance('threads', 'ip_address', 'varchar', 'string');
+        $entities['threads']->fields['ip_address']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_threads']->fields['ip_address']->resets = [
+        $entities['threads']->fields['ip_address']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_threads']->fields['is_active'] = Field::getInstance('wpwt_psmsc_threads', 'is_active', 'int', 'int');
-        $entities['wpwt_psmsc_threads']->fields['is_active']->defaultValue = '1';
-        $entities['wpwt_psmsc_threads']->fields['is_active']->checks = [
+        $entities['threads']->fields['is_active'] = Field::getInstance('threads', 'is_active', 'int', 'int');
+        $entities['threads']->fields['is_active']->defaultValue = '1';
+        $entities['threads']->fields['is_active']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_threads']->fields['os'] = Field::getInstance('wpwt_psmsc_threads', 'os', 'varchar', 'string');
-        $entities['wpwt_psmsc_threads']->fields['os']->checks = [
+        $entities['threads']->fields['os'] = Field::getInstance('threads', 'os', 'varchar', 'string');
+        $entities['threads']->fields['os']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_threads']->fields['os']->resets = [
+        $entities['threads']->fields['os']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_threads']->fields['seen'] = Field::getInstance('wpwt_psmsc_threads', 'seen', 'datetime', 'DateTime');
-        $entities['wpwt_psmsc_threads']->fields['seen']->checks = [
+        $entities['threads']->fields['seen'] = Field::getInstance('threads', 'seen', 'datetime', 'DateTime');
+        $entities['threads']->fields['seen']->checks = [
             'type' => 'DateTime',
         ];
-        $entities['wpwt_psmsc_threads']->fields['source'] = Field::getInstance('wpwt_psmsc_threads', 'source', 'varchar', 'string');
-        $entities['wpwt_psmsc_threads']->fields['source']->checks = [
+        $entities['threads']->fields['source'] = Field::getInstance('threads', 'source', 'varchar', 'string');
+        $entities['threads']->fields['source']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_threads']->fields['source']->resets = [
+        $entities['threads']->fields['source']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_threads']->fields['ticket'] = Field::getInstance('wpwt_psmsc_threads', 'ticket', 'bigint', 'int');
-        $entities['wpwt_psmsc_threads']->fields['ticket']->alias = 'wp1';
-        $entities['wpwt_psmsc_threads']->fields['ticket']->refEntityName = 'wpwt_psmsc_tickets';
-        $entities['wpwt_psmsc_threads']->fields['ticket']->refFieldName = 'id';
-        $entities['wpwt_psmsc_threads']->fields['ticket']->checks = [
+        $entities['threads']->fields['ticket'] = Field::getInstance('threads', 'ticket', 'bigint', 'int');
+        $entities['threads']->fields['ticket']->alias = 'tic';
+        $entities['threads']->fields['ticket']->refEntityName = 'tickets';
+        $entities['threads']->fields['ticket']->refFieldName = 'id';
+        $entities['threads']->fields['ticket']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_threads']->fields['type'] = Field::getInstance('wpwt_psmsc_threads', 'type', 'varchar', 'string');
-        $entities['wpwt_psmsc_threads']->fields['type']->checks = [
+        $entities['threads']->fields['type'] = Field::getInstance('threads', 'type', 'varchar', 'string');
+        $entities['threads']->fields['type']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_threads']->fields['type']->resets = [
+        $entities['threads']->fields['type']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_tickets'] = EntityMetadata::getInstance('wpwt_psmsc_tickets', 'wpw9');
-        $entities['wpwt_psmsc_tickets']->pk = ['id'];
-        $entities['wpwt_psmsc_tickets']->fk = ['category', 'customer', 'priority', 'status'];
-        $entities['wpwt_psmsc_tickets']->notNull = ['category', 'customer', 'date_created', 'date_updated', 'id', 'is_active', 'last_reply_by', 'priority', 'status', 'subject', 'user_type'];
+        $entities['tickets'] = EntityMetadata::getInstance('tickets', 'tick');
+        $entities['tickets']->pk = ['id'];
+        $entities['tickets']->fk = ['category', 'customer', 'priority', 'status'];
+        $entities['tickets']->notNull = ['category', 'customer', 'date_created', 'date_updated', 'id', 'is_active', 'last_reply_by', 'priority', 'status', 'subject', 'user_type'];
 
-        $entities['wpwt_psmsc_tickets']->tree = [];
-        $entities['wpwt_psmsc_tickets']->tree['category'] = EntityTree::getInstance('category', 'wpwt_psmsc_categories', 'id');
+        $entities['tickets']->tree = [];
+        $entities['tickets']->tree['category'] = EntityTree::getInstance('category', 'categories', 'id');
 
-        $entities['wpwt_psmsc_tickets']->tree['customer'] = EntityTree::getInstance('customer', 'wpwt_psmsc_customers', 'id');
+        $entities['tickets']->tree['customer'] = EntityTree::getInstance('customer', 'customers', 'id');
 
-        $entities['wpwt_psmsc_tickets']->tree['priority'] = EntityTree::getInstance('priority', 'wpwt_psmsc_priorities', 'id');
+        $entities['tickets']->tree['priority'] = EntityTree::getInstance('priority', 'priorities', 'id');
 
-        $entities['wpwt_psmsc_tickets']->tree['status'] = EntityTree::getInstance('status', 'wpwt_psmsc_statuses', 'id');
+        $entities['tickets']->tree['status'] = EntityTree::getInstance('status', 'statuses', 'id');
 
-        $entities['wpwt_psmsc_tickets']->relations = [];
-        $entities['wpwt_psmsc_tickets']->relations['category'] = EntityRelation::getInstance('category', 'wpwt_psmsc_categories', 'id');
+        $entities['tickets']->relations = [];
+        $entities['tickets']->relations['category'] = EntityRelation::getInstance('category', 'categories', 'id');
 
-        $entities['wpwt_psmsc_tickets']->relations['customer'] = EntityRelation::getInstance('customer', 'wpwt_psmsc_customers', 'id');
+        $entities['tickets']->relations['customer'] = EntityRelation::getInstance('customer', 'customers', 'id');
 
-        $entities['wpwt_psmsc_tickets']->relations['priority'] = EntityRelation::getInstance('priority', 'wpwt_psmsc_priorities', 'id');
+        $entities['tickets']->relations['priority'] = EntityRelation::getInstance('priority', 'priorities', 'id');
 
-        $entities['wpwt_psmsc_tickets']->relations['status'] = EntityRelation::getInstance('status', 'wpwt_psmsc_statuses', 'id');
+        $entities['tickets']->relations['status'] = EntityRelation::getInstance('status', 'statuses', 'id');
 
-        $entities['wpwt_psmsc_tickets']->om = [];
-        $entities['wpwt_psmsc_tickets']->om['WpwtPsmscAttachments_ticket_id_'] = EntityRef::getInstance('ticket_id', 'wpwt_psmsc_attachments');
-        $entities['wpwt_psmsc_tickets']->om['WpwtPsmscThreads_ticket_'] = EntityRef::getInstance('ticket', 'wpwt_psmsc_threads');
-        $entities['wpwt_psmsc_tickets']->fields['add_recipients'] = Field::getInstance('wpwt_psmsc_tickets', 'add_recipients', 'text', 'string');
-        $entities['wpwt_psmsc_tickets']->fields['add_recipients']->checks = [
+        $entities['tickets']->om = [];
+        $entities['tickets']->om['Attachments_ticket_id_'] = EntityRef::getInstance('ticket_id', 'attachments');
+        $entities['tickets']->om['Threads_ticket_'] = EntityRef::getInstance('ticket', 'threads');
+        $entities['tickets']->fields['add_recipients'] = Field::getInstance('tickets', 'add_recipients', 'text', 'string');
+        $entities['tickets']->fields['add_recipients']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['add_recipients']->resets = [
+        $entities['tickets']->fields['add_recipients']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_tickets']->fields['agent_created'] = Field::getInstance('wpwt_psmsc_tickets', 'agent_created', 'int', 'int');
-        $entities['wpwt_psmsc_tickets']->fields['agent_created']->checks = [
+        $entities['tickets']->fields['agent_created'] = Field::getInstance('tickets', 'agent_created', 'int', 'int');
+        $entities['tickets']->fields['agent_created']->checks = [
             'type' => 'int',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['assigned_agent'] = Field::getInstance('wpwt_psmsc_tickets', 'assigned_agent', 'text', 'string');
-        $entities['wpwt_psmsc_tickets']->fields['assigned_agent']->checks = [
+        $entities['tickets']->fields['assigned_agent'] = Field::getInstance('tickets', 'assigned_agent', 'text', 'string');
+        $entities['tickets']->fields['assigned_agent']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['assigned_agent']->resets = [
+        $entities['tickets']->fields['assigned_agent']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_tickets']->fields['auth_code'] = Field::getInstance('wpwt_psmsc_tickets', 'auth_code', 'varchar', 'string');
-        $entities['wpwt_psmsc_tickets']->fields['auth_code']->checks = [
+        $entities['tickets']->fields['auth_code'] = Field::getInstance('tickets', 'auth_code', 'varchar', 'string');
+        $entities['tickets']->fields['auth_code']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['auth_code']->resets = [
+        $entities['tickets']->fields['auth_code']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_tickets']->fields['browser'] = Field::getInstance('wpwt_psmsc_tickets', 'browser', 'varchar', 'string');
-        $entities['wpwt_psmsc_tickets']->fields['browser']->checks = [
+        $entities['tickets']->fields['browser'] = Field::getInstance('tickets', 'browser', 'varchar', 'string');
+        $entities['tickets']->fields['browser']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['browser']->resets = [
+        $entities['tickets']->fields['browser']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_tickets']->fields['category'] = Field::getInstance('wpwt_psmsc_tickets', 'category', 'int', 'int');
-        $entities['wpwt_psmsc_tickets']->fields['category']->alias = 'wpw';
-        $entities['wpwt_psmsc_tickets']->fields['category']->refEntityName = 'wpwt_psmsc_categories';
-        $entities['wpwt_psmsc_tickets']->fields['category']->refFieldName = 'id';
-        $entities['wpwt_psmsc_tickets']->fields['category']->checks = [
-            'type' => 'int',
-            'required' => '1',
-        ];
-        $entities['wpwt_psmsc_tickets']->fields['customer'] = Field::getInstance('wpwt_psmsc_tickets', 'customer', 'bigint', 'int');
-        $entities['wpwt_psmsc_tickets']->fields['customer']->alias = 'wp1';
-        $entities['wpwt_psmsc_tickets']->fields['customer']->refEntityName = 'wpwt_psmsc_customers';
-        $entities['wpwt_psmsc_tickets']->fields['customer']->refFieldName = 'id';
-        $entities['wpwt_psmsc_tickets']->fields['customer']->checks = [
+        $entities['tickets']->fields['category'] = Field::getInstance('tickets', 'category', 'int', 'int');
+        $entities['tickets']->fields['category']->alias = 'cat';
+        $entities['tickets']->fields['category']->refEntityName = 'categories';
+        $entities['tickets']->fields['category']->refFieldName = 'id';
+        $entities['tickets']->fields['category']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['cust_24'] = Field::getInstance('wpwt_psmsc_tickets', 'cust_24', 'tinytext', 'tinytext');
-        $entities['wpwt_psmsc_tickets']->fields['cust_24']->checks = [
+        $entities['tickets']->fields['customer'] = Field::getInstance('tickets', 'customer', 'bigint', 'int');
+        $entities['tickets']->fields['customer']->alias = 'cus';
+        $entities['tickets']->fields['customer']->refEntityName = 'customers';
+        $entities['tickets']->fields['customer']->refFieldName = 'id';
+        $entities['tickets']->fields['customer']->checks = [
+            'type' => 'int',
+            'required' => '1',
+        ];
+        $entities['tickets']->fields['cust_24'] = Field::getInstance('tickets', 'cust_24', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['cust_24']->checks = [
             'type' => 'tinytext',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['cust_25'] = Field::getInstance('wpwt_psmsc_tickets', 'cust_25', 'tinytext', 'tinytext');
-        $entities['wpwt_psmsc_tickets']->fields['cust_25']->checks = [
+        $entities['tickets']->fields['cust_25'] = Field::getInstance('tickets', 'cust_25', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['cust_25']->checks = [
             'type' => 'tinytext',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['cust_26'] = Field::getInstance('wpwt_psmsc_tickets', 'cust_26', 'tinytext', 'tinytext');
-        $entities['wpwt_psmsc_tickets']->fields['cust_26']->checks = [
+        $entities['tickets']->fields['cust_26'] = Field::getInstance('tickets', 'cust_26', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['cust_26']->checks = [
             'type' => 'tinytext',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['cust_27'] = Field::getInstance('wpwt_psmsc_tickets', 'cust_27', 'tinytext', 'tinytext');
-        $entities['wpwt_psmsc_tickets']->fields['cust_27']->checks = [
+        $entities['tickets']->fields['cust_27'] = Field::getInstance('tickets', 'cust_27', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['cust_27']->checks = [
             'type' => 'tinytext',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['cust_28'] = Field::getInstance('wpwt_psmsc_tickets', 'cust_28', 'tinytext', 'tinytext');
-        $entities['wpwt_psmsc_tickets']->fields['cust_28']->checks = [
+        $entities['tickets']->fields['cust_28'] = Field::getInstance('tickets', 'cust_28', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['cust_28']->checks = [
             'type' => 'tinytext',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['date_closed'] = Field::getInstance('wpwt_psmsc_tickets', 'date_closed', 'datetime', 'DateTime');
-        $entities['wpwt_psmsc_tickets']->fields['date_closed']->checks = [
+        $entities['tickets']->fields['date_closed'] = Field::getInstance('tickets', 'date_closed', 'datetime', 'DateTime');
+        $entities['tickets']->fields['date_closed']->checks = [
             'type' => 'DateTime',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['date_created'] = Field::getInstance('wpwt_psmsc_tickets', 'date_created', 'datetime', 'DateTime');
-        $entities['wpwt_psmsc_tickets']->fields['date_created']->checks = [
-            'type' => 'DateTime',
-            'required' => '1',
-        ];
-        $entities['wpwt_psmsc_tickets']->fields['date_updated'] = Field::getInstance('wpwt_psmsc_tickets', 'date_updated', 'datetime', 'DateTime');
-        $entities['wpwt_psmsc_tickets']->fields['date_updated']->checks = [
+        $entities['tickets']->fields['date_created'] = Field::getInstance('tickets', 'date_created', 'datetime', 'DateTime');
+        $entities['tickets']->fields['date_created']->checks = [
             'type' => 'DateTime',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['id'] = Field::getInstance('wpwt_psmsc_tickets', 'id', 'bigint', 'int');
-        $entities['wpwt_psmsc_tickets']->fields['id']->checks = [
+        $entities['tickets']->fields['date_updated'] = Field::getInstance('tickets', 'date_updated', 'datetime', 'DateTime');
+        $entities['tickets']->fields['date_updated']->checks = [
+            'type' => 'DateTime',
+            'required' => '1',
+        ];
+        $entities['tickets']->fields['id'] = Field::getInstance('tickets', 'id', 'bigint', 'int');
+        $entities['tickets']->fields['id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['ip_address'] = Field::getInstance('wpwt_psmsc_tickets', 'ip_address', 'varchar', 'string');
-        $entities['wpwt_psmsc_tickets']->fields['ip_address']->checks = [
+        $entities['tickets']->fields['ip_address'] = Field::getInstance('tickets', 'ip_address', 'varchar', 'string');
+        $entities['tickets']->fields['ip_address']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['ip_address']->resets = [
+        $entities['tickets']->fields['ip_address']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_tickets']->fields['is_active'] = Field::getInstance('wpwt_psmsc_tickets', 'is_active', 'int', 'int');
-        $entities['wpwt_psmsc_tickets']->fields['is_active']->defaultValue = '1';
-        $entities['wpwt_psmsc_tickets']->fields['is_active']->checks = [
+        $entities['tickets']->fields['is_active'] = Field::getInstance('tickets', 'is_active', 'int', 'int');
+        $entities['tickets']->fields['is_active']->defaultValue = '1';
+        $entities['tickets']->fields['is_active']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['last_reply_by'] = Field::getInstance('wpwt_psmsc_tickets', 'last_reply_by', 'bigint', 'int');
-        $entities['wpwt_psmsc_tickets']->fields['last_reply_by']->checks = [
+        $entities['tickets']->fields['last_reply_by'] = Field::getInstance('tickets', 'last_reply_by', 'bigint', 'int');
+        $entities['tickets']->fields['last_reply_by']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['last_reply_on'] = Field::getInstance('wpwt_psmsc_tickets', 'last_reply_on', 'datetime', 'DateTime');
-        $entities['wpwt_psmsc_tickets']->fields['last_reply_on']->checks = [
+        $entities['tickets']->fields['last_reply_on'] = Field::getInstance('tickets', 'last_reply_on', 'datetime', 'DateTime');
+        $entities['tickets']->fields['last_reply_on']->checks = [
             'type' => 'DateTime',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['last_reply_source'] = Field::getInstance('wpwt_psmsc_tickets', 'last_reply_source', 'varchar', 'string');
-        $entities['wpwt_psmsc_tickets']->fields['last_reply_source']->checks = [
+        $entities['tickets']->fields['last_reply_source'] = Field::getInstance('tickets', 'last_reply_source', 'varchar', 'string');
+        $entities['tickets']->fields['last_reply_source']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['last_reply_source']->resets = [
+        $entities['tickets']->fields['last_reply_source']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_tickets']->fields['live_agents'] = Field::getInstance('wpwt_psmsc_tickets', 'live_agents', 'tinytext', 'tinytext');
-        $entities['wpwt_psmsc_tickets']->fields['live_agents']->checks = [
+        $entities['tickets']->fields['live_agents'] = Field::getInstance('tickets', 'live_agents', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['live_agents']->checks = [
             'type' => 'tinytext',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['misc'] = Field::getInstance('wpwt_psmsc_tickets', 'misc', 'longtext', 'longtext');
-        $entities['wpwt_psmsc_tickets']->fields['misc']->checks = [
+        $entities['tickets']->fields['misc'] = Field::getInstance('tickets', 'misc', 'longtext', 'longtext');
+        $entities['tickets']->fields['misc']->checks = [
             'type' => 'longtext',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['os'] = Field::getInstance('wpwt_psmsc_tickets', 'os', 'varchar', 'string');
-        $entities['wpwt_psmsc_tickets']->fields['os']->checks = [
+        $entities['tickets']->fields['os'] = Field::getInstance('tickets', 'os', 'varchar', 'string');
+        $entities['tickets']->fields['os']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['os']->resets = [
+        $entities['tickets']->fields['os']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_tickets']->fields['prev_assignee'] = Field::getInstance('wpwt_psmsc_tickets', 'prev_assignee', 'text', 'string');
-        $entities['wpwt_psmsc_tickets']->fields['prev_assignee']->checks = [
+        $entities['tickets']->fields['prev_assignee'] = Field::getInstance('tickets', 'prev_assignee', 'text', 'string');
+        $entities['tickets']->fields['prev_assignee']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['prev_assignee']->resets = [
+        $entities['tickets']->fields['prev_assignee']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_tickets']->fields['priority'] = Field::getInstance('wpwt_psmsc_tickets', 'priority', 'int', 'int');
-        $entities['wpwt_psmsc_tickets']->fields['priority']->alias = 'wp2';
-        $entities['wpwt_psmsc_tickets']->fields['priority']->refEntityName = 'wpwt_psmsc_priorities';
-        $entities['wpwt_psmsc_tickets']->fields['priority']->refFieldName = 'id';
-        $entities['wpwt_psmsc_tickets']->fields['priority']->checks = [
+        $entities['tickets']->fields['priority'] = Field::getInstance('tickets', 'priority', 'int', 'int');
+        $entities['tickets']->fields['priority']->alias = 'pri';
+        $entities['tickets']->fields['priority']->refEntityName = 'priorities';
+        $entities['tickets']->fields['priority']->refFieldName = 'id';
+        $entities['tickets']->fields['priority']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['source'] = Field::getInstance('wpwt_psmsc_tickets', 'source', 'varchar', 'string');
-        $entities['wpwt_psmsc_tickets']->fields['source']->checks = [
+        $entities['tickets']->fields['source'] = Field::getInstance('tickets', 'source', 'varchar', 'string');
+        $entities['tickets']->fields['source']->checks = [
             'type' => 'string',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['source']->resets = [
+        $entities['tickets']->fields['source']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['wpwt_psmsc_tickets']->fields['status'] = Field::getInstance('wpwt_psmsc_tickets', 'status', 'int', 'int');
-        $entities['wpwt_psmsc_tickets']->fields['status']->alias = 'wp3';
-        $entities['wpwt_psmsc_tickets']->fields['status']->refEntityName = 'wpwt_psmsc_statuses';
-        $entities['wpwt_psmsc_tickets']->fields['status']->refFieldName = 'id';
-        $entities['wpwt_psmsc_tickets']->fields['status']->checks = [
+        $entities['tickets']->fields['status'] = Field::getInstance('tickets', 'status', 'int', 'int');
+        $entities['tickets']->fields['status']->alias = 'sta';
+        $entities['tickets']->fields['status']->refEntityName = 'statuses';
+        $entities['tickets']->fields['status']->refFieldName = 'id';
+        $entities['tickets']->fields['status']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['subject'] = Field::getInstance('wpwt_psmsc_tickets', 'subject', 'text', 'string');
-        $entities['wpwt_psmsc_tickets']->fields['subject']->checks = [
+        $entities['tickets']->fields['subject'] = Field::getInstance('tickets', 'subject', 'text', 'string');
+        $entities['tickets']->fields['subject']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['subject']->resets = [
+        $entities['tickets']->fields['subject']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_tickets']->fields['tags'] = Field::getInstance('wpwt_psmsc_tickets', 'tags', 'tinytext', 'tinytext');
-        $entities['wpwt_psmsc_tickets']->fields['tags']->checks = [
+        $entities['tickets']->fields['tags'] = Field::getInstance('tickets', 'tags', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['tags']->checks = [
             'type' => 'tinytext',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['user_type'] = Field::getInstance('wpwt_psmsc_tickets', 'user_type', 'varchar', 'string');
-        $entities['wpwt_psmsc_tickets']->fields['user_type']->checks = [
+        $entities['tickets']->fields['user_type'] = Field::getInstance('tickets', 'user_type', 'varchar', 'string');
+        $entities['tickets']->fields['user_type']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_tickets']->fields['user_type']->resets = [
+        $entities['tickets']->fields['user_type']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_ticket_tags'] = EntityMetadata::getInstance('wpwt_psmsc_ticket_tags', 'wpw10');
-        $entities['wpwt_psmsc_ticket_tags']->pk = ['id'];
-        $entities['wpwt_psmsc_ticket_tags']->notNull = ['bg_color', 'color', 'description', 'id', 'name'];
+        $entities['ticket_tags'] = EntityMetadata::getInstance('ticket_tags', 'tic1');
+        $entities['ticket_tags']->pk = ['id'];
+        $entities['ticket_tags']->notNull = ['bg_color', 'color', 'description', 'id', 'name'];
 
-        $entities['wpwt_psmsc_ticket_tags']->fields['bg_color'] = Field::getInstance('wpwt_psmsc_ticket_tags', 'bg_color', 'varchar', 'string');
-        $entities['wpwt_psmsc_ticket_tags']->fields['bg_color']->checks = [
+        $entities['ticket_tags']->fields['bg_color'] = Field::getInstance('ticket_tags', 'bg_color', 'varchar', 'string');
+        $entities['ticket_tags']->fields['bg_color']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_ticket_tags']->fields['bg_color']->resets = [
+        $entities['ticket_tags']->fields['bg_color']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_ticket_tags']->fields['color'] = Field::getInstance('wpwt_psmsc_ticket_tags', 'color', 'varchar', 'string');
-        $entities['wpwt_psmsc_ticket_tags']->fields['color']->checks = [
+        $entities['ticket_tags']->fields['color'] = Field::getInstance('ticket_tags', 'color', 'varchar', 'string');
+        $entities['ticket_tags']->fields['color']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_ticket_tags']->fields['color']->resets = [
+        $entities['ticket_tags']->fields['color']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['wpwt_psmsc_ticket_tags']->fields['description'] = Field::getInstance('wpwt_psmsc_ticket_tags', 'description', 'tinytext', 'tinytext');
-        $entities['wpwt_psmsc_ticket_tags']->fields['description']->checks = [
+        $entities['ticket_tags']->fields['description'] = Field::getInstance('ticket_tags', 'description', 'tinytext', 'tinytext');
+        $entities['ticket_tags']->fields['description']->checks = [
             'type' => 'tinytext',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_ticket_tags']->fields['id'] = Field::getInstance('wpwt_psmsc_ticket_tags', 'id', 'int', 'int');
-        $entities['wpwt_psmsc_ticket_tags']->fields['id']->checks = [
+        $entities['ticket_tags']->fields['id'] = Field::getInstance('ticket_tags', 'id', 'int', 'int');
+        $entities['ticket_tags']->fields['id']->checks = [
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_ticket_tags']->fields['name'] = Field::getInstance('wpwt_psmsc_ticket_tags', 'name', 'varchar', 'string');
-        $entities['wpwt_psmsc_ticket_tags']->fields['name']->checks = [
+        $entities['ticket_tags']->fields['name'] = Field::getInstance('ticket_tags', 'name', 'varchar', 'string');
+        $entities['ticket_tags']->fields['name']->checks = [
             'type' => 'string',
             'required' => '1',
         ];
-        $entities['wpwt_psmsc_ticket_tags']->fields['name']->resets = [
+        $entities['ticket_tags']->fields['name']->resets = [
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];

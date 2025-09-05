@@ -6,12 +6,12 @@ use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
 
-class WpwtPsmscLogs extends Entity
+class Logs extends Entity
 {
 
     public function __construct()
     {
-        $this->_entityName = "wpwt_psmsc_logs";
+        $this->_entityName = "logs";
         $this->_db = \App\Context::getPedidosDb();
         $this->setDefault();
     }
@@ -34,7 +34,7 @@ class WpwtPsmscLogs extends Entity
     /** @var string|null */
     public ?string $type = null;
 
-    /** @var WpwtPsmscCustomers|null (fk wpwt_psmsc_logs.modified_by _m:o wpwt_psmsc_customers.id) */
-    public ?\Pedidos\WpwtPsmscCustomers_ $modified_by_ = null;
+    /** @var Customers|null (fk logs.modified_by _m:o customers.id) */
+    public ?\Pedidos\Customers_ $modified_by_ = null;
 
 }

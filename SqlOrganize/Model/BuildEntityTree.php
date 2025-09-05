@@ -92,7 +92,7 @@ class BuildEntityTree
              in_array($entity->name, $this->config->limitToFirstLevel))) {
             return [];
         }
-        
+
         $fk = $this->fieldsFkNotReferenced($entity, $entitiesVisited);
         
         $entitiesVisited[] = $entity->name;

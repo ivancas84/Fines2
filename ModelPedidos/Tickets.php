@@ -6,12 +6,12 @@ use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
 
-class WpwtPsmscTickets extends Entity
+class Tickets extends Entity
 {
 
     public function __construct()
     {
-        $this->_entityName = "wpwt_psmsc_tickets";
+        $this->_entityName = "tickets";
         $this->_db = \App\Context::getPedidosDb();
         $this->setDefault();
     }
@@ -109,28 +109,28 @@ class WpwtPsmscTickets extends Entity
     /** @var string|null */
     public ?string $user_type = null;
 
-    /** @var WpwtPsmscCategories|null (fk wpwt_psmsc_tickets.category _m:o wpwt_psmsc_categories.id) */
-    public ?\Pedidos\WpwtPsmscCategories_ $category_ = null;
+    /** @var Categories|null (fk tickets.category _m:o categories.id) */
+    public ?\Pedidos\Categories_ $category_ = null;
 
-    /** @var WpwtPsmscCustomers|null (fk wpwt_psmsc_tickets.customer _m:o wpwt_psmsc_customers.id) */
-    public ?\Pedidos\WpwtPsmscCustomers_ $customer_ = null;
+    /** @var Customers|null (fk tickets.customer _m:o customers.id) */
+    public ?\Pedidos\Customers_ $customer_ = null;
 
-    /** @var WpwtPsmscPriorities|null (fk wpwt_psmsc_tickets.priority _m:o wpwt_psmsc_priorities.id) */
-    public ?\Pedidos\WpwtPsmscPriorities_ $priority_ = null;
+    /** @var Priorities|null (fk tickets.priority _m:o priorities.id) */
+    public ?\Pedidos\Priorities_ $priority_ = null;
 
-    /** @var WpwtPsmscStatuses|null (fk wpwt_psmsc_tickets.status _m:o wpwt_psmsc_statuses.id) */
-    public ?\Pedidos\WpwtPsmscStatuses_ $status_ = null;
-
-    /** @var int|null */
-    public ?int $WpwtPsmscAttachments_ticket_id_Count = null;
-
-    /** @var WpwtPsmscAttachments[] (ref wpwt_psmsc_attachments.ticket_id _m:o wpwt_psmsc_tickets.id) */
-    public array $WpwtPsmscAttachments_ticket_id_ = [];
+    /** @var Statuses|null (fk tickets.status _m:o statuses.id) */
+    public ?\Pedidos\Statuses_ $status_ = null;
 
     /** @var int|null */
-    public ?int $WpwtPsmscThreads_ticket_Count = null;
+    public ?int $Attachments_ticket_id_Count = null;
 
-    /** @var WpwtPsmscThreads[] (ref wpwt_psmsc_threads.ticket _m:o wpwt_psmsc_tickets.id) */
-    public array $WpwtPsmscThreads_ticket_ = [];
+    /** @var Attachments[] (ref attachments.ticket_id _m:o tickets.id) */
+    public array $Attachments_ticket_id_ = [];
+
+    /** @var int|null */
+    public ?int $Threads_ticket_Count = null;
+
+    /** @var Threads[] (ref threads.ticket _m:o tickets.id) */
+    public array $Threads_ticket_ = [];
 
 }

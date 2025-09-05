@@ -6,12 +6,12 @@ use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
 
-class WpwtPsmscThreads extends Entity
+class Threads extends Entity
 {
 
     public function __construct()
     {
-        $this->_entityName = "wpwt_psmsc_threads";
+        $this->_entityName = "threads";
         $this->_db = \App\Context::getPedidosDb();
         $this->setDefault();
     }
@@ -58,10 +58,10 @@ class WpwtPsmscThreads extends Entity
     /** @var string|null */
     public ?string $type = null;
 
-    /** @var WpwtPsmscCustomers|null (fk wpwt_psmsc_threads.customer _m:o wpwt_psmsc_customers.id) */
-    public ?\Pedidos\WpwtPsmscCustomers_ $customer_ = null;
+    /** @var Customers|null (fk threads.customer _m:o customers.id) */
+    public ?\Pedidos\Customers_ $customer_ = null;
 
-    /** @var WpwtPsmscTickets|null (fk wpwt_psmsc_threads.ticket _m:o wpwt_psmsc_tickets.id) */
-    public ?\Pedidos\WpwtPsmscTickets_ $ticket_ = null;
+    /** @var Tickets|null (fk threads.ticket _m:o tickets.id) */
+    public ?\Pedidos\Tickets_ $ticket_ = null;
 
 }

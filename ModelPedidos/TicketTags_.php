@@ -2,13 +2,13 @@
 
 namespace Pedidos;
 
-use \Pedidos\WpwtPsmscTickets;
+use \Pedidos\TicketTags;
 
 use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
 
-class WpwtPsmscTickets_ extends WpwtPsmscTickets
+class TicketTags_ extends TicketTags
 {
 
 }

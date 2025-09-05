@@ -2,7 +2,6 @@
 
 namespace Fines2;
 
-use \SqlOrganize\Sql\DbMy;
 use \SqlOrganize\Sql\Entity;
 use \Fines2\CalificacionDAO;
 use \Fines2\DisposicionDAO;

@@ -2,13 +2,13 @@
 
 namespace Pedidos;
 
-use \Pedidos\WpwtPsmscCustomers;
+use \Pedidos\Categories;
 
 use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
 
-class WpwtPsmscCustomers_ extends WpwtPsmscCustomers
+class Categories_ extends Categories
 {
 
 }

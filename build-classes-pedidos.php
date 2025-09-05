@@ -14,6 +14,6 @@ use SqlOrganize\Model\BuildClasses;
 use Pedidos\SchemaPedidos;
 
 
-BuildClasses::Build(App\Context::getConfigModel(), SchemaPedidos::getEntities());
+BuildClasses::Build(App\Context::getConfigModelPedidos(), SchemaPedidos::getEntities());
 
 echo "Fin";

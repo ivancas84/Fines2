@@ -6,12 +6,12 @@ use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
 
-class WpwtPsmscAttachments extends Entity
+class Attachments extends Entity
 {
 
     public function __construct()
     {
-        $this->_entityName = "wpwt_psmsc_attachments";
+        $this->_entityName = "attachments";
         $this->_db = \App\Context::getPedidosDb();
         $this->setDefault();
     }
@@ -49,7 +49,7 @@ class WpwtPsmscAttachments extends Entity
     /** @var int|null */
     public ?int $ticket_id = null;
 
-    /** @var WpwtPsmscTickets|null (fk wpwt_psmsc_attachments.ticket_id _m:o wpwt_psmsc_tickets.id) */
-    public ?\Pedidos\WpwtPsmscTickets_ $ticket_id_ = null;
+    /** @var Tickets|null (fk attachments.ticket_id _m:o tickets.id) */
+    public ?\Pedidos\Tickets_ $ticket_id_ = null;
 
 }

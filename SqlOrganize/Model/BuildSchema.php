@@ -28,7 +28,8 @@ abstract class BuildSchema
 
             $table = new Table();
             $table->name = $tableName;
-            $table->alias = $this->getAlias($tableName, $tableAlias, 4);
+            $tableNameWithoutPrefix = substr($tableName, strlen($this->config->tablePrefix));
+            $table->alias = $this->getAlias($tableNameWithoutPrefix, $tableAlias, 4);
             $tableAlias[] = $table->alias;
             $table->columns = $this->getColumns($table->name);
 
@@ -36,9 +37,9 @@ abstract class BuildSchema
             foreach ($table->columns as $col) {
                 if ($col->IS_FOREIGN_KEY == 1 && 
                     !in_array($col->REFERENCED_TABLE_NAME, $config->reservedEntities)) {
-                    $idSource = ($config->idName == "field_name") ? 
+                    $idSource = ($config->idSource == "field_name") ? 
                         $col->COLUMN_NAME : $col->REFERENCED_TABLE_NAME;
-                    $col->alias = $this->getAlias($idSource, $fieldsAliases, 3);
+                        $col->alias = $this->getAlias($idSource, $fieldsAliases, 3);
                     $fieldsAliases[] = $col->alias;
                 }
                 $table->columnNames[] = $col->COLUMN_NAME;
@@ -74,12 +75,8 @@ abstract class BuildSchema
 
         // Definicion de entities
         foreach ($this->tables as $t) {
-            if (in_array($t->name, $this->config->reservedEntities)) {
-                continue;
-            }
-
             $e = new EntityMetadata();
-            $e->name = $t->name;
+            $e->name = substr($t->name, strlen($this->config->tablePrefix));
             $e->alias = $t->alias;
             $e->fields = $t->columnNames;
             $e->pk = $t->pk;
@@ -87,41 +84,28 @@ abstract class BuildSchema
             $e->unique = $t->unique;
             $e->uniqueMultiple = $t->uniqueMultiple;
             $e->notNull = $t->notNull;
+            $e->id = $this->defineId($e);
+
             $this->entities[$e->name] = $e;
         }
 
-        // Definir id de entities
-        foreach ($this->entities as $name => $e) {
-            $e->id = $this->defineId($e);
-        }
-
-
         // Definicion de fields
         foreach ($this->tables as $t) {
-            if (in_array($t->name, $this->config->reservedEntities)) {
-                continue;
-            }
-
             foreach ($t->columns as $c) {
-                if (!in_array($c->COLUMN_NAME, $this->entities[$t->name]->fields)) {
-                    continue;
-                }
-
                 $f = new Field();
-                $f->entityName = $t->name;
+                $f->entityName = substr($t->name, strlen($this->config->tablePrefix));
                 $f->name = $c->COLUMN_NAME;
                 $f->alias = $c->alias;
 
                 $this->defineField($c, $f);
 
-                if (!isset($this->fields[$t->name])) {
-                    $this->fields[$t->name] = [];
+                if (!isset($this->fields[$f->entityName])) {
+                    $this->fields[$f->entityName] = [];
                 }
 
-                $this->fields[$t->name][$f->name] = $f;
+                $this->fields[$f->entityName][$f->name] = $f;
             }
-        }
-
+        }   
         // Definicion de tree y relations de entities
         foreach ($this->entities as $name => $e) {
 
@@ -224,7 +208,7 @@ abstract class BuildSchema
         }
 
         if (!empty($c->REFERENCED_TABLE_NAME)) {
-            $f->refEntityName = $c->REFERENCED_TABLE_NAME;
+            $f->refEntityName = substr($c->REFERENCED_TABLE_NAME, strlen($this->config->tablePrefix));
         }
 
         if (!empty($c->REFERENCED_COLUMN_NAME)) {

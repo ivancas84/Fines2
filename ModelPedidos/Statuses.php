@@ -6,15 +6,21 @@ use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
 
-class WpwtPsmscCategories extends Entity
+class Statuses extends Entity
 {
 
     public function __construct()
     {
-        $this->_entityName = "wpwt_psmsc_categories";
+        $this->_entityName = "statuses";
         $this->_db = \App\Context::getPedidosDb();
         $this->setDefault();
     }
+
+    /** @var string|null */
+    public ?string $bg_color = null;
+
+    /** @var string|null */
+    public ?string $color = null;
 
     /** @var int|null */
     public ?int $id = null;
@@ -26,9 +32,9 @@ class WpwtPsmscCategories extends Entity
     public ?string $name = null;
 
     /** @var int|null */
-    public ?int $WpwtPsmscTickets_category_Count = null;
+    public ?int $Tickets_status_Count = null;
 
-    /** @var WpwtPsmscTickets[] (ref wpwt_psmsc_tickets.category _m:o wpwt_psmsc_categories.id) */
-    public array $WpwtPsmscTickets_category_ = [];
+    /** @var Tickets[] (ref tickets.status _m:o statuses.id) */
+    public array $Tickets_status_ = [];
 
 }

@@ -140,17 +140,17 @@ class EntityMetadata
     
     public function getSchema_(): string
     {
-        return empty($this->schema) ? "" : $this->schema;
+        return empty($this->schema) ? "" : $this->schema . ".";
     }
     
     public function getSchemaName(): string
     {
-        return $this->schema . $this->name;
+        return $this->getSchema_() . $this->db->config->tablePrefix . $this->name;
     }
     
     public function getSchemaNameAlias(): string
     {
-        return $this->schema . $this->name . " AS " . $this->alias;
+        return $this->getSchema_() . $this->db->config->tablePrefix . $this->name . " AS " . $this->alias;
     }
     
     /**

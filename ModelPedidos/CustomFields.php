@@ -6,12 +6,12 @@ use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
 
-class WpwtPsmscCustomFields extends Entity
+class CustomFields extends Entity
 {
 
     public function __construct()
     {
-        $this->_entityName = "wpwt_psmsc_custom_fields";
+        $this->_entityName = "custom_fields";
         $this->_db = \App\Context::getPedidosDb();
         $this->setDefault();
     }

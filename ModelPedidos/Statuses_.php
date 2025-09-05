@@ -2,13 +2,13 @@
 
 namespace Pedidos;
 
-use \Pedidos\WpwtPsmscAgents;
+use \Pedidos\Statuses;
 
 use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
 
-class WpwtPsmscAgents_ extends WpwtPsmscAgents
+class Statuses_ extends Statuses
 {
 
 }

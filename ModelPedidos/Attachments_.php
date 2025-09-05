@@ -2,13 +2,13 @@
 
 namespace Pedidos;
 
-use \Pedidos\WpwtPsmscLogs;
+use \Pedidos\Attachments;
 
 use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
 
-class WpwtPsmscLogs_ extends WpwtPsmscLogs
+class Attachments_ extends Attachments
 {
 
 }

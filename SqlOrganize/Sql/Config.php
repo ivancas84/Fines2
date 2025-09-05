@@ -42,7 +42,7 @@ class Config
     
     public string $separator = "__";
 
-    public string $prefix = "";
+    public string $tablePrefix = "";
     
     public string $namespace = "";
 

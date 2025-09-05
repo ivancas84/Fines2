@@ -48,6 +48,7 @@ class Context
         $configDb->pass = DB_PASS_PEDIDOS2;
         $configDb->namespace = "Pedidos";
         $configDb->dataClassesPath = MAIN_PATH . "ModelPedidos" . DIRECTORY_SEPARATOR;
+        $configDb->tablePrefix = 'wpwt_psmsc_';
 
         return $configDb;
     }

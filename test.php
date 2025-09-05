@@ -15,7 +15,7 @@ use ProgramaFines\PfDAO;
 //$pf = new PfDAO("f17ac5fc2a0fcc5024e096552f00b77c");
 //echo $pf->request("https://programafines.ar/inicial/index4.php?a=46");
 $dbp = \App\Context::getPedidosDb();
-$agents = $dbp->CreateDataProvider()->fetchAllEntitiesByParams("wpwt_psmsc_agents");
+$agents = $dbp->CreateDataProvider()->fetchAllEntitiesByParams("agents");
 foreach($agents as $agent) {
 
     echo "<pre>";

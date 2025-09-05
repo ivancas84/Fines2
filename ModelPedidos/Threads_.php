@@ -2,13 +2,13 @@
 
 namespace Pedidos;
 
-use \Pedidos\WpwtPsmscCategories;
+use \Pedidos\Threads;
 
 use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
 
-class WpwtPsmscCategories_ extends WpwtPsmscCategories
+class Threads_ extends Threads
 {
 
 }

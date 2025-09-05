@@ -2,13 +2,13 @@
 
 namespace Pedidos;
 
-use \Pedidos\WpwtPsmscTicketTags;
+use \Pedidos\CustomFields;
 
 use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
 
-class WpwtPsmscTicketTags_ extends WpwtPsmscTicketTags
+class CustomFields_ extends CustomFields
 {
 
 }
