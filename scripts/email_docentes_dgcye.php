@@ -1,6 +1,6 @@
 <?php
 
-require_once '../db-config.php';
+require_once '../fines-config.php';
 
 use \SqlOrganize\Sql\DbMy;
 use Fines2\TomaDAO;

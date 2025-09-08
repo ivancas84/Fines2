@@ -1,6 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/db-config.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/fines-config.php';
 
 add_submenu_page(
     null, 
@@ -15,15 +15,33 @@ use \Fines2\Persona_;
 use \Fines2\Calificacion_;
 use \Fines2\CalificacionDAO;
 use \Fines2\Alumno_;
+use \Fines2\AlumnoComision_;
+
 use \Fines2\AlumnoDAO;
 use \Fines2\DetallePersona_;
 
 use \SqlOrganize\Sql\DbMy;
 use \SqlOrganize\Sql\Entity;
 
+
 function ap3_administrar_persona_page() {
 
     wp_page_message();
+    $persona = ap3_init_Persona();
+    if($persona->_status < 0) return;
+
+    $alumno = ap3_init_Alumno($persona);
+    if($alumno->_status < 0) return;
+
+    
+    ap3_init_Comisiones($alumno, $persona);
+    ap3_init_Calificaciones($alumno, $persona);
+    ap3_init_Detalles($persona);
+
+}
+
+
+function ap3_init_Persona(): Persona_{
     $persona_id = isset($_GET['persona_id']) ? $_GET['persona_id'] : null;
 
 
@@ -32,10 +50,12 @@ function ap3_administrar_persona_page() {
 
     include plugin_dir_path(__FILE__) . 'ap3_persona_form_html.php';
 
-    if($persona->_status < 0)
-        return;
+    return $persona;
 
-    
+
+}
+
+function ap3_init_Alumno(Persona_ $persona): Alumno_{
     //***** Campos de alumno *****/
     $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
 
@@ -46,11 +66,22 @@ function ap3_administrar_persona_page() {
     $alumno->initByUnique(["persona" => $persona->id]);
 
     include plugin_dir_path(__FILE__) . 'ap3_alumno_form_html.php';
+    return $alumno;
+}
 
-    if($alumno->_status < 0)
-        return;
+function ap3_init_comisiones(Alumno_ $alumno, Persona_ $persona){
+    $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
+    $estados = $dataProvider->fetchAllColumnByParams("alumno_comision", "estado", [], ["estado"=>"ASC"]);
+    
+    /** @var AlumnoComision_[] */ $alumno_comisiones = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["alumno" => $alumno->id], ["id" => "DESC"]);
 
-
+    if ($alumno_comisiones) {
+        include plugin_dir_path(__FILE__) . 'ap3_comisiones_table_html.php';
+    } else {
+        echo "<p>No hay comisiones asignadas.</p>";
+    }
+}
+function ap3_init_Calificaciones(Alumno_ $alumno, Persona_ $persona = null){
     //***** CALIFICACIONES *****/
     $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
     AlumnoDAO::reestructurarCalificacionesByAlumno($modifyQueries, $alumno);
@@ -76,16 +107,17 @@ function ap3_administrar_persona_page() {
              echo "<p>No se encontraron calificaciones adicionales para este alumno.</p>";
         }    
     }
+}
 
+function ap3_init_Detalles(Persona_ $persona){
+    
+    $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
 
     //***** DETALLE PERSONA *****/
     /** @var DetallePersona_ */ $detalles = $dataProvider->fetchAllEntitiesByParams("detalle_persona", ["persona"=>$persona->id]);
     if ($detalles) {
         include plugin_dir_path(__FILE__) . 'ap3_detalles_table_html.php';
     } else {
-            echo "<p>No se detalles.</p>";
+            echo "<p>No hay detalles.</p>";
     }
-
-
 }
-

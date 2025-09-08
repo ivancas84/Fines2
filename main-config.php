@@ -1,5 +1,7 @@
 <?php
 
+use App\Context;
+
 define("MAIN_PATH", $_SERVER['DOCUMENT_ROOT'] . "/Fines2/");
 define("DB_HOST_FINES2", "localhost");
 define("DB_NAME_FINES2", "planfi10_20204");
@@ -25,9 +27,11 @@ define("EMAIL_DOCENTES_FROM_NAME", "Docentes CENS 462");
 define("EMAIL_DOCENTES_FROM_ADDRESS", "docentes@planfines2.com.ar");
 define("EMAIL_DOCENTES_BCC", "docentes.cens462@gmail.com");
 
+
 require_once MAIN_PATH . 'Context.php';
 require_once MAIN_PATH . 'SqlOrganize/Sql/requires.php';
 require_once MAIN_PATH . 'SqlOrganizeMy/Sql/requires.php';
+
 
 
 

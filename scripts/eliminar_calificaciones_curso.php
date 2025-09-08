@@ -2,7 +2,7 @@
 
 //Eliminar todas las calificaciones del curso
 
-require_once '../db-config.php';
+require_once '../fines-config.php';
 
 use SqlOrganize\Sql\DataProvider;
 use SqlOrganize\Sql\DbMy;

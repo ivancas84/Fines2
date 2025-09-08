@@ -5,7 +5,7 @@ mb_internal_encoding('UTF-8');
 
 require_once '../vendor/autoload.php'; // Ensure TCPDF is autoloaded
 
-require_once '../db-config.php';
+require_once '../fines-config.php';
 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;

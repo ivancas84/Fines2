@@ -2,7 +2,7 @@
 
 
 
-require_once __DIR__ . '/db-config.php';
+require_once __DIR__ . '/fines-config.php';
 
 use SqlOrganize\Sql\DbMy;
 use SqlOrganize\Utils\ValueTypesUtils;

@@ -4,7 +4,7 @@ use Fines2\ComisionDAO;
 use SqlOrganize\Sql\DataProvider;
 use SqlOrganize\Sql\DbMy;
 
-require_once '../db-config.php';
+require_once '../fines-config.php';
 
 // Check if the file exists
 if (!file_exists(DOCENTES_PATH)) {

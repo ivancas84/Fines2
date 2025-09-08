@@ -22,3 +22,4 @@ require_once MAIN_PATH . 'DataAccess/TomaDAO.php';
 
 require_once MAIN_PATH . 'ProgramaFines/PfDAO.php';
 require_once MAIN_PATH . 'ProgramaFines/PfUtils.php';
+\App\Context::initFinesDb();

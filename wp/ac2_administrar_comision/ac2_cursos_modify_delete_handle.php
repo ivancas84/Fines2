@@ -1,5 +1,5 @@
 <?php
-require_once $_SERVER['DOCUMENT_ROOT'] . '/db-config.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/fines-config.php';
 
 add_action('admin_post_ac2_cursos_modify_delete', 'ac2_cursos_modify_delete_handle');
 

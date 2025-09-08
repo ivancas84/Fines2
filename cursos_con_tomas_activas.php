@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/db-config.php';
+require_once __DIR__ . '/main-config.php';
 
 use SqlOrganize\Sql\DbMy;
 

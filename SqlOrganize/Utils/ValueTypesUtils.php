@@ -1,6 +1,8 @@
 <?php
 
 namespace SqlOrganize\Utils;
+
+use DateTime;
 use DateTimeInterface;
 class ValueTypesUtils
 {
@@ -575,6 +577,15 @@ public static function dictOfListByPropertyName(iterable $source, string $propNa
         return $result;
     }
 
+    
+    public static function fechaActualDiaDeMesDeAnio(){
+        $fecha = new DateTime();
+        $dia = $fecha->format('d');
+        $mes = mes($fecha->format('n')); // Obtener el mes en español
+        $anio = $fecha->format('Y');
+
+        return "$dia de $mes de $anio";
+    }
 
 }
 

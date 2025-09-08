@@ -14,6 +14,8 @@ class Context
     private static ?Db $fines = null;
     private static ?Db $pedidos = null;
 
+    
+
     public static function getConfigDb(){
         $configDb = new SqlConfig();
         $configDb->host = DB_HOST_FINES2;
@@ -71,20 +73,14 @@ class Context
 
 
     public static function getFinesDb(): Db {
-        if (self::$fines === null) {
-            self::initFinesDb();
-        }
         return self::$fines;
     }
 
     public static function getPedidosDb(): Db {
-        if (self::$pedidos === null) {
-            self::initPedidosDb();
-        }
         return self::$pedidos;
     }
 
-    private static function initFinesDb(): void {
+    public static function initFinesDb(): void {
         $config = self::getConfigDb();
 
         if (self::$fines === null) {
@@ -97,7 +93,7 @@ class Context
         }
     }
 
-    private static function initPedidosDb(): void {
+    public static function initPedidosDb(): void {
         $config = self::getConfigDbPedidos();
         if (self::$pedidos === null) {
             self::$pedidos = new DbMy($config, SchemaPedidos::getEntities());

@@ -3,7 +3,7 @@
 namespace Fines2;
 
 use \Fines2\Planificacion;
-use SqlOrganize\Sql\DbMy;
+use SqlOrganize\Utils\ValueTypesUtils;
 
 class Planificacion_ extends Planificacion
 {
@@ -31,6 +31,10 @@ class Planificacion_ extends Planificacion
             "anio" => strval($a),
             "semestre" => $s
         ];
+    }
+
+    public function getAnioLetras(){
+        return ValueTypesUtils::toOrdinalSpanish(intval($this->anio));
     }
     
 

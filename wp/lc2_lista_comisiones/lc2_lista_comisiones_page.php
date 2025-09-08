@@ -2,10 +2,9 @@
 
 
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/fines-config.php');
 
 use Fines2\DesignacionDAO;
-use SqlOrganize\Sql\DbMy;
 use SqlOrganize\Utils\ValueTypesUtils;
 
 

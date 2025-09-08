@@ -2,7 +2,7 @@
 
 //Eliminar todas las calificaciones del curso
 
-require_once '../db-config.php';
+require_once '../fines-config.php';
 
 use Fines2\AlumnoComision_;
 use SqlOrganize\Sql\DataProvider;

@@ -2,7 +2,7 @@
 
 //Modificar el valor de toma.estado_planilla con el valor "Entregada"
 
-require_once '../db-config.php';
+require_once '../fines-config.php';
 
 use SqlOrganize\Sql\DbMy;
 

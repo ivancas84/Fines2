@@ -1,7 +1,7 @@
 <?php
 
 define("CALENDARIO_ID", "202502110007");
-require_once '../db-config.php';
+require_once '../fines-config.php';
 
 use \SqlOrganize\Sql\DbMy;
 use \SqlOrganize\Sql\Entity;

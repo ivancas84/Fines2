@@ -1,6 +1,6 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/db-config.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/fines-config.php';
 
 add_action('admin_post_ac2_comision_admin', 'ac2_comision_admin_handle');
 

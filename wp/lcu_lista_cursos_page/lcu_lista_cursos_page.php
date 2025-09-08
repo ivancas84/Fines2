@@ -4,7 +4,7 @@
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/class/PdoFines.php');
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/db-config.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/fines-config.php');
 
 
 use \SqlOrganize\Sql\DbMy;
