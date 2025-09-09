@@ -1,6 +1,6 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
+require_once $_SERVER['DOCUMENT_ROOT'] . '/fines-config.php';
 
 use Fines2\Calificacion_;
 use Fines2\Curso_;
