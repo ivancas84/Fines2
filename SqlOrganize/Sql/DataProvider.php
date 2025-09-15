@@ -96,8 +96,6 @@ class DataProvider {
         $sql .= $selectQueries->whereParamsWithOrder($entityName, $params, $orderBy);
         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);
         $stmt = $this->db->getPdo()->prepare($processedSql);
-        echo $processedSql;
-        print_r($processedParams);
         $stmt->execute($processedParams);
         return $stmt->fetch($fetchMode);
     }
@@ -290,4 +288,12 @@ class DataProvider {
         if(count($entities)) return $entities[0];
         return null;
     }
+
+    function getNextMaxValue($entityName, $fieldName = "id") {
+        $table = $this->db->getEntityMetadata($entityName)->getSchemaName();
+        $sql = "SELECT IFNULL(MAX({$fieldName}), 0) + 1 AS next_id FROM $table";
+        return $this->fetchSqlValueByParams($sql);
+    }
+
+  
 }

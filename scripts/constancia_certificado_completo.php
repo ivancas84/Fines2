@@ -2,56 +2,33 @@
 header('Content-Type: text/html; charset=utf-8');
 mb_internal_encoding('UTF-8');
 
-require_once 'includes/db_config.php';
-require_once 'includes/queries_pedidos.php';
-require_once 'vendor/autoload.php'; // Ensure TCPDF is autoloaded
+require_once '../fines-config.php';
+require_once '../vendor/autoload.php'; // Ensure TCPDF is autoloaded
 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+use Pedidos\Tickets_;
+use SqlOrganize\Utils\ValueTypesUtils;
 
-try {
-    $pdo = new PDO("mysql:host=" . DB_HOST_FINES. ";dbname=" . DB_NAME_FINES, DB_USER_FINES, DB_PASS_FINES, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
+$dbFines = \App\Context::getFinesDb();
+$dbPedidos = \App\Context::getPedidosDb();
 
-    $pdo_pedidos = new PDO("mysql:host=" . DB_HOST_PEDIDOS . ";dbname=" . DB_NAME_PEDIDOS . ";charset=utf8mb4", DB_USER_PEDIDOS, DB_PASS_PEDIDOS, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-} catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
-}
 
-$numero_documento = filter_input(INPUT_POST, 'numero_documento', FILTER_SANITIZE_STRING);
-$actual_unix_timestamp = time();
-$upload_dir = "/wpsc/". date('Y') . "/" . date('m') . "/";
-$filename = "{$actual_unix_timestamp}_constancia_{$numero_documento}.pdf";
-$data = [
-    "apellidos" => strtoupper(filter_input(INPUT_POST, 'apellidos', FILTER_SANITIZE_STRING)),
-    "nombres" => ucwords(strtolower(filter_input(INPUT_POST, 'nombres', FILTER_SANITIZE_STRING))),
-    "numero_documento" => $numero_documento ,
-    "anio" => filter_input(INPUT_POST, 'anio_en_curso', FILTER_SANITIZE_STRING),
-    "resolucion" => filter_input(INPUT_POST, 'resolucion', FILTER_SANITIZE_STRING),
-    "fecha" => filter_input(INPUT_POST, 'fecha', FILTER_SANITIZE_STRING),
-    "presentacion" => filter_input(INPUT_POST, 'presentado', FILTER_SANITIZE_STRING),
-    "orientacion" => filter_input(INPUT_POST, 'orientacion', FILTER_SANITIZE_STRING),
-    "observaciones" => filter_input(INPUT_POST, 'observaciones', FILTER_SANITIZE_STRING),
-    "filename" => $filename,
-    "upload_dir" => $upload_dir,
-    "save_path" => $upload_dir."/".$filename
-];
+$actual_unix_timestamp = date("Ymd");
+$_POST["upload_dir"] = "/wpsc/". date('Y') . "/" . date('m') . "/";
+$_POST["filename"] = "{$actual_unix_timestamp}_constancia_{$numero_documento}.pdf";
+$_POST["save_path"] = $_POST["upload_dir"] . $_POST["filename"];
 
-$data["body"] = "La Dirección del CENS 462 de La Plata, hace constar por la presente que ";
-$data["body"] .= $data['apellidos'] . ", ";
-$data["body"] .= $data['nombres'] . " DNI N° ";
-$data["body"] .= $data['numero_documento'] . " es alumno regular de ";
-$data["body"] .= $data['anio'] . " año Programa Fines 2 Trayecto Secundario con orientación en ";
-$data["body"] .= $data['orientacion'] . " resolución ";
-$data["body"] .= $data['resolucion'];
+$_POST["body"] = "La Dirección del CENS 462 de La Plata, hace constar por la presente que ";
+$_POST["body"] .= $_POST['apellidos'] . ", ";
+$_POST["body"] .= $_POST['nombres'] . " DNI N° ";
+$_POST["body"] .= $_POST['numero_documento'] . " es alumno regular de ";
+$_POST["body"] .= $_POST['anio'] . " año Programa Fines 2 Trayecto Secundario con orientación en ";
+$_POST["body"] .= $_POST['orientacion'] . " resolución ";
+$_POST["body"] .= $_POST['resolucion'];
     
-if (!empty($data['observaciones'])) {
-    $data["body"] .= " - " . $data['observaciones']; 
+if (!empty($_POST['observaciones'])) {
+    $_POST["body"] .= " - " . $_POST['observaciones']; 
 }
 
 
@@ -133,6 +110,10 @@ function generar_constancia_titulo_tramite($url, $data) {
 // Call the function
 try {
     $data["subject"] = "Constancia de certificado completo : " . $data["apellidos"] . ", " . $data["nombres"];
+    
+    $ticket = new Tickets_();
+    
+    
     $url = pdoInsertarPedido($data);
     generar_constancia_titulo_tramite($url, $data);
 } catch (Exception $e) {

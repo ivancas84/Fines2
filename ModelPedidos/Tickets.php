@@ -37,20 +37,20 @@ class Tickets extends Entity
     /** @var int|null */
     public ?int $customer = null;
 
-    /** @var tinytext|null */
-    public ?tinytext $cust_24 = null;
+    /** @var string|null */
+    public ?string $cust_24 = null;
 
-    /** @var tinytext|null */
-    public ?tinytext $cust_25 = null;
+    /** @var string|null */
+    public ?string $cust_25 = null;
 
-    /** @var tinytext|null */
-    public ?tinytext $cust_26 = null;
+    /** @var string|null */
+    public ?string $cust_26 = null;
 
-    /** @var tinytext|null */
-    public ?tinytext $cust_27 = null;
+    /** @var string|null */
+    public ?string $cust_27 = null;
 
-    /** @var tinytext|null */
-    public ?tinytext $cust_28 = null;
+    /** @var string|null */
+    public ?string $cust_28 = null;
 
     /** @var DateTime|null */
     public ?DateTime $date_closed = null;
@@ -79,11 +79,11 @@ class Tickets extends Entity
     /** @var string|null */
     public ?string $last_reply_source = null;
 
-    /** @var tinytext|null */
-    public ?tinytext $live_agents = null;
+    /** @var string|null */
+    public ?string $live_agents = null;
 
-    /** @var longtext|null */
-    public ?longtext $misc = null;
+    /** @var string|null */
+    public ?string $misc = null;
 
     /** @var string|null */
     public ?string $os = null;
@@ -103,8 +103,8 @@ class Tickets extends Entity
     /** @var string|null */
     public ?string $subject = null;
 
-    /** @var tinytext|null */
-    public ?tinytext $tags = null;
+    /** @var string|null */
+    public ?string $tags = null;
 
     /** @var string|null */
     public ?string $user_type = null;

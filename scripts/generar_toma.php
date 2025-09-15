@@ -9,6 +9,7 @@ require_once '../fines-config.php';
 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+
 use Fines2\Toma_;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -197,7 +198,8 @@ try {
     <li>Atender a la brevedad cualquier solicitud indicada por el CENS.</li>
   </ul>
 </p>
-<p><strong>Para cualquier duda comuníquese vía mensaje o audio de WhatsApp al número 2216713326</strong></p>
+<p>Consultar consideraciones sobre <a href='https://planfines2.com.ar/wp/2025/09/09/cobro-de-haberes-cens-462-periodo-2025-2/' target='_blank'>Cobro de Háberes</a></p>
+<p><strong>Para cualquier duda comuníquese vía mensaje o audio de WhatsApp al número <a href='https://wa.me/2216713326' target='_blank'>2216713326</a></strong></p>
 <br>
 Saluda a Usted muy atentamente:
 <br>

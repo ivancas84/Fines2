@@ -44,6 +44,7 @@ function fines_plugin_menu() {
       1 // Posición en el menú
     );
 
+    include_once plugin_dir_path(__FILE__) . 'ccc_constancia_certificado_completo/ccc_constancia_certificado_completo_page.php';
     include_once plugin_dir_path(__FILE__) . 'lac_lista_alumnos_comision/lac_lista_alumnos_comision_page.php';
     include_once plugin_dir_path(__FILE__) . 'lacu_lista_alumnos_curso/lacu_lista_alumnos_curso_page.php';
     include_once plugin_dir_path(__FILE__) . 'lc2_lista_comisiones/lc2_lista_comisiones_page.php';
@@ -172,15 +173,6 @@ function fines_plugin_menu() {
 
     add_submenu_page(
       null, 
-      'Constancia de certificado de título en trámite completo',
-      'Constancia de certificado de título en trámite completo', 
-      'edit_posts', 
-      'fines-plugin-constancia-certificado-completo-page', 
-      'ccc_constancia_certificado_completo_page'
-    );
-
-    add_submenu_page(
-      null, 
       'Administrar Tomas de Comisión',
       'Administrar Tomas de Comision', 
       'edit_posts', 
@@ -272,7 +264,7 @@ include_once plugin_dir_path(__FILE__) . 'car_constancia_alumno_regular_page/car
 
 include_once plugin_dir_path(__FILE__) . 'cp_constancia_pase_page/cp_constancia_pase_page.php';
 
-include_once plugin_dir_path(__FILE__) . 'ccc_constancia_certificado_completo_page/ccc_constancia_certificado_completo_page.php';
+
 
 include_once plugin_dir_path(__FILE__) . 'cv_constancia_vacante_page/cv_constancia_vacante_page.php';
 

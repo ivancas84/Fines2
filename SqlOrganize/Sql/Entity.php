@@ -309,6 +309,12 @@ class Entity
                     $length = isset($matches[1]) ? (int)$matches[1] : 10;
                     return ValueTypesUtils::randomString($length);
                 }
+
+                if (strpos($defaultStr, "prop") !== false){
+                    if(array_key_exists($field->name, $this->_db->config->properties)){
+                        return $this->_db->config->properties[$field->name];
+                    }
+                }
                 
                 return $field->defaultValue;
                 
@@ -439,16 +445,12 @@ class Entity
     {
         $defaultStr = strtolower((string)$field->defaultValue);
         
-        if (strpos($defaultStr, "next") !== false) {
+        if (strpos($defaultStr, "next") !== false) { //secuencias
             return $this->_db->createSelectQueries()->getNextValue($field->entityName, $field->name);
         }
         
-        if (strpos($defaultStr, "max") !== false) {
-            $connection = $this->_db->getPdo();
-            $sql = $this->_db->createSelectQueries()->maxValue($this->_entityName, $field->name);
-            $stmt = $connection->prepare($sql);
-            $stmt->execute();
-            return $stmt->fetchColumn() + 1;
+        if (strpos($defaultStr, "max") !== false) { //maximo + 1
+            return $this->_db->CreateDataProvider()->getNextMaxValue($this->_entityName, $field->name);
         }
         
         return (int)preg_replace('/\D/', '', (string)$field->defaultValue);

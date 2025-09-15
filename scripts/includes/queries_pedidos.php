@@ -4,16 +4,6 @@ function generateAuthCode($length = 8) {
     return substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, $length);
 }
 
-function getNextId($pdo, $table) {
-    $stmt = $pdo->query("SELECT IFNULL(MAX(id), 0) + 1 AS next_id FROM $table");
-    return $stmt->fetchColumn();
-}
-
-function getNextFieldName($pdo, $table, $fieldName) {
-    $stmt = $pdo->query("SELECT IFNULL(MAX($fieldName), 0) + 1 AS next_id FROM $table");
-    return $stmt->fetchColumn();
-}
-
 // Function to convert a number to an ordinal string in Spanish
 function toOrdinalSpanish($number) {
     $ordinals = [

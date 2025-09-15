@@ -47,4 +47,6 @@ class Config
     public string $namespace = "";
 
     public string $dataClassesPath = "Model/";
+
+    /** @var array<string, array<string, mixed> > */ public array $properties = [];
 }

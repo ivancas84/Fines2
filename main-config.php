@@ -13,6 +13,7 @@ define("DB_NAME_PEDIDOS2", "planfi10_wp211");
 define("DB_USER_PEDIDOS2", "root");
 define("DB_PASS_PEDIDOS2", "");
 
+define("PLANILLA_ID", "202509030000");
 define("CALENDARIO_ID_ACTUAL", "202508131824");
 define("CALENDARIO_ID_ANTERIOR", "202502110007");
 define("DOCENTES_PATH", "/home/planfi10/domains/planfines2.com.ar/public_html/upload2/docentes.json");

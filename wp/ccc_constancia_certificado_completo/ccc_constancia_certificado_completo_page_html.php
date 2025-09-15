@@ -4,27 +4,27 @@
         <table class="form-table">
 		<tr>
                 <th><label>Nombres:</label></th>
-                <td><input type="text" name="nombres" value="<?= esc_attr($nombres) ?>" class="regular-text" required></td>
+                <td><input type="text" name="nombres" value="<?= esc_attr($alumno->persona_?->nombres) ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Apellidos:</label></th>
-                <td><input type="text" name="apellidos" value="<?= esc_attr($apellidos) ?>" class="regular-text" required></td>
+                <td><input type="text" name="apellidos" value="<?= esc_attr($alumno->persona_?->apellidos) ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Número de Documento:</label></th>
-                <td><input type="text" name="numero_documento" value="<?= esc_attr($numero_documento) ?>" class="regular-text" required></td>
+                <td><input type="text" name="numero_documento" value="<?= esc_attr($alumno->persona_?->numero_documento ?? "") ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Año en Curso:</label></th>
-                <td><input type="text" name="anio_en_curso" value="<?= esc_attr($anio_en_curso) ?>" class="regular-text" required></td>
+                <td><input type="text" name="anio_en_curso" value="<?= esc_attr($anio) ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Orientación:</label></th>
-                <td><input type="text" name="orientacion" value="<?= esc_attr($orientacion) ?>" class="regular-text" required></td>
+                <td><input type="text" name="orientacion" value="<?= esc_attr($alumno_comision->comision_?->planificacion_?->plan_?->orientacion ?? "") ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Resolución:</label></th>
-                <td><input type="text" name="resolucion" value="<?= esc_attr($resolucion) ?>" class="regular-text" required></td>
+                <td><input type="text" name="resolucion" value="<?= esc_attr($alumno_comision->comision_?->planificacion_?->plan_?->resolucion ?? "") ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Fecha:</label></th>

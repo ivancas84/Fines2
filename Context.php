@@ -3,7 +3,7 @@ namespace App;
 
 
 use Fines2\Schema_;
-use Pedidos\SchemaPedidos;
+use Pedidos\SchemaPedidos_;
 use SqlOrganize\Model\Config as ModelConfig;
 use SqlOrganize\Sql\Config as SqlConfig;;
 use SqlOrganize\Sql\Db;
@@ -51,7 +51,11 @@ class Context
         $configDb->namespace = "Pedidos";
         $configDb->dataClassesPath = MAIN_PATH . "ModelPedidos" . DIRECTORY_SEPARATOR;
         $configDb->tablePrefix = 'wpwt_psmsc_';
-
+        $configDb->properties = [
+            "tickets" => [
+                "auth_code" => function() { return substr(str_shuffle('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, 8); }
+            ]
+        ];
         return $configDb;
     }
 
@@ -96,7 +100,7 @@ class Context
     public static function initPedidosDb(): void {
         $config = self::getConfigDbPedidos();
         if (self::$pedidos === null) {
-            self::$pedidos = new DbMy($config, SchemaPedidos::getEntities());
+            self::$pedidos = new DbMy($config, SchemaPedidos_::getEntities());
         }
 
         foreach(self::$pedidos->entitiesMetadata as $entityMetadata){
