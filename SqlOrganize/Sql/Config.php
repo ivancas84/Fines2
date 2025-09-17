@@ -48,5 +48,5 @@ class Config
 
     public string $dataClassesPath = "Model/";
 
-    /** @var array<string, array<string, mixed> > */ public array $properties = [];
-}
+    /** @var array<string, array<string, mixed> > */ public array $properties = []; // definir Closures que retornen valores por defecto para campos específicos
+} 

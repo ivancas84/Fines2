@@ -17,10 +17,6 @@ function toOrdinalSpanish($number) {
 function pdoInsertarPedido($data){
     global $pdo_pedidos;
     
-    $ticket_id = getNextId($pdo_pedidos, 'wpwt_psmsc_tickets');
-    $thread_id = getNextId($pdo_pedidos, 'wpwt_psmsc_threads');  
-    $attachment_id = getNextId($pdo_pedidos, 'wpwt_psmsc_attachments')  ;
-    $auth_code = generateAuthCode();
 
     // Insert into wpwt_psmsc_tickets
     $sql_ticket = "INSERT INTO wpwt_psmsc_tickets 

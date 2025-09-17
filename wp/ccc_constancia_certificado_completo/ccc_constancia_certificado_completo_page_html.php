@@ -1,6 +1,6 @@
 <div class="wrap">
     <h1>Formulario de Datos del Alumno</h1>
-    <form method="POST" action="https://planfines2.com.ar/constancia_certificado_completo.php">
+    <form method="POST" action="https://planfines2.com.ar/script/constancia_certificado_completo.php">
         <table class="form-table">
 		<tr>
                 <th><label>Nombres:</label></th>

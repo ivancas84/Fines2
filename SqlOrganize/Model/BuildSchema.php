@@ -176,6 +176,8 @@ abstract class BuildSchema
             case "char":
             case "varchar":
             case "text":
+            case "longtext":
+            case "tinytext":
             case "enum":
             case "set":
             case "blob":

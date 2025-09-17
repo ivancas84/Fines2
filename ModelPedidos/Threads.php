@@ -19,8 +19,8 @@ class Threads extends Entity
     /** @var string|null */
     public ?string $attachments = null;
 
-    /** @var longtext|null */
-    public ?longtext $body = null;
+    /** @var string|null */
+    public ?string $body = null;
 
     /** @var string|null */
     public ?string $browser = null;

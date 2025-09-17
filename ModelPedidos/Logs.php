@@ -16,8 +16,8 @@ class Logs extends Entity
         $this->setDefault();
     }
 
-    /** @var longtext|null */
-    public ?longtext $body = null;
+    /** @var string|null */
+    public ?string $body = null;
 
     /** @var DateTime|null */
     public ?DateTime $date_created = null;

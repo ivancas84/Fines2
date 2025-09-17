@@ -22,8 +22,8 @@ class TicketTags extends Entity
     /** @var string|null */
     public ?string $color = null;
 
-    /** @var tinytext|null */
-    public ?tinytext $description = null;
+    /** @var string|null */
+    public ?string $description = null;
 
     /** @var int|null */
     public ?int $id = null;

@@ -292,10 +292,11 @@ class Entity
             return null;
         }
 
-        $defaultStr = strtolower((string)$field->defaultValue);
 
         switch ($field->type) {
             case "string":
+                $defaultStr = strtolower((string)$field->defaultValue);
+
                 if (strpos($defaultStr, "guid") !== false) {
                     return ValueTypesUtils::generateGuid();
                 }
@@ -311,18 +312,24 @@ class Entity
                 }
 
                 if (strpos($defaultStr, "prop") !== false){
-                    if(array_key_exists($field->name, $this->_db->config->properties)){
-                        return $this->_db->config->properties[$field->name];
+                    if(array_key_exists($field->name, $this->_db->config->properties[$this->_entityName])){
+                        return $this->_db->config->properties[$this->_entityName][$field->name]();
                     }
                 }
                 
                 return $field->defaultValue;
                 
             case "DateTime":
+                if($field->defaultValue instanceof  DateTime)
+                    return $field->defaultValue;
+
+                $defaultStr = strtolower((string)$field->defaultValue);
+            
                 if (strpos($defaultStr, "cur") !== false || strpos($defaultStr, "getdate") !== false) {
                     return new DateTime();
                 }
-                return $field->defaultValue;
+
+                return new DateTime($field->defaultValue);
                 
             case "bool":
             case "boolean":

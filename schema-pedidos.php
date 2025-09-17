@@ -427,9 +427,9 @@ class SchemaPedidos
         $entities['logs']->relations = [];
         $entities['logs']->relations['modified_by'] = EntityRelation::getInstance('modified_by', 'customers', 'id');
 
-        $entities['logs']->fields['body'] = Field::getInstance('logs', 'body', 'longtext', 'longtext');
+        $entities['logs']->fields['body'] = Field::getInstance('logs', 'body', 'longtext', 'string');
         $entities['logs']->fields['body']->checks = [
-            'type' => 'longtext',
+            'type' => 'string',
             'required' => '1',
         ];
         $entities['logs']->fields['date_created'] = Field::getInstance('logs', 'date_created', 'datetime', 'DateTime');
@@ -597,9 +597,9 @@ class SchemaPedidos
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['threads']->fields['body'] = Field::getInstance('threads', 'body', 'longtext', 'longtext');
+        $entities['threads']->fields['body'] = Field::getInstance('threads', 'body', 'longtext', 'string');
         $entities['threads']->fields['body']->checks = [
-            'type' => 'longtext',
+            'type' => 'string',
             'required' => '1',
         ];
         $entities['threads']->fields['browser'] = Field::getInstance('threads', 'browser', 'varchar', 'string');
@@ -769,25 +769,25 @@ class SchemaPedidos
             'type' => 'int',
             'required' => '1',
         ];
-        $entities['tickets']->fields['cust_24'] = Field::getInstance('tickets', 'cust_24', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['cust_24'] = Field::getInstance('tickets', 'cust_24', 'tinytext', 'string');
         $entities['tickets']->fields['cust_24']->checks = [
-            'type' => 'tinytext',
+            'type' => 'string',
         ];
-        $entities['tickets']->fields['cust_25'] = Field::getInstance('tickets', 'cust_25', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['cust_25'] = Field::getInstance('tickets', 'cust_25', 'tinytext', 'string');
         $entities['tickets']->fields['cust_25']->checks = [
-            'type' => 'tinytext',
+            'type' => 'string',
         ];
-        $entities['tickets']->fields['cust_26'] = Field::getInstance('tickets', 'cust_26', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['cust_26'] = Field::getInstance('tickets', 'cust_26', 'tinytext', 'string');
         $entities['tickets']->fields['cust_26']->checks = [
-            'type' => 'tinytext',
+            'type' => 'string',
         ];
-        $entities['tickets']->fields['cust_27'] = Field::getInstance('tickets', 'cust_27', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['cust_27'] = Field::getInstance('tickets', 'cust_27', 'tinytext', 'string');
         $entities['tickets']->fields['cust_27']->checks = [
-            'type' => 'tinytext',
+            'type' => 'string',
         ];
-        $entities['tickets']->fields['cust_28'] = Field::getInstance('tickets', 'cust_28', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['cust_28'] = Field::getInstance('tickets', 'cust_28', 'tinytext', 'string');
         $entities['tickets']->fields['cust_28']->checks = [
-            'type' => 'tinytext',
+            'type' => 'string',
         ];
         $entities['tickets']->fields['date_closed'] = Field::getInstance('tickets', 'date_closed', 'datetime', 'DateTime');
         $entities['tickets']->fields['date_closed']->checks = [
@@ -841,13 +841,13 @@ class SchemaPedidos
             'removeMultipleSpaces' => true,
             'nullIfEmpty' => true,
         ];
-        $entities['tickets']->fields['live_agents'] = Field::getInstance('tickets', 'live_agents', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['live_agents'] = Field::getInstance('tickets', 'live_agents', 'tinytext', 'string');
         $entities['tickets']->fields['live_agents']->checks = [
-            'type' => 'tinytext',
+            'type' => 'string',
         ];
-        $entities['tickets']->fields['misc'] = Field::getInstance('tickets', 'misc', 'longtext', 'longtext');
+        $entities['tickets']->fields['misc'] = Field::getInstance('tickets', 'misc', 'longtext', 'string');
         $entities['tickets']->fields['misc']->checks = [
-            'type' => 'longtext',
+            'type' => 'string',
         ];
         $entities['tickets']->fields['os'] = Field::getInstance('tickets', 'os', 'varchar', 'string');
         $entities['tickets']->fields['os']->checks = [
@@ -901,9 +901,9 @@ class SchemaPedidos
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['tickets']->fields['tags'] = Field::getInstance('tickets', 'tags', 'tinytext', 'tinytext');
+        $entities['tickets']->fields['tags'] = Field::getInstance('tickets', 'tags', 'tinytext', 'string');
         $entities['tickets']->fields['tags']->checks = [
-            'type' => 'tinytext',
+            'type' => 'string',
         ];
         $entities['tickets']->fields['user_type'] = Field::getInstance('tickets', 'user_type', 'varchar', 'string');
         $entities['tickets']->fields['user_type']->checks = [
@@ -936,9 +936,9 @@ class SchemaPedidos
             'trim' => ' ',
             'removeMultipleSpaces' => true,
         ];
-        $entities['ticket_tags']->fields['description'] = Field::getInstance('ticket_tags', 'description', 'tinytext', 'tinytext');
+        $entities['ticket_tags']->fields['description'] = Field::getInstance('ticket_tags', 'description', 'tinytext', 'string');
         $entities['ticket_tags']->fields['description']->checks = [
-            'type' => 'tinytext',
+            'type' => 'string',
             'required' => '1',
         ];
         $entities['ticket_tags']->fields['id'] = Field::getInstance('ticket_tags', 'id', 'int', 'int');

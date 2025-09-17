@@ -5,11 +5,13 @@ mb_internal_encoding('UTF-8');
 require_once '../fines-config.php';
 require_once '../vendor/autoload.php'; // Ensure TCPDF is autoloaded
 
+use chillerlan\QRCode\Common\EccLevel;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+use Pedidos\Attachments_;
+use Pedidos\Threads_;
 use Pedidos\Tickets_;
 use SqlOrganize\Utils\ValueTypesUtils;
-
 $dbFines = \App\Context::getFinesDb();
 $dbPedidos = \App\Context::getPedidosDb();
 
@@ -26,17 +28,49 @@ $_POST["body"] .= $_POST['numero_documento'] . " es alumno regular de ";
 $_POST["body"] .= $_POST['anio'] . " año Programa Fines 2 Trayecto Secundario con orientación en ";
 $_POST["body"] .= $_POST['orientacion'] . " resolución ";
 $_POST["body"] .= $_POST['resolucion'];
+
     
 if (!empty($_POST['observaciones'])) {
     $_POST["body"] .= " - " . $_POST['observaciones']; 
 }
 
+$_POST["subject"] = "Constancia de certificado completo : " . $_POST["apellidos"] . ", " . $_POST["nombres"];
 
+$ticket = new Tickets_();
+$ticket->subject = $_POST["subject"];
+$ticket->status = 4;
+$ticket->category = 10;
+$ticket->date_closed = new DateTime();
+$ticket->cust_24 = $_POST["numero_documento"];
+$ticket->cust_28 = "Válido por 30 días";
+
+$thread = new Threads_();
+$thread->ticket = $ticket->id;
+$thread->body = $_POST["body"];
+
+$attachment = new Attachments_();
+$attachment->name = $_POST["filename"];
+$attachment->file_path = $_POST["upload_dir"] . $_POST["filename"];
+$attachment->is_image = 1;
+$attachment->source_id = $thread->id;
+$attachment->ticket_id = $ticket->id;
+
+$modify = $dbPedidos->CreateModifyQueries();
+$modify->buildInsertSql($ticket);
+$modify->buildInsertSql($thread);
+$modify->buildInsertSql($attachment);
+
+$thread->attachments = $attachment->id;
+$modify->buildUpdateKeySqlById($thread, "attachments");
+//$modify->process();
+
+$url = "https://planfines2.com.ar/wp/pedidos/?wpsc-section=ticket-list&ticket-id=" . $ticket->id . "&auth-code=" . $ticket->auth_code;
+die("fin prueba");
 function generar_constancia_titulo_tramite($url, $data) {
     // Create QR Code
 
     $options = new QROptions([
-        'eccLevel' => QRCode::ECC_L,
+        'eccLevel' => EccLevel::L,
         'outputType' => QRCode::OUTPUT_IMAGE_PNG,
         'scale' => 5,
     ]);
@@ -109,9 +143,8 @@ function generar_constancia_titulo_tramite($url, $data) {
 
 // Call the function
 try {
-    $data["subject"] = "Constancia de certificado completo : " . $data["apellidos"] . ", " . $data["nombres"];
     
-    $ticket = new Tickets_();
+    
     
     
     $url = pdoInsertarPedido($data);
