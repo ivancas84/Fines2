@@ -26,7 +26,7 @@ define("DB_PASS_PEDIDOS", "nF7jJfUcCMDuWaG8azeG");
 
 define("TEMP_PATH", "/home/planfi10/domains/planfines2.com.ar/public_html/temp/");
 
-define("PATH_UPLOAD_PEDIDOS", "/home/planfi10/domains/planfines2.com.ar/public_html/wp/wp-content/uploads");
+define("PATH_UPLOAD_PEDIDOS2", "/home/planfi10/domains/planfines2.com.ar/public_html/wp/wp-content/uploads");
 
 define("EMAIL_DOCENTES_HOST", "mail.planfines2.com.ar");
 define("EMAIL_DOCENTES_USER", "docentes@planfines2.com.ar");

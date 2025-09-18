@@ -60,6 +60,7 @@
 
 </form>
 
+<p>Constancia de completo <a href="<?=admin_url('admin.php?page=fines-plugin-ccc&id_persona=' . $persona->id)?>" target="_blank">aquí</a></p>
 <style>
     .form-grid {
         display: grid;

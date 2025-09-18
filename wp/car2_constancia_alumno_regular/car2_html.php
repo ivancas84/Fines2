@@ -4,7 +4,7 @@ use SqlOrganize\Utils\ValueTypesUtils;
 ?>
 <div class="wrap">
     <h1>Formulario de Datos del Alumno</h1>
-    <form method="POST" action="https://planfines2.com.ar/constancia_alumno_regular.php">
+    <form method="POST" action="https://planfines2.com.ar/scripts/constancia_alumno_regular.php">
         <table class="form-table">
 		<tr>
                 <th><label>Nombres:</label></th>

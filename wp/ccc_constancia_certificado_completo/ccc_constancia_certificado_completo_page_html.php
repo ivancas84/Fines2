@@ -1,6 +1,6 @@
 <div class="wrap">
     <h1>Formulario de Datos del Alumno</h1>
-    <form method="POST" action="https://planfines2.com.ar/script/constancia_certificado_completo.php">
+    <form method="POST" action="https://planfines2.com.ar/scripts/constancia_certificado_completo.php">
         <table class="form-table">
 		<tr>
                 <th><label>Nombres:</label></th>
@@ -16,7 +16,7 @@
             </tr>
             <tr>
                 <th><label>Año en Curso:</label></th>
-                <td><input type="text" name="anio_en_curso" value="<?= esc_attr($anio) ?>" class="regular-text" required></td>
+                <td><input type="text" name="anio" value="<?= esc_attr($anio) ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Orientación:</label></th>

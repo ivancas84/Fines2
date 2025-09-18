@@ -22,10 +22,10 @@ add_submenu_page(
     'Constancia Alumno Regular', //Título del menú
     'edit_posts', // Permisos
     'fines-plugin-car2',  // Slug del submenú
-    'car2_constancia_alumno_regular_page' // Función que muestra la página del submenu
+    'car2_page' // Función que muestra la página del submenu
 );
 
-function car2_constancia_alumno_regular_page() {
+function car2_page() {
     wp_page_message();
 
     $persona_id = isset($_GET['persona_id']) ? $_GET['persona_id'] : null;
@@ -49,7 +49,7 @@ function car2_constancia_alumno_regular_page() {
     $notas = "Sede: " . $alumno_comision->comision_?->sede_?->getLabel() ?? "?" . ". Comision:" . $alumno_comision->comision_?->pfid ?? "?" . ". Ultimo periodo cursado: " . $alumno_comision->comision_?->calendario_?->getLabel() ?? "?";
 	$fecha = ValueTypesUtils::fechaActualDiaDeMesDeAnio();
 	
-    include plugin_dir_path(__FILE__) . 'car2_constancia_alumno_regular_form_html.php';
+    include plugin_dir_path(__FILE__) . 'car2_html.php';
 }
 
 
