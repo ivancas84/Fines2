@@ -118,6 +118,22 @@ class CalificacionDAO
 
     }
 
+    /**
+     * @return Calificacion_[]
+     */
+    public static function calificacionesAprobadasByAlumno(string $alumno): array {
+
+        $sql = "
+            SELECT DISTINCT calificacion.id
+            FROM calificacion
+            WHERE alumno = :alumno 
+            AND (nota_final >= 7 OR crec >= 4)
+        ";  
+
+        return \App\Context::getFinesDb()
+            ->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno] );
+    }
+
     
 
     /**
