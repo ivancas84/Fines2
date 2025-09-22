@@ -378,12 +378,16 @@ abstract class ModifyQueries
         $this->processArrayParameters($entityName, "delete", $sql, ["{$prefix}Ids" => $ids]);
     }
 
-    public function migrateRelations($entityName, $fkName, $id_origen, $id_destino){
+    public function migrateRelations($entityName, $fkName, $value_origen, $value_destino){
         /** @var DataProvider */ $dataProvider = $this->db->CreateDataProvider();
-        /** @var Entity[] */ $relations = $dataProvider->fetchAllEntitiesByParams($entityName, [$fkName=> $id_origen]);
+        /** @var Entity[] */ $relations = $dataProvider->fetchAllEntitiesByParams($entityName, [$fkName=> $value_origen]);
         foreach($relations as $rel){
-            $rel->set($this->db->config->idName, $id_destino);
-            $this->buildUpdateKeySqlById($rel, $fkName);
+            $this->buildUpdateKeyValueSqlById(
+                $entityName, 
+                $fkName, 
+                $value_destino,
+                $rel->get($this->db->config->idName)
+            );
         }
     }
 
@@ -395,7 +399,6 @@ abstract class ModifyQueries
     {
         $sql = $this->sql;
 
-        
         if(empty($sql))
             return 0;   
         

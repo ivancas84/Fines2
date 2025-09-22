@@ -64,66 +64,7 @@ class PfUtils
     }
 
 
-    public static function parseFirstColumnCalificacionPF($inputString) {
-
-        // Eliminar el número al principio (hasta el primer espacio)
-        $spacePos = strpos($inputString, ' ');
-        if ($spacePos === false) return null; // línea no válida
-
-        $inputString = substr($inputString, $spacePos + 1); // todo después del primer espacio
-
-        // Separar por "DNI"
-        $parts = explode('DNI', $inputString);
-        if (count($parts) !== 2) return null; // no contiene DNI
-
-        $namePart = trim($parts[0]);
-        $dniPart = trim($parts[1]);
-
-        // Obtener número de documento
-        if (!is_numeric($dniPart)) return null;
-
-        // Separar apellidos y nombres por la coma
-        $nameSplit = explode(',', $namePart);
-        if (count($nameSplit) !== 2) return null;
-
-        $apellidos = trim($nameSplit[0]);
-        $nombres = trim($nameSplit[1]);
-
-        return [
-            'apellidos' => $apellidos,
-            'nombres' => $nombres,
-            'numero_documento' => $dniPart
-        ];
-    }
-
-    /**
-     * parsear un elemnto de la planilla de calificaciones del programa fines para dividir el contenido en
-     * nombres, apellidos y nota
-     */
-    public static function parseRowCalificacionPF($row)
-    {
-        $data = array();
-        foreach($row as $key => $value) {
-            if(str_contains($key, "Nombre")){
-                $data = array_merge($data, self::parseFirstColumnCalificacionPF($value));
-            } else if(str_contains($key, "Final")){
-                $value = intval(trim($value));
-                if($value < 7){
-                    throw new Exception("Calificación vacía o menor a 7");
-                }
-
-                $data["nota"] = $value;
-
-            }
-        }
-
-        if(empty($data["nombres"]) || empty($data["apellidos"]) || empty($data["nota"])){
-            throw new Exception("Datos incompletos en la fila.");
-        }
-
-        return $data;
-
-    }
+ 
 
     
     

@@ -14,6 +14,8 @@ class CalificacionDAO
         /** @var Calificacion_ */ $calificacion = $dataProvider->fetchEntityByParams("calificacion", ["alumno" => $idAlumno, "disposicion" => $idDisposicion]);
         if(empty($calificacion)){
             $calificacion = new Calificacion_();
+            $calificacion->_status = -1;
+
         } else {
             $calificacion->_status = 1;
             $calificacion->_changeLog = [];

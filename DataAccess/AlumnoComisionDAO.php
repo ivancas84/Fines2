@@ -2,18 +2,23 @@
 
 namespace Fines2;
 
+use App\Context;
 use Fines2\AlumnoComision_;
+use SqlOrganize\Sql\Db;
 use SqlOrganize\Sql\ModifyQueries;
 
 class AlumnoComisionDAO
 {
 
     public static function createAndPersist(ModifyQueries $modifyQueries, string $alumno_id, string $comision_id, ?string $observaciones): AlumnoComision_{
-        
-        $alumnoComision = new AlumnoComision_();
-        $alumnoComision->initByUnique(["alumno" => $alumno_id, "comision" => $comision_id]);
-        
-        if ($alumnoComision->_status < 0){
+
+        /** @var Db */ $db = Context::getFinesDb();
+        /** @var AlumnoComision_ */ $alumnoComision = $db->CreateDataProvider()->fetchEntityByParams("alumno_comision", ["alumno" => $alumno_id, "comision" => $comision_id]); 
+        if($alumnoComision == null ) {
+            $alumnoComision = new AlumnoComision_();
+            $alumnoComision->_status = -1; //marco para insertar
+            $alumnoComision->set("alumno", $alumno_id);
+            $alumnoComision->set("comision", $comision_id);
             $alumnoComision->set("estado", ($modifyQueries->getDetailAction("alumno", $alumno_id) == "insert") ? "Ingresante" : "Incorporado");
             $alumnoComision->set("observaciones", $observaciones);
             $modifyQueries->buildInsertSql($alumnoComision);

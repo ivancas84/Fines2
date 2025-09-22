@@ -57,7 +57,7 @@
                 <td><?= esc_html($curso->toma_activa_?->estado); ?><br>
                     <?= esc_html($curso->toma_activa_?->estado_contralor); ?><br></td>
                 <td><?= esc_html($curso->toma_activa_?->planilla_docente_?->numero); ?></td>
-                <td><?= esc_html($curso->toma_activa_?->estado_planilla); ?></td>
+                <td><?= esc_html($curso->toma_activa_?->estado_planilla ?? "Sin entregar"); ?></td>
                 <td><?= esc_html(count($calificaciones)); ?></td>
                 <td>Toma <?= esc_html($curso->toma_activa_?->id); ?><br>
                     Curso <?= esc_html($curso->id); ?><br>

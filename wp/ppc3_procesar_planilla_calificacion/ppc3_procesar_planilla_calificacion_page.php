@@ -1,6 +1,7 @@
 <?php
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/fines-config.php';
+require_once plugin_dir_path(__FILE__) . 'pp3_functions.php';
 
 use Fines2\Calificacion_;
 use Fines2\Curso_;
@@ -59,18 +60,16 @@ function ppc3_procesar_planilla_calificacion_page() {
             $i++;
             $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
             echo "<strong>Calificación: " . $i . ";</strong><br>";
-            if($format == "pf"){
-                echo " - " . $data["Apellido, Nombre DNI"]; 
-                $data = PfUtils::parseRowCalificacionPF($data);
-            } 
+            
+            $data = ($format == "pf") ? ppc3_parse_pf($data) :  ppc3_parse_xlsx($data);
 
+            echo "<pre>";
+            print_r($data);
+            echo "</pre>";
 
             /** @var Persona_ */ $persona = PersonaDAO::createAndPersist($modifyQueries, $data);
-
             /** @var Alumno_ */ $alumno = AlumnoDAO::createAndPersist($modifyQueries, $persona->id, $curso->comision_->planificacion_->plan); 
-
            /** @var AlumnoComision_ */ $alumnoComision = AlumnoComisionDAO::createAndPersist($modifyQueries, $alumno->id, $curso->comision_->id, "Importado desde planilla de calificaciones");
-
             /** @var Calificacion_ */ $calificacion = CalificacionDAO::createAndPersist($modifyQueries, $data["nota"], $alumno->id, $curso->disposicion, $curso->id);
 
             echo $modifyQueries->htmlDetail();

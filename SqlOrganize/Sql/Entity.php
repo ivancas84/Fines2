@@ -73,7 +73,7 @@ class Entity
     //  * -1 No existe en la base de datos (insert)
     //  * 0: Existe en la base de datos pero fue modificado (update)
     //  * 1: Existe en la base de datos y no fue modificado
-    public int $_status = -1;
+    public int $_status = 1; //por defecto se carga en 1, si se quiere insertar se debe cargar en -1 manualmente
 
     // Índice dentro de una colección
     // Facilita la impresión del número de fila, por ejemplo
@@ -106,6 +106,7 @@ class Entity
 
     public function initNull(string $fieldName = "_label", ?string $fieldValue = null){
         $this->set("id", null);
+        $this->_status = -1;
         $fieldValue = $fieldValue ?? "-Seleccione " . ucwords($this->_entityName) . "-";
         $this->set($fieldName, $fieldValue);
     }

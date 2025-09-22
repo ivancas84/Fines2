@@ -1,12 +1,15 @@
 <?php
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
+        require_once plugin_dir_path(__FILE__) . 'pp3_functions.php';
 
 use Fines2\Persona_;
 use Fines2\Alumno_;
 use Fines2\AlumnoComision_;
 use Fines2\AlumnoComisionDAO;
 use Fines2\AlumnoDAO;
+use Fines2\Calificacion;
+use Fines2\Calificacion_;
 use Fines2\CalificacionDAO;
 use Fines2\PersonaDAO;
 use ProgramaFines\PfUtils;
@@ -37,13 +40,11 @@ function ppc3_process_handle() {
     foreach($result as $data) {
         try {
             $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
-            if($format == "pf"){
-                try {
-                    $data = PfUtils::parseRowCalificacionPF($data);
-                } catch(Exception $ex){
-                    continue;
-                }
-            } 
+            try {
+                $data = ($format == "pf") ? ppc3_parse_pf($data) :  ppc3_parse_xlsx($data);
+            } catch(Exception $ex){
+                continue;
+            }
 
             /** @var Persona_ */ $persona = PersonaDAO::createAndPersist($modifyQueries, $data);
 
@@ -60,7 +61,5 @@ function ppc3_process_handle() {
         }
     }
 
-    
-
-
+ 
 }

@@ -1,6 +1,8 @@
 <div class="wrap">
     <h1>Transferir Persona</h1>
-    <form method="POST" action="https://planfines2.com.ar/scripts/constancia_certificado_completo.php">
+    <form method="GET">
+        <input type="hidden" name="page" value="fines-plugin-trp" />
+
         <table class="form-table">
 		<tr>
                 <th><label>DNI origen (se eliminará):</label></th>
