@@ -109,7 +109,7 @@ class TomaDAO
         return $dataProvider->fetchAllEntitiesBySqlId("toma", $sql, ["calendario" => $calendario, "sede" => $sede]);
     }
 
-    public static function TomaActivaByCurso($curso_id): Toma_{
+    public static function TomaActivaByCurso($curso_id): ?Toma_{
          $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();

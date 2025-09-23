@@ -88,6 +88,9 @@
                             onclick="return confirm('¿Está seguro que desea generar toma y enviar Email?');">
                             Generar Toma
                             </a>
+                        <a href="<?= esc_url(admin_url('admin.php?page=fines-plugin-ppc3&curso_id=' . $toma->curso_->id)) ?>" title="Cargar Planilla de Calificación" class="button"><span  class="dashicons dashicons-media-spreadsheet"></span></a>
+<a href="<?= esc_url('/scripts/cambiar_estado_planilla.php?toma_id=' . $toma?->id . '&estado=entregada') ?>" target="_blank" title="Cambiar entregada" class="button"><span  class="dashicons dashicons-yes"></span></a>
+                         <a href="<?= esc_url(admin_url('admin.php?page=fines-plugin-lacu&curso_id=' . $toma->curso_->id))?>" class="button" title="Calificaciones por curso"><span class="dashicons dashicons-paperclip"></span></a>
                     </td>
             </tr>
         <?php endfor; ?>

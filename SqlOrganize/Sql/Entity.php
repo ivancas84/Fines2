@@ -140,10 +140,11 @@ class Entity
         }
     }
 
-    public function setFk(string $fieldName, Entity $value): void
+    public function setFk(string $fieldName, ?Entity $value): void
     {   
         $this->set($fieldName . "_", $value, false);
-        $this->set($fieldName, $value->get($this->_db->config->idName));
+        ($value === null) ? $this->set($fieldName, null) :
+            $this->set($fieldName, $value->get($this->_db->config->idName));
     }
 
     /**
