@@ -85,6 +85,8 @@ class TomaDAO
             INNER JOIN curso ON (toma.curso = curso.id)
             INNER JOIN comision ON (curso.comision = comision.id)
             INNER JOIN calendario ON (comision.calendario = calendario.id)
+            AND (toma.estado = 'Aprobada') 
+            AND (toma.estado_contralor != 'Modificar') 
             WHERE calendario = :calendario
         ";
 

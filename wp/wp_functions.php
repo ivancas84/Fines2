@@ -1,5 +1,9 @@
 <?php
 
+function sanitize_text_field($valor){
+    throw new Exception("Not implemented");
+}
+
 function esc_textarea($valor){
     throw new Exception("Not implemented");
 }

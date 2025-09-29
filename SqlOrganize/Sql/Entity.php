@@ -28,7 +28,7 @@ class Entity
 
     public string $_label = ""; 
 
-    /** @var array<string, mixed> */ public array $_changeLog = [];
+    /** @var array<string, mixed> */ public array $_changeLog = []; //registra el ultimo cambio realizado a una propiedad (no incluye Entity)
 
     public function htmlChangeLog(): string{
         $html = "<p><strong>changelog $this->_entityName </strong></p>";
