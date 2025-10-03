@@ -38,6 +38,9 @@
                 <td>
                     <textarea name="observaciones<?=$i?>"><?=$cal->observaciones?></textarea>
                 </td>
+                <td>
+                    <input type="text" name="curso<?=$i?>" value="<?= $cal->curso ?>">
+                </td>
             </tr>
         <?php endfor; ?>
     </tbody>

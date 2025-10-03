@@ -8,19 +8,19 @@ use SqlOrganize\Utils\ValueTypesUtils;
         <table class="form-table">
 		<tr>
                 <th><label>Nombres:</label></th>
-                <td><input type="text" name="nombres" value="<?= esc_attr( mb_strtoupper($persona->nombres, 'UTF-8')) ?>" class="regular-text" required></td>
+                <td><input type="text" name="nombres" value="<?= esc_attr( mb_strtoupper($alumno->persona_->nombres, 'UTF-8')) ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Apellidos:</label></th>
-                <td><input type="text" name="apellidos" value="<?= esc_attr( mb_strtoupper($persona->apellidos, 'UTF-8')) ?>" class="regular-text" required></td>
+                <td><input type="text" name="apellidos" value="<?= esc_attr( mb_strtoupper($alumno->persona_->apellidos, 'UTF-8')) ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Número de Documento:</label></th>
-                <td><input type="text" name="numero_documento" value="<?= esc_attr( $persona->numero_documento) ?>" class="regular-text" required></td>
+                <td><input type="text" name="numero_documento" value="<?= esc_attr( $alumno->persona_->numero_documento) ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Año en Curso:</label></th>
-                <td><input type="text" name="anio_en_curso" value="<?= esc_attr($alumno_comision->alumno_?->planificacion_?->getAnioLetras() ?? "primer") ?>" class="regular-text" required></td>
+                <td><input type="text" name="anio" value="<?= esc_attr($alumno_comision?->comision_->planificacion_?->getAnioLetras()) ?>" class="regular-text" required></td>
             </tr>
             <tr>
                 <th><label>Orientación:</label></th>

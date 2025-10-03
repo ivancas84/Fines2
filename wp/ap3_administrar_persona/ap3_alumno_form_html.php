@@ -84,9 +84,14 @@
 
     <input type="hidden" name="alumno_id" value="<?= esc_attr($alumno->id); ?>"/>
 
-    <button type="submit" class="submit-btn">Guardar Cambios</button>
+    <button type="submit" class="submit-btn">Guardar Datos Alumno</button>
 
 </form>
+
+<h3>Generar Constancias</h3>
+<p>Constancia de Certificado de Estudio en Trámite: <a href="<?=admin_url('admin.php?page=fines-plugin-ccc&id_persona=' . $persona->id)?>" target="_blank">GENERAR</a></p>
+<p>Constancia de Alumno Regular: <a href="<?=admin_url('admin.php?page=fines-plugin-car2&persona_id=' . $persona->id)?>" target="_blank">GENERAR</a></p>
+
 
 <style>
     .form-grid {

@@ -198,7 +198,7 @@ function fines_plugin_menu() {
       'taa_transferir_alumnos_activos_page'
     );
 
-    include_once plugin_dir_path(__FILE__) . 'car2_constancia_alumno_regular/car2_constancia_alumno_regular_page.php';
+    include_once plugin_dir_path(__FILE__) . 'car2_constancia_alumno_regular/car2_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'mo_mas_opciones/mo_mas_opciones_page.php';
     include_once plugin_dir_path(__FILE__) . 'cac2_cargar_alumnos_comision/cac2_cargar_alumnos_comision_page.php';

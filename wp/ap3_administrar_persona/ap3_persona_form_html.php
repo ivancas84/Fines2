@@ -54,53 +54,75 @@
             <label for="lugar_nacimiento">Lugar de Nacimiento:</label>
             <input type="text" id="lugar_nacimiento" name="lugar_nacimiento" value="<?=$persona->lugar_nacimiento?>">
         </div>
+
+        <div class="form-group">
+            <label for="descripcion_domicilio">Descripción Domicilio:</label>
+            <input type="text" id="descripcion_domicilio" name="descripcion_domicilio" value="<?=$persona->descripcion_domicilio?>">
+        </div>
     </div>
 
-    <button type="submit" class="submit-btn">Guardar Cambios</button>
+    <button type="submit" class="submit-btn">Guardar Datos Persona</button>
 
 </form>
 
-<p>Constancia de completo <a href="<?=admin_url('admin.php?page=fines-plugin-ccc&id_persona=' . $persona->id)?>" target="_blank">aquí</a></p>
 <style>
     .form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-        max-width: 800px;
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 15px !important;
+        max-width: 1200px !important;
+        width: 100% !important;
     }
 
     .form-group {
-        display: flex;
-        flex-direction: column;
+        display: flex !important;
+        flex-direction: column !important;
     }
 
     label {
-        font-weight: bold;
-        margin-bottom: 5px;
+        font-weight: bold !important;
+        margin-bottom: 5px !important;
     }
 
-    input {
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+    input[type="text"],
+    input[type="email"],
+    input[type="date"] {
+        padding: 8px !important;
+        border: 1px solid #ccc !important;
+        border-radius: 5px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
     }
 
     .submit-btn {
-        display: block;
-        margin: 20px auto;
-        padding: 10px 20px;
-        background-color: #0073aa;
-        color: white;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: 0.3s;
+        display: block !important;
+        margin: 20px auto !important;
+        padding: 10px 20px !important;
+        background-color: #0073aa !important;
+        color: white !important;
+        font-size: 16px !important;
+        border: none !important;
+        border-radius: 5px !important;
+        cursor: pointer !important;
+        transition: 0.3s !important;
     }
 
     .submit-btn:hover {
-        background-color: #005177;
+        background-color: #005177 !important;
+    }
+
+    /* Responsive: fall back to 2 columns on smaller screens */
+    @media (max-width: 900px) {
+        .form-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+        }
+    }
+
+    /* Responsive: fall back to 1 column on mobile */
+    @media (max-width: 600px) {
+        .form-grid {
+            grid-template-columns: 1fr !important;
+        }
     }
 
 </style>
-

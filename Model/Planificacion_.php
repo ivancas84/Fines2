@@ -34,9 +34,8 @@ class Planificacion_ extends Planificacion
     }
 
     public function getAnioLetras(){
-        return ValueTypesUtils::toOrdinalSpanish(intval($this->anio));
+        return mb_strtoupper(ValueTypesUtils::toOrdinalSpanish(intval($this->anio)));
     }
-    
 
 
 

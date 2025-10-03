@@ -19,12 +19,12 @@ $dbFines = \App\Context::getFinesDb();
 $dbPedidos = \App\Context::getPedidosDb();
 
 
-$actual_unix_timestamp = date("Ymd");
+$actual_unix_timestamp = date("Ym"); //solo permitira generar uno por mes
 $upload_dir = "/wpsc/". date('Y') . "/" . date('m') . "/";
-$filename = "{$actual_unix_timestamp}_constancia_{$_POST["numero_documento"]}.pdf";
+$filename = "{$actual_unix_timestamp}_completo_{$_POST["numero_documento"]}.pdf";
 $save_path = $upload_dir . $filename;
-
 $ticketId = AttachmentsDAO::TicketIdByFilepath($save_path);
+
 if(!is_null($ticketId)){
     /** @var Tickets_ */$ticket = $dbPedidos->CreateDataProvider()->fetchEntityByParams("tickets", ["id" => $ticketId]);
     $url = "https://planfines2.com.ar/wp/pedidos/?wpsc-section=ticket-list&ticket-id=" . $ticket->id . "&auth-code=" . $ticket->auth_code;
@@ -34,18 +34,19 @@ if(!is_null($ticketId)){
 }
 
 
-$body = "La Dirección del CENS 462 de La Plata, hace constar por la presente que ";
-$body .= $_POST['apellidos'] . ", ";
-$body .= $_POST['nombres'] . " DNI N° ";
-$body .= $_POST['numero_documento'] . " es alumno regular de ";
-$body .= $_POST['anio'] . " año Programa Fines 2 Trayecto Secundario con orientación en ";
-$body .= $_POST['orientacion'] . " resolución ";
-$body .= $_POST['resolucion'];
+$body = "
+<p>La Dirección del CENS Nº 462 de La Plata, hace constar por la presente que
+<strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['apellidos']}, {$_POST['nombres']}&nbsp;&nbsp;&nbsp;</i></u></strong> DNI Nº <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['numero_documento']}&nbsp;&nbsp;&nbsp;</i></u></strong> 
+tiene en trámite un CERTIFICADO ANALÍTICO DE ESTUDIOS <strong><u><i>&nbsp;&nbsp;&nbsp;COMPLETO&nbsp;&nbsp;&nbsp;</i></u></strong> de <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['anio']}&nbsp;&nbsp;&nbsp;</i></u></strong> año <strong><u><i>&nbsp;&nbsp;&nbsp;Programa Fines 2 Trayecto Secundario&nbsp;&nbsp;&nbsp;</i></u></strong> con orientación en <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['orientacion']}&nbsp;&nbsp;&nbsp;</i></u></strong>
+resolución <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['resolucion']}&nbsp;&nbsp;&nbsp;</i></u></strong> adeudando <strong><u><i>&nbsp;&nbsp;&nbsp;Ninguna Materia&nbsp;&nbsp;&nbsp;</i></u></strong>.</p>
+<p>Se extiende la presente a pedido del interesado en La Plata el día <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['fecha']}&nbsp;&nbsp;&nbsp;</i></u></strong> para ser presentado ante <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['presentado']}&nbsp;&nbsp;&nbsp;</i></u></strong>.</p>
+";
 
-    
 if (!empty($_POST['observaciones'])) {
-    $body .= " - " . $_POST['observaciones']; 
+    $body .= "<p>Observaciones:<strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['observaciones']}&nbsp;&nbsp;&nbsp;</i></u></strong></p>";
 }
+
+
 
 $ticket = new Tickets_();
 $ticket->subject = "Constancia de certificado completo : " . $_POST["apellidos"] . ", " . $_POST["nombres"];
@@ -110,42 +111,31 @@ $pdf->SetAlpha(0.9);
 $pdf->Image(IMAGES_PATH .'sello_cens.png', 85, 85, 30, 40, 'PNG'); // Bottom Center
 $pdf->Image(IMAGES_PATH .'firma_director_luis.png', 120, 90, 60, 35, 'PNG'); // Bottom Right
 
-    $pdf->SetAlpha(1); // Reset transparency
-    // Title
-    $pdf->SetFont('helvetica', 'B', 14);
-    $pdf->Cell(0, 10, "CONSTANCIA DE CERTIFICADO DE ESTUDIO EN TRÁMITE", 0, 1, 'C');
-    $pdf->Ln(5);
+$pdf->SetAlpha(1); // Reset transparency
+// Title
+$pdf->SetFont('helvetica', 'B', 14);
+$pdf->Cell(0, 10, "CONSTANCIA DE CERTIFICADO DE ESTUDIO EN TRÁMITE", 0, 1, 'C');
+$pdf->Ln(5);
 
-    // Justify the content with interlineado
-    $pdf->SetFont('helvetica', '', 10);
-    $content = "
-    <p>La Dirección del CENS Nº 462 de La Plata, hace constar por la presente que
-    <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['apellidos']}, {$_POST['nombres']}&nbsp;&nbsp;&nbsp;</i></u></strong> DNI Nº <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['numero_documento']}&nbsp;&nbsp;&nbsp;</i></u></strong> 
-    tiene en trámite un CERTIFICADO ANALÍTICO DE ESTUDIOS <strong><u><i>&nbsp;&nbsp;&nbsp;COMPLETO&nbsp;&nbsp;&nbsp;</i></u></strong> de <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['anio']}&nbsp;&nbsp;&nbsp;</i></u></strong> año <strong><u><i>&nbsp;&nbsp;&nbsp;Programa Fines 2 Trayecto Secundario&nbsp;&nbsp;&nbsp;</i></u></strong> con orientación en <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['orientacion']}&nbsp;&nbsp;&nbsp;</i></u></strong>
-    resolución <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['resolucion']}&nbsp;&nbsp;&nbsp;</i></u></strong> adeudando <strong><u><i>&nbsp;&nbsp;&nbsp;Ninguna Materia&nbsp;&nbsp;&nbsp;</i></u></strong>.</p>
-    <p>Se extiende la presente a pedido del interesado en La Plata el día <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['fecha']}&nbsp;&nbsp;&nbsp;</i></u></strong> para ser presentado ante <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['presentado']}&nbsp;&nbsp;&nbsp;</i></u></strong>.</p>
-    ";
+// Justify the content with interlineado
+$pdf->SetFont('helvetica', '', 10);
 
-    if (!empty($_POST['observaciones'])) {
-        $content .= "<p>Observaciones:<strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['observaciones']}&nbsp;&nbsp;&nbsp;</i></u></strong></p>";
-    }
 
-    // Write the content with justified text and line spacing
-    $pdf->writeHTMLCell(0, 0, '', '', $content, 0, 1, false, true, 'J');
+// Write the content with justified text and line spacing
+$pdf->writeHTMLCell(0, 0, '', '', $body, 0, 1, false, true, 'J');
 
-    
 
-    // Ensure directories exist
-    if (!file_exists(dirname(PATH_UPLOAD_PEDIDOS2.$upload_dir))) {
-        mkdir(dirname(PATH_UPLOAD_PEDIDOS2.$upload_dir), 0777, true);
-    }
 
-    // Save the PDF
-    $pdf->Output(PATH_UPLOAD_PEDIDOS2.$save_path, "F"); // Save to file
-    // Output PDF
-    $pdf->Output($filename, "I"); // Display in browser
+// Ensure directories exist
+if (!file_exists(PATH_UPLOAD_PEDIDOS2.$upload_dir)) {
+    mkdir(PATH_UPLOAD_PEDIDOS2.$upload_dir, 0777, true);
+}
 
-    // Clean up temp QR file
-    unlink($qrFile);
+// Save the PDF
+$pdf->Output(PATH_UPLOAD_PEDIDOS2.$save_path, "F"); // Save to file
+// Output PDF
+$pdf->Output($filename, "I"); // Display in browser
 
-?>
+// Clean up temp QR file
+unlink($qrFile);
+
