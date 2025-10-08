@@ -43,6 +43,25 @@ class CalificacionDAO
     /**
      * @return Calificacion_[]
      */
+    public static function calificacionesAprobadasDocente(mixed $docente_id): array {
+
+        $sql = "
+            SELECT DISTINCT calificacion.id
+            FROM calificacion
+            INNER JOIN curso ON (calificacion.curso = curso.id)
+            INNER JOIN toma ON (curso.id = toma.curso)
+            WHERE toma.docente = :docente
+            AND (nota_final >= 7 OR crec >= 4)
+            AND toma.estado = 'Aprobada' || toma.estado = 'Pendiente'
+            AND toma.estado_contralor != 'Modificar'
+        ";  
+
+        return \App\Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["docente" => $docente_id] );
+    }
+
+    /**
+     * @return Calificacion_[]
+     */
     public static function calificacionesAprobadasByDisposicionAndDnis(mixed $disposicion, array $dnis): array {
 
         $sql = "

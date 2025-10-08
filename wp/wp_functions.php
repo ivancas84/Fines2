@@ -1,5 +1,8 @@
 <?php
 
+function wp_nonce_field(string $action, string $name, $referer = true , $echo = true){
+    throw new Exception("Not implemented");
+}
 function sanitize_text_field($valor){
     throw new Exception("Not implemented");
 }

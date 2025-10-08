@@ -207,6 +207,7 @@ function fines_plugin_menu() {
     include_once plugin_dir_path(__FILE__) . 'pfpd2_procesar_docentes_pf/pfpd2_procesar_docentes_pf_page.php';
     include_once plugin_dir_path(__FILE__) . 'pfpc_procesar_comisiones_pf/pfpc_procesar_comisiones_pf_page.php';  
     include_once plugin_dir_path(__FILE__) . 'trp_transferir_alumno/trp_page.php';  
+    include_once plugin_dir_path(__FILE__) . 'ad2_administrar_docente/ad2_page.php';  
 
   }
 
