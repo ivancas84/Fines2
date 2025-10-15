@@ -12,8 +12,9 @@
 
     <?php foreach ($tomas as $toma): ?>
         <tr>
-            <form method="POST" action="admin-post.php">
+            <form method="POST" target="_blank" action="https://planfines2.com.ar/scripts/update_entity.php">
                 <input type="text" name="honeypot" style="display: none;">
+                <input type="hidden" name="entity_name" value="toma">
                 <input type="hidden" name="persona_id" value="<?= esc_attr($persona->id) ?>">
                 <input type="hidden" name="toma_id" value="<?= esc_attr($toma->id) ?>">
 

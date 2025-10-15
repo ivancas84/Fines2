@@ -64,7 +64,7 @@ class DataProvider {
 
         $className = $this->db->GetEntityMetadata($entityName)->getQualifiedClassName();
         /** @var Entity */ $obj = new $className;
-        $obj->ssetFromTree($treeRow);
+        $obj->ssetFromTree($treeRow); //asigna status a 1 y reinicia changelog
         return $obj;
     }
 

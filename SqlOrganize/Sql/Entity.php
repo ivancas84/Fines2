@@ -223,6 +223,10 @@ class Entity
         }
     }
 
+    /**
+     * ssetFromTree entiende que la asignacion es desde la base de datos
+     * por eso indica status = 1 y changelog vacio
+     */
     public function ssetFromTree(array $treeData){
         $this->ssetFromArray($treeData);
         $entityMetadata = $this->_db->getEntityMetadata($this->_entityName);
@@ -235,7 +239,8 @@ class Entity
                 $this->set($tree->fieldName . "_", $obj);
             }
         }
-
+        $this->_status = 1;
+        $this->_changeLog = [];
     }
 
     /**
