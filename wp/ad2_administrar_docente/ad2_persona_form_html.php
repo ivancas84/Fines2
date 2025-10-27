@@ -32,9 +32,14 @@
 
         <div class="form-group">
             <label for="genero">Género:</label>
-            <input type="text" id="genero" name="genero" value="<?=$persona->genero?>">
+            <select id="genero" name="genero">
+                <option value="" <?= empty($persona->genero) ? 'selected' : '' ?> disabled hidden>Seleccione...</option>
+                <option value="Femenino" <?= $persona->genero === 'Femenino' ? 'selected' : '' ?>>Femenino</option>
+                <option value="Masculino" <?= $persona->genero === 'Masculino' ? 'selected' : '' ?>>Masculino</option>
+                <option value="Otro" <?= $persona->genero === 'Otro' ? 'selected' : '' ?>>Otro</option>
+            </select>
         </div>
-
+        
         <div class="form-group">
             <label for="telefono">Teléfono:</label>
             <input type="text" id="telefono" name="telefono" value="<?=$persona->telefono?>">

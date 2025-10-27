@@ -32,7 +32,12 @@
 
         <div class="form-group">
             <label for="genero">Género:</label>
-            <input type="text" id="genero" name="genero" value="<?=$persona->genero?>">
+            <select id="genero" name="genero">
+                <option value="" <?= empty($persona->genero) ? 'selected' : '' ?> disabled hidden>Seleccione...</option>
+                <option value="Femenino" <?= $persona->genero === 'Femenino' ? 'selected' : '' ?>>Femenino</option>
+                <option value="Masculino" <?= $persona->genero === 'Masculino' ? 'selected' : '' ?>>Masculino</option>
+                <option value="Otro" <?= $persona->genero === 'Otro' ? 'selected' : '' ?>>Otro</option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -84,15 +89,7 @@
         margin-bottom: 5px !important;
     }
 
-    input[type="text"],
-    input[type="email"],
-    input[type="date"] {
-        padding: 8px !important;
-        border: 1px solid #ccc !important;
-        border-radius: 5px !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
+  
 
     .submit-btn {
         display: block !important;
