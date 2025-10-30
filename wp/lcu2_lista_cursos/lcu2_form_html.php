@@ -1,6 +1,6 @@
    <h1>Búsqueda de Cursos</h1>
     <form method="GET">
-        <input type="hidden" name="page" value="fines-plugin-lista-cursos" />
+        <input type="hidden" name="page" value="fines-plugin-lcu2" />
         <label for="calendario">Calendario:</label>
         <select name="calendario" id="calendario">
             <option value="">-- Seleccione --</option>

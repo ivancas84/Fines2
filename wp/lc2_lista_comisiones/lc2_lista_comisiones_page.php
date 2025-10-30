@@ -11,8 +11,8 @@ use SqlOrganize\Utils\ValueTypesUtils;
 
 add_submenu_page(
     'fines-plugin', //debe coincidir con el slug del menu
-    'Comisiones 2', // Título de la página
-    'Comisiones 2', //Título del menú
+    'Comisiones', // Título de la página
+    'Comisiones', //Título del menú
     'edit_posts', // Permisos
     'fines-plugin-lc2',  // Slug del submenú
     'lc2_lista_comisiones_page' // Función que muestra la página del submenu

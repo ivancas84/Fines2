@@ -14,8 +14,8 @@ use \SqlOrganize\Sql\DbMy;
 
 add_submenu_page(
     'fines-plugin', //debe coincidir con el slug del menu
-    'Administrar Comisión2', // Título de la página
-    'Administrar Comisión2', //Título del menú
+    'Administrar Comisión', // Título de la página
+    'Administrar Comisión', //Título del menú
     'edit_posts', // Permisos
     'fines-plugin-ac2',  // Slug del submenú
     'ac2_administrar_comision_page' // Función que muestra la página del submenu

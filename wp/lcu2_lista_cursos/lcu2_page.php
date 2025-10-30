@@ -21,16 +21,14 @@ add_submenu_page(
     'Lista de Cursos',
     'Lista de Cursos', 
     'edit_posts', 
-    'fines-plugin-lista-cursos', 
-    'lcu_lista_cursos_page'
+    'fines-plugin-lcu2', 
+    'lcu2_lista_cursos_page'
   );
 
-function lcu_lista_cursos_page() {
+function lcu2_lista_cursos_page() {
 
     $db = \App\Context::getFinesDb();
     $dataProvider = $db->CreateDataProvider();
-
-    $pdo = new PdoFines();
 
     $calendarios = $dataProvider->fetchAllEntitiesByParams("calendario",[], ["anio" => "DESC", "semestre" => "DESC"]);
 	$selected_calendario = isset($_GET['calendario']) ? sanitize_text_field($_GET['calendario']) : '';
@@ -43,12 +41,12 @@ function lcu_lista_cursos_page() {
 
     echo "<div class=\"wrap\">";
     
-    include plugin_dir_path(__FILE__) . 'lcu_formulario_busqueda_html.php';
+    include plugin_dir_path(__FILE__) . 'lcu2_form_html.php';
  
     $cursos = CursoDAO::CursosActivosConTomasActivasByCalendario($calendario_id);
 
     if ($cursos) {
-        include plugin_dir_path(__FILE__) . 'lcu_tabla_cursos.html';
+        include plugin_dir_path(__FILE__) . 'lcu2_tabla_cursos_html.php';
     } else {
         echo "<p>No se encontraron cursos para este calendario.</p>";
     }
