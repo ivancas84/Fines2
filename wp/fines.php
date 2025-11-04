@@ -52,18 +52,16 @@ function fines_plugin_menu() {
     include_once plugin_dir_path(__FILE__) . 'ap3_administrar_persona/ap3_administrar_persona_page.php';
     include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision/ac2_administrar_comision_page.php';
     include_once plugin_dir_path(__FILE__) . 'rdc_rindex_comision/rdc_rindex_comision_page.php';
+    include_once plugin_dir_path(__FILE__) . 'bp2_buscar_personas/bp2_page.php';
 
-    add_submenu_page(
+    /*add_submenu_page(
       'fines-plugin', //debe coincidir con el slug del menu
       'Buscar Personas', // Título de la página
       'Buscar Personas', //Título del menú
       'edit_posts', // Permisos
       'fines-plugin-buscar-personas-page',  // Slug del submenú
       'bp_buscar_personas_page' // Función que muestra la página del submenu
-    );
-
-
-
+    );*/
 
   add_submenu_page(
     'fines-plugin', //debe coincidir con el slug del menu

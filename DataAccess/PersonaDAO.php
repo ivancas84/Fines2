@@ -23,4 +23,19 @@ class PersonaDAO
         return $persona;
     }
 
+    public static function searchPersonas($search): array{
+         $sql = "
+            SELECT persona.id 
+            FROM persona 
+            WHERE lower(apellidos)  LIKE lower(:search) 
+            OR lower(nombres) LIKE lower(:search)
+            OR lower(numero_documento) LIKE lower(:search)
+            OR lower(telefono) LIKE lower(:search)
+            OR lower(email) LIKE lower(:search)
+            OR lower(email_abc) LIKE lower(:search)";
+
+        /** @var DataProvider */ $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
+        return $dataProvider->fetchAllEntitiesBySqlId("persona", $sql, ['search' => '%' . $search . '%']);
+    }
+
 }
