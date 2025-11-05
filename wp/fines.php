@@ -215,6 +215,8 @@ function fines_plugin_menu() {
   include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision/ac2_curso_add_handle.php';
   include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision/ac2_toma_add_handle.php';
 
+  include_once plugin_dir_path(__FILE__) . 'ad2_administrar_docente/ad2_persona_admin_handle.php';
+
 
   include_once plugin_dir_path(__FILE__) . 'ap3_administrar_persona/ap3_calificaciones_update_handle.php';
   include_once plugin_dir_path(__FILE__) . 'ap3_administrar_persona/ap3_comisiones_update_handle.php';

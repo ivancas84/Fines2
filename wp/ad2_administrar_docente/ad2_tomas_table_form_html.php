@@ -62,15 +62,21 @@
                         <?php endforeach; ?>
                     </select>
                 </td>
-
+                    <td>Toma <?= esc_html($toma?->id); ?><br>
+                    Curso <?= esc_html($toma?->curso); ?><br>
+                    Comisión <?= esc_html($toma?->curso_?->comision); ?><br>
+                    Sede <?= esc_html($toma?->curso_?->comision_?->sede); ?>
+                </td>
                 <td style="white-space: nowrap;">
                     <button 
                         type="submit" 
                         name="action" 
                         value="ad2_toma_update"
-                        class="button button-primary"
+                        class="button"
+                        title="Actualizar toma"
                     >
-                        Modificar
+                        <span class="dashicons dashicons-edit"></span>
+
                     </button>
 
                     <button 
@@ -78,16 +84,21 @@
                         name="action" 
                         value="ad2_toma_delete"
                         class="button button-secondary" 
+                        title="Eliminar toma"
+
                         onclick="return confirm('¿Está seguro que desea eliminar esta toma?');"
                     >
-                        Eliminar
+                        <span class="dashicons dashicons-table-row-delete"></span>
+
                     </button>
 
-                    <a class="button-link"
+                    <a 
+                      title="Generar toma y enviar Email"
+                      class="button"
                         target="_blank"
                         href="https://planfines2.com.ar/scripts/generar_toma.php?toma_id=<?= $toma->id ?>"
                         onclick="return confirm('¿Está seguro que desea generar toma y enviar Email?');">
-                        Generar Toma
+                        <span class="dashicons dashicons-text-page"></span>
                     </a>
 
                     <a href="<?= esc_url(admin_url('admin.php?page=fines-plugin-ppc3&curso_id=' . $toma->curso_->id)) ?>" 
