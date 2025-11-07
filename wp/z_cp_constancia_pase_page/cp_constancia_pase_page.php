@@ -24,16 +24,6 @@ function cp_constancia_pase_page() {
         die();
     }
 
-    if($alumno->anio_ingreso){
-        $tramo = $alumno->anio_ingreso;
-        if($alumno->semestre_ingreso)
-            $tramo .= $alumno->semestre_ingreso;
-        else 
-            $tramo .= "1";
-    } else {
-        $tramo = "11";
-    }
-
     $calificaciones_aprobadas_ = wpdbCalificacionesAprobadas__By_idAlumno_idPlan_tramo($wpdb, $alumno->id, $alumno->plan, $tramo);
     $anios_cursados_ = [];
     foreach($calificaciones_aprobadas_ as $calificacion){

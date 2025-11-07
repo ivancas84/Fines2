@@ -53,6 +53,7 @@ function fines_plugin_menu() {
     include_once plugin_dir_path(__FILE__) . 'ac2_administrar_comision/ac2_administrar_comision_page.php';
     include_once plugin_dir_path(__FILE__) . 'rdc_rindex_comision/rdc_rindex_comision_page.php';
     include_once plugin_dir_path(__FILE__) . 'bp2_buscar_personas/bp2_page.php';
+    include_once plugin_dir_path(__FILE__) . 'cp2_constancia_pase/cp2_page.php';
 
     /*add_submenu_page(
       'fines-plugin', //debe coincidir con el slug del menu

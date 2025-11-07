@@ -87,12 +87,12 @@ function ap3_init_Calificaciones(Alumno_ $alumno, Persona_ $persona = null){
     AlumnoDAO::reestructurarCalificacionesByAlumno($modifyQueries, $alumno);
     $modifyQueries->process();
 
-    $tramo = $alumno->getTramoShort();
+    $tramo = $alumno->getTramoIngresoShort();
 
     if(!empty($alumno->plan)){
         $calificaciones = CalificacionDAO::calificacionesByAlumnoPlanTramo($alumno->id, $alumno->plan, $tramo);
         if ($calificaciones) {
-            $titulo_calificaciones = "Aprobadas del mismo plan";
+            $titulo_calificaciones = " del plan";
             include plugin_dir_path(__FILE__) . 'ap3_calificaciones_table_html.php';
         } else {
             echo "<p>No se encontraron calificaciones para este alumno.</p>";

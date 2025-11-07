@@ -7,6 +7,9 @@ require_once '../pedidos-config.php';
 
 require_once '../vendor/autoload.php'; // Ensure TCPDF is autoloaded
 
+
+
+
 use chillerlan\QRCode\Common\EccLevel;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
@@ -15,32 +18,34 @@ use Pedidos\Attachments_;
 use Pedidos\Threads_;
 use Pedidos\Tickets_;
 use SqlOrganize\Utils\ValueTypesUtils;
+
+$v = ValueTypesUtils::class;
 $dbFines = \App\Context::getFinesDb();
 $dbPedidos = \App\Context::getPedidosDb();
 
-
-$actual_unix_timestamp = date("Ymdhi"); //solo permitira generar uno por mes
+$actual_unix_timestamp = date("Ymdhi");
 $upload_dir = "/wpsc/". date('Y') . "/" . date('m') . "/";
-$filename = "{$actual_unix_timestamp}_completo_{$_POST["numero_documento"]}.pdf";
+$filename = "{$actual_unix_timestamp}_pase_{$_POST["numero_documento"]}.pdf";
 $save_path = $upload_dir . $filename;
-$ticketId = AttachmentsDAO::TicketIdByFilepath($save_path);
+$ticketId = AttachmentsDAO::CheckTicketIdByFilepath($save_path);
 
-if(!is_null($ticketId)){
-    /** @var Tickets_ */$ticket = $dbPedidos->CreateDataProvider()->fetchEntityByParams("tickets", ["id" => $ticketId]);
-    $url = "https://planfines2.com.ar/wp/pedidos/?wpsc-section=ticket-list&ticket-id=" . $ticket->id . "&auth-code=" . $ticket->auth_code;
-    echo "<p>Ya existe una constancia generada para este DNI. Puede descargarla nuevamente desde el siguiente enlace:</p>";
-    echo "<p><a href='$url' target='_blank'>$url</a></p>";
-    die();
-}
-
+$s_ = ValueTypesUtils::htmlStrong(...);
 
 $body = "
 <p>La Dirección del CENS Nº 462 de La Plata, hace constar por la presente que
-<strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['apellidos']}, {$_POST['nombres']}&nbsp;&nbsp;&nbsp;</i></u></strong> DNI Nº <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['numero_documento']}&nbsp;&nbsp;&nbsp;</i></u></strong> 
-tiene en trámite un CERTIFICADO ANALÍTICO DE ESTUDIOS <strong><u><i>&nbsp;&nbsp;&nbsp;COMPLETO&nbsp;&nbsp;&nbsp;</i></u></strong> de <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['anio']}&nbsp;&nbsp;&nbsp;</i></u></strong> año <strong><u><i>&nbsp;&nbsp;&nbsp;Programa Fines 2 Trayecto Secundario&nbsp;&nbsp;&nbsp;</i></u></strong> con orientación en <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['orientacion']}&nbsp;&nbsp;&nbsp;</i></u></strong>
-resolución <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['resolucion']}&nbsp;&nbsp;&nbsp;</i></u></strong> adeudando <strong><u><i>&nbsp;&nbsp;&nbsp;Ninguna Materia&nbsp;&nbsp;&nbsp;</i></u></strong>.</p>
-<p>Se extiende la presente a pedido del interesado en La Plata el día <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['fecha']}&nbsp;&nbsp;&nbsp;</i></u></strong> para ser presentado ante <strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['presentado']}&nbsp;&nbsp;&nbsp;</i></u></strong>.</p>
-";
+{$s_($apellidos)}, {$s_($nombres)} DNI Nº {$_($numero_documento)} 
+ha cursado los años {$_($anios_cursados)} del Programa Fines 2 Trayecto Secundario con orientacion en {$s_($orientacion)}
+resolución {$s_($resolucion)}, bajo el siguiente detalle ";
+
+
+$data["body"] = "La Dirección del CENS 462 de La Plata, hace constar por la presente que ";
+$data["body"] .= $data['apellidos'] .    ", ";
+$data["body"] .= $data['nombres'] . " DNI N° ";
+$data["body"] .= $data['numero_documento'] . " ha cursado los años ";
+$data["body"] .= $data['anios_cursados'] . " del Programa Fines 2 Trayecto Secundario con orientación en ";
+$data["body"] .= $data['orientacion'] . " resolución ";
+$data["body"] .= $data['resolucion'] . ", aprobando " . count($data['calificaciones_aprobadas']) . " y adeudando " . count($data['calificaciones_desaprobadas']) . " materias.";
+
 
 if (!empty($_POST['observaciones'])) {
     $body .= "<p>Observaciones:<strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['observaciones']}&nbsp;&nbsp;&nbsp;</i></u></strong></p>";
@@ -49,7 +54,7 @@ if (!empty($_POST['observaciones'])) {
 
 
 $ticket = new Tickets_();
-$ticket->subject = "Constancia de certificado completo : " . $_POST["apellidos"] . ", " . $_POST["nombres"];
+$ticket->subject = "Constancia de alumno regular : " . $_POST["apellidos"] . ", " . $_POST["nombres"];
 $ticket->status = 4;
 $ticket->category = 10;
 $ticket->date_closed = new DateTime();
@@ -76,7 +81,6 @@ $thread->attachments = $attachment->id;
 $modify->buildUpdateKeySqlById($thread, "attachments");
 $modify->process();
 
-
 $url = "https://planfines2.com.ar/wp/pedidos/?wpsc-section=ticket-list&ticket-id=" . $ticket->id . "&auth-code=" . $ticket->auth_code;
 
 $options = new QROptions([
@@ -91,11 +95,13 @@ $qrcode = (new QRCode($options))->render($url);
 $qrFile = tempnam(sys_get_temp_dir(), 'qr') . '.png';
 file_put_contents($qrFile, base64_decode(str_replace('data:image/png;base64,', '', $qrcode)));
 
+
+
 // Create PDF instance
 $pdf = new TCPDF('L', 'mm', 'A5'); // 'L' for Landscape, 'A5' for A5 paper size
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Escuela CENS Nº 462');
-$pdf->SetTitle('Constancia de Certificado de Estudio en Trámite');
+$pdf->SetTitle('Constancia de Alumno Regular');
 $pdf->SetMargins(20, 30, 20);
 $pdf->setPrintHeader(false); // Avoid header line
 $pdf->AddPage();
@@ -114,7 +120,7 @@ $pdf->Image(IMAGES_PATH .'firma_director_luis.png', 120, 90, 60, 35, 'PNG'); // 
 $pdf->SetAlpha(1); // Reset transparency
 // Title
 $pdf->SetFont('helvetica', 'B', 14);
-$pdf->Cell(0, 10, "CONSTANCIA DE CERTIFICADO DE ESTUDIO EN TRÁMITE", 0, 1, 'C');
+$pdf->Cell(0, 10, "CONSTANCIA DE ALUMNO REGULAR", 0, 1, 'C');
 $pdf->Ln(5);
 
 // Justify the content with interlineado
@@ -125,14 +131,15 @@ $pdf->SetFont('helvetica', '', 10);
 $pdf->writeHTMLCell(0, 0, '', '', $body, 0, 1, false, true, 'J');
 
 
+    // Ensure directories exist
 
-// Ensure directories exist
 if (!file_exists(PATH_UPLOAD_PEDIDOS2.$upload_dir)) {
     mkdir(PATH_UPLOAD_PEDIDOS2.$upload_dir, 0777, true);
 }
 
 // Save the PDF
 $pdf->Output(PATH_UPLOAD_PEDIDOS2.$save_path, "F"); // Save to file
+
 // Output PDF
 $pdf->Output($filename, "I"); // Display in browser
 

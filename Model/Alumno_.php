@@ -11,7 +11,7 @@ use DateTime;
 
 class Alumno_ extends Alumno
 {
-   public function getTramoShort(){
+   public function getTramoIngresoShort(){
         if(!empty($this->anio_ingreso)){
             $tramo = strval($this->anio_ingreso);
             if(!empty($this->semestre_ingreso))

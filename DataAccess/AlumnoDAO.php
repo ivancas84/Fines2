@@ -42,7 +42,7 @@ class AlumnoDAO
         }
 
         if(!empty($alumno->plan)){
-            /** @var string */ $tramo = $alumno->getTramoShort();
+            /** @var string */ $tramo = $alumno->getTramoIngresoShort();
             /** @var Calificacion_[] */ $calificacionesAprobadas = CalificacionDAO::calificacionesAprobadasByAlumnoPlanTramo($alumno->id, $alumno->plan, $tramo);
             /** @var Disposicion_[] */ $disposiciones =  DisposicionDAO::disposicionesByPlanTramo($alumno->plan, $tramo);
 

@@ -385,6 +385,13 @@ public static function arrayOfName(iterable $objects, string $name): array
     }
 
     /**
+     * HTML strong
+     */
+    public static function htmlStrong($text) {
+        return "<strong><u><i>&nbsp;&nbsp;&nbsp;{$text}&nbsp;&nbsp;&nbsp;</i></u></strong>";
+    }
+
+    /**
      * Convierte texto a HTML
      */
     public static function convertTextToHtml(string $text): string

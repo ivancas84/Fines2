@@ -20,12 +20,14 @@ class Calificacion_ extends Calificacion
             $this->set("nota_final", $nota);
     }
 
-    public function getNotaAprobada(){
+    public function getNotaAprobada(): ?string {
         if($this->nota_final >= 7)
-            return $this->nota_final;
+            return strval(round($this->nota_final));
         
         if($this->crec >= 4)
-            return $this->crec - "c";
+            return strval(round($this->crec)) . "c";
+
+        return null;
     }
 
     public function cssBackgroundColor(): string {
