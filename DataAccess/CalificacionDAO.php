@@ -177,24 +177,5 @@ class CalificacionDAO
         return $calificaciones;
     }
 
-    /**
-     * @param Calificacion_[] $calificaciones
-     * @return string[]
-     */
-    public static function getAniosCursados(array $calificaciones): array{
-        $anios_cursados_ = [];
-        foreach($calificaciones as $calificacion){
-            $anio = $calificacion->disposicion_->planificacion_->anio;
-
-            if($anio == "1")
-                $anios_cursados_[0] = "Primero";
-            elseif($anio == "2")
-                $anios_cursados_[1] = "Segundo";
-            elseif($anio == "3")
-                $anios_cursados_[2] = "Tercero";
-        }
-
-        return $anios_cursados_;
-    }
         
 }

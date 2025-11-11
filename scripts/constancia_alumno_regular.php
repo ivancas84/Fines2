@@ -21,19 +21,11 @@ $dbPedidos = \App\Context::getPedidosDb();
 
 
 
-$actual_unix_timestamp = date("Ym"); //solo permitira generar uno por mes
+$actual_unix_timestamp = date("Ymdhi"); //solo permitira generar uno por mes
 $upload_dir = "/wpsc/". date('Y') . "/" . date('m') . "/";
 $filename = "{$actual_unix_timestamp}_regular_{$_POST["numero_documento"]}.pdf";
 $save_path = $upload_dir . $filename;
-$ticketId = AttachmentsDAO::TicketIdByFilepath($save_path);
-
-if(!is_null($ticketId)){
-    /** @var Tickets_ */$ticket = $dbPedidos->CreateDataProvider()->fetchEntityByParams("tickets", ["id" => $ticketId]);
-    $url = "https://planfines2.com.ar/wp/pedidos/?wpsc-section=ticket-list&ticket-id=" . $ticket->id . "&auth-code=" . $ticket->auth_code;
-    echo "<p>Ya existe una constancia generada para este DNI. Puede descargarla nuevamente desde el siguiente enlace:</p>";
-    echo "<p><a href='$url' target='_blank'>$url</a></p>";
-    die();
-}
+$ticketId = AttachmentsDAO::CheckTicketIdByFilepath($save_path);
 
 $body = "
 <p>La Dirección del CENS Nº 462 de La Plata, hace constar por la presente que

@@ -7,105 +7,129 @@ require_once '../pedidos-config.php';
 
 require_once '../vendor/autoload.php'; // Ensure TCPDF is autoloaded
 
-
-
-
-use chillerlan\QRCode\Common\EccLevel;
-use chillerlan\QRCode\QRCode;
-use chillerlan\QRCode\QROptions;
+/**
+ * script para generar constancia de pase en PDF
+ * 
+ * La impresion de asignaturas aprobadas y desaprobadas es diferente para el ticket y para el PDF
+ */
 use Fines2\AttachmentsDAO;
+use Fines2\TicketsDAO;
+use Fines2\QRUtils;
 use Pedidos\Attachments_;
 use Pedidos\Threads_;
 use Pedidos\Tickets_;
 use SqlOrganize\Utils\ValueTypesUtils;
 
+
 $v = ValueTypesUtils::class;
 $dbFines = \App\Context::getFinesDb();
 $dbPedidos = \App\Context::getPedidosDb();
 
+
+
+$persona_id = $_POST['persona_id'] ?? throw new Exception('El parámetro persona_id no fue definido');
+
+/** @var Fines2\Alumno_ */ $alumno = $dbFines->CreateDataProvider()->fetchEntityByParams("alumno", ["persona" => $persona_id]);
+if(!$alumno){
+    echo "<p>No se encontró un alumno asociado a ese id.</p>";
+    die();
+}
+
+if(!$alumno->plan){
+    echo "<p>Alumno sin plan, es necesario completar el plan del alumno para generar la constancia de pase.</p>";
+    die();
+}
+
+$alumno->initializeCalifacionesArrays();
+
+$aniosCursados = esc_attr(implode(", ", $alumno->AniosCursados));
+$nombres = esc_attr(ValueTypesUtils::toTitleCase($alumno->persona_->nombres));
+$apellidos = esc_attr(mb_strtoupper($alumno->persona_->apellidos));
+$numero_documento = esc_attr($alumno->persona_->numero_documento);
+$orientacion = esc_attr($alumno->plan_->orientacion);
+$resolucion = esc_attr($alumno->plan_->resolucion);
+
+$fecha = ValueTypesUtils::fechaActualDiaDeMesDeAnio();
+$anio = ValueTypesUtils::toOrdinalSpanish($alumno_comision->comision_?->planificacion_?->anio ?? "");
 $actual_unix_timestamp = date("Ymdhi");
 $upload_dir = "/wpsc/". date('Y') . "/" . date('m') . "/";
-$filename = "{$actual_unix_timestamp}_pase_{$_POST["numero_documento"]}.pdf";
+$filename = "{$actual_unix_timestamp}_pase_{$numero_documento}.pdf";
 $save_path = $upload_dir . $filename;
 $ticketId = AttachmentsDAO::CheckTicketIdByFilepath($save_path);
 
 $s_ = ValueTypesUtils::htmlStrong(...);
 
-$body = "
+$bodyStart = "
 <p>La Dirección del CENS Nº 462 de La Plata, hace constar por la presente que
 {$s_($apellidos)}, {$s_($nombres)} DNI Nº {$_($numero_documento)} 
 ha cursado los años {$_($anios_cursados)} del Programa Fines 2 Trayecto Secundario con orientacion en {$s_($orientacion)}
-resolución {$s_($resolucion)}, bajo el siguiente detalle ";
+resolución {$s_($resolucion)}, bajo el siguiente detalle:</p>
+";
 
 
-$data["body"] = "La Dirección del CENS 462 de La Plata, hace constar por la presente que ";
-$data["body"] .= $data['apellidos'] .    ", ";
-$data["body"] .= $data['nombres'] . " DNI N° ";
-$data["body"] .= $data['numero_documento'] . " ha cursado los años ";
-$data["body"] .= $data['anios_cursados'] . " del Programa Fines 2 Trayecto Secundario con orientación en ";
-$data["body"] .= $data['orientacion'] . " resolución ";
-$data["body"] .= $data['resolucion'] . ", aprobando " . count($data['calificaciones_aprobadas']) . " y adeudando " . count($data['calificaciones_desaprobadas']) . " materias.";
+$body = $bodyStart;
+if($alumno->CalificacionAprobada_Count > 0){
+    $body .= "<h3>Calificaciones Aprobadas</h3>
+    <table border='1' cellpadding='5' cellspacing='0'>
+        <tr><th>Asignatura</th><th>Tramo</th><th>Nota</th></tr>";
+        foreach($alumno->CalificacionesAprobadas as $calificacion){
+            $body .= "<tr><td>{$calificacion->disposicion_->asignatura_->nombre}</td><td>{$calificacion->disposicion_->planificacion_->getTramo()}</td><td>{$calificacion->getNotaAprobada()}</td></tr>";
+        }
+    $body .= "</table>";
+}
 
-
-if (!empty($_POST['observaciones'])) {
-    $body .= "<p>Observaciones:<strong><u><i>&nbsp;&nbsp;&nbsp;{$_POST['observaciones']}&nbsp;&nbsp;&nbsp;</i></u></strong></p>";
+if($alumno->CalificacionDesaprobada_Count > 0){
+    $body .= "<h3>Calificaciones Pendientes</h3>
+    <table border='1' cellpadding='5' cellspacing='0'>
+        <tr><th>Asignatura</th><th>Tramo</th></tr>";
+        foreach($alumno->CalificacionesDesaprobadas as $calificacion){
+            $body .= "<tr><td>{$calificacion->disposicion_->asignatura_->nombre}</td><td>{$calificacion->disposicion_->planificacion_->getTramo()}</td></tr>";
+        }
+    $body .= "</table>";
 }
 
 
+$bodyEnd = !empty($_POST['observaciones']) ? $_POST['observaciones'] : ""; 
 
-$ticket = new Tickets_();
-$ticket->subject = "Constancia de alumno regular : " . $_POST["apellidos"] . ", " . $_POST["nombres"];
-$ticket->status = 4;
-$ticket->category = 10;
-$ticket->date_closed = new DateTime();
-$ticket->cust_24 = $_POST["numero_documento"];
-$ticket->cust_28 = "Válido por 30 días";
-
-$thread = new Threads_();
-$thread->ticket = $ticket->id;
-$thread->body = $body;
-
-$attachment = new Attachments_();
-$attachment->name = $filename;
-$attachment->file_path = $save_path;
-$attachment->is_image = 1;
-$attachment->source_id = $thread->id;
-$attachment->ticket_id = $ticket->id;
+$body .= $bodyEnd;
 
 $modify = $dbPedidos->CreateModifyQueries();
-$modify->buildInsertSql($ticket);
-$modify->buildInsertSql($thread);
-$modify->buildInsertSql($attachment);
 
-$thread->attachments = $attachment->id;
-$modify->buildUpdateKeySqlById($thread, "attachments");
+/** @var Tickets_ */ $ticket = TicketsDAO::CreateAndInsertTicketConstancia(
+    $modify,
+    "Constancia de Pase : " . $apellidos . ", " . $nombres,
+    $numero_documento, 
+    $body, $filename, $save_path
+);
+
 $modify->process();
 
-$url = "https://planfines2.com.ar/wp/pedidos/?wpsc-section=ticket-list&ticket-id=" . $ticket->id . "&auth-code=" . $ticket->auth_code;
-
-$options = new QROptions([
-    'eccLevel' => EccLevel::L,
-    'outputType' => QRCode::OUTPUT_IMAGE_PNG,
-    'scale' => 5,
-]);
-
-$qrcode = (new QRCode($options))->render($url);
-
-// Save the QR Code as a temporary file
-$qrFile = tempnam(sys_get_temp_dir(), 'qr') . '.png';
-file_put_contents($qrFile, base64_decode(str_replace('data:image/png;base64,', '', $qrcode)));
-
+$qrFile = $ticket->generateQR();
 
 
 // Create PDF instance
-$pdf = new TCPDF('L', 'mm', 'A5'); // 'L' for Landscape, 'A5' for A5 paper size
+$pdf = new TCPDF('P', 'mm', 'A4'); // 'L' for Landscape, 'A5' for A5 paper size
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Escuela CENS Nº 462');
-$pdf->SetTitle('Constancia de Alumno Regular');
-$pdf->SetMargins(20, 30, 20);
-$pdf->setPrintHeader(false); // Avoid header line
+$pdf->SetTitle('CONSTANCIA DE PASE');
+$pdf->SetMargins(20, 45, 20);
+$pdf->setPrintHeader(true); // Avoid header line
+$pdf->setPrintFooter(true);
+$pdf->SetAutoPageBreak(true, 50);
 $pdf->AddPage();
-$pdf->Rect(10, 10, 190, 125); // Full-page border
+
+// Title
+$pdf->SetFont('helvetica', 'B', 14);
+$pdf->Cell(0, 10, "CONSTANCIA DE PASE", 0, 1, 'C');
+$pdf->Ln(5);
+
+// Content
+$pdf->SetFont('helvetica', '', 10);
+
+
+
+
+
 
 // Header with logo and QR code
 $pdf->Image(IMAGES_PATH .'logo.jpg', 20, 15, 120, 0, 'JPG'); // Logo occupies 2/3

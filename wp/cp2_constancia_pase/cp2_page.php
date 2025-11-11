@@ -20,6 +20,7 @@ add_submenu_page(
     'cp2_page' // Función que muestra la página del submenu
 );
 
+
 function cp2_page() {
     wp_page_message();
 
@@ -38,23 +39,9 @@ function cp2_page() {
         die();
     }
 
-    $calificacionesAprobadas_ = [];
-    $calificacionesDesaprobadas_ = [];
-    /** @var Calificacion_[] */ $calificaciones = CalificacionDAO::calificacionesByAlumnoPlanTramo($alumno->id, $alumno->plan, $alumno->getTramoIngresoShort());
-    foreach($calificaciones as $c){
-        if($c->getNotaAprobada() != null){
-            $calificacionesAprobadas_[] = $c;
-        } else {
-            $calificacionesDesaprobadas_[] = $c;
-        }
-    }
+    $alumno->initializeCalifacionesArrays();
 
-
-    $calificacionesAprobadas = count($calificacionesAprobadas_ );
-    $calificacionesDesaprobadas = count($calificacionesDesaprobadas_ );
-    $orientacion = $alumno->plan_->orientacion;
-    $resolucion = $alumno->plan_->resolucion;
-    $aniosCursados = esc_attr(implode(", ", CalificacionDAO::getAniosCursados($calificaciones)));
+    $aniosCursados = esc_attr(implode(", ", $alumno->AniosCursados));
     $nombres = esc_attr(ValueTypesUtils::toTitleCase($alumno->persona_->nombres));
     $apellidos = esc_attr(mb_strtoupper($alumno->persona_->apellidos));
     $numero_documento = esc_attr($alumno->persona_->numero_documento);

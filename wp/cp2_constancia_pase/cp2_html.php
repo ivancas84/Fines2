@@ -13,7 +13,7 @@
             </tr>
             <tr>
                 <th><label>Orientación / Resolución:</label></th>
-                <td><?= $orientacion ?> / <?= $resolucion ?></td>
+                <td><?= $alumno->plan_->orientacion ?> / <?= $alumno->plan_->resolucion ?></td>
             </tr>
             <tr>
                 <th><label>Fecha:</label></th>
@@ -23,7 +23,7 @@
             
             <tr>
                 <th><label>Aprobadas / Desaprobadas:</label></th>
-                <td><?= $calificacionesAprobadas ?> / <?= $calificacionesDesaprobadas ?></td>
+                <td><?= $alumno->CalificacionAprobada_Count ?> / <?= $alumno->CalificacionDesaprobada_Count ?></td>
             </tr>
 
             <tr>
