@@ -2,10 +2,11 @@
 header('Content-Type: text/html; charset=utf-8');
 mb_internal_encoding('UTF-8');
 
+require_once '../vendor/autoload.php'; // Ensure TCPDF is autoloaded
+
 require_once '../fines-config.php';
 require_once '../pedidos-config.php';
 
-require_once '../vendor/autoload.php'; // Ensure TCPDF is autoloaded
 
 use chillerlan\QRCode\Common\EccLevel;
 use chillerlan\QRCode\QRCode;

@@ -1,6 +1,6 @@
 <div class="wrap">
     <h1>Constancia de Pase</h1>
-    <form method="POST" action="https://planfines2.com.ar/scripts/constancia_pase2.php">
+    <form method="POST" action="https://planfines2.com.ar/scripts/constancia_progresar.php">
         <table class="form-table">
             <input type="hidden" name="alumno_id" value="<?= esc_attr($alumno->id) ?>">
 		    <tr>

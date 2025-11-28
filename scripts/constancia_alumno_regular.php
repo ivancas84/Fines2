@@ -2,10 +2,11 @@
 header('Content-Type: text/html; charset=utf-8');
 mb_internal_encoding('UTF-8');
 
+require_once '../vendor/autoload.php'; // Ensure TCPDF is autoloaded
+
 require_once '../fines-config.php';
 require_once '../pedidos-config.php';
 
-require_once '../vendor/autoload.php'; // Ensure TCPDF is autoloaded
 
 
 use chillerlan\QRCode\Common\EccLevel;
@@ -18,7 +19,6 @@ use Pedidos\Tickets_;
 use SqlOrganize\Utils\ValueTypesUtils;
 $dbFines = \App\Context::getFinesDb();
 $dbPedidos = \App\Context::getPedidosDb();
-
 
 
 $actual_unix_timestamp = date("Ymdhi"); //solo permitira generar uno por mes
@@ -86,7 +86,7 @@ file_put_contents($qrFile, base64_decode(str_replace('data:image/png;base64,', '
 
 
 // Create PDF instance
-$pdf = new TCPDF('L', 'mm', 'A5'); // 'L' for Landscape, 'A5' for A5 paper size
+$pdf = new \TCPDF('L', 'mm', 'A5'); // 'L' for Landscape, 'A5' for A5 paper size
 $pdf->SetCreator(PDF_CREATOR);
 $pdf->SetAuthor('Escuela CENS Nº 462');
 $pdf->SetTitle('Constancia de Alumno Regular');

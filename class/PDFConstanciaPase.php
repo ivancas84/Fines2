@@ -21,6 +21,7 @@ use chillerlan\QRCode\QROptions;
             $this->setPrintFooter(true);
             $this->SetAutoPageBreak(true, 50);
             $this->AddPage();
+            
             // Title
             $this->SetFont('helvetica', 'B', 14);
             $this->Cell(0, 10, "CONSTANCIA DE PASE", 0, 1, 'C');

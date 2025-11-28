@@ -16,8 +16,8 @@
     <tbody>
         <? foreach ($alumnosComision as $alumnoComision): ?>
             <tr>
-                <td><?= esc_html($alumnoComision->alumno_?->persona_?->apellidos); ?></td>
-                <td><?= esc_html($alumnoComision->alumno_?->persona_?->nombres); ?></td>
+                <td><a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines-plugin-ap3&persona_id=<?=$alumnoComision->alumno_?->persona ?>"><?= esc_html($alumnoComision->alumno_?->persona_?->apellidos); ?></a></td>
+                <td><a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines-plugin-ap3&persona_id=<?=$alumnoComision->alumno_?->persona ?>"><?= esc_html($alumnoComision->alumno_?->persona_?->nombres); ?></a></td>
                 <td><?= esc_html($alumnoComision->alumno_?->persona_?->numero_documento); ?></td>
                 <? for ($i = 0; $i < count($informe); $i++): ?>
                 <td><?= esc_html($alumnoComision->notas[$i]) ?></td>

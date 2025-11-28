@@ -12,13 +12,14 @@ use Fines2\Calificacion_;
 
 class Alumno_ extends Alumno
 {
-    /** @var Calificacion[] */
+
+    /** @var Calificacion_[] */
     public array $CalificacionAprobada_ = [];
 
     /** @var int|null */
     public ?int $CalificacionAprobada_Count = null;
 
-    /** @var Calificacion[] */
+    /** @var Calificacion_[] */
     public array $CalificacionDesaprobada_ = [];
 
     /** @var int|null */

@@ -588,11 +588,19 @@ public static function dictOfListByPropertyName(iterable $source, string $propNa
     public static function fechaActualDiaDeMesDeAnio(){
         $fecha = new DateTime();
         $dia = $fecha->format('d');
-        $mes = mes($fecha->format('n')); // Obtener el mes en español
+        $mes = self::mesEnLetras($fecha->format('n')); // Obtener el mes en español
         $anio = $fecha->format('Y');
 
         return "$dia de $mes de $anio";
     }
+
+    public static function mesEnLetras($numero_mes){
+        $meses = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+        return $meses[$numero_mes - 1];
+}
 
 }
 

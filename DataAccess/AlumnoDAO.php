@@ -32,7 +32,18 @@ class AlumnoDAO
         return \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityBySqlId("alumno", $sql, ['numero_documento' => $numero_documento]);
     }
 
-
+    public static function ultimaComisionAlumno(string $alumno_id): ?Comision_ {
+        $sql = "SELECT comision.id 
+        FROM alumno_comision 
+        INNER JOIN alumno ON alumno_comision.alumno = alumno.id 
+        INNER JOIN comision ON comision.id = alumno_comision.comision 
+        INNER JOIN calendario ON calendario.id = comision.calendario
+        WHERE alumno.id = :alumno_id
+        AND alumno_comision.activo = 1
+        ORDER BY calendario.inicio DESC LIMIT 1;
+";
+        return \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityBySqlId("comision", $sql, ['alumno_id' => $alumno->id]);
+    }
 
     public static function reestructurarCalificacionesByAlumno(ModifyQueries $modifyQueries, Alumno_ $alumno){
         $db = \App\Context::getFinesDb();
