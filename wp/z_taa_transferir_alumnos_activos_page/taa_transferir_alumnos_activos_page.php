@@ -20,9 +20,7 @@ function taa_transferir_alumnos_activos_page() {
             
             $comisiones = wpdbComisiones_autorizadas__By_calendario__Without_tramo32($wpdb, $calendario_id);
             
-
             foreach($comisiones as $comision){
-
 
                 echo "<h2>Procesando " . $comision->pfid . "</h2>";
                 $idsAlumnosExistentes = wpdbIdsAlumnos__By_comision($wpdb, $comision->id);

@@ -188,14 +188,6 @@ function fines_plugin_menu() {
       'atc_administrar_toma_comision_page'
     );
 
-    add_submenu_page(
-      null, 
-      'Transferir Alumnos Activos',
-      'Transferir Alumnos Activos', 
-      'edit_posts', 
-      'fines-plugin-transferir-alumnos-activos-page', 
-      'taa_transferir_alumnos_activos_page'
-    );
 
     include_once plugin_dir_path(__FILE__) . 'car2_constancia_alumno_regular/car2_page.php';
 

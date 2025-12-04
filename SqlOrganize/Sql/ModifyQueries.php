@@ -462,4 +462,54 @@ abstract class ModifyQueries
         }*/
     }
 
+    public function getSqlPreview(): string
+{
+    $sql = $this->sql;
+    $preview = $sql;
+
+    foreach ($this->parameters as $key => $value) {
+
+        // Handle DateTime
+        if ($value instanceof DateTimeInterface) {
+            $value = $value->format('Y-m-d H:i:s');
+        }
+
+        // NULL → SQL NULL
+        if ($value === null) {
+            $replacement = "NULL";
+        }
+        // Integers → no quotes
+        elseif (is_int($value)) {
+            $replacement = (string)$value;
+        }
+        // Floats → no quotes
+        elseif (is_float($value)) {
+            // Ensure dot decimal separator for SQL
+            $replacement = str_replace(',', '.', (string)$value);
+        }
+        // Strings → quoted + escaped
+        elseif (is_string($value)) {
+            $escaped = str_replace("'", "''", $value);
+            $replacement = "'" . $escaped . "'";
+        }
+        // Fallback: json encode objects / arrays (optional)
+        else {
+            throw new Exception("Unsupported parameter type for key {$key}");
+        }
+
+        // Replace all occurrences
+        $preview = str_replace(':' . $key, $replacement, $preview);
+    }
+
+    return $preview;
+    }
+
+    //Reiniciar todos los campos menos detail
+    public function Reset()
+    {
+        $this->sql = "";
+        $this->parameterCounter = 0;
+        $this->parameters = [];
+    }
+
 }
