@@ -14,6 +14,10 @@ abstract class ModifyQueries
     private $parameterCounter = 0;
 
 
+    public function getCounter(){
+        return $this->parameterCounter;
+    }
+
     public function getSql(){
         return $this->sql;
     }
@@ -85,7 +89,9 @@ abstract class ModifyQueries
      */
     private function getNextPrefix()
     {
-        return sprintf("p%d_", $this->parameterCounter++);
+        $ret = sprintf("p%d_", $this->parameterCounter++);
+        $this->sql .= "# Consulta " . $this->parameterCounter . "\n";
+        return $ret;
     }
 
     /**
