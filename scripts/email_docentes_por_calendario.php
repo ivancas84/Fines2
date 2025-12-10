@@ -1,6 +1,5 @@
 <?php
 
-define("CALENDARIO_ID", "202502110007");
 require_once '../fines-config.php';
 
 use \SqlOrganize\Sql\DbMy;
@@ -14,10 +13,7 @@ use SqlOrganize\Sql\ModifyQueries;
 echo "<pre>";
 $db = \App\Context::getFinesDb();
 $dataProvider = $db->CreateDataProvider();
-$comision_id = 'a199f325-7d76-496d-9467-0a79ccafe104';
-$db = \App\Context::getFinesDb();
-$dataProvider = $db->CreateDataProvider();
-$tomas = TomaDAO::TomasActivasByCalendario(CALENDARIO_ID);
+$tomas = TomaDAO::TomasActivasByCalendario(CALENDARIO_ID_ACTUAL);
 
 $emails = [];
 foreach ($tomas as $toma){

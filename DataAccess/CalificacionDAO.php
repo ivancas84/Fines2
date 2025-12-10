@@ -99,6 +99,8 @@ class CalificacionDAO
 
     }
 
+
+
     /**
      * @return Calificacion_[]
      */
@@ -115,6 +117,27 @@ class CalificacionDAO
         ";  
 
         /** @var Calificacion_[] */ $calificaciones = \App\Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno, "plan"=>$plan, "tramo_short"=>$tramo_short] );
+        return self::CompletarTomaActivaEnCalificaciones($calificaciones);
+
+    }
+
+     /**
+     * @return Calificacion_[]
+     */
+    public static function calificacionesAprobadasAlumnoPlan(string $alumno, string $plan): array {
+
+        $sql = "
+            SELECT DISTINCT calificacion.id
+            FROM calificacion
+            INNER JOIN alumno ON (calificacion.alumno = alumno.id)
+            INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+            INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
+            INNER JOIN plan ON (planificacion.plan = plan.id)
+            WHERE alumno = :alumno AND plan.id = :plan 
+            AND (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
+        ";  
+
+        /** @var Calificacion_[] */ $calificaciones = \App\Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno, "plan"=>$plan] );
         return self::CompletarTomaActivaEnCalificaciones($calificaciones);
 
     }

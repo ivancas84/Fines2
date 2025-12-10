@@ -12,6 +12,7 @@ require_once '../fines-config.php';
 //no debe haber asignaturas desaprobadas en la base de datos.
 
 use Fines2\AlumnoComision_;
+use Fines2\CalificacionDAO;
 use Fines2\Comision_;
 use SqlOrganize\Sql\DataProvider;
 use SqlOrganize\Sql\ModifyQueries;
@@ -34,6 +35,7 @@ foreach($comisionesSemestre as $comision){
 
     foreach($alumnosComision as $alumnoComision){
 
+        
         if(array_key_exists($alumnoComision->alumno_->persona, $control_duplicados)){
             echo "<p style='color:red;'>Alumno duplicado " . $alumnoComision->alumno_->persona_->getLabel() . "</p>";
             echo "<pre>".print_r($alumnoComision->toArray(), true)."</pre>";
@@ -42,6 +44,7 @@ foreach($comisionesSemestre as $comision){
             echo "<pre>".print_r($control_duplicados[$alumnoComision->alumno_->persona]->toArray(), true)."</pre>";
             $modifyQueries->buildDeleteSqlById("alumno_comision", $control_duplicados[$alumnoComision->alumno_->persona]->id);
             echo "<p style='color:blue;'>Consulta " . $modifyQueries->getCounter() . ".</p>";
+            continue;
         } else {
             $control_duplicados[$alumnoComision->alumno_->persona] = $alumnoComision;
         }
@@ -51,7 +54,10 @@ foreach($comisionesSemestre as $comision){
         if($alumnoComision->alumno_->plan != $comision->planificacion_->plan){
             echo "<p style='color:red;'>Plan diferente alumno " . ($alumnoComision->alumno_?->plan_?->getLabel() ?? "Sin plan") . "</p>";
             $modifyQueries->buildUpdateKeyValueSqlById("alumno", "plan", $comision->planificacion_->plan, $alumnoComision->alumno);
-            echo "<p style='color:blue;'>Consulta " . $modifyQueries->getCounter() . ".</p>";             }
+            echo "<p style='color:blue;'>Consulta " . $modifyQueries->getCounter() . ".</p>";             
+        }
+
+        $calificacionesAprobadasPlan = CalificacionDAO::calificacionesAprobadasAlumnoPlan($alumnoComision->alumno, $comision->planificacion_->plan);
     }
 
     echo "<pre>" . $modifyQueries->getSqlPreview() . "</pre><br /><br /><br />";
