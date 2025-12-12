@@ -200,5 +200,17 @@ class CalificacionDAO
         return $calificaciones;
     }
 
+
+    public static function CalificacionesAprobadasAlumnoPlanificacion(string $alumno_id, string $planificacion_id): array {
+        $sql = "
+            SELECT DISTINCT calificacion.id
+            FROM calificacion
+            INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+            WHERE (nota_final >= 7 OR crec >= 4)
+            AND calificacion.alumno = :alumno_id
+            AND disposicion.planificacion = :planificacion_id
+        ";  
+        return \App\Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno_id"=>$alumno_id, "planificacion_id"=>$planificacion_id]);
+    }
         
 }
