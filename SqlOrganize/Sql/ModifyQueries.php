@@ -304,8 +304,37 @@ abstract class ModifyQueries
         ];
 
         $this->sql .= $sql . "\n";
+
+        
     }
-    
+
+    public function build(string $sql, array $parameters, ?string $action, ?string $entityName, array $ids = []): void
+    {
+        $prefix = $this->getNextPrefix();
+
+        // Replace :param with :{prefix}param
+        $sql = preg_replace(
+            '/:([a-zA-Z_][a-zA-Z0-9_]*)/',
+            ':' . $prefix . '$1',
+            $sql
+        );
+
+        $this->sql .= $sql . "\n";
+
+        foreach ($parameters as $key => $value) {
+            $this->parameters[$prefix . $key] = $value;
+        }
+
+        if($action !== null && $entityName !== null && count($ids) > 0)
+            foreach($ids as $id)
+                $this->detail[] = [
+                    'EntityName' => $entityName,
+                    'Id' => $id,
+                    'Action' => $action
+                ];
+    }
+
+
     public function buildInsertSqlIfNotExists(Entity $entity): void {
         $entity->sset(
             $this->db->config->idName, 
@@ -483,6 +512,10 @@ abstract class ModifyQueries
         // NULL → SQL NULL
         if ($value === null) {
             $replacement = "NULL";
+        }
+        // Booleans → SQL TRUE/FALSE
+        elseif (is_bool($value)) {
+            $replacement = $value ? 'TRUE' : 'FALSE';
         }
         // Integers → no quotes
         elseif (is_int($value)) {

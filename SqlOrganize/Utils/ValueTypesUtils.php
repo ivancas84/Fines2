@@ -110,6 +110,41 @@ public static function arrayOfName(iterable $objects, string $name): array
     return $result;
 }
 
+/**
+ * @param iterable<object|array> $items
+ * @return array<mixed, mixed>
+ */
+public static function pluckKeyValue(iterable $items, string $key, string $value): array
+{
+    $result = [];
+
+    foreach ($items as $item) {
+        if (is_object($item)) {
+            if (!property_exists($item, $key) || !property_exists($item, $value)) 
+                continue;
+
+            $k = $item->$key;
+            $v = $item->$value;
+
+        } elseif (is_array($item)) {
+            if (!array_key_exists($key, $item) || !array_key_exists($value, $item))
+                continue;
+
+            $k = $item[$key];
+            $v = $item[$value];
+
+        } else {
+            continue;
+        }
+
+        if ($k !== null)
+            $result[$k] = $v;
+    }
+
+    return $result;
+}
+
+
     public static function generateGuid(): string
     {
         return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
