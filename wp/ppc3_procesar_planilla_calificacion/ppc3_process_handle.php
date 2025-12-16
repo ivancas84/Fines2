@@ -1,7 +1,7 @@
 <?php
 
 require_once($_SERVER['DOCUMENT_ROOT'] . '/includes/db_config.php');
-        require_once plugin_dir_path(__FILE__) . 'pp3_functions.php';
+        require_once plugin_dir_path(__FILE__) . 'ppc3_functions.php';
 
 use Fines2\Persona_;
 use Fines2\Alumno_;
@@ -37,11 +37,24 @@ function ppc3_process_handle() {
     $format = $_POST['format'];
     $result = ValueTypesUtils::excelParse($rawData);
    
+    echo "<h2>Cantidad de calificaciones a procesar ". count($result) . "</h2>";
     foreach($result as $data) {
         try {
             $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
             try {
-                $data = ($format == "pf") ? ppc3_parse_pf($data) :  ppc3_parse_xlsx($data);
+                switch($format) {
+                    case "PF":
+                        $data = ppc3_parse_pf($data);
+                        break;
+                    case "PF2":
+                        $data = ppc3_parse_pf2($data);
+                        break;
+                    case "XLSX":
+                        $data = ppc3_parse_xlsx($data);
+                        break;
+                    default:
+                        throw new Exception("Formato no reconocido");
+                }
             } catch(Exception $ex){
                 continue;
             }
