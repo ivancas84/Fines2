@@ -1,8 +1,8 @@
 <?php
 
-namespace Pedidos;
+namespace Pedidos\Model;
 
-use \Pedidos\Logs;
+use \Pedidos\Model\Logs;
 
 use SqlOrganize\Sql\Entity;
 use Exception;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Pedidos;
+namespace Pedidos\Model;
 
-use \Pedidos\Attachments;
+use \Pedidos\Model\Attachments;
 
 use SqlOrganize\Sql\Entity;
 use Exception;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Pedidos;
+namespace Pedidos\Model;
 
-use \Pedidos\Threads;
+use \Pedidos\Model\Threads;
 
 use SqlOrganize\Sql\Entity;
 use Exception;

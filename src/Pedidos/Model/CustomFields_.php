@@ -1,8 +1,8 @@
 <?php
 
-namespace Pedidos;
+namespace Pedidos\Model;
 
-use \Pedidos\CustomFields;
+use \Pedidos\Model\CustomFields;
 
 use SqlOrganize\Sql\Entity;
 use Exception;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pedidos;
+namespace Pedidos\Model;
 
 use \Pedidos\Agents;
 

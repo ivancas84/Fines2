@@ -1,6 +1,6 @@
 <?php
 
-namespace Pedidos;
+namespace Pedidos\Model;
 
 use SqlOrganize\Sql\Entity;
 use Exception;
@@ -59,9 +59,9 @@ class Threads extends Entity
     public ?string $type = null;
 
     /** @var Customers|null (fk threads.customer _m:o customers.id) */
-    public ?\Pedidos\Customers_ $customer_ = null;
+    public ?Customers_ $customer_ = null;
 
     /** @var Tickets|null (fk threads.ticket _m:o tickets.id) */
-    public ?\Pedidos\Tickets_ $ticket_ = null;
+    public ?Tickets_ $ticket_ = null;
 
 }

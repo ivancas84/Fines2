@@ -1,11 +1,11 @@
 <?php
 
-namespace Pedidos;
+namespace Pedidos\Model;
 
+use \Pedidos\Model\Tickets;
 use chillerlan\QRCode\Common\EccLevel;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
-use \Pedidos\Tickets;
 
 use SqlOrganize\Sql\Entity;
 use Exception;

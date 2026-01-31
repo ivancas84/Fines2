@@ -1,6 +1,6 @@
 <?php
 
-namespace Pedidos;
+namespace Pedidos\Model;
 
 use SqlOrganize\Sql\Entity;
 use Exception;
@@ -35,6 +35,6 @@ class Logs extends Entity
     public ?string $type = null;
 
     /** @var Customers|null (fk logs.modified_by _m:o customers.id) */
-    public ?\Pedidos\Customers_ $modified_by_ = null;
+    public ?Customers_ $modified_by_ = null;
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pedidos;
+namespace Pedidos\Model;
 
 use SqlOrganize\Sql\Entity;
 use Exception;
@@ -110,16 +110,16 @@ class Tickets extends Entity
     public ?string $user_type = null;
 
     /** @var Categories|null (fk tickets.category _m:o categories.id) */
-    public ?\Pedidos\Categories_ $category_ = null;
+    public ?Categories_ $category_ = null;
 
     /** @var Customers|null (fk tickets.customer _m:o customers.id) */
-    public ?\Pedidos\Customers_ $customer_ = null;
+    public ?Customers_ $customer_ = null;
 
     /** @var Priorities|null (fk tickets.priority _m:o priorities.id) */
-    public ?\Pedidos\Priorities_ $priority_ = null;
+    public ?Priorities_ $priority_ = null;
 
     /** @var Statuses|null (fk tickets.status _m:o statuses.id) */
-    public ?\Pedidos\Statuses_ $status_ = null;
+    public ?Statuses_ $status_ = null;
 
     /** @var int|null */
     public ?int $Attachments_ticket_id_Count = null;

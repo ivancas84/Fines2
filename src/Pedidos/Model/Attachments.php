@@ -1,6 +1,6 @@
 <?php
 
-namespace Pedidos;
+namespace Pedidos\Model;
 
 use SqlOrganize\Sql\Entity;
 use Exception;
@@ -50,6 +50,6 @@ class Attachments extends Entity
     public ?int $ticket_id = null;
 
     /** @var Tickets|null (fk attachments.ticket_id _m:o tickets.id) */
-    public ?\Pedidos\Tickets_ $ticket_id_ = null;
+    public ?Tickets_ $ticket_id_ = null;
 
 }

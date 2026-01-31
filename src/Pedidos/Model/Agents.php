@@ -1,6 +1,6 @@
 <?php
 
-namespace Pedidos;
+namespace Pedidos\Model;
 
 use SqlOrganize\Sql\Entity;
 use Exception;
@@ -44,6 +44,6 @@ class Agents extends Entity
     public ?int $workload = null;
 
     /** @var Customers|null (fk agents.customer _m:o customers.id) */
-    public ?\Pedidos\Customers_ $customer_ = null;
+    public ?Customers_ $customer_ = null;
 
 }
