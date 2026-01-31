@@ -1,0 +1,67 @@
+<?php
+
+namespace Fines2\Model;
+
+use SqlOrganize\Sql\Entity;
+use Exception;
+use DateTime;
+
+class Curso extends Entity
+{
+
+    public function __construct()
+    {
+        $this->_entityName = "curso";
+        $this->_db = \App\Context::getFinesDb();
+        $this->setDefault();
+    }
+
+    /** @var DateTime|null */
+    public ?DateTime $alta = null;
+
+    /** @var string|null */
+    public ?string $codigo = null;
+
+    /** @var string|null */
+    public ?string $comision = null;
+
+    /** @var string|null */
+    public ?string $descripcion_horario = null;
+
+    /** @var string|null */
+    public ?string $disposicion = null;
+
+    /** @var int|null */
+    public ?int $horas_catedra = null;
+
+    /** @var string|null */
+    public ?string $id = null;
+
+    /** @var string|null */
+    public ?string $observaciones = null;
+
+    /** @var Comision|null (fk curso.comision _m:o comision.id) */
+    public ?Comision_ $comision_ = null;
+
+    /** @var Disposicion|null (fk curso.disposicion _m:o disposicion.id) */
+    public ?Disposicion_ $disposicion_ = null;
+
+    /** @var int|null */
+    public ?int $Calificacion_Count = null;
+
+    /** @var Calificacion[] (ref calificacion.curso _m:o curso.id) */
+    public array $Calificacion_ = [];
+
+    /** @var int|null */
+    public ?int $Horario_Count = null;
+
+    /** @var Horario[] (ref horario.curso _m:o curso.id) */
+    public array $Horario_ = [];
+
+    /** @var int|null */
+    public ?int $Toma_Count = null;
+
+    /** @var Toma[] (ref toma.curso _m:o curso.id) */
+    public array $Toma_ = [];
+
+}

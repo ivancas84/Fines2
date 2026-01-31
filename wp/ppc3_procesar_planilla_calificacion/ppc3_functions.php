@@ -1,5 +1,6 @@
  <?php
 
+use Fines2\Persona_;
 use SqlOrganize\Utils\ValueTypesUtils;
 
    /**
@@ -17,7 +18,7 @@ use SqlOrganize\Utils\ValueTypesUtils;
             } else if(str_contains($k, "ape")){
                 $data["apellidos"] = $value;
             } else if(str_contains($k, "dni") || (str_contains($k, "doc"))){
-                $data["numero_documento"] = ValueTypesUtils::cleanStringOfNonDigits($value);
+                $data["numero_documento"] = Persona_::cuilDni($value)["dni"];
             } else if(str_contains($key, "final") || str_contains($k, "nota") || str_contains($k, "calif")){
                 $value = ValueTypesUtils::cleanStringOfNonDigits($value);
                 $data["nota"] = empty($value) ? 0 : intval($value);
@@ -85,18 +86,26 @@ use SqlOrganize\Utils\ValueTypesUtils;
 
     $data['numero_documento'] = $dni;
 
-    // Alumno: "APELLIDO, Nombre"
+    // Alumno: "APELLIDO, Nombre" o "APELLIDO. Nombre"
     if (empty($row['Alumno'])) {
         throw new Exception("Alumno vacío");
     }
 
     $alumno = trim($row['Alumno']);
 
-    if (!str_contains($alumno, ',')) {
-        throw new Exception("Formato de alumno inválido: se espera 'APELLIDO, Nombre'");
+    // Detectar separador
+    if (str_contains($alumno, ',')) {
+        $separator = ',';
+    } elseif (str_contains($alumno, '.')) {
+        $separator = '.';
+    } else {
+        throw new Exception("Formato de alumno inválido: se espera 'APELLIDO, Nombre' o 'APELLIDO. Nombre'");
     }
 
-    [$apellidos, $nombres] = array_map('trim', explode(',', $alumno, 2));
+    [$apellidos, $nombres] = array_map(
+        'trim',
+        explode($separator, $alumno, 2)
+    );
 
     if ($apellidos === '' || $nombres === '') {
         throw new Exception("Nombre o apellido incompleto");

@@ -12,9 +12,23 @@ class ComposerStaticInit1ba944b1b2880695113851e981334169
             'chillerlan\\Settings\\' => 20,
             'chillerlan\\QRCode\\' => 18,
         ),
+        'S' => 
+        array (
+            'SqlOrganize\\' => 12,
+            'SqlOrganizeMy\\' => 14,
+        ),
         'P' => 
         array (
+            'Pedidos\\' => 8,
             'PHPMailer\\PHPMailer\\' => 20,
+        ),
+        'F' => 
+        array (
+            'Fines2\\' => 7,
+        ),
+        'A' => 
+        array (
+            'App\\' => 4,
         ),
     );
 
@@ -27,9 +41,29 @@ class ComposerStaticInit1ba944b1b2880695113851e981334169
         array (
             0 => __DIR__ . '/..' . '/chillerlan/php-qrcode/src',
         ),
+        'SqlOrganize\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/SqlOrganize',
+        ),
+        'SqlOrganizeMy\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/SqlOrganizeMy',
+        ),
+        'Pedidos\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Pedidos',
+        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
+        'Fines2\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Fines2',
+        ),
+        'App\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src',
         ),
     );
 

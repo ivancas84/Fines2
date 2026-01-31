@@ -1,0 +1,38 @@
+<?php
+
+namespace Fines2\Model;
+
+use \Fines2\Model\Calificacion;
+
+use SqlOrganize\Sql\Entity;
+use Exception;
+use DateTime;
+
+class Calificacion_ extends Calificacion
+{
+public function SetNotaAprobada(int $nota){
+        if($nota < 4 && $nota > 10) 
+            throw new Exception("Nota incorrecta");
+        if($nota < 7)
+            $this->set("crec", $nota);
+        else 
+            $this->set("nota_final", $nota);
+    }
+
+    public function getNotaAprobada(): ?string {
+        if($this->nota_final >= 7)
+            return strval(round($this->nota_final));
+        
+        if($this->crec >= 4)
+            return strval(round($this->crec)) . "c";
+
+        return null;
+    }
+
+    public function cssBackgroundColor(): string {
+
+        return (intval($this->nota_final) < 7 && intval($this->crec) < 4) ? "background-color: #FFDDDD;" // Red pastel
+                        : "background-color: #DDFFDD;"; // Green pastel
+    }
+}
+

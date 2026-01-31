@@ -60,16 +60,12 @@ function ppc3_procesar_planilla_calificacion_page() {
             $i++;
             $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
             echo "<strong>Calificación: " . $i . ";</strong><br>";
-            
-            print_r($data);
 
             switch($format) {
                     case "PF":
-                        echo "voy";
                         $data = ppc3_parse_pf($data);
                         break;
                     case "PF2":
-                        echo "test";
                         $data = ppc3_parse_pf2($data);
                         break;
                     case "XLSX":

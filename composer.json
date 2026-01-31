@@ -3,5 +3,15 @@
         "tecnickcom/tcpdf": "^6.8",
         "chillerlan/php-qrcode": "^5.0",
         "phpmailer/phpmailer": "^6.9"
+    },
+
+    "autoload": {
+        "psr-4": {
+        "App\\": "src/",
+        "Fines2\\": "src/Fines2/",
+        "Pedidos\\": "src/Pedidos/",
+        "SqlOrganize\\": "src/SqlOrganize/",
+        "SqlOrganizeMy\\": "src/SqlOrganizeMy/"
+        }
     }
 }

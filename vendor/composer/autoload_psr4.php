@@ -8,5 +8,10 @@ $baseDir = dirname($vendorDir);
 return array(
     'chillerlan\\Settings\\' => array($vendorDir . '/chillerlan/php-settings-container/src'),
     'chillerlan\\QRCode\\' => array($vendorDir . '/chillerlan/php-qrcode/src'),
+    'SqlOrganize\\' => array($baseDir . '/src/SqlOrganize'),
+    'SqlOrganizeMy\\' => array($baseDir . '/src/SqlOrganizeMy'),
+    'Pedidos\\' => array($baseDir . '/src/Pedidos'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
+    'Fines2\\' => array($baseDir . '/src/Fines2'),
+    'App\\' => array($baseDir . '/src'),
 );
