@@ -142,6 +142,7 @@ class DataProvider {
 
     public function fetchAllEntitiesByParams(string $entityName, array $params = [], array $orderBy = []): array {
         $treeData = $this->fetchAllTreeByParams($entityName, $params, $orderBy);
+
         return $this->treeDataToEntities($entityName, $treeData);
     }
 

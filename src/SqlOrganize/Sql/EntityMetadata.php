@@ -30,7 +30,7 @@ class EntityMetadata
 
     public function getQualifiedClassName(): string
     {
-        $namespace = (!empty($this->db->config->namespace)) ? "\\".$this->db->config->namespace ."\\" : "";
+        $namespace = (!empty($this->db->config->namespace)) ? $this->db->config->namespace ."\\Model\\" : "";
         return $namespace . $this->getClassName() . "_";
     }
     

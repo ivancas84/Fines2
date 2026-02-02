@@ -17,46 +17,41 @@ class Context
     private static bool $pedidosInitialized = false;
 
 
-    public static function getConfigDb(){
-        require_once("..\config\config.php");
-
+    public static function getConfigDbFines(){
         $configDb = new SqlConfig();
         $configDb->host = DB_HOST_FINES2;
         $configDb->dbName = DB_NAME_FINES2;
         $configDb->user = DB_USER_FINES2;
         $configDb->pass = DB_PASS_FINES2;
         $configDb->namespace = "Fines2";
-        $configDb->dataClassesPath = MAIN_PATH . "Model" . DIRECTORY_SEPARATOR;
+        $configDb->dataClassesPath = MAIN_PATH . "src" . DIRECTORY_SEPARATOR . "Pedidos" . DIRECTORY_SEPARATOR . "Model" . DIRECTORY_SEPARATOR;
 
         return $configDb;
     }
 
-    public static function getConfigModel(){
-        require_once("..\config\config.php");
-
+    public static function getConfigModelFines(){
         $configModel = new ModelConfig();
         $configModel->host = DB_HOST_FINES2;
         $configModel->dbName = DB_NAME_FINES2;
         $configModel->user = DB_USER_FINES2;
         $configModel->pass = DB_PASS_FINES2;
         $configModel->namespace = "Fines2";
-        $configModel->schemaClassPath = "C:\\xampp\\htdocs\\Fines2\\src\\Fines2\\";
-        $configModel->dataClassesPath = "C:\\xampp\\htdocs\\Fines2\\src\\Fines2\\Model\\";
+        
+        $configModel->schemaClassPath = MAIN_PATH . "src" . DIRECTORY_SEPARATOR . "Fines2" . DIRECTORY_SEPARATOR;
+        $configModel->dataClassesPath = MAIN_PATH . "src" . DIRECTORY_SEPARATOR . "Fines2" . DIRECTORY_SEPARATOR . "Model" . DIRECTORY_SEPARATOR;
         $configModel->dbInstance = "\App\Context::getFinesDb()";
         
         return $configModel;
     }
 
     public static function getConfigDbPedidos(){
-        require_once("..\config\config.php");
-
         $configDb = new SqlConfig();
         $configDb->host = DB_HOST_PEDIDOS2;
         $configDb->dbName = DB_NAME_PEDIDOS2;
         $configDb->user = DB_USER_PEDIDOS2;
         $configDb->pass = DB_PASS_PEDIDOS2;
         $configDb->namespace = "Pedidos";
-        $configDb->dataClassesPath = MAIN_PATH . "ModelPedidos" . DIRECTORY_SEPARATOR;
+        $configDb->dataClassesPath = MAIN_PATH . "Pedidos" . DIRECTORY_SEPARATOR . "src" . DIRECTORY_SEPARATOR . "Model" . DIRECTORY_SEPARATOR;
         $configDb->tablePrefix = 'wpwt_psmsc_';
         $configDb->properties = [
             "tickets" => [
@@ -67,17 +62,14 @@ class Context
     }
 
     public static function getConfigModelPedidos(){
-        require_once("..\config\config.php");
-
         $configModel = new ModelConfig();
         $configModel->host = DB_HOST_PEDIDOS2;
         $configModel->dbName = DB_NAME_PEDIDOS2;
         $configModel->user = DB_USER_PEDIDOS2;
         $configModel->pass = DB_PASS_PEDIDOS2;
         $configModel->namespace = "Pedidos";
-        $configModel->schemaName = 'schema_pedidos';
-        $configModel->schemaClassPath = "C:\\xampp\\htdocs\\Fines2\\";
-        $configModel->dataClassesPath = "C:\\xampp\\htdocs\\Fines2\\ModelPedidos\\";
+        $configModel->schemaClassPath = MAIN_PATH . "src" . DIRECTORY_SEPARATOR . "Pedidos" . DIRECTORY_SEPARATOR;
+        $configModel->dataClassesPath =  MAIN_PATH . "src" . DIRECTORY_SEPARATOR . "Pedidos" . DIRECTORY_SEPARATOR . "Model" . DIRECTORY_SEPARATOR;
         $configModel->dbInstance = "\App\Context::getPedidosDb()";
         $configModel->tablePrefix = 'wpwt_psmsc_';
         return $configModel;
@@ -96,7 +88,7 @@ class Context
     }
 
     public static function initFinesDb(): void {
-        $config = self::getConfigDb();
+        $config = self::getConfigDbFines();
 
         if (self::$fines === null) {
             self::$fines = new DbMy($config, SchemaFines::getEntities());
@@ -109,10 +101,6 @@ class Context
             self::$pedidos = new DbMy($config, SchemaPedidos::getEntities());
         }
 
-        foreach(self::$pedidos->entitiesMetadata as $entityMetadata){
-            require_once rtrim($config->dataClassesPath, '/') . '/' . $entityMetadata->getClassName() .'.php';
-            require_once rtrim($config->dataClassesPath, '/') . '/' . $entityMetadata->getClassName() .'_.php';
-        }
     }
 }
 

@@ -2,7 +2,7 @@
 
 namespace Pedidos\Model;
 
-use \Pedidos\Agents;
+use \Pedidos\Model\Agents;
 
 use SqlOrganize\Sql\Entity;
 use Exception;
