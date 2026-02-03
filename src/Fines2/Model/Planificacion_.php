@@ -11,7 +11,7 @@ use DateTime;
 
 class Planificacion_ extends Planificacion
 {
-public function getTramo(): string {
+    public function getTramo(): string {
         return ($this->anio ?? "?") . "°" . ($this->semestre ?? "?") . "C";
     }
 
