@@ -69,10 +69,8 @@ class DataProvider {
     }
 
     /**
-     * @param string $entityName Nombre de la entidad
-     * @param array $params Array de parametros a filtrar, deben ser solo columnas de $entityName ["fieldName"=>"value", ...]
-     * @param array $orderBy Array de parametros a ordenar, deben ser solo columnas de $entityName, ["fieldName"=>"ASC", ...]
-     * @param string $conn Conector entre las condiciones, por defecto "AND"
+     * Transformar y ejecutar sql. El SQL debe partir de entityName en el FROM
+     * @return array fetchAll
      */
     protected function _fetchAllByParams(string $sql, string $entityName, array $params = [], array $orderBy = [], $fetchMode = PDO::FETCH_ASSOC): array
     {
@@ -81,14 +79,14 @@ class DataProvider {
         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
-        return $stmt->fetchAll($fetchMode);
+        $ret = $stmt->fetchAll($fetchMode);
+        $stmt->closeCursor();
+        return $ret;
     }
 
     /**
-     * @param string $entityName Nombre de la entidad
-     * @param array $params Array de parametros a filtrar, deben ser solo columnas de $entityName ["fieldName"=>"value", ...]
-     * @param array $orderBy Array de parametros a ordenar, deben ser solo columnas de $entityName, ["fieldName"=>"ASC", ...]
-     * @param string $conn Conector entre las condiciones, por defecto "AND"
+     * Transformar y ejecutar sql. El SQL debe partir de entityName en el FROM
+     * @return mixed fetch
      */
     protected function _fetchByParams(string $sql, string $entityName, array $params = [], array $orderBy = [], $fetchMode = PDO::FETCH_ASSOC): mixed
     {
@@ -97,9 +95,16 @@ class DataProvider {
         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
-        return $stmt->fetch($fetchMode);
+        $ret = $stmt->fetch($fetchMode);
+        $stmt->closeCursor();
+        return $ret;
+
     }
 
+    /**
+     * Generar y ejecutar sql de una entidad y sus relaciones
+     * @return array fetchAll
+     */
     public function fetchAllJoinByParams(string $entityName, array $params = [], array $orderBy = []): array
     {
         $selectQueries = $this->db->createSelectQueries();
@@ -107,6 +112,10 @@ class DataProvider {
         return $this->_fetchAllByParams($sql, $entityName, $params, $orderBy);
     }
 
+    /**
+     * Generar y ejecutar sql de una entidad (no incluye relaciones)
+     * @return array fetchAll
+     */
     public function fetchAllByParams(string $entityName, array $params = [], array $orderBy = []): array
     {
         $selectQueries = $this->db->createSelectQueries();
@@ -114,6 +123,10 @@ class DataProvider {
         return $this->_fetchAllByParams($sql, $entityName, $params, $orderBy);
     }
 
+    /**
+     * Generar y ejecutar sql para obtener la cantidad de elementos de una entidad
+     * @return int fetchColumn
+     */
     public function countByParams(string $entityName, array $params = []): int
     {
         $selectQueries = $this->db->createSelectQueries();
@@ -122,10 +135,17 @@ class DataProvider {
         [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
-        return (int)$stmt->fetchColumn();
+        $ret = (int)$stmt->fetchColumn();
+        $stmt->closeCursor();
+        return $ret;
 
     }
 
+
+    /**
+     * Generar y ejecutar sql de una entidad y sus relaciones, y tranformarlo en arbol
+     * @return array asociativo fetchAll con árbol de relaciones
+     */
     public function fetchAllTreeByParams(string $entityName, array $params = [], array $orderBy = []): array
     {
         $rawEntities = $this->fetchAllJoinByParams($entityName, $params, $orderBy);
@@ -140,6 +160,10 @@ class DataProvider {
         return $response; // Ya es array asociativo, no se necesita deserializar
     }
 
+    /**
+     * Generar y ejecutar sql de una entidad y sus relaciones, y devolver la entidad principal y el arbol de propiedades
+     * @return array asociativo fetchAll con árbol de entidades
+     */
     public function fetchAllEntitiesByParams(string $entityName, array $params = [], array $orderBy = []): array {
         $treeData = $this->fetchAllTreeByParams($entityName, $params, $orderBy);
 
@@ -148,8 +172,8 @@ class DataProvider {
 
 
     /**
-     * Consulta de datos por parámetros únicos
-     * Retorna array sin relaciones
+     * Generar y ejecutar sql de una entidad sin relaciones utilizando parámetros únicos
+     * @return array Datos sin relaciones
      */
     public function fetchByUnique(string $entityName, array $uniqueParams): ?array {
         $selectQueries = $this->db->CreateSelectQueries();
@@ -159,13 +183,14 @@ class DataProvider {
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
         if(count($rows) > 1) throw new Exception("Consulta por campos unicos retorno más de un resultado");
         return (count($rows) == 0) ? null : $rows[0];
     }
 
     /**
-     * consulta de entidad por parámetros únicos
-     * @return  Entity|null Retorna Entity con relaciones
+     * Generar y ejecutar sql de una entidad utilizando parámetros únicos
+     * @return Entity|null Retorna Entity con relaciones
      */
     public function fetchEntityByUnique(string $entityName, array $uniqueParams): ?Entity {
         $row = $this->fetchByUnique($entityName, $uniqueParams);
@@ -174,6 +199,11 @@ class DataProvider {
         return $this->treeRowToEntity($entityName, $treeRow);
     }
 
+    /**
+     * consulta de entidad por parámetros únicos
+     * @return Entity|null Retorna Entity con relaciones
+     */
+
     public function fetchEntityByParams(string $entityName, array $params): ?Entity {
         $entities = $this->fetchAllEntitiesByParams($entityName, $params);
         if(count($entities)) return $entities[0];
@@ -181,10 +211,8 @@ class DataProvider {
     }
     
     /**
-     * Fetch data with support for array parameters in SQL queries
-     * 
-     * @param
-     * $params array asociativo
+     * Procesar y ejecutar sql para obtener array asociativo de datos
+     * @return array asociativo de datos
      */
     public function fetchAllSqlByParams(string $sql, ?array $params = null): array
     {
@@ -199,9 +227,15 @@ class DataProvider {
 
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $ret = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+        return $ret;
     }
 
+    /**
+     * Procesar y ejecutar sql para obtener array asociativo de datos de la primera columna
+     * @return array asociativo de datos de la primera columna
+     */
     public function fetchSqlByParams(string $sql, ?array $params = null): ?array
     {
         if ($params === null) {
@@ -215,9 +249,14 @@ class DataProvider {
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
         $response = $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
         return ($response === false) ? null : $response;
     }
 
+    /**
+     * Procesar y ejecutar sql para obtener primer valor de la primera columna
+     * @return mixed primer valor de la primera columna
+     */
     public function fetchSqlValueByParams(string $sql, ?array $params = null): mixed
     {
         if ($params === null) {
@@ -234,13 +273,15 @@ class DataProvider {
         $stmt->execute($processedParams);
 
         $value = $stmt->fetch(PDO::FETCH_COLUMN, 0);
+        $stmt->closeCursor();
         return ($value === false) ? null : $value;
     }
 
     /**
-     * 
+     * Generar y ejecutar sql para obtener conjunto de valores de un solo fieldName
+     * @return array conjunto de valores de un solo fieldName
      */
-    public function fetchAllColumnByParams($entityName, $fieldName, array $params = [], array $orderBy = []){
+    public function fetchAllColumnByParams($entityName, $fieldName, array $params = [], array $orderBy = []): array{
         $selectQueries = $this->db->createSelectQueries();
         $sql = $selectQueries->selectField($entityName, $fieldName);
         return $this->_fetchAllByParams($sql, $entityName, $params, $orderBy, PDO::FETCH_COLUMN);
@@ -248,9 +289,8 @@ class DataProvider {
 
 
     /**
-     * Consulta de columna
-     * 
-     * @param $params array asociativo
+     * Procesar y ejecutar sql para obtener conjunto de valores de una columna indicando indice
+     * @return array conjunto de valores de una columna
      */
     public function fetchAllColumnSqlByParams(string $sql, int $columnIndex = 0, ?array $params = null): array
     {
@@ -264,26 +304,50 @@ class DataProvider {
 
         $stmt = $this->db->getPdo()->prepare($processedSql);
         $stmt->execute($processedParams);
-        return $stmt->fetchAll(PDO::FETCH_COLUMN, $columnIndex);
+        $ret = $stmt->fetchAll(PDO::FETCH_COLUMN, $columnIndex);
+        $stmt->closeCursor();
+        return $ret;
     }
 
     /**
-     * SQL debe consultar el id en la primera columna
+     * Regenerar y ejecutar SQL para consultar conjunto de entidades
+     * 
+     * @param El SQL enviado como parametro debe consultar el id en la primera columna
      * 
      * La forma mas sencilla de hacer consultas a la base de datos abtrayendo del esquema es mediante este metodo
      * Solo se debe definir un sql que retorne el id de la entidad en la primera columna y se definira un metodo que arme el arbol de entidades.
+     * 
      * @example
      *   $sql = "
      *       SELECT DISTINCT id 
      *       FROM toma
      *       WHERE curso = :cursos";
-     *   $tomas = $dataProvider->fetchAllEntitiesBySqlId("\Fines2\Toma_", $sql, ["cursos"=>$ids_cursos]);
+     *   $tomas = $dataProvider->fetchAllEntitiesBySqlId("Toma_", $sql, ["cursos"=>$ids_cursos]);
+     * 
+     * @return array Entity
      */
     public function fetchAllEntitiesBySqlId(string $entityName, string $sql, ?array $params = null): array {
         $ids = $this->fetchAllColumnSqlByParams($sql, 0, $params);
         return $this->fetchAllEntitiesByParams($entityName, ["id" => $ids]);
     }
 
+    /**
+     * Regenerar y ejecutar SQL para consultar entidad
+     * 
+     * @param El SQL enviado como parametro debe consultar el id en la primera columna
+     * 
+     * La forma mas sencilla de hacer consultas a la base de datos abtrayendo del esquema es mediante este metodo
+     * Solo se debe definir un sql que retorne el id de la entidad en la primera columna y se definira un metodo que arme el arbol de entidades.
+     * 
+     * @example
+     *   $sql = "
+     *       SELECT DISTINCT id 
+     *       FROM toma
+     *       WHERE curso = :cursos";
+     *   $tomas = $dataProvider->fetchEntityBySqlId("Toma_", $sql, ["cursos"=>$ids_cursos]);
+     * 
+     * @return array Entity
+     */
     public function fetchEntityBySqlId(string $entityName, string $sql, ?array $params = null): ?Entity {
         $entities = $this->fetchAllEntitiesBySqlId($entityName, $sql, $params);
         if(count($entities)) return $entities[0];
@@ -294,6 +358,34 @@ class DataProvider {
         $table = $this->db->getEntityMetadata($entityName)->getSchemaName();
         $sql = "SELECT IFNULL(MAX({$fieldName}), 0) + 1 AS next_id FROM $table";
         return $this->fetchSqlValueByParams($sql);
+    }
+
+    /**
+     * Executes a SELECT query associative array  * where the first specified column becomes the key and the second becomes the value.
+     * No utiliza relaciones!
+     */
+    public function fetchPairs(string $entityName, string $keyField, string $valueField, array $params = [], array $orderBy = []): array
+    {
+
+        $selectQueries = $this->db->createSelectQueries();
+        $sql = $selectQueries->select($entityName);
+        $sql .= $selectQueries->whereParamsWithOrder($entityName, $params, $orderBy);
+        [$processedSql, $processedParams] = $selectQueries->processArrayParameters($sql, $params);
+        $stmt = $this->db->getPdo()->prepare($processedSql);
+        $stmt->execute($processedParams);
+        $result = [];
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if (!isset($row[$keyField]) || !array_key_exists($valueField, $row)) {
+                throw new Exception("Query must return columns '$keyField' and '$valueField'");
+            }
+            
+            $key = $row[$keyField];
+            $result[$key] = $row[$valueField];
+        }
+        
+        $stmt->closeCursor();
+        return $result;
     }
 
   

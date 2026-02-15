@@ -547,51 +547,35 @@ class Entity
     }
 
 
-    
-
-
-
 
     
-    public function persist(): mixed
+    public function persist(ModifyQueries $modifyQueries): void
     {
-    
-        $modifyQueries = $this->_db->CreateModifyQueries();
-        $modifyQueries->buildPersistSql($this);
-        $modifyQueries->execute();
-        return $this->get($this->_db->config->idName);
+        $modifyQueries->persistSql($this);
     }
 
-    public function persistByStatus(): mixed
+    public function persistByStatus(ModifyQueries $modifyQueries): void
     {
         if($this->_status == 0) {
-            $this->update();
+            $this->update($modifyQueries);
         } elseif($this->_status < 0) {
-            $this->insert();
+            $this->insert($modifyQueries);
         } 
-
-        return $this->get($this->_db->config->idName);
     }
 
-    public function update(): void
+    public function update(ModifyQueries $modifyQueries): void
     {
-        $modifyQueries = $this->_db->CreateModifyQueries();
-        $modifyQueries->buildUpdateSql($this);
-        $modifyQueries->execute();
+        $modifyQueries->updateSql($this);
     }
 
-    public function updateField($fieldName): void
+    public function updateField(ModifyQueries $modifyQueries, string $fieldName): void
     {
-        $modifyQueries = $this->_db->CreateModifyQueries();
-        $modifyQueries->buildUpdateKeySqlById($this, $fieldName);
-        $modifyQueries->execute();
+        $modifyQueries->updateKeySqlById($this, $fieldName);
     }
 
-    public function insert(): void
+    public function insert(ModifyQueries $modifyQueries): void
     {
-            $modifyQueries = $this->_db->CreateModifyQueries();
-            $modifyQueries->buildInsertSql($this);
-            $modifyQueries->execute();
+        $modifyQueries->insertSql($this);
     }
 
     

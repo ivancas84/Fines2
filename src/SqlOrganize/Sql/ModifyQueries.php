@@ -117,9 +117,9 @@ abstract class ModifyQueries
     /**
      * Persistencia de entidad, 
      */
-    public function buildPersistSql(Entity $data): void
+    public function persistSql(Entity $data): void
     {
-        $id = $this->buildPersistSql_($data->_entityName, $data->toArray());
+        $id = $this->persistSql_($data->_entityName, $data->toArray());
         $data->set(
             $this->db->config->idName, 
             $id
@@ -131,39 +131,39 @@ abstract class ModifyQueries
      * 
      * @return mixed id persistido
      */
-    public function buildPersistSql_($entityName, array $data, ?CompareParams $cp = null): mixed {
+    public function persistSql_($entityName, array $data, ?CompareParams $cp = null): mixed {
         
         $existingRow = $this->db->CreateDataProvider()->fetchByUnique($entityName, $data);
         if (!empty($existingRow)) {
             $data[$this->db->config->idName] = $existingRow[$this->db->config->idName];
 
             if (!empty($this->db->compare($entityName, $data, $existingRow, $cp)))
-                $this->buildUpdateSql_($entityName, $data);
+                $this->updateSql_($entityName, $data);
             
         } else {
-            $this->buildInsertSql_($entityName, $data);
+            $this->insertSql_($entityName, $data);
         }
         return $data[$this->db->config->idName]; 
     }
 
-    public function buildPersistSqlByStatus(Entity $data): void
+    public function persistSqlByStatus(Entity $data): void
     {
         if ($data->_status === 1) // pedido existe y no fue modificado
             return;
 
         if ($data->_status === 0)
-            $this->buildUpdateSql($data);
+            $this->updateSql($data);
         else
-            $this->buildInsertSql($data);
+            $this->insertSql($data);
     }
 
 
-    public function buildUpdateSql(Entity $data): void
+    public function updateSql(Entity $data): void
     {
-        $this->buildUpdateSql_($data->_entityName, $data->toArray());
+        $this->updateSql_($data->_entityName, $data->toArray());
     }
 
-    public function buildUpdateSql_(string $entityName, array $data): void
+    public function updateSql_(string $entityName, array $data): void
     {
         $prefix = $this->getNextPrefix();
         $sql = $this->generateUpdateSql($entityName, $data, $prefix);
@@ -181,16 +181,16 @@ abstract class ModifyQueries
         $this->sql .= $sql . "\n";
     }
 
-    public function buildUpdateSqlByCompare(Entity $entityToUpdate, Entity $entityToCompare, ?CompareParams $cmp = null){
-        return $this->buildUpdateSqlByCompare_($entityToUpdate->_entityName, $entityToUpdate->toArray(), $entityToCompare->toArray(), $cmp);
+    public function updateSqlByCompare(Entity $entityToUpdate, Entity $entityToCompare, ?CompareParams $cmp = null){
+        return $this->updateSqlByCompare_($entityToUpdate->_entityName, $entityToUpdate->toArray(), $entityToCompare->toArray(), $cmp);
     }
 
-    public function buildUpdateSqlByCompare_(string $entityName, array $dataToUpdate, array $dataToCompare, ?CompareParams $cmp = null): void
+    public function updateSqlByCompare_(string $entityName, array $dataToUpdate, array $dataToCompare, ?CompareParams $cmp = null): void
     {
         $dataToUpdate[$this->db->config->idName] = $dataToCompare[$this->db->config->idName];
 
         if (!empty($this->db->compare($entityName, $dataToUpdate, $dataToCompare, $cmp)))
-            $this->buildUpdateSql_($entityName, $dataToUpdate);
+            $this->updateSql_($entityName, $dataToUpdate);
     }
 
     /**
@@ -200,9 +200,9 @@ abstract class ModifyQueries
      * @param string $key Campo a actualizar
      * @return string SQL generado
      */
-    public function buildUpdateKeySqlById(Entity $entity, $key): void
+    public function updateKeySqlById(Entity $entity, $key): void
     {
-        $this->buildUpdateKeyValueSqlById(
+        $this->updateKeyValueSqlById(
             $entity->_entityName, 
             $key, 
             $entity->get($key), 
@@ -219,7 +219,7 @@ abstract class ModifyQueries
      * @param mixed $id ID del registro
      * @return string SQL generado
      */
-    public function buildUpdateKeyValueSqlById($entityName, $key, $value, $id): void
+    public function updateKeyValueSqlById($entityName, $key, $value, $id): void
     {
         $prefix = $this->getNextPrefix();
         $entityMetadata = $this->db->getEntityMetadata($entityName);
@@ -245,7 +245,7 @@ abstract class ModifyQueries
         $this->sql .= $sql . ";\n";
     }
 
-    public function buildUpdateKeyValueSqlByIds($entityName, $key, $value, ...$ids): void
+    public function updateKeyValueSqlByIds($entityName, $key, $value, ...$ids): void
     {
         $prefix = $this->getNextPrefix();
         $entityMetadata = $this->db->getEntityMetadata($entityName);
@@ -258,7 +258,7 @@ abstract class ModifyQueries
         $this->processArrayParameters($entityName, "update", $sql, [$prefix . 'Key' => $value, "{$prefix}Ids" => $ids]);
     }
 
-    protected function buildUpdateSqlByIds_(string $entityName, array $data, ...$ids): void
+    protected function updateSqlByIds_(string $entityName, array $data, ...$ids): void
     {
         $prefix = $this->getNextPrefix();
         $entityMetadata = $this->db->getEntityMetadata($entityName);
@@ -274,11 +274,11 @@ abstract class ModifyQueries
      */
     protected abstract function generateUpdateSql(string $entityName, array $row, string $prefix): string;
     
-    public function buildInsertSql(Entity $entity): void{
-        $this->buildInsertSql_($entity->_entityName, $entity->toArray());
+    public function insertSql(Entity $entity): void{
+        $this->insertSql_($entity->_entityName, $entity->toArray());
     }
 
-    public function buildInsertSql_(string $entityName, array $data): void
+    public function insertSql_(string $entityName, array $data): void
     {
         $prefix = $this->getNextPrefix();
 
@@ -335,28 +335,28 @@ abstract class ModifyQueries
     }
 
 
-    public function buildInsertSqlIfNotExists(Entity $entity): void {
+    public function insertSqlIfNotExists(Entity $entity): void {
         $entity->sset(
             $this->db->config->idName, 
-            $this->buildInsertSqlIfNotExists_($entity->_entityName, $entity->toArray())
+            $this->insertSqlIfNotExists_($entity->_entityName, $entity->toArray())
         );
     }
 
-    public function buildInsertSqlIfNotExists_(string $entityName, array $data): mixed
+    public function insertSqlIfNotExists_(string $entityName, array $data): mixed
     {
         $existingRow = $this->db->CreateDataProvider()->fetchByUnique($entityName, $data);
         if(empty($existingRow)){
-            $this->buildInsertSql_($entityName, $data);
+            $this->insertSql_($entityName, $data);
             return $this->detail[count($this->detail)-1]["Id"];
         }
 
         return $existingRow[$this->db->config->idName];
     }
 
-    public function buildInsertSqlIfNotExistsOrCompare_(string $entityName, array $data, CompareParams $compare){
+    public function insertSqlIfNotExistsOrCompare_(string $entityName, array $data, CompareParams $compare){
         $existingRow = $this->db->CreateDataProvider()->fetchByUnique($entityName, $data);
         if(empty($existingRow)){
-            $this->buildInsertSql_($entityName, $data);
+            $this->insertSql_($entityName, $data);
         } else {
             $compare = $this->db->compare($entityName, $data, $existingRow, $compare);
 
@@ -366,11 +366,11 @@ abstract class ModifyQueries
     }
 
 
-    public function buildDeleteSql(Entity $entity): void {
-        $this->buildDeleteSqlById($entity->_entityName, $entity->get($this->db->config->idName));
+    public function deleteSql(Entity $entity): void {
+        $this->deleteSqlById($entity->_entityName, $entity->get($this->db->config->idName));
     }
 
-    public function buildDeleteSqlById($entityName, $id)
+    public function deleteSqlById($entityName, $id)
     {
         $prefix = $this->getNextPrefix();
         $metadata = $this->db->getEntityMetadata($entityName);
@@ -396,7 +396,7 @@ abstract class ModifyQueries
         return $sql;
     }
 
-    public function buildDeleteSqlByIds($entityName, ...$ids): void
+    public function deleteSqlByIds($entityName, ...$ids): void
     {
         $prefix = $this->getNextPrefix();
         $metadata = $this->db->getEntityMetadata($entityName);
@@ -417,7 +417,7 @@ abstract class ModifyQueries
         /** @var DataProvider */ $dataProvider = $this->db->CreateDataProvider();
         /** @var Entity[] */ $relations = $dataProvider->fetchAllEntitiesByParams($entityName, [$fkName=> $value_origen]);
         foreach($relations as $rel){
-            $this->buildUpdateKeyValueSqlById(
+            $this->updateKeyValueSqlById(
                 $entityName, 
                 $fkName, 
                 $value_destino,

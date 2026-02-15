@@ -26,7 +26,7 @@ foreach($comisionesAutorizadasSemestreSin32 as $comision) {
     
     $tramoSiguiente = $comision->planificacion_?->getTramoSiguiente();
       /** @var Planificacion_ */ $nuevaPlanificacion = \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityByParams("planificacion", [
-            "plan" => $comision->planificacion_->plan,  
+            "plan" => $comision->planificacion_->plan,
             "anio" => $tramoSiguiente["anio"],
             "semestre" => $tramoSiguiente["semestre"]
         ]);
