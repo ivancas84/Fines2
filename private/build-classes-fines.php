@@ -8,6 +8,6 @@ use App\Context;
 use SqlOrganize\Model\BuildClasses;
 use Fines2\Schema_;
 
-BuildClasses::Build(Context::getConfigModel(), Schema_::getEntities());
+BuildClasses::Build(Context::getConfigModelFines(), Schema_::getEntities());
 
 echo "fin";

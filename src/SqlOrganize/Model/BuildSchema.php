@@ -446,6 +446,142 @@ public function createSchema(): void
 
 }
 
+
+
+public function createSchemaJson(): void    
+{
+    if (!is_dir($this->config->schemaClassPath)) {
+        mkdir($this->config->schemaClassPath, 0755, true);
+    }
+
+    $schemaFileName = str_replace('_', '-', $this->config->schemaName) . ".json";
+    $schemaSourcePath = $this->config->schemaClassPath . DIRECTORY_SEPARATOR . $schemaFileName;
+    $sw = fopen($schemaSourcePath, 'w');
+
+    fwrite($sw, "    {\n");
+
+    foreach ($this->entities as $entityName => $entity) {
+        fwrite($sw, "        \"{$entityName}\" = {\n");
+        fwrite($sw, "           \"name\" = \"{$entityName}\",\n");
+        fwrite($sw, "           \"alias\" = \"{$entity->alias}\",\n");
+
+        if (!empty($entity->schema)) {
+            fwrite($sw, "           \"schema\" = \"{$entity->schema}\",\n");
+        }
+        if (!empty($entity->pk)) {
+            fwrite($sw, "        \"pk\" = [\"" . implode("\", \"", $entity->pk) . "\"],\n");
+        }
+        if (!empty($entity->fk)) {
+            fwrite($sw, "        \"fk\" = [\"" . implode("\", \"", $entity->fk) . "\"],\n");
+        }
+        if (!empty($entity->noAdmin)) {
+            fwrite($sw, "        \"noAdmin\" = [\"" . implode("\", \"", $entity->noAdmin) . "\"],\n");
+        }
+        if (!empty($entity->unique)) {
+            fwrite($sw, "        \"unique\" = [\"" . implode("\", \"", $entity->unique) . "\"],\n");
+        }
+        if (!empty($entity->uniqueMultiple)) {
+            $ums = array_map(fn($g) => "[\"" . implode("\", \"", $g) . "\"]", $entity->uniqueMultiple);
+            fwrite($sw, "        \"uniqueMultiple\" = [" . implode(", ", $ums) . "],\n");
+        }
+        if (!empty($entity->notNull)) {
+            fwrite($sw, "        \"notNull\" = [\"" . implode("\", \"", $entity->notNull) . "\"],\n");
+        }
+
+        fwrite($sw, "\n");
+
+        // Tree relationships
+        if (!empty($entity->tree)) {
+            fwrite($sw, "        \"tree\" = {\n");
+            foreach ($entity->tree as $fieldId => $tree) {
+                fwrite($sw, "            \"{$fieldId}\" = {\n");
+                fwrite($sw, "                \"fieldName\" = \"{$tree->fieldName}\"\n");
+                fwrite($sw, "                \"refEntityName\" = \"{$tree->refEntityName}\"\n");
+                fwrite($sw, "                \"refFieldName\" = \"{$tree->refFieldName}\"\n");
+
+                if (!empty($tree->children)) {
+                    $this->writeTreeChildrenJSON($sw, "        ", $tree->children);
+                }
+                fwrite($sw, "            }\n");
+            }
+        }
+
+        // Relations
+        if (!empty($entity->relations)) {
+            fwrite($sw, "        \$entities['{$entityName}']->relations = [];\n");
+            foreach ($entity->relations as $fieldId => $relation) {
+                fwrite($sw, "        \$entities['{$entityName}']->relations['{$fieldId}'] = EntityRelation::getInstance('{$relation->fieldName}', '{$relation->refEntityName}', '{$relation->refFieldName}');\n");
+                if (!empty($relation->parentId)) {
+                    fwrite($sw, "        \$entities['{$entityName}']->relations['{$fieldId}']->parentId = '{$relation->parentId}';\n");
+                }
+                fwrite($sw, "\n");
+
+            }
+        }
+
+        // One-to-One relationships (oo)
+        if (!empty($entity->oo)) {
+            fwrite($sw, "        \$entities['{$entityName}']->oo = [];\n");
+            foreach ($entity->oo as $id => $rref) {
+                fwrite($sw, "        \$entities['{$entityName}']->oo['{$id}']  = EntityRef::getInstance('{$rref->fieldName}', '{$rref->entityName}');\n\n");
+            }
+        }
+
+        // One-to-Many relationships (om)
+        if (!empty($entity->om)) {
+            fwrite($sw, "        \$entities['{$entityName}']->om = [];\n");
+            foreach ($entity->om as $id => $rref) {
+                fwrite($sw, "        \$entities['{$entityName}']->om['{$id}'] = EntityRef::getInstance('{$rref->fieldName}', '{$rref->entityName}');\n");
+            }
+        }
+
+        // Fields
+        if (isset($this->fields[$entityName])) {
+            foreach ($this->fields[$entityName] as $fieldName => $field) {
+                fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}'] = Field::getInstance('{$entityName}', '{$fieldName}', '{$field->dataType}', '{$field->type}');\n");
+
+                if (!is_null($field->defaultValue)) {
+                    $defaultValue = ($field->type == "bool") ? (ValueTypesUtils::toBool($field->defaultValue) ? "true" : "false") : "'{$field->defaultValue}'";
+                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->defaultValue = $defaultValue;\n");
+                }
+                if (!empty($field->alias)) {
+                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->alias = '{$field->alias}';\n");
+                }
+                if (!empty($field->refEntityName)) {
+                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->refEntityName = '{$field->refEntityName}';\n");
+                }
+                if (!empty($field->refFieldName)) {
+                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->refFieldName = '{$field->refFieldName}';\n");
+                }
+                if (!empty($field->checks)) {
+                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->checks = [\n");
+                    foreach ($field->checks as $k => $v) {
+                        fwrite($sw, "            '{$k}' => '{$v}',\n");
+                    }
+                    fwrite($sw, "        ];\n");
+                }
+                if (!empty($field->resets)) {
+                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->resets = [\n");
+                    foreach ($field->resets as $k => $v) {
+                        $vStr = is_bool($v) ? ($v ? 'true' : 'false') : "'{$v}'";
+                        fwrite($sw, "            '{$k}' => {$vStr},\n");
+                    }
+                    fwrite($sw, "        ];\n");
+                }
+
+            }
+        }
+
+    }
+    fwrite($sw, "        return \$entities;\n");
+
+    fwrite($sw, "    }\n");
+    fwrite($sw, "}\n");
+
+    fclose($sw);
+
+}
+
 public function writeTreeChildren($sw, $source, $children)
 {
     fwrite($sw, $source . "->children = [];\n");
@@ -458,6 +594,22 @@ public function writeTreeChildren($sw, $source, $children)
     }
 }
 
+public function writeTreeChildrenJSON($sw, $blank_spaces, $children)
+{
+    fwrite($sw, $blank_spaces . "\"children\" = {;\n");
+    foreach ($children as $fieldId => $tree) {
+        fwrite($sw, $blank_spaces . "    \"{$fieldId}\" = {\n");
+        fwrite($sw, $blank_spaces . "        \"fieldName\" = \"{$tree->fieldName}\"\n");
+        fwrite($sw, $blank_spaces . "        \"refEntityName\" = \"{$tree->refEntityName}\"\n");
+        fwrite($sw, $blank_spaces . "        \"refFieldName\" = \"{$tree->refFieldName}\"\n");
+        fwrite($sw, $blank_spaces . "    }\n");
+
+        if (!empty($tree->children)) {
+            $this->writeTreeChildrenJSON($sw, $blank_spaces . "    ", $tree->children);
+        }
+        fwrite($sw, "\n");
+    }
+}
 
     public function relationsRef(string $entityName): array
     {

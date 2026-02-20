@@ -2,10 +2,6 @@
 
 namespace SqlOrganize\Model;
 
-require_once MAIN_PATH . 'SqlOrganize/Model/EntityMetadata.php';
-require_once MAIN_PATH . 'SqlOrganize/Model/EntityTree.php';
-require_once MAIN_PATH . 'SqlOrganize/Model/Field.php';
-
 
 class BuildEntityTree
 {
