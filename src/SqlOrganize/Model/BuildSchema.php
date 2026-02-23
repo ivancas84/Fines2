@@ -458,124 +458,195 @@ public function createSchemaJson(): void
     $schemaSourcePath = $this->config->schemaClassPath . DIRECTORY_SEPARATOR . $schemaFileName;
     $sw = fopen($schemaSourcePath, 'w');
 
-    fwrite($sw, "    {\n");
+    fwrite($sw, "{\n");
+
+    $lastKeyEntities = array_key_last($this->entities);
 
     foreach ($this->entities as $entityName => $entity) {
-        fwrite($sw, "        \"{$entityName}\" = {\n");
-        fwrite($sw, "           \"name\" = \"{$entityName}\",\n");
-        fwrite($sw, "           \"alias\" = \"{$entity->alias}\",\n");
+
+        fwrite($sw, "  \"{$entityName}\" : {\n");
+        fwrite($sw, "    \"name\" : \"{$entityName}\",\n");
+        fwrite($sw, "    \"alias\" : \"{$entity->alias}\",\n");
 
         if (!empty($entity->schema)) {
-            fwrite($sw, "           \"schema\" = \"{$entity->schema}\",\n");
+            fwrite($sw, "    \"schema\" : \"{$entity->schema}\",\n");
         }
         if (!empty($entity->pk)) {
-            fwrite($sw, "        \"pk\" = [\"" . implode("\", \"", $entity->pk) . "\"],\n");
+            fwrite($sw, "    \"pk\" : [\"" . implode("\", \"", $entity->pk) . "\"],\n");
         }
         if (!empty($entity->fk)) {
-            fwrite($sw, "        \"fk\" = [\"" . implode("\", \"", $entity->fk) . "\"],\n");
+            fwrite($sw, "    \"fk\" : [\"" . implode("\", \"", $entity->fk) . "\"],\n");
         }
         if (!empty($entity->noAdmin)) {
-            fwrite($sw, "        \"noAdmin\" = [\"" . implode("\", \"", $entity->noAdmin) . "\"],\n");
+            fwrite($sw, "    \"noAdmin\" : [\"" . implode("\", \"", $entity->noAdmin) . "\"],\n");
         }
         if (!empty($entity->unique)) {
-            fwrite($sw, "        \"unique\" = [\"" . implode("\", \"", $entity->unique) . "\"],\n");
+            fwrite($sw, "    \"unique\" : [\"" . implode("\", \"", $entity->unique) . "\"],\n");
         }
         if (!empty($entity->uniqueMultiple)) {
             $ums = array_map(fn($g) => "[\"" . implode("\", \"", $g) . "\"]", $entity->uniqueMultiple);
-            fwrite($sw, "        \"uniqueMultiple\" = [" . implode(", ", $ums) . "],\n");
+            fwrite($sw, "    \"uniqueMultiple\" : [" . implode(", ", $ums) . "],\n");
         }
         if (!empty($entity->notNull)) {
-            fwrite($sw, "        \"notNull\" = [\"" . implode("\", \"", $entity->notNull) . "\"],\n");
+            fwrite($sw, "    \"notNull\" : [\"" . implode("\", \"", $entity->notNull) . "\"],\n");
         }
-
-        fwrite($sw, "\n");
 
         // Tree relationships
         if (!empty($entity->tree)) {
-            fwrite($sw, "        \"tree\" = {\n");
+            fwrite($sw, "    \"tree\" : {\n");
+            $lastKey = array_key_last($entity->tree);
+
             foreach ($entity->tree as $fieldId => $tree) {
-                fwrite($sw, "            \"{$fieldId}\" = {\n");
-                fwrite($sw, "                \"fieldName\" = \"{$tree->fieldName}\"\n");
-                fwrite($sw, "                \"refEntityName\" = \"{$tree->refEntityName}\"\n");
-                fwrite($sw, "                \"refFieldName\" = \"{$tree->refFieldName}\"\n");
+                fwrite($sw, "      \"{$fieldId}\" : {\n");
+                fwrite($sw, "        \"fieldName\" : \"{$tree->fieldName}\",\n");
+                fwrite($sw, "        \"refEntityName\" : \"{$tree->refEntityName}\",\n");
+                fwrite($sw, "        \"refFieldName\" : \"{$tree->refFieldName}\"");
 
                 if (!empty($tree->children)) {
+                    fwrite($sw, ",\n");
                     $this->writeTreeChildrenJSON($sw, "        ", $tree->children);
+                } else {
+                    fwrite($sw, "\n");
                 }
-                fwrite($sw, "            }\n");
+                fwrite($sw, "      }");
+
+                // 👇 Only add comma if it's NOT the last element
+                if ($fieldId !== $lastKey) {
+                    fwrite($sw, ",");
+                }
+                fwrite($sw, "\n");
+
+
             }
+
+            fwrite($sw, "    },\n");
+
         }
 
         // Relations
         if (!empty($entity->relations)) {
-            fwrite($sw, "        \$entities['{$entityName}']->relations = [];\n");
+            $lastKey = array_key_last($entity->relations);
+
+            fwrite($sw, "    \"relations\" : {\n");
             foreach ($entity->relations as $fieldId => $relation) {
-                fwrite($sw, "        \$entities['{$entityName}']->relations['{$fieldId}'] = EntityRelation::getInstance('{$relation->fieldName}', '{$relation->refEntityName}', '{$relation->refFieldName}');\n");
+                fwrite($sw, "      \"{$fieldId}\" : {\n");
+                fwrite($sw, "          \"fieldName\" : \"{$relation->fieldName}\",\n");
+                fwrite($sw, "          \"refEntityName\" : \"{$relation->refEntityName}\",\n"); 
+                fwrite($sw, "          \"refFieldName\" : \"{$relation->refFieldName}\"");
                 if (!empty($relation->parentId)) {
-                    fwrite($sw, "        \$entities['{$entityName}']->relations['{$fieldId}']->parentId = '{$relation->parentId}';\n");
+                    fwrite($sw, ",\n");
+                    fwrite($sw, "          \"parentId\" : \"{$relation->parentId}\"\n");
+                } else {
+                    fwrite($sw, "\n");
+                }
+                fwrite($sw, "      }");
+               
+                if ($fieldId !== $lastKey) {
+                    fwrite($sw, ",");
                 }
                 fwrite($sw, "\n");
-
             }
+            fwrite($sw, "    },\n");
         }
 
         // One-to-One relationships (oo)
         if (!empty($entity->oo)) {
-            fwrite($sw, "        \$entities['{$entityName}']->oo = [];\n");
+            $lastKey = array_key_last($entity->oo);
+
+            fwrite($sw, "    \"oo\" : {\n");
             foreach ($entity->oo as $id => $rref) {
-                fwrite($sw, "        \$entities['{$entityName}']->oo['{$id}']  = EntityRef::getInstance('{$rref->fieldName}', '{$rref->entityName}');\n\n");
+                fwrite($sw, "        \"{$id}\" : {\n");
+                fwrite($sw, "            \"fieldName\" : \"{$rref->fieldName}\",\n");
+                fwrite($sw, "            \"entityName\" : \"{$rref->entityName}\"\n");
+                fwrite($sw, "        }");
+                if ($id !== $lastKey) fwrite($sw, ",");
+                fwrite($sw, "\n");
             }
+            fwrite($sw, "    },\n");
         }
 
         // One-to-Many relationships (om)
         if (!empty($entity->om)) {
-            fwrite($sw, "        \$entities['{$entityName}']->om = [];\n");
+            $lastKey = array_key_last($entity->om);
+
+            fwrite($sw, "    \"om\" : {\n");
             foreach ($entity->om as $id => $rref) {
-                fwrite($sw, "        \$entities['{$entityName}']->om['{$id}'] = EntityRef::getInstance('{$rref->fieldName}', '{$rref->entityName}');\n");
+                fwrite($sw, "        \"{$id}\" : {\n");
+                fwrite($sw, "            \"fieldName\" : \"{$rref->fieldName}\",\n");
+                fwrite($sw, "            \"entityName\" : \"{$rref->entityName}\"\n");
+                fwrite($sw, "        }");
+                if ($id !== $lastKey) fwrite($sw, ",");
+                fwrite($sw, "\n");
             }
+            fwrite($sw, "    },\n");
         }
 
         // Fields
         if (isset($this->fields[$entityName])) {
-            foreach ($this->fields[$entityName] as $fieldName => $field) {
-                fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}'] = Field::getInstance('{$entityName}', '{$fieldName}', '{$field->dataType}', '{$field->type}');\n");
+            $lastKey = array_key_last($this->fields[$entityName]);
 
+            fwrite($sw, "    \"fields\" : {\n");
+
+            foreach ($this->fields[$entityName] as $fieldName => $field) {
+                fwrite($sw, "        \"{$fieldName}\" : {\n");
+                fwrite($sw, "            \"entityName\" : \"{$entityName}\",\n");
+               
                 if (!is_null($field->defaultValue)) {
-                    $defaultValue = ($field->type == "bool") ? (ValueTypesUtils::toBool($field->defaultValue) ? "true" : "false") : "'{$field->defaultValue}'";
-                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->defaultValue = $defaultValue;\n");
+                    $defaultValue = ($field->type == "bool") ? (ValueTypesUtils::toBool($field->defaultValue) ? "true" : "false") : "\"{$field->defaultValue}\"";
+                    fwrite($sw, "            \"defaultValue\" : $defaultValue,\n");
                 }
                 if (!empty($field->alias)) {
-                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->alias = '{$field->alias}';\n");
+                    fwrite($sw, "            \"alias\" : \"{$field->alias}\",\n");
                 }
                 if (!empty($field->refEntityName)) {
-                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->refEntityName = '{$field->refEntityName}';\n");
+                    fwrite($sw, "            \"refEntityName\" : \"{$field->refEntityName}\",\n");
                 }
                 if (!empty($field->refFieldName)) {
-                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->refFieldName = '{$field->refFieldName}';\n");
+                    fwrite($sw, "            \"refFieldName\" : \"{$field->refFieldName}\",\n");
                 }
                 if (!empty($field->checks)) {
-                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->checks = [\n");
+                    $lastKey_ = array_key_last($field->checks);
+
+                    fwrite($sw, "            \"checks\" : {\n");
                     foreach ($field->checks as $k => $v) {
-                        fwrite($sw, "            '{$k}' => '{$v}',\n");
+                        fwrite($sw, "              \"{$k}\" : \"{$v}\"\n");
+                        if ($k !== $lastKey_) fwrite($sw, ",");
                     }
-                    fwrite($sw, "        ];\n");
+                    fwrite($sw, "            },\n");
                 }
                 if (!empty($field->resets)) {
-                    fwrite($sw, "        \$entities['{$entityName}']->fields['{$fieldName}']->resets = [\n");
-                    foreach ($field->resets as $k => $v) {
-                        $vStr = is_bool($v) ? ($v ? 'true' : 'false') : "'{$v}'";
-                        fwrite($sw, "            '{$k}' => {$vStr},\n");
-                    }
-                    fwrite($sw, "        ];\n");
-                }
+                    $lastKey_ = array_key_last($field->resets);
 
+                    fwrite($sw, "            \"resets\" : {\n");
+                    foreach ($field->resets as $k => $v) {
+                        $vStr = is_bool($v) ? ($v ? 'true' : 'false') : "\"{$v}\"";
+                        fwrite($sw, "              \"{$k}\" : {$vStr}\n");
+                        if ($k !== $lastKey_) fwrite($sw, ",");
+                    }
+                    fwrite($sw, "            },\n");
+                }
+                fwrite($sw, "            \"fieldName\" : \"{$fieldName}\",\n");
+                fwrite($sw, "            \"dataType\" : \"{$field->dataType}\",\n");
+                fwrite($sw, "            \"type\" : \"{$field->type}\"\n");
+                fwrite($sw, "        }");
+
+                if ($fieldName !== $lastKey) {
+                    fwrite($sw, ",");
+                }
+                fwrite($sw, "\n");
             }
+            fwrite($sw, "    }\n");
+
         }
 
-    }
-    fwrite($sw, "        return \$entities;\n");
+        fwrite($sw, "  }");
 
-    fwrite($sw, "    }\n");
+        if ($entityName !== $lastKeyEntities) {
+            fwrite($sw, ",");
+        }
+        fwrite($sw, "\n");
+    }
+
     fwrite($sw, "}\n");
 
     fclose($sw);
@@ -596,19 +667,29 @@ public function writeTreeChildren($sw, $source, $children)
 
 public function writeTreeChildrenJSON($sw, $blank_spaces, $children)
 {
-    fwrite($sw, $blank_spaces . "\"children\" = {;\n");
-    foreach ($children as $fieldId => $tree) {
-        fwrite($sw, $blank_spaces . "    \"{$fieldId}\" = {\n");
-        fwrite($sw, $blank_spaces . "        \"fieldName\" = \"{$tree->fieldName}\"\n");
-        fwrite($sw, $blank_spaces . "        \"refEntityName\" = \"{$tree->refEntityName}\"\n");
-        fwrite($sw, $blank_spaces . "        \"refFieldName\" = \"{$tree->refFieldName}\"\n");
-        fwrite($sw, $blank_spaces . "    }\n");
+    fwrite($sw, $blank_spaces . "\"children\" : {\n");
+    $lastKey = array_key_last($children);
 
-        if (!empty($tree->children)) {
-            $this->writeTreeChildrenJSON($sw, $blank_spaces . "    ", $tree->children);
+    foreach ($children as $fieldId => $tree) {
+        fwrite($sw, $blank_spaces . "  \"{$fieldId}\" : {\n");
+        fwrite($sw, $blank_spaces . "    \"fieldName\" : \"{$tree->fieldName}\",\n");
+        fwrite($sw, $blank_spaces . "    \"refEntityName\" : \"{$tree->refEntityName}\",\n");
+        fwrite($sw, $blank_spaces . "    \"refFieldName\" : \"{$tree->refFieldName}\"");
+
+       
+         if (!empty($tree->children)) {
+                fwrite($sw, ",\n");
+                $this->writeTreeChildrenJSON($sw, $blank_spaces."  ", $tree->children);
+            } else {
+                fwrite($sw, "\n");
+            }
+        fwrite($sw, $blank_spaces . "  }");
+        if ($fieldId !== $lastKey) {
+            fwrite($sw, ",");
         }
         fwrite($sw, "\n");
     }
+    fwrite($sw,  $blank_spaces . "}\n");
 }
 
     public function relationsRef(string $entityName): array

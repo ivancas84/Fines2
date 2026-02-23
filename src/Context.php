@@ -3,6 +3,7 @@ namespace App;
 
 
 use Fines2\Schema_ as SchemaFines;
+use MetadataLoader;
 use Pedidos\Schema_ as SchemaPedidos;
 use SqlOrganize\Model\Config as ModelConfig;
 use SqlOrganize\Sql\Config as SqlConfig;;
@@ -13,8 +14,6 @@ class Context
 {
     private static ?Db $fines = null;
     private static ?Db $pedidos = null;
-    private static bool $finesInitialized = false;
-    private static bool $pedidosInitialized = false;
 
 
     public static function getConfigDbFines(){
@@ -77,29 +76,44 @@ class Context
 
 
 
+
     public static function getFinesDb(): Db {
-        if(!self::$finesInitialized) self::initFinesDb();
+        $config = self::getConfigDbFines();
+
+        if (self::$fines === null) {
+
+            $raw = file_get_contents(PATH_SCHEMA_FINES);
+
+            $schema = json_decode(
+                $raw,
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+            self::$fines = new DbMy($config);
+            self::$fines->entitiesMetadata = MetadataLoader::load($schema, self::$fines);
+        }
+
         return self::$fines;
     }
 
     public static function getPedidosDb(): Db {
-        if(!self::$pedidosInitialized) self::initPedidosDb();
-        return self::$pedidos;
-    }
-
-    public static function initFinesDb(): void {
-        $config = self::getConfigDbFines();
-
-        if (self::$fines === null) {
-            self::$fines = new DbMy($config, SchemaFines::getEntities());
-        }
-    }
-
-    public static function initPedidosDb(): void {
         $config = self::getConfigDbPedidos();
         if (self::$pedidos === null) {
-            self::$pedidos = new DbMy($config, SchemaPedidos::getEntities());
+            $raw = file_get_contents(PATH_SCHEMA_PEDIDOS);
+
+            $schema = json_decode(
+                $raw,
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+
+            self::$pedidos = new DbMy($config);
+            self::$pedidos->entitiesMetadata = MetadataLoader::load($schema, self::$pedidos);
         }
+
+        return self::$pedidos;
 
     }
 }

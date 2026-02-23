@@ -23,35 +23,13 @@ abstract class Db
     public PDO $pdo;
     public Config $config;
     
-    /**
-     * El constructor recibe un conjunto de metadatos de entidades (EntityMetadata[] $entitiesMetadata).
-     * Se recorre $entitiesMetadata para inicializar la propiedad $_db de cada una de ellas
-     * Cada entidad posee un conjunto de fields (FieldMetadata) 
-     * Se recorre $fieldsMetadata para inicializar la propiedad $_db de cada una de ellas
-     * De esta forma toda la estructura accede a la misma Db
-     * 
-     * @param EntityMetadata[] $entitiesMetadata
-     */
-    public function __construct(Config $config, array $entitiesMetadata)
+    public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->initEntitiesMetadata($entitiesMetadata);
     }
 
     protected abstract function initPdo();
     
-    protected function initEntitiesMetadata(array $entities){
-        $this->entitiesMetadata = $entities;
-
-        foreach ($this->entitiesMetadata as $entityMetadata) {
-            $entityMetadata->db = $this;
-            
-            foreach ($entityMetadata->fields as $field) {
-                $field->db = $this;
-            }
-        }
-    }
-
   
     // Get the PDO connection
     public function getPdo(): PDO

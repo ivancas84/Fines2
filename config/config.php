@@ -27,7 +27,8 @@ define("EMAIL_DOCENTES_FROM_ADDRESS", "docentes@planfines2.com.ar");
 define("EMAIL_DOCENTES_BCC", "docentes.cens462@gmail.com");
 
 define("PATH_UPLOAD_PEDIDOS2", "/home/planfi10/domains/planfines2.com.ar/public_html/wp/wp-content/uploads/");
-
+define("PATH_SCHEMA_FINES", "path/to/schema.json");
+define("PATH_SCHEMA_PEDIDOS", "path/to/schema.json");
 define("PATH_START_API", 1);
 
 

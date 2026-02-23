@@ -21,14 +21,12 @@ class DbMy extends Db
     /**
      * Constructor
      * 
-     * @param array|null $entities 
-     * 
-     * @example<
+     * @example
      * $connectionString = "server=127.0.0.1;uid=root;pwd=12345;database=test"
      */
-    public function __construct(Config $config, array $entities)
+    public function __construct(Config $config)
     {
-        parent::__construct($config, $entities);
+        parent::__construct($config);
     }
 
     protected function initPdo(){
