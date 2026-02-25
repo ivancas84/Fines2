@@ -176,6 +176,12 @@ abstract class Db
         return $this->entitiesMetadata[$entityName];
     }
     
+    public function GetEntity(string $entityName): Entity
+    {
+         $className = $this->GetEntityMetadata($entityName)->getQualifiedClassName();
+        /** @var Entity */ $obj = new $className;
+        return $obj;
+    }
   
     
 

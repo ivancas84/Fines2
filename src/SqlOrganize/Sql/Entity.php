@@ -45,7 +45,7 @@ class Entity
         return $html;
     }
 
-    public function getLogging(){
+    public function getLogging(): Logging{
         if(empty($this->_logging))
             $this->_logging = new Logging();
 
