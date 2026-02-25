@@ -8,19 +8,7 @@ function handle_personas(?string $id, $dataProvider): void
         // GET /api/personas → list (very basic – you can add filters later)
         $personas = $dataProvider->fetchAllEntitiesByParams('persona', []); // ← all, or add limit/where
 
-        $result = array_map(fn($p) => [
-            'id'               => $p->id,
-            'nombres'          => $p->nombres,
-            'apellidos'        => $p->apellidos,
-            'cuil'             => $p->cuil,
-            'numero_documento' => $p->numero_documento,
-            'fecha_nacimiento' => $p->fecha_nacimiento?->format('Y-m-d'),
-            'email'            => $p->email,
-            'telefono'         => $p->telefono,
-            // add only what you want to expose
-        ], $personas);
-
-        send_json(['data' => $result]);
+        send_json(['data' => $personas->toArray()]);
     }
 
     // GET /api/personas/xxxx-xxxx-xxxx
@@ -30,23 +18,8 @@ function handle_personas(?string $id, $dataProvider): void
         error_json('Persona no encontrada', 404);
     }
 
-    $data = [
-        'id'               => $persona->id,
-        'nombres'          => $persona->nombres,
-        'apellidos'        => $persona->apellidos,
-        'cuil'             => $persona->cuil,
-        'numero_documento' => $persona->numero_documento,
-        'fecha_nacimiento' => $persona->fecha_nacimiento?->format('Y-m-d'),
-        'genero'           => $persona->genero,
-        'email'            => $persona->email,
-        'telefono'         => $persona->telefono,
-        'domicilio'        => $persona->domicilio,
-        'localidad'        => $persona->localidad,
-        // you can add related data if needed, example:
-        // 'alumno' => $persona->Alumno_ ? $persona->Alumno_->toArray() : null,
-    ];
 
-    send_json(['data' => $data]);
+    send_json(['data' => $persona->toArray()]);
 }
 
 function handle_comisiones(?string $id, $dataProvider): void
@@ -55,17 +28,13 @@ function handle_comisiones(?string $id, $dataProvider): void
         // List – you can improve later with filters, pagination, etc.
         $comisiones = $dataProvider->fetchAllEntitiesByParams('comision', []);
 
-        $result = array_map(fn($c) => [
-            'id'            => $c->id,
-            'label'         => $c->getLabel(),
-            'division'      => $c->division,
-            'turno'         => $c->turno,
-            'planificacion' => $c->planificacion,
-            'sede'          => $c->sede,
-            'modalidad'     => $c->modalidad,
-        ], $comisiones);
+        $result = array_map(
+            fn($c) => $c->toArray(),
+            $comisiones
+        );
 
         send_json(['data' => $result]);
+
     }
 
     // Single

@@ -11,19 +11,30 @@ if (empty($parts[PATH_START_API]) || $parts[PATH_START_API] !== 'api') {
 }
 
 $resource = $parts[PATH_START_API+1] ?? '';
-$id = $parts[PATH_START_API+2] ?? null;
 
-switch ($resource) {
-    case 'personas':
-        require __DIR__ . '/src/handlers.php';
-        handle_personas($id, $dataProvider);
-        break;
+$db = \App\Context::getFinesDb();
 
-    case 'comisiones':
-        require __DIR__ . '/src/handlers.php';
-        handle_comisiones($id, $dataProvider);
-        break;
+if(in_array($resource, array_keys($db->entitiesMetadata))){
+    $dataProvider = $db->CreateDataProvider();
 
-    default:
-        error_json('Resource not found', 404);
+    $id = $parts[PATH_START_API+2] ?? null;
+
+    if ($id === null) {
+        $rawEntities = $dataProvider->fetchAllJoinByParams($resource);
+
+        send_json($rawEntities);
+    }
+
+    // GET /api/personas/xxxx-xxxx-xxxx
+    $row = $dataProvider->fetchByUnique($resource, ['id' => $id]);
+
+    if (!$row) {
+        error_json($resource . ' sin encontrar', 404);
+    }
+
+
+    send_json($row);
+        
+} else { 
+    error_json('Resource not found', 404);
 }

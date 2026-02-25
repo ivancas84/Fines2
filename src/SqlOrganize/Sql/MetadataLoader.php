@@ -1,11 +1,7 @@
 <?php
 
-use SqlOrganize\Sql\EntityMetadata;
-use SqlOrganize\Sql\Field;
-use SqlOrganize\Sql\EntityTree;
-use SqlOrganize\Sql\EntityRelation;
-use SqlOrganize\Sql\EntityRef;
-use SqlOrganize\Sql\Db;
+namespace SqlOrganize\Sql;
+
 
 class MetadataLoader
 {
@@ -52,13 +48,15 @@ class MetadataLoader
             // -------------------------
             foreach (($meta['tree'] ?? []) as $k => $t) {
 
-                $tree = EntityTree::getInstance(
+                $em->tree[$k] = EntityTree::getInstance(
                     $t['fieldName'],
                     $t['refEntityName'],
                     $t['refFieldName'] ?? 'id'
                 );
 
-                $em->tree[$k] = $tree;
+                if (!empty($t['children'])) {
+                    self::writeTreeChildren($t['children'], $em->tree[$k]->children);
+                }
             }
 
             // -------------------------
@@ -101,5 +99,27 @@ class MetadataLoader
         }
 
         return $entities;
+    }
+
+    /**
+     * @param array<string, mixed> $meta
+     * @param array<string, EntityTree> $children
+     */ 
+    public static function writeTreeChildren($meta, array &$children)
+    {
+        $children = [];
+
+        foreach (($meta ?? []) as $k => $t) {
+                $children[$k] = EntityTree::getInstance(
+                    $t['fieldName'],
+                    $t['refEntityName'],
+                    $t['refFieldName'] ?? 'id'
+                );
+
+                if (!empty($t['children'])) {
+                    self::writeTreeChildren($t['children'], $children[$k]->children);
+                }
+            }
+
     }
 }

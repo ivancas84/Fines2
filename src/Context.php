@@ -3,7 +3,7 @@ namespace App;
 
 
 use Fines2\Schema_ as SchemaFines;
-use MetadataLoader;
+use SqlOrganize\Sql\MetadataLoader;
 use Pedidos\Schema_ as SchemaPedidos;
 use SqlOrganize\Model\Config as ModelConfig;
 use SqlOrganize\Sql\Config as SqlConfig;;

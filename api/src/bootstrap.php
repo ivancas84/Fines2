@@ -28,6 +28,3 @@ function error_json(string $msg, int $status = 400): never
     send_json(['error' => $msg], $status);
 }
 
-// Shared db & dataProvider
-$db = \App\Context::getFinesDb();
-$dataProvider = $db->CreateDataProvider();

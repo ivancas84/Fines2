@@ -5,6 +5,7 @@
 require_once __DIR__ . '/../config/config.php';
 require __DIR__ . '/../vendor/autoload.php';
 
+
 use Fines2\Model\Comision_;
 use App\Context;
 use Fines2\DataAccess\CalificacionDAO;
