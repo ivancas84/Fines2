@@ -9,6 +9,8 @@ $method = $_SERVER['REQUEST_METHOD'];
 $path   = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $path   = trim($path, '/');
 $parts  = explode('/', $path);
+$db  = \App\Context::getFinesDb();
+
 
 if (empty($parts[PATH_START_API]) || $parts[PATH_START_API] !== 'api') {
     error_json('Not found', 404);
@@ -21,7 +23,6 @@ if (!in_array($resource, array_keys($db->entitiesMetadata))) {
     error_json('Resource not found', 404);
 }
 
-$db         = \App\Context::getFinesDb();
 $dataProvider = $db->CreateDataProvider();
 
 // ────────────────────────────────────────────────
@@ -69,6 +70,7 @@ elseif ($method === 'POST' && $id === null) {
         /** @var Entity */ $entity = $db->GetEntity($resource);
         $entity->ssetFromArray($data);
         $entity->reset();
+        throw new Exception(print_r($entity->toArray(),true));
         if(!$entity->check()) throw new Exception($entity->getLogging()->__toString());
         /** @var ModifyQueries */ $modifyQueries = $db->CreateModifyQueries();
         $entity->persist($modifyQueries);

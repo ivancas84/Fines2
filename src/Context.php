@@ -81,17 +81,10 @@ class Context
         $config = self::getConfigDbFines();
 
         if (self::$fines === null) {
-
-            $raw = file_get_contents(PATH_SCHEMA_FINES);
-
-            $schema = json_decode(
-                $raw,
-                true,
-                512,
-                JSON_THROW_ON_ERROR
-            );
             self::$fines = new DbMy($config);
-            self::$fines->entitiesMetadata = MetadataLoader::load($schema, self::$fines);
+            self::$fines->entitiesMetadata = SchemaFines::getEntities();
+            foreach(self::$fines->entitiesMetadata as $metadata)
+                $metadata->db = self::$fines;
         }
 
         return self::$fines;
