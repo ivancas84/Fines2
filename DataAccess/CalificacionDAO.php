@@ -9,7 +9,7 @@ use SqlOrganize\Utils\ValueTypesUtils;
 class CalificacionDAO
 {
 
-    public static function createAndPersist(ModifyQueries $modifyQueries, int $nota, string $idAlumno, string $idDisposicion, ?string $idCurso): Calificacion_{
+    public static function createAndPersist(ModifyQueries $modifyQueries, int $nota, string $idAlumno, string $idDisposicion, ?string $idCurso, ?string $observaciones = null): Calificacion_{
         $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
         /** @var Calificacion_ */ $calificacion = $dataProvider->fetchEntityByParams("calificacion", ["alumno" => $idAlumno, "disposicion" => $idDisposicion]);
         if(empty($calificacion)){
@@ -25,6 +25,7 @@ class CalificacionDAO
         $calificacion->set("disposicion", $idDisposicion);
         $calificacion->set("curso", $idCurso);
         $calificacion->setNotaAprobada($nota);
+        $calificacion->sadd("observaciones", $observaciones);
         $modifyQueries->buildPersistSqlByStatus($calificacion);
         return $calificacion;
     }

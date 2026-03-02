@@ -54,7 +54,7 @@ class Schema
         ];
         $entities['alumno']->fields['adeuda_deudores']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['adeuda_legajo'] = Field::getInstance('alumno', 'adeuda_legajo', 'varchar', 'string');
@@ -63,7 +63,7 @@ class Schema
         ];
         $entities['alumno']->fields['adeuda_legajo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['anio_ingreso'] = Field::getInstance('alumno', 'anio_ingreso', 'varchar', 'string');
@@ -72,7 +72,7 @@ class Schema
         ];
         $entities['alumno']->fields['anio_ingreso']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['anio_inscripcion'] = Field::getInstance('alumno', 'anio_inscripcion', 'smallint', 'int');
@@ -89,7 +89,7 @@ class Schema
         ];
         $entities['alumno']->fields['comentarios']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['confirmado_direccion'] = Field::getInstance('alumno', 'confirmado_direccion', 'tinyint', 'bool');
@@ -110,7 +110,7 @@ class Schema
         ];
         $entities['alumno']->fields['documentacion_inscripcion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['establecimiento_inscripcion'] = Field::getInstance('alumno', 'establecimiento_inscripcion', 'varchar', 'string');
@@ -119,7 +119,7 @@ class Schema
         ];
         $entities['alumno']->fields['establecimiento_inscripcion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['estado_inscripcion'] = Field::getInstance('alumno', 'estado_inscripcion', 'varchar', 'string');
@@ -128,7 +128,7 @@ class Schema
         ];
         $entities['alumno']->fields['estado_inscripcion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['fecha_titulacion'] = Field::getInstance('alumno', 'fecha_titulacion', 'date', 'DateTime');
@@ -141,7 +141,7 @@ class Schema
         ];
         $entities['alumno']->fields['folio']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['id'] = Field::getInstance('alumno', 'id', 'varchar', 'string');
@@ -151,7 +151,7 @@ class Schema
         ];
         $entities['alumno']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['alumno']->fields['libro'] = Field::getInstance('alumno', 'libro', 'varchar', 'string');
         $entities['alumno']->fields['libro']->checks = [
@@ -159,7 +159,7 @@ class Schema
         ];
         $entities['alumno']->fields['libro']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['libro_folio'] = Field::getInstance('alumno', 'libro_folio', 'varchar', 'string');
@@ -168,7 +168,7 @@ class Schema
         ];
         $entities['alumno']->fields['libro_folio']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['observaciones'] = Field::getInstance('alumno', 'observaciones', 'text', 'string');
@@ -177,7 +177,7 @@ class Schema
         ];
         $entities['alumno']->fields['observaciones']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['persona'] = Field::getInstance('alumno', 'persona', 'varchar', 'string');
@@ -190,7 +190,7 @@ class Schema
         ];
         $entities['alumno']->fields['persona']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['alumno']->fields['plan'] = Field::getInstance('alumno', 'plan', 'varchar', 'string');
         $entities['alumno']->fields['plan']->alias = 'pla';
@@ -201,7 +201,7 @@ class Schema
         ];
         $entities['alumno']->fields['plan']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['previas_completas'] = Field::getInstance('alumno', 'previas_completas', 'tinyint', 'bool');
@@ -219,7 +219,7 @@ class Schema
         ];
         $entities['alumno']->fields['resolucion_inscripcion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno']->fields['semestre_ingreso'] = Field::getInstance('alumno', 'semestre_ingreso', 'smallint', 'int');
@@ -365,7 +365,7 @@ class Schema
         ];
         $entities['alumno_comision']->fields['alumno']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['alumno_comision']->fields['comision'] = Field::getInstance('alumno_comision', 'comision', 'varchar', 'string');
         $entities['alumno_comision']->fields['comision']->alias = 'com';
@@ -376,7 +376,7 @@ class Schema
         ];
         $entities['alumno_comision']->fields['comision']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno_comision']->fields['creado'] = Field::getInstance('alumno_comision', 'creado', 'timestamp', 'DateTime');
@@ -392,7 +392,7 @@ class Schema
         ];
         $entities['alumno_comision']->fields['estado']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno_comision']->fields['id'] = Field::getInstance('alumno_comision', 'id', 'varchar', 'string');
@@ -402,7 +402,7 @@ class Schema
         ];
         $entities['alumno_comision']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['alumno_comision']->fields['observaciones'] = Field::getInstance('alumno_comision', 'observaciones', 'text', 'string');
         $entities['alumno_comision']->fields['observaciones']->checks = [
@@ -410,7 +410,7 @@ class Schema
         ];
         $entities['alumno_comision']->fields['observaciones']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['alumno_comision']->fields['pfid'] = Field::getInstance('alumno_comision', 'pfid', 'int', 'int');
@@ -558,7 +558,7 @@ class Schema
         ];
         $entities['asignacion_planilla_docente']->fields['comentario']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['asignacion_planilla_docente']->fields['id'] = Field::getInstance('asignacion_planilla_docente', 'id', 'varchar', 'string');
@@ -568,7 +568,7 @@ class Schema
         ];
         $entities['asignacion_planilla_docente']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['asignacion_planilla_docente']->fields['insertado'] = Field::getInstance('asignacion_planilla_docente', 'insertado', 'timestamp', 'DateTime');
         $entities['asignacion_planilla_docente']->fields['insertado']->defaultValue = 'current_timestamp()';
@@ -586,7 +586,7 @@ class Schema
         ];
         $entities['asignacion_planilla_docente']->fields['planilla_docente']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['asignacion_planilla_docente']->fields['reclamo'] = Field::getInstance('asignacion_planilla_docente', 'reclamo', 'tinyint', 'bool');
         $entities['asignacion_planilla_docente']->fields['reclamo']->defaultValue = false;
@@ -604,7 +604,7 @@ class Schema
         ];
         $entities['asignacion_planilla_docente']->fields['toma']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['asignatura'] = EntityMetadata::getInstance('asignatura', 'asi1');
         $entities['asignatura']->pk = ['id'];
@@ -619,7 +619,7 @@ class Schema
         ];
         $entities['asignatura']->fields['clasificacion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['asignatura']->fields['codigo'] = Field::getInstance('asignatura', 'codigo', 'varchar', 'string');
@@ -628,7 +628,7 @@ class Schema
         ];
         $entities['asignatura']->fields['codigo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['asignatura']->fields['formacion'] = Field::getInstance('asignatura', 'formacion', 'varchar', 'string');
@@ -637,7 +637,7 @@ class Schema
         ];
         $entities['asignatura']->fields['formacion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['asignatura']->fields['id'] = Field::getInstance('asignatura', 'id', 'varchar', 'string');
@@ -647,7 +647,7 @@ class Schema
         ];
         $entities['asignatura']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['asignatura']->fields['nombre'] = Field::getInstance('asignatura', 'nombre', 'varchar', 'string');
         $entities['asignatura']->fields['nombre']->checks = [
@@ -656,7 +656,7 @@ class Schema
         ];
         $entities['asignatura']->fields['nombre']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['asignatura']->fields['perfil'] = Field::getInstance('asignatura', 'perfil', 'varchar', 'string');
         $entities['asignatura']->fields['perfil']->checks = [
@@ -664,7 +664,7 @@ class Schema
         ];
         $entities['asignatura']->fields['perfil']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['calendario'] = EntityMetadata::getInstance('calendario', 'cale');
@@ -684,7 +684,7 @@ class Schema
         ];
         $entities['calendario']->fields['descripcion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['calendario']->fields['fin'] = Field::getInstance('calendario', 'fin', 'date', 'DateTime');
@@ -698,7 +698,7 @@ class Schema
         ];
         $entities['calendario']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['calendario']->fields['inicio'] = Field::getInstance('calendario', 'inicio', 'date', 'DateTime');
         $entities['calendario']->fields['inicio']->checks = [
@@ -870,7 +870,7 @@ class Schema
         ];
         $entities['calificacion']->fields['alumno']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['calificacion']->fields['archivado'] = Field::getInstance('calificacion', 'archivado', 'tinyint', 'bool');
         $entities['calificacion']->fields['archivado']->defaultValue = false;
@@ -891,7 +891,7 @@ class Schema
         ];
         $entities['calificacion']->fields['curso']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['calificacion']->fields['disposicion'] = Field::getInstance('calificacion', 'disposicion', 'varchar', 'string');
@@ -904,7 +904,7 @@ class Schema
         ];
         $entities['calificacion']->fields['disposicion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['calificacion']->fields['division'] = Field::getInstance('calificacion', 'division', 'varchar', 'string');
         $entities['calificacion']->fields['division']->checks = [
@@ -912,7 +912,7 @@ class Schema
         ];
         $entities['calificacion']->fields['division']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['calificacion']->fields['fecha'] = Field::getInstance('calificacion', 'fecha', 'date', 'DateTime');
@@ -926,7 +926,7 @@ class Schema
         ];
         $entities['calificacion']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['calificacion']->fields['nota1'] = Field::getInstance('calificacion', 'nota1', 'decimal', 'float');
         $entities['calificacion']->fields['nota1']->checks = [
@@ -950,7 +950,7 @@ class Schema
         ];
         $entities['calificacion']->fields['observaciones']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['calificacion']->fields['porcentaje_asistencia'] = Field::getInstance('calificacion', 'porcentaje_asistencia', 'int', 'int');
@@ -971,7 +971,7 @@ class Schema
         ];
         $entities['cargo']->fields['descripcion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['cargo']->fields['id'] = Field::getInstance('cargo', 'id', 'varchar', 'string');
         $entities['cargo']->fields['id']->checks = [
@@ -980,7 +980,7 @@ class Schema
         ];
         $entities['cargo']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['centro_educativo'] = EntityMetadata::getInstance('centro_educativo', 'cent');
         $entities['centro_educativo']->pk = ['id'];
@@ -1002,7 +1002,7 @@ class Schema
         ];
         $entities['centro_educativo']->fields['cue']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['centro_educativo']->fields['domicilio'] = Field::getInstance('centro_educativo', 'domicilio', 'varchar', 'string');
@@ -1014,7 +1014,7 @@ class Schema
         ];
         $entities['centro_educativo']->fields['domicilio']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['centro_educativo']->fields['id'] = Field::getInstance('centro_educativo', 'id', 'varchar', 'string');
@@ -1024,7 +1024,7 @@ class Schema
         ];
         $entities['centro_educativo']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['centro_educativo']->fields['nombre'] = Field::getInstance('centro_educativo', 'nombre', 'varchar', 'string');
         $entities['centro_educativo']->fields['nombre']->checks = [
@@ -1033,7 +1033,7 @@ class Schema
         ];
         $entities['centro_educativo']->fields['nombre']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['centro_educativo']->fields['observaciones'] = Field::getInstance('centro_educativo', 'observaciones', 'text', 'string');
         $entities['centro_educativo']->fields['observaciones']->checks = [
@@ -1041,7 +1041,7 @@ class Schema
         ];
         $entities['centro_educativo']->fields['observaciones']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['comision'] = EntityMetadata::getInstance('comision', 'comi');
@@ -1138,7 +1138,7 @@ class Schema
         ];
         $entities['comision']->fields['calendario']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['comision']->fields['comentario'] = Field::getInstance('comision', 'comentario', 'text', 'string');
         $entities['comision']->fields['comentario']->checks = [
@@ -1146,7 +1146,7 @@ class Schema
         ];
         $entities['comision']->fields['comentario']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['comision']->fields['comision_siguiente'] = Field::getInstance('comision', 'comision_siguiente', 'varchar', 'string');
@@ -1158,7 +1158,7 @@ class Schema
         ];
         $entities['comision']->fields['comision_siguiente']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['comision']->fields['configuracion'] = Field::getInstance('comision', 'configuracion', 'varchar', 'string');
@@ -1168,7 +1168,7 @@ class Schema
         ];
         $entities['comision']->fields['configuracion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['comision']->fields['division'] = Field::getInstance('comision', 'division', 'varchar', 'string');
@@ -1178,7 +1178,7 @@ class Schema
         ];
         $entities['comision']->fields['division']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['comision']->fields['estado'] = Field::getInstance('comision', 'estado', 'varchar', 'string');
         $entities['comision']->fields['estado']->defaultValue = 'Confirma';
@@ -1187,7 +1187,7 @@ class Schema
         ];
         $entities['comision']->fields['estado']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['comision']->fields['id'] = Field::getInstance('comision', 'id', 'varchar', 'string');
@@ -1197,7 +1197,7 @@ class Schema
         ];
         $entities['comision']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['comision']->fields['identificacion'] = Field::getInstance('comision', 'identificacion', 'varchar', 'string');
         $entities['comision']->fields['identificacion']->checks = [
@@ -1205,7 +1205,7 @@ class Schema
         ];
         $entities['comision']->fields['identificacion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['comision']->fields['modalidad'] = Field::getInstance('comision', 'modalidad', 'varchar', 'string');
@@ -1218,7 +1218,7 @@ class Schema
         ];
         $entities['comision']->fields['modalidad']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['comision']->fields['observaciones'] = Field::getInstance('comision', 'observaciones', 'text', 'string');
         $entities['comision']->fields['observaciones']->checks = [
@@ -1226,7 +1226,7 @@ class Schema
         ];
         $entities['comision']->fields['observaciones']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['comision']->fields['pfid'] = Field::getInstance('comision', 'pfid', 'varchar', 'string');
@@ -1235,7 +1235,7 @@ class Schema
         ];
         $entities['comision']->fields['pfid']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['comision']->fields['planificacion'] = Field::getInstance('comision', 'planificacion', 'varchar', 'string');
@@ -1247,7 +1247,7 @@ class Schema
         ];
         $entities['comision']->fields['planificacion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['comision']->fields['publicada'] = Field::getInstance('comision', 'publicada', 'tinyint', 'bool');
@@ -1266,7 +1266,7 @@ class Schema
         ];
         $entities['comision']->fields['sede']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['comision']->fields['turno'] = Field::getInstance('comision', 'turno', 'varchar', 'string');
         $entities['comision']->fields['turno']->checks = [
@@ -1274,7 +1274,7 @@ class Schema
         ];
         $entities['comision']->fields['turno']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['comision_relacionada'] = EntityMetadata::getInstance('comision_relacionada', 'com1');
@@ -1420,7 +1420,7 @@ class Schema
         ];
         $entities['comision_relacionada']->fields['comision']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['comision_relacionada']->fields['id'] = Field::getInstance('comision_relacionada', 'id', 'varchar', 'string');
         $entities['comision_relacionada']->fields['id']->checks = [
@@ -1429,7 +1429,7 @@ class Schema
         ];
         $entities['comision_relacionada']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['comision_relacionada']->fields['relacion'] = Field::getInstance('comision_relacionada', 'relacion', 'varchar', 'string');
         $entities['comision_relacionada']->fields['relacion']->alias = 'co1';
@@ -1441,7 +1441,7 @@ class Schema
         ];
         $entities['comision_relacionada']->fields['relacion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['contralor'] = EntityMetadata::getInstance('contralor', 'cont');
         $entities['contralor']->pk = ['id'];
@@ -1469,7 +1469,7 @@ class Schema
         ];
         $entities['contralor']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['contralor']->fields['insertado'] = Field::getInstance('contralor', 'insertado', 'timestamp', 'DateTime');
         $entities['contralor']->fields['insertado']->defaultValue = 'current_timestamp()';
@@ -1487,7 +1487,7 @@ class Schema
         ];
         $entities['contralor']->fields['planilla_docente']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['curso'] = EntityMetadata::getInstance('curso', 'curs');
         $entities['curso']->pk = ['id'];
@@ -1596,7 +1596,7 @@ class Schema
         ];
         $entities['curso']->fields['codigo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['curso']->fields['comision'] = Field::getInstance('curso', 'comision', 'varchar', 'string');
@@ -1609,7 +1609,7 @@ class Schema
         ];
         $entities['curso']->fields['comision']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['curso']->fields['descripcion_horario'] = Field::getInstance('curso', 'descripcion_horario', 'varchar', 'string');
         $entities['curso']->fields['descripcion_horario']->checks = [
@@ -1617,7 +1617,7 @@ class Schema
         ];
         $entities['curso']->fields['descripcion_horario']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['curso']->fields['disposicion'] = Field::getInstance('curso', 'disposicion', 'varchar', 'string');
@@ -1629,7 +1629,7 @@ class Schema
         ];
         $entities['curso']->fields['disposicion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['curso']->fields['horas_catedra'] = Field::getInstance('curso', 'horas_catedra', 'int', 'int');
@@ -1644,7 +1644,7 @@ class Schema
         ];
         $entities['curso']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['curso']->fields['observaciones'] = Field::getInstance('curso', 'observaciones', 'varchar', 'string');
         $entities['curso']->fields['observaciones']->checks = [
@@ -1652,7 +1652,7 @@ class Schema
         ];
         $entities['curso']->fields['observaciones']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['designacion'] = EntityMetadata::getInstance('designacion', 'desi');
@@ -1723,7 +1723,7 @@ class Schema
         ];
         $entities['designacion']->fields['cargo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['designacion']->fields['desde'] = Field::getInstance('designacion', 'desde', 'date', 'DateTime');
         $entities['designacion']->fields['desde']->checks = [
@@ -1740,7 +1740,7 @@ class Schema
         ];
         $entities['designacion']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['designacion']->fields['persona'] = Field::getInstance('designacion', 'persona', 'varchar', 'string');
         $entities['designacion']->fields['persona']->alias = 'per';
@@ -1752,7 +1752,7 @@ class Schema
         ];
         $entities['designacion']->fields['persona']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['designacion']->fields['pfid'] = Field::getInstance('designacion', 'pfid', 'varchar', 'string');
         $entities['designacion']->fields['pfid']->checks = [
@@ -1760,7 +1760,7 @@ class Schema
         ];
         $entities['designacion']->fields['pfid']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['designacion']->fields['sede'] = Field::getInstance('designacion', 'sede', 'varchar', 'string');
@@ -1773,7 +1773,7 @@ class Schema
         ];
         $entities['designacion']->fields['sede']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['detalle_persona'] = EntityMetadata::getInstance('detalle_persona', 'deta');
         $entities['detalle_persona']->pk = ['id'];
@@ -1805,7 +1805,7 @@ class Schema
         ];
         $entities['detalle_persona']->fields['archivo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['detalle_persona']->fields['asunto'] = Field::getInstance('detalle_persona', 'asunto', 'varchar', 'string');
@@ -1814,7 +1814,7 @@ class Schema
         ];
         $entities['detalle_persona']->fields['asunto']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['detalle_persona']->fields['creado'] = Field::getInstance('detalle_persona', 'creado', 'timestamp', 'DateTime');
@@ -1830,7 +1830,7 @@ class Schema
         ];
         $entities['detalle_persona']->fields['descripcion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['detalle_persona']->fields['fecha'] = Field::getInstance('detalle_persona', 'fecha', 'date', 'DateTime');
         $entities['detalle_persona']->fields['fecha']->defaultValue = 'curdate()';
@@ -1844,7 +1844,7 @@ class Schema
         ];
         $entities['detalle_persona']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['detalle_persona']->fields['persona'] = Field::getInstance('detalle_persona', 'persona', 'varchar', 'string');
         $entities['detalle_persona']->fields['persona']->alias = 'per';
@@ -1856,7 +1856,7 @@ class Schema
         ];
         $entities['detalle_persona']->fields['persona']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['detalle_persona']->fields['tipo'] = Field::getInstance('detalle_persona', 'tipo', 'varchar', 'string');
         $entities['detalle_persona']->fields['tipo']->checks = [
@@ -1864,7 +1864,7 @@ class Schema
         ];
         $entities['detalle_persona']->fields['tipo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['dia'] = EntityMetadata::getInstance('dia', 'dia');
@@ -1881,7 +1881,7 @@ class Schema
         ];
         $entities['dia']->fields['dia']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['dia']->fields['id'] = Field::getInstance('dia', 'id', 'varchar', 'string');
         $entities['dia']->fields['id']->checks = [
@@ -1890,7 +1890,7 @@ class Schema
         ];
         $entities['dia']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['dia']->fields['numero'] = Field::getInstance('dia', 'numero', 'smallint', 'int');
         $entities['dia']->fields['numero']->checks = [
@@ -1933,7 +1933,7 @@ class Schema
         ];
         $entities['disposicion']->fields['asignatura']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['disposicion']->fields['horas_catedra'] = Field::getInstance('disposicion', 'horas_catedra', 'int', 'int');
         $entities['disposicion']->fields['horas_catedra']->defaultValue = '0';
@@ -1948,7 +1948,7 @@ class Schema
         ];
         $entities['disposicion']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['disposicion']->fields['orden_informe_coordinacion_distrital'] = Field::getInstance('disposicion', 'orden_informe_coordinacion_distrital', 'int', 'int');
         $entities['disposicion']->fields['orden_informe_coordinacion_distrital']->checks = [
@@ -1964,7 +1964,7 @@ class Schema
         ];
         $entities['disposicion']->fields['planificacion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['disposicion_pendiente'] = EntityMetadata::getInstance('disposicion_pendiente', 'dis1');
         $entities['disposicion_pendiente']->pk = ['id'];
@@ -2030,7 +2030,7 @@ class Schema
         ];
         $entities['disposicion_pendiente']->fields['alumno']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['disposicion_pendiente']->fields['disposicion'] = Field::getInstance('disposicion_pendiente', 'disposicion', 'varchar', 'string');
         $entities['disposicion_pendiente']->fields['disposicion']->alias = 'dis';
@@ -2042,7 +2042,7 @@ class Schema
         ];
         $entities['disposicion_pendiente']->fields['disposicion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['disposicion_pendiente']->fields['id'] = Field::getInstance('disposicion_pendiente', 'id', 'varchar', 'string');
         $entities['disposicion_pendiente']->fields['id']->checks = [
@@ -2051,7 +2051,7 @@ class Schema
         ];
         $entities['disposicion_pendiente']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['disposicion_pendiente']->fields['modo'] = Field::getInstance('disposicion_pendiente', 'modo', 'varchar', 'string');
         $entities['disposicion_pendiente']->fields['modo']->checks = [
@@ -2059,7 +2059,7 @@ class Schema
         ];
         $entities['disposicion_pendiente']->fields['modo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['distribucion_horaria'] = EntityMetadata::getInstance('distribucion_horaria', 'dist');
@@ -2104,7 +2104,7 @@ class Schema
         ];
         $entities['distribucion_horaria']->fields['disposicion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['distribucion_horaria']->fields['horas_catedra'] = Field::getInstance('distribucion_horaria', 'horas_catedra', 'int', 'int');
@@ -2119,7 +2119,7 @@ class Schema
         ];
         $entities['distribucion_horaria']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['domicilio'] = EntityMetadata::getInstance('domicilio', 'domi');
         $entities['domicilio']->pk = ['id'];
@@ -2135,7 +2135,7 @@ class Schema
         ];
         $entities['domicilio']->fields['barrio']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['domicilio']->fields['calle'] = Field::getInstance('domicilio', 'calle', 'varchar', 'string');
@@ -2145,7 +2145,7 @@ class Schema
         ];
         $entities['domicilio']->fields['calle']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['domicilio']->fields['departamento'] = Field::getInstance('domicilio', 'departamento', 'varchar', 'string');
         $entities['domicilio']->fields['departamento']->checks = [
@@ -2153,7 +2153,7 @@ class Schema
         ];
         $entities['domicilio']->fields['departamento']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['domicilio']->fields['entre'] = Field::getInstance('domicilio', 'entre', 'varchar', 'string');
@@ -2162,7 +2162,7 @@ class Schema
         ];
         $entities['domicilio']->fields['entre']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['domicilio']->fields['id'] = Field::getInstance('domicilio', 'id', 'varchar', 'string');
@@ -2172,7 +2172,7 @@ class Schema
         ];
         $entities['domicilio']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['domicilio']->fields['localidad'] = Field::getInstance('domicilio', 'localidad', 'varchar', 'string');
         $entities['domicilio']->fields['localidad']->checks = [
@@ -2181,7 +2181,7 @@ class Schema
         ];
         $entities['domicilio']->fields['localidad']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['domicilio']->fields['numero'] = Field::getInstance('domicilio', 'numero', 'varchar', 'string');
         $entities['domicilio']->fields['numero']->checks = [
@@ -2190,7 +2190,7 @@ class Schema
         ];
         $entities['domicilio']->fields['numero']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['domicilio']->fields['piso'] = Field::getInstance('domicilio', 'piso', 'varchar', 'string');
         $entities['domicilio']->fields['piso']->checks = [
@@ -2198,7 +2198,7 @@ class Schema
         ];
         $entities['domicilio']->fields['piso']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['email'] = EntityMetadata::getInstance('email', 'emai');
@@ -2229,7 +2229,7 @@ class Schema
         ];
         $entities['email']->fields['email']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['email']->fields['id'] = Field::getInstance('email', 'id', 'varchar', 'string');
         $entities['email']->fields['id']->checks = [
@@ -2238,7 +2238,7 @@ class Schema
         ];
         $entities['email']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['email']->fields['insertado'] = Field::getInstance('email', 'insertado', 'timestamp', 'DateTime');
         $entities['email']->fields['insertado']->defaultValue = 'current_timestamp()';
@@ -2256,7 +2256,7 @@ class Schema
         ];
         $entities['email']->fields['persona']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['email']->fields['verificado'] = Field::getInstance('email', 'verificado', 'tinyint', 'bool');
         $entities['email']->fields['verificado']->defaultValue = false;
@@ -2277,7 +2277,7 @@ class Schema
         ];
         $entities['file']->fields['content']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['file']->fields['created'] = Field::getInstance('file', 'created', 'timestamp', 'DateTime');
         $entities['file']->fields['created']->defaultValue = 'current_timestamp()';
@@ -2292,7 +2292,7 @@ class Schema
         ];
         $entities['file']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['file']->fields['name'] = Field::getInstance('file', 'name', 'varchar', 'string');
         $entities['file']->fields['name']->checks = [
@@ -2301,7 +2301,7 @@ class Schema
         ];
         $entities['file']->fields['name']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['file']->fields['size'] = Field::getInstance('file', 'size', 'int', 'int');
         $entities['file']->fields['size']->checks = [
@@ -2315,7 +2315,7 @@ class Schema
         ];
         $entities['file']->fields['type']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['horario'] = EntityMetadata::getInstance('horario', 'hora');
         $entities['horario']->pk = ['id'];
@@ -2429,7 +2429,7 @@ class Schema
         ];
         $entities['horario']->fields['curso']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['horario']->fields['dia'] = Field::getInstance('horario', 'dia', 'varchar', 'string');
         $entities['horario']->fields['dia']->alias = 'dia';
@@ -2441,7 +2441,7 @@ class Schema
         ];
         $entities['horario']->fields['dia']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['horario']->fields['hora_fin'] = Field::getInstance('horario', 'hora_fin', 'time', 'DateTime');
         $entities['horario']->fields['hora_fin']->checks = [
@@ -2460,7 +2460,7 @@ class Schema
         ];
         $entities['horario']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['modalidad'] = EntityMetadata::getInstance('modalidad', 'moda');
         $entities['modalidad']->pk = ['id'];
@@ -2476,7 +2476,7 @@ class Schema
         ];
         $entities['modalidad']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['modalidad']->fields['nombre'] = Field::getInstance('modalidad', 'nombre', 'varchar', 'string');
         $entities['modalidad']->fields['nombre']->checks = [
@@ -2485,7 +2485,7 @@ class Schema
         ];
         $entities['modalidad']->fields['nombre']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['modalidad']->fields['pfid'] = Field::getInstance('modalidad', 'pfid', 'varchar', 'string');
         $entities['modalidad']->fields['pfid']->checks = [
@@ -2493,7 +2493,7 @@ class Schema
         ];
         $entities['modalidad']->fields['pfid']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona'] = EntityMetadata::getInstance('persona', 'pers');
@@ -2534,7 +2534,7 @@ class Schema
         ];
         $entities['persona']->fields['apellidos']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['apodo'] = Field::getInstance('persona', 'apodo', 'varchar', 'string');
@@ -2543,7 +2543,7 @@ class Schema
         ];
         $entities['persona']->fields['apodo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['codigo_area'] = Field::getInstance('persona', 'codigo_area', 'varchar', 'string');
@@ -2552,7 +2552,7 @@ class Schema
         ];
         $entities['persona']->fields['codigo_area']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['cuil'] = Field::getInstance('persona', 'cuil', 'varchar', 'string');
@@ -2561,7 +2561,7 @@ class Schema
         ];
         $entities['persona']->fields['cuil']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['cuil1'] = Field::getInstance('persona', 'cuil1', 'tinyint', 'int');
@@ -2578,7 +2578,7 @@ class Schema
         ];
         $entities['persona']->fields['departamento']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['descripcion_domicilio'] = Field::getInstance('persona', 'descripcion_domicilio', 'varchar', 'string');
@@ -2587,7 +2587,7 @@ class Schema
         ];
         $entities['persona']->fields['descripcion_domicilio']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['dia_nacimiento'] = Field::getInstance('persona', 'dia_nacimiento', 'tinyint', 'int');
@@ -2603,7 +2603,7 @@ class Schema
         ];
         $entities['persona']->fields['domicilio']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['email'] = Field::getInstance('persona', 'email', 'varchar', 'string');
@@ -2612,7 +2612,7 @@ class Schema
         ];
         $entities['persona']->fields['email']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['email_abc'] = Field::getInstance('persona', 'email_abc', 'varchar', 'string');
@@ -2621,7 +2621,7 @@ class Schema
         ];
         $entities['persona']->fields['email_abc']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['email_verificado'] = Field::getInstance('persona', 'email_verificado', 'tinyint', 'bool');
@@ -2640,7 +2640,7 @@ class Schema
         ];
         $entities['persona']->fields['genero']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['id'] = Field::getInstance('persona', 'id', 'varchar', 'string');
@@ -2650,7 +2650,7 @@ class Schema
         ];
         $entities['persona']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['persona']->fields['info_verificada'] = Field::getInstance('persona', 'info_verificada', 'tinyint', 'bool');
         $entities['persona']->fields['info_verificada']->defaultValue = false;
@@ -2664,7 +2664,7 @@ class Schema
         ];
         $entities['persona']->fields['localidad']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['lugar_nacimiento'] = Field::getInstance('persona', 'lugar_nacimiento', 'varchar', 'string');
@@ -2673,7 +2673,7 @@ class Schema
         ];
         $entities['persona']->fields['lugar_nacimiento']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['mes_nacimiento'] = Field::getInstance('persona', 'mes_nacimiento', 'tinyint', 'int');
@@ -2686,7 +2686,7 @@ class Schema
         ];
         $entities['persona']->fields['nacionalidad']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['nombres'] = Field::getInstance('persona', 'nombres', 'varchar', 'string');
@@ -2696,7 +2696,7 @@ class Schema
         ];
         $entities['persona']->fields['nombres']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['persona']->fields['numero_documento'] = Field::getInstance('persona', 'numero_documento', 'varchar', 'string');
         $entities['persona']->fields['numero_documento']->checks = [
@@ -2705,7 +2705,7 @@ class Schema
         ];
         $entities['persona']->fields['numero_documento']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['persona']->fields['partido'] = Field::getInstance('persona', 'partido', 'varchar', 'string');
         $entities['persona']->fields['partido']->checks = [
@@ -2713,7 +2713,7 @@ class Schema
         ];
         $entities['persona']->fields['partido']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['sexo'] = Field::getInstance('persona', 'sexo', 'tinyint', 'int');
@@ -2726,7 +2726,7 @@ class Schema
         ];
         $entities['persona']->fields['telefono']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['persona']->fields['telefono_verificado'] = Field::getInstance('persona', 'telefono_verificado', 'tinyint', 'bool');
@@ -2748,7 +2748,7 @@ class Schema
         ];
         $entities['plan']->fields['distribucion_horaria']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['plan']->fields['id'] = Field::getInstance('plan', 'id', 'varchar', 'string');
@@ -2758,7 +2758,7 @@ class Schema
         ];
         $entities['plan']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['plan']->fields['orientacion'] = Field::getInstance('plan', 'orientacion', 'varchar', 'string');
         $entities['plan']->fields['orientacion']->checks = [
@@ -2767,7 +2767,7 @@ class Schema
         ];
         $entities['plan']->fields['orientacion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['plan']->fields['pfid'] = Field::getInstance('plan', 'pfid', 'varchar', 'string');
         $entities['plan']->fields['pfid']->checks = [
@@ -2775,7 +2775,7 @@ class Schema
         ];
         $entities['plan']->fields['pfid']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['plan']->fields['resolucion'] = Field::getInstance('plan', 'resolucion', 'varchar', 'string');
@@ -2784,7 +2784,7 @@ class Schema
         ];
         $entities['plan']->fields['resolucion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['planificacion'] = EntityMetadata::getInstance('planificacion', 'pla1');
@@ -2808,7 +2808,7 @@ class Schema
         ];
         $entities['planificacion']->fields['anio']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['planificacion']->fields['id'] = Field::getInstance('planificacion', 'id', 'varchar', 'string');
         $entities['planificacion']->fields['id']->checks = [
@@ -2817,7 +2817,7 @@ class Schema
         ];
         $entities['planificacion']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['planificacion']->fields['pfid'] = Field::getInstance('planificacion', 'pfid', 'varchar', 'string');
         $entities['planificacion']->fields['pfid']->checks = [
@@ -2825,7 +2825,7 @@ class Schema
         ];
         $entities['planificacion']->fields['pfid']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['planificacion']->fields['plan'] = Field::getInstance('planificacion', 'plan', 'varchar', 'string');
@@ -2838,7 +2838,7 @@ class Schema
         ];
         $entities['planificacion']->fields['plan']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['planificacion']->fields['semestre'] = Field::getInstance('planificacion', 'semestre', 'varchar', 'string');
         $entities['planificacion']->fields['semestre']->checks = [
@@ -2847,7 +2847,7 @@ class Schema
         ];
         $entities['planificacion']->fields['semestre']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['planilla_docente'] = EntityMetadata::getInstance('planilla_docente', 'pla2');
         $entities['planilla_docente']->pk = ['id'];
@@ -2872,7 +2872,7 @@ class Schema
         ];
         $entities['planilla_docente']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['planilla_docente']->fields['insertado'] = Field::getInstance('planilla_docente', 'insertado', 'timestamp', 'DateTime');
         $entities['planilla_docente']->fields['insertado']->defaultValue = 'current_timestamp()';
@@ -2887,7 +2887,7 @@ class Schema
         ];
         $entities['planilla_docente']->fields['numero']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['planilla_docente']->fields['observaciones'] = Field::getInstance('planilla_docente', 'observaciones', 'text', 'string');
         $entities['planilla_docente']->fields['observaciones']->checks = [
@@ -2895,7 +2895,7 @@ class Schema
         ];
         $entities['planilla_docente']->fields['observaciones']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['resolucion'] = EntityMetadata::getInstance('resolucion', 'reso');
@@ -2915,7 +2915,7 @@ class Schema
         ];
         $entities['resolucion']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['resolucion']->fields['numero'] = Field::getInstance('resolucion', 'numero', 'varchar', 'string');
         $entities['resolucion']->fields['numero']->checks = [
@@ -2924,7 +2924,7 @@ class Schema
         ];
         $entities['resolucion']->fields['numero']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['resolucion']->fields['tipo'] = Field::getInstance('resolucion', 'tipo', 'varchar', 'string');
         $entities['resolucion']->fields['tipo']->checks = [
@@ -2932,7 +2932,7 @@ class Schema
         ];
         $entities['resolucion']->fields['tipo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['sede'] = EntityMetadata::getInstance('sede', 'sede');
@@ -2988,7 +2988,7 @@ class Schema
         ];
         $entities['sede']->fields['centro_educativo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['sede']->fields['domicilio'] = Field::getInstance('sede', 'domicilio', 'varchar', 'string');
@@ -3000,7 +3000,7 @@ class Schema
         ];
         $entities['sede']->fields['domicilio']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['sede']->fields['fecha_traspaso'] = Field::getInstance('sede', 'fecha_traspaso', 'date', 'DateTime');
@@ -3014,7 +3014,7 @@ class Schema
         ];
         $entities['sede']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['sede']->fields['nombre'] = Field::getInstance('sede', 'nombre', 'varchar', 'string');
         $entities['sede']->fields['nombre']->checks = [
@@ -3023,7 +3023,7 @@ class Schema
         ];
         $entities['sede']->fields['nombre']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['sede']->fields['numero'] = Field::getInstance('sede', 'numero', 'varchar', 'string');
         $entities['sede']->fields['numero']->checks = [
@@ -3032,7 +3032,7 @@ class Schema
         ];
         $entities['sede']->fields['numero']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['sede']->fields['observaciones'] = Field::getInstance('sede', 'observaciones', 'text', 'string');
         $entities['sede']->fields['observaciones']->checks = [
@@ -3040,7 +3040,7 @@ class Schema
         ];
         $entities['sede']->fields['observaciones']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['sede']->fields['organizacion'] = Field::getInstance('sede', 'organizacion', 'varchar', 'string');
@@ -3052,7 +3052,7 @@ class Schema
         ];
         $entities['sede']->fields['organizacion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['sede']->fields['pfid'] = Field::getInstance('sede', 'pfid', 'varchar', 'string');
@@ -3061,7 +3061,7 @@ class Schema
         ];
         $entities['sede']->fields['pfid']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['sede']->fields['pfid_organizacion'] = Field::getInstance('sede', 'pfid_organizacion', 'varchar', 'string');
@@ -3070,7 +3070,7 @@ class Schema
         ];
         $entities['sede']->fields['pfid_organizacion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['sede']->fields['tipo_sede'] = Field::getInstance('sede', 'tipo_sede', 'varchar', 'string');
@@ -3082,7 +3082,7 @@ class Schema
         ];
         $entities['sede']->fields['tipo_sede']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['telefono'] = EntityMetadata::getInstance('telefono', 'tele');
@@ -3113,7 +3113,7 @@ class Schema
         ];
         $entities['telefono']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['telefono']->fields['insertado'] = Field::getInstance('telefono', 'insertado', 'timestamp', 'DateTime');
         $entities['telefono']->fields['insertado']->defaultValue = 'current_timestamp()';
@@ -3128,7 +3128,7 @@ class Schema
         ];
         $entities['telefono']->fields['numero']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['telefono']->fields['persona'] = Field::getInstance('telefono', 'persona', 'varchar', 'string');
         $entities['telefono']->fields['persona']->alias = 'per';
@@ -3140,7 +3140,7 @@ class Schema
         ];
         $entities['telefono']->fields['persona']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['telefono']->fields['prefijo'] = Field::getInstance('telefono', 'prefijo', 'varchar', 'string');
         $entities['telefono']->fields['prefijo']->checks = [
@@ -3148,7 +3148,7 @@ class Schema
         ];
         $entities['telefono']->fields['prefijo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['telefono']->fields['tipo'] = Field::getInstance('telefono', 'tipo', 'varchar', 'string');
@@ -3157,7 +3157,7 @@ class Schema
         ];
         $entities['telefono']->fields['tipo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['tipo_sede'] = EntityMetadata::getInstance('tipo_sede', 'tipo');
@@ -3174,7 +3174,7 @@ class Schema
         ];
         $entities['tipo_sede']->fields['descripcion']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['tipo_sede']->fields['id'] = Field::getInstance('tipo_sede', 'id', 'varchar', 'string');
         $entities['tipo_sede']->fields['id']->checks = [
@@ -3183,7 +3183,7 @@ class Schema
         ];
         $entities['tipo_sede']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['toma'] = EntityMetadata::getInstance('toma', 'toma');
         $entities['toma']->pk = ['id'];
@@ -3321,7 +3321,7 @@ class Schema
         ];
         $entities['toma']->fields['archivo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['comentario'] = Field::getInstance('toma', 'comentario', 'varchar', 'string');
@@ -3330,7 +3330,7 @@ class Schema
         ];
         $entities['toma']->fields['comentario']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['curso'] = Field::getInstance('toma', 'curso', 'varchar', 'string');
@@ -3343,7 +3343,7 @@ class Schema
         ];
         $entities['toma']->fields['curso']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['toma']->fields['docente'] = Field::getInstance('toma', 'docente', 'varchar', 'string');
         $entities['toma']->fields['docente']->alias = 'per';
@@ -3354,7 +3354,7 @@ class Schema
         ];
         $entities['toma']->fields['docente']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['estado'] = Field::getInstance('toma', 'estado', 'varchar', 'string');
@@ -3363,7 +3363,7 @@ class Schema
         ];
         $entities['toma']->fields['estado']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['estado_contralor'] = Field::getInstance('toma', 'estado_contralor', 'varchar', 'string');
@@ -3372,7 +3372,7 @@ class Schema
         ];
         $entities['toma']->fields['estado_contralor']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['estado_planilla'] = Field::getInstance('toma', 'estado_planilla', 'varchar', 'string');
@@ -3381,7 +3381,7 @@ class Schema
         ];
         $entities['toma']->fields['estado_planilla']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['fecha_toma'] = Field::getInstance('toma', 'fecha_toma', 'date', 'DateTime');
@@ -3395,7 +3395,7 @@ class Schema
         ];
         $entities['toma']->fields['id']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['toma']->fields['observaciones'] = Field::getInstance('toma', 'observaciones', 'text', 'string');
         $entities['toma']->fields['observaciones']->checks = [
@@ -3403,7 +3403,7 @@ class Schema
         ];
         $entities['toma']->fields['observaciones']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['planilla_docente'] = Field::getInstance('toma', 'planilla_docente', 'varchar', 'string');
@@ -3415,7 +3415,7 @@ class Schema
         ];
         $entities['toma']->fields['planilla_docente']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['reclamo'] = Field::getInstance('toma', 'reclamo', 'tinyint', 'bool');
@@ -3433,7 +3433,7 @@ class Schema
         ];
         $entities['toma']->fields['reemplazo']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['toma']->fields['tipo_movimiento'] = Field::getInstance('toma', 'tipo_movimiento', 'varchar', 'string');
@@ -3443,7 +3443,7 @@ class Schema
         ];
         $entities['toma']->fields['tipo_movimiento']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         return $entities;
     }

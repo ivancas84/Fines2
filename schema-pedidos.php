@@ -61,7 +61,7 @@ class SchemaPedidos
         ];
         $entities['agents']->fields['name']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['agents']->fields['role'] = Field::getInstance('agents', 'role', 'int', 'int');
         $entities['agents']->fields['role']->defaultValue = '0';
@@ -133,7 +133,7 @@ class SchemaPedidos
         ];
         $entities['attachments']->fields['file_path']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['attachments']->fields['id'] = Field::getInstance('attachments', 'id', 'bigint', 'int');
         $entities['attachments']->fields['id']->checks = [
@@ -165,7 +165,7 @@ class SchemaPedidos
         ];
         $entities['attachments']->fields['name']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['attachments']->fields['source'] = Field::getInstance('attachments', 'source', 'varchar', 'string');
         $entities['attachments']->fields['source']->checks = [
@@ -174,7 +174,7 @@ class SchemaPedidos
         ];
         $entities['attachments']->fields['source']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['attachments']->fields['source_id'] = Field::getInstance('attachments', 'source_id', 'bigint', 'int');
         $entities['attachments']->fields['source_id']->defaultValue = '0';
@@ -215,7 +215,7 @@ class SchemaPedidos
         ];
         $entities['categories']->fields['name']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['customers'] = EntityMetadata::getInstance('customers', 'cust');
         $entities['customers']->pk = ['id'];
@@ -233,7 +233,7 @@ class SchemaPedidos
         ];
         $entities['customers']->fields['email']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['customers']->fields['id'] = Field::getInstance('customers', 'id', 'bigint', 'int');
         $entities['customers']->fields['id']->checks = [
@@ -247,7 +247,7 @@ class SchemaPedidos
         ];
         $entities['customers']->fields['name']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['customers']->fields['ticket_count'] = Field::getInstance('customers', 'ticket_count', 'int', 'int');
         $entities['customers']->fields['ticket_count']->defaultValue = '0';
@@ -284,7 +284,7 @@ class SchemaPedidos
         ];
         $entities['custom_fields']->fields['date_display_as']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['custom_fields']->fields['date_format'] = Field::getInstance('custom_fields', 'date_format', 'varchar', 'string');
@@ -293,7 +293,7 @@ class SchemaPedidos
         ];
         $entities['custom_fields']->fields['date_format']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['custom_fields']->fields['date_range'] = Field::getInstance('custom_fields', 'date_range', 'varchar', 'string');
@@ -302,7 +302,7 @@ class SchemaPedidos
         ];
         $entities['custom_fields']->fields['date_range']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['custom_fields']->fields['default_value'] = Field::getInstance('custom_fields', 'default_value', 'text', 'string');
@@ -311,7 +311,7 @@ class SchemaPedidos
         ];
         $entities['custom_fields']->fields['default_value']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['custom_fields']->fields['end_range'] = Field::getInstance('custom_fields', 'end_range', 'datetime', 'DateTime');
@@ -324,7 +324,7 @@ class SchemaPedidos
         ];
         $entities['custom_fields']->fields['extra_info']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['custom_fields']->fields['field'] = Field::getInstance('custom_fields', 'field', 'varchar', 'string');
@@ -333,7 +333,7 @@ class SchemaPedidos
         ];
         $entities['custom_fields']->fields['field']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['custom_fields']->fields['id'] = Field::getInstance('custom_fields', 'id', 'int', 'int');
@@ -364,7 +364,7 @@ class SchemaPedidos
         ];
         $entities['custom_fields']->fields['name']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['custom_fields']->fields['number_type'] = Field::getInstance('custom_fields', 'number_type', 'varchar', 'string');
         $entities['custom_fields']->fields['number_type']->checks = [
@@ -372,7 +372,7 @@ class SchemaPedidos
         ];
         $entities['custom_fields']->fields['number_type']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['custom_fields']->fields['placeholder_text'] = Field::getInstance('custom_fields', 'placeholder_text', 'text', 'string');
@@ -381,7 +381,7 @@ class SchemaPedidos
         ];
         $entities['custom_fields']->fields['placeholder_text']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['custom_fields']->fields['slug'] = Field::getInstance('custom_fields', 'slug', 'varchar', 'string');
@@ -390,7 +390,7 @@ class SchemaPedidos
         ];
         $entities['custom_fields']->fields['slug']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['custom_fields']->fields['start_range'] = Field::getInstance('custom_fields', 'start_range', 'datetime', 'DateTime');
@@ -413,7 +413,7 @@ class SchemaPedidos
         ];
         $entities['custom_fields']->fields['type']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['logs'] = EntityMetadata::getInstance('logs', 'logs');
@@ -462,7 +462,7 @@ class SchemaPedidos
         ];
         $entities['logs']->fields['type']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['priorities'] = EntityMetadata::getInstance('priorities', 'prio');
         $entities['priorities']->pk = ['id'];
@@ -477,7 +477,7 @@ class SchemaPedidos
         ];
         $entities['priorities']->fields['bg_color']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['priorities']->fields['color'] = Field::getInstance('priorities', 'color', 'varchar', 'string');
         $entities['priorities']->fields['color']->checks = [
@@ -486,7 +486,7 @@ class SchemaPedidos
         ];
         $entities['priorities']->fields['color']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['priorities']->fields['id'] = Field::getInstance('priorities', 'id', 'int', 'int');
         $entities['priorities']->fields['id']->checks = [
@@ -506,7 +506,7 @@ class SchemaPedidos
         ];
         $entities['priorities']->fields['name']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['statuses'] = EntityMetadata::getInstance('statuses', 'stat');
         $entities['statuses']->pk = ['id'];
@@ -521,7 +521,7 @@ class SchemaPedidos
         ];
         $entities['statuses']->fields['bg_color']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['statuses']->fields['color'] = Field::getInstance('statuses', 'color', 'varchar', 'string');
         $entities['statuses']->fields['color']->checks = [
@@ -530,7 +530,7 @@ class SchemaPedidos
         ];
         $entities['statuses']->fields['color']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['statuses']->fields['id'] = Field::getInstance('statuses', 'id', 'int', 'int');
         $entities['statuses']->fields['id']->checks = [
@@ -550,7 +550,7 @@ class SchemaPedidos
         ];
         $entities['statuses']->fields['name']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['threads'] = EntityMetadata::getInstance('threads', 'thre');
         $entities['threads']->pk = ['id'];
@@ -594,7 +594,7 @@ class SchemaPedidos
         ];
         $entities['threads']->fields['attachments']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['threads']->fields['body'] = Field::getInstance('threads', 'body', 'longtext', 'string');
@@ -608,7 +608,7 @@ class SchemaPedidos
         ];
         $entities['threads']->fields['browser']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['threads']->fields['customer'] = Field::getInstance('threads', 'customer', 'bigint', 'int');
@@ -639,7 +639,7 @@ class SchemaPedidos
         ];
         $entities['threads']->fields['ip_address']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['threads']->fields['is_active'] = Field::getInstance('threads', 'is_active', 'int', 'int');
@@ -654,7 +654,7 @@ class SchemaPedidos
         ];
         $entities['threads']->fields['os']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['threads']->fields['seen'] = Field::getInstance('threads', 'seen', 'datetime', 'DateTime');
@@ -667,7 +667,7 @@ class SchemaPedidos
         ];
         $entities['threads']->fields['source']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['threads']->fields['ticket'] = Field::getInstance('threads', 'ticket', 'bigint', 'int');
@@ -685,7 +685,7 @@ class SchemaPedidos
         ];
         $entities['threads']->fields['type']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['tickets'] = EntityMetadata::getInstance('tickets', 'tick');
         $entities['tickets']->pk = ['id'];
@@ -719,7 +719,7 @@ class SchemaPedidos
         ];
         $entities['tickets']->fields['add_recipients']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['tickets']->fields['agent_created'] = Field::getInstance('tickets', 'agent_created', 'int', 'int');
@@ -732,7 +732,7 @@ class SchemaPedidos
         ];
         $entities['tickets']->fields['assigned_agent']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['tickets']->fields['auth_code'] = Field::getInstance('tickets', 'auth_code', 'varchar', 'string');
@@ -741,7 +741,7 @@ class SchemaPedidos
         ];
         $entities['tickets']->fields['auth_code']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['tickets']->fields['browser'] = Field::getInstance('tickets', 'browser', 'varchar', 'string');
@@ -750,7 +750,7 @@ class SchemaPedidos
         ];
         $entities['tickets']->fields['browser']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['tickets']->fields['category'] = Field::getInstance('tickets', 'category', 'int', 'int');
@@ -814,7 +814,7 @@ class SchemaPedidos
         ];
         $entities['tickets']->fields['ip_address']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['tickets']->fields['is_active'] = Field::getInstance('tickets', 'is_active', 'int', 'int');
@@ -838,7 +838,7 @@ class SchemaPedidos
         ];
         $entities['tickets']->fields['last_reply_source']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['tickets']->fields['live_agents'] = Field::getInstance('tickets', 'live_agents', 'tinytext', 'string');
@@ -855,7 +855,7 @@ class SchemaPedidos
         ];
         $entities['tickets']->fields['os']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['tickets']->fields['prev_assignee'] = Field::getInstance('tickets', 'prev_assignee', 'text', 'string');
@@ -864,7 +864,7 @@ class SchemaPedidos
         ];
         $entities['tickets']->fields['prev_assignee']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['tickets']->fields['priority'] = Field::getInstance('tickets', 'priority', 'int', 'int');
@@ -881,7 +881,7 @@ class SchemaPedidos
         ];
         $entities['tickets']->fields['source']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
             'nullIfEmpty' => true,
         ];
         $entities['tickets']->fields['status'] = Field::getInstance('tickets', 'status', 'int', 'int');
@@ -899,7 +899,7 @@ class SchemaPedidos
         ];
         $entities['tickets']->fields['subject']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['tickets']->fields['tags'] = Field::getInstance('tickets', 'tags', 'tinytext', 'string');
         $entities['tickets']->fields['tags']->checks = [
@@ -912,7 +912,7 @@ class SchemaPedidos
         ];
         $entities['tickets']->fields['user_type']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['ticket_tags'] = EntityMetadata::getInstance('ticket_tags', 'tic1');
         $entities['ticket_tags']->pk = ['id'];
@@ -925,7 +925,7 @@ class SchemaPedidos
         ];
         $entities['ticket_tags']->fields['bg_color']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['ticket_tags']->fields['color'] = Field::getInstance('ticket_tags', 'color', 'varchar', 'string');
         $entities['ticket_tags']->fields['color']->checks = [
@@ -934,7 +934,7 @@ class SchemaPedidos
         ];
         $entities['ticket_tags']->fields['color']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         $entities['ticket_tags']->fields['description'] = Field::getInstance('ticket_tags', 'description', 'tinytext', 'string');
         $entities['ticket_tags']->fields['description']->checks = [
@@ -953,7 +953,7 @@ class SchemaPedidos
         ];
         $entities['ticket_tags']->fields['name']->resets = [
             'trim' => ' ',
-            'removeMultipleSpaces' => true,
+            'normalizeSpaces' => true,
         ];
         return $entities;
     }

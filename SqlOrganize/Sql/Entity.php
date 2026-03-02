@@ -158,7 +158,7 @@ class Entity
     }
 
     /**
-     * Seteo "lento" con conversión de tipos
+     * Smart or Slow setter - Seteo "lento" con conversión de tipos
      */
     public function sset(string $fieldName, $value): void
     {
@@ -198,6 +198,76 @@ class Entity
                 break;
         }
     }
+
+    /**
+     * Smart additive setter
+     * If field is NOT NULL → accumulate instead of replace
+     */
+    public function sadd(string $fieldName, $value): void
+    {
+        if ($value === null || $value === "") return;
+        $field   = $this->_db->Field($this->_entityName, $fieldName);
+        $current = $this->$fieldName ?? null;
+
+    switch ($field->type) {
+
+        case "int":
+            $this->set(
+                $fieldName,
+                ((int)$current) + ((int)$value)
+            );
+            break;
+
+        case "float":
+        case "decimal":
+            $this->set(
+                $fieldName,
+                ((float)$current) +
+                ((float)str_replace('.', ',', (string)$value))
+            );
+            break;
+
+        case "string":
+        case "text":
+        case "varchar":
+            $this->set(
+                $fieldName,
+                ValueTypesUtils::normalizeSpaces(((string)$current) . " " . ((string)$value))
+            );
+            break;
+
+        case "bool":
+        case "boolean":
+            $this->set(
+                $fieldName,
+                ValueTypesUtils::toBool($current)
+                || ValueTypesUtils::toBool($value)
+            );
+            break;
+
+        case "DateTime":
+
+            $new = ($value instanceof DateTime)
+                ? $value
+                : new DateTime((string)$value);
+
+            if ($current instanceof DateTime) {
+                // keep latest date
+                $this->set(
+                    $fieldName,
+                    $new > $current ? $new : $current
+                );
+            } else {
+                $this->set($fieldName, $new);
+            }
+
+            break;
+
+        default:
+            $this->set($fieldName, $value);
+            break;
+    }
+}
 
     /**
      * Asignar valor por defecto a propiedades simples
@@ -403,7 +473,7 @@ class Entity
                     }
                     break;
                     
-                case "removemultiplespaces":
+                case "normalizespaces":
                     if (!empty($val)) {
                         $this->set($fieldName, preg_replace('/\s+/', ' ', (string)$val));
                     }

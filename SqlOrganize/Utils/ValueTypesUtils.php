@@ -284,8 +284,9 @@ public static function pluckKeyValue(iterable $items, string $key, string $value
     /**
      * Remueve espacios múltiples
      */
-    public static function removeMultipleSpaces(string $string): string
+    public static function normalizeSpaces(?string $string): ?string
     {
+        if ($string === null) return null;
         return preg_replace('/\s+/', ' ', $string);
     }
 
@@ -376,8 +377,8 @@ public static function pluckKeyValue(iterable $items, string $key, string $value
      */
     public static function similarTo(string $name1, string $name2, int $len = 4): bool
     {
-        $n1 = explode(' ', strtoupper(self::removeMultipleSpaces(trim($name1))));
-        $n2 = explode(' ', strtoupper(self::removeMultipleSpaces(trim($name2))));
+        $n1 = explode(' ', strtoupper(self::normalizeSpaces(trim($name1))));
+        $n2 = explode(' ', strtoupper(self::normalizeSpaces(trim($name2))));
         
         foreach ($n1 as $nn1) {
             foreach ($n2 as $nn2) {

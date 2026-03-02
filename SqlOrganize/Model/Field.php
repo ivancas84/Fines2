@@ -91,7 +91,7 @@ class Field
      *     'Trim' => ' ',
      *     'Ltrim' => ' ', // no implementado
      *     'Rtrim' => ' ', // no implementado  
-     *     'RemoveMultipleSpaces' => null,
+     *     'NormalizeSpaces' => null,
      *     'NullIfEmpty' => true, // si es vacío se asigna null
      *     'DefaultIfNull' => true, // si es null se asigna valor por defecto
      *     'SetDefault' => true, // siempre setea valor por defecto, por más que el valor ya exista

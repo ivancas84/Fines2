@@ -230,7 +230,7 @@ abstract class BuildSchema
         if ($f->type == "string") {
             $f->resets = [
                 "trim" => ' ',
-                "removeMultipleSpaces" => true
+                "normalizeSpaces" => true
             ];
             if (!$f->notNull) {
                 $f->resets["nullIfEmpty"] = true;
