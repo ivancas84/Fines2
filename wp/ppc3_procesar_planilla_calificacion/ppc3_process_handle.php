@@ -33,6 +33,7 @@ function ppc3_process_handle() {
         return;
     }
 
+    $observaciones = $_POST["observaciones"];
     $rawData = trim($_POST['data']);
     $format = $_POST['format'];
     $result = ValueTypesUtils::excelParse($rawData);
@@ -65,7 +66,7 @@ function ppc3_process_handle() {
 
            /** @var AlumnoComision_ */ $alumnoComision = AlumnoComisionDAO::createAndPersist($modifyQueries, $alumno->id, $curso->comision_->id, "Importado desde planilla de calificaciones");
 
-            /** @var Calificacion_ */ $calificacion = CalificacionDAO::createAndPersist($modifyQueries, $data["nota"], $alumno->id, $curso->disposicion, $curso->id);
+            /** @var Calificacion_ */ $calificacion = CalificacionDAO::createAndPersist($modifyQueries, $data["nota"], $alumno->id, $curso->disposicion, $curso->id, $observaciones);
 
             $modifyQueries->process();
             wp_redirect_handle("fines-plugin-ppc3", "curso_id", $curso->id, "Registro realizado");  

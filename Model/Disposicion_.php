@@ -16,7 +16,8 @@ class Disposicion_ extends Disposicion
             ($this->planificacion_?->anio ?? "?"). "/" .
             ($this->planificacion_?->semestre ?? "?") . " " .
             ($this->planificacion_?->plan_?->resolucion ?? "?") . " " . 
-            ValueTypesUtils::acronym($this->planificacion_?->plan_?->orientacion ?? ""); 
+            ValueTypesUtils::acronym($this->planificacion_?->plan_?->orientacion ?? "") . " (" .
+            ($this->horas_catedra ?? "?") . ")"; 
     }
 
 
