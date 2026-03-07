@@ -7,6 +7,7 @@ use \Fines2\DataAccess\CalificacionDAO;
 use SqlOrganize\Sql\Entity;
 use Exception;
 use DateTime;
+use SqlOrganize\Utils\ValueTypesUtils;
 
 class Alumno_ extends Alumno
 {
@@ -68,6 +69,20 @@ class Alumno_ extends Alumno
                 $this->AniosCursados[2] = "Tercero";
 
             $this->AniosCursados = array_values($this->AniosCursados);
+        }
+    }
+
+    public function migrateCalificaciones($modifyQueries, $alumno_destino_id){
+        /** @var Calificacion_[] */ $calificaciones_origen = CalificacionDAO::calificacionesAprobadasByAlumno($this->id);
+        /** @var array<mixed, Calificacion_> */$calificaciones_origen_agrupadas = ValueTypesUtils::dictOfObjByPropertyNames($calificaciones_origen, "disposicion");
+        /** @var Calificacion_[] */ $calificaciones_destino = CalificacionDAO::calificacionesAprobadasByAlumno($alumno_destino_id);
+        /** @var array<mixed, Calificacion_> */ $calificaciones_destino_agrupadas = ValueTypesUtils::dictOfObjByPropertyNames($calificaciones_destino, "disposicion");
+
+        foreach($calificaciones_origen_agrupadas as $disposicion => $calificacion){
+            if(!array_key_exists($disposicion, array_keys($calificaciones_destino_agrupadas))){
+                $calificacion->alumno = $alumno_destino_id;
+                $modifyQueries->updateKeySqlById($calificacion, "alumno");
+            }
         }
     }
 }

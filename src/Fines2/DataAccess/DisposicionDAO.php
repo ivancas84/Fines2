@@ -1,6 +1,9 @@
 <?php
 namespace Fines2\DataAccess;
 
+use Fines2\Model\Disposicion_;
+use SqlOrganize\Sql\DataProvider;
+use SqlOrganize\Sql\Db;
 use SqlOrganize\Sql\DbMy;
 use SqlOrganize\Utils\ValueTypesUtils;
 
@@ -37,6 +40,30 @@ class DisposicionDAO {
         ";
 
         return $dataProvider->fetchAllEntitiesBySqlId("disposicion", $sql);
+    }
+
+    /**
+     * @return Disposicion_[]
+     */
+    public static function disposicionesDivision($comision_pfid): array{
+        /** @var Db */ $db = \App\Context::getFinesDb();
+
+        /** @var DataProvider */ $dataProvider = $db->CreateDataProvider();
+
+        $sql = "
+        SELECT DISTINCT disposicion.id
+        FROM disposicion
+        INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+        WHERE planificacion.plan IN (
+            SELECT planificacion.plan
+            FROM comision
+            INNER JOIN planificacion ON comision.planificacion = planificacion.id
+            WHERE comision.pfid = :comision_pfid
+        )
+        ORDER BY planificacion.anio, planificacion.semestre;
+";
+    
+        return $dataProvider->fetchAllEntitiesBySqlId("disposicion", $sql, ["comision_pfid" => $comision_pfid]);
     }
 
 }

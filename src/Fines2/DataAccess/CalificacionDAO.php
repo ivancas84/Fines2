@@ -6,6 +6,8 @@ use SqlOrganize\Sql\DbMy;
 use SqlOrganize\Sql\ModifyQueries;
 use SqlOrganize\Utils\ValueTypesUtils;
 use Fines2\Model\Calificacion_;
+use SqlOrganize\Sql\DataProvider;
+use SqlOrganize\Sql\Db;
 
 class CalificacionDAO
 {
@@ -26,7 +28,7 @@ class CalificacionDAO
         $calificacion->set("disposicion", $idDisposicion);
         $calificacion->set("curso", $idCurso);
         $calificacion->setNotaAprobada($nota);
-        $modifyQueries->buildPersistSqlByStatus($calificacion);
+        $modifyQueries->persistSqlByStatus($calificacion);
         return $calificacion;
     }
 
@@ -213,5 +215,35 @@ class CalificacionDAO
         ";  
         return \App\Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno_id"=>$alumno_id, "planificacion_id"=>$planificacion_id]);
     }
+
+
+    /**
+     * @return array
+     */
+    public static function calificacionesAprobadasAlumnosDisposiciones(array $alumnos_id, array $disposiciones_id): array{
+        /** @var Db */ $db = \App\Context::getFinesDb();
+
+        /** @var DataProvider */ $dataProvider = $db->CreateDataProvider();
+
+        $sql = "
+            SELECT 
+                calificacion.alumno, 
+                calificacion.disposicion,
+                MAX(calificacion.nota_final) AS nota_final, 
+                MAX(calificacion.crec) AS crec
+            FROM calificacion
+            INNER JOIN disposicion ON calificacion.disposicion = disposicion.id
+            INNER JOIN asignatura ON disposicion.asignatura = asignatura.id
+            INNER JOIN planificacion ON disposicion.planificacion = planificacion.id
+            WHERE (calificacion.nota_final >= 7 OR calificacion.crec >= 4) 
+            AND calificacion.disposicion IN (:ids_disposicion)
+            AND calificacion.alumno IN (:ids_alumnos)
+            GROUP BY calificacion.alumno, calificacion.disposicion
+        ";
+    
+        return $dataProvider->fetchAllSqlByParams($sql, ["ids_disposicion" => $disposiciones_id, "ids_alumnos" => $alumnos_id]);
+    }
+    
         
+    
 }

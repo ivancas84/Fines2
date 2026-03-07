@@ -1,0 +1,176 @@
+<style>
+    form {
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-family: sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    form p {
+        margin-bottom: 1.2rem;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.4rem;
+        color: #444;
+    }
+
+    select,
+    input[type="text"],
+    textarea {
+        width: 100%;
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: white;
+        box-sizing: border-box;
+    }
+
+    input[type="checkbox"] {
+        margin-right: 0.5rem;
+        transform: scale(1.2);
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    button.button {
+        background-color: #0073aa;
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        font-size: 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    button.button:hover {
+        background-color: #005f8d;
+    }
+
+    /* Optional: Style for checkbox labels inline */
+    input[type="checkbox"] + label {
+        display: inline;
+        font-weight: normal;
+    }
+</style>
+
+<h1>Editar Comisión</h1>
+<form method="POST" action="<?=MAIN_URL?>script/administrar_comision.php" >
+    <input type="hidden" name="comision_id" id="comision_id" value="<?= $comision->id ?? '' ?>" />
+
+    <p>
+        <label for="calendario">Calendario:</label>
+        <select name="calendario" id="calendario">
+            <option value="">-- Seleccione --</option>
+            <? foreach ($calendarios as $calendario) : ?>
+                <option value="<? echo esc_attr($calendario->id); ?>" 
+                    <? selected($comision->calendario, $calendario->id); ?>>
+                    <? echo esc_html($calendario->getLabel()); ?>
+                </option>
+            <? endforeach; ?>
+        </select>
+    </p>
+
+    <p>
+        <label for="sede">Sede:</label>
+        <select name="sede" id="sede">
+            <option value="">-- Seleccione --</option>
+            <? foreach ($sedes as $sede) : ?>
+                <option value="<? echo esc_attr($sede->id); ?>" 
+                    <? selected($comision->sede, $sede->id); ?>>
+                    <? echo esc_html($sede->numero . "-" . $sede->nombre); ?>
+                </option>
+            <? endforeach; ?>
+        </select>
+    </p>
+
+    <p>
+        <label for="modalidad">Modalidad:</label>
+        <select name="modalidad" id="modalidad">
+            <option value="">-- Seleccione --</option>
+            <? foreach ($modalidades as $modalidad) : ?>
+                <option value="<? echo esc_attr($modalidad->id); ?>" 
+                    <? selected($comision->modalidad, $modalidad->id); ?>>
+                    <? echo esc_html($modalidad->nombre); ?>
+                </option>
+            <? endforeach; ?>
+        </select>
+    </p>
+
+    <p>
+        <label for="planificacion">Planificación:</label>
+        <select name="planificacion" id="planificacion">
+            <option value="">-- Seleccione --</option>
+            <? foreach ($planificaciones as $planificacion) : ?>
+                <option value="<? echo esc_attr($planificacion->id); ?>" 
+                    <? selected($comision->planificacion, $planificacion->id); ?>>
+                    <? echo esc_html($planificacion->getLabel()); ?>
+                </option>
+            <? endforeach; ?>
+        </select>
+    </p>
+
+    <p>
+        <label for="turno">Turno:</label>
+        <select name="turno" id="turno">
+            <option value="">-- Seleccione --</option>
+            <option value="Mañana" <?= $comision->turno == 'Mañana' ? 'selected' : '' ?>>Mañana</option>
+            <option value="Tarde" <?= $comision->turno == 'Tarde' ? 'selected' : '' ?>>Tarde</option>
+            <option value="Vespertino" <?= $comision->turno == 'Vespertino' ? 'selected' : '' ?>>Vespertino</option>
+        </select>
+    </p>
+
+    <p>
+        <label for="division">División:</label>
+        <input type="text" name="division" id="division" value="<?= $comision->division ?? '' ?>" />
+    </p>
+
+    <p>
+        <label for="pfid">PFID:</label>
+        <input type="text" name="pfid" id="pfid" value="<?= $comision->pfid ?? '' ?>" />
+    </p>
+
+    <p>
+        <input type="checkbox" name="autorizada" id="autorizada" <?= $comision->autorizada ? 'checked' : '' ?> />
+        <label for="autorizada">Autorizada</label>
+    </p>
+
+    <p>
+        <input type="checkbox" name="apertura" id="apertura" <?= $comision->apertura ? 'checked' : '' ?> />
+        <label for="apertura">Apertura</label>
+    </p>
+
+    <p>
+        <input type="checkbox" name="publicada" id="publicada" <?= $comision->publicada ? 'checked' : '' ?> />
+        <label for="publicada">Publicada</label>
+    </p>
+
+    <p>
+        <label for="observaciones">Observaciones:</label>
+        <textarea name="observaciones" id="observaciones" rows="4"><?= $comision->observaciones ?? '' ?></textarea>
+    </p>
+
+    <p>
+        <label for="siguiente">Siguiente:</label>
+        <input type="text" name="comision_siguiente" id="comision_siguiente" value="<?= $comision->comision_siguiente ?? '' ?>" />
+    </p>
+
+    <p>
+        <button type="submit" class="button">Guardar</button>
+    </p>
+</form>

@@ -284,8 +284,9 @@ public static function pluckKeyValue(iterable $items, string $key, string $value
     /**
      * Remueve espacios múltiples
      */
-    public static function removeMultipleSpaces(string $string): string
+    public static function normalizeSpaces(?string $string): ?string
     {
+        if ($string === null) return null;
         return preg_replace('/\s+/', ' ', $string);
     }
 
@@ -376,8 +377,8 @@ public static function pluckKeyValue(iterable $items, string $key, string $value
      */
     public static function similarTo(string $name1, string $name2, int $len = 4): bool
     {
-        $n1 = explode(' ', strtoupper(self::removeMultipleSpaces(trim($name1))));
-        $n2 = explode(' ', strtoupper(self::removeMultipleSpaces(trim($name2))));
+        $n1 = explode(' ', strtoupper(self::normalizeSpaces(trim($name1))));
+        $n2 = explode(' ', strtoupper(self::normalizeSpaces(trim($name2))));
         
         foreach ($n1 as $nn1) {
             foreach ($n2 as $nn2) {
@@ -635,7 +636,28 @@ public static function dictOfListByPropertyName(iterable $source, string $propNa
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
         ];
         return $meses[$numero_mes - 1];
-}
+    }
+
+    public static function redirect(?string $message = null, int $delay = 0): void
+    {
+        // page that sent the form
+        $redirect = $_SERVER['HTTP_REFERER'] ?? '/';
+
+        // append message parameter
+        if (!empty($message)) {
+            $separator = (strpos($redirect, '?') === false) ? '?' : '&';
+            $redirect .= $separator . 'message=' . urlencode($message);
+        }
+
+        if ($delay > 0) {
+            header("Refresh: $delay; url=$redirect");
+            echo "Redirecting in $delay seconds...";
+        } else {
+            header("Location: $redirect");
+        }
+
+        exit;
+    }
 
 }
 

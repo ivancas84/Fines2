@@ -291,6 +291,15 @@ class DataProvider {
     /**
      * Procesar y ejecutar sql para obtener conjunto de valores de una columna indicando indice
      * @return array conjunto de valores de una columna
+     * @example Ejecucion con variable como array
+     * $sql = "SELECT * FROM tabla WHERE id IN(:ids);"
+     * $params = ["ids" => ["1","2","3"]];
+     *     Se traduce a:
+     *         $processedSql = "SELECT * FROM tabla WHERE id IN(:ids_1, :ids_2, :ids_3);" 
+     *         $processedParams = ["ids_1"=>"1", "ids_2" => "2", "ids_3" => "3"]
+     *     Se ejecuta como:
+     *         $stmt = $this->db->getPdo()->prepare($processedSql);
+     *         $stmt->execute($processedParams);
      */
     public function fetchAllColumnSqlByParams(string $sql, int $columnIndex = 0, ?array $params = null): array
     {

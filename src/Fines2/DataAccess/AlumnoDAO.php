@@ -2,15 +2,17 @@
 
 namespace Fines2\DataAccess;
 
+use App\Context;
 use \SqlOrganize\Sql\Entity;
 use \Fines2\DataAccess\CalificacionDAO;
 use \Fines2\DataAccess\DisposicionDAO;
 use \Fines2\Model\Alumno_;
 use \Fines2\Model\Comision_;
 use \Fines2\Model\Calificacion_;
+use SqlOrganize\Sql\DataProvider;
+use SqlOrganize\Sql\Db;
 use \SqlOrganize\Sql\ModifyQueries;
-
-
+use SqlOrganize\Utils\ValueTypesUtils;
 
 class AlumnoDAO
 {
@@ -18,7 +20,7 @@ class AlumnoDAO
         $alumno = new Alumno_();
         $alumno->initByUnique(["persona"=>$persona_id]);
         $alumno->set("plan", $plan_id);
-        $modifyQueries->buildPersistSqlByStatus($alumno);
+        $modifyQueries->persistSqlByStatus($alumno);
         return $alumno;
     }
     
@@ -28,12 +30,13 @@ class AlumnoDAO
         return \App\Context::getFinesDb()->CreateDataProvider()->fetchAllColumnSqlByParams($sql, 0);
     }
 
-    public static function alumnoByNumeroDocumento($numero_documento): ?Entity {
+    public static function alumnoByNumeroDocumento($numero_documento): ?Alumno_ {
         $sql = "SELECT alumno.id
                 FROM alumno
                 INNER JOIN persona ON alumno.persona = persona.id
                 WHERE persona.numero_documento = :numero_documento";
-        return \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityBySqlId("alumno", $sql, ['numero_documento' => $numero_documento]);
+        /** @var Alumno_ */ $alumno = \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityBySqlId("alumno", $sql, ['numero_documento' => $numero_documento]);
+        return $alumno;
     }
 
     public static function ultimaComisionAlumno(string $alumno_id): ?Comision_ {
@@ -46,14 +49,15 @@ class AlumnoDAO
         AND alumno_comision.activo = 1
         ORDER BY calendario.inicio DESC LIMIT 1;
 ";
-        return \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityBySqlId("comision", $sql, ['alumno_id' => $alumno_id]);
+        /** @var ?Comision_ */ $comision = Context::getFinesDb()->CreateDataProvider()->fetchEntityBySqlId("comision", $sql, ['alumno_id' => $alumno_id]);
+        return $comision;
     }
 
     public static function reestructurarCalificacionesByAlumno(ModifyQueries $modifyQueries, Alumno_ $alumno){
         $db = \App\Context::getFinesDb();
         /** @var string[] */ $idsCalificacionesDesaprobadas = CalificacionDAO::idsCalificacionesDesaprobadasByAlumno($alumno->id);
         if(!empty($idsCalificacionesDesaprobadas)){
-            $modifyQueries->buildDeleteSqlByIds("calificacion", ...$idsCalificacionesDesaprobadas);
+            $modifyQueries->deleteSqlByIds("calificacion", ...$idsCalificacionesDesaprobadas);
         }
 
         if(!empty($alumno->plan)){
@@ -79,13 +83,34 @@ class AlumnoDAO
                     $cal->archivado = false;
                     $cal->nota_final = 0;
                     $cal->crec = 0;
-                    $modifyQueries->buildInsertSql($cal);
+                    $modifyQueries->insertSql($cal);
                 }
             }
             
                 
         }
             
+    }
+
+
+    /**
+     * @param string[] $id_comisiones
+     * @return Alumno_[]
+     */
+    public static function alumnosComisiones(array $id_comisiones): array{
+        $sql = "
+            SELECT 
+                DISTINCT alumno.id
+            FROM alumno
+            INNER JOIN persona ON (alumno.persona = persona.id)
+            INNER JOIN alumno_comision ON alumno.id = alumno_comision.alumno
+            WHERE comision IN (:id_comisiones)
+            ORDER BY persona.apellidos ASC, persona.nombres ASC;
+        ";
+
+        /** @var DataProvider */ $dp = Context::getFinesDb()->CreateDataProvider();
+
+         return $dp->fetchAllEntitiesBySqlId("alumno", $sql, ["id_comisiones"=>$id_comisiones]);
     }
 
 }

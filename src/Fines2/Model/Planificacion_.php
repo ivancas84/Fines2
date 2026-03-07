@@ -22,10 +22,11 @@ class Planificacion_ extends Planificacion
         . ($this->semestre  ?? "?");
     }
 
-    public function getTramoSiguiente(): array {
+    public function getTramoSiguiente(): ?array {
         $a = intval($this->anio);
         $s = intval($this->semestre);
         if($s == 2) {
+            if($a == 3) return null;
             $a++;
             $s = 1;
         } else {
