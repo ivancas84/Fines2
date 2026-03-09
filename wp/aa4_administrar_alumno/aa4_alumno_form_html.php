@@ -1,8 +1,8 @@
 <form id="ap4-alumno-admin" action="<?=MAIN_URL?>script/administrar_persona.php" method="POST">
-    <?php wp_html_init_form("ap3_alumno_admin", "persona_id", $persona->id); ?>
+    <input type="hidden" name="persona_id" value="<?=$persona->id ?>" />
+
     <div class="form-grid">
         <div class="form-group">
-            
             <label for="estado_inscripcion">Estado de Inscripción:</label>
             <select name="estado_inscripcion" id="estado_inscripcion">
                 <option value="">-- Seleccione --</option>

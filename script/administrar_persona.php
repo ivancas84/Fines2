@@ -7,34 +7,24 @@ require_once __DIR__ . '/../config/config.php';
 
 use App\Context;
 use Fines2\Model\Persona_;
+use SqlOrganize\Sql\Db;
 use SqlOrganize\Sql\ModifyQueries;
 use SqlOrganize\Utils\ValueTypesUtils;
 
 try {
 
-    /** @var ModifyQueries */ $modifyQueries = Context::getFinesDb()->CreateModifyQueries();
+    /** @var Db */ $db = Context::getFinesDb();
+    /** @var ModifyQueries */ $modifyQueries = $db->CreateModifyQueries();
+
+    $persona_id = $_POST["persona_id"];
     $_POST["id"] = $persona_id;
     
-    $persona = new Persona_();
-    $persona->initByUnique($_POST);
-    $persona->ssetFromArray($_POST);
-    $persona->reset();
+    $persona = $db->createEntityByUnique("persona", $_POST);
+    $persona->resetAndCheck();
 
-    if(!$persona->check())
-        throw new Exception($persona->getLogging()->__toString());
+    $message = $persona->persistByStatus($modifyQueries);
 
-    if($persona->_status == 0) {
-        $persona->update($modifyQueries);
-        $message = "Registro actualizado";  
-
-    } elseif($persona->_status < 0) {
-        $persona->insert($modifyQueries);
-        $message = "Registro insertado";  
-
-    } else {
-        $message = "Sin modificaciones";  
-    }
-
+    $modifyQueries->process();
     ValueTypesUtils::redirect($message);
 
 } catch (Exception $ex){

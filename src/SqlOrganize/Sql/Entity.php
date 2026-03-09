@@ -441,6 +441,12 @@ class Entity
         $this->resetField($idField);
     }
 
+    public function resetAndCheck(){
+        $this->reset();
+         if(!$this->check())
+            throw new Exception($this->getLogging()->__toString());
+    }
+
     
 
     /**
@@ -624,13 +630,22 @@ class Entity
         $modifyQueries->persistSql($this);
     }
 
-    public function persistByStatus(ModifyQueries $modifyQueries): void
+    /**
+     * @return string Mensaje de persistencia
+     */
+    public function persistByStatus(ModifyQueries $modifyQueries): string
     {
         if($this->_status == 0) {
             $this->update($modifyQueries);
+            return "Registro actualizado";  
+
         } elseif($this->_status < 0) {
             $this->insert($modifyQueries);
+            return "Registro insertado";  
+
         } 
+
+        return "Sin modificaciones";  
     }
 
     public function update(ModifyQueries $modifyQueries): void

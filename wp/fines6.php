@@ -45,7 +45,10 @@ function fines6_plugin_menu() {
 
     include_once plugin_dir_path(__FILE__) . 'lc3_lista_comisiones/lc3_lista_comisiones_page.php';
 
+    include_once plugin_dir_path(__FILE__) . 'aa4_administrar_alumno/aa4_page.php';
+
     include_once plugin_dir_path(__FILE__) . 'trp2_transferir_persona/trp2_page.php';
+
 
     //no se incluyen en el menu principal
     include_once plugin_dir_path(__FILE__) . 'rdd2_rindex_division_direccion/rdd2_page.php';

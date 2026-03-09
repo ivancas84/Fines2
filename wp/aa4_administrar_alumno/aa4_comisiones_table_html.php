@@ -1,7 +1,5 @@
 <h3>Comisiones</h3>
 <form method="post" action="admin-post.php">    
-    <?php wp_html_init_form("ap3_comisiones_update", "persona_id", $persona->id); ?>
-
     <table border="1" cellpadding="5" cellspacing="0">
         <thead>
             <tr>
@@ -12,7 +10,6 @@
                 <th>Estado</th>
                 <th>Activo</th>
                 <th>Opciones</th>
-
             </tr>
         </thead>
         <tbody>

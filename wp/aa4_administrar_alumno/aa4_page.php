@@ -1,14 +1,20 @@
 <?php
 
+use App\Context;
+use Fines2\DataAccess\AlumnoDAO;
+use Fines2\DataAccess\CalificacionDAO;
 use Fines2\Model\Alumno_;
+use Fines2\Model\AlumnoComision_;
+use Fines2\Model\Calificacion_;
 use Fines2\Model\Persona_;
+use SqlOrganize\Sql\Db;
 
 add_submenu_page(
-    null, 
-    'Administrar Persona',
-    'Administrar Persona', 
+    FINES_PLUGIN, 
+    'Administrar Alumno',
+    'Administrar Alumno', 
     'edit_posts', 
-    'fines-plugin-ap4', 
+    FINES_PLUGIN.'-aa4', 
     'ap4_page'
 );
 
@@ -32,10 +38,11 @@ function ap4_page() {
 function ap4_init_Persona(): Persona_{
     $persona_id = isset($_GET['persona_id']) ? $_GET['persona_id'] : null;
 
-    /** @var Persona_ */ $persona = new Persona_();
-    if(!empty($persona_id)) $persona->initById($persona_id);
+    /** @var Db */ $db = Context::getFinesDb();
+    if(empty($persona_id)) $persona = $db->createEntity("persona");
+    else $persona = $db->createEntityById("persona", $persona_id);
 
-    include plugin_dir_path(__FILE__) . 'ap4_persona_form_html.php';
+    include plugin_dir_path(__FILE__) . 'aa4_persona_form_html.php';
 
     return $persona;
 }
@@ -47,10 +54,10 @@ function ap4_init_Alumno(Persona_ $persona): Alumno_{
     $estados_inscripcion = $dataProvider->fetchAllColumnByParams("alumno", "estado_inscripcion", [], ["estado_inscripcion"=>"ASC"]);
     $planes = $dataProvider->fetchAllEntitiesByParams("plan");
 
-    $alumno = new Alumno_();
-    $alumno->initByUnique(["persona" => $persona->id]);
+    /** @var Db */ $db = Context::getFinesDb();
+    /** @var Alumno_ */ $alumno = $db->createEntityByUnique("persona", ["persona" => $persona->id]);
 
-    include plugin_dir_path(__FILE__) . 'ap4_alumno_form_html.php';
+    include plugin_dir_path(__FILE__) . 'aa4_alumno_form_html.php';
     return $alumno;
 }
 
@@ -61,7 +68,7 @@ function ap4_init_comisiones(Alumno_ $alumno, Persona_ $persona){
     /** @var AlumnoComision_[] */ $alumno_comisiones = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["alumno" => $alumno->id], ["id" => "DESC"]);
 
     if ($alumno_comisiones) {
-        include plugin_dir_path(__FILE__) . 'ap4_comisiones_table_html.php';
+        include plugin_dir_path(__FILE__) . 'aa4_comisiones_table_html.php';
     } else {
         echo "<p>No hay comisiones asignadas.</p>";
     }
@@ -75,19 +82,19 @@ function ap4_init_Calificaciones(Alumno_ $alumno, Persona_ $persona = null){
     $tramo = $alumno->getTramoIngresoShort();
 
     if(!empty($alumno->plan)){
-        $calificaciones = CalificacionDAO::calificacionesByAlumnoPlanTramo($alumno->id, $alumno->plan, $tramo);
+        /** @var Calificacion_[] */ $calificaciones = CalificacionDAO::calificacionesByAlumnoPlanTramo($alumno->id, $alumno->plan, $tramo);
         if ($calificaciones) {
             $titulo_calificaciones = " del plan";
-            include plugin_dir_path(__FILE__) . 'ap4_calificaciones_table_html.php';
+            include plugin_dir_path(__FILE__) . 'aa4_calificaciones_table_html.php';
         } else {
             echo "<p>No se encontraron calificaciones para este alumno.</p>";
         }
         
         
-        $calificaciones = CalificacionDAO::calificacionesAprobadasByAlumnoNotInPlan($alumno->id, $alumno->plan);
+        /** @var Calificacion_[] */$calificaciones = CalificacionDAO::calificacionesAprobadasByAlumnoNotInPlan($alumno->id, $alumno->plan);
         if ($calificaciones) {
-            $titulo_calificaciones = "Aprobadas de otro plan";
-            include plugin_dir_path(__FILE__) . 'ap4_calificaciones_table_html.php';
+            $titulo_calificaciones = " de otro plan";
+            include plugin_dir_path(__FILE__) . 'aa4_calificaciones_table_html.php';
         } else {
              echo "<p>No se encontraron calificaciones adicionales para este alumno.</p>";
         }    

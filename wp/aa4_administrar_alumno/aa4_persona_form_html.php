@@ -1,8 +1,6 @@
 <h1>Informe <?=$persona->getLabel() ?></h1>
 
 <form  method="POST" action="<?=MAIN_URL?>script/administrar_persona.php">
-    <?php wp_html_init_form("ap3_persona_admin", "persona_id", $persona->id); ?>
-
     <input type="hidden" name="persona_id" value="<?=$persona->id?>" />
     <div class="form-grid">
         <div class="form-group">

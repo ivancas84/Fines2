@@ -5,6 +5,8 @@ namespace SqlOrganize\Sql;
 use PDO;
 use PDOException;
 use DateTimeInterface;
+use Exception;
+
 /**
  * Mapeo de la base de datos. Contenedor principal de SqlOrganize.
  * 
@@ -317,5 +319,38 @@ abstract class Db
         }
         
         return $response;
+    }
+
+    public function createEntity(string $entityName): Entity{
+        $className = $this->GetEntityMetadata($entityName)->getQualifiedClassName();
+        /** @var Entity */ $obj = new $className;
+        $obj->_status = -1;
+        return $obj;
+    }
+
+    public function createEntityById(string $entityName, mixed $id): Entity{
+        
+        $fetched = $this->createDataProvider()->fetchEntityByParams($entityName, ["id" => $id]);
+
+        if (!$fetched) {
+            throw new Exception("no se encontro registro para $entityName con el id $id");
+        } else {
+            $fetched->_status = 1;
+            $fetched->_changeLog = [];
+            return $fetched;
+        }
+    }
+
+    public function createEntityByUnique(string $entityName, array $param): Entity {
+        $obj = $this->createDataProvider()->fetchEntityByUnique($entityName, $param);
+        if ($obj) {
+            $obj->_status = 1;
+            $obj->_changeLog = [];
+            $obj->ssetFromArray($param);
+        } else {
+            $obj = $this->createEntity($entityName);
+            $obj->_status = -1;
+        }
+        return $obj;
     }
 }

@@ -1,8 +1,14 @@
+<?
+
+use Fines2\Model\Calificacion_;
+
+/**
+ * @var array<int, Calificacion_> $calificaciones
+ */
+?>
 <h3>Calificaciones <?=$titulo_calificaciones?></h3>
 <p>Los cambios sólo tendrán efecto en las calificaciones aprobadas.</p>
-<form method="post" action="admin-post.php">    
-    <?php wp_html_init_form("ap3_calificaciones_update", "persona_id", $persona->id); ?>
-
+<form method="post" action="<?=MAIN_URL?>script/actualizar_calificaciones.php">    
     <table border="1" cellpadding="5" cellspacing="0">
         <thead>
             <tr>
@@ -18,7 +24,7 @@
             </tr>
         </thead>
         <tbody>
-        <?php for ($i = 0; $i < count($calificaciones); $i++):  $cal = $calificaciones[$i]; ?>
+        <?php for ($i = 0; $i < count($calificaciones); $i++): $cal = $calificaciones[$i]; ?>
             <tr style="<?= $cal->cssBackgroundColor(); ?>">
                 <td style="display:none;">
                     <input type="hidden" name="calificacion_id<?=$i?>" value="<?= esc_attr($cal->id) ?>">
