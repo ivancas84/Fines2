@@ -55,7 +55,7 @@ function ap4_init_Alumno(Persona_ $persona): Alumno_{
     $planes = $dataProvider->fetchAllEntitiesByParams("plan");
 
     /** @var Db */ $db = Context::getFinesDb();
-    /** @var Alumno_ */ $alumno = $db->createEntityByUnique("persona", ["persona" => $persona->id]);
+    /** @var Alumno_ */ $alumno = $db->createEntityByUnique("alumno", ["persona" => $persona->id]);
 
     include plugin_dir_path(__FILE__) . 'aa4_alumno_form_html.php';
     return $alumno;

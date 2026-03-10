@@ -84,7 +84,7 @@ $semClass = ($disp->planificacion_->semestre == 1) ? "sem1" : "sem2";
 <tr>
 
 <td>
-<?= htmlspecialchars($alumno->persona_->getLabel()) ?>
+<a href="<?=  admin_url('admin.php?page='.FINES_PLUGIN.'-aa4&persona_id=' . $alumno->persona)?>"><?= htmlspecialchars($alumno->persona_->getLabel()) ?></a>
 </td>
 
 <?php foreach ($disposicionesPorId as $dispId => $disp): ?>
