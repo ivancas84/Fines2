@@ -4,27 +4,10 @@ namespace Fines2\DataAccess;
 
 use App\Context;
 use Fines2\Model\AlumnoComision_;
-use SqlOrganize\Sql\Db;
-use SqlOrganize\Sql\ModifyQueries;
+use PDO;
 
 class AlumnoComisionDAO
 {
-
-    public static function createAndPersist(ModifyQueries $modifyQueries, string $alumno_id, string $comision_id, ?string $observaciones): AlumnoComision_{
-
-        /** @var Db */ $db = Context::getFinesDb();
-        /** @var AlumnoComision_ */ $alumnoComision = $db->CreateDataProvider()->fetchEntityByParams("alumno_comision", ["alumno" => $alumno_id, "comision" => $comision_id]); 
-        if($alumnoComision == null ) {
-            $alumnoComision = new AlumnoComision_();
-            $alumnoComision->_status = -1; //marco para insertar
-            $alumnoComision->set("alumno", $alumno_id);
-            $alumnoComision->set("comision", $comision_id);
-            $alumnoComision->set("estado", ($modifyQueries->getDetailAction("alumno", $alumno_id) == "insert") ? "Ingresante" : "Incorporado");
-            $alumnoComision->set("observaciones", $observaciones);
-            $modifyQueries->buildInsertSql($alumnoComision);
-        }
-        return $alumnoComision;
-    }
 
     /**
      * Ultima comisión activa de un alumno
@@ -39,7 +22,50 @@ class AlumnoComisionDAO
             AND alumno_comision.activo = true
             ORDER BY calendario.anio DESC, calendario.semestre DESC;
         ";
-        return \App\Context::getFinesDb()->CreateDataProvider()->fetchEntityBySqlId("alumno_comision", $sql, ['alumno' => $alumno_id]);
+        return Context::getFinesDb()->CreateDataProvider()->fetchEntityBySqlId("alumno_comision", $sql, ['alumno' => $alumno_id]);
     }
+
+    /**
+     * @return Array
+     * (
+     *     [12] => Array
+     *         (
+     *             [cantidad_alumnos] => 30
+     *             [cantidad_alumnos_activos] => 25
+     *         )
+     * 
+     *     [15] => Array
+     *         (
+     *             [cantidad_alumnos] => 28
+     *             [cantidad_alumnos_activos] => 20
+     *         )
+     * )
+     */
+    public static function cantidadAlumnosComisionCalendario(mixed $calendario_id): array{
+        $sql = "
+            SELECT 
+            alumno_comision.comision,
+            COUNT(alumno_comision.id) AS cantidad_alumnos,
+            SUM(alumno_comision.activo = 1) AS cantidad_alumnos_activos
+            FROM alumno_comision
+            INNER JOIN comision ON (alumno_comision.comision = comision.id)
+            WHERE comision.calendario = :calendario
+            GROUP BY alumno_comision.comision;
+        ";
+        $stmt = Context::getFinesDb()->getPdo()->prepare($sql);
+        $stmt->execute(['calendario' => $calendario_id]);
+
+        $result = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[$row['comision']] = [
+                'cantidad_alumnos' => $row['cantidad_alumnos'],
+                'cantidad_alumnos_activos' => $row['cantidad_alumnos_activos']
+            ];
+        }
+
+        return $result;
+    }
+
 
 }

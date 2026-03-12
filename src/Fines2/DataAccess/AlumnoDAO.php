@@ -16,14 +16,7 @@ use SqlOrganize\Utils\ValueTypesUtils;
 
 class AlumnoDAO
 {
-    public static function createAndPersist(ModifyQueries $modifyQueries, string $persona_id, ?string $plan_id): Alumno_{
-        $alumno = new Alumno_();
-        $alumno->initByUnique(["persona"=>$persona_id]);
-        $alumno->set("plan", $plan_id);
-        $modifyQueries->persistSqlByStatus($alumno);
-        return $alumno;
-    }
-    
+
     public static function estados_inscripcion(): array {
         $sql = "SELECT DISTINCT estado_inscripcion FROM alumno ORDER BY estado_inscripcion";
         

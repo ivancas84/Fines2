@@ -1,7 +1,6 @@
 <?php
 
-
-
+use Fines2\DataAccess\AlumnoComisionDAO;
 use Fines2\DataAccess\DesignacionDAO;
 use SqlOrganize\Utils\ValueTypesUtils;
 
@@ -38,6 +37,7 @@ function lc3_lista_comisiones_page() {
     include plugin_dir_path(__FILE__) . 'lc3_formulario_busqueda_html.php';
 
     $comisiones = $dataProvider->fetchAllEntitiesByParams("comision", $params, ["pfid" => "ASC"]);
+    $cantidadAlumnos = AlumnoComisionDAO::cantidadAlumnosComisionCalendario($selected_calendario);
     $ids_sedes = ValueTypesUtils::arrayOfName($comisiones, "sede");
     $referentesLabel = DesignacionDAO::referentesLabelByIdSedes($ids_sedes);
     

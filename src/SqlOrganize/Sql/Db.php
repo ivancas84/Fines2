@@ -321,10 +321,12 @@ abstract class Db
         return $response;
     }
 
-    public function createEntity(string $entityName): Entity{
+    public function createEntity(string $entityName, array $param = []): Entity{
         $className = $this->GetEntityMetadata($entityName)->getQualifiedClassName();
         /** @var Entity */ $obj = new $className;
+        $obj->ssetFromArray($param);
         $obj->_status = -1;
+        $obj->_changeLog = [];
         return $obj;
     }
 

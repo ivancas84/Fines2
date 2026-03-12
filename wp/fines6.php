@@ -53,6 +53,9 @@ function fines6_plugin_menu() {
     //no se incluyen en el menu principal
     include_once plugin_dir_path(__FILE__) . 'rdd2_rindex_division_direccion/rdd2_page.php';
 
+    include_once plugin_dir_path(__FILE__) . 'cac3_cargar_alumnos_comision/cac3_page.php';
+
+
   }
 
 

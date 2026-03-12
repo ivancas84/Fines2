@@ -9,6 +9,7 @@
             <th>Autorizada</th>
             <th>Apertura</th>
             <th>Turno</th>
+            <th>Cantidad Alumnos</th>
             <th>Siguiente</th>
             <th>Referentes</th>
             <th>Lista de Alumnos</th>
@@ -17,7 +18,6 @@
     <tbody>
         <? foreach ($comisiones as $comision): ?>
             <? $detalle_comision_url = admin_url('admin.php?page=fines6-plugin-ac3&comision_id=' . $comision->id); ?>
-            <? $cargar_alumnos_url = admin_url('admin.php?page=fines-plugin-cac2&comision_id=' . $comision->id); ?>
             <? $lista_alumnos_url = admin_url('admin.php?page=fines-plugin-lista-alumnos&comision_id=' . $comision->id); ?>
             <? $rindex_url = admin_url('admin.php?page=fines6-plugin-rdd2&comision_pfid=' . $comision->pfid); ?>
             <? $detalle_division_url = admin_url('admin.php?page=fines-plugin-detalle-persona-division-page&comision_pfid=' . $comision->pfid); ?>
@@ -29,11 +29,16 @@
                 <td><?= esc_html(boolToSiNo($comision->autorizada)); ?></td>
                 <td><?= esc_html(boolToSiNo($comision->apertura)); ?></td>
                 <td><?= esc_html($comision->turno); ?></td>
+                <td><?= 
+                    (($cantidadAlumnos[$comision->id] ?? [])['cantidad_alumnos'] ?? 0) .
+                    '/' .
+                    (($cantidadAlumnos[$comision->id] ?? [])['cantidad_alumnos_activos'] ?? 0)
+                ?></td>
                 <td><?= esc_html($comision->comision_siguiente); ?></td>
                 <td><?= $referentesLabel[$comision->sede] ?? 'Sin referentes' ?></td>
+
                 <td>
                     <a href="<?= esc_url($detalle_comision_url); ?>" title="Detalle" ><button type="button"><span  class="dashicons dashicons-edit"></span></button> </a>
-                    <a href="<?= esc_url($cargar_alumnos_url); ?>" title="Cargar" ><button type="button"><span  class="dashicons dashicons-buddicons-buddypress-logo"></span></button></a> 
                     <a href="<?= esc_url($rindex_url); ?>" title="Rindex" >
                         <button type="button">
                             <span  class="dashicons dashicons-media-spreadsheet"></span>
@@ -42,6 +47,11 @@
                     <a href="<?= esc_url($lista_alumnos_url); ?>"  title="Alumnos Comisión">
                         <button type="button">
                             <span  class="dashicons dashicons-editor-table"></span>
+                        </button>
+                    </a>
+                    <a href="<?= esc_url(admin_url('admin.php?page=fines6-plugin-cac3&comision_id=' . $comision->id)) ?>"  title="Cargar alumnos Comisión">
+                        <button type="button">
+                            <span  class="dashicons dashicons-groups"></span>
                         </button>
                     </a>
                     <form action="/v6/script/generar_comision_siguiente.php" method="POST" onsubmit="return confirm('Are you sure?');" style="display:inline;">

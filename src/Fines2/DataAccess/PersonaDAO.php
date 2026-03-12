@@ -7,21 +7,26 @@ use SqlOrganize\Sql\DbMy;
 use SqlOrganize\Sql\ModifyQueries;
 use Exception;
 use Fines2\Model\Persona_;
+use SqlOrganize\Sql\Db;
+use SqlOrganize\Sql\Entity;
 
 class PersonaDAO
 {
 
-    public static function createAndPersist(ModifyQueries $modifyQueries, array $data): Persona_{
-        /** @var Persona_ */ $persona = Context::getFinesDb()->createEntityByUnique("persona", $data);
-        if ($persona->_status === 0){
-            if(!Persona_::nombreParecido($persona->toArray(), $data))
-                throw new Exception("El nombre registrado de la persona es diferente " . $persona->getLabel());
-                $modifyQueries->updateSql($persona);
-        }
-        else if ($persona->_status < 0)
-            $modifyQueries->insertSql($persona);
+    public static function createPersonaByUnique(array $param): Entity {
+        /** @var Db */ $db = Context::getFinesDb();
 
-        return $persona;
+        $obj = $db->createDataProvider()->fetchEntityByUnique("persona", $param);
+        if ($obj) {
+            if(!Persona_::nombreParecido($obj->toArray(), $param)) throw new Exception("Los nombres no son parecidos al registro almacenado");
+            $obj->_status = 1;
+            $obj->_changeLog = [];
+            $obj->ssetFromArray($param);
+        } else {
+            $obj = $db->createEntity("persona");
+            $obj->_status = -1;
+        }
+        return $obj;
     }
 
     public static function searchPersonas($search): array{
