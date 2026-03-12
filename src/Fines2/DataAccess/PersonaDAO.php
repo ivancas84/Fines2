@@ -2,6 +2,7 @@
 
 namespace Fines2\DataAccess;
 
+use App\Context;
 use SqlOrganize\Sql\DbMy;
 use SqlOrganize\Sql\ModifyQueries;
 use Exception;
@@ -11,8 +12,7 @@ class PersonaDAO
 {
 
     public static function createAndPersist(ModifyQueries $modifyQueries, array $data): Persona_{
-        $persona = new Persona_();
-        $persona->initByUnique($data);
+        /** @var Persona_ */ $persona = Context::getFinesDb()->createEntityByUnique("persona", $data);
         if ($persona->_status === 0){
             if(!Persona_::nombreParecido($persona->toArray(), $data))
                 throw new Exception("El nombre registrado de la persona es diferente " . $persona->getLabel());

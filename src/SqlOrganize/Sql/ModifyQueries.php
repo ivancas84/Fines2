@@ -13,7 +13,6 @@ abstract class ModifyQueries
     private $sql = "";
     private $parameterCounter = 0;
 
-
     public function getCounter(){
         return $this->parameterCounter;
     }
