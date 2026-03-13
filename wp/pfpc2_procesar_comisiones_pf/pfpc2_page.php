@@ -3,6 +3,7 @@
 use App\Context;
 use Fines2\DataAccess\CursoDAO;
 use Fines2\DataAccess\TomaDAO;
+use Fines2\Model\Persona_;
 use Fines2\Model\Toma_;
 use SqlOrganize\Sql\DataProvider;
 use SqlOrganize\Sql\Db;
@@ -45,7 +46,7 @@ function pfpc2_page() {
     $id_curso = ""; //coloco para que no tire error
 
     foreach (array_filter(explode(PHP_EOL, $dataText)) as $line) {
-        
+
         if ($procesar_docente) {
             // Procesar docente
             if (strpos($line, "*") !== false) {
@@ -60,6 +61,7 @@ function pfpc2_page() {
                 
                 continue;
             } else {
+
                 $procesar_docente = false;
 
                 $line = str_replace("--", "-", $line); //se han encontrado cuils mal escritos con doble guion
@@ -70,22 +72,23 @@ function pfpc2_page() {
                     $cuil = $matches[0];
                     $cuilParts = explode("-", $cuil);
 
-                    /** @var \Fines2\Persona_ */ $persona = $dataProvider->fetchEntityByUnique("persona", ["numero_documento"=>$cuilParts[1]]);
+                    /** @var Persona_ */ $persona = $dataProvider->fetchEntityByUnique("persona", ["numero_documento"=>$cuilParts[1]]);
 
                     if (empty($persona)) {
                         echo "-- No existe docente " . $cuil . "<br/>";
                         continue;
                     }
 
+                    /** @var ModifyQueries */ $modifyQueries = $db->CreateModifyQueries();
                     $persona->cuil = implode("", $cuilParts);
-                    $persona->updateField("cuil");
-                    echo "-- CUIL actualizado " . $cuil . "<br/>";
+                    $persona->updateField($modifyQueries,  "cuil");
+                    $modifyQueries->process();
+                    echo "-- CUIL actualizado " . $persona->cuil . "<br/>";
 
 
                     /** @var Toma_ */ $toma = TomaDAO::TomaAprobadaOPendiente($id_curso);
                     if(empty($toma)){
                         try {
-                            /** @var ModifyQueries */ $modifyQueries = $db->CreateModifyQueries();
                             $toma = new Toma_();
                             $toma->docente = $persona->id;
                             $toma->curso = $id_curso;
@@ -93,6 +96,7 @@ function pfpc2_page() {
                             $toma->estado = "Pendiente";
                             $toma->estado_contralor = "Pasar";
                             $toma->tipo_movimiento = "AI";
+                            /** @var ModifyQueries */ $modifyQueries = $db->CreateModifyQueries();
                             $toma->insert($modifyQueries);
                             $modifyQueries->process();
                             echo "-- Toma agregada <br/>";
