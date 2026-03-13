@@ -4,6 +4,7 @@ use Fines2\DataAccess\CursoDAO;
 use Fines2\DataAccess\PersonaDAO;
 use Fines2\Model\Comision_;
 use Fines2\Model\Curso_;
+use Fines2\Model\Persona_;
 use Fines2\Model\Toma_;
 use ProgramaFines\Utils\PfUtils;
 use SqlOrganize\Sql\ModifyQueries;
@@ -58,16 +59,19 @@ function pdpf3_page() {
             }
 
             /** @var ModifyQueries */ $modifyQueries = $db->CreateModifyQueries();
-            $persona = PersonaDAO::createAndPersist($modifyQueries, $result[$i]);
-            if($persona->_status == -1){
-                if($c462) echo "--Docente insertado<br>";
-                else $docentesOtrosCensInsertados;
-            } else if($persona->_status == 0){
-                if($c462) echo "--Docente modificado<br>";
-                else $docentesOtrosCensModificados++;
-            } else {
+            /** @var Persona_ */ $persona = PersonaDAO::createPersonaByUnique($result[$i]);
+            $modifyQueries->persistSqlByStatus($persona);
+            if ($persona->_status === 1) {
                 if($c462) echo "--Docente existente<br>";
                 else $docentesOtrosCensExistentes++;
+            } else if ($persona->_status === 0 ){
+                if($c462) echo "--Docente modificado<br>";
+                else $docentesOtrosCensModificados++;
+                $modifyQueries->updateSql($persona);
+            } else {
+                if($c462) echo "--Docente insertado<br>";
+                else $docentesOtrosCensInsertados;
+                $modifyQueries->insertSql($persona);
             }
 
             if($c462){ 

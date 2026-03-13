@@ -18,7 +18,7 @@ add_submenu_page(
     'Cargar Alumnos Comisión', 
     'edit_posts', 
     FINES_PLUGIN.'-cac3', 
-    'cac2_page'
+    'cac3_page'
 );
 
 function cac3_page() {
@@ -35,7 +35,7 @@ function cac3_page() {
     echo "<h1>Cargar alumnos en comisión " . $comision->getLabel() . "</h1>";
 
     if (!isset($_POST['submit']) || empty($_POST['data'])) {
-        include plugin_dir_path(__FILE__) . 'cac2_form.html';
+        include plugin_dir_path(__FILE__) . 'cac3_form_html.php';
         return;
     }
 
@@ -46,7 +46,6 @@ function cac3_page() {
     
     $i = 0;
 
-    $existenDatos = false;
     foreach($alumnosData as $ad){
         try {
 
@@ -70,46 +69,94 @@ function cac3_page() {
 
             echo $ad["apellidos"] . " " . $ad["nombres"] . " " . $ad["numero_documento"] . "<br>";
 
-            /** @var Persona_ */ $persona = PersonaDAO::createAndPersist($modifyQueries, $ad);
+            /** @var Persona_ */ $persona = PersonaDAO::createPersonaByUnique($ad);
+            $modifyQueries->persistSqlByStatus($persona);
+            if ($persona->_status === 1) {
+                echo "Persona existente<br>";
+            } else if ($persona->_status === 0 ){
+                echo "Persona actualizada<br>";
+                $modifyQueries->updateSql($persona);
+            } else {
+                echo "Persona insertada<br>";
+                $modifyQueries->insertSql($persona);
+            }
 
-            /** @var Alumno_ */ $alumno = AlumnoDAO::createAndPersist($modifyQueries, $persona->id, $comision->planificacion_->plan); 
-            
-            /** @var AlumnoComision_ */ $alumnoComision = AlumnoComisionDAO::createAndPersist($modifyQueries, $alumno->id, $comision->id, "Importado desde lista de alumnos");
-                
+
+            /** @var Alumno_ */ $alumno = $db->createEntityByUnique("alumno", ["persona" => $persona->id, "plan" => $comision->planificacion_->plan]);
+
             if($alumno->tiene_certificado && !ValueTypesUtils::toBool($ad["tiene_certificado"])){
-                echo "ERROR: En el sistema tiene certificado pero en la hoja de calculo no";
+                echo "ERROR: En el sistema tiene certificado pero en la hoja de calculo no.<br>";
             }
             else if(!$alumno->tiene_certificado && ValueTypesUtils::toBool($ad["tiene_certificado"])){
-                $modifyQueries->updateKeyValueSqlById("alumno", "tiene_certificado", true, $alumno->id);
+                echo "Se ha cargado el valor de tiene certificado.<br>";
+                $alumno->tiene_certificado = true;
             }
 
             if($alumno->tiene_constancia && !ValueTypesUtils::toBool($ad["tiene_constancia"])){
-                echo "ERROR: En el sistema tiene constancia pero en la hoja de calculo no";
+                echo "ERROR: En el sistema tiene constancia pero en la hoja de calculo no.<br>";
             }
             else if(!$alumno->tiene_constancia && ValueTypesUtils::toBool($ad["tiene_constancia"])){
-                $modifyQueries->updateKeyValueSqlById("alumno", "tiene_constancia", true, $alumno->id);
+                echo "Se ha cargado el valor de tiene contancia.<br>";
+                $alumno->tiene_constancia = true;
             }
 
             if($alumno->tiene_dni && !ValueTypesUtils::toBool($ad["tiene_dni"])){
-                echo "ERROR: En el sistema tiene constancia pero en la hoja de calculo no";
+                echo "ERROR: En el sistema tiene constancia pero en la hoja de calculo no.<br>";
             }
             else if(!$alumno->tiene_dni && ValueTypesUtils::toBool($ad["tiene_dni"])){
-                $modifyQueries->updateKeyValueSqlById("alumno", "tiene_dni", true, $alumno->id);
+                echo "Se ha cargado el valor de tiene dni.<br>";
+                $alumno->tiene_dni = true;
             }
 
             if($alumno->tiene_dni && !ValueTypesUtils::toBool($ad["tiene_partida"])){
-                echo "ERROR: En el sistema tiene partida pero en la hoja de calculo no";
+                echo "ERROR: En el sistema tiene partida pero en la hoja de calculo no.<br>";
             }
             else if(!$alumno->tiene_partida && ValueTypesUtils::toBool($ad["tiene_partida"])){
-                $modifyQueries->updateKeyValueSqlById("alumno", "tiene_partida", true, $alumno->id);
+                echo "Se ha cargado el valor de tiene partida.<br>";
+                $alumno->tiene_partida = true;
             }
 
             if($alumno->tiene_dni && !ValueTypesUtils::toBool($ad["previas_completas"])){
-                echo "ERROR: En el sistema previas completas pero en la hoja de calculo no";
+                echo "ERROR: En el sistema previas completas pero en la hoja de calculo no.<br>";
             }
             elseif(!$alumno->previas_completas && ValueTypesUtils::toBool($ad["previas_completas"])){
-                $modifyQueries->updateKeyValueSqlById("alumno", "previas_completas", true, $alumno->id);
+                echo "Se ha cargado el valor de previas completas.<br>";
+                $alumno->previas_completas = true;
             }
+            
+            if ($alumno->_status === 1) {
+                echo "Alumno existente<br>";
+            } else if ($alumno->_status === 0 ){
+                echo "Alumno actualizado<br>";
+                $modifyQueries->updateSql($alumno);
+            } else {
+                echo "Alumno insertado<br>";
+                $modifyQueries->insertSql($alumno);
+            }
+
+            
+
+
+            $alumnoComisionData = ["alumno" => $alumno->id, "comision" => $comision->id, "observaciones"=> "Importado de lista de alumnos"];
+            if($alumno->_status == -1){
+                /** @var AlumnoComision_ */ $alumnoComision = $db->createEntity("alumno_comision", $alumnoComisionData);
+                $alumnoComision->estado = "Ingresante";            
+            } else {
+                /** @var AlumnoComision_ */ $alumnoComision = $db->createEntityByUnique("alumno_comision", ["persona" => $persona->id, "plan" => $comision->planificacion_->plan]);
+                if($alumnoComision->_status == -1)
+                    $alumnoComision->estado = "Incorporado";
+            }
+            
+            if ($alumnoComision->_status === 1) {
+                echo "Alumno en comisión existente<br>";
+            } else if ($alumnoComision->_status === 0 ){
+                echo "Alumno en comisión actualizado<br>";
+                $modifyQueries->updateSql($alumnoComision);
+            } else {
+                echo "Alumno en comisión insertado<br>";
+                $modifyQueries->insertSql($alumnoComision);
+            }
+
 
             $modifyQueries->process();
 
@@ -118,17 +165,9 @@ function cac3_page() {
             continue;
         }
         
-        echo "<br><br>";
+        echo "Finalizado<br>";
 
-        if(!empty($modifyQueries->detail)) {
-            $existenDatos = true;
-        }
     }
 
-    if($existenDatos){
-        include plugin_dir_path(__FILE__) . 'cac3_form_process_html.php';
-    } else {
-        echo "No existen datos para registrar";
-    }
 
 }

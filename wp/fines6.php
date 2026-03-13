@@ -56,6 +56,8 @@ function fines6_plugin_menu() {
     include_once plugin_dir_path(__FILE__) . 'rdd2_rindex_division_direccion/rdd2_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'pfpd3_procesar_docentes_pf/pfpd3_page.php';
+    
+    include_once plugin_dir_path(__FILE__) . 'cac3_cargar_alumnos_comision/cac3_page.php';
 
   }
 
