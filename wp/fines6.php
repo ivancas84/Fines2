@@ -17,6 +17,14 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+function register_fines6_shortcodes() {
+  add_shortcode('fines_toma_posesion', 'tp2_shortcode');
+}
+
+add_action('init', 'register_fines6_shortcodes');
+include_once plugin_dir_path(__FILE__) . 'tp2_toma_posesion/tp2_shortcode.php';
+
+
 add_action('admin_menu', 'fines6_plugin_menu'); //function fines_plugin_menu to display the menu
 
 // Remove the WordPress admin bar
