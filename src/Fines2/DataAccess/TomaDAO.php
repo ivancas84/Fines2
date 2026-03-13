@@ -2,6 +2,7 @@
 
 namespace Fines2\DataAccess;
 
+use Fines2\Model\Toma_;
 use SqlOrganize\Sql\DbMy;
 use SqlOrganize\Sql\Entity;
 
@@ -125,7 +126,8 @@ class TomaDAO
             AND curso.id = :curso_id
         ";
 
-        return $dataProvider->fetchEntityBySqlId("toma", $sql, ["curso_id" => $curso_id]);
+        /** @var Toma_ */ $toma = $dataProvider->fetchEntityBySqlId("toma", $sql, ["curso_id" => $curso_id]);
+        return $toma;
     }
 
     public static function TomasActivasByCursos(string ...$ids_cursos): array {
@@ -162,8 +164,7 @@ class TomaDAO
         return $dataProvider->fetchAllEntitiesBySqlId("toma", $sql, ["ids_cursos" => $ids_cursos]);
     }
 
-
-    public static function TomaAprobadaOPendiente(string $id_curso): ?Entity {
+    public static function TomaAprobadaOPendiente(string $id_curso): ?Toma_ {
          $db = \App\Context::getFinesDb();
 
         $dataProvider = $db->CreateDataProvider();
@@ -175,7 +176,8 @@ class TomaDAO
             WHERE (toma.estado = 'Aprobada' OR toma.estado = 'Pendiente') 
             AND curso.id = (:id)
         ";
-        return $dataProvider->fetchEntityBySqlId("toma", $sql, ["id" => $id_curso]);
+        /** @var Toma_ */ $toma = $dataProvider->fetchEntityBySqlId("toma", $sql, ["id" => $id_curso]);
+        return $toma;
     }
 
     public static function TomasContralorByCalendario($calendario): array {
