@@ -7,11 +7,12 @@
 
     "autoload": {
         "psr-4": {
-        "App\\": "src/",
-        "Fines2\\": "src/Fines2/",
-        "Pedidos\\": "src/Pedidos/",
-        "SqlOrganize\\": "src/SqlOrganize/",
-        "SqlOrganizeMy\\": "src/SqlOrganizeMy/"
+            "App\\": "src/",
+            "Fines2\\": "src/Fines2/",
+            "Pedidos\\": "src/Pedidos/",
+            "SqlOrganize\\": "src/SqlOrganize/",
+            "SqlOrganizeMy\\": "src/SqlOrganizeMy/",
+            "ProgramaFines\\": "src/ProgramaFines/"
         }
     }
 }

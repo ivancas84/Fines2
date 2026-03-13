@@ -10,6 +10,7 @@ return array(
     'chillerlan\\QRCode\\' => array($vendorDir . '/chillerlan/php-qrcode/src'),
     'SqlOrganize\\' => array($baseDir . '/src/SqlOrganize'),
     'SqlOrganizeMy\\' => array($baseDir . '/src/SqlOrganizeMy'),
+    'ProgramaFines\\' => array($baseDir . '/src/ProgramaFines'),
     'Pedidos\\' => array($baseDir . '/src/Pedidos'),
     'PHPMailer\\PHPMailer\\' => array($vendorDir . '/phpmailer/phpmailer/src'),
     'Fines2\\' => array($baseDir . '/src/Fines2'),

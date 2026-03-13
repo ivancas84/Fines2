@@ -9,7 +9,7 @@ use SqlOrganize\Sql\DataProvider;
 use SqlOrganize\Sql\ModifyQueries;
 
 add_submenu_page(
-    FINES_PLUGIN, 
+    null, 
     'Transferir Persona',
     'Transferir Persona', 
     'edit_posts', 
