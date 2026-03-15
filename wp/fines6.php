@@ -17,6 +17,14 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 
+function register_fines6_shortcodes() {
+  add_shortcode('fines_toma_posesion', 'tp2_shortcode');
+}
+
+add_action('init', 'register_fines6_shortcodes');
+include_once plugin_dir_path(__FILE__) . 'tp2_toma_posesion/tp2_shortcode.php';
+
+
 add_action('admin_menu', 'fines6_plugin_menu'); //function fines_plugin_menu to display the menu
 
 // Remove the WordPress admin bar
@@ -41,9 +49,9 @@ function fines6_plugin_menu() {
     );
 
     //se incluyen en el menu principal
-    include_once plugin_dir_path(__FILE__) . 'ac3_administrar_comision/ac3_administrar_comision_page.php';
-
     include_once plugin_dir_path(__FILE__) . 'lc3_lista_comisiones/lc3_lista_comisiones_page.php';
+
+    include_once plugin_dir_path(__FILE__) . 'ac3_administrar_comision/ac3_administrar_comision_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'aa4_administrar_alumno/aa4_page.php';
 
@@ -55,8 +63,10 @@ function fines6_plugin_menu() {
 
     include_once plugin_dir_path(__FILE__) . 'rdd2_rindex_division_direccion/rdd2_page.php';
 
-    include_once plugin_dir_path(__FILE__) . 'pfpd3_procesar_docentes_pf/pfpd3_page.php';
+    include_once plugin_dir_path(__FILE__) . 'pfpc2_procesar_comisiones_pf/pfpc2_page.php';
     
+    include_once plugin_dir_path(__FILE__) . 'pfpd3_procesar_docentes_pf/pfpd3_page.php';
+
     include_once plugin_dir_path(__FILE__) . 'cac3_cargar_alumnos_comision/cac3_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'la2_lista_alumnos_comision/la2_page.php';
