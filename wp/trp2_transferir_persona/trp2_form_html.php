@@ -1,8 +1,6 @@
 <div class="wrap">
     <h1>Transferir Persona</h1>
-    <form method="GET">
-        <input type="hidden" name="page" value="<?=FINES_PLUGIN?>-trp" />
-
+    <form method="POST">
         <table class="form-table">
 		<tr>
                 <th><label>DNI origen (se eliminará):</label></th>

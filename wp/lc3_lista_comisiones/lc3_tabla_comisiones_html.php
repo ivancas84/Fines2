@@ -18,7 +18,6 @@
     <tbody>
         <? foreach ($comisiones as $comision): ?>
             <? $detalle_comision_url = admin_url('admin.php?page=fines6-plugin-ac3&comision_id=' . $comision->id); ?>
-            <? $lista_alumnos_url = admin_url('admin.php?page=fines-plugin-lista-alumnos&comision_id=' . $comision->id); ?>
             <? $rindex_url = admin_url('admin.php?page=fines6-plugin-rdd2&comision_pfid=' . $comision->pfid); ?>
             <? $detalle_division_url = admin_url('admin.php?page=fines-plugin-detalle-persona-division-page&comision_pfid=' . $comision->pfid); ?>
             <tr>
@@ -44,7 +43,7 @@
                             <span  class="dashicons dashicons-media-spreadsheet"></span>
                         </button>
                     </a> 
-                    <a href="<?= esc_url($lista_alumnos_url); ?>"  title="Alumnos Comisión">
+                    <a href="<?= esc_url(admin_url('admin.php?page=fines6-plugin-la2&comision_id=' . $comision->id)) ?>"  title="Alumnos Comisión">
                         <button type="button">
                             <span  class="dashicons dashicons-editor-table"></span>
                         </button>
@@ -66,7 +65,7 @@
                         <button  type="submit" style="color:red;" title="Eliminar">
                             <span  class="dashicons dashicons-remove"></span>
                          </button>
-      </form>
+                    </form>
                 </td>
             </tr>
         <? endforeach; ?>

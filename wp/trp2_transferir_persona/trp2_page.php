@@ -1,9 +1,7 @@
 <?php
 
 use App\Context;
-use Fines2\DataAccess\CalificacionDAO;
 use Fines2\Model\Alumno_;
-use Fines2\Model\Calificacion_;
 use Fines2\Model\Persona_;
 use SqlOrganize\Sql\DataProvider;
 use SqlOrganize\Sql\ModifyQueries;
@@ -13,23 +11,23 @@ add_submenu_page(
     'Transferir Persona',
     'Transferir Persona', 
     'edit_posts', 
-    FINES_PLUGIN.'-trp', 
-    'trp_page'
+    FINES_PLUGIN.'-trp2', 
+    'trp2_page'
 );
 
 
-function trp_page() {
+function trp2_page() {
     wp_page_message();
 
     include plugin_dir_path(__FILE__) . 'trp2_form_html.php';
 
-    if (!isset($_GET['submit']) || empty($_GET['dni_origen']) || empty($_GET['dni_destino'])) {
+    if (!isset($_POST['submit']) || empty($_POST['dni_origen']) || empty($_POST['dni_destino'])) {
         return;
     }
 
     echo "<h3>Procesando...</h3>";
-    $dni_origen = $_GET['dni_origen'];
-    $dni_destino = $_GET['dni_destino'];
+    $dni_origen = $_POST['dni_origen'];
+    $dni_destino = $_POST['dni_destino'];
 
     /** @var Db */ $db = Context::getFinesDb();
     /** @var DataProvider */ $dataProvider = $db->CreateDataProvider();

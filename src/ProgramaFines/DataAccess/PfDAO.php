@@ -5,220 +5,160 @@ namespace ProgramaFines\DataAccess;
 use Exception;
 use DateTime;
 
+
 class PfDAO
 {
     private $client;
+    private $sessionId;
 
-   //Desde Chrome F12 > Application > Storage > Cookies para obtener el session_id
-   public function __construct(string $sessionId)
+    public function __construct(string $sessionId)
     {
-        $this->client = curl_init();
-        curl_setopt($this->client, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->client, CURLOPT_FOLLOWLOCATION, true);
+        $this->sessionId = $sessionId;
 
-        // Manejo correcto de cookie
-        curl_setopt($this->client, CURLOPT_COOKIE, "PHPSESS=$sessionId");
+        $this->client = curl_init();
+
+        curl_setopt_array($this->client, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_USERAGENT => "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/145 Safari/537.36",
+            CURLOPT_COOKIE => "PHPSESS={$this->sessionId}"
+        ]);
     }
 
-    public function request(string $url): string
+    private function request(string $url, array $headers = [], array $postData = null)
     {
         curl_setopt($this->client, CURLOPT_URL, $url);
+
+        if ($postData !== null) {
+            curl_setopt($this->client, CURLOPT_POST, true);
+            curl_setopt($this->client, CURLOPT_POSTFIELDS, http_build_query($postData));
+        } else {
+            curl_setopt($this->client, CURLOPT_POST, false);
+            curl_setopt($this->client, CURLOPT_HTTPGET, true);
+        }
+
+        if (!empty($headers)) {
+            curl_setopt($this->client, CURLOPT_HTTPHEADER, $headers);
+        }
+
         return curl_exec($this->client);
     }
 
-    public function __destruct()
+
+
+
+
+    
+
+    /* =========================
+       GET genérico
+       ========================= */
+
+    public function getPage(string $url, array $params = [])
     {
-        curl_close($this->client);
+        if (!empty($params)) {
+            $url .= (strpos($url,'?')===false?'?':'&') . http_build_query($params);
+        }
+
+        return $this->request($url);
     }
 
-    public function infoListaAlumnos($pfid)
+    public function getSubCategorias(int $categoryId)
     {
-        $url = "https://www.programafines.ar/inicial/index4.php?a=12&&nom_comision={$pfid}&mi_periodo=4";
-
-        curl_setopt($this->client, CURLOPT_URL, $url);
-        curl_setopt($this->client, CURLOPT_HTTPGET, true);
-
-        $response = curl_exec($this->client);
-
-        if ($response === false) {
-            throw new Exception("Error al obtener lista de alumnos: " . curl_error($this->client));
-        }
-
-        $httpCode = curl_getinfo($this->client, CURLINFO_HTTP_CODE);
-        if ($httpCode !== 200) {
-            throw new Exception("Error al obtener lista de alumnos: Código HTTP " . $httpCode);
-        }
-
-        // Eliminar toda la primera parte del html hasta '<h2 align="left">'.
-        // Cada alumno está delimitado por el string '<h2 align="left">'
-       
-        $data = explode("<h2 align='left'>", $response);
-        unset($data[0]);
-
-        // Reset indexes
-        $data = array_values($data);
-        $students = [];
-
-        foreach ($data as $block) {
-            $student = [];
-
-            // Extraer nombre completo y DNI
-            if (preg_match("/^\d+\s+(.+?)\s{2,}(.+?)\s+DNI\s+(\d+)/", $block, $matches)) {
-                $student['apellidos'] = trim($matches[1]);
-                $student['nombres'] = trim($matches[2]);
-                $student['dni'] = $matches[3];
-            }
-
-            // Fecha de nacimiento
-            if (preg_match("/Fecha Nacimiento:\s*([\d\/]*)/", $block, $matches)) {
-                $fecha_raw = trim($matches[1]);
-                $partes = explode('/', $fecha_raw);
-            
-                if (count($partes) === 3) {
-                    $dia = intval($partes[0]);
-                    $mes = intval($partes[1]);
-                    $anio = intval($partes[2]);
-            
-                    // Crear fecha usando DateTime
-                    $fecha_obj = DateTime::createFromFormat('Y-m-d', sprintf('%04d-%02d-%02d', $anio, $mes, $dia));
-                    $student['fecha_nacimiento'] = $fecha_obj ? $fecha_obj->format('Y-m-d') : null;
-                } else {
-                    $student['fecha_nacimiento'] = null;
-                }
-            }
-
-            // Dirección
-            if (preg_match("/Dirección:\s*(.*?)<br>/", $block, $matches)) {
-                $student['direccion'] = trim($matches[1]);
-            }
-
-            // Teléfono
-            if (preg_match("/Teléfono:\s*(.*?)<br>/", $block, $matches)) {
-                $student['telefono'] = trim($matches[1]);
-                if(strlen($student['telefono']) < 6) {
-                    $student['telefono'] = null;
-                }
-            }
-
-            // Email (puede estar vacío)
-            if (preg_match("/Email:\s*(.*?)<br>/", $block, $matches)) {
-                $student['email'] = trim($matches[1]);
-            }
-
-            $students[] = $student;
-        }
-
-        return $students;
+        return $this->request(
+            "https://www.programafines.ar/inicial/subcategorias5.php",
+            [
+                "Accept: */*",
+                "Accept-Language: es-419,es;q=0.9",
+                "Content-Type: application/x-www-form-urlencoded; charset=UTF-8",
+                "Origin: https://www.programafines.ar",
+                "X-Requested-With: XMLHttpRequest"
+            ],
+            [
+                "id_category" => $categoryId
+            ]
+        );
     }
 
-    public function infoAlumnoFormularioModificacion($dni)
-    {
-        $formData = ['dni_cargar' => $dni];
-
-        curl_setopt($this->client, CURLOPT_URL, "https://www.programafines.ar/inicial/index4.php?a=8&b=1");
-        curl_setopt($this->client, CURLOPT_POST, true);
-        curl_setopt($this->client, CURLOPT_POSTFIELDS, http_build_query($formData));
-
-        $response = curl_exec($this->client);
-
-        if ($response === false) {
-            throw new Exception("Error al obtener formulario de alumno: " . curl_error($this->client));
-        }
-
-        $httpCode = curl_getinfo($this->client, CURLINFO_HTTP_CODE);
-        if ($httpCode !== 200) {
-            throw new Exception("Error al obtener formulario de alumno: Código HTTP " . $httpCode);
-        }
-
-        // ... (copiar el parseo DOMDocument igual que ya lo tienes)
+    /**
+     * @param string $pfid comision
+     * @param string $periodo 6 = 2026-1
+     */
+    public function getListaAlumnos($pfid, $periodo = 6){
+        return $this->getPage(
+            "https://www.programafines.ar/inicial/index4.php",
+            [
+                "a" => 12,
+                "nom_comision" => $pfid,
+                "mi_periodo" => $periodo
+            ]
+        );
     }
 
-    public function actualizarFormularioAlumno($formData)
+    public function openFormAgregarAlumnoPCI()
     {
-        curl_setopt($this->client, CURLOPT_URL, "https://www.programafines.ar/inicial/index4.php?a=8&b=2");
-        curl_setopt($this->client, CURLOPT_POST, true);
-        curl_setopt($this->client, CURLOPT_POSTFIELDS, http_build_query($formData));
-
-        $response = curl_exec($this->client);
-
-        if ($response === false) {
-            throw new Exception("Error al actualizar formulario: " . curl_error($this->client));
-        }
-
-        $httpCode = curl_getinfo($this->client, CURLINFO_HTTP_CODE);
-        if ($httpCode !== 200) {
-            throw new Exception("Error al actualizar formulario: Código HTTP " . $httpCode);
-        }
+        return $this->getPage(
+            "https://www.programafines.ar/inicial/index4.php",
+            ["a" => 711]
+        );
     }
 
-    public function inscribirEstudianteValues($comisionPfid, $persona)
+    public function sendDataForm1AgregarAlumnoPCI(array $data)
     {
-        $dataForm = [
-            'nombre' => $persona->nombres ?? '',
-            'apellido' => $persona->apellidos ?? '',
-            'cuil1' => $persona->cuil1 ?? '',
-            'dni_cargar' => $persona->numero_documento ?? '',
-            'cuil2' => $persona->cuil2 ?? '',
-            'direccion' => $persona->descripcion_domicilio ?? '',
-            'departamento' => $persona->departamento ?? '',
-            'localidad' => $persona->localidad ?? '',
-            'partido' => $persona->partido ?? '',
-            'email' => $persona->email ?? '',
-            'cod_area' => $persona->codigo_area ?? '',
-            'telefono' => $persona->telefono ?? '',
-            'nacionalidad' => $persona->nacionalidad ?? 'Argentina',
-            'sexo' => $persona->sexo ?? '1',
-            'subcategory' => $comisionPfid
-        ];
-
-        $this->inscribirEstudiante($dataForm);
+        return $this->request(
+            "https://www.programafines.ar/inicial/index4.php?a=711&b=1",
+            [],
+            [
+                "apellido" => $data["apellido"],
+                "nombre" => $data["nombre"],
+                "cuil1" => $data["cuil1"],
+                "dni_cargar" => $data["dni"],
+                "cuil2" => $data["cuil2"],
+                "nacionalidad" => $data["nacionalidad"] ?? "Argentina",
+                "sexo" => $data["sexo"],
+                "dia_nac" => $data["dia"],
+                "mes_nac" => $data["mes"],
+                "ano_nac" => $data["ano"],
+                "mi_periodo" => $data["periodo"],
+                "subcategory" => $data["comision"],
+                "cuatrim_inscripcion" => $data["cuatrimestre"]
+            ]
+        );
     }
 
-    public function inscribirEstudiante($formData)
+    public function sendDataForm2AgregarAlumnoPCI(array $data)
     {
-        curl_setopt($this->client, CURLOPT_URL, "https://www.programafines.ar/inicial/index4.php?a=7&b=1");
-        curl_setopt($this->client, CURLOPT_POST, true);
-        curl_setopt($this->client, CURLOPT_POSTFIELDS, http_build_query($formData));
-        $response = curl_exec($this->client);
-
-        if ($response === false) {
-            throw new Exception("Error al inscribir estudiante (paso 1): " . curl_error($this->client));
-        }
-
-        curl_setopt($this->client, CURLOPT_URL, "https://www.programafines.ar/inicial/index4.php?a=7&b=2");
-        $response = curl_exec($this->client);
-
-        if ($response === false) {
-            throw new Exception("Error al inscribir estudiante (paso 2): " . curl_error($this->client));
-        }
-
-        if (strpos($response, "existe un estudiante con ese dni en esta") !== false) {
-            throw new Exception("Estudiante en otra comisión, revisar desde PF");
-        }
+        return $this->request(
+            "https://www.programafines.ar/inicial/index4.php?a=711&b=2",
+            [],
+            [
+                "direccion" => $data["direccion"] ?? "",
+                "departamento" => $data["departamento"] ?? "",
+                "localidad" => $data["localidad"] ?? "",
+                "partido" => $data["partido"] ?? "",
+                "email" => $data["email"] ?? "",
+                "cod_area" => $data["cod_area"] ?? "",
+                "nro_telefono" => $data["telefono"] ?? ""
+            ]
+        );
     }
 
-    public function cambiarComision($dni, $comisionDestino)
+    public function agregarAlumnoPCI(array $alumno)
     {
-        $formData = [
-            'dni_cargar' => $dni,
-            'comision_destino' => $comisionDestino
-        ];
+        // 1 abrir
+        $this->openFormAgregarAlumnoPCI();
 
-        curl_setopt($this->client, CURLOPT_URL, "https://www.programafines.ar/inicial/index4.php?a=22&b=1");
-        curl_setopt($this->client, CURLOPT_POST, true);
-        curl_setopt($this->client, CURLOPT_POSTFIELDS, http_build_query($formData));
-        curl_exec($this->client);
+        // 2 enviar datos alumno
+        $this->sendDataForm1AgregarAlumnoPCI($alumno);
 
-        curl_setopt($this->client, CURLOPT_URL, "https://www.programafines.ar/inicial/index4.php?a=22&b=2");
-        curl_exec($this->client);
-
-        if (strpos($response, "existe un estudiante con ese dni en esta") !== false) {
-            throw new Exception("Estudiante en otra comisión, revisar desde PF");
-        }
+        // 3 finalizar
+        return $this->sendDataForm2AgregarAlumnoPCI($alumno);
     }
 
-    public function dispose()
+    public function close()
     {
         curl_close($this->client);
     }
 }
+

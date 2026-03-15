@@ -1,6 +1,8 @@
 <?php
 
-//Eliminar todas las calificaciones del curso
+/**
+ * Recibe un array de alumno_comision de un determinado alumno y actualiza sus valores
+ */
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../config/config.php';

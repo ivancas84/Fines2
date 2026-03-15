@@ -13,22 +13,34 @@ use DateTime;
 
 class Persona_ extends Persona
 {
-public function getEmails(): string {
+    public function getEmails(): string {
         $emails = [];
         if (!empty(trim($this->email_abc))) array_push($emails, $this->email_abc);
         if (!empty(trim($this->email))) array_push($emails, $this->email);
         return implode(", ", $emails);
     }
+
     
     public function getLabel(): string {
-        return (mb_strtoupper($this->apellidos) ?? "?") . " " 
-        . (ValueTypesUtils::toTitleCase($this->nombres)  ?? "?") . " "
+        return $this->getNombre() . " "
         . ($this->numero_documento  ?? "?");
     }
 
     public function getNombre(): string {
-        return (ValueTypesUtils::toUpperCase($this->apellidos) ?? "?") . " " 
-        . (ValueTypesUtils::toTitleCase($this->nombres)  ?? "?");
+        return $this->getApellidos() . " " 
+        . $this->getNombres();
+    }
+
+    public function getApellidos(): string {
+        return (ValueTypesUtils::toUpperCase($this->apellidos) ?? "?");
+    }
+
+    public function getNombres(): string {
+        return (ValueTypesUtils::toTitleCase($this->nombres)  ?? "?");
+    }
+
+    public function getCuilDni(){
+        return (!empty($this->cuil) && str_contains($this->cuil,$this->numero_documento)) ? $this->cuil : $this->numero_documento;
     }
 
     public static function cuilDni(string $cuilDni): array {
@@ -67,6 +79,10 @@ public function getEmails(): string {
         }
     
         return false;
+    }
+
+    public function getFechaNacimiento(){
+        return $this->fecha_nacimiento ? $this->fecha_nacimiento->format('Y-m-d') : "";
     }
 
     public function compare(Entity $entity, ?CompareParams $cp = null): array

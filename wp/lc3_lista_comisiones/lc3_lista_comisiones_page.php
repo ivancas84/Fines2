@@ -42,7 +42,7 @@ function lc3_lista_comisiones_page() {
     $referentesLabel = DesignacionDAO::referentesLabelByIdSedes($ids_sedes);
     
     if (!empty($comisiones)) {
-        include plugin_dir_path(__FILE__) . 'lc3_tabla_comisiones.html';
+        include plugin_dir_path(__FILE__) . 'lc3_tabla_comisiones_html.php';
     } else {
         echo "<p>No se encontraron comisiones para este calendario.</p>";
     }
