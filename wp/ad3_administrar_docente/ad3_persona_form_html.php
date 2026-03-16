@@ -1,8 +1,7 @@
-<h1>Informe <?=$persona->getLabel() ?></h1>
+<h1>Informe Docente <?=$persona->getLabel() ?></h1>
 
-<form  method="POST" action="admin-post.php">
-    <?php wp_html_init_form("ad2_persona_admin", "persona_id", $persona->id); ?>
-
+<form  method="POST" action="<?=MAIN_URL?>script/administrar_persona.php">
+    <input type="hidden" name="persona_id" value="<?=$persona->id?>" />
 
     <div class="form-grid">
         <div class="form-group">

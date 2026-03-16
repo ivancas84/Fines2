@@ -3,10 +3,9 @@
 namespace Fines2\DataAccess;
 
 use App\Context;
-use SqlOrganize\Sql\DbMy;
-use SqlOrganize\Sql\ModifyQueries;
 use Exception;
 use Fines2\Model\Persona_;
+use SqlOrganize\Sql\DataProvider;
 use SqlOrganize\Sql\Db;
 use SqlOrganize\Sql\Entity;
 
