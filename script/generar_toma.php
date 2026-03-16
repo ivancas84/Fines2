@@ -1,11 +1,11 @@
 <?php
-header('Content-Type: text/html; charset=utf-8');
-set_time_limit(0);
-mb_internal_encoding('UTF-8');
+
 
 require __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../config/config.php';
-
+header('Content-Type: text/html; charset=utf-8');
+set_time_limit(0);
+mb_internal_encoding('UTF-8');
 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
@@ -19,8 +19,7 @@ use SqlOrganize\Utils\ValueTypesUtils;
 try {
     
     $toma_id = $_GET["toma_id"];
-    $enviar_email = ValueTypesUtils::toBool($_GET["email"]);
-
+    $enviar_email = isset($_GET["email"]) ? ValueTypesUtils::toBool($_GET["email"]) : false;
     $db = \App\Context::getFinesDb();
 
     /** @var DataProvider */ $dataProvider = $db->CreateDataProvider();
@@ -86,7 +85,6 @@ try {
         </tr>
     </table>';
 
-
     
     
     
@@ -150,21 +148,19 @@ try {
 
     // Save or Display PDF
     $pdf->Output($save_path, "F"); // Save to file
-    //$pdf->Output($data["filename"], "I"); // Display in browser
-
-
-
-
-
+    
     if(!$enviar_email){
-        die("No será enviado el email");
-    }
+        $pdf->Output($filename, "I"); // Display in browser
 
-    $maxAttempts = 3;
-    $attempt = 0;
-    $sent = false;
+    } else {
 
-    while ($attempt < $maxAttempts && !$sent) {
+
+
+        $maxAttempts = 3;
+        $attempt = 0;
+        $sent = false;
+
+        while ($attempt < $maxAttempts && !$sent) {
         $mail = new PHPMailer(true);
 
 
@@ -206,26 +202,24 @@ Saluda a Usted muy atentamente:
 <br>
 Equipo de Coordinadores del Plan Fines 2 CENS 462
 <br><a href=\"https://planfines2.com.ar\">https://planfines2.com.ar</a>";
-            $mail->isHTML(true);
-            $mail->addAttachment($save_path);
-            
-            $mail->send();
-            $sent = true;
-            echo "Message has been sent<br>";
-        } catch (Exception $e) {
-            $attempt++;
-            if ($attempt < $maxAttempts) {
-                sleep(5); // Wait 5 seconds before retry
+                $mail->isHTML(true);
+                $mail->addAttachment($save_path);
+                
+                $mail->send();
+                $sent = true;
+                echo "Message has been sent<br>";
+            } catch (Exception $e) {
+                $attempt++;
+                if ($attempt < $maxAttempts) {
+                    sleep(5); // Wait 5 seconds before retry
+                }
             }
+
         }
-
+        if (!$sent) {
+            echo "Message could not be sent after {$maxAttempts} attempts.<br>";
+        }
     }
-    if (!$sent) {
-        echo "Message could not be sent after {$maxAttempts} attempts.<br>";
-    }
-
-
-
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
 }
