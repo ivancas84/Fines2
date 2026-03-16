@@ -1,7 +1,6 @@
 <h2>Tomas</h2>
 
-<form method="POST" action="admin-post.php">
-    <?php wp_html_init_form("ac3_tomas_modify_delete", "comision_id", $comision->id); ?>
+<form method="POST" action="<?=MAIN_URL?>script/modificar_o_eliminar_toma.php">
 
     <table border="1">
         <tr>
@@ -81,13 +80,14 @@
                         </select>
                     </td>
                     <td>
-                        <button type="submit" onclick="return confirm('Está seguro que desea eliminar?');" class="btn-delete-toma" data-index="<?= $i ?>">Eliminar</button>
-                        <a class="button-link"
+                        <button type="submit" onclick="return confirm('Está seguro que desea eliminar?');" class="btn-delete-toma" data-index="<?= $i ?>">                            <span class="dashicons dashicons-trash"></span>
+</button>
+                        <a 
                             target="_blank"
-                            href="https://planfines2.com.ar/scripts/generar_toma.php?toma_id=<?= $toma->id ?>"
+                            href="https://planfines2.com.ar/v6/script/generar_toma.php?toma_id=<?= $toma->id ?>"
                             onclick="return confirm('¿Está seguro que desea generar toma y enviar Email?');">
-                            Generar Toma
-                            </a>
+                            <span class="dashicons dashicons-id"></span>
+                        </a>
                         <a href="<?= esc_url(admin_url('admin.php?page=fines-plugin-ppc3&curso_id=' . $toma->curso_->id)) ?>" title="Cargar Planilla de Calificación" class="button"><span  class="dashicons dashicons-media-spreadsheet"></span></a>
 <a href="<?= esc_url('/scripts/cambiar_estado_planilla.php?toma_id=' . $toma?->id . '&estado=entregada') ?>" target="_blank" title="Cambiar entregada" class="button"><span  class="dashicons dashicons-yes"></span></a>
                          <a href="<?= esc_url(admin_url('admin.php?page=fines-plugin-lacu&curso_id=' . $toma->curso_->id))?>" class="button" title="Calificaciones por curso"><span class="dashicons dashicons-paperclip"></span></a>

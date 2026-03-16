@@ -20,11 +20,11 @@ class PersonaDAO
             if(!Persona_::nombreParecido($obj->toArray(), $param)) throw new Exception("Los nombres no son parecidos al registro almacenado");
             $obj->_status = 1;
             $obj->_changeLog = [];
-            $obj->ssetFromArray($param);
         } else {
             $obj = $db->createEntity("persona");
             $obj->_status = -1;
         }
+        $obj->ssetFromArray($param);
         return $obj;
     }
 

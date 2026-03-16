@@ -1,5 +1,8 @@
 <?php
-//Definir sql para transferir alumnos aprobados
+
+/**
+ *  Lista rapida de todos los alumnos del calendario actual 
+ * */
 
 
 require_once __DIR__ . '/../config/config.php';

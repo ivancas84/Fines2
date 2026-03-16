@@ -4,11 +4,28 @@ namespace Fines2\DataAccess;
 
 use App\Context;
 use Fines2\Model\AlumnoComision_;
+use Fines2\Model\Comision_;
 use PDO;
 
 class AlumnoComisionDAO
 {
 
+    /**
+     * @return Comision_[]
+     */
+    public static function alumnosComision($comision_id): array{
+        $sql = "
+            SELECT alumno_comision.id
+            FROM alumno_comision
+            INNER JOIN alumno ON (alumno_comision.alumno = alumno.id)
+            INNER JOIN persona ON (alumno.persona = persona.id)
+            WHERE alumno_comision.comision = :comision
+            ORDER BY alumno_comision.activo DESC, persona.apellidos ASC, persona.nombres ASC;
+        ";
+        $comisiones = Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesBySqlId("alumno_comision", $sql, ['comision' => $comision_id]);
+        return $comisiones;
+    }
+    
     /**
      * Ultima comisión activa de un alumno
      */
