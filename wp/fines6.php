@@ -51,10 +51,13 @@ function fines6_plugin_menu() {
     //se incluyen en el menu principal
     include_once plugin_dir_path(__FILE__) . 'lc3_lista_comisiones/lc3_lista_comisiones_page.php';
 
+    include_once plugin_dir_path(__FILE__) . 'lcu3_lista_cursos/lcu3_page.php';
+
     include_once plugin_dir_path(__FILE__) . 'ac3_administrar_comision/ac3_administrar_comision_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'aa4_administrar_alumno/aa4_page.php';
 
+    include_once plugin_dir_path(__FILE__) . 'aa4_administrar_alumno/aa4_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'mo2_mas_opciones/mo2_page.php';
 
