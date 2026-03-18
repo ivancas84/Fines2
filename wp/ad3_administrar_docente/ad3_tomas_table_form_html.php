@@ -12,11 +12,11 @@
 
     <?php foreach ($tomas as $toma): ?>
         <tr>
-            <form method="POST" target="_blank" action="https://planfines2.com.ar/scripts/update_entity.php">
+            <form method="POST" action="<?=MAIN_URL?>script/update_entity.php">
                 <input type="text" name="honeypot" style="display: none;">
+                <input type="hidden" name="id" value="<?= esc_attr($toma->id) ?>">
                 <input type="hidden" name="entity_name" value="toma">
                 <input type="hidden" name="persona_id" value="<?= esc_attr($persona->id) ?>">
-                <input type="hidden" name="toma_id" value="<?= esc_attr($toma->id) ?>">
 
                 <td>
                     <input 
@@ -96,18 +96,18 @@
                       title="Generar toma y enviar Email"
                       class="button"
                         target="_blank"
-                        href="https://planfines2.com.ar/scripts/generar_toma.php?toma_id=<?= $toma->id ?>"
+                        href="<?=MAIN_URL?>script/generar_toma.php?toma_id=<?= $toma->id ?>"
                         onclick="return confirm('¿Está seguro que desea generar toma y enviar Email?');">
                         <span class="dashicons dashicons-text-page"></span>
                     </a>
 
-                    <a href="<?= esc_url(admin_url('admin.php?page=fines-plugin-ppc3&curso_id=' . $toma->curso_->id)) ?>" 
+                    <a href="<?= esc_url(admin_url('admin.php?page='.FINES_PLUGIN.'-ppc3&curso_id=' . $toma->curso_->id)) ?>" 
                         title="Cargar Planilla de Calificación" 
                         class="button">
                         <span class="dashicons dashicons-media-spreadsheet"></span>
                     </a>
 
-                    <a href="<?= esc_url('/scripts/cambiar_estado_planilla.php?toma_id=' . $toma->id . '&estado=entregada') ?>" 
+                    <a href="<?= esc_url(MAIN_URL.'/script/cambiar_estado_planilla.php?toma_id=' . $toma->id . '&estado=entregada') ?>" 
                         target="_blank" 
                         title="Cambiar entregada" 
                         class="button">

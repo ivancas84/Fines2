@@ -1,4 +1,4 @@
-<h1>Informe <?=$persona->getLabel() ?></h1>
+<h1>Informe Alumno <?=$persona->getLabel() ?></h1>
 
 <form  method="POST" action="<?=MAIN_URL?>script/administrar_persona.php">
     <input type="hidden" name="persona_id" value="<?=$persona->id?>" />

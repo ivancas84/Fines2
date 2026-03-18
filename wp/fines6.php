@@ -49,19 +49,28 @@ function fines6_plugin_menu() {
     );
 
     //se incluyen en el menu principal
+    include_once plugin_dir_path(__FILE__) . 'bp3_buscar_personas/bp3_page.php';
+
     include_once plugin_dir_path(__FILE__) . 'lc3_lista_comisiones/lc3_lista_comisiones_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'lcu3_lista_cursos/lcu3_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'ac3_administrar_comision/ac3_administrar_comision_page.php';
 
+<<<<<<< HEAD
     include_once plugin_dir_path(__FILE__) . 'aa4_administrar_alumno/aa4_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'aa4_administrar_alumno/aa4_page.php';
 
+=======
+>>>>>>> 0c12110279aa77c70842cfa46b08a2153c031d0b
     include_once plugin_dir_path(__FILE__) . 'mo2_mas_opciones/mo2_page.php';
 
     //no se incluyen en el menu principal
+    include_once plugin_dir_path(__FILE__) . 'aa4_administrar_alumno/aa4_page.php';
+
+    include_once plugin_dir_path(__FILE__) . 'ad3_administrar_docente/ad3_page.php';
+    
     include_once plugin_dir_path(__FILE__) . 'trp2_transferir_persona/trp2_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'rdd2_rindex_division_direccion/rdd2_page.php';

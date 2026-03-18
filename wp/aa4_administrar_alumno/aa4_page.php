@@ -10,7 +10,7 @@ use Fines2\Model\Persona_;
 use SqlOrganize\Sql\Db;
 
 add_submenu_page(
-    FINES_PLUGIN, 
+    null, 
     'Administrar Alumno',
     'Administrar Alumno', 
     'edit_posts', 

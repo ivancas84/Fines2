@@ -19,7 +19,6 @@ use SqlOrganize\Utils\ValueTypesUtils;
 try {
     
     $toma_id = $_GET["toma_id"];
-    $enviar_email = isset($_GET["email"]) ? ValueTypesUtils::toBool($_GET["email"]) : false;
     $db = \App\Context::getFinesDb();
 
     /** @var DataProvider */ $dataProvider = $db->CreateDataProvider();
@@ -149,12 +148,7 @@ try {
     // Save or Display PDF
     $pdf->Output($save_path, "F"); // Save to file
     
-    if(!$enviar_email){
-        $pdf->Output($filename, "I"); // Display in browser
-
-    } else {
-
-
+    //$pdf->Output($filename, "I"); // Display in browser
 
         $maxAttempts = 3;
         $attempt = 0;
@@ -219,7 +213,6 @@ Equipo de Coordinadores del Plan Fines 2 CENS 462
         if (!$sent) {
             echo "Message could not be sent after {$maxAttempts} attempts.<br>";
         }
-    }
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
 }
