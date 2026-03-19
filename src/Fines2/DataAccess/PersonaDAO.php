@@ -24,7 +24,7 @@ class PersonaDAO
             $obj = $db->createEntity("persona");
             $obj->_status = -1;
         }
-        $obj->ssetFromArray($param);
+        $obj->ssetIfNullFromArray($param);
         return $obj;
     }
 

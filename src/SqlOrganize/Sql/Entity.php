@@ -157,6 +157,8 @@ class Entity
         $this->setFk($fieldName, $v);
     }
 
+
+
     /**
      * Smart or Slow setter - Seteo "lento" con conversión de tipos
      */
@@ -196,6 +198,17 @@ class Entity
             default:
                 $this->set($fieldName, $value);
                 break;
+        }
+    }
+
+    
+    /**
+     * Aplicar sset solo si el $fieldName del objeto es null
+     */
+    public function ssetIfNull(string $fieldName, $value): void
+    {
+        if($this->get($fieldName) == null){
+            $this->sset($fieldName, $value);
         }
     }
 
@@ -329,29 +342,45 @@ class Entity
     /**
      * Seteo "lento" de propiedades simples
      */
-    public function ssetFromArray(array $data): void
+    public function ssetFromArray(array $data, string $prefix = ""): void
     {
         foreach ($this->_db->fieldNames($this->_entityName) as $fieldName) {
-            if (array_key_exists($fieldName, $data)) {
+            $key = $prefix . $fieldName;
+
+            if (array_key_exists($key, $data)) {
                 $this->sset($fieldName, $data[$fieldName]);
             }
         }
     }
-
+    
     /**
      * Seteo lento solo de valores no nulos
      */
-    public function ssetNotNull(array $data): void
+    public function ssetNotNull(array $data, string $prefix = ""): void
     {
         foreach ($this->_db->fieldNames($this->_entityName) as $fieldName) {
-            if (array_key_exists($fieldName, $data) && !empty($data[$fieldName])) {
-                $this->sset($fieldName, $data[$fieldName]);
+            $key = $prefix . $fieldName;
+            if (array_key_exists($fieldName, $data) && !empty($data[$key])) {
+                $this->sset($fieldName, $data[$key]);
             }
         }
     }
 
     /**
-     * Seteo "lento" de un determinado campo, con verificación y conversión de tipo de datos
+     * Seteo lento solo de valores nulos del origen
+     */
+    public function ssetIfNullFromArray(array $data, string $prefix = ""): void
+    {
+        foreach ($this->_db->fieldNames($this->_entityName) as $fieldName) {
+            $key = $prefix . $fieldName;
+            if (array_key_exists($key, $data)) {
+                $this->ssetIfNull($fieldName, $data[$key]);
+            }
+        }
+    }
+
+    /**
+     * Asignar valor por defecto a field
      */
     public function setDefaultField(string $fieldName): void
     {
