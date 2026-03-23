@@ -43,7 +43,7 @@ use \SqlOrganize\Utils\ValueTypesUtils;
      $calificaciones = CalificacionDAO::calificacionesAprobadasByDisposicionAndDnis($curso->disposicion, $dnis);
      $calificaciones = ValueTypesUtils::dictOfObjByPropertyNames($calificaciones, "alumno");
 ?>
-            <? $detalle_comision_url = admin_url('admin.php?page=' . FINES_PLUGIN . '-ac2&comision_id=' . $curso->comision); ?>
+            <? $detalle_comision_url = admin_url('admin.php?page=' . FINES_PLUGIN . '-ac3&comision_id=' . $curso->comision); ?>
             <? $administrar_tomas_url = admin_url('admin.php?page=' . FINES_PLUGIN . '-administrar-toma-comision&comision_id=' . $curso->comision); ?>
             <? $cargar_planilla_calificacion_url = admin_url('admin.php?page=' . FINES_PLUGIN . '-ppc3&curso_id=' . $curso->id); ?>
             <? $cargar_alumnos_url = admin_url('admin.php?page=' . FINES_PLUGIN . '-cac&comision_id=' . $curso->comision); ?>

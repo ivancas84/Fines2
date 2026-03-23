@@ -57,5 +57,5 @@ try {
 
 
 } catch (Exception $ex) {
-        ValueTypesUtils::redirect($ex->getMessage());
+    ValueTypesUtils::redirect($ex->getMessage());
 }

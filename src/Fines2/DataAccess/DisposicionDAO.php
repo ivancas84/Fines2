@@ -35,7 +35,7 @@ class DisposicionDAO {
             INNER JOIN asignatura ON asignatura.id = disposicion.asignatura 
             INNER JOIN planificacion ON planificacion.id = disposicion.planificacion 
             INNER JOIN plan ON plan.id = planificacion.plan 
-            WHERE plan.id IN ('202303101', '202303102', '4', '5') 
+            WHERE plan.id IN ('202303101', '202303102', '4', '5', '2026032201') 
             ORDER BY asignatura.nombre, planificacion.anio, planificacion.semestre, plan.resolucion, plan.orientacion ASC;
         ";
 

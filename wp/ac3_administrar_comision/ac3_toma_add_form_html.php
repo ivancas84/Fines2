@@ -1,7 +1,16 @@
+<?php
+
+use Fines2\Model\Comision_;
+use Fines2\Model\Curso_;
+
+/** @var Comision_ $comision */
+/** @var Curso_[] $cursos */
+
+?>
 <h2>Agregar Toma</h2>
-<form method="POST" action="admin-post.php">
-    <?php wp_html_init_form("ac2_toma_add", "comision_id", $comision->id); ?>
-    
+<form method="POST" action="<?=MAIN_URL?>script/agregar_toma.php">
+    <input type="hidden" name="comision_id" id="comision_id" value="<?= $comision->id ?? '' ?>" />
+
     <table border="1">
         <tr>
             <th>Fecha</th>
@@ -69,4 +78,5 @@
 
     <button type="submit" id="btn-guardar">Guardar</button>
 </form>
+
 

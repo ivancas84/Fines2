@@ -1,6 +1,6 @@
 <h2>Cursos</h2>
 
-<form method="POST" action="administrar_cursos_comision.php">
+<form method="POST" action="<?=MAIN_URL?>/script/administrar_cursos_comision.php">
     <input type="hidden" name="comision_id" id="comision_id" value="<?= $comision->id ?? '' ?>" />
 
     <table border="1">

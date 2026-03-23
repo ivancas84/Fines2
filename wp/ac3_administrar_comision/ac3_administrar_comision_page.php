@@ -15,10 +15,10 @@ add_submenu_page(
     'Administrar Comisión', //Título del menú
     'edit_posts', // Permisos
     FINES_PLUGIN.'-ac3',  // Slug del submenú
-    'ac3_administrar_comision_page' // Función que muestra la página del submenu
+    'ac3_page' // Función que muestra la página del submenu
 );
   
-function ac3_administrar_comision_page() {
+function ac3_page() {
 
         wp_page_message();
         $comision_id = isset($_GET['comision_id']) ? $_GET['comision_id'] : null;
@@ -43,7 +43,7 @@ function ac3_init_cursos(Comision_ $comision) {
     $dataProvider = Context::getFinesDb()->CreateDataProvider();
     $cursos = $dataProvider->fetchAllEntitiesByParams("curso", ["comision"=>$comision->id]);
     if($cursos)
-        include plugin_dir_path(__FILE__) . 'ac3_curso_table_form.html';
+        include plugin_dir_path(__FILE__) . 'ac3_curso_table_form_html.php';
     else 
         echo "<p>No hay cursos para mostrar de la comisión</p>";
 }

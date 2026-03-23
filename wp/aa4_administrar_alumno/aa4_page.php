@@ -30,7 +30,7 @@ function ap4_page() {
     
     ap4_init_Comisiones($alumno, $persona);
     ap4_init_Calificaciones($alumno, $persona);
-    ap4_init_Detalles($persona);
+    aa4_init_Detalles($persona);
 
 }
 
@@ -101,14 +101,14 @@ function ap4_init_Calificaciones(Alumno_ $alumno, Persona_ $persona = null){
     }
 }
 
-function ap4_init_Detalles(Persona_ $persona){
+function aa4_init_Detalles(Persona_ $persona){
     
     $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
 
     //***** DETALLE PERSONA *****/
     /** @var DetallePersona_ */ $detalles = $dataProvider->fetchAllEntitiesByParams("detalle_persona", ["persona"=>$persona->id]);
     if ($detalles) {
-        include plugin_dir_path(__FILE__) . 'ap4_detalles_table_html.php';
+        include plugin_dir_path(__FILE__) . 'aa4_detalles_table_html.php';
     } else {
             echo "<p>No hay detalles.</p>";
     }

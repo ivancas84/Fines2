@@ -18,10 +18,9 @@ try {
 
     $persona_id = $_POST["persona_id"];
     $_POST["id"] = $persona_id;
-    
     $persona = $db->createEntityByUnique("persona", $_POST);
     $persona->resetAndCheck();
-
+    
     $message = $persona->persistByStatus($modifyQueries);
 
     $modifyQueries->process();

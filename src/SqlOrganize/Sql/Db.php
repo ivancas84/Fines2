@@ -351,6 +351,7 @@ abstract class Db
             $obj->ssetFromArray($param);
         } else {
             $obj = $this->createEntity($entityName);
+            $obj->ssetFromArray($param);
             $obj->_status = -1;
         }
         return $obj;

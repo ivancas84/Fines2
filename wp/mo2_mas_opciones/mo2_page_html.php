@@ -1,5 +1,7 @@
 <h2>Opciones</h2>
 
+</p><a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines6-plugin-aa4">Agregar alumno</a></p>
+</p><a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines6-plugin-ad3">Agregar docente</a></p>
 
 </p><a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines6-plugin-procesar-docentes-pf-page">Procesar Docentes PF desde JSON (obsoleto)</a></p>
 </p><a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines6-plugin-pdpf3">Procesar Docentes PF desde XLSX</a></p>
