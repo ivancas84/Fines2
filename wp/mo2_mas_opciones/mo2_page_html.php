@@ -1,5 +1,7 @@
 <h2>Opciones</h2>
 
+</p><a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines6-plugin-cv2">Constancia Vacante</a></p>
+
 </p><a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines6-plugin-aa4">Agregar alumno</a></p>
 </p><a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines6-plugin-ad3">Agregar docente</a></p>
 

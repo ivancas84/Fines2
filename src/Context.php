@@ -96,18 +96,16 @@ class Context
 
     public static function getPedidosDb(): Db {
         $config = self::getConfigDbPedidos();
+
         if (self::$pedidos === null) {
-            $raw = file_get_contents(PATH_SCHEMA_PEDIDOS);
-
-            $schema = json_decode(
-                $raw,
-                true,
-                512,
-                JSON_THROW_ON_ERROR
-            );
-
             self::$pedidos = new DbMy($config);
-            self::$pedidos->entitiesMetadata = MetadataLoader::load($schema, self::$pedidos);
+            self::$pedidos->entitiesMetadata = SchemaPedidos::getEntities();
+            foreach(self::$pedidos->entitiesMetadata as $metadata){
+                $metadata->db = self::$pedidos;
+                foreach ($metadata->fields as $field) {
+                    $field->db = self::$pedidos;
+                }
+            }
         }
 
         return self::$pedidos;

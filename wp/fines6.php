@@ -57,17 +57,9 @@ function fines6_plugin_menu() {
 
     include_once plugin_dir_path(__FILE__) . 'ac3_administrar_comision/ac3_administrar_comision_page.php';
 
-<<<<<<< HEAD
     include_once plugin_dir_path(__FILE__) . 'aa4_administrar_alumno/aa4_page.php';
 
-    include_once plugin_dir_path(__FILE__) . 'aa4_administrar_alumno/aa4_page.php';
-
-=======
->>>>>>> 0c12110279aa77c70842cfa46b08a2153c031d0b
     include_once plugin_dir_path(__FILE__) . 'mo2_mas_opciones/mo2_page.php';
-
-    //no se incluyen en el menu principal
-    include_once plugin_dir_path(__FILE__) . 'aa4_administrar_alumno/aa4_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'ad3_administrar_docente/ad3_page.php';
     
@@ -82,6 +74,12 @@ function fines6_plugin_menu() {
     include_once plugin_dir_path(__FILE__) . 'cac3_cargar_alumnos_comision/cac3_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'la2_lista_alumnos_comision/la2_page.php';
+
+
+    /** NO SE INCLUYEN EN EL MENU PRINCIPAL */
+    include_once plugin_dir_path(__FILE__) . 'ccc2_constancia_certificado_completo/ccc2_page.php';
+
+    include_once plugin_dir_path(__FILE__) . 'cv2_constancia_vacante/cv2_page.php';
 
   }
 

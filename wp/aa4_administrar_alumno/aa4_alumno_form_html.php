@@ -89,7 +89,7 @@
 </form>
 
 <h3>Generar Constancias</h3>
-<p>Constancia de Certificado de Estudio en Trámite: <a href="<?=admin_url('admin.php?page=fines-plugin-ccc&id_persona=' . $persona->id)?>" target="_blank">GENERAR</a></p>
+<p>Constancia de Certificado de Estudio en Trámite: <a href="<?=admin_url('admin.php?page='.FINES_PLUGIN.'-ccc2&id_persona=' . $persona->id)?>" target="_blank">GENERAR</a></p>
 <p>Constancia de Alumno Regular: <a href="<?=admin_url('admin.php?page=fines-plugin-car2&persona_id=' . $persona->id)?>" target="_blank">GENERAR</a></p>
 <p>Constancia de Pase: <a href="<?=admin_url('admin.php?page=fines-plugin-cp2&persona_id=' . $persona->id)?>" target="_blank">GENERAR</a></p>
 
