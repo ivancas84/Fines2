@@ -7,9 +7,7 @@ use chillerlan\QRCode\Common\EccLevel;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 
-use SqlOrganize\Sql\Entity;
-use Exception;
-use DateTime;
+
 
 class Tickets_ extends Tickets
 {
@@ -19,7 +17,7 @@ class Tickets_ extends Tickets
      * 
      * @return string The file path to the generated QR code image. Don't forget to delete the temporary file after use with unlink().
      */
-    public function generateQR(): string
+    public function generateQRCode(): string
     {
         $url = "https://planfines2.com.ar/wp/pedidos/?wpsc-section=ticket-list&ticket-id=" 
         . $this->id . "&auth-code=" 
@@ -31,7 +29,12 @@ class Tickets_ extends Tickets
             'scale' => 5,
         ]);
 
-        $qrcode = (new QRCode($options))->render($url);    
+        return (new QRCode($options))->render($url);    
+    } 
+
+    public function generateQRFile(): string
+    {
+        $qrcode = $this->generateQRCode();
 
         // Save the QR Code as a temporary file
         $qrFile = tempnam(sys_get_temp_dir(), 'qr') . '.png';

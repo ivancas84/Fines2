@@ -69,20 +69,8 @@ $thread->attachments = $attachment->id;
 $modify->UpdateKeySqlById($thread, "attachments");
 $modify->process();
 
-$url = "https://planfines2.com.ar/wp/pedidos/?wpsc-section=ticket-list&ticket-id=" . $ticket->id . "&auth-code=" . $ticket->auth_code;
 
-$options = new QROptions([
-    'eccLevel' => EccLevel::L,
-    'outputType' => QRCode::OUTPUT_IMAGE_PNG,
-    'scale' => 5,
-]);
-
-$qrcode = (new QRCode($options))->render($url);
-
-// Save the QR Code as a temporary file
-$qrFile = tempnam(sys_get_temp_dir(), 'qr') . '.png';
-file_put_contents($qrFile, base64_decode(str_replace('data:image/png;base64,', '', $qrcode)));
-
+$qrFile = $ticket->generateQRFile();
 
 
 // Create PDF instance

@@ -3,9 +3,9 @@
 namespace Pedidos\DataAccess;
 
 use DateTime;
-use Pedidos\Attachments_;
-use Pedidos\Threads_;
-use Pedidos\Tickets_;
+use Pedidos\Model\Attachments_;
+use Pedidos\Model\Threads_;
+use Pedidos\Model\Tickets_;
 use SqlOrganize\Sql\ModifyQueries;
 
 class TicketsDAO
@@ -35,12 +35,12 @@ class TicketsDAO
         $attachment->source_id = $thread->id;
         $attachment->ticket_id = $ticket->id;
 
-        $modify->buildInsertSql($ticket);
-        $modify->buildInsertSql($thread);
-        $modify->buildInsertSql($attachment);
+        $modify->insertSql($ticket);
+        $modify->insertSql($thread);
+        $modify->insertSql($attachment);
 
         $thread->attachments = $attachment->id;
-        $modify->buildUpdateKeySqlById($thread, "attachments");
+        $modify->updateKeySqlById($thread, "attachments");
 
         return $ticket;
     }

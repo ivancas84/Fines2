@@ -83,6 +83,8 @@ function fines6_plugin_menu() {
 
     include_once plugin_dir_path(__FILE__) . 'car3_constancia_alumno_regular/car3_page.php';
 
+    include_once plugin_dir_path(__FILE__) . 'cp3_constancia_pase/cp3_page.php';
+
 
   }
 

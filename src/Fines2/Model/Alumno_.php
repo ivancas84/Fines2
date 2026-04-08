@@ -68,7 +68,7 @@ class Alumno_ extends Alumno
             elseif($anio == "3")
                 $this->AniosCursados[2] = "Tercero";
 
-            $this->AniosCursados = array_values($this->AniosCursados);
+            $this->AniosCursados = array_unique(array_values($this->AniosCursados));
         }
     }
 

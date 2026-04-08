@@ -34,7 +34,7 @@ class Disposicion extends Entity
     /** @var Asignatura|null (fk disposicion.asignatura _m:o asignatura.id) */
     public ?Asignatura_ $asignatura_ = null;
 
-    /** @var Planificacion|null (fk disposicion.planificacion _m:o planificacion.id) */
+    /** @var Planificacion_|null (fk disposicion.planificacion _m:o planificacion.id) */
     public ?Planificacion_ $planificacion_ = null;
 
     /** @var int|null */
