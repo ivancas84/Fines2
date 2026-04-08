@@ -57,12 +57,12 @@ class BuildClasses
 
                 if (in_array($relation->fieldName, $entityMetadata->unique)) {
                     // Relación one-to-one
-                    fwrite($file, "    /** @var " . $entities[$relation->refEntityName]->getClassName() . "|null (fk " . $entityName . "." . $relation->fieldName . " _o:o " . $relation->refEntityName . ".id) */\n");
+                    fwrite($file, "    /** @var " . $entities[$relation->refEntityName]->getClassName() . "_|null (fk " . $entityName . "." . $relation->fieldName . " _o:o " . $relation->refEntityName . ".id) */\n");
                     fwrite($file, "    public ?" .  $entities[$relation->refEntityName]->getClassName() . "_ \$" . $relation->fieldName . "_ = null;\n");
                     fwrite($file, "\n");
                 } else {
                     // Relación many-to-one
-                    fwrite($file, "    /** @var " . $entities[$relation->refEntityName]->getClassName() . "|null (fk " . $entityName . "." . $relation->fieldName . " _m:o " . $relation->refEntityName . ".id) */\n");
+                    fwrite($file, "    /** @var " . $entities[$relation->refEntityName]->getClassName() . "_|null (fk " . $entityName . "." . $relation->fieldName . " _m:o " . $relation->refEntityName . ".id) */\n");
                     fwrite($file, "    public ?" . $entities[$relation->refEntityName]->getClassName() . "_ \$" . $relation->fieldName . "_ = null;\n");
                     fwrite($file, "\n");   
                 
@@ -71,7 +71,7 @@ class BuildClasses
 
             // Relaciones one-to-one inversas
             foreach ($entityMetadata->oo as $id => $rref) {
-                fwrite($file, "    /** @var " . $entities[$rref->entityName]->getClassName() . "|null (ref " . $rref->entityName . "." . $rref->fieldName . " _o:o " . $entityName . ".id) */\n");
+                fwrite($file, "    /** @var " . $entities[$rref->entityName]->getClassName() . "_|null (ref " . $rref->entityName . "." . $rref->fieldName . " _o:o " . $entityName . ".id) */\n");
                 fwrite($file, "    public ?" . $entities[$rref->entityName]->getClassName() . "_ \$" . $id . " = null;\n");
                 fwrite($file, "\n");
             }
@@ -81,7 +81,7 @@ class BuildClasses
                 fwrite($file, "    /** @var int|null */\n");
                 fwrite($file, "    public ?int \$" . $id . "Count = null;\n");
                 fwrite($file, "\n");
-                fwrite($file, "    /** @var " . $entities[$rref->entityName]->getClassName() . "[] (ref " . $rref->entityName . "." . $rref->fieldName . " _m:o " . $entityName . ".id) */\n");
+                fwrite($file, "    /** @var " . $entities[$rref->entityName]->getClassName() . "_[] (ref " . $rref->entityName . "." . $rref->fieldName . " _m:o " . $entityName . ".id) */\n");
                 fwrite($file, "    public array \$" . $id . " = [];\n");
                 fwrite($file, "\n");
             }

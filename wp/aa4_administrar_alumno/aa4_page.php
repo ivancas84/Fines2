@@ -26,9 +26,12 @@ function ap4_page() {
 
     $alumno = ap4_init_Alumno($persona);
     if($alumno->_status < 0) return;
+    $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
+    $estados = $dataProvider->fetchAllColumnByParams("alumno_comision", "estado", [], ["estado"=>"ASC"]);
 
-    
-    ap4_init_Comisiones($alumno, $persona);
+    ap4_init_Comisiones($alumno, $estados);
+    ap4_init_comision_add($alumno, $estados);
+
     ap4_init_Calificaciones($alumno, $persona);
     aa4_init_Detalles($persona);
 
@@ -61,18 +64,26 @@ function ap4_init_Alumno(Persona_ $persona): Alumno_{
     return $alumno;
 }
 
-function ap4_init_comisiones(Alumno_ $alumno, Persona_ $persona){
+function ap4_init_comisiones(Alumno_ $alumno, array $estados){
     $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
-    $estados = $dataProvider->fetchAllColumnByParams("alumno_comision", "estado", [], ["estado"=>"ASC"]);
     
     /** @var AlumnoComision_[] */ $alumno_comisiones = $dataProvider->fetchAllEntitiesByParams("alumno_comision", ["alumno" => $alumno->id], ["id" => "DESC"]);
 
     if ($alumno_comisiones) {
+        //$alumno, $estados
         include plugin_dir_path(__FILE__) . 'aa4_comisiones_table_html.php';
     } else {
         echo "<p>No hay comisiones asignadas.</p>";
     }
 }
+
+
+function ap4_init_comision_add(Alumno_ $alumno, array $estados) {
+    include plugin_dir_path(__FILE__) . 'aa4_comision_add_form_html.php';
+}
+
+
+
 function ap4_init_Calificaciones(Alumno_ $alumno, Persona_ $persona = null){
     //***** CALIFICACIONES *****/
     $modifyQueries = \App\Context::getFinesDb()->CreateModifyQueries();
