@@ -1,8 +1,18 @@
-<p>Copiar y pegar desde una nomina en Excel con la estructura definida: 
-<a href="https://docs.google.com/spreadsheets/d/1v0g2Xk4q3x5j6l7z8h8g9f0h0/edit#gid=0" target="_blank">Descargar</a>
-</p>
+<p>Copiar y pegar desde una nomina en Excel con la estructura definida, modificar encabezados con los siguientes:</p>
+<ul>
+    <li>nombres</li>
+    <li>apellidos</li>
+    <li>numero_documento</li>
+    <li>fecha_nacimiento: Cambiar formato yyyy-mm-dd</li>
+    <li>tiene_dni</li>
+    <li>tiene_partida</li>
+    <li>tiene_certificado</li>
+    <li>tiene_constancia</li>
+    <li>previas_completas</li>
+    <li>observaciones</li>
+</ul>
 <form method="POST">
-    <input type="hidden" name="page" value="fines-plugin-cac2" />
+    <input type="hidden" name="page" value="<?= FINES_PLUGIN ?>-cac3" />
     <input type="hidden" name="comision_id" value="<?=$comision->id?>" />
     
     <p>
