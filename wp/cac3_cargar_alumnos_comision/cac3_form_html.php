@@ -1,9 +1,10 @@
-<p>Copiar y pegar desde una nomina en Excel con la estructura definida, modificar encabezados con los siguientes:</p>
+<p>Copiar y pegar desde una nomina en Excel con la estructura definida, modificar encabezados con los siguientes, pueden estar en cualquier orden (* obligatorio):</p>
 <ul>
-    <li>nombres</li>
+    <li>nombres *</li>
     <li>apellidos</li>
-    <li>numero_documento</li>
+    <li>cuil_dni *</li>
     <li>fecha_nacimiento: Cambiar formato yyyy-mm-dd</li>
+    <li>anio_ingreso</li>
     <li>tiene_dni</li>
     <li>tiene_partida</li>
     <li>tiene_certificado</li>

@@ -81,15 +81,32 @@ function cac3_page() {
                 $modifyQueries->insertSql($persona);
             }
 
-
             /** @var Alumno_ */ $alumno = $db->createEntityByUnique("alumno", ["persona" => $persona->id, "plan" => $comision->planificacion_->plan]);
+            
+
+            $tieneActual = !empty($alumno->anio_ingreso);
+            $tieneNuevo  = !empty($ad["anio_ingreso"]);
+
+            $anioActual = $tieneActual ? (int)$alumno->anio_ingreso : null;
+            $anioNuevo  = $tieneNuevo  ? (int)$ad["anio_ingreso"] : null;
+
+            if ($tieneActual && $tieneNuevo && $anioActual > $anioNuevo) {
+                echo "ERROR: En el sistema el año ingreso es mayor al de la hoja de calculo.<br>";
+            }
+
+            else if ($tieneNuevo) {
+                echo "Se ha cargado el valor de año ingreso.<br>";
+                $alumno->set("confirmado_direccion", true);
+                $alumno->sset("anio_ingreso", $anioNuevo);
+            }
 
             if($alumno->tiene_certificado && !ValueTypesUtils::toBool($ad["tiene_certificado"])){
                 echo "ERROR: En el sistema tiene certificado pero en la hoja de calculo no.<br>";
             }
             else if(!$alumno->tiene_certificado && ValueTypesUtils::toBool($ad["tiene_certificado"])){
                 echo "Se ha cargado el valor de tiene certificado.<br>";
-                $alumno->tiene_certificado = true;
+                $alumno->set("tiene_certificado", true);
+
             }
 
             if($alumno->tiene_constancia && !ValueTypesUtils::toBool($ad["tiene_constancia"])){
@@ -97,7 +114,7 @@ function cac3_page() {
             }
             else if(!$alumno->tiene_constancia && ValueTypesUtils::toBool($ad["tiene_constancia"])){
                 echo "Se ha cargado el valor de tiene contancia.<br>";
-                $alumno->tiene_constancia = true;
+                $alumno->set("tiene_constancia", true);
             }
 
             if($alumno->tiene_dni && !ValueTypesUtils::toBool($ad["tiene_dni"])){
@@ -105,23 +122,32 @@ function cac3_page() {
             }
             else if(!$alumno->tiene_dni && ValueTypesUtils::toBool($ad["tiene_dni"])){
                 echo "Se ha cargado el valor de tiene dni.<br>";
-                $alumno->tiene_dni = true;
+                $alumno->set("tiene_dni", true);
+
             }
 
-            if($alumno->tiene_dni && !ValueTypesUtils::toBool($ad["tiene_partida"])){
+            if($alumno->tiene_partida && !ValueTypesUtils::toBool($ad["tiene_partida"])){
                 echo "ERROR: En el sistema tiene partida pero en la hoja de calculo no.<br>";
             }
             else if(!$alumno->tiene_partida && ValueTypesUtils::toBool($ad["tiene_partida"])){
                 echo "Se ha cargado el valor de tiene partida.<br>";
-                $alumno->tiene_partida = true;
+                $alumno->set("tiene_partida", true);
             }
 
-            if($alumno->tiene_dni && !ValueTypesUtils::toBool($ad["previas_completas"])){
+            if($alumno->previas_completas && !ValueTypesUtils::toBool($ad["previas_completas"])){
                 echo "ERROR: En el sistema previas completas pero en la hoja de calculo no.<br>";
             }
             elseif(!$alumno->previas_completas && ValueTypesUtils::toBool($ad["previas_completas"])){
                 echo "Se ha cargado el valor de previas completas.<br>";
-                $alumno->previas_completas = true;
+                $alumno->set("previas_completas", true);
+            }
+
+            if(ValueTypesUtils::hayPalabrasNuevas($alumno->observaciones, $ad["observaciones"])){
+                echo "Se actualizara el valor de observaciones. Antiguo = " . $alumno->observaciones . ". Nuevo = " . $ad["observaciones"] . "<br>";
+                (empty($alumno->observaciones)) ? $alumno->set("observaciones", $ad["observaciones"]) : $alumno->set("observaciones", $alumno->observaciones . " - " . $ad["observaciones"]);
+            }
+            else {
+                echo "No se actualizara el valor de observaciones.<br>";
             }
             
             if ($alumno->_status === 1) {
@@ -134,17 +160,15 @@ function cac3_page() {
                 $modifyQueries->insertSql($alumno);
             }
 
-            
-
 
             $alumnoComisionData = ["alumno" => $alumno->id, "comision" => $comision->id, "observaciones"=> "Importado de lista de alumnos"];
             if($alumno->_status == -1){
                 /** @var AlumnoComision_ */ $alumnoComision = $db->createEntity("alumno_comision", $alumnoComisionData);
-                $alumnoComision->estado = "Ingresante";            
+                $alumnoComision->set("estado", "Ingresante");            
             } else {
-                /** @var AlumnoComision_ */ $alumnoComision = $db->createEntityByUnique("alumno_comision", ["persona" => $persona->id, "plan" => $comision->planificacion_->plan]);
+                /** @var AlumnoComision_ */ $alumnoComision = $db->createEntityByUnique("alumno_comision", ["alumno" => $alumno->id, "comision" => $comision->id]);
                 if($alumnoComision->_status == -1)
-                    $alumnoComision->estado = "Incorporado";
+                    $alumnoComision->set("estado", "Incorporado");
             }
             
             if ($alumnoComision->_status === 1) {
@@ -157,7 +181,6 @@ function cac3_page() {
                 $modifyQueries->insertSql($alumnoComision);
             }
 
-
             $modifyQueries->process();
 
         } catch (Exception $e) {
@@ -165,7 +188,7 @@ function cac3_page() {
             continue;
         }
         
-        echo "Finalizado<br>";
+        echo "Finalizado<br><br>";
 
     }
 

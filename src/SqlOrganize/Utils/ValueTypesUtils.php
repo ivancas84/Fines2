@@ -659,6 +659,54 @@ public static function dictOfListByPropertyName(iterable $source, string $propNa
         exit;
     }
 
+    //normalizar texto para comparar
+    public static function normalizarTexto($texto) {
+        if (empty($texto)) {
+            $texto = '';
+        }
+
+        // pasar a minúsculas
+        $texto = mb_strtolower($texto, 'UTF-8');
+
+        // quitar acentos
+        $texto = iconv('UTF-8', 'ASCII//TRANSLIT', $texto);
+
+        // eliminar signos (dejar solo letras y números)
+        $texto = preg_replace('/[^a-z0-9\s]/', '', $texto);
+
+        // normalizar espacios
+        $texto = preg_replace('/\s+/', ' ', $texto);
+
+        return trim($texto);
+    }
+
+    //obtener palabras de texto para comparar si hay cambios
+    public static function obtenerPalabras($texto) {
+        $texto = self::normalizarTexto($texto);
+        $palabras = explode(' ', $texto);
+
+        // eliminar palabras vacías y duplicadas
+        $palabras = array_filter($palabras);
+        return array_unique($palabras);
+    }
+
+    public static function hayPalabrasNuevas($textoViejo, $textoNuevo) {
+        $palabrasViejas = self::obtenerPalabras($textoViejo);
+        $palabrasNuevas = self::obtenerPalabras($textoNuevo);
+
+        // diferencia: palabras que están en el nuevo pero no en el viejo
+        $nuevas = array_diff($palabrasNuevas, $palabrasViejas);
+
+        return !empty($nuevas);
+    }
+
+    public static function obtenerNuevasPalabras($textoViejo, $textoNuevo) {
+        $palabrasViejas = self::obtenerPalabras($textoViejo);
+        $palabrasNuevas = self::obtenerPalabras($textoNuevo);
+
+        return array_values(array_diff($palabrasNuevas, $palabrasViejas));
+    }
+
 }
 
 if (!function_exists('str_substring_between')) {
