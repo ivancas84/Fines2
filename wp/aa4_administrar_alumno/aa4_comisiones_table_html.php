@@ -1,5 +1,11 @@
+<?
+
+use Fines2\Model\AlumnoComision_;
+
+/** @var array<int, AlumnoComision_> $alumno_comisiones */
+?>
 <h3>Comisiones</h3>
-<form method="post" action="admin-post.php">    
+<form method="post" action="<?=MAIN_URL?>script/actualizar_alumno_comisiones.php">    
     <table border="1" cellpadding="5" cellspacing="0">
         <thead>
             <tr>
@@ -15,7 +21,7 @@
         <tbody>
         <?php for ($i = 0; $i < count($alumno_comisiones); $i++):  $ac = $alumno_comisiones[$i]; ?>
             <tr>
-                <input type="hidden" name="comision_id<?=$i?>" value="<?= esc_attr($ac->id) ?>">
+                <input type="hidden" name="alumno_comision_id<?=$i?>" value="<?= esc_attr($ac->id) ?>">
 
                 <td><?= esc_html($ac->comision_->sede_->getLabel()) ?></td>
                 <td><?= esc_html($ac->comision_->pfid) ?></td>

@@ -1,14 +1,14 @@
 <?php
 
-/**
- * Recibe un array de alumno_comision de un determinado alumno y actualiza sus valores
- */
+//Eliminar todas las calificaciones del curso
+
 
 require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . '/../config/config.php';
 
 use App\Context;
 use Fines2\Model\AlumnoComision_;
+use SqlOrganize\Sql\Db;
 use SqlOrganize\Sql\ModifyQueries;
 use SqlOrganize\Utils\ValueTypesUtils;
 
@@ -19,20 +19,20 @@ try {
     /** @var Db */ $db = Context::getFinesDb();
     /** @var ModifyQueries */ $modifyQueries = $db->CreateModifyQueries();
 
-    while (isset($_POST["comision_id$i"])) {
-        $acData = ValueTypesUtils::filterArrayBySuffix($_POST, $i);
+    while (isset($_POST["alumno_comision_id$i"])) {
+        $alumnoComisionData = ValueTypesUtils::filterArrayBySuffix($_POST, $i);
 
-        /** @var AlumnoComision_ */ $ac = $db->createEntityById("alumno_comision", $acData["comision_id"]);
-        $ac->ssetFromArray($acData);
-        if($ac->_status < 1){
-            $ac->update($modifyQueries);
+         /** @var AlumnoComision_ */ $alumnoComision = $db->createEntityById("alumno_comision", $alumnoComisionData["alumno_comision_id"]);
+        $alumnoComision->ssetFromArray($alumnoComisionData);
+        if($alumnoComision->_status < 1){
+            $alumnoComision->update($modifyQueries);
             $countActualizados++;
         }
         $i++;
     }
 
     $modifyQueries->process();
-    ValueTypesUtils::redirect("$countActualizados comisiones de alumno actualizadas");
+    ValueTypesUtils::redirect("$countActualizados comisiones actualizadas");
 
 
 } catch (Exception $ex){

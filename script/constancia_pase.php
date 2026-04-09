@@ -15,7 +15,7 @@ header('Content-Type: text/html; charset=utf-8');
 mb_internal_encoding('UTF-8');
 
 require_once __DIR__ . '/../config/config.php';
-require __DIR__ . '/../vendor/autoload.php';+
+require __DIR__ . '/../vendor/autoload.php';
 
 
 /** @var Db */ $dbFines = Context::getFinesDb();
@@ -97,7 +97,7 @@ if($alumno->CalificacionDesaprobada_Count > 0){
 
 
 $bodyEnd = "<p>Se extiende la presente a pedido del interesado en La Plata el día {$s_($fecha)} para ser presentado ante {$s_($presentado)}.</p>";
-$bodyEnd .= !empty($observaciones) ? $s_($observaciones) : ""; 
+if (!empty($observaciones)) $bodyEnd .= "<p>Observaciones:{$s_($observaciones)}</p>";
 
 $body .= $bodyEnd;
 
