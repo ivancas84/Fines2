@@ -87,17 +87,28 @@ function cac3_page() {
             $tieneActual = !empty($alumno->anio_ingreso);
             $tieneNuevo  = !empty($ad["anio_ingreso"]);
 
-            $anioActual = $tieneActual ? (int)$alumno->anio_ingreso : null;
-            $anioNuevo  = $tieneNuevo  ? (int)$ad["anio_ingreso"] : null;
+            $anioActual = $tieneActual ? (int)substr($alumno->anio_ingreso, 0, 1) : null;
+            $anioNuevo  = $tieneNuevo  ? (int)substr($ad["anio_ingreso"], 0, 1) : null;
 
             if ($tieneActual && $tieneNuevo && $anioActual > $anioNuevo) {
                 echo "ERROR: En el sistema el año ingreso es mayor al de la hoja de calculo.<br>";
             }
-
             else if ($tieneNuevo) {
                 echo "Se ha cargado el valor de año ingreso.<br>";
                 $alumno->set("confirmado_direccion", true);
                 $alumno->sset("anio_ingreso", $anioNuevo);
+            }
+
+            if (!empty(substr($ad["modulo"], 0, 1))) {
+                $modulo = (int)$ad["modulo"];
+
+                if ($modulo % 2 !== 0) {
+                    echo "Se ha asignado semestre ingreso = 1 (módulo impar).<br>";
+                    $alumno->set("semestre_ingreso", 1);
+                } else {
+                    echo "Se ha asignado semestre ingreso = 2 (módulo par).<br>";
+                    $alumno->set("semestre_ingreso", 2);
+                }
             }
 
             if($alumno->tiene_certificado && !ValueTypesUtils::toBool($ad["tiene_certificado"])){

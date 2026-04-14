@@ -5,6 +5,7 @@
     <li>cuil_dni *</li>
     <li>fecha_nacimiento: Cambiar formato yyyy-mm-dd</li>
     <li>anio_ingreso</li>
+    <li>modulo</li>
     <li>tiene_dni</li>
     <li>tiene_partida</li>
     <li>tiene_certificado</li>
