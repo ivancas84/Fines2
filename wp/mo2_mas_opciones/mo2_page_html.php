@@ -10,6 +10,8 @@
 </p><a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines6-plugin-pfpc2">Procesar Comisiones PF desde Informe Global</a></p>
 
 </p><a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines6-plugin-trp2">Transferir persona</a></p>
+</p><a href="https://planfines2.com.ar/wp/wp-admin/admin.php?page=fines6-plugin-cc">Cargar Cookie Programa Fines</a></p>
+
 
 <h2>Scripts consulta</h2>
 </p><a href="https://planfines2.com.ar/scripts/contralor.php">Tomas pendientes para contralor</a></p>
