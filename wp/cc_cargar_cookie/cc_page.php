@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 use App\Context;
 use Fines2\Model\Alumno_;

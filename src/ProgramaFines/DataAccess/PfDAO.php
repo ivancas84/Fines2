@@ -84,9 +84,10 @@ class PfDAO
     /**
      * @param string $pfid comision
      * @param string $periodo 6 = 2026-1
+     * @return array<int, array<string,mixed>> 
      */
-    public function getListaAlumnos($pfid, $periodo = 6){
-        return $this->getPage(
+    public function getListaAlumnos($pfid, $periodo = 6): array{
+        $htmlListaAlumnos = $this->getPage(
             "https://www.programafines.ar/inicial/index4.php",
             [
                 "a" => 12,
@@ -94,7 +95,48 @@ class PfDAO
                 "mi_periodo" => $periodo
             ]
         );
+
+        return $this->parseListaAlumnos($htmlListaAlumnos);
     }
+
+    public function parseListaAlumnos($html)
+{
+    $result = [];
+
+    // Separar por cada alumno
+    $bloques = preg_split('/<h2[^>]*>/', $html);
+
+    foreach ($bloques as $bloque) {
+        $bloque = trim($bloque);
+        if ($bloque === '') continue;
+
+        $alumno = [];
+
+        // POSICION + NOMBRE + DNI
+        if (preg_match('/^(\d+)\s+(.+?)\s+DNI\s+(\d+)/s', $bloque, $m)) {
+            $alumno['posicion'] = $m[1];
+            $alumno['nombre']   = trim($m[2]);
+            $alumno['dni']      = $m[3];
+        } else {
+            continue; // si no matchea, no es un alumno
+        }
+
+        // Fecha nacimiento + email
+        if (preg_match('/Fecha Nacimiento:\s*([^E<]+)\s*Email:\s*([^<]*)/s', $bloque, $m)) {
+            $alumno['fecha_nacimiento'] = trim($m[1]);
+            $alumno['email']            = trim($m[2]);
+        }
+
+        // Teléfono
+        if (preg_match('/Teléfono:\s*([^<]+)/', $bloque, $m)) {
+            $alumno['telefono'] = trim($m[1]);
+        }
+
+        $result[] = $alumno;
+    }
+
+    return $result;
+}
 
     public function openFormAgregarAlumnoPCI()
     {
