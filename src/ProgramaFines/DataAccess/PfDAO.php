@@ -99,45 +99,67 @@ class PfDAO
         return $this->parseListaAlumnos($htmlListaAlumnos);
     }
 
-    public function parseListaAlumnos($html)
-{
-    $result = [];
+    protected function parseListaAlumnos($html)
+    {
+        $result = [];
 
-    // Separar por cada alumno
-    $bloques = preg_split('/<h2[^>]*>/', $html);
+        // Separar por cada alumno
+        $bloques = preg_split('/<h2[^>]*>/', $html);
 
-    foreach ($bloques as $bloque) {
-        $bloque = trim($bloque);
-        if ($bloque === '') continue;
+        foreach ($bloques as $bloque) {
+            $bloque = trim($bloque);
+            if ($bloque === '') continue;
 
-        $alumno = [];
+            $alumno = [];
 
-        // POSICION + NOMBRE + DNI
-        if (preg_match('/^(\d+)\s+(.+?)\s+DNI\s+(\d+)/s', $bloque, $m)) {
-            $alumno['posicion'] = $m[1];
-            $alumno['nombre']   = trim($m[2]);
-            $alumno['dni']      = $m[3];
-        } else {
-            continue; // si no matchea, no es un alumno
+            // POSICION + NOMBRE + DNI
+            if (preg_match('/^(\d+)\s+(.+?)\s+DNI\s+(\d+)/s', $bloque, $m)) {
+                $alumno['posicion'] = $m[1];
+                $alumno['nombre']   = trim($m[2]);
+                $alumno['numero_documento']      = $m[3];
+            } else {
+                continue; // si no matchea, no es un alumno
+            }
+
+            //inicializar campos opcionales
+            $alumno["fecha_nacimiento"] = null;
+            $alumno["email"] = null;
+            $alumno["telefono"] = null;
+            
+            // Fecha nacimiento + email
+            if (preg_match('/Fecha Nacimiento:\s*([^E<]+)\s*Email:\s*([^<]*)/s', $bloque, $m)) {
+                $alumno['fecha_nacimiento'] = trim($m[1]);
+                if (strpos($m[2], '@') !== false) {
+                    $alumno['email'] = trim($m[2]);
+                }
+            }
+
+            // Teléfono
+            if (preg_match('/Teléfono:\s*([^<]+)/', $bloque, $m) && strlen($m[1])> 6) {
+                $alumno['telefono'] = trim($m[1]);
+            }
+
+            $result[] = $alumno;
         }
 
-        // Fecha nacimiento + email
-        if (preg_match('/Fecha Nacimiento:\s*([^E<]+)\s*Email:\s*([^<]*)/s', $bloque, $m)) {
-            $alumno['fecha_nacimiento'] = trim($m[1]);
-            $alumno['email']            = trim($m[2]);
-        }
-
-        // Teléfono
-        if (preg_match('/Teléfono:\s*([^<]+)/', $bloque, $m)) {
-            $alumno['telefono'] = trim($m[1]);
-        }
-
-        $result[] = $alumno;
+        return $result;
     }
 
-    return $result;
-}
 
+    /**
+     * Pantalla raiz para agregar alumno
+     */
+    public function openFormAgregarAlumno()
+    {
+        return $this->getPage(
+            "https://www.programafines.ar/inicial/index4.php",
+            ["a" => 711]
+        );
+    }
+
+    /**
+     * Pantalla raiz para agregar alumno PCI
+     */
     public function openFormAgregarAlumnoPCI()
     {
         return $this->getPage(

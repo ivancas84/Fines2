@@ -35,6 +35,11 @@ define("PATH_SCHEMA_FINES", __DIR__ . '/../src/Fines2/schema.json');
 define("PATH_SCHEMA_PEDIDOS", "path/to/schema.json");
 define("PATH_START_API", 1);
 
+define("PF_PERIODO", 6);
+
+
+
+
 
 
 

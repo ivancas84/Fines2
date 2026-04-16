@@ -42,10 +42,12 @@ function la2_page() {
     if(!empty($_SESSION["PHPSESS"])){
         $pf = new PfDAO( $_SESSION['PHPSESS']);
 
-        echo "voy a consultar la lista de alumnos";
-        $lista_alumnos = $pf->getListaAlumnos($comision->pfid);
+        /** @var array<int, array<string,mixed>> */ $alumnos_pf = $pf->getListaAlumnos($comision->pfid, PF_PERIODO);
 
-        echo "<pre>";
-        print_r($lista_alumnos);
+        if (!empty($alumnos_pf)) {
+            include plugin_dir_path(__FILE__) . 'la2_tabla_alumnos_pf_html.php';
+        } else {
+            echo "<p>No se encontraron alumnos en programafines para esta comision en el período indicado.</p>";
+        }
     }
 }
