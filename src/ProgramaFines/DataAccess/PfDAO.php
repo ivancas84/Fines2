@@ -145,6 +145,12 @@ class PfDAO
         return $result;
     }
 
+    public function openFormModificarAlumno(string $dni){
+        return $this->getPage(
+            "https://www.programafines.ar/inicial/index4.php?a=8&b=1",
+            ["dni_cargar" => $dni]
+        );
+    }
 
     /**
      * Pantalla raiz para agregar alumno
@@ -153,9 +159,48 @@ class PfDAO
     {
         return $this->getPage(
             "https://www.programafines.ar/inicial/index4.php",
-            ["a" => 711]
+            ["a" => 7]
         );
     }
+
+    
+    
+        /**
+         * @example 
+         * apellido PEREZ
+         * nombre JUAN PABLO
+         * cuil1 0
+         * dni_cargar 31234567
+         * cuil2 0
+         * nacionalidad Argentina
+         * sexo 2
+         * dia_nac 7
+         * mes_nac 6
+         * ano_nac 1997
+         * mi_periodo 6
+         * subcategory 10142
+         */
+    public function sendDataForm1AgregarAlumno(array $data)
+    {
+        return $this->request(
+            "https://www.programafines.ar/inicial/index4.php?a=7&b=1",
+            [],
+            [
+                "apellido" => $data["apellido"],
+                "nombre" => $data["nombre"],
+                "cuil1" => $data["cuil1"],
+                "dni_cargar" => $data["dni"],
+                "cuil2" => $data["cuil2"],
+                "nacionalidad" => $data["nacionalidad"] ?? "Argentina",
+                "sexo" => $data["sexo"],
+                "dia_nac" => $data["dia"],
+                "mes_nac" => $data["mes"],
+                "ano_nac" => $data["ano"],
+                "mi_periodo" => $data["periodo"],
+                "subcategory" => $data["comision"],
+            ]
+        );
+    } 
 
     /**
      * Pantalla raiz para agregar alumno PCI
