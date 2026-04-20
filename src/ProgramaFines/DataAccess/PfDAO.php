@@ -125,7 +125,11 @@ class PfDAO
             $alumno["fecha_nacimiento"] = null;
             $alumno["email"] = null;
             $alumno["telefono"] = null;
-            
+            $alumno["historial"] = null;
+            $alumno["cambiar_comision"] = null;
+            $alumno["eliminar"] = null;
+            $alumno["modificar"] = null;
+
             // Fecha nacimiento + email
             if (preg_match('/Fecha Nacimiento:\s*([^E<]+)\s*Email:\s*([^<]*)/s', $bloque, $m)) {
                 $alumno['fecha_nacimiento'] = trim($m[1]);
@@ -139,9 +143,31 @@ class PfDAO
                 $alumno['telefono'] = trim($m[1]);
             }
 
+            // HISTORIAL
+            if (preg_match('/href="([^"]*a=15[^"]*)"/', $bloque, $m)) {
+                $alumno["historial"] = html_entity_decode($m[1]);
+            }
+
+            // CAMBIAR COMISION (a=12 & b=2)
+            if (preg_match('/href="([^"]*a=12(?:&amp;|&)b=2[^"]*)"/', $bloque, $m)) {
+                $alumno["cambiar_comision"] = html_entity_decode($m[1]);
+            }
+
+            // ELIMINAR (a=12 & b=1)
+            if (preg_match('/href="([^"]*a=12(?:&amp;|&)b=1[^"]*)"/', $bloque, $m)) {
+                $alumno["eliminar"] = html_entity_decode($m[1]);
+            }
+
+            // MODIFICAR (a=8)
+            if (preg_match('/href="([^"]*a=8[^"]*)"/', $bloque, $m)) {
+                $alumno["modificar"] = html_entity_decode($m[1]);
+            }
+
             $result[] = $alumno;
         }
 
+        echo "<pre>";
+        print_r($result);
         return $result;
     }
 

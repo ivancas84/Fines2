@@ -20,6 +20,14 @@
                 <td><?= esc_html($apf["numero_documento"] ?? "?"); ?></td>
                 <td><?= esc_html($apf["fecha_nacimiento"] ?? "?"); ?></td>
                 <td><?= esc_html($apf["email"] ?? "?"); ?></td>
+                <td>
+                    <a href="<?= esc_url(PF_URL. $apf["eliminar"])?>" title="Eliminar de la lista en PF">
+                        <button type="button">
+                            <span class="dashicons dashicons-edit"></span>
+                        </button>
+                    </a>
+
+                </td>
             </tr>
         <? endforeach; ?>
     </tbody>

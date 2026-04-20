@@ -36,6 +36,8 @@ define("PATH_SCHEMA_PEDIDOS", "path/to/schema.json");
 define("PATH_START_API", 1);
 
 define("PF_PERIODO", 6);
+define("PF_URL", "https://programafines.ar/inicial/");
+
 
 
 
