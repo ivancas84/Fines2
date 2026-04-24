@@ -10,6 +10,7 @@ use SqlOrganize\Utils\ValueTypesUtils;
 
 use Exception;
 use DateTime;
+use Override;
 
 class Persona_ extends Persona
 {
@@ -41,6 +42,13 @@ class Persona_ extends Persona
 
     public function getCuilDni(){
         return (!empty($this->cuil) && str_contains($this->cuil,$this->numero_documento)) ? $this->cuil : $this->numero_documento;
+    }
+
+    public function getSexo(): ?string {
+        if ($this->sexo == 1) return "Masculino";
+        elseif ($this->sexo == 2) return "Femenino";
+        elseif ($this->sexo == 3) return "No Binario";
+        return null;
     }
 
     public static function cuilDni(string $cuilDni): array {
@@ -97,6 +105,93 @@ class Persona_ extends Persona
         unset($e1["nombres"], $e2["nombres"]);
         unset($e1["apellidos"], $e2["apellidos"]);
         return array_merge($response, $this->_db->compare($this->_entityName, $e1, $e2, $cp));
+    }
+
+    
+    public function ssetIfNullFromPf(array $data): void
+    {
+                // Campos simples
+        $map = [
+            'nombre'   => 'nombres',
+            'apellido' => 'apellidos',
+            'dni'      => 'numero_documento',
+            'cuil1'    => 'cuil1',
+            'cuil2'    => 'cuil2',
+            'email'    => 'email',
+            'dia_nac'    => 'dia_nacimiento',
+            'mes_nac'    => 'mes_nacimiento',
+            'ano_nac'    => 'anio_nacimiento',
+            'sexo' => 'sexo',
+            'nacionalidad' => 'nacionalidad',
+            'codigo_area' => 'codigo_area',
+            'nro_telefono' => 'telefono',
+
+        ];
+
+        foreach ($map as $input => $prop) {
+            if (isset($data[$input])) {
+                $this->ssetIfNull($prop, $data[$input]);
+            }
+        }
+
+    }
+
+    public function ssetNotNullFromPF(array $data): void 
+    {
+        // Campos simples
+        $map = [
+            'nombre'   => 'nombres',
+            'apellido' => 'apellidos',
+            'dni'      => 'numero_documento',
+            'cuil1'    => 'cuil1',
+            'cuil2'    => 'cuil2',
+            'email'    => 'email',
+            'dia_nac'    => 'dia_nacimiento',
+            'mes_nac'    => 'mes_nacimiento',
+            'ano_nac'    => 'anio_nacimiento',
+            'sexo' => 'sexo',
+            'nacionalidad' => 'nacionalidad',
+            'codigo_area' => 'codigo_area',
+            'nro_telefono' => 'telefono',
+
+        ];
+
+        foreach ($map as $input => $prop) {
+            if (isset($data[$input])) {
+                $this->sset($prop, $data[$input]);
+            }
+        }
+
+    }
+
+
+     public function toArrayPF(): array{
+        /** @var array */ $data = [
+        "mi_periodo"   => PF_PERIODO,
+        "apellido"     => $this->getApellidos(),
+        "nombre"       => $this->getNombres(),
+        "cuil1"        => $this->cuil1,
+        "dni_cargar"   => $this->numero_documento,
+        "cuil2"        => $this->cuil2,
+        "nacionalidad" => $this->nacionalidad ?? "Argentina",
+        "dia_nac"      => $this->dia_nacimiento,
+        "mes_nac"      => $this->mes_nacimiento,
+        "ano_nac"      => $this->anio_nacimiento,
+        'email'        => $this->email,
+        'nacionalidad' => $this->nacionalidad,
+        'cod_area'     => $this->codigo_area,
+        'nro_telefono' => $this->telefono,
+        ];
+
+        if(!empty($this->sexo))
+            $data["sexo"] =  $this->sexo;
+        else 
+            $data["sexo"] = str_contains(strtolower($this->genero), 'a') ? 1 : 2;
+
+        return $data;
+
+
+
     }
 
 }

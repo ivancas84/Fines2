@@ -22,5 +22,11 @@ class AlumnoComision_ extends AlumnoComision
             echo " - Alumno no tiene comisiones<br>";
         }
     }
+
+    public function toArrayPF(): array{
+        /** @var array */ $data = $this->alumno_->persona_->toArrayPF(); 
+        $data["subcategory"]  = $this->comision_->pfid;
+        return $data;
+    }
 }
 

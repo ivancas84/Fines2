@@ -5,6 +5,7 @@ namespace ProgramaFines\DataAccess;
 use Exception;
 use DateTime;
 
+class AlumnoNoExisteException extends Exception {}
 
 class PfDAO
 {
@@ -26,7 +27,7 @@ class PfDAO
         ]);
     }
 
-    private function request(string $url, array $headers = [], array $postData = null)
+    private function request(string $url, array $headers = [], ?array $postData = null)
     {
         curl_setopt($this->client, CURLOPT_URL, $url);
 
@@ -166,20 +167,149 @@ class PfDAO
             $result[] = $alumno;
         }
 
-        echo "<pre>";
-        print_r($result);
+  
         return $result;
     }
 
+
+ 
+
+
     public function openFormModificarAlumno(string $dni){
-        return $this->getPage(
+        $html =  $this->getPage(
             "https://www.programafines.ar/inicial/index4.php?a=8&b=1",
             ["dni_cargar" => $dni]
         );
+
+        $htmlLower =  strtolower($html);
+        $noExisteAlumno = str_contains($htmlLower, 'ingrese dni del estudiante') ||
+                   str_contains($htmlLower, 'dni del estudiante') ||
+                   !str_contains($htmlLower, 'datos necesarios para la inscripción');
+        if($noExisteAlumno) throw new AlumnoNoExisteException("No existe el alumno, no se puede modificar");
+        return $this->parseFormModificarAlumno($html);
     }
 
     /**
-     * Pantalla raiz para agregar alumno
+     * @example Similar a sendDataForm1AgregarAlumno pero no tiene "subcategory" ni "dni_cargar"
+     * (Si se manda dni_cargar de todas formas, permitirá modificar el dni?)
+     * apellido PEREZ
+     * nombre JUAN PABLO
+     * cuil1 0
+     * cuil2 0
+     * nacionalidad Argentina
+     * sexo 2 (1 Masculino - 2 Femenino - 3 No Binario)
+     * dia_nac 7
+     * mes_nac 6
+     * ano_nac 1997
+     * mi_periodo 6
+     * cod_area 221
+     * nro_telefono 4556677
+     * direccion 4556677
+     */
+    public function sendDataFormModificarAlumno(array $data)
+    {
+        return $this->request(
+            "https://www.programafines.ar/inicial/index4.php?a=8&b=2",
+            [],
+            [
+                "nombre"=> $data["nombre"] ?? throw new Exception("No está definido el nombre"),
+                "dni_cargar" => $data["dni_cargar"] ?? throw new Exception("El dni no se encuentra definido"),
+                "apellido"=> $data["apellido"] ?? $data["nombre"],
+                "mi_periodo" => $data["mi_periodo"] ?? PF_PERIODO,
+                "cuil1" => $data["cuil1"] ?? "0",
+                "cuil2" => $data["cuil2"] ?? "0",
+                "nacionalidad" => $data["nacionalidad"] ?? "Argentina",
+                "sexo" => $data["sexo"] ?? "2",
+                "dia_nac" => $data["dia_nac"] ?? "1",
+                "mes_nac" => $data["mes_nac"] ?? "2",
+                "ano_nac" => $data["ano_nac"] ?? "1999",
+                "cod_area" => $data["cod_area"] ?? "221", 
+                "nro_telefono" => $data["nro_telefono"] ?? "", 
+                "direccion" => $data["direccion"] ?? ""                
+            ]
+        );
+    } 
+
+    protected function parseFormModificarAlumno($html): array
+    {
+        $data = [
+            'apellido'      => null,
+            'nombre'        => null,
+            'dni'           => null,
+            'cuil1'         => null,
+            'cuil2'         => null,
+            'sexo'          => null,        // 1 = Masculino, 2 = Femenino, 3 = No Binario
+            'dia_nac'       => null,
+            'mes_nac'       => null,
+            'ano_nac'       => null,
+            'direccion'     => null,
+            'departamento'  => null,
+            'localidad'     => null,
+            'partido'       => null,
+            'email'         => null,
+            'nacionalidad'  => null,
+            'cod_area'      => null,
+            'nro_telefono'  => null,
+        ];
+
+        // Apellido y Nombre
+        if (preg_match('/name="apellido"[^>]*value="([^"]*)"/i', $html, $m)) {
+            $data['apellido'] = html_entity_decode(trim($m[1]), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        }
+        if (preg_match('/name="nombre"[^>]*value="([^"]*)"/i', $html, $m)) {
+            $data['nombre'] = html_entity_decode(trim($m[1]), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        }
+
+        // CUIL (partes) y DNI (el número que está entre los dos inputs)
+        if (preg_match('/name="cuil1"[^>]*value="([^"]*)"/i', $html, $m)) {
+            $data['cuil1'] = trim($m[1]);
+        }
+        if (preg_match('/-\s*(\d{6,9})\s*-/', $html, $m)) {   // DNI central
+            $data['dni'] = $m[1];
+        }
+        if (preg_match('/name="cuil2"[^>]*value="([^"]*)"/i', $html, $m)) {
+            $data['cuil2'] = trim($m[1]);
+        }
+
+        // Sexo (radio con checked)
+        if (preg_match('/name="sexo"[^>]*value="(\d+)"[^>]*checked/i', $html, $m)) {
+            $data['sexo'] = (int)$m[1];
+        }
+
+        // Fecha de nacimiento (selects)
+        if (preg_match('/name="dia_nac"[^>]*>.*?<option[^>]*value="(\d+)"\s*selected="selected"/is', $html, $m)) {
+            $data['dia_nac'] = (int)$m[1];
+        }
+        if (preg_match('/name="mes_nac"[^>]*>.*?<option[^>]*value="(\d+)"\s*selected="selected"/is', $html, $m)) {
+            $data['mes_nac'] = (int)$m[1];
+        }
+        if (preg_match('/name="ano_nac"[^>]*>.*?<option[^>]*value="(\d+)"\s*selected="selected"/is', $html, $m)) {
+            $data['ano_nac'] = (int)$m[1];
+        }
+
+        // Campos de texto simples
+        $camposTexto = ['direccion', 'departamento', 'localidad', 'partido', 'email', 'cod_area', 'nro_telefono'];
+        foreach ($camposTexto as $campo) {
+            if (preg_match('/name="' . preg_quote($campo, '/') . '"[^>]*value="([^"]*)"/i', $html, $m)) {
+                $valor = trim($m[1]);
+                $data[$campo] = ($valor !== '') ? html_entity_decode($valor, ENT_QUOTES | ENT_HTML5, 'UTF-8') : null;
+            }
+        }
+
+        // Nacionalidad (select)
+        if (preg_match('/name="nacionalidad"[^>]*>.*?<option[^>]*value="([^"]+)"\s*selected="selected"/is', $html, $m)) {
+            $data['nacionalidad'] = html_entity_decode(trim($m[1]), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        }
+
+        return $data;
+    }
+
+
+
+    /**
+     * Pantalla raiz para agregar alumno a una comision
+     * 
+     * 
      */
     public function openFormAgregarAlumno()
     {
@@ -188,6 +318,8 @@ class PfDAO
             ["a" => 7]
         );
     }
+
+   
 
     
     
@@ -212,21 +344,40 @@ class PfDAO
             "https://www.programafines.ar/inicial/index4.php?a=7&b=1",
             [],
             [
-                "apellido" => $data["apellido"],
-                "nombre" => $data["nombre"],
-                "cuil1" => $data["cuil1"],
-                "dni_cargar" => $data["dni"],
-                "cuil2" => $data["cuil2"],
+                "nombre" => $data["nombre"] ?? throw new Exception("El nombre no se encuentra definido"),
+                "dni_cargar" => $data["dni_cargar"] ?? throw new Exception("El dni no se encuentra definido"),
+                "subcategory" => $data["subcategory"] ?? throw new Exception("El número de comisión no se encuentra definido"),
+                "mi_periodo" => $data["mi_periodo"] ?? PF_PERIODO,
+                "apellido" => $data["apellido"] ?? $data["nombre"],
+                "cuil1" => $data["cuil1"] ?? "0",
+                "cuil2" => $data["cuil2"] ?? "0",
                 "nacionalidad" => $data["nacionalidad"] ?? "Argentina",
-                "sexo" => $data["sexo"],
-                "dia_nac" => $data["dia"],
-                "mes_nac" => $data["mes"],
-                "ano_nac" => $data["ano"],
-                "mi_periodo" => $data["periodo"],
-                "subcategory" => $data["comision"],
+                "sexo" => $data["sexo"] ?? "2",
+                "dia_nac" => $data["dia_nac"] ?? "1",
+                "mes_nac" => $data["mes_nac"] ?? "2",
+                "ano_nac" => $data["ano_nac"] ?? "1999",
+
             ]
         );
     } 
+
+    public function sendDataForm2AgregarAlumno(array $data)
+    {
+        return $this->request(
+            "https://www.programafines.ar/inicial/index4.php?a=7&b=2",
+            [],
+            [
+                "direccion" => $data["direccion"] ?? "",
+                "departamento" => $data["departamento"] ?? "",
+                "localidad" => $data["localidad"] ?? "",
+                "partido" => $data["partido"] ?? "",
+                "email" => $data["email"] ?? "",
+                "cod_area" => $data["cod_area"] ?? "",
+                "nro_telefono" => $data["telefono"] ?? ""
+            ]
+        );
+    }
+
 
     /**
      * Pantalla raiz para agregar alumno PCI
@@ -238,6 +389,27 @@ class PfDAO
             ["a" => 711]
         );
     }
+    public function openFormCambiarComisionAlumno(){
+        return $this->getPage(
+            "https://programafines.ar/inicial/index4.php?a=22",
+            ["a" => 22]
+        );
+    }
+
+    /**
+         * @example 
+         * dni_cargar 31234567
+         * comision_destino 10142
+         */
+    public function sendDataCambiarComisionAlumno(array $data)
+    {
+        return $this->request(
+            "https://www.programafines.ar/inicial/index4.php?a=7&b=1",
+            [],
+            $data
+        );
+    } 
+
 
     public function sendDataForm1AgregarAlumnoPCI(array $data)
     {

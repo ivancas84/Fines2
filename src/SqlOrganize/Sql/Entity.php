@@ -472,7 +472,7 @@ class Entity
 
     public function resetAndCheck(){
         $this->reset();
-         if(!$this->check())
+        if(!$this->check())
             throw new Exception($this->getLogging()->__toString());
     }
 

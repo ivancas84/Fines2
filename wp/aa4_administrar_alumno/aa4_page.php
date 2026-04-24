@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 use App\Context;
 use Fines2\DataAccess\AlumnoDAO;
@@ -7,6 +8,8 @@ use Fines2\Model\Alumno_;
 use Fines2\Model\AlumnoComision_;
 use Fines2\Model\Calificacion_;
 use Fines2\Model\Persona_;
+use ProgramaFines\DataAccess\AlumnoNoExisteException;
+use ProgramaFines\DataAccess\PfDAO;
 use SqlOrganize\Sql\Db;
 
 add_submenu_page(
@@ -20,9 +23,16 @@ add_submenu_page(
 
 function ap4_page() {
 
+    $pf_session = $_SESSION["PHPSESS"] ?? null;
     wp_page_message();
-    $persona = ap4_init_Persona();
+    $persona = ap4_init_Persona($pf_session);
     if($persona->_status < 0) return;
+
+    
+    if(!empty($pf_session)){
+        ap4_init_AlumnoPf($persona, $pf_session);
+    }
+
 
     $alumno = ap4_init_Alumno($persona);
     if($alumno->_status < 0) return;
@@ -38,31 +48,53 @@ function ap4_page() {
 }
 
 
-function ap4_init_Persona(): Persona_{
-    $persona_id = isset($_GET['persona_id']) ? $_GET['persona_id'] : null;
+    function ap4_init_Persona(?string $pf_session): Persona_{
+        $persona_id = isset($_GET['persona_id']) ? $_GET['persona_id'] : null;
 
-    /** @var Db */ $db = Context::getFinesDb();
-    if(empty($persona_id)) $persona = $db->createEntity("persona");
-    else $persona = $db->createEntityById("persona", $persona_id);
+        /** @var Db */ $db = Context::getFinesDb();
+        if(empty($persona_id)) $persona = $db->createEntity("persona");
+        else $persona = $db->createEntityById("persona", $persona_id);
 
-    include plugin_dir_path(__FILE__) . 'aa4_persona_form_html.php';
+        include plugin_dir_path(__FILE__) . 'aa4_persona_form_html.php';
 
-    return $persona;
-}
+        return $persona;
+    }
 
-function ap4_init_Alumno(Persona_ $persona): Alumno_{
-    //***** Campos de alumno *****/
-    $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
+    function ap4_init_Alumno(Persona_ $persona): Alumno_{
+        //***** Campos de alumno *****/
+        $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
 
-    $estados_inscripcion = $dataProvider->fetchAllColumnByParams("alumno", "estado_inscripcion", [], ["estado_inscripcion"=>"ASC"]);
-    $planes = $dataProvider->fetchAllEntitiesByParams("plan");
+        $estados_inscripcion = $dataProvider->fetchAllColumnByParams("alumno", "estado_inscripcion", [], ["estado_inscripcion"=>"ASC"]);
+        $planes = $dataProvider->fetchAllEntitiesByParams("plan");
 
-    /** @var Db */ $db = Context::getFinesDb();
-    /** @var Alumno_ */ $alumno = $db->createEntityByUnique("alumno", ["persona" => $persona->id]);
+        /** @var Db */ $db = Context::getFinesDb();
+        /** @var Alumno_ */ $alumno = $db->createEntityByUnique("alumno", ["persona" => $persona->id]);
 
-    include plugin_dir_path(__FILE__) . 'aa4_alumno_form_html.php';
-    return $alumno;
-}
+        include plugin_dir_path(__FILE__) . 'aa4_alumno_form_html.php';
+        return $alumno;
+    }
+
+    function ap4_init_AlumnoPf(Persona_ $persona, string $pf_session): void{
+        $pfdao = new PfDAO($pf_session);
+        try {
+            $data = $pfdao->openFormModificarAlumno($persona->numero_documento);
+            /** @var Persona_ */ $personaPf = clone $persona;
+            $personaPf->ssetNotNullFromPF($data);
+            $diferencias = $persona->compare($personaPf);
+            if(empty($diferencias)){
+                echo "<p>El alumno existe en programafines, no se encontraron diferencias en datos relevantes<p>";
+            } else {
+                echo "<p>El alumno existe en programafines, se encontraron las siguientes diferencias en datos relevantes<p>";
+                echo "<pre>";
+                print_r($diferencias);
+                echo "</pre>";
+            }
+
+        } catch (AlumnoNoExisteException $ex){
+            echo "<p>El alumno no existe en programafines</p>";
+        }
+    }
+
 
 function ap4_init_comisiones(Alumno_ $alumno, array $estados){
     $dataProvider = \App\Context::getFinesDb()->CreateDataProvider();
