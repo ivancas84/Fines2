@@ -30,7 +30,7 @@ function cac3_page() {
     
     /** @var Comision_ */ $comision = $dataProvider->fetchEntityByParams("comision", ["id" => $_GET['comision_id']]);
     
-    if(empty($comision)) throw new Exception("No se ha encontrado la comision");
+    if(empty($comision)) throw new Exception("No se ha encontrado la comisión");
  
     echo "<h1>Cargar alumnos en comisión " . $comision->getLabel() . "</h1>";
 
@@ -41,25 +41,25 @@ function cac3_page() {
 
     $rawData = trim($_POST['data']);
     $alumnosData = ValueTypesUtils::excelParseIgnorePrefix($rawData);
-    echo "<h2>Cantidad de alumnos a procesar ". count($alumnosData) . "</h2>";
-    $dnisProcesados = [];
+    echo "<h2>Cantidad de alumnos a procesar: " . count($alumnosData) . "</h2>";
     
+    $dnisProcesados = [];
     $i = 0;
 
     foreach($alumnosData as $ad){
         try {
-
             /** @var ModifyQueries */ $modifyQueries = Context::getFinesDb()->CreateModifyQueries();
             $i++;
             echo "<strong>Alumno: " . $i . ";</strong><br>";
-            $cuilDni = Persona_::cuilDni($ad["dni_cuil"]);
+
+            $cuilDni = Persona_::cuilDni($ad["dni_cuil"] ?? '');
             if(empty($cuilDni["dni"])){
-                echo $ad["apellidos"] . " " . $ad["nombres"] . "<br>";
+                echo ($ad["apellidos"] ?? '') . " " . ($ad["nombres"] ?? '') . "<br>";
                 throw new Exception("DNI vacío, no se procesará el alumno");
             }
 
             if(in_array($cuilDni["dni"], $dnisProcesados)){
-                echo $ad["apellidos"] . " " . $ad["nombres"] . " " . $ad["dni"] . "<br>";
+                echo ($ad["apellidos"] ?? '') . " " . ($ad["nombres"] ?? '') . " " . $cuilDni["dni"] . "<br>";
                 throw new Exception("DNI ya procesado, no se procesará el alumno");
             }
             $dnisProcesados[] = $cuilDni["dni"];
@@ -67,10 +67,9 @@ function cac3_page() {
             $ad["numero_documento"] = $cuilDni["dni"];
             $ad["cuil"] = $cuilDni["cuil"];
 
-            echo $ad["apellidos"] . " " . $ad["nombres"] . " " . $ad["numero_documento"] . "<br>";
+            echo ($ad["apellidos"] ?? '') . " " . ($ad["nombres"] ?? '') . " " . $ad["numero_documento"] . "<br>";
 
             /** @var Persona_ */ $persona = PersonaDAO::createPersonaByUnique($ad);
-            $modifyQueries->persistSqlByStatus($persona);
             if ($persona->_status === 1) {
                 echo "Persona existente<br>";
             } else if ($persona->_status === 0 ){
@@ -81,27 +80,30 @@ function cac3_page() {
                 $modifyQueries->insertSql($persona);
             }
 
-            /** @var Alumno_ */ $alumno = $db->createEntityByUnique("alumno", ["persona" => $persona->id, "plan" => $comision->planificacion_->plan]);
-            
+            /** @var Alumno_ */ $alumno = $db->createEntityByUnique("alumno", [
+                "persona" => $persona->id, 
+                "plan" => $comision->planificacion_->plan
+            ]);
 
+            // === Año de ingreso ===
             $tieneActual = !empty($alumno->anio_ingreso);
-            $tieneNuevo  = !empty($ad["anio_ingreso"]);
+            $tieneNuevo  = !empty($ad["anio_ingreso"] ?? '');
 
             $anioActual = $tieneActual ? (int)substr($alumno->anio_ingreso, 0, 1) : null;
             $anioNuevo  = $tieneNuevo  ? (int)substr($ad["anio_ingreso"], 0, 1) : null;
 
             if ($tieneActual && $tieneNuevo && $anioActual > $anioNuevo) {
-                echo "ERROR: En el sistema el año ingreso es mayor al de la hoja de calculo.<br>";
+                echo "ERROR: En el sistema el año ingreso es mayor al de la hoja de cálculo.<br>";
             }
-            else if ($tieneNuevo) {
+            else if ($tieneNuevo && $anioActual != $anioNuevo) {
                 echo "Se ha cargado el valor de año ingreso.<br>";
                 $alumno->set("confirmado_direccion", true);
-                $alumno->sset("anio_ingreso", $anioNuevo);
+                $alumno->sset("anio_ingreso", $ad["anio_ingreso"]);
             }
 
-            if (!empty(substr($ad["modulo"], 0, 1))) {
+            // === Módulo / Semestre ingreso ===
+            if (isset($ad["modulo"]) && !empty(substr($ad["modulo"], 0, 1))) {
                 $modulo = (int)$ad["modulo"];
-
                 if ($modulo % 2 !== 0) {
                     echo "Se ha asignado semestre ingreso = 1 (módulo impar).<br>";
                     $alumno->set("semestre_ingreso", 1);
@@ -111,56 +113,46 @@ function cac3_page() {
                 }
             }
 
-            if($alumno->tiene_certificado && !ValueTypesUtils::toBool($ad["tiene_certificado"])){
-                echo "ERROR: En el sistema tiene certificado pero en la hoja de calculo no.<br>";
-            }
-            else if(!$alumno->tiene_certificado && ValueTypesUtils::toBool($ad["tiene_certificado"])){
-                echo "Se ha cargado el valor de tiene certificado.<br>";
-                $alumno->set("tiene_certificado", true);
+            // === Campos booleanos (ahora seguros) ===
+            $camposBooleanos = [
+                'tiene_certificado',
+                'tiene_constancia',
+                'tiene_dni',
+                'tiene_partida',
+                'previas_completas'
+            ];
 
-            }
+            foreach ($camposBooleanos as $campo) {
+                $valorActual = $alumno->{$campo} ?? false;
+                $valorNuevo  = isset($ad[$campo]) ? ValueTypesUtils::toBool($ad[$campo]) : null;
 
-            if($alumno->tiene_constancia && !ValueTypesUtils::toBool($ad["tiene_constancia"])){
-                echo "ERROR: En el sistema tiene constancia pero en la hoja de calculo no.<br>";
-            }
-            else if(!$alumno->tiene_constancia && ValueTypesUtils::toBool($ad["tiene_constancia"])){
-                echo "Se ha cargado el valor de tiene contancia.<br>";
-                $alumno->set("tiene_constancia", true);
-            }
+                if ($valorNuevo === null) {
+                    continue; // El campo no viene en el Excel → lo ignoramos
+                }
 
-            if($alumno->tiene_dni && !ValueTypesUtils::toBool($ad["tiene_dni"])){
-                echo "ERROR: En el sistema tiene constancia pero en la hoja de calculo no.<br>";
-            }
-            else if(!$alumno->tiene_dni && ValueTypesUtils::toBool($ad["tiene_dni"])){
-                echo "Se ha cargado el valor de tiene dni.<br>";
-                $alumno->set("tiene_dni", true);
-
-            }
-
-            if($alumno->tiene_partida && !ValueTypesUtils::toBool($ad["tiene_partida"])){
-                echo "ERROR: En el sistema tiene partida pero en la hoja de calculo no.<br>";
-            }
-            else if(!$alumno->tiene_partida && ValueTypesUtils::toBool($ad["tiene_partida"])){
-                echo "Se ha cargado el valor de tiene partida.<br>";
-                $alumno->set("tiene_partida", true);
+                if ($valorActual && !$valorNuevo) {
+                    echo "ERROR: En el sistema tiene {$campo} pero en la hoja de cálculo no.<br>";
+                }
+                elseif (!$valorActual && $valorNuevo) {
+                    echo "Se ha cargado el valor de {$campo}.<br>";
+                    $alumno->set($campo, true);
+                }
             }
 
-            if($alumno->previas_completas && !ValueTypesUtils::toBool($ad["previas_completas"])){
-                echo "ERROR: En el sistema previas completas pero en la hoja de calculo no.<br>";
-            }
-            elseif(!$alumno->previas_completas && ValueTypesUtils::toBool($ad["previas_completas"])){
-                echo "Se ha cargado el valor de previas completas.<br>";
-                $alumno->set("previas_completas", true);
-            }
-
-            if(ValueTypesUtils::hayPalabrasNuevas($alumno->observaciones, $ad["observaciones"])){
-                echo "Se actualizara el valor de observaciones. Antiguo = " . $alumno->observaciones . ". Nuevo = " . $ad["observaciones"] . "<br>";
-                (empty($alumno->observaciones)) ? $alumno->set("observaciones", $ad["observaciones"]) : $alumno->set("observaciones", $alumno->observaciones . " - " . $ad["observaciones"]);
-            }
-            else {
-                echo "No se actualizara el valor de observaciones.<br>";
+            // === Observaciones ===
+            if (ValueTypesUtils::hayPalabrasNuevas($alumno->observaciones ?? '', $ad["observaciones"] ?? '')) {
+                $nuevaObs = $ad["observaciones"] ?? '';
+                echo "Se actualizará el valor de observaciones. Antiguo = " . ($alumno->observaciones ?? '') . 
+                     ". Nuevo = " . $nuevaObs . "<br>";
+                
+                $alumno->set("observaciones", empty($alumno->observaciones) 
+                    ? $nuevaObs 
+                    : $alumno->observaciones . " - " . $nuevaObs);
+            } else {
+                echo "No se actualizará el valor de observaciones.<br>";
             }
             
+            // === Guardar Alumno ===
             if ($alumno->_status === 1) {
                 echo "Alumno existente<br>";
             } else if ($alumno->_status === 0 ){
@@ -171,15 +163,24 @@ function cac3_page() {
                 $modifyQueries->insertSql($alumno);
             }
 
+            // === AlumnoComision ===
+            $alumnoComisionData = [
+                "alumno" => $alumno->id, 
+                "comision" => $comision->id, 
+                "observaciones" => "Importado de lista de alumnos"
+            ];
 
-            $alumnoComisionData = ["alumno" => $alumno->id, "comision" => $comision->id, "observaciones"=> "Importado de lista de alumnos"];
-            if($alumno->_status == -1){
+            if ($alumno->_status == -1) {
                 /** @var AlumnoComision_ */ $alumnoComision = $db->createEntity("alumno_comision", $alumnoComisionData);
                 $alumnoComision->set("estado", "Ingresante");            
             } else {
-                /** @var AlumnoComision_ */ $alumnoComision = $db->createEntityByUnique("alumno_comision", ["alumno" => $alumno->id, "comision" => $comision->id]);
-                if($alumnoComision->_status == -1)
+                /** @var AlumnoComision_ */ $alumnoComision = $db->createEntityByUnique("alumno_comision", [
+                    "alumno" => $alumno->id, 
+                    "comision" => $comision->id
+                ]);
+                if ($alumnoComision->_status == -1) {
                     $alumnoComision->set("estado", "Incorporado");
+                }
             }
             
             if ($alumnoComision->_status === 1) {
@@ -200,8 +201,5 @@ function cac3_page() {
         }
         
         echo "Finalizado<br><br>";
-
     }
-
-
 }

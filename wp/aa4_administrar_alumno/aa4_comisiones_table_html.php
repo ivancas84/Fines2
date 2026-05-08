@@ -23,10 +23,10 @@ use Fines2\Model\AlumnoComision_;
             <tr>
                 <input type="hidden" name="alumno_comision_id<?=$i?>" value="<?= esc_attr($ac->id) ?>">
 
-                <td><?= esc_html($ac->comision_->sede_->getLabel()) ?></td>
-                <td><?= esc_html($ac->comision_->pfid) ?></td>
-                <td><?= esc_html($ac->comision_->calendario_->getLabel()) ?></td>
-                <td><?= esc_html($ac->comision_->planificacion_->getLabel()) ?></td>
+                <td><?= esc_html($ac->comision_?->sede_?->getLabel() ?? "Sede no definida") ?></td>
+                <td><?= esc_html($ac->comision_?->pfid ?? "PFID no definido") ?></td>
+                <td><?= esc_html($ac->comision_?->calendario_?->getLabel() ?? "Calendario no definido") ?></td>
+                <td><?= esc_html($ac->comision_?->planificacion_?->getLabel() ?? "Planificacion no definida") ?></td>
                 <td>
                     <select name="estado<?=$i?>" >
                         <option value="">-- Seleccione --</option>

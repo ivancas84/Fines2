@@ -59,6 +59,8 @@ function fines6_plugin_menu() {
 
     include_once plugin_dir_path(__FILE__) . 'aa4_administrar_alumno/aa4_page.php';
 
+    include_once plugin_dir_path(__FILE__) . 'cc_cargar_cookie/cc_page.php';
+
     include_once plugin_dir_path(__FILE__) . 'mo2_mas_opciones/mo2_page.php';
 
     include_once plugin_dir_path(__FILE__) . 'ad3_administrar_docente/ad3_page.php';
@@ -75,6 +77,7 @@ function fines6_plugin_menu() {
 
     include_once plugin_dir_path(__FILE__) . 'la2_lista_alumnos_comision/la2_page.php';
 
+    
 
     /** NO SE INCLUYEN EN EL MENU PRINCIPAL */
     include_once plugin_dir_path(__FILE__) . 'ccc2_constancia_certificado_completo/ccc2_page.php';
@@ -85,7 +88,6 @@ function fines6_plugin_menu() {
 
     include_once plugin_dir_path(__FILE__) . 'cp3_constancia_pase/cp3_page.php';
 
-    include_once plugin_dir_path(__FILE__) . 'cc_cargar_cookie/cc_page.php';
 
 
   }

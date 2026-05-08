@@ -1,4 +1,4 @@
-<form id="ap4-alumno-admin" action="<?=MAIN_URL?>script/administrar_persona.php" method="POST">
+<form id="ap4-alumno-admin" action="<?=MAIN_URL?>script/administrar_alumno.php" method="POST">
     <input type="hidden" name="persona_id" value="<?=$persona->id ?>" />
 
     <div class="form-grid">

@@ -3,6 +3,7 @@
 ?>
 
 <h2>Programa Fines <?=$comision->getLabel() ?> - Cantidad = <?=count($alumnos_pf)?></h2>
+
 <table class="wp-list-table widefat striped">   
     <thead>
         <tr>            
@@ -56,3 +57,12 @@
         <? endforeach; ?>
     </tbody>
 </table>
+<p>
+<form method="post" action="<?=MAIN_URL?>script/pf_agregar_alumnos.php" style="display:inline;" 
+                            onsubmit="return confirm('Desea agregar todos los alumnos de la base planfines2.com.ar a programafines.ar?');">
+                            <input type="hidden" name="comision_id" value="<?= esc_attr($comision->id) ?>"/>
+                            <button type="submit" title="Agregar todo a programafines.ar" >
+                                AGREGAR TODO A PROGRAMAFINES
+                            </button>
+                    </form>
+</p>

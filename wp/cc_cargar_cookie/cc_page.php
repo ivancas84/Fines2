@@ -6,7 +6,7 @@ use Fines2\Model\Alumno_;
 use SqlOrganize\Utils\ValueTypesUtils;
 
 add_submenu_page(
-    null, //debe coincidir con el slug del menu
+    'fines6-plugin', //debe coincidir con el slug del menu
     'Cargar Cookie Programa Fines', // Título de la página
     'Cargar Cookie Programa Fines', //Título del menú
     'edit_posts', // Permisos

@@ -5,7 +5,6 @@ use Fines2\Model\Alumno_;
 /** @var Alumno_ $alumno */
 /** @var string[] $estados */
 
-print_r($estados);
 
 ?>
 <h2>Agregar Comision a Alumno</h2>
