@@ -123,10 +123,7 @@ foreach ($alumnos_comision as $i => $ac) {
                 echo "<p>Existe pero en otra comisión → Modificando y cambiando comisión...</p>";
 
                 $pf->sendDataFormModificarAlumno($data);
-                $pf->sendDataCambiarComisionAlumno([
-                    "dni_cargar" => $data["dni_cargar"],
-                    "comision_destion" => $data["subcategory"]
-                ]);
+                $pf->transferirAlumnoAComision($data["dni_cargar"], $data["subcategory"]);
 
             } catch (AlumnoNoExisteException $ex) {
                 // Realmente no existe → Crear nuevo

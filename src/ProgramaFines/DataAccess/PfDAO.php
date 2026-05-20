@@ -389,6 +389,8 @@ class PfDAO
             ["a" => 711]
         );
     }
+
+
     public function openFormCambiarComisionAlumno(){
         return $this->getPage(
             "https://programafines.ar/inicial/index4.php?a=22",
@@ -401,15 +403,43 @@ class PfDAO
          * dni_cargar 31234567
          * comision_destino 10142
          */
-    public function sendDataCambiarComisionAlumno(array $data)
+    protected function sendDataCambiarComisionAlumno(array $data)
     {
         return $this->request(
-            "https://www.programafines.ar/inicial/index4.php?a=7&b=1",
+            "https://www.programafines.ar/inicial/index4.php?a=22&b=1",
             [],
             $data
         );
     } 
 
+
+    /**
+     * Transfiere un alumno a otra comisión (preparación + confirmación)
+     *
+     * @param string $dni                DNI del alumno (sin puntos ni separadores)
+     * @param string $comisionDestino    Número de la comisión destino (ej: "10166")
+     * @return mixed                     Respuesta del servidor (según lo que devuelva tu método request)
+     */
+    public function transferirAlumnoAComision(string $dni, string $comisionDestino)
+    {
+        // ==================== PASO 1: Preparar el cambio ====================
+        $dataPreparacion = [
+            'dni_cargar'      => $dni,           // nombre del campo que usa tu sistema
+            'comision_destino'=> $comisionDestino
+        ];
+
+        // Llamamos al método que ya tenías (o el que prepara la pantalla de confirmación)
+        $this->sendDataCambiarComisionAlumno($dataPreparacion);
+
+        // ==================== PASO 2: Confirmar la transferencia ====================
+        $urlConfirmacion = "https://www.programafines.ar/inicial/index4.php?a=22&b=2";
+
+        $dataConfirmacion = [
+            'button' => 'Aceptar'   // Imitamos exactamente el botón del formulario
+        ];
+
+        return $this->request($urlConfirmacion, [], $dataConfirmacion);
+    }
 
     public function sendDataForm1AgregarAlumnoPCI(array $data)
     {

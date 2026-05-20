@@ -26,7 +26,7 @@ class PersonaDAO
             $obj->_status = -1;
         }
 
-        $obj->ssetIfNullFromArray($param);
+        $obj->ssetNotNull($param);
 
         if(!isset($param["nacionalidad"]) && empty($obj->get("nacionalidad"))){
             $obj->set("nacionalidad", "Argentina");

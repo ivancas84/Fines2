@@ -123,6 +123,7 @@ class CalificacionDAO
         return self::CompletarTomaActivaEnCalificaciones($calificaciones);
 
     }
+    
 
      /**
      * @return Calificacion_[]
@@ -190,7 +191,6 @@ class CalificacionDAO
         $db = \App\Context::getFinesDb();
 
         /** @var string[] */$idsCursos = ValueTypesUtils::arrayOfName($calificaciones, "curso");
-
         if(empty($idsCursos)) return $calificaciones;
         $tomasActivas = TomaDAO::TomasActivasByCursos(...$idsCursos);
         $tomasActivas = ValueTypesUtils::dictOfObjByPropertyNames($tomasActivas, "curso");

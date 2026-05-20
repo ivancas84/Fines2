@@ -21,6 +21,8 @@ use Fines2\Model\Calificacion_;
                 <th>Período</th>
                 <th>Docente</th>
                 <th>Observaciones</th>
+                <th>ID curso</th>
+
             </tr>
         </thead>
         <tbody>

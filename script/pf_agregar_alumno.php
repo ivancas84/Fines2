@@ -25,17 +25,7 @@ try {
 
     /** @var AlumnoComision_ */ $alumno_comision = $db->createEntityById("alumno_comision", $_POST["alumno_comision_id"]);
 
-    /** @var array */ $data = [
-        "mi_periodo" => PF_PERIODO,
-        "subcategory"=> $alumno_comision->comision_->pfid,
-        "apellido" => $alumno_comision->alumno_->persona_->getApellidos(),
-        "nombre" => $alumno_comision->alumno_->persona_->getNombres(),
-        "cuil1" => $alumno_comision->alumno_->persona_->cuil1,
-        "dni_cargar" => $alumno_comision->alumno_->persona_->numero_documento,
-        "cuil2" => $alumno_comision->alumno_->persona_->cuil2,
-        "nacionalidad" => "Argentina",
-        "sexo" => str_contains(strtolower($alumno_comision->alumno_->persona_->genero), 'a') ? 1 : 2,
-    ];
+    $data = $alumno_comision->toArrayPF();
 
     $fecha = $alumno_comision->alumno_->persona_->fecha_nacimiento;
     if(!empty($fecha)){
@@ -49,10 +39,11 @@ try {
     $pfdao = new PfDAO($pf_session);
     try {
         $pfdao->openFormModificarAlumno($data["dni_cargar"]);
-        echo "<strong>El alumno existe en programafines se agregará a la comisión pero no se cambiarán los datos en programafines</strong>";
-        echo "<p>Si desea modificar los datos acceda a EDITAR ALUMNO (icono de lapiz)</p>";
-        
-        $pfdao->sendDataCambiarComisionAlumno(["dni_cargar" => $data["dni_cargar"], "comision_destion" => $data["subcategory"]]);
+
+        echo "<strong>El alumno existe en programafines se modificaran los datos y agregará a la comisión</strong>";
+        echo $pfdao->sendDataFormModificarAlumno($data);
+        echo "<br>";
+        echo $pfdao->transferirAlumnoAComision($data["dni_cargar"], $data["subcategory"]);
     } catch (AlumnoNoExisteException $ex){
         echo "<h1>El alumno no existe, se agregará a programafines y a la comisión</h1>";
         $form = $pfdao->openFormAgregarAlumno();

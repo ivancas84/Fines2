@@ -78,6 +78,8 @@ use Fines2\Model\Comision_;
                                 <span class="dashicons dashicons-plus"></span>
                             </button>
                         </form>
+
+                      
                     <? endif; ?>
                 </td>
             </tr>
