@@ -19,3 +19,6 @@
 <p>Estos scripts modifican directamente la base de datos, consultar documentación</p>
 <p>NO HACER CLICK SI NO ESTAS SEGURO!</p>
 </p><a href="https://planfines2.com.ar/v6/script/desactivar_alumnos.php">Activar / Desactivar alumnos calendario anterior (verificar configuración de calendario)</a></p>
+
+<h2>Enlaces Programa Fines (debe estar logueado a programafines para acceder)</h2>
+<a target="_blank" href="https://www.programafines.ar/inicial/index4.php?a=47">Cambiar clave docentes</a>

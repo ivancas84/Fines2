@@ -103,6 +103,39 @@ class CalificacionDAO
     }
 
 
+    public static function cantidadCalificacionesAprobadasByAlumnoPlanTramo(
+    string $alumno, 
+    string $plan, 
+    string $tramo_short
+): array {
+    $sql = "
+        SELECT 
+            planificacion.anio,
+            planificacion.semestre,
+            COUNT(DISTINCT calificacion.id) as cantidad
+        FROM calificacion
+        INNER JOIN alumno ON (calificacion.alumno = alumno.id)
+        INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+        INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
+        INNER JOIN plan ON (planificacion.plan = plan.id)
+        WHERE alumno.id = :alumno 
+          AND plan.id = :plan
+          AND CONCAT(planificacion.anio, planificacion.semestre) >= :tramo_short
+          AND (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
+        GROUP BY planificacion.anio, planificacion.semestre
+        ORDER BY planificacion.anio ASC, planificacion.semestre ASC
+    ";
+
+    return \App\Context::getFinesDb()
+        ->CreateDataProvider()
+        ->fetchAllSqlByParams($sql, [
+            "alumno"      => $alumno,
+            "plan"        => $plan,
+            "tramo_short" => $tramo_short
+        ]);
+}
+
+
 
     /**
      * @return Calificacion_[]
@@ -143,8 +176,46 @@ class CalificacionDAO
 
         /** @var Calificacion_[] */ $calificaciones = \App\Context::getFinesDb()->CreateDataProvider()->fetchAllEntitiesBySqlId("calificacion", $sql, ["alumno" => $alumno, "plan"=>$plan] );
         return self::CompletarTomaActivaEnCalificaciones($calificaciones);
-
     }
+
+
+    /**
+ * Cantidad de calificaciones aprobadas de un alumno fuera de un plan específico,
+ * agrupadas por planificacion.anio y planificacion.semestre
+ */
+public static function cantidadCalificacionesAprobadasByAlumnoNotInPlanTramo(
+    string $alumno, 
+    string $plan, 
+    string $tramo_short
+): array {
+
+    $sql = "
+        SELECT 
+            planificacion.anio,
+            planificacion.semestre,
+            COUNT(DISTINCT calificacion.id) as cantidad
+        FROM calificacion
+        INNER JOIN alumno ON (calificacion.alumno = alumno.id)
+        INNER JOIN disposicion ON (calificacion.disposicion = disposicion.id)
+        INNER JOIN planificacion ON (disposicion.planificacion = planificacion.id)
+        INNER JOIN plan ON (planificacion.plan = plan.id)
+        WHERE alumno.id = :alumno 
+          AND plan.id != :plan
+          AND CONCAT(planificacion.anio, planificacion.semestre) >= :tramo_short
+          AND (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
+        GROUP BY planificacion.anio, planificacion.semestre
+        ORDER BY planificacion.anio ASC, planificacion.semestre ASC
+    ";
+
+    return \App\Context::getFinesDb()
+        ->CreateDataProvider()
+        ->fetchAllSqlByParams($sql, [
+            "alumno"      => $alumno,
+            "plan"        => $plan,
+            "tramo_short" => $tramo_short
+        ]);
+}
+
 
     /**
      * @return Calificacion_[]

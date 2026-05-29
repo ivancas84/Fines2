@@ -11,7 +11,7 @@ class AlumnoComisionDAO
 {
 
     /**
-     * @return Comision_[]
+     * @return AlumnoComision_[]
      */
     public static function alumnosComision($comision_id): array{
         $sql = "

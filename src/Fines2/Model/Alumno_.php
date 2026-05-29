@@ -26,6 +26,22 @@ class Alumno_ extends Alumno
     /** @var string[] */
     public array $AniosCursados = [];
 
+    public function getTramoIngreso(){
+
+        if(!empty($this->anio_ingreso)){
+            $tramo = strval($this->anio_ingreso) . "°";
+            if(!empty($this->semestre_ingreso))
+                $tramo .= strval($this->semestre_ingreso);
+            else 
+                $tramo .= "1";
+
+            return $tramo . "C";
+        } else {
+            return null;
+        }
+
+   }
+
     public function getTramoIngresoShort(){
         if(!empty($this->anio_ingreso)){
             $tramo = strval($this->anio_ingreso);
