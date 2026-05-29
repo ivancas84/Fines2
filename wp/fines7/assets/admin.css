@@ -1,0 +1,21 @@
+.fines7-filters {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin: 16px 0 20px;
+}
+
+.fines7-table .fines7-actions {
+    white-space: nowrap;
+}
+
+.fines7-actions .button {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    margin-right: 2px;
+    min-height: 30px;
+    min-width: 30px;
+    padding: 0 4px;
+}
