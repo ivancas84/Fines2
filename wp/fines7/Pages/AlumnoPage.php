@@ -2,7 +2,9 @@
 
 namespace Fines7\Pages;
 
+use Fines7\Core\AdminRequest;
 use Fines7\Core\Database;
+use Fines7\Core\FormData;
 use Fines7\Repositories\AlumnoComisionRepository;
 use Fines7\Repositories\AlumnoRepository;
 use Fines7\Repositories\CalificacionRepository;
@@ -67,8 +69,8 @@ class AlumnoPage
 
     public static function updatePersona(): void
     {
-        self::ensureCanEdit();
-        $personaId = self::personaIdFromPost();
+        AdminRequest::requireCapability('edit_posts');
+        $personaId = FormData::requiredText('persona_id', 'Falta persona_id para procesar el formulario.');
         check_admin_referer('fines7_update_persona_' . $personaId);
 
         $personaRepository = new PersonaRepository(Database::fines());
@@ -78,56 +80,39 @@ class AlumnoPage
 
     public static function saveAlumno(): void
     {
-        self::ensureCanEdit();
-        $personaId = self::personaIdFromPost();
+        AdminRequest::requireCapability('edit_posts');
+        $personaId = FormData::requiredText('persona_id', 'Falta persona_id para procesar el formulario.');
         check_admin_referer('fines7_save_alumno_' . $personaId);
 
         $alumnoRepository = new AlumnoRepository(Database::fines());
-        $alumnoId = isset($_POST['alumno_id']) ? sanitize_text_field(wp_unslash($_POST['alumno_id'])) : '';
+        $alumnoId = FormData::text('alumno_id');
         $alumnoRepository->save($personaId, $alumnoId, self::alumnoDataFromPost());
         self::redirectWithNotice($personaId, 'alumno_guardado');
-    }
-
-    private static function ensureCanEdit(): void
-    {
-        if (!current_user_can('edit_posts')) {
-            wp_die(esc_html__('No tienes permisos suficientes para realizar esta accion.', 'fines7'));
-        }
-    }
-
-    private static function personaIdFromPost(): string
-    {
-        $personaId = isset($_POST['persona_id']) ? sanitize_text_field(wp_unslash($_POST['persona_id'])) : '';
-        if ($personaId === '') {
-            wp_die(esc_html__('Falta persona_id para procesar el formulario.', 'fines7'));
-        }
-
-        return $personaId;
     }
 
     private static function personaDataFromPost(): array
     {
         $data = [
-            'nombres' => self::postText('nombres'),
-            'apellidos' => self::postText('apellidos'),
-            'numero_documento' => self::postText('numero_documento'),
-            'cuil' => self::postText('cuil'),
-            'cuil1' => self::postInt('cuil1'),
-            'cuil2' => self::postInt('cuil2'),
-            'sexo' => self::postInt('sexo'),
-            'dia_nacimiento' => self::postInt('dia_nacimiento'),
-            'mes_nacimiento' => self::postInt('mes_nacimiento'),
-            'anio_nacimiento' => self::postInt('anio_nacimiento'),
-            'telefono' => self::postText('telefono'),
-            'codigo_area' => self::postText('codigo_area'),
-            'email' => self::postEmail('email'),
-            'email_abc' => self::postEmail('email_abc'),
-            'lugar_nacimiento' => self::postText('lugar_nacimiento'),
-            'nacionalidad' => self::postText('nacionalidad'),
-            'descripcion_domicilio' => self::postText('descripcion_domicilio'),
-            'departamento' => self::postText('departamento'),
-            'localidad' => self::postText('localidad'),
-            'partido' => self::postText('partido'),
+            'nombres' => FormData::text('nombres'),
+            'apellidos' => FormData::text('apellidos'),
+            'numero_documento' => FormData::text('numero_documento'),
+            'cuil' => FormData::text('cuil'),
+            'cuil1' => FormData::int('cuil1'),
+            'cuil2' => FormData::int('cuil2'),
+            'sexo' => FormData::int('sexo'),
+            'dia_nacimiento' => FormData::int('dia_nacimiento'),
+            'mes_nacimiento' => FormData::int('mes_nacimiento'),
+            'anio_nacimiento' => FormData::int('anio_nacimiento'),
+            'telefono' => FormData::text('telefono'),
+            'codigo_area' => FormData::text('codigo_area'),
+            'email' => FormData::email('email'),
+            'email_abc' => FormData::email('email_abc'),
+            'lugar_nacimiento' => FormData::text('lugar_nacimiento'),
+            'nacionalidad' => FormData::text('nacionalidad'),
+            'descripcion_domicilio' => FormData::text('descripcion_domicilio'),
+            'departamento' => FormData::text('departamento'),
+            'localidad' => FormData::text('localidad'),
+            'partido' => FormData::text('partido'),
         ];
 
         if ($data['nombres'] === null || $data['numero_documento'] === null) {
@@ -140,21 +125,21 @@ class AlumnoPage
     private static function alumnoDataFromPost(): array
     {
         return [
-            'estado_inscripcion' => self::postText('estado_inscripcion'),
-            'plan' => self::postText('plan'),
-            'anio_ingreso' => self::postText('anio_ingreso'),
-            'semestre_ingreso' => self::postInt('semestre_ingreso'),
-            'anio_inscripcion' => self::postInt('anio_inscripcion'),
-            'semestre_inscripcion' => self::postInt('semestre_inscripcion'),
-            'establecimiento_inscripcion' => self::postText('establecimiento_inscripcion'),
-            'fecha_titulacion' => self::postDate('fecha_titulacion'),
-            'observaciones' => self::postTextarea('observaciones'),
-            'tiene_dni' => self::postBool('tiene_dni'),
-            'tiene_constancia' => self::postBool('tiene_constancia'),
-            'tiene_certificado' => self::postBool('tiene_certificado'),
-            'previas_completas' => self::postBool('previas_completas'),
-            'tiene_partida' => self::postBool('tiene_partida'),
-            'confirmado_direccion' => self::postBool('confirmado_direccion'),
+            'estado_inscripcion' => FormData::text('estado_inscripcion'),
+            'plan' => FormData::text('plan'),
+            'anio_ingreso' => FormData::text('anio_ingreso'),
+            'semestre_ingreso' => FormData::int('semestre_ingreso'),
+            'anio_inscripcion' => FormData::int('anio_inscripcion'),
+            'semestre_inscripcion' => FormData::int('semestre_inscripcion'),
+            'establecimiento_inscripcion' => FormData::text('establecimiento_inscripcion'),
+            'fecha_titulacion' => FormData::date('fecha_titulacion'),
+            'observaciones' => FormData::textarea('observaciones'),
+            'tiene_dni' => FormData::bool('tiene_dni'),
+            'tiene_constancia' => FormData::bool('tiene_constancia'),
+            'tiene_certificado' => FormData::bool('tiene_certificado'),
+            'previas_completas' => FormData::bool('previas_completas'),
+            'tiene_partida' => FormData::bool('tiene_partida'),
+            'confirmado_direccion' => FormData::bool('confirmado_direccion'),
         ];
     }
 
@@ -168,42 +153,4 @@ class AlumnoPage
         exit;
     }
 
-    private static function postText(string $key): ?string
-    {
-        $value = isset($_POST[$key]) ? sanitize_text_field(wp_unslash($_POST[$key])) : '';
-        return $value === '' ? null : $value;
-    }
-
-    private static function postTextarea(string $key): ?string
-    {
-        $value = isset($_POST[$key]) ? sanitize_textarea_field(wp_unslash($_POST[$key])) : '';
-        return $value === '' ? null : $value;
-    }
-
-    private static function postEmail(string $key): ?string
-    {
-        $value = isset($_POST[$key]) ? sanitize_email(wp_unslash($_POST[$key])) : '';
-        return $value === '' ? null : $value;
-    }
-
-    private static function postInt(string $key): ?int
-    {
-        $value = isset($_POST[$key]) ? sanitize_text_field(wp_unslash($_POST[$key])) : '';
-        return $value === '' ? null : (int) $value;
-    }
-
-    private static function postDate(string $key): ?string
-    {
-        $value = isset($_POST[$key]) ? sanitize_text_field(wp_unslash($_POST[$key])) : '';
-        if ($value === '') {
-            return null;
-        }
-
-        return preg_match('/^\d{4}-\d{2}-\d{2}$/', $value) === 1 ? $value : null;
-    }
-
-    private static function postBool(string $key): int
-    {
-        return isset($_POST[$key]) ? 1 : 0;
-    }
 }
