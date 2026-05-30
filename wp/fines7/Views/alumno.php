@@ -65,10 +65,11 @@ $personaLabel = trim(implode(' ', array_filter([
             <div class="fines7-form-grid">
                 <label>Nombres <input type="text" name="nombres" value="<?php echo esc_attr($value($persona, 'nombres')); ?>" required></label>
                 <label>Apellidos <input type="text" name="apellidos" value="<?php echo esc_attr($value($persona, 'apellidos')); ?>"></label>
-                <label>DNI <input type="text" name="numero_documento" value="<?php echo esc_attr($value($persona, 'numero_documento')); ?>" required></label>
-                <label>CUIL <input type="text" name="cuil" value="<?php echo esc_attr($value($persona, 'cuil')); ?>"></label>
-                <label>CUIL prefijo <input type="number" name="cuil1" value="<?php echo esc_attr($value($persona, 'cuil1')); ?>"></label>
-                <label>CUIL sufijo <input type="number" name="cuil2" value="<?php echo esc_attr($value($persona, 'cuil2')); ?>"></label>
+                <fieldset class="fines7-field-group fines7-field-group-cuil">
+                    <label>CUIL1 <input type="number" name="cuil1" value="<?php echo esc_attr($value($persona, 'cuil1')); ?>"></label>
+                    <label>DNI <input type="text" name="numero_documento" value="<?php echo esc_attr($value($persona, 'numero_documento')); ?>" required></label>
+                    <label>CUIL2 <input type="number" name="cuil2" value="<?php echo esc_attr($value($persona, 'cuil2')); ?>"></label>
+                </fieldset>
                 <label>
                     Sexo
                     <select name="sexo">
@@ -78,11 +79,15 @@ $personaLabel = trim(implode(' ', array_filter([
                         <option value="3" <?php selected($value($persona, 'sexo'), '3'); ?>>No binario</option>
                     </select>
                 </label>
-                <label>Dia nacimiento <input type="number" name="dia_nacimiento" min="1" max="31" value="<?php echo esc_attr($value($persona, 'dia_nacimiento')); ?>"></label>
-                <label>Mes nacimiento <input type="number" name="mes_nacimiento" min="1" max="12" value="<?php echo esc_attr($value($persona, 'mes_nacimiento')); ?>"></label>
-                <label>Anio nacimiento <input type="number" name="anio_nacimiento" value="<?php echo esc_attr($value($persona, 'anio_nacimiento')); ?>"></label>
-                <label>Telefono <input type="text" name="telefono" value="<?php echo esc_attr($value($persona, 'telefono')); ?>"></label>
-                <label>Codigo area <input type="text" name="codigo_area" value="<?php echo esc_attr($value($persona, 'codigo_area')); ?>"></label>
+                <fieldset class="fines7-field-group fines7-field-group-date">
+                    <label>Dia nac <input type="number" name="dia_nacimiento" min="1" max="31" value="<?php echo esc_attr($value($persona, 'dia_nacimiento')); ?>"></label>
+                    <label>Mes nac <input type="number" name="mes_nacimiento" min="1" max="12" value="<?php echo esc_attr($value($persona, 'mes_nacimiento')); ?>"></label>
+                    <label>Anio nac <input type="number" name="anio_nacimiento" value="<?php echo esc_attr($value($persona, 'anio_nacimiento')); ?>"></label>
+                </fieldset>
+                <fieldset class="fines7-field-group fines7-field-group-phone">
+                    <label>Codigo area <input type="text" name="codigo_area" value="<?php echo esc_attr($value($persona, 'codigo_area')); ?>"></label>
+                    <label>Telefono <input type="text" name="telefono" value="<?php echo esc_attr($value($persona, 'telefono')); ?>"></label>
+                </fieldset>
                 <label>Email <input type="email" name="email" value="<?php echo esc_attr($value($persona, 'email')); ?>"></label>
                 <label>Email ABC <input type="email" name="email_abc" value="<?php echo esc_attr($value($persona, 'email_abc')); ?>"></label>
                 <label>Lugar nacimiento <input type="text" name="lugar_nacimiento" value="<?php echo esc_attr($value($persona, 'lugar_nacimiento')); ?>"></label>
@@ -109,15 +114,6 @@ $personaLabel = trim(implode(' ', array_filter([
 
             <div class="fines7-form-grid">
                 <label>
-                    Estado de inscripcion
-                    <input list="fines7-estados-inscripcion" name="estado_inscripcion" value="<?php echo esc_attr($value($alumno, 'estado_inscripcion')); ?>">
-                    <datalist id="fines7-estados-inscripcion">
-                        <?php foreach ($estadosInscripcion as $estadoInscripcion) : ?>
-                            <option value="<?php echo esc_attr($estadoInscripcion); ?>"></option>
-                        <?php endforeach; ?>
-                    </datalist>
-                </label>
-                <label>
                     Plan
                     <select name="plan">
                         <option value="">Seleccione...</option>
@@ -129,39 +125,29 @@ $personaLabel = trim(implode(' ', array_filter([
                         <?php endforeach; ?>
                     </select>
                 </label>
-                <label>
-                    Anio ingreso
-                    <select name="anio_ingreso">
-                        <option value="">Seleccione...</option>
-                        <option value="1" <?php selected($value($alumno, 'anio_ingreso'), '1'); ?>>1</option>
-                        <option value="2" <?php selected($value($alumno, 'anio_ingreso'), '2'); ?>>2</option>
-                        <option value="3" <?php selected($value($alumno, 'anio_ingreso'), '3'); ?>>3</option>
-                    </select>
-                </label>
-                <label>
-                    Semestre ingreso
-                    <select name="semestre_ingreso">
-                        <option value="">Seleccione...</option>
-                        <option value="1" <?php selected($value($alumno, 'semestre_ingreso'), '1'); ?>>1</option>
-                        <option value="2" <?php selected($value($alumno, 'semestre_ingreso'), '2'); ?>>2</option>
-                    </select>
-                </label>
-                <label>Anio inscripcion <input type="number" name="anio_inscripcion" value="<?php echo esc_attr($value($alumno, 'anio_inscripcion')); ?>"></label>
-                <label>Semestre inscripcion <input type="number" name="semestre_inscripcion" value="<?php echo esc_attr($value($alumno, 'semestre_inscripcion')); ?>"></label>
-                <label>Establecimiento <input type="text" name="establecimiento_inscripcion" value="<?php echo esc_attr($value($alumno, 'establecimiento_inscripcion')); ?>"></label>
+                <fieldset class="fines7-field-group fines7-field-group-ingreso">
+                    <label>
+                        Anio ingreso
+                        <select name="anio_ingreso">
+                            <option value="">Seleccione...</option>
+                            <option value="1" <?php selected($value($alumno, 'anio_ingreso'), '1'); ?>>1</option>
+                            <option value="2" <?php selected($value($alumno, 'anio_ingreso'), '2'); ?>>2</option>
+                            <option value="3" <?php selected($value($alumno, 'anio_ingreso'), '3'); ?>>3</option>
+                        </select>
+                    </label>
+                    <label>
+                        Semestre ingreso
+                        <select name="semestre_ingreso">
+                            <option value="">Seleccione...</option>
+                            <option value="1" <?php selected($value($alumno, 'semestre_ingreso'), '1'); ?>>1</option>
+                            <option value="2" <?php selected($value($alumno, 'semestre_ingreso'), '2'); ?>>2</option>
+                        </select>
+                    </label>
+                </fieldset>
                 <label>Fecha titulacion <input type="date" name="fecha_titulacion" value="<?php echo esc_attr($value($alumno, 'fecha_titulacion')); ?>"></label>
+                <label class="fines7-inline-check"><input type="checkbox" name="confirmado_direccion" value="1" <?php checked((int) ($alumno['confirmado_direccion'] ?? 0), 1); ?>> Confirmado direccion</label>
                 <label class="fines7-form-wide">Observaciones <textarea name="observaciones" rows="3"><?php echo esc_textarea($value($alumno, 'observaciones')); ?></textarea></label>
             </div>
-
-            <fieldset class="fines7-check-grid">
-                <legend>Legajo</legend>
-                <label><input type="checkbox" name="tiene_dni" value="1" <?php checked((int) ($alumno['tiene_dni'] ?? 0), 1); ?>> Tiene DNI</label>
-                <label><input type="checkbox" name="tiene_constancia" value="1" <?php checked((int) ($alumno['tiene_constancia'] ?? 0), 1); ?>> Tiene constancia</label>
-                <label><input type="checkbox" name="tiene_certificado" value="1" <?php checked((int) ($alumno['tiene_certificado'] ?? 0), 1); ?>> Tiene certificado</label>
-                <label><input type="checkbox" name="previas_completas" value="1" <?php checked((int) ($alumno['previas_completas'] ?? 0), 1); ?>> Previas completas</label>
-                <label><input type="checkbox" name="tiene_partida" value="1" <?php checked((int) ($alumno['tiene_partida'] ?? 0), 1); ?>> Tiene partida</label>
-                <label><input type="checkbox" name="confirmado_direccion" value="1" <?php checked((int) ($alumno['confirmado_direccion'] ?? 0), 1); ?>> Confirmado direccion</label>
-            </fieldset>
 
             <p><button type="submit" class="button button-primary">Guardar Datos Alumno</button></p>
         </form>

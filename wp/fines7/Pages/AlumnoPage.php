@@ -23,7 +23,6 @@ class AlumnoPage
         $personaId = isset($_GET['persona_id']) ? sanitize_text_field(wp_unslash($_GET['persona_id'])) : '';
         $persona = null;
         $alumno = null;
-        $estadosInscripcion = [];
         $planes = [];
         $comisiones = [];
         $calificaciones = [];
@@ -48,7 +47,6 @@ class AlumnoPage
                 if ($persona === null) {
                     $error = 'No se encontro la persona solicitada.';
                 } else {
-                    $estadosInscripcion = $alumnoRepository->estadosInscripcion();
                     $planes = $planRepository->all();
                     $alumno = $alumnoRepository->alumnoByPersona($personaId);
 
@@ -96,7 +94,6 @@ class AlumnoPage
             'nombres' => FormData::text('nombres'),
             'apellidos' => FormData::text('apellidos'),
             'numero_documento' => FormData::text('numero_documento'),
-            'cuil' => FormData::text('cuil'),
             'cuil1' => FormData::int('cuil1'),
             'cuil2' => FormData::int('cuil2'),
             'sexo' => FormData::int('sexo'),
@@ -125,20 +122,11 @@ class AlumnoPage
     private static function alumnoDataFromPost(): array
     {
         return [
-            'estado_inscripcion' => FormData::text('estado_inscripcion'),
             'plan' => FormData::text('plan'),
             'anio_ingreso' => FormData::text('anio_ingreso'),
             'semestre_ingreso' => FormData::int('semestre_ingreso'),
-            'anio_inscripcion' => FormData::int('anio_inscripcion'),
-            'semestre_inscripcion' => FormData::int('semestre_inscripcion'),
-            'establecimiento_inscripcion' => FormData::text('establecimiento_inscripcion'),
             'fecha_titulacion' => FormData::date('fecha_titulacion'),
             'observaciones' => FormData::textarea('observaciones'),
-            'tiene_dni' => FormData::bool('tiene_dni'),
-            'tiene_constancia' => FormData::bool('tiene_constancia'),
-            'tiene_certificado' => FormData::bool('tiene_certificado'),
-            'previas_completas' => FormData::bool('previas_completas'),
-            'tiene_partida' => FormData::bool('tiene_partida'),
             'confirmado_direccion' => FormData::bool('confirmado_direccion'),
         ];
     }

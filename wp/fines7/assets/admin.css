@@ -64,6 +64,36 @@
     min-width: 0;
 }
 
+.fines7-field-group {
+    border: 0;
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    min-width: 0;
+    padding: 0;
+}
+
+.fines7-field-group label {
+    font-size: 12px;
+    gap: 4px;
+}
+
+.fines7-field-group-cuil {
+    grid-template-columns: 0.55fr 1.9fr 0.55fr;
+}
+
+.fines7-field-group-date {
+    grid-template-columns: 0.6fr 0.6fr 1.8fr;
+}
+
+.fines7-field-group-phone {
+    grid-template-columns: 0.8fr 1.2fr;
+}
+
+.fines7-field-group-ingreso {
+    grid-template-columns: 1fr 1fr;
+}
+
 .fines7-form-grid input,
 .fines7-form-grid select,
 .fines7-form-grid textarea {
@@ -74,6 +104,20 @@
     max-width: 100%;
     min-height: 34px;
     width: 100%;
+}
+
+.fines7-form-grid .fines7-inline-check {
+    align-items: center;
+    flex-direction: row;
+    gap: 8px;
+    min-height: 59px;
+    padding-top: 22px;
+}
+
+.fines7-form-grid .fines7-inline-check input {
+    margin: 0;
+    min-height: 0;
+    width: auto;
 }
 
 .fines7-form-wide {
@@ -125,6 +169,13 @@
 @media (max-width: 600px) {
     .fines7-form-grid,
     .fines7-check-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .fines7-field-group-cuil,
+    .fines7-field-group-date,
+    .fines7-field-group-phone,
+    .fines7-field-group-ingreso {
         grid-template-columns: 1fr;
     }
 }
