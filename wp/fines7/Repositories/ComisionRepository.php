@@ -50,7 +50,8 @@ class ComisionRepository
                     NULLIF(planificacion.anio, ''),
                     NULLIF(planificacion.semestre, '')
                 )) AS planificacion_label,
-                planificacion.plan AS plan_label,
+                plan.orientacion AS plan_orientacion,
+                plan.resolucion AS plan_resolucion,
                 comision.autorizada,
                 comision.apertura,
                 comision.turno,
@@ -65,6 +66,7 @@ class ComisionRepository
             LEFT JOIN sede ON sede.id = comision.sede
             LEFT JOIN domicilio ON domicilio.id = sede.domicilio
             LEFT JOIN planificacion ON planificacion.id = comision.planificacion
+            LEFT JOIN plan ON plan.id = planificacion.plan
             LEFT JOIN comision comision_siguiente ON comision_siguiente.id = comision.comision_siguiente
             LEFT JOIN planificacion planificacion_siguiente ON planificacion_siguiente.id = comision_siguiente.planificacion
             LEFT JOIN (
@@ -102,6 +104,31 @@ class ComisionRepository
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($params);
 
-        return $stmt->fetchAll();
+        $comisiones = $stmt->fetchAll();
+
+        foreach ($comisiones as &$comision) {
+            $comision['plan_label'] = trim(implode(' ', array_filter([
+                $this->acronym((string) ($comision['plan_orientacion'] ?? '')),
+                (string) ($comision['plan_resolucion'] ?? ''),
+            ])));
+        }
+        unset($comision);
+
+        return $comisiones;
+    }
+
+    private function acronym(string $value): string
+    {
+        $words = preg_split('/\s+/', trim($value), -1, PREG_SPLIT_NO_EMPTY);
+        if ($words === false) {
+            return '';
+        }
+
+        $acronym = '';
+        foreach ($words as $word) {
+            $acronym .= substr($word, 0, 1);
+        }
+
+        return $acronym;
     }
 }
