@@ -68,6 +68,16 @@ $boolLabel = static function ($value): string {
                 <?php foreach ($comisiones as $comision) : ?>
                     <?php
                     $planificacionLabel = trim(($comision['planificacion_label'] ?? '') . ' ' . ($comision['plan_label'] ?? ''));
+                    $comisionSiguientePfid = (string) ($comision['comision_siguiente_pfid'] ?? '');
+                    $comisionSiguienteAnio = (string) ($comision['comision_siguiente_anio'] ?? '');
+                    $comisionSiguienteSemestre = (string) ($comision['comision_siguiente_semestre'] ?? '');
+                    $comisionSiguienteTramo = $comisionSiguienteAnio !== '' && $comisionSiguienteSemestre !== ''
+                        ? $comisionSiguienteAnio . '°' . $comisionSiguienteSemestre . 'C'
+                        : '';
+                    $comisionSiguienteLabel = trim(implode(' - ', array_filter([
+                        $comisionSiguientePfid,
+                        $comisionSiguienteTramo,
+                    ])));
                     ?>
                     <tr>
                         <td><?php echo esc_html($comision['sede_nombre'] ?: '?'); ?></td>
@@ -86,7 +96,7 @@ $boolLabel = static function ($value): string {
                             );
                             ?>
                         </td>
-                        <td><?php echo esc_html($comision['comision_siguiente'] ?: ''); ?></td>
+                        <td><?php echo esc_html($comisionSiguienteLabel ?: ''); ?></td>
                         <td><?php echo esc_html($comision['referentes_label'] ?: 'Sin Referentes'); ?></td>
                     </tr>
                 <?php endforeach; ?>

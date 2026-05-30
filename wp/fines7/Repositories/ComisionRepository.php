@@ -55,11 +55,16 @@ class ComisionRepository
                 COALESCE(alumnos.cantidad_alumnos, 0) AS cantidad_alumnos,
                 COALESCE(alumnos.cantidad_alumnos_activos, 0) AS cantidad_alumnos_activos,
                 comision.comision_siguiente,
+                comision_siguiente.pfid AS comision_siguiente_pfid,
+                planificacion_siguiente.anio AS comision_siguiente_anio,
+                planificacion_siguiente.semestre AS comision_siguiente_semestre,
                 COALESCE(referentes.referentes_label, 'Sin Referentes') AS referentes_label
             FROM comision
             LEFT JOIN sede ON sede.id = comision.sede
             LEFT JOIN domicilio ON domicilio.id = sede.domicilio
             LEFT JOIN planificacion ON planificacion.id = comision.planificacion
+            LEFT JOIN comision comision_siguiente ON comision_siguiente.id = comision.comision_siguiente
+            LEFT JOIN planificacion planificacion_siguiente ON planificacion_siguiente.id = comision_siguiente.planificacion
             LEFT JOIN (
                 SELECT
                     alumno_comision.comision,
