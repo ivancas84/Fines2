@@ -5,6 +5,28 @@ use Fines7\Core\Plugin;
 $boolLabel = static function ($value): string {
     return (int) $value === 1 ? 'Si' : 'No';
 };
+
+$sortLink = static function (string $column, string $label) use ($selectedCalendario, $soloAutorizadas, $sort, $order): string {
+    $isCurrent = $sort === $column;
+    $nextOrder = $isCurrent && $order === 'asc' ? 'desc' : 'asc';
+    $indicator = $isCurrent ? ' ' . strtoupper($order) : '';
+    $args = [
+        'page' => Plugin::COMISIONES_SLUG,
+        'calendario' => $selectedCalendario,
+        'sort' => $column,
+        'order' => $nextOrder,
+    ];
+
+    if ($soloAutorizadas) {
+        $args['autorizada'] = '1';
+    }
+
+    return sprintf(
+        '<a href="%s">%s</a>',
+        esc_url(add_query_arg($args, admin_url('admin.php'))),
+        esc_html($label . $indicator)
+    );
+};
 ?>
 <div class="wrap fines7-wrap">
     <h1>Comisiones</h1>
@@ -17,6 +39,8 @@ $boolLabel = static function ($value): string {
 
     <form method="get" class="fines7-filters">
         <input type="hidden" name="page" value="<?php echo esc_attr(Plugin::COMISIONES_SLUG); ?>">
+        <input type="hidden" name="sort" value="<?php echo esc_attr($sort); ?>">
+        <input type="hidden" name="order" value="<?php echo esc_attr($order); ?>">
 
         <label for="fines7-calendario">Calendario:</label>
         <select name="calendario" id="fines7-calendario">
@@ -52,13 +76,13 @@ $boolLabel = static function ($value): string {
         <table class="wp-list-table widefat striped fines7-table">
             <thead>
                 <tr>
-                    <th>Nombre</th>
+                    <th><?php echo $sortLink('nombre', 'Nombre'); ?></th>
                     <th>Domicilio</th>
-                    <th>PFID</th>
-                    <th>Planificacion</th>
+                    <th><?php echo $sortLink('pfid', 'PFID'); ?></th>
+                    <th><?php echo $sortLink('planificacion', 'Planificacion'); ?></th>
                     <th>Autorizada</th>
-                    <th>Apertura</th>
-                    <th>Turno</th>
+                    <th><?php echo $sortLink('apertura', 'Apertura'); ?></th>
+                    <th><?php echo $sortLink('turno', 'Turno'); ?></th>
                     <th>Cantidad Alumnos</th>
                     <th>Siguiente</th>
                     <th>Referentes</th>

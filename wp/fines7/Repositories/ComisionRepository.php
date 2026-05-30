@@ -21,7 +21,7 @@ class ComisionRepository
         return $this->pdo->query($sql)->fetchAll();
     }
 
-    public function comisiones(string $calendarioId, bool $soloAutorizadas): array
+    public function comisiones(string $calendarioId, bool $soloAutorizadas, string $sort = 'pfid', string $order = 'asc'): array
     {
         $params = [
             'calendario_alumnos' => $calendarioId,
@@ -32,6 +32,8 @@ class ComisionRepository
         if ($soloAutorizadas) {
             $autorizadaSql = 'AND comision.autorizada = 1';
         }
+
+        $orderBy = $this->comisionesOrderBy($sort, $order);
 
         $sql = "
             SELECT
@@ -98,7 +100,7 @@ class ComisionRepository
             ) referentes ON referentes.sede = comision.sede
             WHERE comision.calendario = :calendario_comision
             {$autorizadaSql}
-            ORDER BY comision.pfid ASC
+            ORDER BY {$orderBy}
         ";
 
         $stmt = $this->pdo->prepare($sql);
@@ -130,5 +132,19 @@ class ComisionRepository
         }
 
         return $acronym;
+    }
+
+    private function comisionesOrderBy(string $sort, string $order): string
+    {
+        $direction = strtolower($order) === 'desc' ? 'DESC' : 'ASC';
+        $sorts = [
+            'nombre' => "sede_nombre {$direction}, comision.pfid ASC",
+            'pfid' => "CAST(comision.pfid AS UNSIGNED) {$direction}, comision.pfid {$direction}",
+            'planificacion' => "CAST(planificacion.anio AS UNSIGNED) {$direction}, CAST(planificacion.semestre AS UNSIGNED) {$direction}, plan.orientacion {$direction}, plan.resolucion {$direction}, comision.pfid ASC",
+            'apertura' => "comision.apertura {$direction}, comision.pfid ASC",
+            'turno' => "comision.turno {$direction}, comision.pfid ASC",
+        ];
+
+        return $sorts[$sort] ?? $sorts['pfid'];
     }
 }

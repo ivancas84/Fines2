@@ -17,6 +17,15 @@ class ComisionesPage
         $comisiones = [];
         $selectedCalendario = isset($_GET['calendario']) ? sanitize_text_field(wp_unslash($_GET['calendario'])) : '';
         $soloAutorizadas = isset($_GET['autorizada']);
+        $sort = isset($_GET['sort']) ? sanitize_key(wp_unslash($_GET['sort'])) : 'pfid';
+        $order = isset($_GET['order']) ? strtolower(sanitize_key(wp_unslash($_GET['order']))) : 'asc';
+        $allowedSorts = ['nombre', 'pfid', 'planificacion', 'apertura', 'turno'];
+        if (!in_array($sort, $allowedSorts, true)) {
+            $sort = 'pfid';
+        }
+        if (!in_array($order, ['asc', 'desc'], true)) {
+            $order = 'asc';
+        }
         $error = null;
 
         try {
@@ -28,7 +37,7 @@ class ComisionesPage
             }
 
             if ($selectedCalendario !== '') {
-                $comisiones = $repository->comisiones($selectedCalendario, $soloAutorizadas);
+                $comisiones = $repository->comisiones($selectedCalendario, $soloAutorizadas, $sort, $order);
             }
         } catch (\Throwable $throwable) {
             $error = $throwable->getMessage();
