@@ -65,6 +65,176 @@ class AlumnoRepository
         return $alumno ?: null;
     }
 
+    public function estadosInscripcion(): array
+    {
+        $sql = "
+            SELECT DISTINCT estado_inscripcion
+            FROM alumno
+            WHERE estado_inscripcion IS NOT NULL
+              AND estado_inscripcion != ''
+            ORDER BY estado_inscripcion ASC
+        ";
+
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function planes(): array
+    {
+        $sql = "
+            SELECT id, orientacion, resolucion
+            FROM plan
+            ORDER BY orientacion ASC, resolucion ASC
+        ";
+
+        return $this->pdo->query($sql)->fetchAll();
+    }
+
+    public function updatePersona(string $personaId, array $data): void
+    {
+        $sql = "
+            UPDATE persona
+            SET
+                nombres = :nombres,
+                apellidos = :apellidos,
+                numero_documento = :numero_documento,
+                cuil = :cuil,
+                cuil1 = :cuil1,
+                cuil2 = :cuil2,
+                sexo = :sexo,
+                dia_nacimiento = :dia_nacimiento,
+                mes_nacimiento = :mes_nacimiento,
+                anio_nacimiento = :anio_nacimiento,
+                telefono = :telefono,
+                codigo_area = :codigo_area,
+                email = :email,
+                email_abc = :email_abc,
+                lugar_nacimiento = :lugar_nacimiento,
+                nacionalidad = :nacionalidad,
+                descripcion_domicilio = :descripcion_domicilio,
+                departamento = :departamento,
+                localidad = :localidad,
+                partido = :partido
+            WHERE id = :id
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'id' => $personaId,
+            'nombres' => $data['nombres'],
+            'apellidos' => $data['apellidos'],
+            'numero_documento' => $data['numero_documento'],
+            'cuil' => $data['cuil'],
+            'cuil1' => $data['cuil1'],
+            'cuil2' => $data['cuil2'],
+            'sexo' => $data['sexo'],
+            'dia_nacimiento' => $data['dia_nacimiento'],
+            'mes_nacimiento' => $data['mes_nacimiento'],
+            'anio_nacimiento' => $data['anio_nacimiento'],
+            'telefono' => $data['telefono'],
+            'codigo_area' => $data['codigo_area'],
+            'email' => $data['email'],
+            'email_abc' => $data['email_abc'],
+            'lugar_nacimiento' => $data['lugar_nacimiento'],
+            'nacionalidad' => $data['nacionalidad'],
+            'descripcion_domicilio' => $data['descripcion_domicilio'],
+            'departamento' => $data['departamento'],
+            'localidad' => $data['localidad'],
+            'partido' => $data['partido'],
+        ]);
+    }
+
+    public function saveAlumno(string $personaId, ?string $alumnoId, array $data): string
+    {
+        if ($alumnoId === null || $alumnoId === '') {
+            $alumnoId = uniqid();
+
+            $sql = "
+                INSERT INTO alumno (
+                    id,
+                    persona,
+                    estado_inscripcion,
+                    plan,
+                    anio_ingreso,
+                    semestre_ingreso,
+                    anio_inscripcion,
+                    semestre_inscripcion,
+                    establecimiento_inscripcion,
+                    fecha_titulacion,
+                    observaciones,
+                    tiene_dni,
+                    tiene_constancia,
+                    tiene_certificado,
+                    previas_completas,
+                    tiene_partida,
+                    confirmado_direccion
+                ) VALUES (
+                    :id,
+                    :persona,
+                    :estado_inscripcion,
+                    :plan,
+                    :anio_ingreso,
+                    :semestre_ingreso,
+                    :anio_inscripcion,
+                    :semestre_inscripcion,
+                    :establecimiento_inscripcion,
+                    :fecha_titulacion,
+                    :observaciones,
+                    :tiene_dni,
+                    :tiene_constancia,
+                    :tiene_certificado,
+                    :previas_completas,
+                    :tiene_partida,
+                    :confirmado_direccion
+                )
+            ";
+        } else {
+            $sql = "
+                UPDATE alumno
+                SET
+                    estado_inscripcion = :estado_inscripcion,
+                    plan = :plan,
+                    anio_ingreso = :anio_ingreso,
+                    semestre_ingreso = :semestre_ingreso,
+                    anio_inscripcion = :anio_inscripcion,
+                    semestre_inscripcion = :semestre_inscripcion,
+                    establecimiento_inscripcion = :establecimiento_inscripcion,
+                    fecha_titulacion = :fecha_titulacion,
+                    observaciones = :observaciones,
+                    tiene_dni = :tiene_dni,
+                    tiene_constancia = :tiene_constancia,
+                    tiene_certificado = :tiene_certificado,
+                    previas_completas = :previas_completas,
+                    tiene_partida = :tiene_partida,
+                    confirmado_direccion = :confirmado_direccion
+                WHERE id = :id
+                  AND persona = :persona
+            ";
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'id' => $alumnoId,
+            'persona' => $personaId,
+            'estado_inscripcion' => $data['estado_inscripcion'],
+            'plan' => $data['plan'],
+            'anio_ingreso' => $data['anio_ingreso'],
+            'semestre_ingreso' => $data['semestre_ingreso'],
+            'anio_inscripcion' => $data['anio_inscripcion'],
+            'semestre_inscripcion' => $data['semestre_inscripcion'],
+            'establecimiento_inscripcion' => $data['establecimiento_inscripcion'],
+            'fecha_titulacion' => $data['fecha_titulacion'],
+            'observaciones' => $data['observaciones'],
+            'tiene_dni' => $data['tiene_dni'],
+            'tiene_constancia' => $data['tiene_constancia'],
+            'tiene_certificado' => $data['tiene_certificado'],
+            'previas_completas' => $data['previas_completas'],
+            'tiene_partida' => $data['tiene_partida'],
+            'confirmado_direccion' => $data['confirmado_direccion'],
+        ]);
+
+        return $alumnoId;
+    }
+
     public function comisiones(string $alumnoId): array
     {
         $sql = "

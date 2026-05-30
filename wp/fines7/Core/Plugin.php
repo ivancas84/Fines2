@@ -3,6 +3,7 @@
 namespace Fines7\Core;
 
 use Fines7\Pages\ComisionesPage;
+use Fines7\Pages\AlumnoPage;
 use Fines7\Pages\PersonasPage;
 
 class Plugin
@@ -19,6 +20,7 @@ class Plugin
         self::$pluginFile = $pluginFile;
 
         add_action('admin_menu', [self::class, 'registerMenu']);
+        add_action('admin_init', [AlumnoPage::class, 'maybeHandlePost']);
         add_action('admin_enqueue_scripts', [self::class, 'enqueueAdminAssets']);
     }
 
@@ -58,7 +60,7 @@ class Plugin
             'Detalle Alumno',
             'edit_posts',
             self::ALUMNO_SLUG,
-            [\Fines7\Pages\AlumnoPage::class, 'render']
+            [AlumnoPage::class, 'render']
         );
     }
 
