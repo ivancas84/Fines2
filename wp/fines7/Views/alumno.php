@@ -57,9 +57,10 @@ $personaLabel = trim(implode(' ', array_filter([
 
     <?php if (empty($error) && $persona !== null) : ?>
         <h2>Persona</h2>
-        <form method="post" class="fines7-edit-form">
+        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="fines7-edit-form">
             <?php wp_nonce_field('fines7_update_persona_' . $persona['id']); ?>
-            <input type="hidden" name="fines7_action" value="update_persona">
+            <input type="hidden" name="action" value="fines7_update_persona">
+            <input type="hidden" name="persona_id" value="<?php echo esc_attr($persona['id']); ?>">
 
             <div class="fines7-form-grid">
                 <label>Nombres <input type="text" name="nombres" value="<?php echo esc_attr($value($persona, 'nombres')); ?>" required></label>
@@ -100,9 +101,10 @@ $personaLabel = trim(implode(' ', array_filter([
             <p>No hay registro de alumno para esta persona. Al guardar estos datos se creara uno nuevo.</p>
         <?php endif; ?>
 
-        <form method="post" class="fines7-edit-form">
+        <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="fines7-edit-form">
             <?php wp_nonce_field('fines7_save_alumno_' . $persona['id']); ?>
-            <input type="hidden" name="fines7_action" value="save_alumno">
+            <input type="hidden" name="action" value="fines7_save_alumno">
+            <input type="hidden" name="persona_id" value="<?php echo esc_attr($persona['id']); ?>">
             <input type="hidden" name="alumno_id" value="<?php echo esc_attr($value($alumno, 'id')); ?>">
 
             <div class="fines7-form-grid">

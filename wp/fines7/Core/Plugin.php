@@ -20,7 +20,8 @@ class Plugin
         self::$pluginFile = $pluginFile;
 
         add_action('admin_menu', [self::class, 'registerMenu']);
-        add_action('admin_init', [AlumnoPage::class, 'maybeHandlePost']);
+        add_action('admin_post_fines7_update_persona', [AlumnoPage::class, 'updatePersona']);
+        add_action('admin_post_fines7_save_alumno', [AlumnoPage::class, 'saveAlumno']);
         add_action('admin_enqueue_scripts', [self::class, 'enqueueAdminAssets']);
     }
 

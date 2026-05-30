@@ -65,46 +65,44 @@ class AlumnoPage
         require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Views' . DIRECTORY_SEPARATOR . 'alumno.php';
     }
 
-    public static function maybeHandlePost(): void
+    public static function updatePersona(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return;
-        }
+        self::ensureCanEdit();
+        $personaId = self::personaIdFromPost();
+        check_admin_referer('fines7_update_persona_' . $personaId);
 
-        $page = isset($_GET['page']) ? sanitize_key(wp_unslash($_GET['page'])) : '';
-        if ($page !== \Fines7\Core\Plugin::ALUMNO_SLUG) {
-            return;
-        }
+        $personaRepository = new PersonaRepository(Database::fines());
+        $personaRepository->update($personaId, self::personaDataFromPost());
+        self::redirectWithNotice($personaId, 'persona_guardada');
+    }
 
+    public static function saveAlumno(): void
+    {
+        self::ensureCanEdit();
+        $personaId = self::personaIdFromPost();
+        check_admin_referer('fines7_save_alumno_' . $personaId);
+
+        $alumnoRepository = new AlumnoRepository(Database::fines());
+        $alumnoId = isset($_POST['alumno_id']) ? sanitize_text_field(wp_unslash($_POST['alumno_id'])) : '';
+        $alumnoRepository->save($personaId, $alumnoId, self::alumnoDataFromPost());
+        self::redirectWithNotice($personaId, 'alumno_guardado');
+    }
+
+    private static function ensureCanEdit(): void
+    {
         if (!current_user_can('edit_posts')) {
             wp_die(esc_html__('No tienes permisos suficientes para realizar esta accion.', 'fines7'));
         }
-
-        $personaId = isset($_GET['persona_id']) ? sanitize_text_field(wp_unslash($_GET['persona_id'])) : '';
-        if ($personaId === '') {
-            return;
-        }
-
-        $pdo = Database::fines();
-        self::handlePost(new PersonaRepository($pdo), new AlumnoRepository($pdo), $personaId);
     }
 
-    private static function handlePost(PersonaRepository $personaRepository, AlumnoRepository $alumnoRepository, string $personaId): void
+    private static function personaIdFromPost(): string
     {
-        $action = isset($_POST['fines7_action']) ? sanitize_key(wp_unslash($_POST['fines7_action'])) : '';
-
-        if ($action === 'update_persona') {
-            check_admin_referer('fines7_update_persona_' . $personaId);
-            $personaRepository->update($personaId, self::personaDataFromPost());
-            self::redirectWithNotice($personaId, 'persona_guardada');
+        $personaId = isset($_POST['persona_id']) ? sanitize_text_field(wp_unslash($_POST['persona_id'])) : '';
+        if ($personaId === '') {
+            wp_die(esc_html__('Falta persona_id para procesar el formulario.', 'fines7'));
         }
 
-        if ($action === 'save_alumno') {
-            check_admin_referer('fines7_save_alumno_' . $personaId);
-            $alumnoId = isset($_POST['alumno_id']) ? sanitize_text_field(wp_unslash($_POST['alumno_id'])) : '';
-            $alumnoRepository->save($personaId, $alumnoId, self::alumnoDataFromPost());
-            self::redirectWithNotice($personaId, 'alumno_guardado');
-        }
+        return $personaId;
     }
 
     private static function personaDataFromPost(): array
