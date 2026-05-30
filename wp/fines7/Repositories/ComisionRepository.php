@@ -40,7 +40,9 @@ class ComisionRepository
                 COALESCE(sede.nombre, sede.numero, '?') AS sede_nombre,
                 TRIM(CONCAT_WS(' ',
                     NULLIF(domicilio.calle, ''),
+                    NULLIF(domicilio.entre, ''),
                     NULLIF(domicilio.numero, ''),
+                    NULLIF(domicilio.barrio, ''),
                     NULLIF(domicilio.localidad, '')
                 )) AS domicilio_label,
                 comision.pfid,
@@ -79,13 +81,16 @@ class ComisionRepository
                 SELECT
                     designacion.sede,
                     GROUP_CONCAT(
-                        TRIM(CONCAT_WS(' ', persona.apellidos, persona.nombres))
+                        CONCAT_WS(' ',
+                            NULLIF(TRIM(CONCAT_WS(' ', persona.apellidos, persona.nombres)), ''),
+                            NULLIF(TRIM(persona.telefono), '')
+                        )
                         ORDER BY persona.apellidos, persona.nombres
                         SEPARATOR ', '
                     ) AS referentes_label
                 FROM designacion
                 INNER JOIN persona ON persona.id = designacion.persona
-                WHERE designacion.cargo = '1'
+                WHERE designacion.cargo = '1' /* referente */
                   AND designacion.hasta IS NULL
                 GROUP BY designacion.sede
             ) referentes ON referentes.sede = comision.sede
