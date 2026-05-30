@@ -3,11 +3,13 @@
 namespace Fines7\Core;
 
 use Fines7\Pages\ComisionesPage;
+use Fines7\Pages\PersonasPage;
 
 class Plugin
 {
     public const MENU_SLUG = 'fines7';
     public const COMISIONES_SLUG = 'fines7-comisiones';
+    public const PERSONAS_SLUG = 'fines7-personas';
 
     private static string $pluginFile;
 
@@ -29,6 +31,15 @@ class Plugin
             [ComisionesPage::class, 'render'],
             'dashicons-admin-generic',
             1
+        );
+
+        add_submenu_page(
+            self::MENU_SLUG,
+            'Buscar Personas',
+            'Buscar Personas',
+            'edit_posts',
+            self::PERSONAS_SLUG,
+            [PersonasPage::class, 'render']
         );
 
         add_submenu_page(
