@@ -16,7 +16,7 @@ class ComisionesPage
         $calendarios = [];
         $comisiones = [];
         $selectedCalendario = isset($_GET['calendario']) ? sanitize_text_field(wp_unslash($_GET['calendario'])) : '';
-        $soloAutorizadas = isset($_GET['autorizada']);
+        $soloAutorizadas = $selectedCalendario === '' || isset($_GET['autorizada']);
         $sort = isset($_GET['sort']) ? sanitize_key(wp_unslash($_GET['sort'])) : 'pfid';
         $order = isset($_GET['order']) ? strtolower(sanitize_key(wp_unslash($_GET['order']))) : 'asc';
         $allowedSorts = ['nombre', 'pfid', 'planificacion', 'apertura', 'turno'];
