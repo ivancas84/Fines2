@@ -7,7 +7,7 @@ return [
             'name' => 'nombre_base_fines',
             'user' => 'usuario',
             'pass' => 'password',
-            'charset' => 'utf8mb3',
+            'charset' => 'utf8',
         ],
     ],
 ];
