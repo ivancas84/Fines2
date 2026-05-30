@@ -3,7 +3,12 @@
 namespace Fines7\Pages;
 
 use Fines7\Core\Database;
+use Fines7\Repositories\AlumnoComisionRepository;
 use Fines7\Repositories\AlumnoRepository;
+use Fines7\Repositories\CalificacionRepository;
+use Fines7\Repositories\DetallePersonaRepository;
+use Fines7\Repositories\PersonaRepository;
+use Fines7\Repositories\PlanRepository;
 
 class AlumnoPage
 {
@@ -28,22 +33,29 @@ class AlumnoPage
             $error = 'Falta persona_id para consultar el detalle de alumno.';
         } else {
             try {
-                $repository = new AlumnoRepository(Database::fines());
-                $persona = $repository->persona($personaId);
+                $pdo = Database::fines();
+                $personaRepository = new PersonaRepository($pdo);
+                $alumnoRepository = new AlumnoRepository($pdo);
+                $planRepository = new PlanRepository($pdo);
+                $alumnoComisionRepository = new AlumnoComisionRepository($pdo);
+                $calificacionRepository = new CalificacionRepository($pdo);
+                $detallePersonaRepository = new DetallePersonaRepository($pdo);
+
+                $persona = $personaRepository->find($personaId);
 
                 if ($persona === null) {
                     $error = 'No se encontro la persona solicitada.';
                 } else {
-                    $estadosInscripcion = $repository->estadosInscripcion();
-                    $planes = $repository->planes();
-                    $alumno = $repository->alumnoByPersona($personaId);
+                    $estadosInscripcion = $alumnoRepository->estadosInscripcion();
+                    $planes = $planRepository->all();
+                    $alumno = $alumnoRepository->alumnoByPersona($personaId);
 
                     if ($alumno !== null) {
-                        $comisiones = $repository->comisiones((string) $alumno['id']);
-                        $calificaciones = $repository->calificaciones((string) $alumno['id']);
+                        $comisiones = $alumnoComisionRepository->byAlumno((string) $alumno['id']);
+                        $calificaciones = $calificacionRepository->byAlumno((string) $alumno['id']);
                     }
 
-                    $detalles = $repository->detalles($personaId);
+                    $detalles = $detallePersonaRepository->byPersona($personaId);
                 }
             } catch (\Throwable $throwable) {
                 $error = $throwable->getMessage();
@@ -73,24 +85,24 @@ class AlumnoPage
             return;
         }
 
-        $repository = new AlumnoRepository(Database::fines());
-        self::handlePost($repository, $personaId);
+        $pdo = Database::fines();
+        self::handlePost(new PersonaRepository($pdo), new AlumnoRepository($pdo), $personaId);
     }
 
-    private static function handlePost(AlumnoRepository $repository, string $personaId): void
+    private static function handlePost(PersonaRepository $personaRepository, AlumnoRepository $alumnoRepository, string $personaId): void
     {
         $action = isset($_POST['fines7_action']) ? sanitize_key(wp_unslash($_POST['fines7_action'])) : '';
 
         if ($action === 'update_persona') {
             check_admin_referer('fines7_update_persona_' . $personaId);
-            $repository->updatePersona($personaId, self::personaDataFromPost());
+            $personaRepository->update($personaId, self::personaDataFromPost());
             self::redirectWithNotice($personaId, 'persona_guardada');
         }
 
         if ($action === 'save_alumno') {
             check_admin_referer('fines7_save_alumno_' . $personaId);
             $alumnoId = isset($_POST['alumno_id']) ? sanitize_text_field(wp_unslash($_POST['alumno_id'])) : '';
-            $repository->saveAlumno($personaId, $alumnoId, self::alumnoDataFromPost());
+            $alumnoRepository->save($personaId, $alumnoId, self::alumnoDataFromPost());
             self::redirectWithNotice($personaId, 'alumno_guardado');
         }
     }
