@@ -10,6 +10,7 @@ class Plugin
     public const MENU_SLUG = 'fines7';
     public const COMISIONES_SLUG = 'fines7-comisiones';
     public const PERSONAS_SLUG = 'fines7-personas';
+    public const ALUMNO_SLUG = 'fines7-alumno';
 
     private static string $pluginFile;
 
@@ -49,6 +50,15 @@ class Plugin
             'edit_posts',
             self::COMISIONES_SLUG,
             [ComisionesPage::class, 'render']
+        );
+
+        add_submenu_page(
+            null,
+            'Detalle Alumno',
+            'Detalle Alumno',
+            'edit_posts',
+            self::ALUMNO_SLUG,
+            [\Fines7\Pages\AlumnoPage::class, 'render']
         );
     }
 

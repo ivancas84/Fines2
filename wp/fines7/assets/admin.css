@@ -19,3 +19,26 @@
     min-width: 30px;
     padding: 0 4px;
 }
+
+.fines7-detail-grid {
+    display: grid;
+    gap: 10px 16px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin: 12px 0 20px;
+    max-width: 1100px;
+}
+
+.fines7-detail-grid div {
+    border-bottom: 1px solid #dcdcde;
+    padding: 6px 0;
+}
+
+.fines7-detail-grid strong,
+.fines7-detail-grid span {
+    display: block;
+}
+
+.fines7-detail-grid strong {
+    color: #50575e;
+    font-size: 12px;
+}

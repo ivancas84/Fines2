@@ -46,6 +46,7 @@ use Fines7\Core\Plugin;
                         <th>Telefono</th>
                         <th>Email</th>
                         <th>Email ABC</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,6 +58,14 @@ use Fines7\Core\Plugin;
                             <td><?php echo esc_html($persona['telefono'] ?: ''); ?></td>
                             <td><?php echo esc_html($persona['email'] ?: ''); ?></td>
                             <td><?php echo esc_html($persona['email_abc'] ?: ''); ?></td>
+                            <td class="fines7-actions">
+                                <a
+                                    href="<?php echo esc_url(add_query_arg(['page' => Plugin::ALUMNO_SLUG, 'persona_id' => $persona['id']], admin_url('admin.php'))); ?>"
+                                    class="button"
+                                >
+                                    Alumno
+                                </a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
