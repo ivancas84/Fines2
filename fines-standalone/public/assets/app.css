@@ -1,0 +1,211 @@
+:root {
+    --app-bg: #f6f7f9;
+    --app-border: #d9dee7;
+    --app-sidebar: #17202a;
+    --app-text: #1f2937;
+}
+
+body {
+    background: var(--app-bg);
+    color: var(--app-text);
+}
+
+.app-shell {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    min-height: 100vh;
+}
+
+.app-sidebar {
+    background: var(--app-sidebar);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 22px 18px;
+}
+
+.app-brand {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.app-sidebar .nav-link {
+    border-radius: 6px;
+    color: #d6dde8;
+    padding: 9px 10px;
+}
+
+.app-sidebar .nav-link:hover,
+.app-sidebar .nav-link:focus {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.app-main {
+    min-width: 0;
+    padding: 28px;
+}
+
+.auth-main {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-panel {
+    background: #fff;
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    max-width: 400px;
+    padding: 28px;
+    width: 100%;
+}
+
+.page-header {
+    align-items: center;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.page-header h1 {
+    font-size: 28px;
+    margin: 0;
+}
+
+.panel {
+    background: #fff;
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    margin-bottom: 18px;
+    padding: 18px;
+}
+
+.panel h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+
+.filters-bar {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.filters-bar .form-control,
+.filters-bar .form-select {
+    max-width: 420px;
+}
+
+.app-table {
+    background: #fff;
+    border: 1px solid var(--app-border);
+    font-size: 14px;
+}
+
+.app-table th {
+    color: #4b5563;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.empty-state,
+.action-card {
+    background: #fff;
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    display: block;
+    padding: 18px;
+}
+
+.action-card {
+    color: inherit;
+    min-height: 120px;
+    text-decoration: none;
+}
+
+.action-card strong,
+.action-card span {
+    display: block;
+}
+
+.action-card span {
+    color: #6b7280;
+    margin-top: 8px;
+}
+
+.form-grid {
+    display: grid;
+    gap: 12px 14px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.form-wide {
+    grid-column: 1 / -1;
+}
+
+.comision-picker {
+    min-width: 260px;
+    position: relative;
+}
+
+.comision-results {
+    background: #fff;
+    border: 1px solid #98a2b3;
+    border-radius: 6px;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14);
+    left: 0;
+    max-height: 220px;
+    overflow-y: auto;
+    position: absolute;
+    top: calc(100% + 4px);
+    width: min(560px, 86vw);
+    z-index: 10;
+}
+
+.comision-option,
+.comision-empty {
+    background: #fff;
+    border: 0;
+    display: block;
+    padding: 8px 10px;
+    text-align: left;
+    width: 100%;
+}
+
+.comision-option:hover,
+.comision-option:focus {
+    background: #eef5ff;
+}
+
+@media (max-width: 1100px) {
+    .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 760px) {
+    .app-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .app-sidebar {
+        position: static;
+    }
+
+    .app-main {
+        padding: 18px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
