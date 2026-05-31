@@ -60,8 +60,14 @@ class AlumnoComisionRepository
         return $this->pdo->query($sql)->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function comisionesDisponibles(): array
+    public function searchComisiones(string $term, int $limit = 10): array
     {
+        $limit = max(1, min(20, $limit));
+        $term = trim($term);
+        if ($term === '') {
+            return [];
+        }
+
         $sql = "
             SELECT
                 comision.id,
@@ -82,10 +88,49 @@ class AlumnoComisionRepository
             LEFT JOIN calendario ON calendario.id = comision.calendario
             LEFT JOIN planificacion ON planificacion.id = comision.planificacion
             LEFT JOIN plan ON plan.id = planificacion.plan
-            ORDER BY CAST(comision.pfid AS UNSIGNED) DESC, comision.pfid DESC
+            WHERE comision.id LIKE :term_like
+               OR comision.pfid LIKE :term_like
+            ORDER BY
+                (comision.pfid = :term_exact_pfid) DESC,
+                (comision.id = :term_exact_id) DESC,
+                CAST(comision.pfid AS UNSIGNED) DESC,
+                comision.pfid DESC
+            LIMIT {$limit}
         ";
 
-        return $this->pdo->query($sql)->fetchAll();
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'term_like' => '%' . $term . '%',
+            'term_exact_pfid' => $term,
+            'term_exact_id' => $term,
+        ]);
+
+        return array_map(function (array $row): array {
+            $planLabel = trim(implode(' - ', array_filter([
+                (string) ($row['plan_orientacion'] ?? ''),
+                (string) ($row['plan_resolucion'] ?? ''),
+            ])));
+
+            $summary = trim(implode(' | ', array_filter([
+                'PFID ' . (string) ($row['pfid'] ?? ''),
+                (string) ($row['sede_label'] ?? ''),
+            ])));
+
+            $label = trim(implode(' | ', array_filter([
+                $summary,
+                (string) ($row['calendario_label'] ?? ''),
+                (string) ($row['tramo_label'] ?? ''),
+                $planLabel,
+                'ID ' . (string) ($row['id'] ?? ''),
+            ])));
+
+            return [
+                'id' => (string) ($row['id'] ?? ''),
+                'pfid' => (string) ($row['pfid'] ?? ''),
+                'summary' => $summary,
+                'label' => $label,
+            ];
+        }, $stmt->fetchAll());
     }
 
     public function saveForAlumno(string $alumnoId, array $rows): void

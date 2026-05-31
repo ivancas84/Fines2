@@ -25,7 +25,6 @@ class AlumnoPage
         $alumno = null;
         $planes = [];
         $comisiones = [];
-        $comisionesDisponibles = [];
         $estadosComision = [];
         $calificaciones = [];
         $detalles = [];
@@ -55,7 +54,6 @@ class AlumnoPage
 
                     if ($alumno !== null) {
                         $comisiones = $alumnoComisionRepository->byAlumno((string) $alumno['id']);
-                        $comisionesDisponibles = $alumnoComisionRepository->comisionesDisponibles();
                         $estadosComision = $alumnoComisionRepository->estados();
                         $calificaciones = $calificacionRepository->byAlumno((string) $alumno['id']);
                     }
@@ -106,6 +104,24 @@ class AlumnoPage
             self::redirectWithNotice($personaId, 'comisiones_guardadas');
         } catch (\Throwable $throwable) {
             self::redirectWithError($personaId, $throwable->getMessage());
+        }
+    }
+
+    public static function searchComisiones(): void
+    {
+        AdminRequest::requireCapability('edit_posts');
+        check_ajax_referer('fines7_search_comisiones', 'nonce');
+
+        $term = isset($_POST['term']) ? sanitize_text_field(wp_unslash($_POST['term'])) : '';
+        if (trim($term) === '') {
+            wp_send_json_success([]);
+        }
+
+        try {
+            $repository = new AlumnoComisionRepository(Database::fines());
+            wp_send_json_success($repository->searchComisiones($term, 10));
+        } catch (\Throwable $throwable) {
+            wp_send_json_error(['message' => $throwable->getMessage()], 400);
         }
     }
 

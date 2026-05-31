@@ -23,6 +23,7 @@ class Plugin
         add_action('admin_post_fines7_update_persona', [AlumnoPage::class, 'updatePersona']);
         add_action('admin_post_fines7_save_alumno', [AlumnoPage::class, 'saveAlumno']);
         add_action('admin_post_fines7_save_alumno_comisiones', [AlumnoPage::class, 'saveAlumnoComisiones']);
+        add_action('wp_ajax_fines7_search_comisiones', [AlumnoPage::class, 'searchComisiones']);
         add_action('admin_enqueue_scripts', [self::class, 'enqueueAdminAssets']);
     }
 
@@ -79,5 +80,18 @@ class Plugin
             [],
             '0.1.0'
         );
+
+        wp_enqueue_script(
+            'fines7-admin',
+            plugin_dir_url(self::$pluginFile) . 'assets/admin.js',
+            [],
+            '0.1.0',
+            true
+        );
+
+        wp_localize_script('fines7-admin', 'fines7Admin', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'searchComisionesNonce' => wp_create_nonce('fines7_search_comisiones'),
+        ]);
     }
 }

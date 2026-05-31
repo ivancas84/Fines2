@@ -30,9 +30,10 @@
     align-items: center;
     display: flex;
     gap: 10px;
+    position: relative;
 }
 
-.fines7-comision-picker input {
+.fines7-comision-picker .fines7-comision-search {
     max-width: 180px;
     width: 33%;
 }
@@ -40,6 +41,47 @@
 .fines7-comision-picker .fines7-muted {
     flex: 1;
     margin-top: 0;
+}
+
+.fines7-comision-results {
+    background: #fff;
+    border: 1px solid #8c8f94;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    left: 0;
+    max-height: 220px;
+    overflow-y: auto;
+    position: absolute;
+    top: calc(100% + 4px);
+    width: min(520px, 90vw);
+    z-index: 20;
+}
+
+.fines7-comision-option,
+.fines7-comision-empty {
+    background: #fff;
+    border: 0;
+    color: #1d2327;
+    display: block;
+    font-size: 13px;
+    line-height: 1.35;
+    margin: 0;
+    padding: 8px 10px;
+    text-align: left;
+    width: 100%;
+}
+
+.fines7-comision-option {
+    cursor: pointer;
+}
+
+.fines7-comision-option:hover,
+.fines7-comision-option:focus {
+    background: #f0f6fc;
+    outline: none;
+}
+
+.fines7-comision-empty {
+    color: #646970;
 }
 
 .fines7-detail-grid {

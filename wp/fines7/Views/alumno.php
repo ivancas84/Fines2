@@ -25,16 +25,6 @@ $planLabel = static function (?array $row): string {
     ])));
 };
 
-$comisionOptionLabel = static function (array $comision) use ($planLabel): string {
-    return trim(implode(' | ', array_filter([
-        'PFID ' . (string) ($comision['pfid'] ?? ''),
-        (string) ($comision['sede_label'] ?? ''),
-        (string) ($comision['calendario_label'] ?? ''),
-        (string) ($comision['tramo_label'] ?? ''),
-        $planLabel($comision),
-    ])));
-};
-
 $personaLabel = trim(implode(' ', array_filter([
     $value($persona, 'apellidos'),
     $value($persona, 'nombres'),
@@ -180,15 +170,6 @@ $personaLabel = trim(implode(' ', array_filter([
                 <input type="hidden" name="persona_id" value="<?php echo esc_attr($persona['id']); ?>">
                 <input type="hidden" name="alumno_id" value="<?php echo esc_attr($alumno['id']); ?>">
 
-                <datalist id="fines7-comisiones-list">
-                    <?php foreach ($comisionesDisponibles as $comisionDisponible) : ?>
-                        <option
-                            value="<?php echo esc_attr($comisionDisponible['id']); ?>"
-                            label="<?php echo esc_attr($comisionOptionLabel($comisionDisponible)); ?>"
-                        ></option>
-                    <?php endforeach; ?>
-                </datalist>
-
                 <table class="wp-list-table widefat striped fines7-table">
                     <thead>
                         <tr>
@@ -205,16 +186,24 @@ $personaLabel = trim(implode(' ', array_filter([
                             <tr>
                                 <td>
                                     <input type="hidden" name="alumno_comision_id[<?php echo esc_attr((string) $index); ?>]" value="<?php echo esc_attr($comision['id']); ?>">
-                                    <div class="fines7-comision-picker">
+                                    <div class="fines7-comision-picker fines7-comision-autocomplete">
                                         <input
                                             type="text"
+                                            class="fines7-comision-search"
+                                            value="<?php echo esc_attr($comision['pfid'] ?? ''); ?>"
+                                            placeholder="Buscar PFID o ID"
+                                            autocomplete="off"
+                                        >
+                                        <input
+                                            type="hidden"
+                                            class="fines7-comision-id"
                                             name="comision_ref[<?php echo esc_attr((string) $index); ?>]"
-                                            list="fines7-comisiones-list"
                                             value="<?php echo esc_attr($comision['comision_id']); ?>"
                                         >
                                         <span class="fines7-muted">
                                             <?php echo esc_html(trim('PFID ' . ($comision['pfid'] ?? '') . ' | ' . ($comision['sede_label'] ?? ''), ' |')); ?>
                                         </span>
+                                        <div class="fines7-comision-results" hidden></div>
                                     </div>
                                 </td>
                                 <td><?php echo esc_html($comision['calendario_label'] ?: ''); ?></td>
@@ -237,9 +226,17 @@ $personaLabel = trim(implode(' ', array_filter([
                         <?php endforeach; ?>
                         <tr>
                             <td>
-                                <div class="fines7-comision-picker">
-                                <input type="text" name="new_comision_ref" list="fines7-comisiones-list" value="" placeholder="ID de comision">
+                                <div class="fines7-comision-picker fines7-comision-autocomplete">
+                                    <input
+                                        type="text"
+                                        class="fines7-comision-search"
+                                        value=""
+                                        placeholder="Buscar PFID o ID"
+                                        autocomplete="off"
+                                    >
+                                    <input type="hidden" class="fines7-comision-id" name="new_comision_ref" value="">
                                     <span class="fines7-muted">Nueva comision</span>
+                                    <div class="fines7-comision-results" hidden></div>
                                 </div>
                             </td>
                             <td colspan="3">Agregar nueva comision</td>
