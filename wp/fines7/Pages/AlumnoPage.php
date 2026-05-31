@@ -25,10 +25,13 @@ class AlumnoPage
         $alumno = null;
         $planes = [];
         $comisiones = [];
+        $comisionesDisponibles = [];
+        $estadosComision = [];
         $calificaciones = [];
         $detalles = [];
         $error = null;
         $notice = isset($_GET['fines7_notice']) ? sanitize_text_field(wp_unslash($_GET['fines7_notice'])) : '';
+        $formError = isset($_GET['fines7_error']) ? sanitize_text_field(wp_unslash($_GET['fines7_error'])) : '';
 
         if ($personaId === '') {
             $error = 'Falta persona_id para consultar el detalle de alumno.';
@@ -52,6 +55,8 @@ class AlumnoPage
 
                     if ($alumno !== null) {
                         $comisiones = $alumnoComisionRepository->byAlumno((string) $alumno['id']);
+                        $comisionesDisponibles = $alumnoComisionRepository->comisionesDisponibles();
+                        $estadosComision = $alumnoComisionRepository->estados();
                         $calificaciones = $calificacionRepository->byAlumno((string) $alumno['id']);
                     }
 
@@ -86,6 +91,22 @@ class AlumnoPage
         $alumnoId = FormData::text('alumno_id');
         $alumnoRepository->save($personaId, $alumnoId, self::alumnoDataFromPost());
         self::redirectWithNotice($personaId, 'alumno_guardado');
+    }
+
+    public static function saveAlumnoComisiones(): void
+    {
+        AdminRequest::requireCapability('edit_posts');
+        $personaId = FormData::requiredText('persona_id', 'Falta persona_id para procesar el formulario.');
+        $alumnoId = FormData::requiredText('alumno_id', 'Falta alumno_id para procesar comisiones.');
+        check_admin_referer('fines7_save_alumno_comisiones_' . $personaId);
+
+        try {
+            $repository = new AlumnoComisionRepository(Database::fines());
+            $repository->saveForAlumno($alumnoId, self::alumnoComisionesDataFromPost());
+            self::redirectWithNotice($personaId, 'comisiones_guardadas');
+        } catch (\Throwable $throwable) {
+            self::redirectWithError($personaId, $throwable->getMessage());
+        }
     }
 
     private static function personaDataFromPost(): array
@@ -131,12 +152,56 @@ class AlumnoPage
         ];
     }
 
+    private static function alumnoComisionesDataFromPost(): array
+    {
+        $rows = [];
+        $ids = isset($_POST['alumno_comision_id']) && is_array($_POST['alumno_comision_id']) ? wp_unslash($_POST['alumno_comision_id']) : [];
+        $comisiones = isset($_POST['comision_ref']) && is_array($_POST['comision_ref']) ? wp_unslash($_POST['comision_ref']) : [];
+        $estados = isset($_POST['estado']) && is_array($_POST['estado']) ? wp_unslash($_POST['estado']) : [];
+
+        foreach ($ids as $index => $id) {
+            $id = sanitize_text_field((string) $id);
+            if ($id === '') {
+                continue;
+            }
+
+            $rows[] = [
+                'id' => $id,
+                'comision_ref' => isset($comisiones[$index]) ? sanitize_text_field((string) $comisiones[$index]) : '',
+                'estado' => isset($estados[$index]) ? sanitize_text_field((string) $estados[$index]) : null,
+                'activo' => isset($_POST['activo'][$index]) ? 1 : 0,
+            ];
+        }
+
+        $newComisionRef = FormData::text('new_comision_ref');
+        if ($newComisionRef !== null) {
+            $rows[] = [
+                'id' => null,
+                'comision_ref' => $newComisionRef,
+                'estado' => FormData::text('new_estado'),
+                'activo' => FormData::bool('new_activo'),
+            ];
+        }
+
+        return $rows;
+    }
+
     private static function redirectWithNotice(string $personaId, string $notice): void
     {
         wp_safe_redirect(add_query_arg([
             'page' => \Fines7\Core\Plugin::ALUMNO_SLUG,
             'persona_id' => $personaId,
             'fines7_notice' => $notice,
+        ], admin_url('admin.php')));
+        exit;
+    }
+
+    private static function redirectWithError(string $personaId, string $message): void
+    {
+        wp_safe_redirect(add_query_arg([
+            'page' => \Fines7\Core\Plugin::ALUMNO_SLUG,
+            'persona_id' => $personaId,
+            'fines7_error' => $message,
         ], admin_url('admin.php')));
         exit;
     }

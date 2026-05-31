@@ -20,6 +20,28 @@
     padding: 0 4px;
 }
 
+.fines7-muted {
+    color: #646970;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.fines7-comision-picker {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+}
+
+.fines7-comision-picker input {
+    max-width: 180px;
+    width: 33%;
+}
+
+.fines7-comision-picker .fines7-muted {
+    flex: 1;
+    margin-top: 0;
+}
+
 .fines7-detail-grid {
     display: grid;
     gap: 10px 16px;

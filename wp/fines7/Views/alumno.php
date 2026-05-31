@@ -25,6 +25,16 @@ $planLabel = static function (?array $row): string {
     ])));
 };
 
+$comisionOptionLabel = static function (array $comision) use ($planLabel): string {
+    return trim(implode(' | ', array_filter([
+        'PFID ' . (string) ($comision['pfid'] ?? ''),
+        (string) ($comision['sede_label'] ?? ''),
+        (string) ($comision['calendario_label'] ?? ''),
+        (string) ($comision['tramo_label'] ?? ''),
+        $planLabel($comision),
+    ])));
+};
+
 $personaLabel = trim(implode(' ', array_filter([
     $value($persona, 'apellidos'),
     $value($persona, 'nombres'),
@@ -45,6 +55,12 @@ $personaLabel = trim(implode(' ', array_filter([
         </div>
     <?php endif; ?>
 
+    <?php if (!empty($formError)) : ?>
+        <div class="notice notice-error is-dismissible">
+            <p><?php echo esc_html($formError); ?></p>
+        </div>
+    <?php endif; ?>
+
     <?php if ($notice === 'persona_guardada') : ?>
         <div class="notice notice-success is-dismissible">
             <p>Datos de persona guardados.</p>
@@ -52,6 +68,10 @@ $personaLabel = trim(implode(' ', array_filter([
     <?php elseif ($notice === 'alumno_guardado') : ?>
         <div class="notice notice-success is-dismissible">
             <p>Datos de alumno guardados.</p>
+        </div>
+    <?php elseif ($notice === 'comisiones_guardadas') : ?>
+        <div class="notice notice-success is-dismissible">
+            <p>Comisiones guardadas.</p>
         </div>
     <?php endif; ?>
 
@@ -154,14 +174,25 @@ $personaLabel = trim(implode(' ', array_filter([
 
         <?php if ($alumno !== null) : ?>
             <h2>Comisiones</h2>
-            <?php if (empty($comisiones)) : ?>
-                <p>No hay comisiones asignadas.</p>
-            <?php else : ?>
+            <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
+                <?php wp_nonce_field('fines7_save_alumno_comisiones_' . $persona['id']); ?>
+                <input type="hidden" name="action" value="fines7_save_alumno_comisiones">
+                <input type="hidden" name="persona_id" value="<?php echo esc_attr($persona['id']); ?>">
+                <input type="hidden" name="alumno_id" value="<?php echo esc_attr($alumno['id']); ?>">
+
+                <datalist id="fines7-comisiones-list">
+                    <?php foreach ($comisionesDisponibles as $comisionDisponible) : ?>
+                        <option
+                            value="<?php echo esc_attr($comisionDisponible['id']); ?>"
+                            label="<?php echo esc_attr($comisionOptionLabel($comisionDisponible)); ?>"
+                        ></option>
+                    <?php endforeach; ?>
+                </datalist>
+
                 <table class="wp-list-table widefat striped fines7-table">
                     <thead>
                         <tr>
-                            <th>Sede</th>
-                            <th>PFID</th>
+                            <th>Comision</th>
                             <th>Periodo</th>
                             <th>Tramo</th>
                             <th>Plan</th>
@@ -170,20 +201,65 @@ $personaLabel = trim(implode(' ', array_filter([
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($comisiones as $comision) : ?>
+                        <?php foreach ($comisiones as $index => $comision) : ?>
                             <tr>
-                                <td><?php echo esc_html($comision['sede_label'] ?: ''); ?></td>
-                                <td><?php echo esc_html($comision['pfid'] ?: ''); ?></td>
+                                <td>
+                                    <input type="hidden" name="alumno_comision_id[<?php echo esc_attr((string) $index); ?>]" value="<?php echo esc_attr($comision['id']); ?>">
+                                    <div class="fines7-comision-picker">
+                                        <input
+                                            type="text"
+                                            name="comision_ref[<?php echo esc_attr((string) $index); ?>]"
+                                            list="fines7-comisiones-list"
+                                            value="<?php echo esc_attr($comision['comision_id']); ?>"
+                                        >
+                                        <span class="fines7-muted">
+                                            <?php echo esc_html(trim('PFID ' . ($comision['pfid'] ?? '') . ' | ' . ($comision['sede_label'] ?? ''), ' |')); ?>
+                                        </span>
+                                    </div>
+                                </td>
                                 <td><?php echo esc_html($comision['calendario_label'] ?: ''); ?></td>
                                 <td><?php echo esc_html($comision['tramo_label'] ?: ''); ?></td>
                                 <td><?php echo esc_html($planLabel($comision)); ?></td>
-                                <td><?php echo esc_html($comision['estado'] ?: ''); ?></td>
-                                <td><?php echo esc_html($boolLabel($comision['activo'] ?? 0)); ?></td>
+                                <td>
+                                    <select name="estado[<?php echo esc_attr((string) $index); ?>]">
+                                        <option value="">Seleccione...</option>
+                                        <?php foreach ($estadosComision as $estadoComision) : ?>
+                                            <option value="<?php echo esc_attr($estadoComision); ?>" <?php selected($comision['estado'], $estadoComision); ?>>
+                                                <?php echo esc_html($estadoComision); ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="activo[<?php echo esc_attr((string) $index); ?>]" value="1" <?php checked((int) ($comision['activo'] ?? 0), 1); ?>>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
+                        <tr>
+                            <td>
+                                <div class="fines7-comision-picker">
+                                <input type="text" name="new_comision_ref" list="fines7-comisiones-list" value="" placeholder="ID de comision">
+                                    <span class="fines7-muted">Nueva comision</span>
+                                </div>
+                            </td>
+                            <td colspan="3">Agregar nueva comision</td>
+                            <td>
+                                <select name="new_estado">
+                                    <option value="">Seleccione...</option>
+                                    <?php foreach ($estadosComision as $estadoComision) : ?>
+                                        <option value="<?php echo esc_attr($estadoComision); ?>"><?php echo esc_html($estadoComision); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="new_activo" value="1">
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
-            <?php endif; ?>
+
+                <p><button type="submit" class="button button-primary">Guardar Comisiones</button></p>
+            </form>
 
             <h2>Calificaciones</h2>
             <?php if (empty($calificaciones)) : ?>

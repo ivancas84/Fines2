@@ -15,6 +15,7 @@ class AlumnoComisionRepository
         $sql = "
             SELECT
                 alumno_comision.id,
+                alumno_comision.comision AS comision_id,
                 alumno_comision.estado,
                 alumno_comision.activo,
                 alumno_comision.observaciones,
@@ -44,5 +45,117 @@ class AlumnoComisionRepository
         $stmt->execute(['alumno_id' => $alumnoId]);
 
         return $stmt->fetchAll();
+    }
+
+    public function estados(): array
+    {
+        $sql = "
+            SELECT DISTINCT estado
+            FROM alumno_comision
+            WHERE estado IS NOT NULL
+              AND estado != ''
+            ORDER BY estado ASC
+        ";
+
+        return $this->pdo->query($sql)->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function comisionesDisponibles(): array
+    {
+        $sql = "
+            SELECT
+                comision.id,
+                comision.pfid,
+                COALESCE(sede.nombre, sede.numero, 'Sede no definida') AS sede_label,
+                TRIM(CONCAT_WS('-',
+                    NULLIF(calendario.anio, ''),
+                    NULLIF(calendario.semestre, '')
+                )) AS calendario_label,
+                TRIM(CONCAT_WS('-',
+                    NULLIF(planificacion.anio, ''),
+                    NULLIF(planificacion.semestre, '')
+                )) AS tramo_label,
+                plan.orientacion AS plan_orientacion,
+                plan.resolucion AS plan_resolucion
+            FROM comision
+            LEFT JOIN sede ON sede.id = comision.sede
+            LEFT JOIN calendario ON calendario.id = comision.calendario
+            LEFT JOIN planificacion ON planificacion.id = comision.planificacion
+            LEFT JOIN plan ON plan.id = planificacion.plan
+            ORDER BY CAST(comision.pfid AS UNSIGNED) DESC, comision.pfid DESC
+        ";
+
+        return $this->pdo->query($sql)->fetchAll();
+    }
+
+    public function saveForAlumno(string $alumnoId, array $rows): void
+    {
+        foreach ($rows as $row) {
+            $comisionId = $this->resolveComisionRef((string) ($row['comision_ref'] ?? ''));
+            if ($comisionId === null) {
+                continue;
+            }
+
+            if (!empty($row['id'])) {
+                $this->update((string) $row['id'], $alumnoId, $comisionId, $row);
+            } else {
+                $this->insert($alumnoId, $comisionId, $row);
+            }
+        }
+    }
+
+    private function update(string $id, string $alumnoId, string $comisionId, array $row): void
+    {
+        $sql = "
+            UPDATE alumno_comision
+            SET comision = :comision,
+                estado = :estado,
+                activo = :activo
+            WHERE id = :id
+              AND alumno = :alumno
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'id' => $id,
+            'alumno' => $alumnoId,
+            'comision' => $comisionId,
+            'estado' => $row['estado'] ?? null,
+            'activo' => (int) ($row['activo'] ?? 0),
+        ]);
+    }
+
+    private function insert(string $alumnoId, string $comisionId, array $row): void
+    {
+        $sql = "
+            INSERT INTO alumno_comision (id, alumno, comision, estado, activo)
+            VALUES (:id, :alumno, :comision, :estado, :activo)
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'id' => uniqid(),
+            'alumno' => $alumnoId,
+            'comision' => $comisionId,
+            'estado' => $row['estado'] ?? null,
+            'activo' => (int) ($row['activo'] ?? 0),
+        ]);
+    }
+
+    private function resolveComisionRef(string $ref): ?string
+    {
+        $ref = trim($ref);
+        if ($ref === '') {
+            return null;
+        }
+
+        $stmt = $this->pdo->prepare('SELECT id FROM comision WHERE id = :ref LIMIT 1');
+        $stmt->execute(['ref' => $ref]);
+        $id = $stmt->fetchColumn();
+        if ($id !== false) {
+            return (string) $id;
+        }
+
+        throw new \RuntimeException('La comision seleccionada no existe. Elegi una opcion del autocompletar para guardar el ID.');
     }
 }
