@@ -8,15 +8,21 @@ $comisionSummary = static fn (array $row): string => trim(implode(' | ', array_f
     $row['tramo_label'] ?? '',
     $planLabel($row),
 ])));
-$cursoSummary = static fn (array $row): string => trim(implode(' | ', array_filter([
-    ($row['pfid'] ?? '') !== '' ? 'PFID ' . $row['pfid'] : '',
-    $row['calendario_label'] ?? '',
-    $row['docente_label'] ?? '',
-    trim(implode(' ', array_filter([
-        $row['asignatura_label'] ?? '',
-        $row['tramo_label'] ?? '',
-    ]))),
-]))) ?: 'Sin curso seleccionado';
+$cursoSummary = static function (array $row): string {
+    if (($row['curso'] ?? '') === '') {
+        return 'Sin curso seleccionado';
+    }
+
+    return trim(implode(' | ', array_filter([
+        ($row['pfid'] ?? '') !== '' ? 'PFID ' . $row['pfid'] : '',
+        $row['calendario_label'] ?? '',
+        $row['docente_label'] ?? '',
+        trim(implode(' ', array_filter([
+            $row['asignatura_label'] ?? '',
+            $row['tramo_label'] ?? '',
+        ]))),
+    ]))) ?: 'Sin curso seleccionado';
+};
 $personaLabel = trim(implode(' ', array_filter([$v($persona, 'apellidos'), $v($persona, 'nombres')])));
 $calificacionIndex = 0;
 $renderCalificacionesTable = static function (array $calificaciones) use ($planLabel, $cursoSummary, &$calificacionIndex): void {
