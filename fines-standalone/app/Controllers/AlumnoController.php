@@ -31,6 +31,8 @@ final class AlumnoController extends Controller
 
         $alumno = $alumnoRepository->byPersona($personaId);
         $alumnoId = $alumno['id'] ?? null;
+        $calificacionRepository = new CalificacionRepository($this->pdo);
+        $tienePlan = $alumnoId && !empty($alumno['plan']);
 
         $this->view->render('alumnos/show', [
             'title' => 'Alumno',
@@ -39,7 +41,15 @@ final class AlumnoController extends Controller
             'planes' => (new PlanRepository($this->pdo))->all(),
             'comisiones' => $alumnoId ? (new AlumnoComisionRepository($this->pdo))->byAlumno((string) $alumnoId) : [],
             'estadosComision' => $alumnoId ? (new AlumnoComisionRepository($this->pdo))->estados() : [],
-            'calificaciones' => $alumnoId ? (new CalificacionRepository($this->pdo))->byAlumno((string) $alumnoId) : [],
+            'calificacionesPlan' => $tienePlan ? $calificacionRepository->byAlumnoPlanTramo(
+                (string) $alumnoId,
+                (string) $alumno['plan'],
+                $calificacionRepository->tramoIngresoShort($alumno),
+            ) : [],
+            'calificacionesOtroPlan' => $tienePlan ? $calificacionRepository->aprobadasByAlumnoNotInPlan(
+                (string) $alumnoId,
+                (string) $alumno['plan'],
+            ) : [],
             'detalles' => (new DetallePersonaRepository($this->pdo))->byPersona($personaId),
             'notice' => flash('notice'),
             'error' => flash('error'),
@@ -107,6 +117,53 @@ final class AlumnoController extends Controller
         Response::redirect(url("/personas/{$personaId}/alumno"));
     }
 
+    public function sincronizarCalificaciones(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+
+        $personaId = (string) ($vars['id'] ?? '');
+        $alumno = (new AlumnoRepository($this->pdo))->byPersona($personaId);
+        if ($alumno === null) {
+            Session::flash('error', 'No hay registro de alumno para sincronizar calificaciones.');
+            Response::redirect(url("/personas/{$personaId}/alumno"));
+        }
+
+        try {
+            $result = (new CalificacionRepository($this->pdo))->sincronizarByAlumno($alumno);
+            Session::flash(
+                'notice',
+                sprintf(
+                    'Calificaciones sincronizadas. Se eliminaron %d desaprobadas y se crearon %d faltantes del plan.',
+                    $result['deleted'],
+                    $result['inserted'],
+                ),
+            );
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+        }
+
+        Response::redirect(url("/personas/{$personaId}/alumno"));
+    }
+
+    public function saveCalificaciones(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+
+        $personaId = (string) ($vars['id'] ?? '');
+        $alumnoId = $this->required($request, 'alumno_id');
+
+        try {
+            (new CalificacionRepository($this->pdo))->updateEditableFields($alumnoId, $this->calificacionRows($request));
+            Session::flash('notice', 'Calificaciones guardadas.');
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+        }
+
+        Response::redirect(url("/personas/{$personaId}/alumno"));
+    }
+
     public function saveComisiones(Request $request, array $vars = []): void
     {
         $this->requireEdit();
@@ -129,6 +186,16 @@ final class AlumnoController extends Controller
     {
         $this->requireLogin();
         Response::json((new AlumnoComisionRepository($this->pdo))->search((string) $request->query('q', ''), 10));
+    }
+
+    public function searchCursos(Request $request, array $vars = []): void
+    {
+        $this->requireLogin();
+        Response::json((new CalificacionRepository($this->pdo))->searchCursos(
+            (string) $request->query('q', ''),
+            (string) $request->query('disposicion', ''),
+            10,
+        ));
     }
 
     private function required(Request $request, string $key): string
@@ -179,6 +246,32 @@ final class AlumnoController extends Controller
                 'comision_ref' => $newComisionRef,
                 'estado' => $request->input('new_estado'),
                 'activo' => $request->checkbox('new_activo'),
+            ];
+        }
+
+        return $rows;
+    }
+
+    private function calificacionRows(Request $request): array
+    {
+        $rows = [];
+        $ids = $request->arrayInput('calificacion_id');
+        $notasFinales = $request->arrayInput('nota_final');
+        $crecs = $request->arrayInput('crec');
+        $cursos = $request->arrayInput('curso');
+        $observaciones = $request->arrayInput('observaciones_calificacion');
+
+        foreach ($ids as $index => $id) {
+            if ((string) $id === '') {
+                continue;
+            }
+
+            $rows[] = [
+                'id' => (string) $id,
+                'nota_final' => (string) ($notasFinales[$index] ?? ''),
+                'crec' => (string) ($crecs[$index] ?? ''),
+                'curso' => (string) ($cursos[$index] ?? ''),
+                'observaciones' => (string) ($observaciones[$index] ?? ''),
             ];
         }
 

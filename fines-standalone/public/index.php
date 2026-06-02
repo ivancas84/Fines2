@@ -23,8 +23,11 @@ $app->get('/personas', [PersonaController::class, 'index']);
 $app->get('/personas/{id}/alumno', [AlumnoController::class, 'show']);
 $app->post('/personas/{id}', [AlumnoController::class, 'updatePersona']);
 $app->post('/personas/{id}/alumno', [AlumnoController::class, 'saveAlumno']);
+$app->post('/personas/{id}/alumno/calificaciones/sincronizar', [AlumnoController::class, 'sincronizarCalificaciones']);
+$app->post('/personas/{id}/alumno/calificaciones', [AlumnoController::class, 'saveCalificaciones']);
 $app->post('/personas/{id}/alumno/comisiones', [AlumnoController::class, 'saveComisiones']);
 $app->get('/comisiones/buscar', [AlumnoController::class, 'searchComisiones']);
+$app->get('/cursos/buscar', [AlumnoController::class, 'searchCursos']);
 
 $app->get('/comisiones', [ComisionController::class, 'index']);
 

@@ -68,7 +68,8 @@ final class AlumnoComisionRepository
             LEFT JOIN planificacion ON planificacion.id = comision.planificacion
             LEFT JOIN plan ON plan.id = planificacion.plan
             WHERE comision.id LIKE :term_like OR comision.pfid LIKE :term_like
-            ORDER BY (comision.pfid = :term_exact_pfid) DESC,
+            ORDER BY TRIM(CONCAT_WS('-', NULLIF(calendario.anio, ''), NULLIF(calendario.semestre, ''))) DESC,
+                     (comision.pfid = :term_exact_pfid) DESC,
                      (comision.id = :term_exact_id) DESC,
                      CAST(comision.pfid AS UNSIGNED) DESC,
                      comision.pfid DESC

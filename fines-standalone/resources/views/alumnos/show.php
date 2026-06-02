@@ -8,7 +8,60 @@ $comisionSummary = static fn (array $row): string => trim(implode(' | ', array_f
     $row['tramo_label'] ?? '',
     $planLabel($row),
 ])));
+$cursoSummary = static fn (array $row): string => trim(implode(' | ', array_filter([
+    ($row['pfid'] ?? '') !== '' ? 'PFID ' . $row['pfid'] : '',
+    $row['calendario_label'] ?? '',
+    $row['docente_label'] ?? '',
+    ($row['curso'] ?? '') !== '' ? 'Curso ' . $row['curso'] : '',
+]))) ?: 'Sin curso seleccionado';
 $personaLabel = trim(implode(' ', array_filter([$v($persona, 'apellidos'), $v($persona, 'nombres')])));
+$calificacionIndex = 0;
+$renderCalificacionesTable = static function (array $calificaciones) use ($planLabel, $cursoSummary, &$calificacionIndex): void {
+    $isAprobada = static fn (array $calificacion): bool => (float) ($calificacion['nota_final'] ?? 0) >= 7
+        || (float) ($calificacion['crec'] ?? 0) >= 4;
+    $numeroEntero = static fn (mixed $numero): string => $numero === null || $numero === '' ? '' : (string) ceil((float) $numero);
+    ?>
+    <div class="table-responsive">
+        <table class="table table-hover app-table">
+            <thead>
+            <tr>
+                <th>Asignatura</th>
+                <th>Tramo</th>
+                <th>Plan</th>
+                <th>Nota final</th>
+                <th>CREC</th>
+                <th>Curso</th>
+                <th>Observaciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($calificaciones as $calificacion) : ?>
+                <?php $index = $calificacionIndex++; ?>
+                <tr class="<?= $isAprobada($calificacion) ? 'calificacion-aprobada' : 'calificacion-desaprobada' ?>">
+                    <td><?= e($calificacion['asignatura_label'] ?? '') ?></td>
+                    <td><?= e($calificacion['tramo_label'] ?? '') ?></td>
+                    <td><?= e($planLabel($calificacion)) ?></td>
+                    <td>
+                        <input type="hidden" name="calificacion_id[<?= e($index) ?>]" value="<?= e($calificacion['id'] ?? '') ?>">
+                        <input class="form-control form-control-sm calificacion-number" type="number" step="1" name="nota_final[<?= e($index) ?>]" value="<?= e($numeroEntero($calificacion['nota_final'] ?? '')) ?>">
+                    </td>
+                    <td><input class="form-control form-control-sm calificacion-number" type="number" step="1" name="crec[<?= e($index) ?>]" value="<?= e($numeroEntero($calificacion['crec'] ?? '')) ?>"></td>
+                    <td>
+                        <div class="curso-picker" data-disposicion="<?= e($calificacion['disposicion'] ?? '') ?>">
+                            <input class="form-control form-control-sm curso-search" value="<?= e($calificacion['curso'] ?? '') ?>" placeholder="ID curso o PFID" autocomplete="off">
+                            <input class="curso-id" type="hidden" name="curso[<?= e($index) ?>]" value="<?= e($calificacion['curso'] ?? '') ?>">
+                            <div class="small text-secondary curso-summary"><?= e($cursoSummary($calificacion)) ?></div>
+                            <div class="curso-results" hidden></div>
+                        </div>
+                    </td>
+                    <td><input class="form-control form-control-sm" name="observaciones_calificacion[<?= e($index) ?>]" value="<?= e($calificacion['observaciones'] ?? '') ?>"></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+    <?php
+};
 ?>
 <div class="page-header">
     <div>
@@ -182,41 +235,38 @@ $personaLabel = trim(implode(' ', array_filter([$v($persona, 'apellidos'), $v($p
     </section>
 
     <section class="panel">
-        <h2>Calificaciones</h2>
-        <?php if ($calificaciones === []) : ?>
-            <div class="empty-state">No se encontraron calificaciones para este alumno.</div>
-        <?php else : ?>
-            <div class="table-responsive">
-                <table class="table table-hover app-table">
-                    <thead>
-                    <tr>
-                        <th>Asignatura</th>
-                        <th>Tramo</th>
-                        <th>Plan</th>
-                        <th>Nota final</th>
-                        <th>CREC</th>
-                        <th>PFID</th>
-                        <th>Periodo</th>
-                        <th>Docente</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($calificaciones as $calificacion) : ?>
-                        <tr>
-                            <td><?= e($calificacion['asignatura_label'] ?? '') ?></td>
-                            <td><?= e($calificacion['tramo_label'] ?? '') ?></td>
-                            <td><?= e($planLabel($calificacion)) ?></td>
-                            <td><?= e($calificacion['nota_final'] ?? '') ?></td>
-                            <td><?= e($calificacion['crec'] ?? '') ?></td>
-                            <td><?= e($calificacion['pfid'] ?? '') ?></td>
-                            <td><?= e($calificacion['calendario_label'] ?? '') ?></td>
-                            <td><?= e($calificacion['docente_label'] ?? '') ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
+        <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+            <div>
+                <h2>Calificaciones</h2>
             </div>
-        <?php endif; ?>
+            <?php if (!empty($alumno['plan'])) : ?>
+                <form method="post" action="<?= e(url('/personas/' . $persona['id'] . '/alumno/calificaciones/sincronizar')) ?>">
+                    <?= $csrf->field() ?>
+                    <button class="btn btn-outline-primary" type="submit">Sincronizar Calificaciones</button>
+                </form>
+            <?php endif; ?>
+        </div>
+
+        <form method="post" action="<?= e(url('/personas/' . $persona['id'] . '/alumno/calificaciones')) ?>">
+            <?= $csrf->field() ?>
+            <input type="hidden" name="alumno_id" value="<?= e($alumno['id']) ?>">
+
+            <h3 class="h5 mt-4">Calificaciones del plan</h3>
+            <?php if ($calificacionesPlan === []) : ?>
+                <div class="empty-state">No se encontraron calificaciones para este alumno.</div>
+            <?php else : ?>
+                <?php $renderCalificacionesTable($calificacionesPlan); ?>
+            <?php endif; ?>
+
+            <h3 class="h5 mt-4">Calificaciones aprobadas de otro plan</h3>
+            <?php if ($calificacionesOtroPlan === []) : ?>
+                <div class="empty-state">No se encontraron calificaciones adicionales para este alumno.</div>
+            <?php else : ?>
+                <?php $renderCalificacionesTable($calificacionesOtroPlan); ?>
+            <?php endif; ?>
+
+            <button class="btn btn-primary" type="submit">Guardar calificaciones</button>
+        </form>
     </section>
 <?php endif; ?>
 
