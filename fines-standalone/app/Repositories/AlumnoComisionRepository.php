@@ -92,7 +92,6 @@ final class AlumnoComisionRepository
             return [
                 'id' => (string) ($row['id'] ?? ''),
                 'pfid' => (string) ($row['pfid'] ?? ''),
-                'summary' => $summary,
                 'label' => $summary,
             ];
         }, $stmt->fetchAll());

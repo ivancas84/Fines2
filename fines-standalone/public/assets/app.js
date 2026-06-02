@@ -36,7 +36,7 @@
             button.addEventListener('click', () => {
                 input.value = row.pfid || row.id;
                 hidden.value = row.id;
-                summary.textContent = row.summary || row.label;
+                summary.textContent = row.label;
                 clearResults(results);
             });
             results.appendChild(button);
