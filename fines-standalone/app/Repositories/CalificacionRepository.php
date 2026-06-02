@@ -164,9 +164,14 @@ final class CalificacionRepository
             SELECT curso.id,
                    comision.pfid,
                    TRIM(CONCAT_WS('-', NULLIF(calendario.anio, ''), NULLIF(calendario.semestre, ''))) AS calendario_label,
+                   asignatura.nombre AS asignatura_label,
+                   TRIM(CONCAT_WS('-', NULLIF(planificacion.anio, ''), NULLIF(planificacion.semestre, ''))) AS tramo_label,
                    COALESCE(toma_activa.docente_label, '') AS docente_label
             FROM curso
             INNER JOIN comision ON comision.id = curso.comision
+            INNER JOIN disposicion ON disposicion.id = curso.disposicion
+            INNER JOIN asignatura ON asignatura.id = disposicion.asignatura
+            INNER JOIN planificacion ON planificacion.id = disposicion.planificacion
             LEFT JOIN calendario ON calendario.id = comision.calendario
             LEFT JOIN (
                 SELECT toma.curso,
@@ -197,7 +202,10 @@ final class CalificacionRepository
                 ($row['pfid'] ?? '') !== '' ? 'PFID ' . $row['pfid'] : '',
                 $row['calendario_label'] ?? '',
                 $row['docente_label'] ?? '',
-                'Curso ' . ($row['id'] ?? ''),
+                trim(implode(' ', array_filter([
+                    $row['asignatura_label'] ?? '',
+                    $row['tramo_label'] ?? '',
+                ]))),
             ])));
 
             return [

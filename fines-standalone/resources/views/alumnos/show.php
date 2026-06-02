@@ -12,7 +12,10 @@ $cursoSummary = static fn (array $row): string => trim(implode(' | ', array_filt
     ($row['pfid'] ?? '') !== '' ? 'PFID ' . $row['pfid'] : '',
     $row['calendario_label'] ?? '',
     $row['docente_label'] ?? '',
-    ($row['curso'] ?? '') !== '' ? 'Curso ' . $row['curso'] : '',
+    trim(implode(' ', array_filter([
+        $row['asignatura_label'] ?? '',
+        $row['tramo_label'] ?? '',
+    ]))),
 ]))) ?: 'Sin curso seleccionado';
 $personaLabel = trim(implode(' ', array_filter([$v($persona, 'apellidos'), $v($persona, 'nombres')])));
 $calificacionIndex = 0;
