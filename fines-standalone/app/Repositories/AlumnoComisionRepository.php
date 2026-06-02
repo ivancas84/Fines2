@@ -82,12 +82,18 @@ final class AlumnoComisionRepository
 
         return array_map(static function (array $row): array {
             $plan = trim(implode(' - ', array_filter([$row['plan_orientacion'] ?? '', $row['plan_resolucion'] ?? ''])));
-            $summary = trim(implode(' | ', array_filter(['PFID ' . ($row['pfid'] ?? ''), $row['sede_label'] ?? ''])));
+            $summary = trim(implode(' | ', array_filter([
+                'PFID ' . ($row['pfid'] ?? ''),
+                $row['sede_label'] ?? '',
+                $row['calendario_label'] ?? '',
+                $row['tramo_label'] ?? '',
+                $plan,
+            ])));
             return [
                 'id' => (string) ($row['id'] ?? ''),
                 'pfid' => (string) ($row['pfid'] ?? ''),
                 'summary' => $summary,
-                'label' => trim(implode(' | ', array_filter([$summary, $row['calendario_label'] ?? '', $row['tramo_label'] ?? '', $plan]))),
+                'label' => $summary,
             ];
         }, $stmt->fetchAll());
     }

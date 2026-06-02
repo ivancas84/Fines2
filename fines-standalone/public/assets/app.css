@@ -148,13 +148,50 @@ body {
     grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
+.form-grid-persona {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .form-wide {
     grid-column: 1 / -1;
 }
 
+.form-span-2 {
+    grid-column: span 2;
+}
+
+.form-composite {
+    display: grid;
+    gap: 8px;
+}
+
+.form-cuil-grid {
+    grid-template-columns: 62px minmax(120px, 1fr) 54px;
+}
+
+.form-date-grid {
+    grid-template-columns: 74px 74px 94px;
+}
+
+.form-phone-grid {
+    grid-template-columns: minmax(96px, 0.8fr) minmax(130px, 1.2fr);
+}
+
+.form-ingreso-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .comision-picker {
-    min-width: 260px;
+    align-items: start;
+    display: grid;
+    gap: 8px 12px;
+    grid-template-columns: minmax(96px, 1fr) minmax(0, 4fr);
     position: relative;
+}
+
+.comision-summary {
+    line-height: 1.45;
+    padding-top: 7px;
 }
 
 .comision-results {
@@ -190,6 +227,14 @@ body {
     .form-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .form-grid-persona {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .form-span-2 {
+        grid-column: 1 / -1;
+    }
 }
 
 @media (max-width: 760px) {
@@ -207,5 +252,20 @@ body {
 
     .form-grid {
         grid-template-columns: 1fr;
+    }
+
+    .form-cuil-grid,
+    .form-date-grid,
+    .form-phone-grid,
+    .form-ingreso-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .comision-picker {
+        grid-template-columns: 1fr;
+    }
+
+    .comision-summary {
+        padding-top: 0;
     }
 }

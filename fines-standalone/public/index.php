@@ -13,7 +13,6 @@ use FinesApp\Core\Request;
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $app = App::boot(dirname(__DIR__));
-echo "<pre>";
 $request = Request::capture();
 $app->get('/', [DashboardController::class, 'index']);
 $app->get('/login', [AuthController::class, 'showLogin']);
