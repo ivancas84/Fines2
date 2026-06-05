@@ -15,6 +15,16 @@ function url(string $path = ''): string
     return $base . '/' . ltrim($path, '/');
 }
 
+function constancias_url(string $path = ''): string
+{
+    $base = rtrim((string) ($_ENV['CONSTANCIAS_PUBLIC_URL'] ?? ''), '/');
+    if ($base === '') {
+        return url($path);
+    }
+
+    return $base . '/' . ltrim($path, '/');
+}
+
 function selected(mixed $actual, mixed $expected): string
 {
     return (string) $actual === (string) $expected ? 'selected' : '';

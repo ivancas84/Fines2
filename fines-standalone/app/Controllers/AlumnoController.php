@@ -10,6 +10,7 @@ use FinesApp\Core\Session;
 use FinesApp\Repositories\AlumnoComisionRepository;
 use FinesApp\Repositories\AlumnoRepository;
 use FinesApp\Repositories\CalificacionRepository;
+use FinesApp\Repositories\ConstanciaRepository;
 use FinesApp\Repositories\DetallePersonaRepository;
 use FinesApp\Repositories\PersonaRepository;
 use FinesApp\Repositories\PlanRepository;
@@ -49,6 +50,10 @@ final class AlumnoController extends Controller
             'calificacionesOtroPlan' => $tienePlan ? $calificacionRepository->aprobadasByAlumnoNotInPlan(
                 (string) $alumnoId,
                 (string) $alumno['plan'],
+            ) : [],
+            'constancias' => $alumnoId ? (new ConstanciaRepository($this->pdo))->byOrigin(
+                'fines-standalone',
+                'alumno:' . (string) $alumnoId,
             ) : [],
             'detalles' => (new DetallePersonaRepository($this->pdo))->byPersona($personaId),
             'notice' => flash('notice'),

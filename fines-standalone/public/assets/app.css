@@ -66,6 +66,31 @@ body {
     width: 100%;
 }
 
+.validation-main {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.validation-panel {
+    background: #fff;
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    max-width: 760px;
+    padding: 28px;
+    width: 100%;
+}
+
+.validation-header {
+    align-items: flex-start;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
 .page-header {
     align-items: center;
     display: flex;

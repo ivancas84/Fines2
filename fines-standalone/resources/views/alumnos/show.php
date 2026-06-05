@@ -181,6 +181,50 @@ $renderCalificacionesTable = static function (array $calificaciones) use ($planL
 
 <?php if ($alumno !== null) : ?>
     <section class="panel">
+        <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
+            <div>
+                <h2>Constancias</h2>
+            </div>
+            <a class="btn btn-outline-primary" href="<?= e(url('/personas/' . $persona['id'] . '/alumno/constancias/alumno-regular/nueva')) ?>">Generar alumno regular</a>
+        </div>
+
+        <?php if (($constancias ?? []) === []) : ?>
+            <div class="empty-state">No hay constancias emitidas para este alumno.</div>
+        <?php else : ?>
+            <div class="table-responsive">
+                <table class="table table-hover app-table">
+                    <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Titulo</th>
+                        <th>Descripcion</th>
+                        <th>Archivo</th>
+                        <th>Estado</th>
+                        <th>Validacion</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($constancias as $constancia) : ?>
+                        <tr>
+                            <td><?= e($constancia['creado_en'] ?? '') ?></td>
+                            <td><?= e($constancia['titulo'] ?? '') ?></td>
+                            <td><?= e($constancia['descripcion'] ?? '') ?></td>
+                            <td><?= e($constancia['archivo_nombre'] ?? '') ?></td>
+                            <td><?= empty($constancia['anulado_en']) ? 'Activa' : 'Anulada' ?></td>
+                            <td>
+                                <?php if (empty($constancia['anulado_en'])) : ?>
+                                    <a href="<?= e(constancias_url('/validar-constancia?id=' . rawurlencode((string) $constancia['id']) . '&clave=' . rawurlencode((string) $constancia['clave']))) ?>" target="_blank" rel="noopener">Abrir</a>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+    </section>
+
+    <section class="panel">
         <h2>Comisiones</h2>
         <form method="post" action="<?= e(url('/personas/' . $persona['id'] . '/alumno/comisiones')) ?>">
             <?= $csrf->field() ?>

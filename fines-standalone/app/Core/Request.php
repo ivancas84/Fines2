@@ -6,17 +6,18 @@ namespace FinesApp\Core;
 
 final class Request
 {
-    /** @param array<string, mixed> $get @param array<string, mixed> $post @param array<string, string> $server */
+    /** @param array<string, mixed> $get @param array<string, mixed> $post @param array<string, string> $server @param array<string, mixed> $files */
     public function __construct(
         private readonly array $get,
         private readonly array $post,
         private readonly array $server,
+        private readonly array $files = [],
     ) {
     }
 
     public static function capture(): self
     {
-        return new self($_GET, $_POST, $_SERVER);
+        return new self($_GET, $_POST, $_SERVER, $_FILES);
     }
 
     public function method(): string
@@ -56,6 +57,23 @@ final class Request
     public function checkbox(string $key): int
     {
         return isset($this->post[$key]) ? 1 : 0;
+    }
+
+    /** @return array{name:string,type:string,tmp_name:string,error:int,size:int}|null */
+    public function file(string $key): ?array
+    {
+        $file = $this->files[$key] ?? null;
+        if (!is_array($file) || !isset($file['error']) || (int) $file['error'] === UPLOAD_ERR_NO_FILE) {
+            return null;
+        }
+
+        return [
+            'name' => (string) ($file['name'] ?? ''),
+            'type' => (string) ($file['type'] ?? ''),
+            'tmp_name' => (string) ($file['tmp_name'] ?? ''),
+            'error' => (int) ($file['error'] ?? UPLOAD_ERR_NO_FILE),
+            'size' => (int) ($file['size'] ?? 0),
+        ];
     }
 
     public function isHtmx(): bool
