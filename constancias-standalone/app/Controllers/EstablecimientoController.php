@@ -39,9 +39,11 @@ final class EstablecimientoController extends Controller
 
         try {
             $data = [
-                'nombre' => $this->required($request, 'nombre'),
-                'cue' => $request->input('cue', '') ?? '',
-                'direccion' => $request->input('direccion', '') ?? '',
+                'nombre' => $current === null ? $this->required($request, 'nombre') : (string) $current['nombre'],
+                'localidad' => $current === null ? ($request->input('localidad', 'La Plata') ?? 'La Plata') : (string) ($current['localidad'] ?? 'La Plata'),
+                'modalidad_principal' => $request->input('modalidad_principal', 'Programa Fines 2 Trayecto Secundario') ?? 'Programa Fines 2 Trayecto Secundario',
+                'orientacion_principal' => $request->input('orientacion_principal', 'Ciencias Sociales') ?? 'Ciencias Sociales',
+                'resolucion_principal' => $request->input('resolucion_principal', '2993/22') ?? '2993/22',
                 'logo_path' => $this->storeImage($request->file('logo'), $baseId, 'logo'),
                 'firma_director_path' => $this->storeImage($request->file('firma_director'), $baseId, 'firma_director'),
                 'sello_oval_path' => $this->storeImage($request->file('sello_oval'), $baseId, 'sello_oval'),
@@ -66,6 +68,32 @@ final class EstablecimientoController extends Controller
         Response::redirect(url('/establecimiento'));
     }
 
+    public function image(Request $request, array $vars): void
+    {
+        $this->requireLogin();
+        $user = $this->auth->user();
+        $field = $this->imageField((string) ($vars['tipo'] ?? ''));
+        if ($user === null || $field === null) {
+            Response::text('Imagen no encontrada', 404);
+        }
+
+        $establecimiento = (new EstablecimientoRepository($this->pdo))->byUser((int) $user['id']);
+        $relativePath = (string) ($establecimiento[$field] ?? '');
+        if ($relativePath === '') {
+            Response::text('Imagen no encontrada', 404);
+        }
+
+        $absolutePath = $this->config->storagePath() . DIRECTORY_SEPARATOR . ltrim($relativePath, '/\\');
+        $realPath = realpath($absolutePath);
+        $storageRoot = realpath($this->config->storagePath());
+        $storagePrefix = $storageRoot === false ? '' : rtrim($storageRoot, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        if ($realPath === false || $storageRoot === false || !str_starts_with($realPath, $storagePrefix)) {
+            Response::text('Imagen no encontrada', 404);
+        }
+
+        Response::inlineFile($realPath, basename($realPath), mime_content_type($realPath) ?: 'application/octet-stream');
+    }
+
     private function required(Request $request, string $key): string
     {
         $value = $request->input($key);
@@ -74,6 +102,15 @@ final class EstablecimientoController extends Controller
         }
 
         return $value;
+    }
+
+    private function imageField(string $tipo): ?string
+    {
+        return [
+            'logo' => 'logo_path',
+            'firma-director' => 'firma_director_path',
+            'sello-oval' => 'sello_oval_path',
+        ][$tipo] ?? null;
     }
 
     private function storeImage(?array $file, string $establecimientoId, string $kind): ?string

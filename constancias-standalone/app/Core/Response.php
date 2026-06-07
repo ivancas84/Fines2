@@ -33,4 +33,17 @@ final class Response
         readfile($path);
         exit;
     }
+
+    public static function inlineFile(string $path, string $fileName, string $mimeType = 'application/octet-stream'): void
+    {
+        if (!is_file($path) || !is_readable($path)) {
+            self::text('Archivo no encontrado', 404);
+        }
+
+        header('Content-Type: ' . $mimeType);
+        header('Content-Length: ' . filesize($path));
+        header('Content-Disposition: inline; filename="' . str_replace('"', '', $fileName) . '"');
+        readfile($path);
+        exit;
+    }
 }

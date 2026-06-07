@@ -1,8 +1,9 @@
 :root {
     --app-bg: #f6f7f9;
     --app-border: #d9dee7;
-    --app-sidebar: #17202a;
+    --app-sidebar: #ffffff;
     --app-text: #1f2937;
+    --app-blue: #173b73;
 }
 
 body {
@@ -18,7 +19,8 @@ body {
 
 .app-sidebar {
     background: var(--app-sidebar);
-    color: #fff;
+    border-right: 1px solid var(--app-border);
+    color: var(--app-text);
     display: flex;
     flex-direction: column;
     gap: 22px;
@@ -26,22 +28,28 @@ body {
 }
 
 .app-brand {
-    color: #fff;
-    font-size: 24px;
-    font-weight: 700;
+    display: block;
     text-decoration: none;
+}
+
+.app-brand img {
+    display: block;
+    height: 82px;
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
 }
 
 .app-sidebar .nav-link {
     border-radius: 6px;
-    color: #d6dde8;
+    color: #334155;
     padding: 9px 10px;
 }
 
 .app-sidebar .nav-link:hover,
 .app-sidebar .nav-link:focus {
-    background: rgba(255, 255, 255, 0.08);
-    color: #fff;
+    background: #eef5ff;
+    color: var(--app-blue);
 }
 
 .app-main {
@@ -58,8 +66,8 @@ body {
 }
 
 .auth-main:has(.validation-page) {
-    align-items: flex-start;
-    padding: 18px 56px 30px;
+    align-items: center;
+    padding: 20px;
 }
 
 .login-panel,
@@ -75,41 +83,110 @@ body {
 }
 
 .validation-page {
-    max-width: 1120px;
+    max-width: 760px;
     width: 100%;
-}
-
-.validation-topbar {
-    align-items: center;
-    display: flex;
-    gap: 56px;
-    justify-content: space-between;
-    margin-bottom: 34px;
-    padding: 8px 76px 0 46px;
-}
-
-.validation-title-image {
-    display: block;
-    flex: 0 1 420px;
-    height: auto;
-    max-height: 118px;
-    max-width: min(360px, 30vw);
-    object-fit: contain;
 }
 
 .validation-school-name {
     color: #1f2937;
-    flex: 1 1 auto;
-    font-size: 34px;
+    font-size: 24px;
     font-weight: 700;
     line-height: 1.15;
-    margin: 0;
-    max-width: 520px;
-    text-align: right;
+    margin-top: 4px;
 }
 
 .login-panel {
     max-width: 400px;
+}
+
+.login-brand-image {
+    display: block;
+    height: 96px;
+    margin-bottom: 2px;
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+}
+
+.validation-card-brand {
+    align-items: flex-start;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.validation-brand-image {
+    display: block;
+    flex: 0 0 auto;
+    height: 96px;
+    margin-bottom: 2px;
+    max-width: 343px;
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+}
+
+.login-panel-options {
+    display: grid;
+    gap: 14px;
+}
+
+.login-option {
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    color: var(--app-text);
+    display: flex;
+    font-size: 17px;
+    font-weight: 650;
+    gap: 14px;
+    min-height: 58px;
+    padding: 12px 14px;
+    text-decoration: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.login-option:hover,
+.login-option:focus {
+    border-color: #9eb4d6;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    color: var(--app-text);
+    transform: translateY(-1px);
+}
+
+.login-option-disabled {
+    background: #f3f4f6;
+    color: #6b7280;
+    pointer-events: none;
+}
+
+.login-option-icon {
+    align-items: center;
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    display: inline-flex;
+    flex: 0 0 42px;
+    height: 42px;
+    justify-content: center;
+}
+
+.login-separator {
+    align-items: center;
+    color: #6b7280;
+    display: flex;
+    font-size: 14px;
+    gap: 12px;
+    margin: 18px 0;
+}
+
+.login-separator::before,
+.login-separator::after {
+    background: var(--app-border);
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
 }
 
 .page-header {
@@ -135,6 +212,60 @@ body {
 
 .panel {
     margin-bottom: 18px;
+}
+
+.constancia-cards {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.action-card {
+    background: #fff;
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    color: inherit;
+    display: block;
+    min-height: 132px;
+    padding: 18px;
+    text-decoration: none;
+}
+
+.action-card:hover,
+.action-card:focus {
+    border-color: #9eb4d6;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    color: inherit;
+}
+
+.action-card strong,
+.action-card span {
+    display: block;
+}
+
+.action-card span {
+    color: #6b7280;
+    margin-top: 8px;
+}
+
+.filters-bar {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.filters-bar .form-control {
+    max-width: 420px;
+}
+
+.pagination-bar {
+    align-items: center;
+    display: flex;
+    gap: 14px;
+    justify-content: space-between;
+    margin-top: 16px;
 }
 
 .app-table {
@@ -163,6 +294,20 @@ body {
     grid-column: span 2;
 }
 
+.rich-table-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ck-editor__editable {
+    min-height: 220px;
+}
+
+.ck-content table {
+    width: 100%;
+}
+
 .validation-header {
     align-items: flex-start;
     display: flex;
@@ -171,9 +316,55 @@ body {
     margin-bottom: 18px;
 }
 
+.validation-body {
+    margin-bottom: 18px;
+}
+
+.validation-body p {
+    margin-bottom: 12px;
+}
+
+.validation-body h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 18px 0 8px;
+}
+
+.validation-body table {
+    border-collapse: collapse;
+    margin: 8px 0 18px;
+    width: 100%;
+}
+
+.validation-body th,
+.validation-body td {
+    border: 1px solid var(--app-border);
+    padding: 8px 10px;
+    vertical-align: top;
+}
+
+.validation-body th {
+    background: #f3f6fa;
+    font-weight: 700;
+}
+
+.validation-key-form {
+    margin-top: 22px;
+    max-width: 360px;
+}
+
+.validation-actions {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+}
+
 @media (max-width: 900px) {
     .app-shell,
-    .form-grid {
+    .form-grid,
+    .constancia-cards,
+    .rich-table-grid {
         grid-template-columns: 1fr;
     }
 
@@ -184,23 +375,26 @@ body {
     .form-span-2 {
         grid-column: 1 / -1;
     }
-}
 
-@media (max-width: 760px) {
-    .validation-topbar {
+    .pagination-bar {
         align-items: flex-start;
         flex-direction: column;
-        gap: 22px;
+    }
+}
+
+@media (max-width: 560px) {
+    .validation-actions {
+        align-items: stretch;
+        flex-direction: column;
     }
 
-    .validation-title-image {
-        max-height: 96px;
-        max-width: min(100%, 320px);
+    .validation-card-brand {
+        flex-direction: column;
+        gap: 8px;
     }
 
     .validation-school-name {
-        font-size: 28px;
-        max-width: 100%;
+        font-size: 22px;
         text-align: left;
     }
 }

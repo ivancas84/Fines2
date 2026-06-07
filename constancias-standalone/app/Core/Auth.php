@@ -24,6 +24,30 @@ final class Auth
             return false;
         }
 
+        $this->loginUser($user);
+
+        return true;
+    }
+
+    public function attemptGoogle(string $email): bool
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT id, establecimiento_id, nombre, email, password_hash, rol, activo FROM fines_app_users WHERE email = :email LIMIT 1'
+        );
+        $stmt->execute(['email' => strtolower($email)]);
+        $user = $stmt->fetch();
+
+        if (!$user || (int) $user['activo'] !== 1) {
+            return false;
+        }
+
+        $this->loginUser($user);
+
+        return true;
+    }
+
+    private function loginUser(array $user): void
+    {
         session_regenerate_id(true);
         Session::put('user_id', (int) $user['id']);
         Session::put('user', [
@@ -36,8 +60,6 @@ final class Auth
 
         $this->pdo->prepare('UPDATE fines_app_users SET ultimo_login_en = NOW() WHERE id = :id')
             ->execute(['id' => (int) $user['id']]);
-
-        return true;
     }
 
     public function logout(): void

@@ -15,11 +15,16 @@ final class DashboardController extends Controller
         $this->requireLogin();
         $user = $this->auth->user();
         $establecimiento = $user === null ? null : (new EstablecimientoRepository($this->pdo))->byUser((int) $user['id']);
+        $search = (string) $request->query('q', '');
+        $page = max(1, (int) $request->query('page', '1'));
+        $result = (new ConstanciaRepository($this->pdo))->search($establecimiento['id'] ?? null, $search, $page, 20);
 
         $this->view->render('dashboard', [
             'title' => 'Constancias',
             'establecimiento' => $establecimiento,
-            'constancias' => (new ConstanciaRepository($this->pdo))->latest($establecimiento['id'] ?? null),
+            'constancias' => $result['rows'],
+            'search' => $search,
+            'pagination' => $result,
             'notice' => flash('notice'),
         ]);
     }

@@ -20,6 +20,13 @@ function checked(mixed $actual, mixed $expected = 1): string
     return (string) $actual === (string) $expected ? 'checked' : '';
 }
 
+function constancia_html(mixed $value): string
+{
+    $allowed = '<p><strong><u><i><br><h3><table><thead><tbody><tfoot><tr><th><td>';
+    $html = strip_tags((string) ($value ?? ''), $allowed);
+    return preg_replace('/<(\/?)(p|strong|u|i|br|h3|table|thead|tbody|tfoot|tr|th|td)\b[^>]*>/i', '<$1$2>', $html) ?? '';
+}
+
 function flash(string $key): ?string
 {
     return Session::pullFlash($key);

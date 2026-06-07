@@ -1,4 +1,18 @@
-<?php $v = static fn (?array $row, string $key): string => $row === null ? '' : (string) ($row[$key] ?? ''); ?>
+<?php
+$v = static fn (?array $row, string $key): string => $row === null ? '' : (string) ($row[$key] ?? '');
+$localidad = $v($establecimiento, 'localidad') ?: 'La Plata';
+$modalidad = $v($establecimiento, 'modalidad_principal') ?: 'Programa Fines 2 Trayecto Secundario';
+$orientacion = $v($establecimiento, 'orientacion_principal') ?: 'Ciencias Sociales';
+$resolucion = $v($establecimiento, 'resolucion_principal') ?: '2993/22';
+$imageCell = static function (?array $row, string $key, string $tipo) use ($v): string {
+    $path = $v($row, $key);
+    if ($path === '') {
+        return 'Sin imagen';
+    }
+
+    return e($path) . ' <a class="btn btn-sm btn-outline-primary ms-2" href="' . e(url('/establecimiento/imagen/' . $tipo)) . '" target="_blank" rel="noopener">Ver</a>';
+};
+?>
 <div class="page-header">
     <div>
         <h1>Establecimiento</h1>
@@ -14,12 +28,14 @@
 <?php endif; ?>
 
 <section class="panel">
-    <form method="post" action="<?= e(url('/establecimiento')) ?>" enctype="multipart/form-data">
+    <form class="js-prevent-double-submit" method="post" action="<?= e(url('/establecimiento')) ?>" enctype="multipart/form-data">
         <?= $csrf->field() ?>
         <div class="form-grid">
-            <label class="form-label form-span-2">Nombre <input class="form-control" name="nombre" value="<?= e($v($establecimiento, 'nombre')) ?>" required></label>
-            <label class="form-label">CUE <input class="form-control" name="cue" value="<?= e($v($establecimiento, 'cue')) ?>"></label>
-            <label class="form-label form-wide">Direccion <input class="form-control" name="direccion" value="<?= e($v($establecimiento, 'direccion')) ?>"></label>
+            <label class="form-label form-span-2">Nombre <input class="form-control" name="nombre" value="<?= e($v($establecimiento, 'nombre')) ?>" readonly required></label>
+            <label class="form-label form-span-2">Localidad <input class="form-control" name="localidad" value="<?= e($localidad) ?>" readonly></label>
+            <label class="form-label form-span-2">Modalidad principal <input class="form-control" name="modalidad_principal" value="<?= e($modalidad) ?>" required></label>
+            <label class="form-label">Orientación principal <input class="form-control" name="orientacion_principal" value="<?= e($orientacion) ?>" required></label>
+            <label class="form-label">Resolución principal <input class="form-control" name="resolucion_principal" value="<?= e($resolucion) ?>" required></label>
             <label class="form-label form-span-2">Logo <input class="form-control" type="file" name="logo" accept="image/png,image/jpeg,image/webp"></label>
             <label class="form-label form-span-2">Firma del director <input class="form-control" type="file" name="firma_director" accept="image/png,image/jpeg,image/webp"></label>
             <label class="form-label form-span-2">Sello oval <input class="form-control" type="file" name="sello_oval" accept="image/png,image/jpeg,image/webp"></label>
@@ -27,12 +43,12 @@
         <div class="table-responsive mt-3">
             <table class="table app-table">
                 <tbody>
-                <tr><th>Logo actual</th><td><?= e($v($establecimiento, 'logo_path') ?: 'Sin imagen') ?></td></tr>
-                <tr><th>Firma actual</th><td><?= e($v($establecimiento, 'firma_director_path') ?: 'Sin imagen') ?></td></tr>
-                <tr><th>Sello actual</th><td><?= e($v($establecimiento, 'sello_oval_path') ?: 'Sin imagen') ?></td></tr>
+                <tr><th>Logo actual</th><td><?= $imageCell($establecimiento, 'logo_path', 'logo') ?></td></tr>
+                <tr><th>Firma actual</th><td><?= $imageCell($establecimiento, 'firma_director_path', 'firma-director') ?></td></tr>
+                <tr><th>Sello actual</th><td><?= $imageCell($establecimiento, 'sello_oval_path', 'sello-oval') ?></td></tr>
                 </tbody>
             </table>
         </div>
-        <button class="btn btn-primary" type="submit">Guardar establecimiento</button>
+        <button class="btn btn-primary" type="submit" data-submitting-text="Guardando...">Guardar establecimiento</button>
     </form>
 </section>

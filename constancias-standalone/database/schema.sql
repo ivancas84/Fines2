@@ -1,6 +1,10 @@
 CREATE TABLE IF NOT EXISTS fines_app_establecimientos (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(190) NOT NULL,
+    localidad VARCHAR(120) NULL DEFAULT 'La Plata',
+    modalidad_principal VARCHAR(190) NULL DEFAULT 'Programa Fines 2 Trayecto Secundario',
+    orientacion_principal VARCHAR(190) NULL DEFAULT 'Ciencias Sociales',
+    resolucion_principal VARCHAR(80) NULL DEFAULT '2993/22',
     cue VARCHAR(40) NULL,
     direccion VARCHAR(255) NULL,
     logo_path VARCHAR(255) NULL,
@@ -37,8 +41,6 @@ CREATE TABLE IF NOT EXISTS fines_app_constancias (
     apellidos VARCHAR(120) NOT NULL,
     numero_documento VARCHAR(40) NOT NULL,
     datos_json JSON NULL,
-    origen_sistema VARCHAR(80) NULL,
-    origen_referencia VARCHAR(120) NULL,
     archivo_path VARCHAR(255) NULL,
     archivo_nombre VARCHAR(190) NULL,
     mime_type VARCHAR(120) NOT NULL DEFAULT 'application/pdf',
@@ -47,7 +49,6 @@ CREATE TABLE IF NOT EXISTS fines_app_constancias (
     anulado_en DATETIME NULL,
     UNIQUE KEY fines_app_constancias_clave_unique (clave),
     KEY fines_app_constancias_documento_index (numero_documento),
-    KEY fines_app_constancias_origen_index (origen_sistema, origen_referencia),
     KEY fines_app_constancias_establecimiento_index (establecimiento_id),
     KEY fines_app_constancias_validacion_index (id, clave, anulado_en),
     KEY fines_app_constancias_creado_por_index (creado_por)
