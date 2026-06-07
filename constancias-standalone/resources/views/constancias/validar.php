@@ -21,7 +21,7 @@ $establecimiento = trim((string) ($constancia['establecimiento_nombre'] ?? ''));
             <?php endif; ?>
             <form class="validation-key-form" method="get" action="<?= e(url('/validar-constancia')) ?>">
                 <label class="form-label w-100">Clave de verificaci&oacute;n
-                    <input class="form-control" name="clave" value="<?= e($clave ?? '') ?>" autocomplete="off" maxlength="24" required>
+                    <input class="form-control" name="clave" value="<?= e(form_value('clave', $clave ?? '')) ?>" autocomplete="off" maxlength="24" required>
                 </label>
                 <button class="btn btn-primary" type="submit">Validar</button>
             </form>

@@ -1,9 +1,16 @@
 <?php
 $v = static fn (?array $row, string $key): string => $row === null ? '' : (string) ($row[$key] ?? '');
-$localidad = $v($establecimiento, 'localidad') ?: 'La Plata';
-$modalidad = $v($establecimiento, 'modalidad_principal') ?: 'Programa Fines 2 Trayecto Secundario';
-$orientacion = $v($establecimiento, 'orientacion_principal') ?: 'Ciencias Sociales';
-$resolucion = $v($establecimiento, 'resolucion_principal') ?: '2993/22';
+$establecimientoForm = form_values($establecimiento ?? [], [
+    'nombre',
+    'localidad',
+    'modalidad_principal',
+    'orientacion_principal',
+    'resolucion_principal',
+]);
+$localidad = (string) ($establecimientoForm['localidad'] ?? '') ?: 'La Plata';
+$modalidad = (string) ($establecimientoForm['modalidad_principal'] ?? '') ?: 'Programa Fines 2 Trayecto Secundario';
+$orientacion = (string) ($establecimientoForm['orientacion_principal'] ?? '') ?: 'Ciencias Sociales';
+$resolucion = (string) ($establecimientoForm['resolucion_principal'] ?? '') ?: '2993/22';
 $imageCell = static function (?array $row, string $key, string $tipo) use ($v): string {
     $path = $v($row, $key);
     if ($path === '') {
@@ -31,7 +38,7 @@ $imageCell = static function (?array $row, string $key, string $tipo) use ($v): 
     <form class="js-prevent-double-submit" method="post" action="<?= e(url('/establecimiento')) ?>" enctype="multipart/form-data">
         <?= $csrf->field() ?>
         <div class="form-grid">
-            <label class="form-label form-span-2">Nombre <input class="form-control" name="nombre" value="<?= e($v($establecimiento, 'nombre')) ?>" readonly required></label>
+            <label class="form-label form-span-2">Nombre <input class="form-control" name="nombre" value="<?= e($establecimientoForm['nombre'] ?? '') ?>" readonly required></label>
             <label class="form-label form-span-2">Localidad <input class="form-control" name="localidad" value="<?= e($localidad) ?>" readonly></label>
             <label class="form-label form-span-2">Modalidad principal <input class="form-control" name="modalidad_principal" value="<?= e($modalidad) ?>" required></label>
             <label class="form-label">Orientación principal <input class="form-control" name="orientacion_principal" value="<?= e($orientacion) ?>" required></label>

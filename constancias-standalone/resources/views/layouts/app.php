@@ -16,8 +16,9 @@
                 <img src="<?= e(url('/assets/abc-constancias-logo.png')) ?>" alt="ABC Constancias">
             </a>
             <nav class="nav flex-column gap-1">
-                <a class="nav-link" href="<?= e(url('/constancias')) ?>">Constancias</a>
+                <a class="nav-link" href="<?= e(url('/constancias')) ?>">Generar</a>
                 <a class="nav-link" href="<?= e(url('/')) ?>">Emitidas</a>
+                <a class="nav-link" href="<?= e(url('/validar-constancia')) ?>">Validar</a>
                 <a class="nav-link" href="<?= e(url('/establecimiento')) ?>">Establecimiento</a>
             </nav>
             <form class="mt-auto" method="post" action="<?= e(url('/logout')) ?>">

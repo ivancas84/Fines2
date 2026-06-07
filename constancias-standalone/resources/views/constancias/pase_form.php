@@ -1,3 +1,20 @@
+<?php
+$defaults = form_values($defaults, [
+    'nombres',
+    'apellidos',
+    'numero_documento',
+    'anio',
+    'modalidad',
+    'orientacion',
+    'resolucion',
+    'fecha',
+    'presentado',
+    'observaciones',
+    'incluir_firmas',
+    'materias_aprobadas_html',
+    'materias_desaprobadas_html',
+]);
+?>
 <div class="page-header">
     <div>
         <h1>Constancia de pase</h1>

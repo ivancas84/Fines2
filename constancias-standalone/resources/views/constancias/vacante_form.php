@@ -1,3 +1,14 @@
+<?php
+$defaults = form_values($defaults, [
+    'nombres',
+    'apellidos',
+    'numero_documento',
+    'fecha',
+    'presentado',
+    'observaciones',
+    'incluir_firmas',
+]);
+?>
 <div class="page-header">
     <div>
         <h1>Constancia de vacante</h1>

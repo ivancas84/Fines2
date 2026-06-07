@@ -12,7 +12,7 @@
 
 <section class="panel">
     <form class="filters-bar" method="get" action="<?= e(url('/')) ?>">
-        <input class="form-control" name="q" value="<?= e($search ?? '') ?>" placeholder="Buscar por nombre, apellido o DNI" autocomplete="off">
+        <input class="form-control" name="q" value="<?= e(form_value('q', $search ?? '')) ?>" placeholder="Buscar por nombre, apellido o DNI" autocomplete="off">
         <button class="btn btn-primary" type="submit">Buscar</button>
         <?php if (($search ?? '') !== '') : ?>
             <a class="btn btn-outline-secondary" href="<?= e(url('/')) ?>">Limpiar</a>
