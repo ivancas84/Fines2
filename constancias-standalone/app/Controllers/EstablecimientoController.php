@@ -44,14 +44,13 @@ final class EstablecimientoController extends Controller
                 'modalidad_principal' => $request->input('modalidad_principal', 'Programa Fines 2 Trayecto Secundario') ?? 'Programa Fines 2 Trayecto Secundario',
                 'orientacion_principal' => $request->input('orientacion_principal', 'Ciencias Sociales') ?? 'Ciencias Sociales',
                 'resolucion_principal' => $request->input('resolucion_principal', '2993/22') ?? '2993/22',
-                'logo_path' => $this->storeImage($request->file('logo'), $baseId, 'logo'),
                 'firma_director_path' => $this->storeImage($request->file('firma_director'), $baseId, 'firma_director'),
                 'sello_oval_path' => $this->storeImage($request->file('sello_oval'), $baseId, 'sello_oval'),
             ];
             $id = $repository->saveForUser((int) $user['id'], $data);
             if ($baseId === 'nuevo') {
                 $fixed = [];
-                foreach (['logo_path', 'firma_director_path', 'sello_oval_path'] as $key) {
+                foreach (['firma_director_path', 'sello_oval_path'] as $key) {
                     if ($data[$key] !== null) {
                         $fixed[$key] = $this->moveNewAsset($data[$key], $id);
                     }
@@ -107,7 +106,6 @@ final class EstablecimientoController extends Controller
     private function imageField(string $tipo): ?string
     {
         return [
-            'logo' => 'logo_path',
             'firma-director' => 'firma_director_path',
             'sello-oval' => 'sello_oval_path',
         ][$tipo] ?? null;

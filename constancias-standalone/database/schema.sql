@@ -7,7 +7,6 @@ CREATE TABLE IF NOT EXISTS fines_app_establecimientos (
     resolucion_principal VARCHAR(80) NULL DEFAULT '2993/22',
     cue VARCHAR(40) NULL,
     direccion VARCHAR(255) NULL,
-    logo_path VARCHAR(255) NULL,
     firma_director_path VARCHAR(255) NULL,
     sello_oval_path VARCHAR(255) NULL,
     activo TINYINT(1) NOT NULL DEFAULT 1,
@@ -20,14 +19,18 @@ CREATE TABLE IF NOT EXISTS fines_app_users (
     establecimiento_id BIGINT UNSIGNED NULL,
     nombre VARCHAR(120) NOT NULL,
     email VARCHAR(190) NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
     rol ENUM('admin', 'operador', 'consulta') NOT NULL DEFAULT 'consulta',
     activo TINYINT(1) NOT NULL DEFAULT 1,
     ultimo_login_en DATETIME NULL,
     creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     actualizado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY fines_app_users_email_unique (email),
-    KEY fines_app_users_establecimiento_index (establecimiento_id)
+    KEY fines_app_users_establecimiento_index (establecimiento_id),
+    CONSTRAINT fines_app_users_establecimiento_fk
+        FOREIGN KEY (establecimiento_id)
+        REFERENCES fines_app_establecimientos (id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS fines_app_constancias (
@@ -51,9 +54,19 @@ CREATE TABLE IF NOT EXISTS fines_app_constancias (
     KEY fines_app_constancias_documento_index (numero_documento),
     KEY fines_app_constancias_establecimiento_index (establecimiento_id),
     KEY fines_app_constancias_validacion_index (id, clave, anulado_en),
-    KEY fines_app_constancias_creado_por_index (creado_por)
+    KEY fines_app_constancias_creado_por_index (creado_por),
+    CONSTRAINT fines_app_constancias_establecimiento_fk
+        FOREIGN KEY (establecimiento_id)
+        REFERENCES fines_app_establecimientos (id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL,
+    CONSTRAINT fines_app_constancias_creado_por_fk
+        FOREIGN KEY (creado_por)
+        REFERENCES fines_app_users (id)
+        ON UPDATE CASCADE
+        ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO fines_app_users (nombre, email, password_hash, rol, activo)
-VALUES ('Administrador', 'admin@example.com', '$2y$10$s2iepUUHI7oi7K7bf35IkuJ9ENiPVng6706jjtKFYa.A6RIxWlHsu', 'admin', 1)
-ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash), rol = VALUES(rol), activo = VALUES(activo);
+INSERT INTO fines_app_users (nombre, email, rol, activo)
+VALUES ('Administrador', 'admin@example.com', 'admin', 1)
+ON DUPLICATE KEY UPDATE rol = VALUES(rol), activo = VALUES(activo);

@@ -1,3 +1,43 @@
+<?php
+$newConstanciaUrl = static function (array $constancia): ?string {
+    $routes = [
+        'alumno_regular' => '/constancias/alumno-regular/nueva',
+        'titulo_tramite' => '/constancias/titulo-tramite/nueva',
+        'vacante' => '/constancias/vacante/nueva',
+        'pase' => '/constancias/pase/nueva',
+    ];
+
+    $route = $routes[(string) ($constancia['tipo'] ?? '')] ?? null;
+    if ($route === null) {
+        return null;
+    }
+
+    $data = json_decode((string) ($constancia['datos_json'] ?? ''), true);
+    if (!is_array($data)) {
+        $data = [];
+    }
+
+    $data = array_merge([
+        'nombres' => $constancia['nombres'] ?? '',
+        'apellidos' => $constancia['apellidos'] ?? '',
+        'numero_documento' => $constancia['numero_documento'] ?? '',
+    ], $data);
+
+    foreach (['fecha', 'clave', 'establecimiento_nombre', 'localidad'] as $field) {
+        unset($data[$field]);
+    }
+
+    foreach ($data as $key => $value) {
+        if (is_bool($value)) {
+            $data[$key] = $value ? '1' : '';
+        } elseif (!is_scalar($value) && $value !== null) {
+            unset($data[$key]);
+        }
+    }
+
+    return url($route . '?' . http_build_query($data));
+};
+?>
 <div class="page-header">
     <div>
         <h1>Constancias emitidas</h1>
@@ -41,11 +81,16 @@
                         <td><?= e($constancia['numero_documento'] ?? '') ?></td>
                         <td><?= e($constancia['titulo'] ?? '') ?></td>
                         <td>
-                            <?php if (empty($constancia['anulado_en'])) : ?>
-                                <a href="<?= e(url('/validar-constancia?clave=' . rawurlencode((string) $constancia['clave']))) ?>" target="_blank" rel="noopener">Validar</a>
-                                <span class="text-secondary mx-1">|</span>
-                                <a href="<?= e(url('/validar-constancia/descargar?clave=' . rawurlencode((string) $constancia['clave']))) ?>">Descargar</a>
+                            <?php $newUrl = $newConstanciaUrl($constancia); ?>
+                            <?php $actions = []; ?>
+                            <?php if ($newUrl !== null) : ?>
+                                <?php $actions[] = '<a href="' . e($newUrl) . '">Nueva</a>'; ?>
                             <?php endif; ?>
+                            <?php if (empty($constancia['anulado_en'])) : ?>
+                                <?php $actions[] = '<a href="' . e(url('/validar-constancia?clave=' . rawurlencode((string) $constancia['clave']))) . '" target="_blank" rel="noopener">Validar</a>'; ?>
+                                <?php $actions[] = '<a href="' . e(url('/validar-constancia/descargar?clave=' . rawurlencode((string) $constancia['clave']))) . '">Descargar</a>'; ?>
+                            <?php endif; ?>
+                            <?= implode('<span class="text-secondary mx-1">|</span>', $actions) ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

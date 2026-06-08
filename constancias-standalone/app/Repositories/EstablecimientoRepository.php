@@ -38,10 +38,10 @@ final class EstablecimientoRepository
             $stmt = $this->pdo->prepare("
                 INSERT INTO fines_app_establecimientos (
                     nombre, localidad, modalidad_principal, orientacion_principal, resolucion_principal,
-                    logo_path, firma_director_path, sello_oval_path
+                    firma_director_path, sello_oval_path
                 ) VALUES (
                     :nombre, :localidad, :modalidad_principal, :orientacion_principal, :resolucion_principal,
-                    :logo_path, :firma_director_path, :sello_oval_path
+                    :firma_director_path, :sello_oval_path
                 )
             ");
             $stmt->execute([
@@ -50,7 +50,6 @@ final class EstablecimientoRepository
                 'modalidad_principal' => $data['modalidad_principal'] ?: 'Programa Fines 2 Trayecto Secundario',
                 'orientacion_principal' => $data['orientacion_principal'] ?: 'Ciencias Sociales',
                 'resolucion_principal' => $data['resolucion_principal'] ?: '2993/22',
-                'logo_path' => $data['logo_path'] ?? null,
                 'firma_director_path' => $data['firma_director_path'] ?? null,
                 'sello_oval_path' => $data['sello_oval_path'] ?? null,
             ]);
@@ -68,7 +67,6 @@ final class EstablecimientoRepository
                 modalidad_principal = :modalidad_principal,
                 orientacion_principal = :orientacion_principal,
                 resolucion_principal = :resolucion_principal,
-                logo_path = :logo_path,
                 firma_director_path = :firma_director_path,
                 sello_oval_path = :sello_oval_path
             WHERE id = :id
@@ -80,7 +78,6 @@ final class EstablecimientoRepository
             'modalidad_principal' => $data['modalidad_principal'] ?: 'Programa Fines 2 Trayecto Secundario',
             'orientacion_principal' => $data['orientacion_principal'] ?: 'Ciencias Sociales',
             'resolucion_principal' => $data['resolucion_principal'] ?: '2993/22',
-            'logo_path' => $data['logo_path'] ?? $current['logo_path'],
             'firma_director_path' => $data['firma_director_path'] ?? $current['firma_director_path'],
             'sello_oval_path' => $data['sello_oval_path'] ?? $current['sello_oval_path'],
         ]);

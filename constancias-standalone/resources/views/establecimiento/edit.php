@@ -43,14 +43,12 @@ $imageCell = static function (?array $row, string $key, string $tipo) use ($v): 
             <label class="form-label form-span-2">Modalidad principal <input class="form-control" name="modalidad_principal" value="<?= e($modalidad) ?>" required></label>
             <label class="form-label">Orientación principal <input class="form-control" name="orientacion_principal" value="<?= e($orientacion) ?>" required></label>
             <label class="form-label">Resolución principal <input class="form-control" name="resolucion_principal" value="<?= e($resolucion) ?>" required></label>
-            <label class="form-label form-span-2">Logo <input class="form-control" type="file" name="logo" accept="image/png,image/jpeg,image/webp"></label>
             <label class="form-label form-span-2">Firma del director <input class="form-control" type="file" name="firma_director" accept="image/png,image/jpeg,image/webp"></label>
             <label class="form-label form-span-2">Sello oval <input class="form-control" type="file" name="sello_oval" accept="image/png,image/jpeg,image/webp"></label>
         </div>
         <div class="table-responsive mt-3">
             <table class="table app-table">
                 <tbody>
-                <tr><th>Logo actual</th><td><?= $imageCell($establecimiento, 'logo_path', 'logo') ?></td></tr>
                 <tr><th>Firma actual</th><td><?= $imageCell($establecimiento, 'firma_director_path', 'firma-director') ?></td></tr>
                 <tr><th>Sello actual</th><td><?= $imageCell($establecimiento, 'sello_oval_path', 'sello-oval') ?></td></tr>
                 </tbody>

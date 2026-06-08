@@ -44,9 +44,8 @@ $defaults = form_values($defaults, [
                 <input class="form-check-input" type="checkbox" name="incluir_firmas" value="1" <?= checked($defaults['incluir_firmas'] ?? '1') ?>>
                 <span class="form-check-label">Incluir firmas</span>
             </label>
+            <label class="form-label form-wide">Observaciones <textarea class="form-control" name="observaciones" rows="3"><?= e($defaults['observaciones'] ?? '') ?></textarea></label>
         </div>
-
-        <label class="form-label form-wide mt-3">Observaciones <textarea class="form-control" name="observaciones" rows="3"><?= e($defaults['observaciones'] ?? '') ?></textarea></label>
 
         <p class="text-secondary mt-4 mb-3">
             Indique las materias aprobadas y desaprobadas. Si lo desea, copie y pegue la informaci&oacute;n desde una hoja de c&aacute;lculo, como Excel, Google Sheets u otra similar.

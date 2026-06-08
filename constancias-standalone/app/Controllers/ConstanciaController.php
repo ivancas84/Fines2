@@ -236,10 +236,21 @@ final class ConstanciaController extends Controller
             }
             $data[$field] = $value;
         }
+        if (isset($data['apellidos'])) {
+            $data['apellidos'] = mb_strtoupper($data['apellidos'], 'UTF-8');
+        }
+        if (isset($data['nombres'])) {
+            $data['nombres'] = $this->titleCaseName($data['nombres']);
+        }
         $data['observaciones'] = $request->input('observaciones', '') ?? '';
         $data['incluir_firmas'] = $request->input('incluir_firmas') === '1';
 
         return $data;
+    }
+
+    private function titleCaseName(string $value): string
+    {
+        return mb_convert_case(mb_strtolower($value, 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
     }
 
     private function academicDefaults(): array
@@ -392,7 +403,7 @@ final class ConstanciaController extends Controller
 
     private function addHeader(TCPDF $pdf, string $validationUrl, array $data, ?array $establecimiento): void
     {
-        $logo = $this->storageFilePath((string) ($establecimiento['logo_path'] ?? ''));
+        $logo = $this->commonLogoPath();
         if ($logo !== null) {
             $pdf->Image($logo, 20, 15, 122, 0, '', '', '', false, 300, '', false, false, 0, true);
         } else {
@@ -405,6 +416,13 @@ final class ConstanciaController extends Controller
         $pdf->SetFont('helvetica', 'B', 8);
         $pdf->SetXY(162, 43);
         $pdf->Cell(32, 4, (string) ($data['clave'] ?? ''), 0, 0, 'C');
+    }
+
+    private function commonLogoPath(): ?string
+    {
+        $path = $this->config->rootPath() . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'constancias-header-logo.jpg';
+
+        return is_file($path) ? $path : null;
     }
 
     private function alumnoRegularBody(array $data): string

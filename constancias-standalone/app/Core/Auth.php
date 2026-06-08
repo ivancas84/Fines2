@@ -14,25 +14,13 @@ final class Auth
 
     public function attempt(string $email, string $password): bool
     {
-        $stmt = $this->pdo->prepare(
-            'SELECT id, establecimiento_id, nombre, email, password_hash, rol, activo FROM fines_app_users WHERE email = :email LIMIT 1'
-        );
-        $stmt->execute(['email' => $email]);
-        $user = $stmt->fetch();
-
-        if (!$user || (int) $user['activo'] !== 1 || !password_verify($password, (string) $user['password_hash'])) {
-            return false;
-        }
-
-        $this->loginUser($user);
-
-        return true;
+        return false;
     }
 
     public function attemptGoogle(string $email): bool
     {
         $stmt = $this->pdo->prepare(
-            'SELECT id, establecimiento_id, nombre, email, password_hash, rol, activo FROM fines_app_users WHERE email = :email LIMIT 1'
+            'SELECT id, establecimiento_id, nombre, email, rol, activo FROM fines_app_users WHERE email = :email LIMIT 1'
         );
         $stmt->execute(['email' => strtolower($email)]);
         $user = $stmt->fetch();

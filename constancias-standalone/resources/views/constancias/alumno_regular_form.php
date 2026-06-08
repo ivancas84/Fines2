@@ -44,6 +44,9 @@ $defaults = form_values($defaults, [
             </label>
             <label class="form-label form-wide">Observaciones <textarea class="form-control" name="observaciones" rows="3"><?= e($defaults['observaciones'] ?? '') ?></textarea></label>
         </div>
-        <button class="btn btn-primary mt-3" type="submit" data-submitting-text="Generando...">Generar constancia</button>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            <button class="btn btn-primary" type="submit" data-submitting-text="Generando...">Generar constancia</button>
+            <a class="btn btn-outline-primary" href="<?= e(url('/assets/constancia-ejemplo-alumno-regular.pdf')) ?>" download>VER EJEMPLO PDF</a>
+        </div>
     </form>
 </section>

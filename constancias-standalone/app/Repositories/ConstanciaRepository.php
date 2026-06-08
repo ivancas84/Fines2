@@ -93,7 +93,7 @@ final class ConstanciaRepository
         $offset = ($page - 1) * $perPage;
 
         $stmt = $this->pdo->prepare("
-            SELECT id, tipo, titulo, descripcion, clave, nombres, apellidos, numero_documento,
+            SELECT id, tipo, titulo, descripcion, clave, nombres, apellidos, numero_documento, datos_json,
                    archivo_nombre, creado_en, anulado_en
             FROM fines_app_constancias
             {$where}
