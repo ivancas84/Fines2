@@ -184,6 +184,25 @@ final class AlumnoController extends Controller
         Response::redirect(url("/personas/{$personaId}/alumno"));
     }
 
+    public function deleteComision(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+
+        $personaId = (string) ($vars['id'] ?? '');
+        $alumnoId = $this->required($request, 'alumno_id');
+        $alumnoComisionId = $this->required($request, 'alumno_comision_delete_id');
+
+        try {
+            (new AlumnoComisionRepository($this->pdo))->deleteForAlumno($alumnoId, $alumnoComisionId);
+            Session::flash('notice', 'Comision eliminada del alumno.');
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+        }
+
+        Response::redirect(url("/personas/{$personaId}/alumno"));
+    }
+
     public function searchComisiones(Request $request, array $vars = []): void
     {
         $this->requireLogin();

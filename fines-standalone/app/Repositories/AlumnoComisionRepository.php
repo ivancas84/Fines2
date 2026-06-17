@@ -169,6 +169,22 @@ final class AlumnoComisionRepository
         }
     }
 
+    public function deleteForAlumno(string $alumnoId, string $alumnoComisionId): void
+    {
+        $stmt = $this->pdo->prepare("
+            DELETE FROM alumno_comision
+            WHERE id = :id AND alumno = :alumno
+        ");
+        $stmt->execute([
+            'id' => $alumnoComisionId,
+            'alumno' => $alumnoId,
+        ]);
+
+        if ($stmt->rowCount() === 0) {
+            throw new \RuntimeException('No se encontro la comision del alumno para eliminar.');
+        }
+    }
+
     private function resolveComisionRef(string $ref): ?string
     {
         $ref = trim($ref);

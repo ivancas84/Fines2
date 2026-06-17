@@ -235,6 +235,7 @@ $renderCalificacionesTable = static function (array $calificaciones) use ($alumn
                         <th>Comision</th>
                         <th>Estado</th>
                         <th>Activo</th>
+                        <th>Acciones</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -258,6 +259,17 @@ $renderCalificacionesTable = static function (array $calificaciones) use ($alumn
                                 </select>
                             </td>
                             <td><input class="form-check-input" type="checkbox" name="activo[<?= e($index) ?>]" value="1" <?= checked($comision['activo'] ?? 0) ?>></td>
+                            <td>
+                                <button
+                                    class="btn btn-sm btn-outline-danger"
+                                    type="submit"
+                                    name="alumno_comision_delete_id"
+                                    value="<?= e($comision['id']) ?>"
+                                    formaction="<?= e(url('/personas/' . $persona['id'] . '/alumno/comisiones/eliminar')) ?>"
+                                    formmethod="post"
+                                    onclick="return confirm('Eliminar esta comision del alumno?')"
+                                >Eliminar</button>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                     <tr>
@@ -278,6 +290,7 @@ $renderCalificacionesTable = static function (array $calificaciones) use ($alumn
                             </select>
                         </td>
                         <td><input class="form-check-input" type="checkbox" name="new_activo" value="1"></td>
+                        <td></td>
                     </tr>
                     </tbody>
                 </table>

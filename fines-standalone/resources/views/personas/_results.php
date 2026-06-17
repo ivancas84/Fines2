@@ -27,6 +27,7 @@
                     <td><?= e($persona['email_abc'] ?? '') ?></td>
                     <td class="text-end">
                         <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/personas/' . $persona['id'] . '/alumno')) ?>">Alumno</a>
+                        <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/personas/' . $persona['id'] . '/docente')) ?>">Docente</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
