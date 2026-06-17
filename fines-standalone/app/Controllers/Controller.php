@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FinesApp\Controllers;
 
 use FinesApp\Core\Auth;
+use FinesApp\Core\Config;
 use FinesApp\Core\Csrf;
 use FinesApp\Core\View;
 use PDO;
@@ -16,6 +17,7 @@ abstract class Controller
         protected readonly View $view,
         protected readonly Auth $auth,
         protected readonly Csrf $csrf,
+        protected readonly Config $config,
     ) {
     }
 

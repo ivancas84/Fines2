@@ -10,7 +10,6 @@ use FinesApp\Core\Session;
 use FinesApp\Repositories\AlumnoComisionRepository;
 use FinesApp\Repositories\AlumnoRepository;
 use FinesApp\Repositories\CalificacionRepository;
-use FinesApp\Repositories\ConstanciaRepository;
 use FinesApp\Repositories\DetallePersonaRepository;
 use FinesApp\Repositories\PersonaRepository;
 use FinesApp\Repositories\PlanRepository;
@@ -33,6 +32,7 @@ final class AlumnoController extends Controller
         $alumno = $alumnoRepository->byPersona($personaId);
         $alumnoId = $alumno['id'] ?? null;
         $calificacionRepository = new CalificacionRepository($this->pdo);
+        $alumnoComisionRepository = new AlumnoComisionRepository($this->pdo);
         $tienePlan = $alumnoId && !empty($alumno['plan']);
 
         $this->view->render('alumnos/show', [
@@ -40,8 +40,9 @@ final class AlumnoController extends Controller
             'persona' => $persona,
             'alumno' => $alumno,
             'planes' => (new PlanRepository($this->pdo))->all(),
-            'comisiones' => $alumnoId ? (new AlumnoComisionRepository($this->pdo))->byAlumno((string) $alumnoId) : [],
-            'estadosComision' => $alumnoId ? (new AlumnoComisionRepository($this->pdo))->estados() : [],
+            'comisiones' => $alumnoId ? $alumnoComisionRepository->byAlumno((string) $alumnoId) : [],
+            'ultimaComision' => $alumnoId ? $alumnoComisionRepository->latestByAlumno((string) $alumnoId) : null,
+            'estadosComision' => $alumnoId ? $alumnoComisionRepository->estados() : [],
             'calificacionesPlan' => $tienePlan ? $calificacionRepository->byAlumnoPlanTramo(
                 (string) $alumnoId,
                 (string) $alumno['plan'],
@@ -50,10 +51,6 @@ final class AlumnoController extends Controller
             'calificacionesOtroPlan' => $tienePlan ? $calificacionRepository->aprobadasByAlumnoNotInPlan(
                 (string) $alumnoId,
                 (string) $alumno['plan'],
-            ) : [],
-            'constancias' => $alumnoId ? (new ConstanciaRepository($this->pdo))->byOrigin(
-                'fines-standalone',
-                'alumno:' . (string) $alumnoId,
             ) : [],
             'detalles' => (new DetallePersonaRepository($this->pdo))->byPersona($personaId),
             'notice' => flash('notice'),
@@ -193,14 +190,20 @@ final class AlumnoController extends Controller
         Response::json((new AlumnoComisionRepository($this->pdo))->search((string) $request->query('q', ''), 10));
     }
 
-    public function searchCursos(Request $request, array $vars = []): void
+    public function asociarCurso(Request $request, array $vars = []): void
     {
         $this->requireLogin();
-        Response::json((new CalificacionRepository($this->pdo))->searchCursos(
-            (string) $request->query('q', ''),
+
+        $curso = (new CalificacionRepository($this->pdo))->findCursoByAlumnoDisposicion(
+            (string) $request->query('alumno', ''),
             (string) $request->query('disposicion', ''),
-            10,
-        ));
+        );
+
+        if ($curso === null) {
+            Response::json(['message' => 'No se encontro un curso para las comisiones del alumno y esta disposicion.'], 404);
+        }
+
+        Response::json($curso);
     }
 
     private function required(Request $request, string $key): string

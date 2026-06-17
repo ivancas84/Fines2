@@ -76,7 +76,7 @@ final class App
 
             [, $handler, $vars] = $routeInfo;
             [$controllerClass, $method] = $handler;
-            $controller = new $controllerClass($this->database->pdo(), $this->view, $this->auth, $this->csrf);
+            $controller = new $controllerClass($this->database->pdo(), $this->view, $this->auth, $this->csrf, $this->config);
             $controller->{$method}($request, $vars);
         } catch (\Throwable $throwable) {
             if ($this->config->bool('APP_DEBUG', false)) {

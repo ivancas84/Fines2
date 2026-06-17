@@ -24,8 +24,37 @@ $cursoSummary = static function (array $row): string {
     ]))) ?: 'Sin curso seleccionado';
 };
 $personaLabel = trim(implode(' ', array_filter([$v($persona, 'apellidos'), $v($persona, 'nombres')])));
+$anioEnLetras = static fn (mixed $value): string => match ((string) $value) {
+    '1' => 'primer',
+    '2' => 'segundo',
+    '3' => 'tercer',
+    default => (string) $value,
+};
+$constanciaUrl = static function (string $path, array $params): string {
+    $params = array_filter($params, static fn (mixed $value): bool => $value !== null && $value !== '');
+
+    return constancias_url($path . ($params === [] ? '' : '?' . http_build_query($params)));
+};
+$academicParams = [
+    'nombres' => $v($persona, 'nombres'),
+    'apellidos' => $v($persona, 'apellidos'),
+    'numero_documento' => $v($persona, 'numero_documento'),
+    'anio' => $anioEnLetras($ultimaComision['planificacion_anio'] ?? ($alumno['anio_ingreso'] ?? '')),
+    'modalidad' => 'Programa Fines 2 Trayecto Secundario',
+    'orientacion' => (string) ($ultimaComision['plan_orientacion'] ?? ($alumno['plan_orientacion'] ?? 'Ciencias Sociales')),
+    'resolucion' => (string) ($ultimaComision['plan_resolucion'] ?? ($alumno['plan_resolucion'] ?? '2993/22')),
+    'presentado' => 'Quien Corresponda',
+    'incluir_firmas' => '1',
+];
+$basicConstanciaParams = [
+    'nombres' => $v($persona, 'nombres'),
+    'apellidos' => $v($persona, 'apellidos'),
+    'numero_documento' => $v($persona, 'numero_documento'),
+    'presentado' => 'Quien Corresponda',
+    'incluir_firmas' => '1',
+];
 $calificacionIndex = 0;
-$renderCalificacionesTable = static function (array $calificaciones) use ($planLabel, $cursoSummary, &$calificacionIndex): void {
+$renderCalificacionesTable = static function (array $calificaciones) use ($alumno, $planLabel, $cursoSummary, &$calificacionIndex): void {
     $isAprobada = static fn (array $calificacion): bool => (float) ($calificacion['nota_final'] ?? 0) >= 7
         || (float) ($calificacion['crec'] ?? 0) >= 4;
     $numeroEntero = static fn (mixed $numero): string => $numero === null || $numero === '' ? '' : (string) ceil((float) $numero);
@@ -56,11 +85,10 @@ $renderCalificacionesTable = static function (array $calificaciones) use ($planL
                     </td>
                     <td><input class="form-control form-control-sm calificacion-number" type="number" step="1" name="crec[<?= e($index) ?>]" value="<?= e($numeroEntero($calificacion['crec'] ?? '')) ?>"></td>
                     <td>
-                        <div class="curso-picker" data-disposicion="<?= e($calificacion['disposicion'] ?? '') ?>">
-                            <input class="form-control form-control-sm curso-search" value="<?= e($calificacion['curso'] ?? '') ?>" placeholder="ID curso o PFID" autocomplete="off">
+                        <div class="curso-picker" data-alumno="<?= e($alumno['id'] ?? '') ?>" data-disposicion="<?= e($calificacion['disposicion'] ?? '') ?>">
+                            <button class="btn btn-sm btn-outline-primary curso-associate" type="button">Asociar curso</button>
                             <input class="curso-id" type="hidden" name="curso[<?= e($index) ?>]" value="<?= e($calificacion['curso'] ?? '') ?>">
                             <div class="small text-secondary curso-summary"><?= e($cursoSummary($calificacion)) ?></div>
-                            <div class="curso-results" hidden></div>
                         </div>
                     </td>
                     <td><input class="form-control form-control-sm" name="observaciones_calificacion[<?= e($index) ?>]" value="<?= e($calificacion['observaciones'] ?? '') ?>"></td>
@@ -184,44 +212,15 @@ $renderCalificacionesTable = static function (array $calificaciones) use ($planL
         <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
             <div>
                 <h2>Constancias</h2>
+                <p class="text-secondary mb-0">Se generan en Constancias Standalone con los datos precargados.</p>
             </div>
-            <a class="btn btn-outline-primary" href="<?= e(url('/personas/' . $persona['id'] . '/alumno/constancias/alumno-regular/nueva')) ?>">Generar alumno regular</a>
+            <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/alumno-regular/nueva', $academicParams)) ?>">Alumno regular</a>
+                <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/titulo-tramite/nueva', $academicParams)) ?>">Titulo en tramite</a>
+                <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/vacante/nueva', $basicConstanciaParams)) ?>">Vacante</a>
+                <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/pase/nueva', $academicParams)) ?>">Pase</a>
+            </div>
         </div>
-
-        <?php if (($constancias ?? []) === []) : ?>
-            <div class="empty-state">No hay constancias emitidas para este alumno.</div>
-        <?php else : ?>
-            <div class="table-responsive">
-                <table class="table table-hover app-table">
-                    <thead>
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Titulo</th>
-                        <th>Descripcion</th>
-                        <th>Archivo</th>
-                        <th>Estado</th>
-                        <th>Validacion</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($constancias as $constancia) : ?>
-                        <tr>
-                            <td><?= e($constancia['creado_en'] ?? '') ?></td>
-                            <td><?= e($constancia['titulo'] ?? '') ?></td>
-                            <td><?= e($constancia['descripcion'] ?? '') ?></td>
-                            <td><?= e($constancia['archivo_nombre'] ?? '') ?></td>
-                            <td><?= empty($constancia['anulado_en']) ? 'Activa' : 'Anulada' ?></td>
-                            <td>
-                                <?php if (empty($constancia['anulado_en'])) : ?>
-                                    <a href="<?= e(constancias_url('/validar-constancia?id=' . rawurlencode((string) $constancia['id']) . '&clave=' . rawurlencode((string) $constancia['clave']))) ?>" target="_blank" rel="noopener">Abrir</a>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-        <?php endif; ?>
     </section>
 
     <section class="panel">

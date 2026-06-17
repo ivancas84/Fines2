@@ -91,21 +91,50 @@
         url: (baseUrl, q) => `${baseUrl}/comisiones/buscar?q=${encodeURIComponent(q)}`,
     });
 
-    setupPicker('.curso-picker', {
-        input: '.curso-search',
-        hidden: '.curso-id',
-        summary: '.curso-summary',
-        results: '.curso-results',
-        optionClass: 'curso-option',
-        emptyClass: 'curso-empty',
-        inputValue: (row) => row.id,
-        url: (baseUrl, q, wrapper) => `${baseUrl}/cursos/buscar?q=${encodeURIComponent(q)}&disposicion=${encodeURIComponent(wrapper.dataset.disposicion || '')}`,
+    document.querySelectorAll('.curso-picker').forEach((wrapper) => {
+        const hidden = wrapper.querySelector('.curso-id');
+        const summary = wrapper.querySelector('.curso-summary');
+        const button = wrapper.querySelector('.curso-associate');
+        if (!hidden || !summary || !button) {
+            return;
+        }
+
+        button.addEventListener('click', async () => {
+            button.disabled = true;
+            try {
+                const baseUrl = (document.body.dataset.baseUrl || '/').replace(/\/$/, '');
+                const response = await fetch(`${baseUrl}/cursos/asociar?alumno=${encodeURIComponent(wrapper.dataset.alumno || '')}&disposicion=${encodeURIComponent(wrapper.dataset.disposicion || '')}`, {
+                    credentials: 'same-origin',
+                });
+                const row = await response.json();
+
+                if (!response.ok) {
+                    hidden.value = '';
+                    summary.textContent = row.message || 'No se encontro un curso';
+                    summary.classList.remove('text-secondary');
+                    summary.classList.add('text-danger');
+                    return;
+                }
+
+                hidden.value = row.id;
+                summary.textContent = row.label;
+                summary.classList.remove('text-danger');
+                summary.classList.add('text-secondary');
+            } catch (error) {
+                hidden.value = '';
+                summary.textContent = 'No se pudo asociar el curso';
+                summary.classList.remove('text-secondary');
+                summary.classList.add('text-danger');
+            } finally {
+                button.disabled = false;
+            }
+        });
     });
 
     document.addEventListener('click', (event) => {
-        document.querySelectorAll('.comision-picker, .curso-picker').forEach((wrapper) => {
+        document.querySelectorAll('.comision-picker').forEach((wrapper) => {
             if (!wrapper.contains(event.target)) {
-                const results = wrapper.querySelector('.comision-results, .curso-results');
+                const results = wrapper.querySelector('.comision-results');
                 if (results) {
                     clearResults(results);
                 }

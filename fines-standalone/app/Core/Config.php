@@ -38,6 +38,17 @@ final class Config
         return rtrim(str_replace('\\', '/', dirname($script)), '/');
     }
 
+    public function publicUrl(): string
+    {
+        $url = rtrim($this->string('APP_PUBLIC_URL', ''), '/');
+        if ($url !== '') {
+            return $url;
+        }
+
+        $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['SERVER_PORT'] ?? '') === '443');
+        return rtrim(($https ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . url('/'), '/');
+    }
+
     /** @return array{host:string, port:string, database:string, username:string, password:string, charset:string} */
     public function database(): array
     {

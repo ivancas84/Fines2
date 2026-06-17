@@ -151,15 +151,14 @@ final class CalificacionRepository
         }
     }
 
-    public function searchCursos(string $term, string $disposicionId, int $limit = 10): array
+    public function findCursoByAlumnoDisposicion(string $alumnoId, string $disposicionId): ?array
     {
-        $term = trim($term);
+        $alumnoId = trim($alumnoId);
         $disposicionId = trim($disposicionId);
-        if ($term === '' || $disposicionId === '') {
-            return [];
+        if ($alumnoId === '' || $disposicionId === '') {
+            return null;
         }
 
-        $limit = max(1, min(20, $limit));
         $stmt = $this->pdo->prepare("
             SELECT curso.id,
                    comision.pfid,
@@ -167,9 +166,11 @@ final class CalificacionRepository
                    asignatura.nombre AS asignatura_label,
                    TRIM(CONCAT_WS('-', NULLIF(planificacion.anio, ''), NULLIF(planificacion.semestre, ''))) AS tramo_label,
                    COALESCE(toma_activa.docente_label, '') AS docente_label
-            FROM curso
-            INNER JOIN comision ON comision.id = curso.comision
+            FROM alumno_comision
+            INNER JOIN comision ON comision.id = alumno_comision.comision
+            INNER JOIN curso ON curso.comision = comision.id
             INNER JOIN disposicion ON disposicion.id = curso.disposicion
+                AND disposicion.planificacion = comision.planificacion
             INNER JOIN asignatura ON asignatura.id = disposicion.asignatura
             INNER JOIN planificacion ON planificacion.id = disposicion.planificacion
             LEFT JOIN calendario ON calendario.id = comision.calendario
@@ -181,39 +182,20 @@ final class CalificacionRepository
                 WHERE toma.estado = 'Aprobada' AND toma.estado_contralor = 'Pasar'
                 GROUP BY toma.curso
             ) toma_activa ON toma_activa.curso = curso.id
-            WHERE curso.disposicion = :disposicion_id
-              AND (curso.id LIKE :term_like OR comision.pfid LIKE :term_like)
-            ORDER BY (curso.id = :term_exact_id) DESC,
-                     (comision.pfid = :term_exact_pfid) DESC,
-                     CAST(comision.pfid AS UNSIGNED) DESC,
-                     comision.pfid DESC,
-                     curso.id DESC
-            LIMIT {$limit}
+            WHERE alumno_comision.alumno = :alumno_id
+              AND curso.disposicion = :disposicion_id
+            ORDER BY alumno_comision.activo DESC,
+                     alumno_comision.id DESC,
+                     curso.id ASC
+            LIMIT 1
         ");
         $stmt->execute([
+            'alumno_id' => $alumnoId,
             'disposicion_id' => $disposicionId,
-            'term_like' => '%' . $term . '%',
-            'term_exact_id' => $term,
-            'term_exact_pfid' => $term,
         ]);
+        $row = $stmt->fetch();
 
-        return array_map(static function (array $row): array {
-            $label = trim(implode(' | ', array_filter([
-                ($row['pfid'] ?? '') !== '' ? 'PFID ' . $row['pfid'] : '',
-                $row['calendario_label'] ?? '',
-                $row['docente_label'] ?? '',
-                trim(implode(' ', array_filter([
-                    $row['asignatura_label'] ?? '',
-                    $row['tramo_label'] ?? '',
-                ]))),
-            ])));
-
-            return [
-                'id' => (string) ($row['id'] ?? ''),
-                'pfid' => (string) ($row['pfid'] ?? ''),
-                'label' => $label,
-            ];
-        }, $stmt->fetchAll());
+        return $row === false ? null : $this->cursoSearchRow($row);
     }
 
     public function tramoIngresoShort(array $alumno): string
@@ -286,6 +268,25 @@ final class CalificacionRepository
         }
 
         return (string) $value;
+    }
+
+    private function cursoSearchRow(array $row): array
+    {
+        $label = trim(implode(' | ', array_filter([
+            ($row['pfid'] ?? '') !== '' ? 'PFID ' . $row['pfid'] : '',
+            $row['calendario_label'] ?? '',
+            $row['docente_label'] ?? '',
+            trim(implode(' ', array_filter([
+                $row['asignatura_label'] ?? '',
+                $row['tramo_label'] ?? '',
+            ]))),
+        ])));
+
+        return [
+            'id' => (string) ($row['id'] ?? ''),
+            'pfid' => (string) ($row['pfid'] ?? ''),
+            'label' => $label,
+        ];
     }
 
     private function validCursoId(string $alumnoId, string $calificacionId, mixed $cursoId): ?string
