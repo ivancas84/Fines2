@@ -17,6 +17,7 @@
             <nav class="nav flex-column gap-1">
                 <a class="nav-link" href="<?= e(url('/personas')) ?>">Personas</a>
                 <a class="nav-link" href="<?= e(url('/comisiones')) ?>">Comisiones</a>
+                <a class="nav-link" href="<?= e(url('/informes')) ?>">Informes</a>
                 <a class="nav-link" href="<?= e(url('/establecimiento')) ?>">Establecimiento</a>
             </nav>
             <form class="mt-auto" method="post" action="<?= e(url('/logout')) ?>">

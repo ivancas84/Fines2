@@ -30,6 +30,8 @@ $app->get('/constancias/vacante/nueva', [ConstanciaController::class, 'newVacant
 $app->post('/constancias/vacante', [ConstanciaController::class, 'createVacante']);
 $app->get('/constancias/pase/nueva', [ConstanciaController::class, 'newPase']);
 $app->post('/constancias/pase', [ConstanciaController::class, 'createPase']);
+$app->get('/constancias/general/nueva', [ConstanciaController::class, 'newGeneral']);
+$app->post('/constancias/general', [ConstanciaController::class, 'createGeneral']);
 $app->get('/establecimiento', [EstablecimientoController::class, 'edit']);
 $app->get('/establecimiento/imagen/{tipo}', [EstablecimientoController::class, 'image']);
 $app->post('/establecimiento', [EstablecimientoController::class, 'update']);

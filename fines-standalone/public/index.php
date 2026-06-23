@@ -8,6 +8,7 @@ use FinesApp\Controllers\ComisionController;
 use FinesApp\Controllers\DashboardController;
 use FinesApp\Controllers\DocenteController;
 use FinesApp\Controllers\EstablecimientoController;
+use FinesApp\Controllers\InformeController;
 use FinesApp\Controllers\PersonaController;
 use FinesApp\Core\App;
 use FinesApp\Core\Request;
@@ -24,6 +25,8 @@ $app->get('/login/google/callback', [AuthController::class, 'handleGoogleCallbac
 $app->post('/logout', [AuthController::class, 'logout']);
 $app->get('/establecimiento', [EstablecimientoController::class, 'edit']);
 $app->post('/establecimiento', [EstablecimientoController::class, 'update']);
+$app->get('/informes', [InformeController::class, 'index']);
+$app->get('/informes/egresados', [InformeController::class, 'egresados']);
 
 $app->get('/personas', [PersonaController::class, 'index']);
 $app->get('/personas/{id}/alumno', [AlumnoController::class, 'show']);

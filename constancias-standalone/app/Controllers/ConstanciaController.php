@@ -98,6 +98,24 @@ final class ConstanciaController extends Controller
         ]);
     }
 
+    public function newGeneral(Request $request): void
+    {
+        $this->requireEdit();
+        $this->view->render('constancias/general_form', [
+            'title' => 'Constancia general',
+            'defaults' => [
+                'nombres' => '',
+                'apellidos' => '',
+                'numero_documento' => '',
+                'fecha' => $this->fechaActual(),
+                'presentado' => 'Quien Corresponda',
+                'texto' => '',
+                'incluir_firmas' => '1',
+            ],
+            'error' => flash('error'),
+        ]);
+    }
+
     public function createAlumnoRegular(Request $request): void
     {
         $this->requireEdit();
@@ -178,6 +196,27 @@ final class ConstanciaController extends Controller
             function (string $absolutePath, string $validationUrl, array $prepared, ?array $establecimiento, string $heading, string $body, string $titulo): void {
                 $this->renderPasePdf($absolutePath, $validationUrl, $prepared, $establecimiento, $heading, $body, $titulo);
             },
+        );
+    }
+
+    public function createGeneral(Request $request): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $data = $this->inputFields($request, ['nombres', 'apellidos', 'numero_documento', 'fecha', 'presentado']);
+        $data['texto'] = trim((string) ($request->input('texto', '') ?? ''));
+
+        if ($data['texto'] === '') {
+            throw new \InvalidArgumentException('Debe cargar el texto de la constancia.');
+        }
+
+        $this->issueConstancia(
+            'general',
+            'Constancia general',
+            'CONSTANCIA GENERAL',
+            'general',
+            $data,
+            fn (array $prepared): string => $this->generalBody($prepared),
         );
     }
 
@@ -515,6 +554,23 @@ final class ConstanciaController extends Controller
         return $this->appendObservaciones($body, $data);
     }
 
+    private function generalBody(array $data): string
+    {
+        $establecimiento = $this->pdfEscape((string) $data['establecimiento_nombre']);
+        $localidad = $this->pdfEscape((string) ($data['localidad'] ?? 'La Plata'));
+        $texto = $this->formatUserText((string) ($data['texto'] ?? ''));
+
+        return "
+            <p>La Direcci&oacute;n del establecimiento {$establecimiento} del distrito de {$localidad}, Provincia de Buenos Aires, hace constar que
+            <strong><u><i>&nbsp;&nbsp;{$this->pdfEscape($data['apellidos'])}, {$this->pdfEscape($data['nombres'])}&nbsp;&nbsp;</i></u></strong>,
+            DNI <strong><u><i>&nbsp;&nbsp;{$this->pdfEscape($data['numero_documento'])}&nbsp;&nbsp;</i></u></strong>:</p>
+            {$texto}
+            <p>Se extiende la presente a pedido del interesado el d&iacute;a
+            <strong><u><i>&nbsp;&nbsp;{$this->pdfEscape($data['fecha'])}&nbsp;&nbsp;</i></u></strong> para ser presentada ante
+            <strong><u><i>&nbsp;&nbsp;{$this->pdfEscape($data['presentado'])}&nbsp;&nbsp;</i></u></strong>.</p>
+        ";
+    }
+
     private function appendObservaciones(string $body, array $data): string
     {
         if (($data['observaciones'] ?? '') !== '') {
@@ -562,6 +618,16 @@ final class ConstanciaController extends Controller
         $clean = preg_replace('/<th\b([^>]*)>/i', '<th$1 style="font-weight:bold;">', $clean) ?? $clean;
 
         return $clean;
+    }
+
+    private function formatUserText(string $text): string
+    {
+        $text = trim($text);
+        if ($text === '') {
+            return '';
+        }
+
+        return '<p><strong><u><i>&nbsp;&nbsp;' . nl2br($this->pdfEscape($text), false) . '&nbsp;&nbsp;</i></u></strong></p>';
     }
 
     private function storageFilePath(string $relativePath): ?string

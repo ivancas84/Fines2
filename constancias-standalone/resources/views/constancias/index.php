@@ -22,4 +22,8 @@
         <strong>Pase</strong>
         <span>Constancia de pase con materias aprobadas y desaprobadas pegadas desde Excel.</span>
     </a>
+    <a class="action-card" href="<?= e(url('/constancias/general/nueva')) ?>">
+        <strong>General</strong>
+        <span>Constancia general con texto libre.</span>
+    </a>
 </section>
