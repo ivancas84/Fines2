@@ -19,6 +19,128 @@ final class ComisionRepository
             ->fetchAll();
     }
 
+    public function byId(string $comisionId): ?array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT comision.id,
+                   comision.pfid,
+                   comision.turno,
+                   comision.autorizada,
+                   comision.apertura,
+                   COALESCE(sede.nombre, sede.numero, '?') AS sede_nombre,
+                   TRIM(CONCAT_WS('-', NULLIF(calendario.anio, ''), NULLIF(calendario.semestre, ''))) AS calendario_label,
+                   calendario.descripcion AS calendario_descripcion,
+                   TRIM(CONCAT_WS('-', NULLIF(planificacion.anio, ''), NULLIF(planificacion.semestre, ''))) AS planificacion_label,
+                   plan.orientacion AS plan_orientacion,
+                   plan.resolucion AS plan_resolucion
+            FROM comision
+            LEFT JOIN sede ON sede.id = comision.sede
+            LEFT JOIN calendario ON calendario.id = comision.calendario
+            LEFT JOIN planificacion ON planificacion.id = comision.planificacion
+            LEFT JOIN plan ON plan.id = planificacion.plan
+            WHERE comision.id = :comision_id
+            LIMIT 1
+        ");
+        $stmt->execute(['comision_id' => $comisionId]);
+        $row = $stmt->fetch();
+
+        return $row ?: null;
+    }
+
+    public function alumnos(string $comisionId): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT alumno_comision.id AS alumno_comision_id,
+                   alumno_comision.activo,
+                   alumno_comision.estado,
+                   alumno.id AS alumno_id,
+                   alumno.persona AS persona_id,
+                   alumno.plan AS alumno_plan_id,
+                   alumno.anio_ingreso,
+                   alumno.semestre_ingreso,
+                   persona.apellidos,
+                   persona.nombres,
+                   persona.cuil,
+                   persona.cuil1,
+                   persona.numero_documento,
+                   persona.cuil2,
+                   persona.codigo_area,
+                   persona.telefono,
+                   persona.email,
+                   persona.fecha_nacimiento,
+                   persona.sexo
+            FROM alumno_comision
+            INNER JOIN alumno ON alumno.id = alumno_comision.alumno
+            INNER JOIN persona ON persona.id = alumno.persona
+            WHERE alumno_comision.comision = :comision_id
+            ORDER BY alumno_comision.activo DESC,
+                     persona.apellidos ASC,
+                     persona.nombres ASC
+        ");
+        $stmt->execute(['comision_id' => $comisionId]);
+        $alumnos = $stmt->fetchAll();
+
+        if ($alumnos === []) {
+            return [];
+        }
+
+        $aprobadasStmt = $this->pdo->prepare("
+            SELECT calificacion.alumno AS alumno_id,
+                   planificacion.plan AS plan_id,
+                   planificacion.anio,
+                   planificacion.semestre,
+                   COUNT(DISTINCT calificacion.id) AS cantidad
+            FROM alumno_comision
+            INNER JOIN calificacion ON calificacion.alumno = alumno_comision.alumno
+            INNER JOIN disposicion ON disposicion.id = calificacion.disposicion
+            INNER JOIN planificacion ON planificacion.id = disposicion.planificacion
+            WHERE alumno_comision.comision = :comision_id
+              AND (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
+            GROUP BY calificacion.alumno,
+                     planificacion.plan,
+                     planificacion.anio,
+                     planificacion.semestre
+            ORDER BY CAST(planificacion.anio AS UNSIGNED) ASC,
+                     CAST(planificacion.semestre AS UNSIGNED) ASC
+        ");
+        $aprobadasStmt->execute(['comision_id' => $comisionId]);
+
+        $aprobadasPorAlumno = [];
+        foreach ($aprobadasStmt->fetchAll() as $aprobada) {
+            $aprobadasPorAlumno[(string) $aprobada['alumno_id']][] = $aprobada;
+        }
+
+        foreach ($alumnos as &$alumno) {
+            $tramoIngreso = $this->tramoIngresoShort($alumno);
+            $planId = (string) ($alumno['alumno_plan_id'] ?? '');
+            $porTramo = [];
+            $otrosPlanes = 0;
+
+            foreach ($aprobadasPorAlumno[(string) $alumno['alumno_id']] ?? [] as $aprobada) {
+                $tramoCalificacion = (string) $aprobada['anio'] . (string) $aprobada['semestre'];
+                if ($tramoCalificacion < $tramoIngreso) {
+                    continue;
+                }
+
+                $cantidad = (int) $aprobada['cantidad'];
+                if ($planId !== '' && (string) $aprobada['plan_id'] === $planId) {
+                    $porTramo[] = [
+                        'label' => $aprobada['anio'] . '° ' . $aprobada['semestre'] . 'C',
+                        'cantidad' => $cantidad,
+                    ];
+                } elseif ($planId !== '') {
+                    $otrosPlanes += $cantidad;
+                }
+            }
+
+            $alumno['aprobadas_por_tramo'] = $porTramo;
+            $alumno['aprobadas_otros_planes'] = $otrosPlanes;
+        }
+        unset($alumno);
+
+        return $alumnos;
+    }
+
     public function comisiones(string $calendarioId, bool $soloAutorizadas, string $sort = 'pfid', string $order = 'asc'): array
     {
         $autorizadaSql = $soloAutorizadas ? 'AND comision.autorizada = 1' : '';
@@ -90,6 +212,18 @@ final class ComisionRepository
     {
         $words = preg_split('/\s+/', trim($value), -1, PREG_SPLIT_NO_EMPTY) ?: [];
         return implode('', array_map(static fn (string $word): string => substr($word, 0, 1), $words));
+    }
+
+    private function tramoIngresoShort(array $alumno): string
+    {
+        $anio = trim((string) ($alumno['anio_ingreso'] ?? ''));
+        if ($anio === '') {
+            return '11';
+        }
+
+        $semestre = trim((string) ($alumno['semestre_ingreso'] ?? ''));
+
+        return $anio . ($semestre !== '' ? $semestre : '1');
     }
 
     private function orderBy(string $sort, string $order): string

@@ -52,6 +52,7 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
                 <th>Alumnos</th>
                 <th>Siguiente</th>
                 <th>Referentes</th>
+                <th>Acciones</th>
             </tr>
             </thead>
             <tbody>
@@ -71,9 +72,18 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
                     <td><?= e($boolLabel($comision['autorizada'] ?? 0)) ?></td>
                     <td><?= e($boolLabel($comision['apertura'] ?? 0)) ?></td>
                     <td><?= e($comision['turno'] ?? '') ?></td>
-                    <td><?= e(($comision['cantidad_alumnos'] ?? 0) . '/' . ($comision['cantidad_alumnos_activos'] ?? 0)) ?></td>
+                    <td>
+                        <a href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/alumnos')) ?>">
+                            <?= e(($comision['cantidad_alumnos'] ?? 0) . '/' . ($comision['cantidad_alumnos_activos'] ?? 0)) ?>
+                        </a>
+                    </td>
                     <td><?= e($siguiente) ?></td>
                     <td><?= e($comision['referentes_label'] ?? 'Sin Referentes') ?></td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/alumnos')) ?>">
+                            Ver alumnos
+                        </a>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

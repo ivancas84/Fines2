@@ -44,4 +44,24 @@ final class ComisionController extends Controller
             'comisiones' => $comisiones,
         ]);
     }
+
+    public function alumnos(Request $request, array $vars = []): void
+    {
+        $this->requireLogin();
+
+        $comisionId = trim((string) ($vars['id'] ?? ''));
+        $repository = new ComisionRepository($this->pdo);
+        $comision = $comisionId !== '' ? $repository->byId($comisionId) : null;
+
+        if ($comision === null) {
+            $this->view->render('errors/404', ['title' => 'Comision no encontrada'], 404);
+            return;
+        }
+
+        $this->view->render('comisiones/alumnos', [
+            'title' => 'Alumnos de la comision',
+            'comision' => $comision,
+            'alumnos' => $repository->alumnos($comisionId),
+        ]);
+    }
 }

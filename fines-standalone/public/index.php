@@ -42,5 +42,6 @@ $app->post('/personas/{id}/alumno/comisiones/eliminar', [AlumnoController::class
 $app->get('/comisiones/buscar', [AlumnoController::class, 'searchComisiones']);
 $app->get('/cursos/asociar', [AlumnoController::class, 'asociarCurso']);
 $app->get('/comisiones', [ComisionController::class, 'index']);
+$app->get('/comisiones/{id}/alumnos', [ComisionController::class, 'alumnos']);
 
 $app->dispatch($request);
