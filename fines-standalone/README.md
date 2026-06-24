@@ -84,3 +84,14 @@ La app agrega tablas con prefijo `fines_app_`:
 - `fines_app_constancias`: constancias emitidas, datos snapshot del titular, origen opcional, clave publica de validacion y ruta relativa del PDF.
 
 Los datos de dominio siguen usando las tablas Fines existentes, por ejemplo `persona`, `alumno`, `comision`, `calendario`, `plan`, `alumno_comision`, `calificacion`.
+
+## Integración con ProgramaFines
+
+Configurar en `.env` el identificador interno del período vigente:
+
+```ini
+PROGRAMAFINES_PERIOD=6
+```
+
+Cada usuario conecta su sesión desde la pantalla **ProgramaFines** copiando el valor de la cookie `PHPSESS`.
+El valor queda solamente en la sesión PHP del navegador y se elimina al desconectar o cerrar sesión.

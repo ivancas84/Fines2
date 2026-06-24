@@ -35,6 +35,36 @@ function checked(mixed $actual, mixed $expected = 1): string
     return (string) $actual === (string) $expected ? 'checked' : '';
 }
 
+function persona_cuil(array $persona): string
+{
+    $cuil1 = trim((string) ($persona['cuil1'] ?? ''));
+    $dni = preg_replace('/\D+/', '', (string) ($persona['numero_documento'] ?? '')) ?? '';
+    $cuil2 = trim((string) ($persona['cuil2'] ?? ''));
+
+    if ($cuil1 === '' || $dni === '' || $cuil2 === '') {
+        return $dni;
+    }
+
+    return str_pad($cuil1, 2, '0', STR_PAD_LEFT)
+        . '-'
+        . str_pad($dni, 8, '0', STR_PAD_LEFT)
+        . '-'
+        . substr($cuil2, -1);
+}
+
+function persona_fecha_nacimiento(array $persona): string
+{
+    $dia = (int) ($persona['dia_nacimiento'] ?? 0);
+    $mes = (int) ($persona['mes_nacimiento'] ?? 0);
+    $anio = (int) ($persona['anio_nacimiento'] ?? 0);
+
+    if ($dia < 1 || $mes < 1 || $anio < 1 || !checkdate($mes, $dia, $anio)) {
+        return '';
+    }
+
+    return sprintf('%02d/%02d/%04d', $dia, $mes, $anio);
+}
+
 function flash(string $key): ?string
 {
     return Session::pullFlash($key);

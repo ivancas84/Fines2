@@ -228,6 +228,35 @@ body {
     position: relative;
 }
 
+.pf-summary {
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    min-height: 92px;
+    padding: 16px;
+}
+
+.pf-summary strong {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.pf-summary-success {
+    background: #ecfdf3;
+    color: #166534;
+}
+
+.pf-summary-warning {
+    background: #fffbeb;
+    color: #92400e;
+}
+
+.pf-summary-danger {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
 .comision-picker {
     grid-template-columns: minmax(96px, 1fr) minmax(0, 4fr);
 }

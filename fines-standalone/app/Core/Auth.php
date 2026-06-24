@@ -69,6 +69,7 @@ final class Auth
     {
         Session::forget('user_id');
         Session::forget('user');
+        Session::forget('programafines_session_id');
         session_regenerate_id(true);
     }
 

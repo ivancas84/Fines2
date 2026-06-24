@@ -7,6 +7,10 @@ namespace FinesApp\Controllers;
 use FinesApp\Core\Request;
 use FinesApp\Core\Response;
 use FinesApp\Core\Session;
+use FinesApp\Integrations\ProgramaFines\AlumnoNoExisteException;
+use FinesApp\Integrations\ProgramaFines\ProgramaFinesClient;
+use FinesApp\Integrations\ProgramaFines\ProgramaFinesMapper;
+use FinesApp\Integrations\ProgramaFines\ProgramaFinesSession;
 use FinesApp\Repositories\AlumnoComisionRepository;
 use FinesApp\Repositories\AlumnoRepository;
 use FinesApp\Repositories\CalificacionRepository;
@@ -34,6 +38,25 @@ final class AlumnoController extends Controller
         $calificacionRepository = new CalificacionRepository($this->pdo);
         $alumnoComisionRepository = new AlumnoComisionRepository($this->pdo);
         $tienePlan = $alumnoId && !empty($alumno['plan']);
+        $programaFines = [
+            'connected' => (new ProgramaFinesSession())->connected(),
+            'exists' => false,
+            'remote' => null,
+            'differences' => [],
+            'error' => null,
+        ];
+        if ($programaFines['connected'] && trim((string) ($persona['numero_documento'] ?? '')) !== '') {
+            try {
+                $remote = $this->programaFinesClient()->student((string) $persona['numero_documento']);
+                $programaFines['exists'] = true;
+                $programaFines['remote'] = $remote;
+                $programaFines['differences'] = ProgramaFinesMapper::differences($persona, $remote);
+            } catch (AlumnoNoExisteException) {
+                $programaFines['exists'] = false;
+            } catch (\Throwable $throwable) {
+                $programaFines['error'] = $throwable->getMessage();
+            }
+        }
 
         $this->view->render('alumnos/show', [
             'title' => 'Alumno',
@@ -55,7 +78,36 @@ final class AlumnoController extends Controller
             'detalles' => (new DetallePersonaRepository($this->pdo))->byPersona($personaId),
             'notice' => flash('notice'),
             'error' => flash('error'),
+            'programaFines' => $programaFines,
         ]);
+    }
+
+    public function actualizarProgramaFines(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $personaId = (string) ($vars['id'] ?? '');
+
+        try {
+            $persona = (new PersonaRepository($this->pdo))->find($personaId);
+            if ($persona === null) {
+                throw new \RuntimeException('No se encontró la persona.');
+            }
+
+            $client = $this->programaFinesClient();
+            $client->student((string) $persona['numero_documento']);
+            $client->updateStudent(ProgramaFinesMapper::localPersona(
+                $persona,
+                max(1, (int) $this->config->string('PROGRAMAFINES_PERIOD', '6')),
+            ));
+            Session::flash('notice', 'Datos del alumno actualizados en ProgramaFines.');
+        } catch (AlumnoNoExisteException) {
+            Session::flash('error', 'El alumno no existe en ProgramaFines. Agregalo desde una comisión con PFID.');
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+        }
+
+        Response::redirect(url("/personas/{$personaId}/alumno"));
     }
 
     public function updatePersona(Request $request, array $vars = []): void
@@ -68,13 +120,7 @@ final class AlumnoController extends Controller
             (new PersonaRepository($this->pdo))->update($personaId, [
                 'nombres' => $this->required($request, 'nombres'),
                 'apellidos' => $this->nullableText($request->input('apellidos')),
-                'numero_documento' => $this->required($request, 'numero_documento'),
-                'cuil1' => $this->nullableInt($request->input('cuil1')),
-                'cuil2' => $this->nullableInt($request->input('cuil2')),
-                'sexo' => $this->nullableInt($request->input('sexo')),
-                'dia_nacimiento' => $this->nullableInt($request->input('dia_nacimiento')),
-                'mes_nacimiento' => $this->nullableInt($request->input('mes_nacimiento')),
-                'anio_nacimiento' => $this->nullableInt($request->input('anio_nacimiento')),
+                ...$this->personaIdentificationData($request),
                 'telefono' => $this->nullableText($request->input('telefono')),
                 'codigo_area' => $this->nullableText($request->input('codigo_area')),
                 'email' => $this->nullableText($request->input('email')),
@@ -88,6 +134,9 @@ final class AlumnoController extends Controller
             ]);
 
             Session::flash('notice', 'Datos de persona guardados.');
+        } catch (\InvalidArgumentException $exception) {
+            Session::flash('error', $exception->getMessage());
+            Response::redirect(url("/personas/{$personaId}/alumno"));
         } catch (\PDOException $exception) {
             if ($exception->getCode() === '23000') {
                 Session::flash('error', 'No se pudo guardar: DNI, CUIL o Email ABC ya pertenece a otra persona.');
@@ -303,5 +352,15 @@ final class AlumnoController extends Controller
         }
 
         return $rows;
+    }
+
+    private function programaFinesClient(): ProgramaFinesClient
+    {
+        $sessionId = (new ProgramaFinesSession())->id();
+        if ($sessionId === null) {
+            throw new \RuntimeException('Primero conectá una sesión desde la pantalla ProgramaFines.');
+        }
+
+        return new ProgramaFinesClient($sessionId);
     }
 }

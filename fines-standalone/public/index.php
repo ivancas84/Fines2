@@ -10,6 +10,7 @@ use FinesApp\Controllers\DocenteController;
 use FinesApp\Controllers\EstablecimientoController;
 use FinesApp\Controllers\InformeController;
 use FinesApp\Controllers\PersonaController;
+use FinesApp\Controllers\ProgramaFinesController;
 use FinesApp\Core\App;
 use FinesApp\Core\Request;
 
@@ -23,6 +24,9 @@ $app->post('/login', [AuthController::class, 'login']);
 $app->get('/login/google', [AuthController::class, 'redirectToGoogle']);
 $app->get('/login/google/callback', [AuthController::class, 'handleGoogleCallback']);
 $app->post('/logout', [AuthController::class, 'logout']);
+$app->get('/programafines', [ProgramaFinesController::class, 'edit']);
+$app->post('/programafines', [ProgramaFinesController::class, 'connect']);
+$app->post('/programafines/desconectar', [ProgramaFinesController::class, 'disconnect']);
 $app->get('/establecimiento', [EstablecimientoController::class, 'edit']);
 $app->post('/establecimiento', [EstablecimientoController::class, 'update']);
 $app->get('/informes', [InformeController::class, 'index']);
@@ -43,5 +47,10 @@ $app->get('/comisiones/buscar', [AlumnoController::class, 'searchComisiones']);
 $app->get('/cursos/asociar', [AlumnoController::class, 'asociarCurso']);
 $app->get('/comisiones', [ComisionController::class, 'index']);
 $app->get('/comisiones/{id}/alumnos', [ComisionController::class, 'alumnos']);
+$app->post('/comisiones/{id}/programafines/enviar', [ComisionController::class, 'enviarAlumnoProgramaFines']);
+$app->post('/comisiones/{id}/programafines/sincronizar', [ComisionController::class, 'sincronizarProgramaFines']);
+$app->post('/comisiones/{id}/programafines/importar', [ComisionController::class, 'importarAlumnoProgramaFines']);
+$app->post('/comisiones/{id}/programafines/quitar', [ComisionController::class, 'quitarAlumnoProgramaFines']);
+$app->post('/personas/{id}/programafines/actualizar', [AlumnoController::class, 'actualizarProgramaFines']);
 
 $app->dispatch($request);

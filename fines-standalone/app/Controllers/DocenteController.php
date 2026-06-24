@@ -50,13 +50,7 @@ final class DocenteController extends Controller
             (new PersonaRepository($this->pdo))->update($personaId, [
                 'nombres' => $this->required($request, 'nombres'),
                 'apellidos' => $this->nullableText($request->input('apellidos')),
-                'numero_documento' => $this->required($request, 'numero_documento'),
-                'cuil1' => $this->nullableInt($request->input('cuil1')),
-                'cuil2' => $this->nullableInt($request->input('cuil2')),
-                'sexo' => $this->nullableInt($request->input('sexo')),
-                'dia_nacimiento' => $this->nullableInt($request->input('dia_nacimiento')),
-                'mes_nacimiento' => $this->nullableInt($request->input('mes_nacimiento')),
-                'anio_nacimiento' => $this->nullableInt($request->input('anio_nacimiento')),
+                ...$this->personaIdentificationData($request),
                 'telefono' => $this->nullableText($request->input('telefono')),
                 'codigo_area' => $this->nullableText($request->input('codigo_area')),
                 'email' => $this->nullableText($request->input('email')),
@@ -70,6 +64,9 @@ final class DocenteController extends Controller
             ]);
 
             Session::flash('notice', 'Datos de persona guardados.');
+        } catch (\InvalidArgumentException $exception) {
+            Session::flash('error', $exception->getMessage());
+            Response::redirect(url("/personas/{$personaId}/docente"));
         } catch (\PDOException $exception) {
             if ($exception->getCode() === '23000') {
                 Session::flash('error', 'No se pudo guardar: DNI, CUIL o Email ABC ya pertenece a otra persona.');

@@ -15,7 +15,7 @@ final class PersonaRepository
     public function find(string $personaId): ?array
     {
         $stmt = $this->pdo->prepare("
-            SELECT id, nombres, apellidos, numero_documento, cuil, cuil1, cuil2, sexo,
+            SELECT id, nombres, apellidos, numero_documento, cuil1, cuil2, sexo,
                    dia_nacimiento, mes_nacimiento, anio_nacimiento, telefono, codigo_area,
                    email, email_abc, lugar_nacimiento, nacionalidad, descripcion_domicilio,
                    departamento, localidad, partido

@@ -67,14 +67,14 @@ $numeroEntero = static fn (mixed $numero): string => $numero === null || $numero
                 </select>
             </label>
             <div class="form-composite form-cuil-grid">
-                <label class="form-label">CUIL1 <input class="form-control" inputmode="numeric" maxlength="2" pattern="[0-9]{0,2}" name="cuil1" value="<?= e($v($persona, 'cuil1')) ?>"></label>
-                <label class="form-label">DNI <input class="form-control" name="numero_documento" value="<?= e($v($persona, 'numero_documento')) ?>" required></label>
-                <label class="form-label">CUIL2 <input class="form-control" inputmode="numeric" maxlength="1" pattern="[0-9]{0,1}" name="cuil2" value="<?= e($v($persona, 'cuil2')) ?>"></label>
+                <label class="form-label">CUIL1 <input class="form-control" inputmode="numeric" minlength="2" maxlength="2" pattern="[0-9]{2}" name="cuil1" value="<?= e($v($persona, 'cuil1')) ?>"></label>
+                <label class="form-label">DNI <input class="form-control" inputmode="numeric" minlength="8" maxlength="8" pattern="[0-9]{8}" name="numero_documento" value="<?= e($v($persona, 'numero_documento')) ?>" required></label>
+                <label class="form-label">CUIL2 <input class="form-control" inputmode="numeric" minlength="1" maxlength="1" pattern="[0-9]" name="cuil2" value="<?= e($v($persona, 'cuil2')) ?>"></label>
             </div>
             <div class="form-composite form-date-grid">
-                <label class="form-label">Dia nac <input class="form-control" inputmode="numeric" maxlength="2" pattern="[0-9]{0,2}" name="dia_nacimiento" value="<?= e($v($persona, 'dia_nacimiento')) ?>"></label>
-                <label class="form-label">Mes nac <input class="form-control" inputmode="numeric" maxlength="2" pattern="[0-9]{0,2}" name="mes_nacimiento" value="<?= e($v($persona, 'mes_nacimiento')) ?>"></label>
-                <label class="form-label">Anio nac <input class="form-control" inputmode="numeric" maxlength="4" pattern="[0-9]{0,4}" name="anio_nacimiento" value="<?= e($v($persona, 'anio_nacimiento')) ?>"></label>
+                <label class="form-label">Día nac. <input class="form-control" type="number" min="1" max="31" name="dia_nacimiento" value="<?= e($v($persona, 'dia_nacimiento')) ?>"></label>
+                <label class="form-label">Mes nac. <input class="form-control" type="number" min="1" max="12" name="mes_nacimiento" value="<?= e($v($persona, 'mes_nacimiento')) ?>"></label>
+                <label class="form-label">Año nac. <input class="form-control" type="number" min="1900" max="<?= e(date('Y')) ?>" name="anio_nacimiento" value="<?= e($v($persona, 'anio_nacimiento')) ?>"></label>
             </div>
             <div class="form-composite form-phone-grid">
                 <label class="form-label">Codigo area <input class="form-control" name="codigo_area" value="<?= e($v($persona, 'codigo_area')) ?>"></label>
