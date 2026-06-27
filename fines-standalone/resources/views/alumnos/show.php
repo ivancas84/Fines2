@@ -30,11 +30,66 @@ $anioEnLetras = static fn (mixed $value): string => match ((string) $value) {
     '3' => 'tercer',
     default => (string) $value,
 };
+$anioCursado = static fn (mixed $value): ?string => match ((string) $value) {
+    '1' => 'Primero',
+    '2' => 'Segundo',
+    '3' => 'Tercero',
+    default => null,
+};
+$notaAprobada = static function (array $calificacion): string {
+    if ((float) ($calificacion['nota_final'] ?? 0) >= 7) {
+        return (string) round((float) $calificacion['nota_final']);
+    }
+
+    if ((float) ($calificacion['crec'] ?? 0) >= 4) {
+        return (string) round((float) $calificacion['crec']) . 'c';
+    }
+
+    return '';
+};
+$calificacionAprobada = static fn (array $calificacion): bool => $notaAprobada($calificacion) !== '';
+$materiasTable = static function (array $calificaciones, bool $incluirNota) use ($notaAprobada): string {
+    if ($calificaciones === []) {
+        return '';
+    }
+
+    $html = '<table><thead><tr><th>Asignatura</th><th>Tramo</th>';
+    if ($incluirNota) {
+        $html .= '<th>Nota</th>';
+    }
+    $html .= '</tr></thead><tbody>';
+
+    foreach ($calificaciones as $calificacion) {
+        $html .= '<tr><td>' . e($calificacion['asignatura_label'] ?? '') . '</td>';
+        $html .= '<td>' . e($calificacion['tramo_label'] ?? '') . '</td>';
+        if ($incluirNota) {
+            $html .= '<td>' . e($notaAprobada($calificacion)) . '</td>';
+        }
+        $html .= '</tr>';
+    }
+
+    return $html . '</tbody></table>';
+};
 $constanciaUrl = static function (string $path, array $params): string {
     $params = array_filter($params, static fn (mixed $value): bool => $value !== null && $value !== '');
 
     return constancias_url($path . ($params === [] ? '' : '?' . http_build_query($params)));
 };
+$calificacionesAprobadasPase = array_values(array_filter(
+    array_merge($calificacionesPlan ?? [], $calificacionesOtroPlan ?? []),
+    $calificacionAprobada,
+));
+$calificacionesPendientesPase = array_values(array_filter(
+    $calificacionesPlan ?? [],
+    static fn (array $calificacion): bool => !$calificacionAprobada($calificacion),
+));
+$aniosCursadosPase = array_values(array_unique(array_filter(array_map(
+    static function (array $calificacion) use ($anioCursado): ?string {
+        $tramo = (string) ($calificacion['tramo_label'] ?? '');
+        return $anioCursado($tramo === '' ? '' : strtok($tramo, '-'));
+    },
+    $calificacionesAprobadasPase,
+))));
 $academicParams = [
     'nombres' => $v($persona, 'nombres'),
     'apellidos' => $v($persona, 'apellidos'),
@@ -46,6 +101,11 @@ $academicParams = [
     'presentado' => 'Quien Corresponda',
     'incluir_firmas' => '1',
 ];
+$paseParams = array_merge($academicParams, [
+    'anio' => $aniosCursadosPase === [] ? ($academicParams['anio'] ?? '') : implode(', ', $aniosCursadosPase),
+    'materias_aprobadas_html' => $materiasTable($calificacionesAprobadasPase, true),
+    'materias_desaprobadas_html' => $materiasTable($calificacionesPendientesPase, false),
+]);
 $basicConstanciaParams = [
     'nombres' => $v($persona, 'nombres'),
     'apellidos' => $v($persona, 'apellidos'),
@@ -270,7 +330,7 @@ $renderCalificacionesTable = static function (array $calificaciones) use ($alumn
                 <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/alumno-regular/nueva', $academicParams)) ?>">Alumno regular</a>
                 <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/titulo-tramite/nueva', $academicParams)) ?>">Titulo en tramite</a>
                 <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/vacante/nueva', $basicConstanciaParams)) ?>">Vacante</a>
-                <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/pase/nueva', $academicParams)) ?>">Pase</a>
+                <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/pase/nueva', $paseParams)) ?>">Pase</a>
             </div>
         </div>
     </section>
