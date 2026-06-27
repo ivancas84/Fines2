@@ -28,14 +28,13 @@ DB_PASSWORD=
 DB_CHARSET=utf8
 ```
 
-Para que las constancias se guarden en el storage del sistema Constancias, configurar:
+Las constancias se administran en un sistema externo e independiente. Configurar solamente su URL publica:
 
 ```ini
-CONSTANCIAS_STORAGE_PATH=C:\xampp\htdocs\Fines2\constancias-standalone\storage\constancias
-CONSTANCIAS_PUBLIC_URL=http://localhost/Fines2/constancias-standalone/public
+CONSTANCIAS_PUBLIC_URL=https://abcconstancias.com.ar
 ```
 
-`CONSTANCIAS_STORAGE_PATH` es una ruta de servidor compartida. En la base se guarda solo la ruta relativa del PDF, por ejemplo `2026/06/constancia_123_alumno_regular_37379203.pdf`.
+Desde la ficha del alumno, `fines-standalone` abre los formularios de `abcconstancias.com.ar` y envía los datos iniciales mediante parámetros de la URL. No genera PDFs, no guarda constancias y no accede al almacenamiento del otro sistema.
 
 Crear las tablas de login:
 
@@ -43,30 +42,16 @@ Crear las tablas de login:
 Get-Content database\login_tables.sql | & 'C:\xampp\mysql\bin\mysql.exe' -uroot planfi10_20204
 ```
 
-Si ya existian las tablas de login, agregar establecimientos y la relacion del usuario:
+El acceso se realiza exclusivamente mediante Google OAuth. El correo de Google debe existir en `fines_app_users`, estar activo y tener `establecimiento_id = 1`.
 
-```powershell
-Get-Content database\establecimientos_tables.sql | & 'C:\xampp\mysql\bin\mysql.exe' -uroot planfi10_20204
+Para habilitar un usuario:
+
+```sql
+INSERT INTO fines_app_users (establecimiento_id, nombre, email, password_hash, rol, activo)
+VALUES (1, 'Nombre Apellido', 'correo@gmail.com', NULL, 'operador', 1);
 ```
 
-Crear las tablas de constancias:
-
-```powershell
-Get-Content database\constancias_tables.sql | & 'C:\xampp\mysql\bin\mysql.exe' -uroot planfi10_20204
-```
-
-Si la tabla fue creada con la primera version acoplada a Fines, migrarla al modelo independiente:
-
-```powershell
-Get-Content database\constancias_independent_migration.sql | & 'C:\xampp\mysql\bin\mysql.exe' -uroot planfi10_20204
-```
-
-Usuario inicial de desarrollo:
-
-```text
-email: admin@example.com
-contrasena: admin123
-```
+En instalaciones antiguas donde `password_hash` todavía sea obligatorio, usar una cadena vacía en lugar de `NULL`. La aplicación no consulta esa columna.
 
 ## URL local con XAMPP
 
@@ -79,11 +64,11 @@ http://localhost/Fines2/fines-standalone/public/login
 La app agrega tablas con prefijo `fines_app_`:
 
 - `fines_app_users`: usuarios, password hash, rol y estado.
-- `fines_app_establecimientos`: escuela asociada al usuario, firma del director y sello oval.
 - `fines_app_audit_logs`: preparada para registrar acciones futuras.
-- `fines_app_constancias`: constancias emitidas, datos snapshot del titular, origen opcional, clave publica de validacion y ruta relativa del PDF.
 
 Los datos de dominio siguen usando las tablas Fines existentes, por ejemplo `persona`, `alumno`, `comision`, `calendario`, `plan`, `alumno_comision`, `calificacion`.
+
+Las tablas históricas `fines_app_establecimientos` y `fines_app_constancias`, si ya existen en una base instalada, no son utilizadas por esta aplicación y pueden conservarse hasta decidir su eliminación manual.
 
 ## Integración con ProgramaFines
 

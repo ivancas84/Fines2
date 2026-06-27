@@ -264,7 +264,7 @@ $renderCalificacionesTable = static function (array $calificaciones) use ($alumn
         <div class="d-flex flex-wrap align-items-start justify-content-between gap-3">
             <div>
                 <h2>Constancias</h2>
-                <p class="text-secondary mb-0">Se generan en Constancias Standalone con los datos precargados.</p>
+                <p class="text-secondary mb-0">Se abren en abcconstancias.com.ar con los datos precargados.</p>
             </div>
             <div class="d-flex flex-wrap gap-2">
                 <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/alumno-regular/nueva', $academicParams)) ?>">Alumno regular</a>

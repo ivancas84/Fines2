@@ -233,6 +233,7 @@ final class ComisionRepository
                     UPDATE persona SET
                         nombres = COALESCE(NULLIF(nombres, ''), :nombres),
                         apellidos = COALESCE(NULLIF(apellidos, ''), :apellidos),
+                        numero_documento = :numero_documento,
                         cuil1 = COALESCE(cuil1, :cuil1),
                         cuil2 = COALESCE(cuil2, :cuil2),
                         sexo = COALESCE(sexo, :sexo),

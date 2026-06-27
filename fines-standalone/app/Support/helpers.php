@@ -19,7 +19,7 @@ function constancias_url(string $path = ''): string
 {
     $base = rtrim((string) ($_ENV['CONSTANCIAS_PUBLIC_URL'] ?? ''), '/');
     if ($base === '') {
-        return url($path);
+        throw new RuntimeException('Falta configurar CONSTANCIAS_PUBLIC_URL.');
     }
 
     return $base . '/' . ltrim($path, '/');

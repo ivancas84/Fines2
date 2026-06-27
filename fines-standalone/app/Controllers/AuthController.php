@@ -23,21 +23,6 @@ final class AuthController extends Controller
         ]);
     }
 
-    public function login(Request $request, array $vars = []): void
-    {
-        $this->csrf->validate($request->input('_token'));
-
-        $email = strtolower((string) $request->input('email', ''));
-        $password = (string) $request->input('password', '');
-
-        if (!$this->auth->attempt($email, $password)) {
-            Session::flash('error', 'Email o contrasena incorrectos.');
-            Response::redirect(url('/login'));
-        }
-
-        Response::redirect(url('/'));
-    }
-
     public function redirectToGoogle(Request $request, array $vars = []): void
     {
         if (!$this->googleEnabled()) {
