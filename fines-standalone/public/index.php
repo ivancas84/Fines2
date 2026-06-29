@@ -5,6 +5,7 @@ declare(strict_types=1);
 use FinesApp\Controllers\AlumnoController;
 use FinesApp\Controllers\AuthController;
 use FinesApp\Controllers\ComisionController;
+use FinesApp\Controllers\CursoController;
 use FinesApp\Controllers\DashboardController;
 use FinesApp\Controllers\DocenteController;
 use FinesApp\Controllers\InformeController;
@@ -40,6 +41,7 @@ $app->post('/personas/{id}/alumno/calificaciones', [AlumnoController::class, 'sa
 $app->post('/personas/{id}/alumno/comisiones', [AlumnoController::class, 'saveComisiones']);
 $app->post('/personas/{id}/alumno/comisiones/eliminar', [AlumnoController::class, 'deleteComision']);
 $app->get('/comisiones/buscar', [AlumnoController::class, 'searchComisiones']);
+$app->get('/cursos', [CursoController::class, 'index']);
 $app->get('/cursos/asociar', [AlumnoController::class, 'asociarCurso']);
 $app->get('/comisiones', [ComisionController::class, 'index']);
 $app->get('/comisiones/{id}/alumnos', [ComisionController::class, 'alumnos']);

@@ -1,7 +1,6 @@
 Options -Indexes
 
 RewriteEngine On
-RewriteBase /fines-standalone/public/
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
