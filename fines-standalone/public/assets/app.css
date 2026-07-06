@@ -44,6 +44,11 @@ body {
     color: #fff;
 }
 
+.app-sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+}
+
 .app-main {
     min-width: 0;
     padding: 28px;

@@ -59,7 +59,7 @@ final class CursoRepository
                 INNER JOIN comision comision_toma ON comision_toma.id = curso_toma.comision
                 WHERE comision_toma.calendario = :calendario_tomas
                   AND toma.estado = 'Aprobada'
-                  AND (toma.estado_contralor IS NULL OR toma.estado_contralor != 'Modificar')
+                  AND toma.estado_contralor != 'Modificar'
                 GROUP BY toma.curso
             ) toma_por_curso ON toma_por_curso.curso = curso.id
             LEFT JOIN toma toma_activa ON toma_activa.id = toma_por_curso.toma_id

@@ -1,4 +1,19 @@
-<?php $user = $auth->user(); ?>
+<?php
+$user = $auth->user();
+$currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';
+$basePath = rtrim((string) ($_ENV['APP_BASE_PATH'] ?? ''), '/');
+if ($basePath !== '' && str_starts_with($currentPath, $basePath)) {
+    $currentPath = substr($currentPath, strlen($basePath)) ?: '/';
+}
+$currentPath = '/' . trim($currentPath, '/');
+$navItems = [
+    '/personas' => 'Personas',
+    '/comisiones' => 'Comisiones',
+    '/cursos' => 'Cursos',
+    '/informes' => 'Informes',
+    '/programafines' => 'ProgramaFines',
+];
+?>
 <!doctype html>
 <html lang="es">
 <head>
@@ -15,11 +30,12 @@
         <aside class="app-sidebar">
             <a class="app-brand" href="<?= e(url('/')) ?>">Fines</a>
             <nav class="nav flex-column gap-1">
-                <a class="nav-link" href="<?= e(url('/personas')) ?>">Personas</a>
-                <a class="nav-link" href="<?= e(url('/comisiones')) ?>">Comisiones</a>
-                <a class="nav-link" href="<?= e(url('/cursos')) ?>">Cursos</a>
-                <a class="nav-link" href="<?= e(url('/informes')) ?>">Informes</a>
-                <a class="nav-link" href="<?= e(url('/programafines')) ?>">ProgramaFines</a>
+                <?php foreach ($navItems as $path => $label) : ?>
+                    <?php $isActive = $currentPath === $path || str_starts_with($currentPath, $path . '/'); ?>
+                    <a class="nav-link<?= $isActive ? ' active' : '' ?>" href="<?= e(url($path)) ?>"<?= $isActive ? ' aria-current="page"' : '' ?>>
+                        <?= e($label) ?>
+                    </a>
+                <?php endforeach; ?>
             </nav>
             <form class="mt-auto" method="post" action="<?= e(url('/logout')) ?>">
                 <?= $csrf->field() ?>
