@@ -9,6 +9,7 @@ $currentPath = '/' . trim($currentPath, '/');
 $navItems = [
     '/personas' => 'Personas',
     '/comisiones' => 'Comisiones',
+    '/sedes' => 'Sedes',
     '/cursos' => 'Cursos',
     '/informes' => 'Informes',
     '/programafines' => 'ProgramaFines',

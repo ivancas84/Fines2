@@ -11,6 +11,7 @@ use FinesApp\Controllers\DocenteController;
 use FinesApp\Controllers\InformeController;
 use FinesApp\Controllers\PersonaController;
 use FinesApp\Controllers\ProgramaFinesController;
+use FinesApp\Controllers\SedeController;
 use FinesApp\Core\App;
 use FinesApp\Core\Request;
 
@@ -45,6 +46,7 @@ $app->get('/cursos', [CursoController::class, 'index']);
 $app->get('/cursos/asociar', [AlumnoController::class, 'asociarCurso']);
 $app->get('/comisiones', [ComisionController::class, 'index']);
 $app->get('/comisiones/{id}/alumnos', [ComisionController::class, 'alumnos']);
+$app->get('/sedes', [SedeController::class, 'index']);
 $app->post('/comisiones/{id}/programafines/enviar', [ComisionController::class, 'enviarAlumnoProgramaFines']);
 $app->post('/comisiones/{id}/programafines/sincronizar', [ComisionController::class, 'sincronizarProgramaFines']);
 $app->post('/comisiones/{id}/programafines/importar', [ComisionController::class, 'importarAlumnoProgramaFines']);

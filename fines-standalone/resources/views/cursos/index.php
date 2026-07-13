@@ -75,7 +75,18 @@ $tomaEstado = static function (array $curso): string {
                     </td>
                     <td><?= e($curso['docente_email'] ?? '') ?></td>
                     <td><?= e($curso['docente_email_abc'] ?? '') ?></td>
-                    <td><?= e($curso['docente_telefono'] ?? '') ?></td>
+                    <td>
+                        <?php
+                        $telefono = preg_replace('/\D/', '', $curso['docente_telefono'] ?? '');
+                        $nombres = explode(' ', trim($curso['docente_nombres'] ?? ''));
+                        $nombre = e($nombres[0] ?? '');
+                        ?>
+                        <?php if ($telefono !== '') : ?>
+                            <a href="https://web.whatsapp.com/send/?phone=<?= e($telefono) ?>&text=Hola <?= $nombre ?> " target="_blank" rel="noopener"><?= e($telefono) ?></a>
+                        <?php else : ?>
+                            <span class="text-secondary">-</span>
+                        <?php endif; ?>
+                    </td>
                     <td><?= e($curso['fecha_toma'] ?? '') ?></td>
                     <td><?= e($tomaEstado($curso)) ?></td>
                     <td><?= e($curso['planilla_numero'] ?? '') ?></td>
