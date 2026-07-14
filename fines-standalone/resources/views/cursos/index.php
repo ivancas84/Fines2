@@ -26,6 +26,9 @@ $tomaEstado = static function (array $curso): string {
     <button class="btn btn-primary" type="submit">Consultar</button>
 </form>
 
+<?php if (!empty($notice)) : ?><div class="alert alert-success"><?= e($notice) ?></div><?php endif; ?>
+<?php if (!empty($error)) : ?><div class="alert alert-danger"><?= e($error) ?></div><?php endif; ?>
+
 <?php if ($cursos === []) : ?>
     <div class="empty-state">No se encontraron cursos para este calendario.</div>
 <?php else : ?>
@@ -98,10 +101,23 @@ $tomaEstado = static function (array $curso): string {
                         Comision <?= e($curso['comision_id'] ?? '') ?><br>
                         Sede <?= e($curso['sede_id'] ?? '') ?>
                     </td>
-                    <td>
+                    <td class="text-nowrap">
                         <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/comisiones/' . rawurlencode((string) $curso['comision_id']) . '/alumnos')) ?>">
                             Ver alumnos
                         </a>
+                        <a class="btn btn-sm btn-outline-success" href="<?= e(url('/cursos/' . rawurlencode((string) $curso['curso_id']) . '/planilla')) ?>">
+                            Planilla
+                        </a>
+                        <?php if (($curso['toma_id'] ?? '') !== '' && $auth->canEdit()) : ?>
+                            <form class="d-inline" method="post" action="<?= e(url('/cursos/' . rawurlencode((string) $curso['curso_id']) . '/planilla/entregada')) ?>"
+                                  onsubmit="return confirm('¿Marcar la planilla como entregada?');">
+                                <?= $csrf->field() ?>
+                                <input type="hidden" name="return" value="cursos">
+                                <button class="btn btn-sm btn-outline-secondary" type="submit" title="Marcar planilla entregada">
+                                    Entregada
+                                </button>
+                            </form>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

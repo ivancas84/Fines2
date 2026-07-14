@@ -102,6 +102,37 @@ final class TomaRepository
         }
     }
 
+    public function updateEstadoPlanilla(string $tomaId, string $estado = 'entregada'): void
+    {
+        $tomaId = trim($tomaId);
+        $estado = trim($estado);
+        if ($tomaId === '') {
+            throw new \InvalidArgumentException('Falta el id de la toma.');
+        }
+        if ($estado === '') {
+            throw new \InvalidArgumentException('Falta el estado de planilla.');
+        }
+
+        $stmt = $this->pdo->prepare('
+            UPDATE toma
+            SET estado_planilla = :estado
+            WHERE id = :id
+        ');
+        $stmt->execute([
+            'id' => $tomaId,
+            'estado' => $estado,
+        ]);
+
+        if ($stmt->rowCount() === 0) {
+            $exists = $this->pdo->prepare('SELECT id FROM toma WHERE id = :id LIMIT 1');
+            $exists->execute(['id' => $tomaId]);
+            if ($exists->fetchColumn() === false) {
+                throw new \RuntimeException('No se encontró la toma indicada.');
+            }
+            // rowCount 0 puede ser "mismo valor"; no es error.
+        }
+    }
+
     private function distinctColumn(string $column): array
     {
         $allowed = ['estado', 'tipo_movimiento', 'estado_contralor'];

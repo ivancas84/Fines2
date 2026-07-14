@@ -43,6 +43,10 @@ $app->post('/personas/{id}/alumno/comisiones', [AlumnoController::class, 'saveCo
 $app->post('/personas/{id}/alumno/comisiones/eliminar', [AlumnoController::class, 'deleteComision']);
 $app->get('/comisiones/buscar', [AlumnoController::class, 'searchComisiones']);
 $app->get('/cursos', [CursoController::class, 'index']);
+$app->get('/cursos/{id}/planilla', [CursoController::class, 'planilla']);
+$app->post('/cursos/{id}/planilla/consultar', [CursoController::class, 'planillaConsultar']);
+$app->post('/cursos/{id}/planilla/guardar', [CursoController::class, 'planillaGuardar']);
+$app->post('/cursos/{id}/planilla/entregada', [CursoController::class, 'marcarPlanillaEntregada']);
 $app->get('/cursos/asociar', [AlumnoController::class, 'asociarCurso']);
 $app->get('/comisiones', [ComisionController::class, 'index']);
 $app->get('/comisiones/{id}/alumnos', [ComisionController::class, 'alumnos']);

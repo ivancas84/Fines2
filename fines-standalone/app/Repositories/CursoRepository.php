@@ -19,6 +19,66 @@ final class CursoRepository
             ->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function byId(string $cursoId): ?array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT curso.id AS curso_id,
+                   curso.comision AS comision_id,
+                   curso.horas_catedra AS curso_horas_catedra,
+                   curso.descripcion_horario,
+                   comision.pfid,
+                   comision.sede AS sede_id,
+                   comision.calendario AS calendario_id,
+                   planificacion.plan AS plan_id,
+                   COALESCE(sede.nombre, sede.numero, '?') AS sede_nombre,
+                   TRIM(CONCAT_WS('-', NULLIF(planificacion.anio, ''), NULLIF(planificacion.semestre, ''))) AS tramo_label,
+                   TRIM(CONCAT_WS('-', NULLIF(calendario.anio, ''), NULLIF(calendario.semestre, ''))) AS calendario_label,
+                   calendario.descripcion AS calendario_descripcion,
+                   asignatura.nombre AS asignatura_nombre,
+                   asignatura.codigo AS asignatura_codigo,
+                   disposicion.id AS disposicion_id,
+                   disposicion.horas_catedra AS disposicion_horas_catedra,
+                   plan.orientacion AS plan_orientacion,
+                   plan.resolucion AS plan_resolucion,
+                   toma_activa.id AS toma_id,
+                   toma_activa.fecha_toma,
+                   toma_activa.estado AS toma_estado,
+                   toma_activa.estado_contralor,
+                   toma_activa.estado_planilla,
+                   planilla_docente.numero AS planilla_numero,
+                   docente.id AS docente_id,
+                   TRIM(CONCAT_WS(' ', NULLIF(docente.apellidos, ''), NULLIF(docente.nombres, ''))) AS docente_nombre,
+                   docente.nombres AS docente_nombres,
+                   docente.email AS docente_email,
+                   docente.email_abc AS docente_email_abc,
+                   docente.telefono AS docente_telefono
+            FROM curso
+            INNER JOIN comision ON comision.id = curso.comision
+            LEFT JOIN sede ON sede.id = comision.sede
+            LEFT JOIN calendario ON calendario.id = comision.calendario
+            LEFT JOIN disposicion ON disposicion.id = curso.disposicion
+            LEFT JOIN asignatura ON asignatura.id = disposicion.asignatura
+            LEFT JOIN planificacion ON planificacion.id = disposicion.planificacion
+            LEFT JOIN plan ON plan.id = planificacion.plan
+            LEFT JOIN (
+                SELECT toma.curso, MIN(toma.id) AS toma_id
+                FROM toma
+                WHERE toma.estado = 'Aprobada'
+                  AND toma.estado_contralor != 'Modificar'
+                GROUP BY toma.curso
+            ) toma_por_curso ON toma_por_curso.curso = curso.id
+            LEFT JOIN toma toma_activa ON toma_activa.id = toma_por_curso.toma_id
+            LEFT JOIN persona docente ON docente.id = toma_activa.docente
+            LEFT JOIN planilla_docente ON planilla_docente.id = toma_activa.planilla_docente
+            WHERE curso.id = :curso_id
+            LIMIT 1
+        ");
+        $stmt->execute(['curso_id' => $cursoId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row ?: null;
+    }
+
     public function porCalendario(string $calendarioId): array
     {
         $stmt = $this->pdo->prepare("
