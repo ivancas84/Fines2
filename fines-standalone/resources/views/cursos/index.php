@@ -6,6 +6,16 @@ $tomaEstado = static function (array $curso): string {
         $curso['estado_contralor'] ?? '',
     ])));
 };
+$estadoPlanillaBadge = static function (array $curso): array {
+    $raw = trim((string) ($curso['estado_planilla'] ?? ''));
+    $normalized = mb_strtolower($raw);
+    if ($normalized === 'entregada') {
+        return ['label' => 'Sí Entregada', 'class' => 'badge-planilla-entregada'];
+    }
+
+    $label = $raw !== '' ? $raw : 'No entregada';
+    return ['label' => $label, 'class' => 'badge-planilla-no-entregada'];
+};
 ?>
 <div class="page-header">
     <div>
@@ -38,19 +48,11 @@ $tomaEstado = static function (array $curso): string {
             <tr>
                 <th>Sede</th>
                 <th>Comision</th>
-                <th>Tramo</th>
                 <th>Asignatura</th>
-                <th>Hs cat</th>
                 <th>Docente</th>
-                <th>Email</th>
-                <th>Email ABC</th>
-                <th>Telefono</th>
-                <th>Fecha toma</th>
-                <th>Estado</th>
-                <th>Planilla</th>
+                <th>Contacto</th>
+                <th>Toma</th>
                 <th>Estado planilla</th>
-                <th class="text-end">Aprobados</th>
-                <th>Ids</th>
                 <th>Acciones</th>
             </tr>
             </thead>
@@ -62,13 +64,38 @@ $tomaEstado = static function (array $curso): string {
                     $curso['asignatura_nombre'] ?? '',
                 ])));
                 $docente = trim((string) ($curso['docente_nombre'] ?? ''));
+                $hsCat = trim(($curso['curso_horas_catedra'] ?? '') . '/' . ($curso['disposicion_horas_catedra'] ?? ''), '/');
+                $planillaNumero = trim((string) ($curso['planilla_numero'] ?? ''));
+                $estadoToma = $tomaEstado($curso);
+                $planillaEstado = $estadoPlanillaBadge($curso);
+                $telefono = preg_replace('/\D/', '', $curso['docente_telefono'] ?? '') ?? '';
+                $nombres = explode(' ', trim($curso['docente_nombres'] ?? ''));
+                $nombre = e($nombres[0] ?? '');
+                $email = trim((string) ($curso['docente_email'] ?? ''));
+                $emailAbc = trim((string) ($curso['docente_email_abc'] ?? ''));
+                $resumenCopia = trim(preg_replace(
+                    '/\s+/u',
+                    ' ',
+                    implode(' ', array_filter([
+                        trim((string) ($curso['docente_apellidos'] ?? '')),
+                        trim((string) ($curso['docente_nombres'] ?? '')),
+                        trim((string) ($curso['asignatura_nombre'] ?? '')),
+                        trim((string) ($curso['pfid'] ?? '')),
+                    ], static fn (string $part): bool => $part !== '')),
+                ) ?? '');
                 ?>
                 <tr>
                     <td><?= e($curso['sede_nombre'] ?? '') ?></td>
-                    <td><?= e($curso['pfid'] ?? '') ?></td>
-                    <td><?= e($curso['tramo_label'] ?? '') ?></td>
+                    <td>
+                        <div><?= e($curso['pfid'] ?? '') ?></div>
+                        <?php if (($curso['tramo_label'] ?? '') !== '') : ?>
+                            <div class="small text-secondary"><?= e($curso['tramo_label']) ?></div>
+                        <?php endif; ?>
+                        <?php if ($hsCat !== '') : ?>
+                            <div class="small text-secondary"><?= e($hsCat) ?> hs</div>
+                        <?php endif; ?>
+                    </td>
                     <td><?= e($asignatura) ?></td>
-                    <td><?= e(($curso['curso_horas_catedra'] ?? '') . '/' . ($curso['disposicion_horas_catedra'] ?? '')) ?></td>
                     <td>
                         <?php if ($docente !== '' && ($curso['docente_id'] ?? '') !== '') : ?>
                             <a href="<?= e(url('/personas/' . rawurlencode((string) $curso['docente_id']) . '/docente')) ?>"><?= e($docente) ?></a>
@@ -76,32 +103,47 @@ $tomaEstado = static function (array $curso): string {
                             <span class="text-secondary">Sin docente</span>
                         <?php endif; ?>
                     </td>
-                    <td><?= e($curso['docente_email'] ?? '') ?></td>
-                    <td><?= e($curso['docente_email_abc'] ?? '') ?></td>
-                    <td>
-                        <?php
-                        $telefono = preg_replace('/\D/', '', $curso['docente_telefono'] ?? '');
-                        $nombres = explode(' ', trim($curso['docente_nombres'] ?? ''));
-                        $nombre = e($nombres[0] ?? '');
-                        ?>
+                    <td class="small">
+                        <?php if ($email !== '') : ?>
+                            <div><?= e($email) ?></div>
+                        <?php endif; ?>
+                        <?php if ($emailAbc !== '') : ?>
+                            <div class="text-secondary"><?= e($emailAbc) ?></div>
+                        <?php endif; ?>
                         <?php if ($telefono !== '') : ?>
-                            <a href="https://web.whatsapp.com/send/?phone=<?= e($telefono) ?>&text=Hola <?= $nombre ?> " target="_blank" rel="noopener"><?= e($telefono) ?></a>
-                        <?php else : ?>
+                            <div>
+                                <a href="https://web.whatsapp.com/send/?phone=<?= e($telefono) ?>&text=Hola <?= $nombre ?> " target="_blank" rel="noopener"><?= e($telefono) ?></a>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($email === '' && $emailAbc === '' && $telefono === '') : ?>
                             <span class="text-secondary">-</span>
                         <?php endif; ?>
                     </td>
-                    <td><?= e($curso['fecha_toma'] ?? '') ?></td>
-                    <td><?= e($tomaEstado($curso)) ?></td>
-                    <td><?= e($curso['planilla_numero'] ?? '') ?></td>
-                    <td><?= e(($curso['estado_planilla'] ?? '') !== '' ? $curso['estado_planilla'] : 'Sin entregar') ?></td>
-                    <td class="text-end"><?= e($curso['cantidad_aprobados'] ?? 0) ?></td>
-                    <td class="small text-secondary">
-                        Toma <?= e($curso['toma_id'] ?? '') ?><br>
-                        Curso <?= e($curso['curso_id'] ?? '') ?><br>
-                        Comision <?= e($curso['comision_id'] ?? '') ?><br>
-                        Sede <?= e($curso['sede_id'] ?? '') ?>
+                    <td>
+                        <div><?= e($planillaNumero !== '' ? $planillaNumero : '-') ?></div>
+                        <div class="small text-secondary"><?= e(trim((string) ($curso['fecha_toma'] ?? '')) !== '' ? $curso['fecha_toma'] : 'Sin fecha') ?></div>
+                        <?php if ($estadoToma !== '') : ?>
+                            <div class="small text-secondary"><?= e($estadoToma) ?></div>
+                        <?php else : ?>
+                            <div class="small text-secondary">Sin estado</div>
+                        <?php endif; ?>
+                    </td>
+                    <td>
+                        <div>
+                            <span class="badge-planilla <?= e($planillaEstado['class']) ?>"><?= e($planillaEstado['label']) ?></span>
+                        </div>
+                        <div class="small text-secondary mt-1">
+                            Aprobados: <?= e($curso['cantidad_aprobados'] ?? 0) ?>
+                        </div>
                     </td>
                     <td class="text-nowrap">
+                        <button
+                            class="btn btn-sm btn-outline-dark"
+                            type="button"
+                            data-copy-text="<?= e($resumenCopia) ?>"
+                            title="Copiar resumen: apellidos nombres asignatura pfid"
+                            <?= $resumenCopia === '' ? 'disabled' : '' ?>
+                        >CR</button>
                         <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/comisiones/' . rawurlencode((string) $curso['comision_id']) . '/alumnos')) ?>">
                             Ver alumnos
                         </a>

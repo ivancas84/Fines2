@@ -1,4 +1,5 @@
 .vs/
+version 5/
 scripts/db_config.php
 includes/fines_plugin_db_connect.php
 wp/fines7/config/fines7.php

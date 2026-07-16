@@ -157,6 +157,26 @@ body {
     color: #7f1d1d;
 }
 
+.badge-planilla {
+    border-radius: 999px;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 0.35em 0.65em;
+    white-space: nowrap;
+}
+
+.badge-planilla-entregada {
+    background: #dcfce7;
+    color: #14532d;
+}
+
+.badge-planilla-no-entregada {
+    background: #fee2e2;
+    color: #7f1d1d;
+}
+
 .calificacion-number {
     max-width: 82px;
 }

@@ -141,4 +141,51 @@
             }
         });
     });
+
+    const copyText = async (text) => {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return;
+        }
+
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+    };
+
+    document.addEventListener('click', async (event) => {
+        const button = event.target.closest('[data-copy-text]');
+        if (!button || button.disabled) {
+            return;
+        }
+
+        const text = button.getAttribute('data-copy-text') || '';
+        if (!text) {
+            return;
+        }
+
+        const original = button.textContent;
+        try {
+            await copyText(text);
+            button.textContent = 'OK';
+            button.classList.add('btn-success');
+            button.classList.remove('btn-outline-dark');
+        } catch (error) {
+            button.textContent = 'Err';
+            button.classList.add('btn-danger');
+            button.classList.remove('btn-outline-dark');
+        }
+
+        window.setTimeout(() => {
+            button.textContent = original;
+            button.classList.remove('btn-success', 'btn-danger');
+            button.classList.add('btn-outline-dark');
+        }, 1200);
+    });
 }());
