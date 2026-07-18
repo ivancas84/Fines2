@@ -47,7 +47,12 @@ $pfLocalOnly = array_fill_keys($programaFines['local_only'] ?? [], true);
             <p class="small text-secondary mb-0"><?= e($planLabel) ?></p>
         <?php endif; ?>
     </div>
-    <span class="badge text-bg-primary fs-6"><?= e((string) count($alumnos)) ?> alumnos</span>
+    <div class="d-flex flex-wrap align-items-center gap-2">
+        <a class="btn btn-outline-secondary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']))) ?>">
+            Administrar
+        </a>
+        <span class="badge text-bg-primary fs-6"><?= e((string) count($alumnos)) ?> alumnos</span>
+    </div>
 </div>
 
 <?php if (!empty($notice)) : ?><div class="alert alert-success"><?= e($notice) ?></div><?php endif; ?>

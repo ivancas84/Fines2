@@ -49,6 +49,14 @@ $app->post('/cursos/{id}/planilla/guardar', [CursoController::class, 'planillaGu
 $app->post('/cursos/{id}/planilla/entregada', [CursoController::class, 'marcarPlanillaEntregada']);
 $app->get('/cursos/asociar', [AlumnoController::class, 'asociarCurso']);
 $app->get('/comisiones', [ComisionController::class, 'index']);
+$app->get('/comisiones/nueva', [ComisionController::class, 'createForm']);
+$app->post('/comisiones', [ComisionController::class, 'create']);
+$app->get('/comisiones/{id}', [ComisionController::class, 'admin']);
+$app->post('/comisiones/{id}', [ComisionController::class, 'saveComision']);
+$app->post('/comisiones/{id}/cursos', [ComisionController::class, 'saveCursos']);
+$app->post('/comisiones/{id}/cursos/agregar', [ComisionController::class, 'addCurso']);
+$app->post('/comisiones/{id}/tomas', [ComisionController::class, 'saveTomas']);
+$app->post('/comisiones/{id}/tomas/agregar', [ComisionController::class, 'addToma']);
 $app->get('/comisiones/{id}/alumnos', [ComisionController::class, 'alumnos']);
 $app->get('/sedes', [SedeController::class, 'index']);
 $app->post('/comisiones/{id}/programafines/enviar', [ComisionController::class, 'enviarAlumnoProgramaFines']);

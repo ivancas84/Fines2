@@ -17,6 +17,11 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
         <h1>Comisiones</h1>
         <p class="text-secondary mb-0"><?= e((string) count($comisiones)) ?> comisiones consultadas.</p>
     </div>
+    <?php if ($auth->canEdit()) : ?>
+        <a class="btn btn-primary" href="<?= e(url('/comisiones/nueva' . ($selectedCalendario !== '' ? '?calendario=' . rawurlencode((string) $selectedCalendario) : ''))) ?>">
+            Nueva comisión
+        </a>
+    <?php endif; ?>
 </div>
 
 <form class="filters-bar" method="get" action="<?= e(url('/comisiones')) ?>">
@@ -79,7 +84,10 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
                     </td>
                     <td><?= e($siguiente) ?></td>
                     <td><?= e($comision['referentes_label'] ?? 'Sin Referentes') ?></td>
-                    <td>
+                    <td class="text-nowrap">
+                        <a class="btn btn-sm btn-outline-secondary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']))) ?>">
+                            Administrar
+                        </a>
                         <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/alumnos')) ?>">
                             Ver alumnos
                         </a>

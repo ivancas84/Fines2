@@ -77,10 +77,10 @@ $estadoPlanillaBadge = static function (array $curso): array {
                     '/\s+/u',
                     ' ',
                     implode(' ', array_filter([
+                        trim((string) ($curso['pfid'] ?? '')),
+                        trim((string) ($curso['asignatura_nombre'] ?? '')),
                         trim((string) ($curso['docente_apellidos'] ?? '')),
                         trim((string) ($curso['docente_nombres'] ?? '')),
-                        trim((string) ($curso['asignatura_nombre'] ?? '')),
-                        trim((string) ($curso['pfid'] ?? '')),
                     ], static fn (string $part): bool => $part !== '')),
                 ) ?? '');
                 ?>
@@ -141,7 +141,7 @@ $estadoPlanillaBadge = static function (array $curso): array {
                             class="btn btn-sm btn-outline-dark"
                             type="button"
                             data-copy-text="<?= e($resumenCopia) ?>"
-                            title="Copiar resumen: apellidos nombres asignatura pfid"
+                            title="Copiar resumen: pfid asignatura apellidos nombres"
                             <?= $resumenCopia === '' ? 'disabled' : '' ?>
                         >CR</button>
                         <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/comisiones/' . rawurlencode((string) $curso['comision_id']) . '/alumnos')) ?>">

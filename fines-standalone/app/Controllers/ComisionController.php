@@ -12,6 +12,7 @@ use FinesApp\Integrations\ProgramaFines\ProgramaFinesClient;
 use FinesApp\Integrations\ProgramaFines\ProgramaFinesMapper;
 use FinesApp\Integrations\ProgramaFines\ProgramaFinesSession;
 use FinesApp\Repositories\ComisionRepository;
+use FinesApp\Repositories\TomaRepository;
 
 final class ComisionController extends Controller
 {
@@ -218,6 +219,332 @@ final class ComisionController extends Controller
         }
 
         Response::redirect(url("/comisiones/{$comisionId}/alumnos"));
+    }
+
+    public function createForm(Request $request, array $vars = []): void
+    {
+        $this->requireLogin();
+
+        $comisionRepository = new ComisionRepository($this->pdo);
+        $calendarios = $comisionRepository->calendarios();
+        $selectedCalendario = (string) $request->query('calendario', '');
+        if ($selectedCalendario === '' && $calendarios !== []) {
+            $selectedCalendario = (string) $calendarios[0]['id'];
+        }
+
+        $this->renderAdminForm(
+            comision: [
+                'id' => '',
+                'pfid' => '',
+                'turno' => '',
+                'division' => '',
+                'autorizada' => 0,
+                'apertura' => 0,
+                'publicada' => 0,
+                'observaciones' => '',
+                'calendario_id' => $selectedCalendario,
+                'sede_id' => '',
+                'modalidad_id' => '',
+                'planificacion_id' => '',
+                'comision_siguiente' => '',
+                'sede_nombre' => '',
+                'calendario_label' => '',
+            ],
+            isNew: true,
+            title: 'Nueva comisión',
+        );
+    }
+
+    public function create(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+
+        try {
+            $data = $this->comisionFormData($request);
+            $result = (new ComisionRepository($this->pdo))->createAdmin($data);
+            $extra = $result['cursos_creados'] > 0
+                ? " Se crearon {$result['cursos_creados']} cursos de la planificación."
+                : '';
+            Session::flash('notice', 'Comisión creada.' . $extra);
+            Response::redirect(url('/comisiones/' . rawurlencode($result['id'])));
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+            Response::redirect(url('/comisiones/nueva'));
+        }
+    }
+
+    public function admin(Request $request, array $vars = []): void
+    {
+        $this->requireLogin();
+
+        $comisionId = trim((string) ($vars['id'] ?? ''));
+        $comisionRepository = new ComisionRepository($this->pdo);
+        $comision = $comisionId !== '' ? $comisionRepository->byId($comisionId) : null;
+
+        if ($comision === null) {
+            $this->view->render('errors/404', ['title' => 'Comisión no encontrada'], 404);
+            return;
+        }
+
+        $this->renderAdminForm(
+            comision: $comision,
+            isNew: false,
+            title: 'Administrar comisión',
+        );
+    }
+
+    public function saveComision(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $comisionId = (string) ($vars['id'] ?? '');
+
+        try {
+            $repository = new ComisionRepository($this->pdo);
+            if ($repository->byId($comisionId) === null) {
+                throw new \RuntimeException('La comisión no existe.');
+            }
+
+            $result = $repository->updateAdmin($comisionId, $this->comisionFormData($request));
+
+            $extra = $result['cursos_creados'] > 0
+                ? " Se crearon {$result['cursos_creados']} cursos de la planificación."
+                : '';
+            Session::flash('notice', 'Comisión guardada.' . $extra);
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+        }
+
+        Response::redirect(url("/comisiones/{$comisionId}"));
+    }
+
+    /**
+     * @param array<string, mixed> $comision
+     */
+    private function renderAdminForm(array $comision, bool $isNew, string $title): void
+    {
+        $comisionRepository = new ComisionRepository($this->pdo);
+        $tomaRepository = new TomaRepository($this->pdo);
+        $comisionId = (string) ($comision['id'] ?? '');
+
+        $this->view->render('comisiones/admin', [
+            'title' => $title,
+            'isNew' => $isNew,
+            'comision' => $comision,
+            'calendarios' => $comisionRepository->calendarios(),
+            'sedes' => $comisionRepository->sedesOptions(),
+            'modalidades' => $comisionRepository->modalidadesOptions(),
+            'planificaciones' => $comisionRepository->planificacionesOptions(),
+            'disposiciones' => $isNew ? [] : $comisionRepository->disposicionesOptions(),
+            'cursos' => $isNew || $comisionId === '' ? [] : $comisionRepository->cursosByComision($comisionId),
+            'tomas' => $isNew || $comisionId === '' ? [] : $tomaRepository->byComision($comisionId),
+            'estadosToma' => $isNew ? [] : $tomaRepository->estados(),
+            'tiposMovimiento' => $isNew ? [] : $tomaRepository->tiposMovimiento(),
+            'estadosContralor' => $isNew ? [] : $tomaRepository->estadosContralor(),
+            'notice' => flash('notice'),
+            'error' => flash('error'),
+        ]);
+    }
+
+    /** @return array<string, mixed> */
+    private function comisionFormData(Request $request): array
+    {
+        $calendario = trim((string) $request->input('calendario', ''));
+        $sede = trim((string) $request->input('sede', ''));
+        $modalidad = trim((string) $request->input('modalidad', ''));
+        $division = trim((string) $request->input('division', ''));
+        if ($calendario === '' || $sede === '' || $modalidad === '') {
+            throw new \InvalidArgumentException('Calendario, sede y modalidad son obligatorios.');
+        }
+        if ($division === '') {
+            $division = '-';
+        }
+
+        return [
+            'calendario' => $calendario,
+            'sede' => $sede,
+            'modalidad' => $modalidad,
+            'planificacion' => $this->nullableText($request->input('planificacion')),
+            'turno' => $this->nullableText($request->input('turno')),
+            'division' => $division,
+            'pfid' => $this->nullableText($request->input('pfid')),
+            'autorizada' => $request->checkbox('autorizada'),
+            'apertura' => $request->checkbox('apertura'),
+            'publicada' => $request->checkbox('publicada'),
+            'observaciones' => $this->nullableText($request->input('observaciones')),
+            'comision_siguiente' => $this->nullableText($request->input('comision_siguiente')),
+        ];
+    }
+
+    public function saveCursos(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $comisionId = (string) ($vars['id'] ?? '');
+
+        try {
+            $repository = new ComisionRepository($this->pdo);
+            $deleteId = trim((string) $request->input('delete_curso_id', ''));
+            if ($deleteId !== '') {
+                $repository->deleteCurso($comisionId, $deleteId);
+                Session::flash('notice', 'Curso eliminado.');
+            } else {
+                $repository->updateCursos($comisionId, $this->cursoRows($request));
+                Session::flash('notice', 'Cursos guardados.');
+            }
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+        }
+
+        Response::redirect(url("/comisiones/{$comisionId}"));
+    }
+
+    public function addCurso(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $comisionId = (string) ($vars['id'] ?? '');
+
+        try {
+            $disposicion = trim((string) $request->input('disposicion', ''));
+            if ($disposicion === '') {
+                throw new \InvalidArgumentException('Seleccioná una disposición.');
+            }
+
+            (new ComisionRepository($this->pdo))->addCurso($comisionId, [
+                'disposicion' => $disposicion,
+                'horas_catedra' => $request->input('horas_catedra', '0'),
+                'descripcion_horario' => $request->input('descripcion_horario'),
+            ]);
+            Session::flash('notice', 'Curso agregado.');
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+        }
+
+        Response::redirect(url("/comisiones/{$comisionId}"));
+    }
+
+    public function saveTomas(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $comisionId = (string) ($vars['id'] ?? '');
+
+        try {
+            $repository = new TomaRepository($this->pdo);
+            $deleteId = trim((string) $request->input('delete_toma_id', ''));
+            if ($deleteId !== '') {
+                $repository->deleteInComision($comisionId, $deleteId);
+                Session::flash('notice', 'Toma eliminada.');
+            } else {
+                $repository->updateForComision($comisionId, $this->tomaRows($request));
+                Session::flash('notice', 'Tomas guardadas.');
+            }
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+        }
+
+        Response::redirect(url("/comisiones/{$comisionId}"));
+    }
+
+    public function addToma(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $comisionId = (string) ($vars['id'] ?? '');
+
+        try {
+            (new TomaRepository($this->pdo))->addForComision($comisionId, [
+                'fecha_toma' => $request->input('fecha_toma'),
+                'curso' => $request->input('curso'),
+                'dni_docente' => $request->input('dni_docente'),
+                'estado' => $request->input('estado'),
+                'tipo_movimiento' => $request->input('tipo_movimiento'),
+                'estado_contralor' => $request->input('estado_contralor'),
+            ]);
+            Session::flash('notice', 'Toma agregada.');
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+        }
+
+        Response::redirect(url("/comisiones/{$comisionId}"));
+    }
+
+    /** @return list<array{id: string, disposicion: mixed, horas_catedra: mixed, descripcion_horario: mixed}> */
+    private function cursoRows(Request $request): array
+    {
+        $ids = $request->arrayInput('curso_id');
+        $disposiciones = $request->arrayInput('disposicion');
+        $horas = $request->arrayInput('horas_catedra');
+        $horarios = $request->arrayInput('descripcion_horario');
+        $rows = [];
+
+        foreach ($ids as $index => $id) {
+            $id = trim((string) $id);
+            if ($id === '') {
+                continue;
+            }
+            $rows[] = [
+                'id' => $id,
+                'disposicion' => $disposiciones[$index] ?? null,
+                'horas_catedra' => $horas[$index] ?? 0,
+                'descripcion_horario' => $horarios[$index] ?? null,
+            ];
+        }
+
+        return $rows;
+    }
+
+    /**
+     * @return list<array{
+     *   id: string,
+     *   fecha_toma: mixed,
+     *   curso: mixed,
+     *   dni_docente: mixed,
+     *   estado: mixed,
+     *   tipo_movimiento: mixed,
+     *   estado_contralor: mixed
+     * }>
+     */
+    private function tomaRows(Request $request): array
+    {
+        $ids = $request->arrayInput('toma_id');
+        $fechas = $request->arrayInput('fecha_toma');
+        $cursos = $request->arrayInput('curso');
+        $dnis = $request->arrayInput('dni_docente');
+        $estados = $request->arrayInput('estado');
+        $tipos = $request->arrayInput('tipo_movimiento');
+        $contralores = $request->arrayInput('estado_contralor');
+        $rows = [];
+
+        foreach ($ids as $index => $id) {
+            $id = trim((string) $id);
+            if ($id === '') {
+                continue;
+            }
+            $rows[] = [
+                'id' => $id,
+                'fecha_toma' => $fechas[$index] ?? null,
+                'curso' => $cursos[$index] ?? null,
+                'dni_docente' => $dnis[$index] ?? null,
+                'estado' => $estados[$index] ?? null,
+                'tipo_movimiento' => $tipos[$index] ?? null,
+                'estado_contralor' => $contralores[$index] ?? null,
+            ];
+        }
+
+        return $rows;
+    }
+
+    private function nullableText(?string $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+        $value = trim($value);
+
+        return $value === '' ? null : $value;
     }
 
     private function syncStudent(

@@ -160,11 +160,25 @@ $yaEntregada = mb_strtolower($estadoPlanilla) === 'entregada';
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <?php if (is_array($parsed)) : ?>
-                                    <div><?= e(($parsed['apellidos'] ?? '') . ', ' . ($parsed['nombres'] ?? '')) ?></div>
-                                    <div class="small text-secondary">DNI <?= e((string) ($parsed['numero_documento'] ?? '')) ?></div>
+                                <?php
+                                $personaId = trim((string) ($item['persona_id'] ?? ''));
+                                $alumnoNombre = is_array($parsed)
+                                    ? trim(($parsed['apellidos'] ?? '') . ', ' . ($parsed['nombres'] ?? ''))
+                                    : (string) ($item['label'] ?? '');
+                                ?>
+                                <?php if ($personaId !== '') : ?>
+                                    <div>
+                                        <a href="<?= e(url('/personas/' . rawurlencode($personaId) . '/alumno')) ?>" target="_blank" rel="noopener">
+                                            <?= e($alumnoNombre !== '' ? $alumnoNombre : 'Ver alumno') ?>
+                                        </a>
+                                    </div>
+                                <?php elseif (is_array($parsed)) : ?>
+                                    <div><?= e($alumnoNombre) ?></div>
                                 <?php else : ?>
-                                    <?= e((string) ($item['label'] ?? '')) ?>
+                                    <div><?= e($alumnoNombre) ?></div>
+                                <?php endif; ?>
+                                <?php if (is_array($parsed)) : ?>
+                                    <div class="small text-secondary">DNI <?= e((string) ($parsed['numero_documento'] ?? '')) ?></div>
                                 <?php endif; ?>
                             </td>
                             <td><?= e(is_array($parsed) ? (string) ($parsed['nota'] ?? '') : '') ?></td>

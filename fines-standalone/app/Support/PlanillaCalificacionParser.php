@@ -185,39 +185,4 @@ final class PlanillaCalificacionParser
         ];
     }
 
-    /**
-     * Compara si dos personas tienen al menos un token de nombre/apellido con prefijo común.
-     *
-     * @param array{nombres?: mixed, apellidos?: mixed} $persona1
-     * @param array{nombres?: mixed, apellidos?: mixed} $persona2
-     */
-    public static function nombreParecido(array $persona1, array $persona2, int $length = 5): bool
-    {
-        $nombres1 = mb_strtolower((string) ($persona1['nombres'] ?? ''));
-        $apellidos1 = mb_strtolower((string) ($persona1['apellidos'] ?? ''));
-        $nombres2 = mb_strtolower((string) ($persona2['nombres'] ?? ''));
-        $apellidos2 = mb_strtolower((string) ($persona2['apellidos'] ?? ''));
-
-        $tokens1 = array_merge(explode(' ', $nombres1), explode(' ', $apellidos1));
-        $tokens2 = array_merge(explode(' ', $nombres2), explode(' ', $apellidos2));
-
-        foreach ($tokens1 as $token1) {
-            $token1 = trim($token1);
-            if ($token1 === '') {
-                continue;
-            }
-            $token1Prefix = mb_substr($token1, 0, $length);
-            foreach ($tokens2 as $token2) {
-                $token2 = trim($token2);
-                if ($token2 === '') {
-                    continue;
-                }
-                if (mb_strpos($token2, $token1Prefix) === 0) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FinesApp\Repositories;
 
-use FinesApp\Support\PlanillaCalificacionParser;
+use FinesApp\Support\PersonaName;
 use PDO;
 
 final class PlanillaCalificacionRepository
@@ -22,6 +22,7 @@ final class PlanillaCalificacionRepository
      *   label: string,
      *   actions: list<string>,
      *   has_changes: bool,
+     *   persona_id?: string|null,
      *   error?: string
      * }
      */
@@ -34,6 +35,7 @@ final class PlanillaCalificacionRepository
         $label = trim($data['apellidos'] . ', ' . $data['nombres'] . ' (' . $data['numero_documento'] . ') nota ' . $data['nota']);
         $actions = [];
         $hasChanges = false;
+        $personaExistenteId = null;
 
         $cursoId = (string) ($curso['curso_id'] ?? '');
         $comisionId = (string) ($curso['comision_id'] ?? '');
@@ -77,7 +79,9 @@ final class PlanillaCalificacionRepository
                 $personaCreated = true;
             } else {
                 $personaId = (string) $persona['id'];
-                if (!PlanillaCalificacionParser::nombreParecido($persona, $data)) {
+                $personaExistenteId = $personaId;
+                // Misma regla que Fines2\Model\Persona_::nombreParecido (prefijo 5 en tokens).
+                if (!PersonaName::nombreParecido($persona, $data, 5)) {
                     throw new \RuntimeException(
                         'El nombre registrado de la persona es diferente: '
                         . trim(($persona['apellidos'] ?? '') . ', ' . ($persona['nombres'] ?? '')),
@@ -227,6 +231,7 @@ final class PlanillaCalificacionRepository
                 'label' => $label,
                 'actions' => $actions,
                 'has_changes' => $hasChanges,
+                'persona_id' => $personaExistenteId,
             ];
         } catch (\Throwable $throwable) {
             if ($persist && $this->pdo->inTransaction()) {
@@ -238,6 +243,7 @@ final class PlanillaCalificacionRepository
                 'label' => $label,
                 'actions' => $actions,
                 'has_changes' => false,
+                'persona_id' => $personaExistenteId,
                 'error' => $throwable->getMessage(),
             ];
         }

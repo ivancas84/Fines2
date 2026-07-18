@@ -25,19 +25,29 @@ final class ComisionRepository
             SELECT comision.id,
                    comision.pfid,
                    comision.turno,
+                   comision.division,
                    comision.autorizada,
                    comision.apertura,
+                   comision.publicada,
+                   comision.observaciones,
+                   comision.calendario AS calendario_id,
+                   comision.sede AS sede_id,
+                   comision.modalidad AS modalidad_id,
+                   comision.planificacion AS planificacion_id,
+                   comision.comision_siguiente,
                    COALESCE(sede.nombre, sede.numero, '?') AS sede_nombre,
                    TRIM(CONCAT_WS('-', NULLIF(calendario.anio, ''), NULLIF(calendario.semestre, ''))) AS calendario_label,
                    calendario.descripcion AS calendario_descripcion,
                    TRIM(CONCAT_WS('-', NULLIF(planificacion.anio, ''), NULLIF(planificacion.semestre, ''))) AS planificacion_label,
                    plan.orientacion AS plan_orientacion,
-                   plan.resolucion AS plan_resolucion
+                   plan.resolucion AS plan_resolucion,
+                   modalidad.nombre AS modalidad_nombre
             FROM comision
             LEFT JOIN sede ON sede.id = comision.sede
             LEFT JOIN calendario ON calendario.id = comision.calendario
             LEFT JOIN planificacion ON planificacion.id = comision.planificacion
             LEFT JOIN plan ON plan.id = planificacion.plan
+            LEFT JOIN modalidad ON modalidad.id = comision.modalidad
             WHERE comision.id = :comision_id
             LIMIT 1
         ");
@@ -45,6 +55,413 @@ final class ComisionRepository
         $row = $stmt->fetch();
 
         return $row ?: null;
+    }
+
+    /** @return list<array{id: string, label: string}> */
+    public function modalidadesOptions(): array
+    {
+        $rows = $this->pdo
+            ->query('SELECT id, nombre FROM modalidad ORDER BY nombre ASC')
+            ->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(static fn (array $row): array => [
+            'id' => (string) $row['id'],
+            'label' => (string) ($row['nombre'] ?? $row['id']),
+        ], $rows);
+    }
+
+    /** @return list<array{id: string, label: string}> */
+    public function sedesOptions(): array
+    {
+        $rows = $this->pdo
+            ->query("
+                SELECT id, numero, nombre
+                FROM sede
+                ORDER BY CAST(numero AS UNSIGNED) ASC, numero ASC, nombre ASC
+            ")
+            ->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(static function (array $row): array {
+            $label = trim(implode(' - ', array_filter([
+                (string) ($row['numero'] ?? ''),
+                (string) ($row['nombre'] ?? ''),
+            ])));
+
+            return [
+                'id' => (string) $row['id'],
+                'label' => $label !== '' ? $label : (string) $row['id'],
+            ];
+        }, $rows);
+    }
+
+    /** @return list<array{id: string, label: string}> */
+    public function planificacionesOptions(): array
+    {
+        $rows = $this->pdo
+            ->query("
+                SELECT planificacion.id,
+                       planificacion.anio,
+                       planificacion.semestre,
+                       plan.orientacion,
+                       plan.resolucion
+                FROM planificacion
+                LEFT JOIN plan ON plan.id = planificacion.plan
+                ORDER BY CAST(planificacion.anio AS UNSIGNED) ASC,
+                         CAST(planificacion.semestre AS UNSIGNED) ASC,
+                         plan.orientacion ASC,
+                         plan.resolucion ASC
+            ")
+            ->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(static function (array $row): array {
+            $label = trim(implode(' ', array_filter([
+                (string) ($row['orientacion'] ?? ''),
+                (string) ($row['resolucion'] ?? ''),
+                trim(($row['anio'] ?? '') . '/' . ($row['semestre'] ?? ''), '/'),
+            ])));
+
+            return [
+                'id' => (string) $row['id'],
+                'label' => $label !== '' ? $label : (string) $row['id'],
+            ];
+        }, $rows);
+    }
+
+    /**
+     * Disposiciones de planes vigentes (misma lista que el admin legacy).
+     *
+     * @return list<array{id: string, label: string, horas_catedra: int}>
+     */
+    public function disposicionesOptions(): array
+    {
+        $stmt = $this->pdo->query("
+            SELECT disposicion.id,
+                   disposicion.horas_catedra,
+                   asignatura.nombre AS asignatura_nombre,
+                   asignatura.codigo AS asignatura_codigo,
+                   planificacion.anio,
+                   planificacion.semestre,
+                   plan.resolucion,
+                   plan.orientacion
+            FROM disposicion
+            INNER JOIN asignatura ON asignatura.id = disposicion.asignatura
+            INNER JOIN planificacion ON planificacion.id = disposicion.planificacion
+            INNER JOIN plan ON plan.id = planificacion.plan
+            WHERE plan.id IN ('202303101', '202303102', '4', '5', '2026032201')
+            ORDER BY asignatura.nombre ASC,
+                     CAST(planificacion.anio AS UNSIGNED) ASC,
+                     CAST(planificacion.semestre AS UNSIGNED) ASC,
+                     plan.resolucion ASC,
+                     plan.orientacion ASC
+        ");
+
+        return array_map(function (array $row): array {
+            $acronym = $this->acronym((string) ($row['orientacion'] ?? ''));
+            $label = trim(implode(' ', array_filter([
+                (string) ($row['asignatura_nombre'] ?? ''),
+                (string) ($row['asignatura_codigo'] ?? ''),
+                trim(($row['anio'] ?? '') . '/' . ($row['semestre'] ?? ''), '/'),
+                (string) ($row['resolucion'] ?? ''),
+                $acronym,
+                '(' . (string) ($row['horas_catedra'] ?? '?') . ')',
+            ])));
+
+            return [
+                'id' => (string) $row['id'],
+                'label' => $label !== '' ? $label : (string) $row['id'],
+                'horas_catedra' => (int) ($row['horas_catedra'] ?? 0),
+            ];
+        }, $stmt->fetchAll(PDO::FETCH_ASSOC));
+    }
+
+    public function cursosByComision(string $comisionId): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT curso.id,
+                   curso.horas_catedra,
+                   curso.descripcion_horario,
+                   curso.disposicion AS disposicion_id,
+                   curso.codigo,
+                   disposicion.horas_catedra AS disposicion_horas_catedra,
+                   asignatura.nombre AS asignatura_nombre,
+                   asignatura.codigo AS asignatura_codigo,
+                   TRIM(CONCAT_WS('-', NULLIF(planificacion.anio, ''), NULLIF(planificacion.semestre, ''))) AS tramo_label,
+                   plan.resolucion AS plan_resolucion,
+                   plan.orientacion AS plan_orientacion
+            FROM curso
+            LEFT JOIN disposicion ON disposicion.id = curso.disposicion
+            LEFT JOIN asignatura ON asignatura.id = disposicion.asignatura
+            LEFT JOIN planificacion ON planificacion.id = disposicion.planificacion
+            LEFT JOIN plan ON plan.id = planificacion.plan
+            WHERE curso.comision = :comision_id
+            ORDER BY asignatura.nombre ASC, curso.id ASC
+        ");
+        $stmt->execute(['comision_id' => $comisionId]);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($rows as &$row) {
+            $row['label'] = trim(implode(' ', array_filter([
+                (string) ($row['asignatura_nombre'] ?? ''),
+                (string) ($row['asignatura_codigo'] ?? ''),
+                (string) ($row['tramo_label'] ?? ''),
+                (string) ($row['plan_resolucion'] ?? ''),
+                $this->acronym((string) ($row['plan_orientacion'] ?? '')),
+            ])));
+        }
+        unset($row);
+
+        return $rows;
+    }
+
+    /**
+     * Crea una comisión nueva (vacía de cursos/tomas) y opcionalmente genera cursos de la planificación.
+     *
+     * @param array{
+     *   calendario: string,
+     *   sede: string,
+     *   modalidad: string,
+     *   planificacion: ?string,
+     *   turno: ?string,
+     *   division: string,
+     *   pfid: ?string,
+     *   autorizada: int,
+     *   apertura: int,
+     *   publicada: int,
+     *   observaciones: ?string,
+     *   comision_siguiente: ?string
+     * } $data
+     * @return array{id: string, cursos_creados: int}
+     */
+    public function createAdmin(array $data): array
+    {
+        $comisionId = uniqid();
+        $this->pdo->beginTransaction();
+        try {
+            $stmt = $this->pdo->prepare("
+                INSERT INTO comision (
+                    id, calendario, sede, modalidad, planificacion, turno, division, pfid,
+                    autorizada, apertura, publicada, observaciones, comision_siguiente
+                ) VALUES (
+                    :id, :calendario, :sede, :modalidad, :planificacion, :turno, :division, :pfid,
+                    :autorizada, :apertura, :publicada, :observaciones, :comision_siguiente
+                )
+            ");
+            $stmt->execute([
+                'id' => $comisionId,
+                'calendario' => $data['calendario'],
+                'sede' => $data['sede'],
+                'modalidad' => $data['modalidad'],
+                'planificacion' => $data['planificacion'],
+                'turno' => $data['turno'],
+                'division' => $data['division'],
+                'pfid' => $data['pfid'],
+                'autorizada' => $data['autorizada'],
+                'apertura' => $data['apertura'],
+                'publicada' => $data['publicada'],
+                'observaciones' => $data['observaciones'],
+                'comision_siguiente' => $data['comision_siguiente'],
+            ]);
+
+            $cursosCreados = 0;
+            $planificacionId = trim((string) ($data['planificacion'] ?? ''));
+            if ($planificacionId !== '') {
+                $cursosCreados = $this->ensureCursosForPlanificacion($comisionId, $planificacionId);
+            }
+
+            $this->pdo->commit();
+
+            return ['id' => $comisionId, 'cursos_creados' => $cursosCreados];
+        } catch (\Throwable $throwable) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $throwable;
+        }
+    }
+
+    /**
+     * Actualiza la comisión y crea cursos faltantes de la planificación (como el script legacy).
+     *
+     * @param array{
+     *   calendario: string,
+     *   sede: string,
+     *   modalidad: string,
+     *   planificacion: ?string,
+     *   turno: ?string,
+     *   division: string,
+     *   pfid: ?string,
+     *   autorizada: int,
+     *   apertura: int,
+     *   publicada: int,
+     *   observaciones: ?string,
+     *   comision_siguiente: ?string
+     * } $data
+     * @return array{cursos_creados: int}
+     */
+    public function updateAdmin(string $comisionId, array $data): array
+    {
+        $this->pdo->beginTransaction();
+        try {
+            $stmt = $this->pdo->prepare("
+                UPDATE comision
+                SET calendario = :calendario,
+                    sede = :sede,
+                    modalidad = :modalidad,
+                    planificacion = :planificacion,
+                    turno = :turno,
+                    division = :division,
+                    pfid = :pfid,
+                    autorizada = :autorizada,
+                    apertura = :apertura,
+                    publicada = :publicada,
+                    observaciones = :observaciones,
+                    comision_siguiente = :comision_siguiente
+                WHERE id = :id
+            ");
+            $stmt->execute([
+                'id' => $comisionId,
+                'calendario' => $data['calendario'],
+                'sede' => $data['sede'],
+                'modalidad' => $data['modalidad'],
+                'planificacion' => $data['planificacion'],
+                'turno' => $data['turno'],
+                'division' => $data['division'],
+                'pfid' => $data['pfid'],
+                'autorizada' => $data['autorizada'],
+                'apertura' => $data['apertura'],
+                'publicada' => $data['publicada'],
+                'observaciones' => $data['observaciones'],
+                'comision_siguiente' => $data['comision_siguiente'],
+            ]);
+
+            $cursosCreados = 0;
+            $planificacionId = trim((string) ($data['planificacion'] ?? ''));
+            if ($planificacionId !== '') {
+                $cursosCreados = $this->ensureCursosForPlanificacion($comisionId, $planificacionId);
+            }
+
+            $this->pdo->commit();
+
+            return ['cursos_creados' => $cursosCreados];
+        } catch (\Throwable $throwable) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $throwable;
+        }
+    }
+
+    public function updateCursos(string $comisionId, array $rows): void
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE curso
+            SET disposicion = :disposicion,
+                horas_catedra = :horas_catedra,
+                descripcion_horario = :descripcion_horario
+            WHERE id = :id AND comision = :comision
+        ");
+
+        foreach ($rows as $row) {
+            $id = trim((string) ($row['id'] ?? ''));
+            if ($id === '') {
+                continue;
+            }
+
+            $stmt->execute([
+                'id' => $id,
+                'comision' => $comisionId,
+                'disposicion' => $this->nullableText($row['disposicion'] ?? null),
+                'horas_catedra' => (int) ($row['horas_catedra'] ?? 0),
+                'descripcion_horario' => $this->nullableText($row['descripcion_horario'] ?? null),
+            ]);
+        }
+    }
+
+    public function addCurso(string $comisionId, array $data): string
+    {
+        $id = uniqid();
+        $stmt = $this->pdo->prepare("
+            INSERT INTO curso (id, comision, disposicion, horas_catedra, descripcion_horario)
+            VALUES (:id, :comision, :disposicion, :horas_catedra, :descripcion_horario)
+        ");
+        $stmt->execute([
+            'id' => $id,
+            'comision' => $comisionId,
+            'disposicion' => $this->nullableText($data['disposicion'] ?? null),
+            'horas_catedra' => (int) ($data['horas_catedra'] ?? 0),
+            'descripcion_horario' => $this->nullableText($data['descripcion_horario'] ?? null),
+        ]);
+
+        return $id;
+    }
+
+    public function deleteCurso(string $comisionId, string $cursoId): void
+    {
+        $stmt = $this->pdo->prepare('DELETE FROM curso WHERE id = :id AND comision = :comision');
+        $stmt->execute([
+            'id' => $cursoId,
+            'comision' => $comisionId,
+        ]);
+
+        if ($stmt->rowCount() === 0) {
+            throw new \RuntimeException('No se encontró el curso para eliminar.');
+        }
+    }
+
+    private function ensureCursosForPlanificacion(string $comisionId, string $planificacionId): int
+    {
+        $disposicionStmt = $this->pdo->prepare("
+            SELECT id, horas_catedra
+            FROM disposicion
+            WHERE planificacion = :planificacion
+        ");
+        $disposicionStmt->execute(['planificacion' => $planificacionId]);
+        $disposiciones = $disposicionStmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($disposiciones === []) {
+            return 0;
+        }
+
+        $existentesStmt = $this->pdo->prepare("
+            SELECT disposicion
+            FROM curso
+            WHERE comision = :comision
+              AND disposicion IS NOT NULL
+        ");
+        $existentesStmt->execute(['comision' => $comisionId]);
+        $existentes = array_flip(array_map('strval', $existentesStmt->fetchAll(PDO::FETCH_COLUMN)));
+
+        $insert = $this->pdo->prepare("
+            INSERT INTO curso (id, comision, disposicion, horas_catedra)
+            VALUES (:id, :comision, :disposicion, :horas_catedra)
+        ");
+
+        $created = 0;
+        foreach ($disposiciones as $disposicion) {
+            $disposicionId = (string) $disposicion['id'];
+            if (isset($existentes[$disposicionId])) {
+                continue;
+            }
+
+            $insert->execute([
+                'id' => uniqid(),
+                'comision' => $comisionId,
+                'disposicion' => $disposicionId,
+                'horas_catedra' => (int) ($disposicion['horas_catedra'] ?? 0),
+            ]);
+            $created++;
+        }
+
+        return $created;
+    }
+
+    private function nullableText(mixed $value): ?string
+    {
+        if ($value === null) {
+            return null;
+        }
+        $value = trim((string) $value);
+
+        return $value === '' ? null : $value;
     }
 
     public function alumnos(string $comisionId): array
