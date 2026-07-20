@@ -351,6 +351,96 @@ final class ComisionRepository
         }
     }
 
+    /**
+     * Elimina la comisión y sus cursos solo si no hay tomas, alumnos ni referencias como comisión siguiente.
+     *
+     * @return array{calendario_id: string, cursos_eliminados: int}
+     */
+    public function deleteIfAllowed(string $comisionId): array
+    {
+        $comisionId = trim($comisionId);
+        if ($comisionId === '') {
+            throw new \InvalidArgumentException('Falta el id de la comisión.');
+        }
+
+        $comision = $this->byId($comisionId);
+        if ($comision === null) {
+            throw new \RuntimeException('La comisión no existe.');
+        }
+
+        $bloqueos = $this->deleteBlockers($comisionId);
+        if ($bloqueos !== []) {
+            throw new \RuntimeException('No se puede eliminar la comisión: ' . implode(' ', $bloqueos));
+        }
+
+        $this->pdo->beginTransaction();
+        try {
+            $deleteCursos = $this->pdo->prepare('DELETE FROM curso WHERE comision = :comision');
+            $deleteCursos->execute(['comision' => $comisionId]);
+            $cursosEliminados = $deleteCursos->rowCount();
+
+            $deleteComision = $this->pdo->prepare('DELETE FROM comision WHERE id = :id');
+            $deleteComision->execute(['id' => $comisionId]);
+            if ($deleteComision->rowCount() === 0) {
+                throw new \RuntimeException('No se pudo eliminar la comisión.');
+            }
+
+            $this->pdo->commit();
+
+            return [
+                'calendario_id' => (string) ($comision['calendario_id'] ?? ''),
+                'cursos_eliminados' => $cursosEliminados,
+            ];
+        } catch (\Throwable $throwable) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $throwable;
+        }
+    }
+
+    /**
+     * Motivos por los que no se puede borrar (vacío = se puede borrar).
+     *
+     * @return list<string>
+     */
+    public function deleteBlockers(string $comisionId): array
+    {
+        $blockers = [];
+
+        $tomasStmt = $this->pdo->prepare("
+            SELECT COUNT(*)
+            FROM toma
+            INNER JOIN curso ON curso.id = toma.curso
+            WHERE curso.comision = :comision_id
+        ");
+        $tomasStmt->execute(['comision_id' => $comisionId]);
+        $tomas = (int) $tomasStmt->fetchColumn();
+        if ($tomas > 0) {
+            $blockers[] = "tiene {$tomas} toma(s).";
+        }
+
+        $alumnosStmt = $this->pdo->prepare('
+            SELECT COUNT(*) FROM alumno_comision WHERE comision = :comision_id
+        ');
+        $alumnosStmt->execute(['comision_id' => $comisionId]);
+        $alumnos = (int) $alumnosStmt->fetchColumn();
+        if ($alumnos > 0) {
+            $blockers[] = "tiene {$alumnos} alumno(s) asignado(s).";
+        }
+
+        $siguienteStmt = $this->pdo->prepare('
+            SELECT COUNT(*) FROM comision WHERE comision_siguiente = :comision_id
+        ');
+        $siguienteStmt->execute(['comision_id' => $comisionId]);
+        $siguientes = (int) $siguienteStmt->fetchColumn();
+        if ($siguientes > 0) {
+            $blockers[] = "es comisión siguiente de {$siguientes} otra(s) comisión(es).";
+        }
+
+        return $blockers;
+    }
+
     public function updateCursos(string $comisionId, array $rows): void
     {
         $stmt = $this->pdo->prepare("

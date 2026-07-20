@@ -319,6 +319,28 @@ final class ComisionController extends Controller
         Response::redirect(url("/comisiones/{$comisionId}"));
     }
 
+    public function deleteComision(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $comisionId = trim((string) ($vars['id'] ?? ''));
+
+        try {
+            $result = (new ComisionRepository($this->pdo))->deleteIfAllowed($comisionId);
+            $extra = $result['cursos_eliminados'] > 0
+                ? " Se eliminaron {$result['cursos_eliminados']} curso(s)."
+                : '';
+            Session::flash('notice', 'Comisión eliminada.' . $extra);
+            $calendarioQuery = $result['calendario_id'] !== ''
+                ? '?calendario=' . rawurlencode($result['calendario_id'])
+                : '';
+            Response::redirect(url('/comisiones' . $calendarioQuery));
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+            Response::redirect(url('/comisiones/' . rawurlencode($comisionId)));
+        }
+    }
+
     /**
      * @param array<string, mixed> $comision
      */
@@ -342,6 +364,7 @@ final class ComisionController extends Controller
             'estadosToma' => $isNew ? [] : $tomaRepository->estados(),
             'tiposMovimiento' => $isNew ? [] : $tomaRepository->tiposMovimiento(),
             'estadosContralor' => $isNew ? [] : $tomaRepository->estadosContralor(),
+            'deleteBlockers' => $isNew || $comisionId === '' ? [] : $comisionRepository->deleteBlockers($comisionId),
             'notice' => flash('notice'),
             'error' => flash('error'),
         ]);

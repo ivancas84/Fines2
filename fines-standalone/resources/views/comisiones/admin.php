@@ -136,7 +136,7 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
                 <textarea class="form-control" name="observaciones" id="observaciones" rows="3" <?= $canEdit ? '' : 'readonly' ?>><?= e($comision['observaciones'] ?? '') ?></textarea>
             </div>
             <?php if ($canEdit) : ?>
-                <div class="col-12">
+                <div class="col-12 d-flex flex-wrap gap-2">
                     <button class="btn btn-primary" type="submit">
                         <?= $isNew ? 'Crear comisión' : 'Guardar comisión' ?>
                     </button>
@@ -144,6 +144,31 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
             <?php endif; ?>
         </div>
     </form>
+
+    <?php if (!$isNew && $canEdit) : ?>
+        <?php $deleteBlockers = $deleteBlockers ?? []; ?>
+        <div class="border-top mt-4 pt-3">
+            <h3 class="h6">Eliminar comisión</h3>
+            <?php if ($deleteBlockers === []) : ?>
+                <p class="small text-secondary mb-2">
+                    Se eliminarán la comisión y todos sus cursos. Solo es posible si no hay tomas, no hay alumnos asignados
+                    y ninguna otra comisión la usa como comisión siguiente.
+                </p>
+                <form method="post" action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/eliminar')) ?>"
+                      onsubmit="return confirm('¿Eliminar esta comisión y todos sus cursos? Esta acción no se puede deshacer.');">
+                    <?= $csrf->field() ?>
+                    <button class="btn btn-outline-danger" type="submit">Eliminar comisión</button>
+                </form>
+            <?php else : ?>
+                <p class="small text-secondary mb-1">No se puede eliminar esta comisión:</p>
+                <ul class="small text-danger mb-0">
+                    <?php foreach ($deleteBlockers as $blocker) : ?>
+                        <li><?= e($blocker) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
 </section>
 
 <?php if ($isNew) : ?>
@@ -255,13 +280,9 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
                 <table class="table table-hover align-middle app-table">
                     <thead>
                     <tr>
-                        <th>Fecha</th>
-                        <th>Curso</th>
+                        <th>Fecha / Curso</th>
                         <th>Docente</th>
-                        <th>DNI</th>
-                        <th>Estado</th>
-                        <th>Tipo mov.</th>
-                        <th>Contralor</th>
+                        <th>Estado / Mov. / Contralor</th>
                         <th>Acciones</th>
                     </tr>
                     </thead>
@@ -273,21 +294,21 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
                         $emailAbc = trim((string) ($toma['docente_email_abc'] ?? ''));
                         ?>
                         <tr>
-                            <td style="min-width: 140px">
-                                <input type="hidden" name="toma_id[<?= e((string) $index) ?>]" value="<?= e($toma['id']) ?>">
-                                <input class="form-control form-control-sm" type="date" name="fecha_toma[<?= e((string) $index) ?>]" value="<?= e($toma['fecha_toma'] ?? '') ?>" <?= $canEdit ? '' : 'readonly' ?>>
-                            </td>
                             <td style="min-width: 180px">
-                                <select class="form-select form-select-sm" name="curso[<?= e((string) $index) ?>]" <?= $canEdit ? '' : 'disabled' ?>>
-                                    <option value="">-- Seleccione --</option>
-                                    <?php foreach ($cursos as $curso) : ?>
-                                        <option value="<?= e($curso['id']) ?>" <?= selected($toma['curso_id'] ?? '', $curso['id']) ?>>
-                                            <?= e($cursoOptionLabel($curso)) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
+                                <input type="hidden" name="toma_id[<?= e((string) $index) ?>]" value="<?= e($toma['id']) ?>">
+                                <div class="d-flex flex-column gap-1">
+                                    <input class="form-control form-control-sm" type="date" name="fecha_toma[<?= e((string) $index) ?>]" value="<?= e($toma['fecha_toma'] ?? '') ?>" <?= $canEdit ? '' : 'readonly' ?>>
+                                    <select class="form-select form-select-sm" name="curso[<?= e((string) $index) ?>]" <?= $canEdit ? '' : 'disabled' ?>>
+                                        <option value="">-- Curso --</option>
+                                        <?php foreach ($cursos as $curso) : ?>
+                                            <option value="<?= e($curso['id']) ?>" <?= selected($toma['curso_id'] ?? '', $curso['id']) ?>>
+                                                <?= e($cursoOptionLabel($curso)) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
                             </td>
-                            <td class="small">
+                            <td class="small" style="min-width: 160px">
                                 <?php if (($toma['docente_id'] ?? '') !== '') : ?>
                                     <div>
                                         <a href="<?= e(url('/personas/' . rawurlencode((string) $toma['docente_id']) . '/docente')) ?>" target="_blank" rel="noopener">
@@ -306,33 +327,31 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
                                 <?php if ($emailAbc !== '') : ?>
                                     <div class="text-secondary"><?= e($emailAbc) ?></div>
                                 <?php endif; ?>
+                                <div class="mt-1">
+                                    <input class="form-control form-control-sm" name="dni_docente[<?= e((string) $index) ?>]" value="<?= e($toma['docente_documento'] ?? '') ?>" placeholder="DNI" <?= $canEdit ? '' : 'readonly' ?>>
+                                </div>
                             </td>
-                            <td style="min-width: 120px">
-                                <input class="form-control form-control-sm" name="dni_docente[<?= e((string) $index) ?>]" value="<?= e($toma['docente_documento'] ?? '') ?>" <?= $canEdit ? '' : 'readonly' ?>>
-                            </td>
-                            <td>
-                                <select class="form-select form-select-sm" name="estado[<?= e((string) $index) ?>]" <?= $canEdit ? '' : 'disabled' ?>>
-                                    <option value="">--</option>
-                                    <?php foreach ($estadosToma as $estado) : ?>
-                                        <option value="<?= e($estado) ?>" <?= selected($toma['estado'] ?? '', $estado) ?>><?= e($estado) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-select form-select-sm" name="tipo_movimiento[<?= e((string) $index) ?>]" <?= $canEdit ? '' : 'disabled' ?>>
-                                    <option value="">--</option>
-                                    <?php foreach ($tiposMovimiento as $tipo) : ?>
-                                        <option value="<?= e($tipo) ?>" <?= selected($toma['tipo_movimiento'] ?? '', $tipo) ?>><?= e($tipo) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </td>
-                            <td>
-                                <select class="form-select form-select-sm" name="estado_contralor[<?= e((string) $index) ?>]" <?= $canEdit ? '' : 'disabled' ?>>
-                                    <option value="">--</option>
-                                    <?php foreach ($estadosContralor as $estadoContralor) : ?>
-                                        <option value="<?= e($estadoContralor) ?>" <?= selected($toma['estado_contralor'] ?? '', $estadoContralor) ?>><?= e($estadoContralor) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
+                            <td style="min-width: 150px">
+                                <div class="d-flex flex-column gap-1">
+                                    <select class="form-select form-select-sm" name="estado[<?= e((string) $index) ?>]" title="Estado" <?= $canEdit ? '' : 'disabled' ?>>
+                                        <option value="">Estado</option>
+                                        <?php foreach ($estadosToma as $estado) : ?>
+                                            <option value="<?= e($estado) ?>" <?= selected($toma['estado'] ?? '', $estado) ?>><?= e($estado) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <select class="form-select form-select-sm" name="tipo_movimiento[<?= e((string) $index) ?>]" title="Tipo movimiento" <?= $canEdit ? '' : 'disabled' ?>>
+                                        <option value="">Tipo mov.</option>
+                                        <?php foreach ($tiposMovimiento as $tipo) : ?>
+                                            <option value="<?= e($tipo) ?>" <?= selected($toma['tipo_movimiento'] ?? '', $tipo) ?>><?= e($tipo) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <select class="form-select form-select-sm" name="estado_contralor[<?= e((string) $index) ?>]" title="Contralor" <?= $canEdit ? '' : 'disabled' ?>>
+                                        <option value="">Contralor</option>
+                                        <?php foreach ($estadosContralor as $estadoContralor) : ?>
+                                            <option value="<?= e($estadoContralor) ?>" <?= selected($toma['estado_contralor'] ?? '', $estadoContralor) ?>><?= e($estadoContralor) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
                             </td>
                             <td>
                                 <div class="d-flex flex-column gap-1 align-items-stretch">
@@ -367,55 +386,59 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
             <form method="post" action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/tomas/agregar')) ?>">
                 <?= $csrf->field() ?>
                 <div class="table-responsive">
-                    <table class="table table-sm align-middle app-table">
+                    <table class="table table-hover align-middle app-table">
                         <thead>
                         <tr>
-                            <th>Fecha</th>
-                            <th>Curso</th>
-                            <th>DNI docente</th>
-                            <th>Estado</th>
-                            <th>Tipo mov.</th>
-                            <th>Contralor</th>
-                            <th></th>
+                            <th>Fecha / Curso</th>
+                            <th>Docente</th>
+                            <th>Estado / Mov. / Contralor</th>
+                            <th>Acciones</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td><input class="form-control form-control-sm" type="date" name="fecha_toma" value="<?= e(date('Y-m-d')) ?>"></td>
-                            <td>
-                                <select class="form-select form-select-sm" name="curso" required>
-                                    <option value="">-- Seleccione --</option>
-                                    <?php foreach ($cursos as $curso) : ?>
-                                        <option value="<?= e($curso['id']) ?>"><?= e($cursoOptionLabel($curso)) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
+                            <td style="min-width: 180px">
+                                <div class="d-flex flex-column gap-1">
+                                    <input class="form-control form-control-sm" type="date" name="fecha_toma" value="<?= e(date('Y-m-d')) ?>">
+                                    <select class="form-select form-select-sm" name="curso" required>
+                                        <option value="">-- Curso --</option>
+                                        <?php foreach ($cursos as $curso) : ?>
+                                            <option value="<?= e($curso['id']) ?>"><?= e($cursoOptionLabel($curso)) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
                             </td>
-                            <td><input class="form-control form-control-sm" name="dni_docente" placeholder="DNI" required></td>
-                            <td>
-                                <select class="form-select form-select-sm" name="estado">
-                                    <option value="">--</option>
-                                    <?php foreach ($estadosToma as $estado) : ?>
-                                        <option value="<?= e($estado) ?>"><?= e($estado) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
+                            <td class="small" style="min-width: 160px">
+                                <div class="text-secondary mb-1">Indicá el DNI del docente</div>
+                                <input class="form-control form-control-sm" name="dni_docente" placeholder="DNI" required>
+                            </td>
+                            <td style="min-width: 150px">
+                                <div class="d-flex flex-column gap-1">
+                                    <select class="form-select form-select-sm" name="estado" title="Estado">
+                                        <option value="">Estado</option>
+                                        <?php foreach ($estadosToma as $estado) : ?>
+                                            <option value="<?= e($estado) ?>"><?= e($estado) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <select class="form-select form-select-sm" name="tipo_movimiento" title="Tipo movimiento" required>
+                                        <option value="">Tipo mov.</option>
+                                        <?php foreach ($tiposMovimiento as $tipo) : ?>
+                                            <option value="<?= e($tipo) ?>"><?= e($tipo) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <select class="form-select form-select-sm" name="estado_contralor" title="Contralor">
+                                        <option value="">Contralor</option>
+                                        <?php foreach ($estadosContralor as $estadoContralor) : ?>
+                                            <option value="<?= e($estadoContralor) ?>"><?= e($estadoContralor) ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
                             </td>
                             <td>
-                                <select class="form-select form-select-sm" name="tipo_movimiento" required>
-                                    <option value="">--</option>
-                                    <?php foreach ($tiposMovimiento as $tipo) : ?>
-                                        <option value="<?= e($tipo) ?>"><?= e($tipo) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
+                                <div class="d-flex flex-column gap-1 align-items-stretch">
+                                    <button class="btn btn-sm btn-outline-primary" type="submit">Agregar</button>
+                                </div>
                             </td>
-                            <td>
-                                <select class="form-select form-select-sm" name="estado_contralor">
-                                    <option value="">--</option>
-                                    <?php foreach ($estadosContralor as $estadoContralor) : ?>
-                                        <option value="<?= e($estadoContralor) ?>"><?= e($estadoContralor) ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </td>
-                            <td><button class="btn btn-sm btn-outline-primary" type="submit">Agregar</button></td>
                         </tr>
                         </tbody>
                     </table>
