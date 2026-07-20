@@ -90,6 +90,8 @@ final class CursoRepository
                    comision.sede AS sede_id,
                    COALESCE(sede.nombre, sede.numero, '?') AS sede_nombre,
                    TRIM(CONCAT_WS('-', NULLIF(planificacion.anio, ''), NULLIF(planificacion.semestre, ''))) AS tramo_label,
+                   plan.orientacion AS plan_orientacion,
+                   plan.resolucion AS plan_resolucion,
                    asignatura.nombre AS asignatura_nombre,
                    asignatura.codigo AS asignatura_codigo,
                    disposicion.id AS disposicion_id,
@@ -114,6 +116,8 @@ final class CursoRepository
             LEFT JOIN disposicion ON disposicion.id = curso.disposicion
             LEFT JOIN asignatura ON asignatura.id = disposicion.asignatura
             LEFT JOIN planificacion ON planificacion.id = disposicion.planificacion
+            LEFT JOIN planificacion comision_planificacion ON comision_planificacion.id = comision.planificacion
+            LEFT JOIN plan ON plan.id = comision_planificacion.plan
             LEFT JOIN (
                 SELECT toma.curso, MIN(toma.id) AS toma_id
                 FROM toma

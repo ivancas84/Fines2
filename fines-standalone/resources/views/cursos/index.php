@@ -83,9 +83,18 @@ $estadoPlanillaBadge = static function (array $curso): array {
                         trim((string) ($curso['docente_nombres'] ?? '')),
                     ], static fn (string $part): bool => $part !== '')),
                 ) ?? '');
+                $planLabel = trim(implode(' - ', array_filter([
+                    trim((string) ($curso['plan_orientacion'] ?? '')),
+                    trim((string) ($curso['plan_resolucion'] ?? '')),
+                ], static fn (string $part): bool => $part !== '')));
                 ?>
                 <tr>
-                    <td><?= e($curso['sede_nombre'] ?? '') ?></td>
+                    <td>
+                        <div><?= e($curso['sede_nombre'] ?? '') ?></div>
+                        <?php if ($planLabel !== '') : ?>
+                            <div class="small text-secondary"><?= e($planLabel) ?></div>
+                        <?php endif; ?>
+                    </td>
                     <td>
                         <div><?= e($curso['pfid'] ?? '') ?></div>
                         <?php if (($curso['tramo_label'] ?? '') !== '') : ?>
