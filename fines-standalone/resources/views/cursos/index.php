@@ -7,6 +7,12 @@ $tomaEstado = static function (array $curso): string {
     ])));
 };
 $estadoPlanillaBadge = static function (array $curso): array {
+    $tieneDocente = trim((string) ($curso['docente_id'] ?? '')) !== ''
+        || trim((string) ($curso['docente_nombre'] ?? '')) !== '';
+    if (!$tieneDocente) {
+        return ['label' => 'Sin docente', 'class' => 'badge-planilla-sin-docente'];
+    }
+
     $raw = trim((string) ($curso['estado_planilla'] ?? ''));
     $normalized = mb_strtolower($raw);
     if ($normalized === 'entregada') {

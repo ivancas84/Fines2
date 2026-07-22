@@ -177,6 +177,11 @@ body {
     color: #7f1d1d;
 }
 
+.badge-planilla-sin-docente {
+    background: #e5e7eb;
+    color: #4b5563;
+}
+
 .calificacion-number {
     max-width: 82px;
 }
