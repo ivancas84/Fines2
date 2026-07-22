@@ -96,7 +96,15 @@ $estadoPlanillaBadge = static function (array $curso): array {
                         <?php endif; ?>
                     </td>
                     <td>
-                        <div><?= e($curso['pfid'] ?? '') ?></div>
+                        <div>
+                            <?php if (($curso['comision_id'] ?? '') !== '') : ?>
+                                <a href="<?= e(url('/comisiones/' . rawurlencode((string) $curso['comision_id']))) ?>" title="Administrar comisión">
+                                    <?= e(($curso['pfid'] ?? '') !== '' ? $curso['pfid'] : 'Administrar') ?>
+                                </a>
+                            <?php else : ?>
+                                <?= e($curso['pfid'] ?? '') ?>
+                            <?php endif; ?>
+                        </div>
                         <?php if (($curso['tramo_label'] ?? '') !== '') : ?>
                             <div class="small text-secondary"><?= e($curso['tramo_label']) ?></div>
                         <?php endif; ?>
