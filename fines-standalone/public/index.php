@@ -54,6 +54,8 @@ $app->post('/comisiones', [ComisionController::class, 'create']);
 $app->get('/comisiones/{id}', [ComisionController::class, 'admin']);
 $app->post('/comisiones/{id}', [ComisionController::class, 'saveComision']);
 $app->post('/comisiones/{id}/eliminar', [ComisionController::class, 'deleteComision']);
+$app->post('/comisiones/{id}/generar-siguiente', [ComisionController::class, 'generarSiguiente']);
+$app->post('/comisiones/{id}/transferir-alumnos-activos', [ComisionController::class, 'transferirAlumnosActivos']);
 $app->post('/comisiones/{id}/cursos', [ComisionController::class, 'saveCursos']);
 $app->post('/comisiones/{id}/cursos/agregar', [ComisionController::class, 'addCurso']);
 $app->post('/comisiones/{id}/tomas', [ComisionController::class, 'saveTomas']);

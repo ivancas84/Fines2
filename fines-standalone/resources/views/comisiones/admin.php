@@ -34,6 +34,30 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
             <a class="btn btn-outline-secondary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/alumnos')) ?>">
                 Ver alumnos
             </a>
+            <?php if ($canEdit) : ?>
+                <form method="post"
+                      action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/generar-siguiente')) ?>"
+                      onsubmit="return confirm('¿Generar la comisión del tramo siguiente? Se copiarán sede, modalidad, turno, división y PFID, y se crearán los cursos de la planificación siguiente.');">
+                    <?= $csrf->field() ?>
+                    <input type="hidden" name="redirect" value="admin">
+                    <input type="hidden" name="return_calendario" value="<?= e((string) ($comision['calendario_id'] ?? '')) ?>">
+                    <button class="btn btn-warning" type="submit" title="Generar comisión siguiente">
+                        Generar comisión siguiente
+                    </button>
+                </form>
+                <?php if (trim((string) ($comision['comision_siguiente'] ?? '')) !== '') : ?>
+                    <form method="post"
+                          action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/transferir-alumnos-activos')) ?>"
+                          onsubmit="return confirm('¿Transferir los alumnos activos a la comisión siguiente? Solo se agregan los que aún no estén allí, con estado Regular.');">
+                        <?= $csrf->field() ?>
+                        <input type="hidden" name="redirect" value="admin">
+                        <input type="hidden" name="return_calendario" value="<?= e((string) ($comision['calendario_id'] ?? '')) ?>">
+                        <button class="btn btn-outline-success" type="submit" title="Transferir alumnos activos a la comisión siguiente">
+                            Transferir alumnos activos
+                        </button>
+                    </form>
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
     <?php endif; ?>
 </div>

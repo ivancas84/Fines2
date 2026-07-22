@@ -40,6 +40,9 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
     <button class="btn btn-primary" type="submit">Consultar</button>
 </form>
 
+<?php if (!empty($notice)) : ?><div class="alert alert-success"><?= e($notice) ?></div><?php endif; ?>
+<?php if (!empty($error)) : ?><div class="alert alert-danger"><?= e($error) ?></div><?php endif; ?>
+
 <?php if ($comisiones === []) : ?>
     <div class="empty-state">No se encontraron comisiones para este calendario.</div>
 <?php else : ?>
@@ -68,6 +71,7 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
                     ? ($comision['comision_siguiente_anio'] . ' ' . $comision['comision_siguiente_semestre'])
                     : '';
                 $siguiente = trim(implode(' - ', array_filter([$comision['comision_siguiente_pfid'] ?? '', $siguienteTramo])));
+                $tieneSiguiente = $siguiente !== '';
                 ?>
                 <tr>
                     <td><?= e($comision['sede_nombre'] ?? '?') ?></td>
@@ -91,6 +95,29 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
                         <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/alumnos')) ?>">
                             Ver alumnos
                         </a>
+                        <?php if ($auth->canEdit()) : ?>
+                            <form class="d-inline" method="post"
+                                  action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/generar-siguiente')) ?>"
+                                  onsubmit="return confirm('¿Generar la comisión del tramo siguiente? Se copiarán sede, modalidad, turno, división y PFID, y se crearán los cursos de la planificación siguiente.');">
+                                <?= $csrf->field() ?>
+                                <input type="hidden" name="return_calendario" value="<?= e((string) $selectedCalendario) ?>">
+                                <button class="btn btn-sm <?= $tieneSiguiente ? 'btn-outline-warning' : 'btn-warning' ?>" type="submit"
+                                        title="<?= $tieneSiguiente ? 'Ya tiene siguiente: completar cursos faltantes si hace falta' : 'Generar comisión siguiente' ?>">
+                                    <?= $tieneSiguiente ? 'Completar siguiente' : 'Generar siguiente' ?>
+                                </button>
+                            </form>
+                            <?php if ($tieneSiguiente) : ?>
+                                <form class="d-inline" method="post"
+                                      action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/transferir-alumnos-activos')) ?>"
+                                      onsubmit="return confirm('¿Transferir los alumnos activos a la comisión siguiente? Solo se agregan los que aún no estén allí, con estado Regular.');">
+                                    <?= $csrf->field() ?>
+                                    <input type="hidden" name="return_calendario" value="<?= e((string) $selectedCalendario) ?>">
+                                    <button class="btn btn-sm btn-outline-success" type="submit" title="Transferir alumnos activos a la comisión siguiente">
+                                        Transferir activos
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

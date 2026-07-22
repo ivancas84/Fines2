@@ -352,6 +352,371 @@ final class ComisionRepository
     }
 
     /**
+     * Genera (o reutiliza) la comisión del tramo siguiente y asegura sus cursos,
+     * como script/generar_comision_siguiente.php del sistema anterior.
+     *
+     * @return array{
+     *   id: string,
+     *   created: bool,
+     *   cursos_creados: int,
+     *   calendario_id: string,
+     *   planificacion_id: string
+     * }
+     */
+    public function generarSiguiente(string $comisionId, ?string $calendarioDestinoId = null): array
+    {
+        $comisionId = trim($comisionId);
+        if ($comisionId === '') {
+            throw new \InvalidArgumentException('Falta el id de la comisión.');
+        }
+
+        $stmt = $this->pdo->prepare("
+            SELECT comision.id,
+                   comision.turno,
+                   comision.division,
+                   comision.identificacion,
+                   comision.autorizada,
+                   comision.apertura,
+                   comision.publicada,
+                   comision.pfid,
+                   comision.sede,
+                   comision.modalidad,
+                   comision.planificacion,
+                   comision.comision_siguiente,
+                   comision.calendario,
+                   planificacion.plan AS plan_id,
+                   planificacion.anio AS planificacion_anio,
+                   planificacion.semestre AS planificacion_semestre,
+                   calendario.anio AS calendario_anio,
+                   calendario.semestre AS calendario_semestre
+            FROM comision
+            LEFT JOIN planificacion ON planificacion.id = comision.planificacion
+            LEFT JOIN calendario ON calendario.id = comision.calendario
+            WHERE comision.id = :id
+            LIMIT 1
+        ");
+        $stmt->execute(['id' => $comisionId]);
+        $comision = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($comision === false) {
+            throw new \RuntimeException('La comisión no existe.');
+        }
+
+        $planId = trim((string) ($comision['plan_id'] ?? ''));
+        $anio = (int) ($comision['planificacion_anio'] ?? 0);
+        $semestre = (int) ($comision['planificacion_semestre'] ?? 0);
+        if ($planId === '' || $anio < 1 || $semestre < 1) {
+            throw new \RuntimeException('La comisión no tiene una planificación válida.');
+        }
+
+        $tramoSiguiente = $this->tramoSiguiente($anio, $semestre);
+        if ($tramoSiguiente === null) {
+            throw new \RuntimeException('No hay tramo siguiente (la planificación ya es 3° año / 2° semestre).');
+        }
+
+        $planificacionStmt = $this->pdo->prepare("
+            SELECT id
+            FROM planificacion
+            WHERE plan = :plan
+              AND anio = :anio
+              AND semestre = :semestre
+            LIMIT 1
+        ");
+        $planificacionStmt->execute([
+            'plan' => $planId,
+            'anio' => $tramoSiguiente['anio'],
+            'semestre' => $tramoSiguiente['semestre'],
+        ]);
+        $nuevaPlanificacionId = $planificacionStmt->fetchColumn();
+        if ($nuevaPlanificacionId === false || $nuevaPlanificacionId === null || $nuevaPlanificacionId === '') {
+            throw new \RuntimeException(
+                "No se encontró planificación para el plan {$planId} tramo {$tramoSiguiente['anio']}/{$tramoSiguiente['semestre']}.",
+            );
+        }
+        $nuevaPlanificacionId = (string) $nuevaPlanificacionId;
+
+        $this->pdo->beginTransaction();
+        try {
+            $created = false;
+            $siguienteId = trim((string) ($comision['comision_siguiente'] ?? ''));
+
+            if ($siguienteId !== '') {
+                $siguienteStmt = $this->pdo->prepare("
+                    SELECT id, planificacion
+                    FROM comision
+                    WHERE id = :id
+                    LIMIT 1
+                ");
+                $siguienteStmt->execute(['id' => $siguienteId]);
+                $siguiente = $siguienteStmt->fetch(PDO::FETCH_ASSOC);
+                if ($siguiente === false) {
+                    throw new \RuntimeException('La comisión siguiente referenciada no existe.');
+                }
+                if ((string) ($siguiente['planificacion'] ?? '') !== $nuevaPlanificacionId) {
+                    throw new \RuntimeException(
+                        'La comisión ya tiene siguiente, pero su planificación no coincide con el tramo esperado.',
+                    );
+                }
+            } else {
+                $calendarioDestino = $this->resolveCalendarioDestino(
+                    (string) ($comision['calendario'] ?? ''),
+                    (int) ($comision['calendario_anio'] ?? 0),
+                    (int) ($comision['calendario_semestre'] ?? 0),
+                    $calendarioDestinoId,
+                );
+
+                $siguienteId = uniqid();
+                $insert = $this->pdo->prepare("
+                    INSERT INTO comision (
+                        id, calendario, sede, modalidad, planificacion, turno, division,
+                        identificacion, pfid, autorizada, apertura, publicada
+                    ) VALUES (
+                        :id, :calendario, :sede, :modalidad, :planificacion, :turno, :division,
+                        :identificacion, :pfid, 1, 0, 0
+                    )
+                ");
+                $insert->execute([
+                    'id' => $siguienteId,
+                    'calendario' => $calendarioDestino,
+                    'sede' => $comision['sede'],
+                    'modalidad' => $comision['modalidad'],
+                    'planificacion' => $nuevaPlanificacionId,
+                    'turno' => $comision['turno'],
+                    'division' => $comision['division'] !== null && $comision['division'] !== ''
+                        ? $comision['division']
+                        : '-',
+                    'identificacion' => $comision['identificacion'],
+                    'pfid' => $comision['pfid'],
+                ]);
+
+                $link = $this->pdo->prepare('
+                    UPDATE comision
+                    SET comision_siguiente = :siguiente
+                    WHERE id = :id
+                ');
+                $link->execute([
+                    'siguiente' => $siguienteId,
+                    'id' => $comisionId,
+                ]);
+                $created = true;
+            }
+
+            $cursosCreados = $this->ensureCursosForPlanificacion($siguienteId, $nuevaPlanificacionId);
+
+            $calendarioFinalStmt = $this->pdo->prepare('SELECT calendario FROM comision WHERE id = :id LIMIT 1');
+            $calendarioFinalStmt->execute(['id' => $siguienteId]);
+            $calendarioFinal = (string) ($calendarioFinalStmt->fetchColumn() ?: '');
+
+            $this->pdo->commit();
+
+            return [
+                'id' => $siguienteId,
+                'created' => $created,
+                'cursos_creados' => $cursosCreados,
+                'calendario_id' => $calendarioFinal,
+                'planificacion_id' => $nuevaPlanificacionId,
+            ];
+        } catch (\Throwable $throwable) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $throwable;
+        }
+    }
+
+    /**
+     * Copia los alumnos activos de la comisión a su comisión siguiente
+     * (como script/transferir_alumnos_activos.php, para una sola comisión).
+     * No duplica alumnos que ya estén en la siguiente.
+     *
+     * @return array{
+     *   comision_siguiente_id: string,
+     *   activos_origen: int,
+     *   ya_en_siguiente: int,
+     *   transferidos: int
+     * }
+     */
+    public function transferirAlumnosActivos(string $comisionId): array
+    {
+        $comisionId = trim($comisionId);
+        if ($comisionId === '') {
+            throw new \InvalidArgumentException('Falta el id de la comisión.');
+        }
+
+        $stmt = $this->pdo->prepare("
+            SELECT comision.id,
+                   comision.comision_siguiente,
+                   planificacion.anio AS planificacion_anio,
+                   planificacion.semestre AS planificacion_semestre
+            FROM comision
+            LEFT JOIN planificacion ON planificacion.id = comision.planificacion
+            WHERE comision.id = :id
+            LIMIT 1
+        ");
+        $stmt->execute(['id' => $comisionId]);
+        $comision = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($comision === false) {
+            throw new \RuntimeException('La comisión no existe.');
+        }
+
+        $siguienteId = trim((string) ($comision['comision_siguiente'] ?? ''));
+        if ($siguienteId === '') {
+            throw new \RuntimeException('La comisión no tiene comisión siguiente. Generala antes de transferir alumnos.');
+        }
+
+        $anio = (string) ($comision['planificacion_anio'] ?? '');
+        $semestre = (string) ($comision['planificacion_semestre'] ?? '');
+        if ($anio . $semestre === '32') {
+            throw new \RuntimeException('No se transferen alumnos desde una comisión de tramo 3-2 (egreso).');
+        }
+
+        $checkSiguiente = $this->pdo->prepare('SELECT id FROM comision WHERE id = :id LIMIT 1');
+        $checkSiguiente->execute(['id' => $siguienteId]);
+        if ($checkSiguiente->fetchColumn() === false) {
+            throw new \RuntimeException('La comisión siguiente referenciada no existe.');
+        }
+
+        $activosStmt = $this->pdo->prepare("
+            SELECT alumno
+            FROM alumno_comision
+            WHERE comision = :comision
+              AND activo = 1
+        ");
+        $activosStmt->execute(['comision' => $comisionId]);
+        $alumnosActivos = array_values(array_unique(array_map(
+            static fn (mixed $id): string => (string) $id,
+            $activosStmt->fetchAll(PDO::FETCH_COLUMN),
+        )));
+
+        $existentesStmt = $this->pdo->prepare("
+            SELECT alumno
+            FROM alumno_comision
+            WHERE comision = :comision
+        ");
+        $existentesStmt->execute(['comision' => $siguienteId]);
+        $yaEnSiguiente = array_fill_keys(array_map(
+            static fn (mixed $id): string => (string) $id,
+            $existentesStmt->fetchAll(PDO::FETCH_COLUMN),
+        ), true);
+
+        $insert = $this->pdo->prepare("
+            INSERT INTO alumno_comision (id, alumno, comision, estado, activo)
+            VALUES (:id, :alumno, :comision, 'Regular', 1)
+        ");
+
+        $this->pdo->beginTransaction();
+        try {
+            $transferidos = 0;
+            $yaEstaban = 0;
+            foreach ($alumnosActivos as $alumnoId) {
+                if (isset($yaEnSiguiente[$alumnoId])) {
+                    $yaEstaban++;
+                    continue;
+                }
+                $insert->execute([
+                    'id' => uniqid(),
+                    'alumno' => $alumnoId,
+                    'comision' => $siguienteId,
+                ]);
+                $yaEnSiguiente[$alumnoId] = true;
+                $transferidos++;
+            }
+            $this->pdo->commit();
+
+            return [
+                'comision_siguiente_id' => $siguienteId,
+                'activos_origen' => count($alumnosActivos),
+                'ya_en_siguiente' => $yaEstaban,
+                'transferidos' => $transferidos,
+            ];
+        } catch (\Throwable $throwable) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $throwable;
+        }
+    }
+
+    /**
+     * @return array{anio: string, semestre: string}|null
+     */
+    private function tramoSiguiente(int $anio, int $semestre): ?array
+    {
+        if ($semestre === 2) {
+            if ($anio === 3) {
+                return null;
+            }
+            $anio++;
+            $semestre = 1;
+        } else {
+            $semestre = 2;
+        }
+
+        return [
+            'anio' => (string) $anio,
+            'semestre' => (string) $semestre,
+        ];
+    }
+
+    /**
+     * Calendario destino: override explícito, o el período siguiente al de la comisión origen.
+     */
+    private function resolveCalendarioDestino(
+        string $calendarioOrigenId,
+        int $calendarioAnio,
+        int $calendarioSemestre,
+        ?string $overrideId,
+    ): string {
+        $overrideId = $overrideId !== null ? trim($overrideId) : '';
+        if ($overrideId !== '') {
+            $check = $this->pdo->prepare('SELECT id FROM calendario WHERE id = :id LIMIT 1');
+            $check->execute(['id' => $overrideId]);
+            $found = $check->fetchColumn();
+            if ($found === false || $found === null || $found === '') {
+                throw new \RuntimeException('El calendario destino indicado no existe.');
+            }
+
+            return (string) $found;
+        }
+
+        if ($calendarioAnio < 1 || $calendarioSemestre < 1) {
+            throw new \RuntimeException('La comisión no tiene un calendario válido para calcular el destino.');
+        }
+
+        if ($calendarioSemestre === 1) {
+            $nextAnio = $calendarioAnio;
+            $nextSemestre = 2;
+        } else {
+            $nextAnio = $calendarioAnio + 1;
+            $nextSemestre = 1;
+        }
+
+        $stmt = $this->pdo->prepare("
+            SELECT id
+            FROM calendario
+            WHERE anio = :anio
+              AND semestre = :semestre
+            ORDER BY inicio DESC, id DESC
+            LIMIT 1
+        ");
+        $stmt->execute([
+            'anio' => $nextAnio,
+            'semestre' => $nextSemestre,
+        ]);
+        $id = $stmt->fetchColumn();
+        if ($id === false || $id === null || $id === '') {
+            throw new \RuntimeException(
+                "No hay calendario cargado para el período {$nextAnio}-{$nextSemestre}. Creá el calendario o indicá CALENDARIO_ID_ACTUAL.",
+            );
+        }
+
+        if ((string) $id === $calendarioOrigenId) {
+            throw new \RuntimeException('El calendario destino coincide con el de origen; revisá los calendarios cargados.');
+        }
+
+        return (string) $id;
+    }
+
+    /**
      * Elimina la comisión y sus cursos solo si no hay tomas, alumnos ni referencias como comisión siguiente.
      *
      * @return array{calendario_id: string, cursos_eliminados: int}

@@ -49,7 +49,100 @@ final class ComisionController extends Controller
             'sort' => $sort,
             'order' => $order,
             'comisiones' => $comisiones,
+            'notice' => flash('notice'),
+            'error' => flash('error'),
         ]);
+    }
+
+    public function generarSiguiente(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $comisionId = trim((string) ($vars['id'] ?? ''));
+
+        $returnCalendario = trim((string) $request->input('return_calendario', ''));
+        $calendarioDestino = $this->nullableText($request->input('calendario_destino'));
+        if ($calendarioDestino === null) {
+            $calendarioDestino = $this->nullableText($this->config->string('CALENDARIO_ID_ACTUAL', ''));
+        }
+
+        try {
+            $result = (new ComisionRepository($this->pdo))->generarSiguiente(
+                $comisionId,
+                $calendarioDestino,
+            );
+
+            if ($result['created']) {
+                $msg = 'Comisión siguiente creada.';
+            } else {
+                $msg = 'La comisión ya tenía comisión siguiente asignada.';
+            }
+            if ($result['cursos_creados'] > 0) {
+                $msg .= " Se crearon {$result['cursos_creados']} curso(s).";
+            }
+            Session::flash('notice', $msg);
+
+            $redirectToAdmin = $request->input('redirect') === 'admin';
+            if ($redirectToAdmin) {
+                Response::redirect(url('/comisiones/' . rawurlencode($result['id'])));
+            }
+
+            $query = $returnCalendario !== ''
+                ? '?calendario=' . rawurlencode($returnCalendario)
+                : ($result['calendario_id'] !== ''
+                    ? '?calendario=' . rawurlencode($result['calendario_id'])
+                    : '');
+            Response::redirect(url('/comisiones' . $query));
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+            $redirectToAdmin = $request->input('redirect') === 'admin';
+            if ($redirectToAdmin && $comisionId !== '') {
+                Response::redirect(url('/comisiones/' . rawurlencode($comisionId)));
+            }
+            $query = $returnCalendario !== ''
+                ? '?calendario=' . rawurlencode($returnCalendario)
+                : '';
+            Response::redirect(url('/comisiones' . $query));
+        }
+    }
+
+    public function transferirAlumnosActivos(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $comisionId = trim((string) ($vars['id'] ?? ''));
+        $returnCalendario = trim((string) $request->input('return_calendario', ''));
+        $redirect = (string) $request->input('redirect', 'list');
+
+        $siguienteId = null;
+        try {
+            $result = (new ComisionRepository($this->pdo))->transferirAlumnosActivos($comisionId);
+            $siguienteId = $result['comision_siguiente_id'];
+            $msg = "Transferencia a comisión siguiente: {$result['transferidos']} alumno(s) copiado(s)";
+            $msg .= " de {$result['activos_origen']} activo(s)";
+            if ($result['ya_en_siguiente'] > 0) {
+                $msg .= " ({$result['ya_en_siguiente']} ya estaban en la siguiente)";
+            }
+            $msg .= '.';
+            Session::flash('notice', $msg);
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+        }
+
+        if ($redirect === 'siguiente' && $siguienteId !== null && $siguienteId !== '') {
+            Response::redirect(url('/comisiones/' . rawurlencode($siguienteId) . '/alumnos'));
+        }
+        if ($redirect === 'admin') {
+            Response::redirect(url('/comisiones/' . rawurlencode($comisionId)));
+        }
+        if ($redirect === 'alumnos' || $redirect === 'siguiente') {
+            Response::redirect(url('/comisiones/' . rawurlencode($comisionId) . '/alumnos'));
+        }
+
+        $query = $returnCalendario !== ''
+            ? '?calendario=' . rawurlencode($returnCalendario)
+            : '';
+        Response::redirect(url('/comisiones' . $query));
     }
 
     public function alumnos(Request $request, array $vars = []): void

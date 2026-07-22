@@ -51,6 +51,17 @@ $pfLocalOnly = array_fill_keys($programaFines['local_only'] ?? [], true);
         <a class="btn btn-outline-secondary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']))) ?>">
             Administrar
         </a>
+        <?php if ($auth->canEdit() && trim((string) ($comision['comision_siguiente'] ?? '')) !== '') : ?>
+            <form method="post"
+                  action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/transferir-alumnos-activos')) ?>"
+                  onsubmit="return confirm('¿Transferir los alumnos activos a la comisión siguiente? Solo se agregan los que aún no estén allí, con estado Regular.');">
+                <?= $csrf->field() ?>
+                <input type="hidden" name="redirect" value="siguiente">
+                <button class="btn btn-outline-success" type="submit" title="Transferir alumnos activos a la comisión siguiente">
+                    Transferir activos a siguiente
+                </button>
+            </form>
+        <?php endif; ?>
         <span class="badge text-bg-primary fs-6"><?= e((string) count($alumnos)) ?> alumnos</span>
     </div>
 </div>
