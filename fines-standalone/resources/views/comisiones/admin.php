@@ -6,6 +6,9 @@ $comisionLabel = trim(implode(' | ', array_filter([
     $comision['calendario_label'] ?? '',
 ])));
 $canEdit = $auth->canEdit();
+$esTramoFinal = (int) ($comision['planificacion_anio'] ?? 0) === 3
+    && (int) ($comision['planificacion_semestre'] ?? 0) === 2;
+$puedeSiguiente = $canEdit && !$isNew && !$esTramoFinal;
 $calendarioBack = ($comision['calendario_id'] ?? '') !== ''
     ? '?calendario=' . rawurlencode((string) $comision['calendario_id'])
     : '';
@@ -34,7 +37,7 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
             <a class="btn btn-outline-secondary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/alumnos')) ?>">
                 Ver alumnos
             </a>
-            <?php if ($canEdit) : ?>
+            <?php if ($puedeSiguiente) : ?>
                 <form method="post"
                       action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/generar-siguiente')) ?>"
                       onsubmit="return confirm('¿Generar la comisión del tramo siguiente? Se copiarán sede, modalidad, turno, división y PFID, y se crearán los cursos de la planificación siguiente.');">

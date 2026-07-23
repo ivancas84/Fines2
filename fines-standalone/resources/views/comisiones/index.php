@@ -67,11 +67,17 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
             <?php foreach ($comisiones as $comision) : ?>
                 <?php
                 $planificacion = trim(($comision['planificacion_label'] ?? '') . ' ' . ($comision['plan_label'] ?? ''));
+                $esTramoFinal = (int) ($comision['planificacion_anio'] ?? 0) === 3
+                    && (int) ($comision['planificacion_semestre'] ?? 0) === 2;
+                $siguienteId = trim((string) ($comision['comision_siguiente_id'] ?? ''));
                 $siguienteTramo = ($comision['comision_siguiente_anio'] ?? '') !== '' && ($comision['comision_siguiente_semestre'] ?? '') !== ''
                     ? ($comision['comision_siguiente_anio'] . ' ' . $comision['comision_siguiente_semestre'])
                     : '';
-                $siguiente = trim(implode(' - ', array_filter([$comision['comision_siguiente_pfid'] ?? '', $siguienteTramo])));
-                $tieneSiguiente = $siguiente !== '';
+                $siguiente = $esTramoFinal
+                    ? '—'
+                    : trim(implode(' - ', array_filter([$comision['comision_siguiente_pfid'] ?? '', $siguienteTramo])));
+                $tieneSiguiente = !$esTramoFinal && $siguienteId !== '';
+                $puedeGenerarSiguiente = !$esTramoFinal && $auth->canEdit();
                 ?>
                 <tr>
                     <td><?= e($comision['sede_nombre'] ?? '?') ?></td>
@@ -86,7 +92,17 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
                             <?= e(($comision['cantidad_alumnos'] ?? 0) . '/' . ($comision['cantidad_alumnos_activos'] ?? 0)) ?>
                         </a>
                     </td>
-                    <td><?= e($siguiente) ?></td>
+                    <td>
+                        <?php if ($esTramoFinal) : ?>
+                            —
+                        <?php elseif ($siguienteId !== '') : ?>
+                            <a href="<?= e(url('/comisiones/' . rawurlencode($siguienteId))) ?>" title="Administrar comisión siguiente">
+                                <?= e($siguiente !== '' ? $siguiente : $siguienteId) ?>
+                            </a>
+                        <?php else : ?>
+                            <?= e($siguiente) ?>
+                        <?php endif; ?>
+                    </td>
                     <td><?= e($comision['referentes_label'] ?? 'Sin Referentes') ?></td>
                     <td class="text-nowrap">
                         <a class="btn btn-sm btn-outline-secondary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']))) ?>">
@@ -95,7 +111,7 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
                         <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/alumnos')) ?>">
                             Ver alumnos
                         </a>
-                        <?php if ($auth->canEdit()) : ?>
+                        <?php if ($puedeGenerarSiguiente) : ?>
                             <form class="d-inline" method="post"
                                   action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/generar-siguiente')) ?>"
                                   onsubmit="return confirm('¿Generar la comisión del tramo siguiente? Se copiarán sede, modalidad, turno, división y PFID, y se crearán los cursos de la planificación siguiente.');">

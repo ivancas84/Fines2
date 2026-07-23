@@ -37,6 +37,8 @@ $programaFinesUrl = static function (mixed $path): string {
 };
 $pfBoth = array_fill_keys($programaFines['both'] ?? [], true);
 $pfLocalOnly = array_fill_keys($programaFines['local_only'] ?? [], true);
+$esTramoFinal = (int) ($comision['planificacion_anio'] ?? 0) === 3
+    && (int) ($comision['planificacion_semestre'] ?? 0) === 2;
 ?>
 <div class="page-header">
     <div>
@@ -51,7 +53,7 @@ $pfLocalOnly = array_fill_keys($programaFines['local_only'] ?? [], true);
         <a class="btn btn-outline-secondary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']))) ?>">
             Administrar
         </a>
-        <?php if ($auth->canEdit() && trim((string) ($comision['comision_siguiente'] ?? '')) !== '') : ?>
+        <?php if ($auth->canEdit() && !$esTramoFinal && trim((string) ($comision['comision_siguiente'] ?? '')) !== '') : ?>
             <form method="post"
                   action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/transferir-alumnos-activos')) ?>"
                   onsubmit="return confirm('¿Transferir los alumnos activos a la comisión siguiente? Solo se agregan los que aún no estén allí, con estado Regular.');">
