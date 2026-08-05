@@ -37,6 +37,9 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
             <a class="btn btn-outline-secondary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/alumnos')) ?>">
                 Ver alumnos
             </a>
+            <a class="btn btn-outline-dark" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/rindex')) ?>" title="Rindex de calificaciones de la comisión">
+                Rindex
+            </a>
             <?php if ($puedeSiguiente) : ?>
                 <form method="post"
                       action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/generar-siguiente')) ?>"

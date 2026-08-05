@@ -170,6 +170,11 @@ $estadoPlanillaBadge = static function (array $curso): array {
                         <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/comisiones/' . rawurlencode((string) $curso['comision_id']) . '/alumnos')) ?>">
                             Ver alumnos
                         </a>
+                        <?php if (($curso['comision_id'] ?? '') !== '') : ?>
+                            <a class="btn btn-sm btn-outline-dark" href="<?= e(url('/comisiones/' . rawurlencode((string) $curso['comision_id']) . '/rindex?from=cursos')) ?>" title="Rindex de calificaciones de la comisión">
+                                Rindex
+                            </a>
+                        <?php endif; ?>
                         <a class="btn btn-sm btn-outline-success" href="<?= e(url('/cursos/' . rawurlencode((string) $curso['curso_id']) . '/planilla')) ?>">
                             Planilla
                         </a>

@@ -53,6 +53,9 @@ $esTramoFinal = (int) ($comision['planificacion_anio'] ?? 0) === 3
         <a class="btn btn-outline-secondary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']))) ?>">
             Administrar
         </a>
+        <a class="btn btn-outline-dark" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/rindex?from=alumnos')) ?>" title="Rindex de calificaciones de la comisión">
+            Rindex
+        </a>
         <?php if ($auth->canEdit() && !$esTramoFinal && trim((string) ($comision['comision_siguiente'] ?? '')) !== '') : ?>
             <form method="post"
                   action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/transferir-alumnos-activos')) ?>"

@@ -157,6 +157,68 @@ body {
     color: #7f1d1d;
 }
 
+.rindex-table {
+    background: #fff;
+    border: 1px solid var(--app-border);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.rindex-table th,
+.rindex-table td {
+    border: 1px solid #d9dee7;
+    padding: 6px 8px;
+    vertical-align: middle;
+}
+
+.rindex-table th {
+    background: #f8fafc;
+    font-size: 12px;
+    font-weight: 600;
+    max-width: 140px;
+    white-space: normal;
+}
+
+.rindex-sem1 {
+    background: #e3f2fd !important;
+}
+
+.rindex-sem2 {
+    background: #fff3cd !important;
+}
+
+.rindex-ok {
+    background: #c8e6c9;
+    font-weight: 700;
+}
+
+.rindex-missing {
+    background: #ffcdd2;
+}
+
+.rindex-sticky-col,
+.rindex-sticky-col-2 {
+    background: #fff;
+    left: 0;
+    position: sticky;
+    z-index: 1;
+}
+
+.rindex-sticky-col-2 {
+    left: 8rem;
+}
+
+.rindex-table thead .rindex-sticky-col,
+.rindex-table thead .rindex-sticky-col-2 {
+    background: #f8fafc;
+    z-index: 2;
+}
+
+.rindex-table tr.table-secondary .rindex-sticky-col,
+.rindex-table tr.table-secondary .rindex-sticky-col-2 {
+    background: #e9ecef;
+}
+
 .badge-planilla {
     border-radius: 999px;
     display: inline-block;

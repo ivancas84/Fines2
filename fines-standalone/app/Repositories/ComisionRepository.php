@@ -639,6 +639,128 @@ final class ComisionRepository
     }
 
     /**
+     * Reactiva o desactiva alumnos de la comisión según calificaciones aprobadas
+     * del mismo año/semestre que comision.planificacion.
+     * ≥ 3 aprobadas (nota_final ≥ 7 o crec ≥ 4) → activo = 1; si no → activo = 0.
+     *
+     * @return array{
+     *   total: int,
+     *   activados: int,
+     *   desactivados: int,
+     *   sin_cambio: int,
+     *   planificacion_anio: string,
+     *   planificacion_semestre: string
+     * }
+     */
+    public function reactivarAlumnos(string $comisionId): array
+    {
+        $comisionId = trim($comisionId);
+        if ($comisionId === '') {
+            throw new \InvalidArgumentException('Falta el id de la comisión.');
+        }
+
+        $stmt = $this->pdo->prepare("
+            SELECT comision.id,
+                   planificacion.anio AS planificacion_anio,
+                   planificacion.semestre AS planificacion_semestre
+            FROM comision
+            LEFT JOIN planificacion ON planificacion.id = comision.planificacion
+            WHERE comision.id = :id
+            LIMIT 1
+        ");
+        $stmt->execute(['id' => $comisionId]);
+        $comision = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($comision === false) {
+            throw new \RuntimeException('La comisión no existe.');
+        }
+
+        $anio = trim((string) ($comision['planificacion_anio'] ?? ''));
+        $semestre = trim((string) ($comision['planificacion_semestre'] ?? ''));
+        if ($anio === '' || $semestre === '') {
+            throw new \RuntimeException('La comisión no tiene planificación (año/semestre) configurada.');
+        }
+
+        $conteoStmt = $this->pdo->prepare("
+            SELECT alumno_comision.id AS alumno_comision_id,
+                   alumno_comision.activo AS activo_actual,
+                   COALESCE(aprobadas.cantidad, 0) AS cantidad_aprobadas
+            FROM alumno_comision
+            LEFT JOIN (
+                SELECT calificacion.alumno AS alumno_id,
+                       COUNT(DISTINCT calificacion.disposicion) AS cantidad
+                FROM calificacion
+                INNER JOIN disposicion ON disposicion.id = calificacion.disposicion
+                INNER JOIN planificacion ON planificacion.id = disposicion.planificacion
+                INNER JOIN alumno_comision ac_filtro
+                        ON ac_filtro.alumno = calificacion.alumno
+                       AND ac_filtro.comision = :comision_filtro
+                WHERE planificacion.anio = :anio
+                  AND planificacion.semestre = :semestre
+                  AND (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
+                GROUP BY calificacion.alumno
+            ) aprobadas ON aprobadas.alumno_id = alumno_comision.alumno
+            WHERE alumno_comision.comision = :comision_id
+        ");
+        $conteoStmt->execute([
+            'comision_filtro' => $comisionId,
+            'comision_id' => $comisionId,
+            'anio' => $anio,
+            'semestre' => $semestre,
+        ]);
+        $filas = $conteoStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $update = $this->pdo->prepare('
+            UPDATE alumno_comision
+            SET activo = :activo
+            WHERE id = :id
+        ');
+
+        $activados = 0;
+        $desactivados = 0;
+        $sinCambio = 0;
+
+        $this->pdo->beginTransaction();
+        try {
+            foreach ($filas as $fila) {
+                $cantidad = (int) ($fila['cantidad_aprobadas'] ?? 0);
+                $nuevoActivo = $cantidad >= 3 ? 1 : 0;
+                $activoActual = (int) ($fila['activo_actual'] ?? 0);
+
+                if ($activoActual === $nuevoActivo) {
+                    $sinCambio++;
+                    continue;
+                }
+
+                $update->execute([
+                    'activo' => $nuevoActivo,
+                    'id' => (string) $fila['alumno_comision_id'],
+                ]);
+
+                if ($nuevoActivo === 1) {
+                    $activados++;
+                } else {
+                    $desactivados++;
+                }
+            }
+            $this->pdo->commit();
+        } catch (\Throwable $throwable) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $throwable;
+        }
+
+        return [
+            'total' => count($filas),
+            'activados' => $activados,
+            'desactivados' => $desactivados,
+            'sin_cambio' => $sinCambio,
+            'planificacion_anio' => $anio,
+            'planificacion_semestre' => $semestre,
+        ];
+    }
+
+    /**
      * @return array{anio: string, semestre: string}|null
      */
     private function tramoSiguiente(int $anio, int $semestre): ?array
@@ -919,6 +1041,200 @@ final class ComisionRepository
         $value = trim((string) $value);
 
         return $value === '' ? null : $value;
+    }
+
+    /**
+     * Rindex de comisión: matriz alumnos × cursos (notas aprobadas por disposición).
+     * Equivalente a version 5/wp/rdc_rindex_comision.
+     *
+     * @return array{
+     *   comision: array<string, mixed>,
+     *   columnas: list<array{curso_id: string, disposicion_id: string, asignatura: string, tramo: string, docente: string, semestre: string}>,
+     *   filas: list<array{
+     *     alumno_id: string,
+     *     persona_id: string,
+     *     apellidos: string,
+     *     nombres: string,
+     *     numero_documento: string,
+     *     activo: int,
+     *     notas: list<string>
+     *   }>
+     * }|null
+     */
+    public function rindex(string $comisionId): ?array
+    {
+        $comision = $this->byId($comisionId);
+        if ($comision === null) {
+            return null;
+        }
+
+        $columnasStmt = $this->pdo->prepare("
+            SELECT curso.id AS curso_id,
+                   curso.disposicion AS disposicion_id,
+                   COALESCE(asignatura.nombre, '?') AS asignatura,
+                   COALESCE(asignatura.codigo, '') AS asignatura_codigo,
+                   planificacion.anio AS planificacion_anio,
+                   planificacion.semestre AS planificacion_semestre,
+                   TRIM(CONCAT(
+                       COALESCE(planificacion.anio, '?'),
+                       '°',
+                       COALESCE(planificacion.semestre, '?'),
+                       'C'
+                   )) AS tramo,
+                   TRIM(CONCAT_WS(' ', NULLIF(docente.apellidos, ''), NULLIF(docente.nombres, ''))) AS docente
+            FROM curso
+            LEFT JOIN disposicion ON disposicion.id = curso.disposicion
+            LEFT JOIN asignatura ON asignatura.id = disposicion.asignatura
+            LEFT JOIN planificacion ON planificacion.id = disposicion.planificacion
+            LEFT JOIN (
+                SELECT toma.curso, MIN(toma.id) AS toma_id
+                FROM toma
+                INNER JOIN curso curso_toma ON curso_toma.id = toma.curso
+                WHERE curso_toma.comision = :comision_tomas
+                  AND toma.estado = 'Aprobada'
+                  AND toma.estado_contralor = 'Pasar'
+                GROUP BY toma.curso
+            ) toma_por_curso ON toma_por_curso.curso = curso.id
+            LEFT JOIN toma toma_activa ON toma_activa.id = toma_por_curso.toma_id
+            LEFT JOIN persona docente ON docente.id = toma_activa.docente
+            WHERE curso.comision = :comision_id
+            ORDER BY CAST(planificacion.anio AS UNSIGNED) ASC,
+                     CAST(planificacion.semestre AS UNSIGNED) ASC,
+                     asignatura.nombre ASC,
+                     curso.id ASC
+        ");
+        $columnasStmt->execute([
+            'comision_tomas' => $comisionId,
+            'comision_id' => $comisionId,
+        ]);
+        $cursos = $columnasStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $columnas = [];
+        $disposicionIds = [];
+        foreach ($cursos as $curso) {
+            $disposicionId = trim((string) ($curso['disposicion_id'] ?? ''));
+            if ($disposicionId !== '') {
+                $disposicionIds[$disposicionId] = true;
+            }
+            $asignatura = trim(implode(' ', array_filter([
+                (string) ($curso['asignatura'] ?? ''),
+                (string) ($curso['asignatura_codigo'] ?? ''),
+            ])));
+            $columnas[] = [
+                'curso_id' => (string) ($curso['curso_id'] ?? ''),
+                'disposicion_id' => $disposicionId,
+                'asignatura' => $asignatura !== '' ? $asignatura : '?',
+                'tramo' => (string) ($curso['tramo'] ?? '?'),
+                'docente' => trim((string) ($curso['docente'] ?? '')) !== ''
+                    ? trim((string) $curso['docente'])
+                    : '?',
+                'semestre' => (string) ($curso['planificacion_semestre'] ?? ''),
+            ];
+        }
+
+        $alumnosStmt = $this->pdo->prepare("
+            SELECT alumno_comision.activo,
+                   alumno.id AS alumno_id,
+                   alumno.persona AS persona_id,
+                   persona.apellidos,
+                   persona.nombres,
+                   persona.numero_documento
+            FROM alumno_comision
+            INNER JOIN alumno ON alumno.id = alumno_comision.alumno
+            INNER JOIN persona ON persona.id = alumno.persona
+            WHERE alumno_comision.comision = :comision_id
+            ORDER BY alumno_comision.activo DESC,
+                     persona.apellidos ASC,
+                     persona.nombres ASC
+        ");
+        $alumnosStmt->execute(['comision_id' => $comisionId]);
+        $alumnos = $alumnosStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $notasPorAlumnoDisp = [];
+        $alumnoIds = array_values(array_unique(array_filter(array_map(
+            static fn (array $row): string => trim((string) ($row['alumno_id'] ?? '')),
+            $alumnos,
+        ))));
+        $disposicionList = array_keys($disposicionIds);
+
+        if ($alumnoIds !== [] && $disposicionList !== []) {
+            $alumnoPlaceholders = [];
+            $dispPlaceholders = [];
+            $params = [];
+            foreach ($alumnoIds as $index => $alumnoId) {
+                $key = 'a' . $index;
+                $alumnoPlaceholders[] = ':' . $key;
+                $params[$key] = $alumnoId;
+            }
+            foreach ($disposicionList as $index => $disposicionId) {
+                $key = 'd' . $index;
+                $dispPlaceholders[] = ':' . $key;
+                $params[$key] = $disposicionId;
+            }
+
+            $califStmt = $this->pdo->prepare('
+                SELECT calificacion.alumno,
+                       calificacion.disposicion,
+                       calificacion.nota_final,
+                       calificacion.crec
+                FROM calificacion
+                WHERE calificacion.alumno IN (' . implode(', ', $alumnoPlaceholders) . ')
+                  AND calificacion.disposicion IN (' . implode(', ', $dispPlaceholders) . ')
+                  AND (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
+            ');
+            $califStmt->execute($params);
+            foreach ($califStmt->fetchAll(PDO::FETCH_ASSOC) as $calificacion) {
+                $alumnoId = (string) ($calificacion['alumno'] ?? '');
+                $disposicionId = (string) ($calificacion['disposicion'] ?? '');
+                $nota = $this->formatNotaAprobada(
+                    $calificacion['nota_final'] ?? null,
+                    $calificacion['crec'] ?? null,
+                );
+                if ($alumnoId === '' || $disposicionId === '' || $nota === null) {
+                    continue;
+                }
+                $notasPorAlumnoDisp[$alumnoId][$disposicionId] = $nota;
+            }
+        }
+
+        $filas = [];
+        foreach ($alumnos as $alumno) {
+            $alumnoId = (string) ($alumno['alumno_id'] ?? '');
+            $notas = [];
+            foreach ($columnas as $columna) {
+                $disposicionId = $columna['disposicion_id'];
+                $notas[] = $disposicionId !== ''
+                    ? (string) ($notasPorAlumnoDisp[$alumnoId][$disposicionId] ?? '')
+                    : '';
+            }
+            $filas[] = [
+                'alumno_id' => $alumnoId,
+                'persona_id' => (string) ($alumno['persona_id'] ?? ''),
+                'apellidos' => (string) ($alumno['apellidos'] ?? ''),
+                'nombres' => (string) ($alumno['nombres'] ?? ''),
+                'numero_documento' => (string) ($alumno['numero_documento'] ?? ''),
+                'activo' => (int) ($alumno['activo'] ?? 0),
+                'notas' => $notas,
+            ];
+        }
+
+        return [
+            'comision' => $comision,
+            'columnas' => $columnas,
+            'filas' => $filas,
+        ];
+    }
+
+    private function formatNotaAprobada(mixed $notaFinal, mixed $crec): ?string
+    {
+        if ($notaFinal !== null && $notaFinal !== '' && (float) $notaFinal >= 7) {
+            return (string) (int) round((float) $notaFinal);
+        }
+        if ($crec !== null && $crec !== '' && (float) $crec >= 4) {
+            return (string) (int) round((float) $crec) . 'c';
+        }
+
+        return null;
     }
 
     public function alumnos(string $comisionId): array

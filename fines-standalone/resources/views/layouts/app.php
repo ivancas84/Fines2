@@ -10,6 +10,7 @@ $navItems = [
     '/personas' => 'Personas',
     '/comisiones' => 'Comisiones',
     '/sedes' => 'Sedes',
+    '/calendarios' => 'Calendarios',
     '/cursos' => 'Cursos',
     '/informes' => 'Informes',
     '/programafines' => 'ProgramaFines',

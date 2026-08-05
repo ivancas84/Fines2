@@ -145,6 +145,65 @@ final class ComisionController extends Controller
         Response::redirect(url('/comisiones' . $query));
     }
 
+    public function reactivarAlumnos(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $comisionId = trim((string) ($vars['id'] ?? ''));
+        $returnCalendario = trim((string) $request->input('return_calendario', ''));
+        $redirect = (string) $request->input('redirect', 'list');
+        $from = trim((string) $request->input('from', ''));
+
+        try {
+            $result = (new ComisionRepository($this->pdo))->reactivarAlumnos($comisionId);
+            $tramo = $result['planificacion_anio'] . '°' . $result['planificacion_semestre'] . 'C';
+            $msg = "Reactivar alumnos ({$tramo}): {$result['total']} evaluado(s)";
+            $msg .= ", {$result['activados']} activado(s)";
+            $msg .= ", {$result['desactivados']} desactivado(s)";
+            if ($result['sin_cambio'] > 0) {
+                $msg .= ", {$result['sin_cambio']} sin cambio";
+            }
+            $msg .= '. Criterio: ≥ 3 calificaciones aprobadas del mismo año/semestre de la planificación.';
+            Session::flash('notice', $msg);
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+        }
+
+        if ($redirect === 'rindex' && $comisionId !== '') {
+            $query = $from !== '' ? '?from=' . rawurlencode($from) : '';
+            Response::redirect(url('/comisiones/' . rawurlencode($comisionId) . '/rindex' . $query));
+        }
+
+        $query = $returnCalendario !== ''
+            ? '?calendario=' . rawurlencode($returnCalendario)
+            : '';
+        Response::redirect(url('/comisiones' . $query));
+    }
+
+    public function rindex(Request $request, array $vars = []): void
+    {
+        $this->requireLogin();
+
+        $comisionId = trim((string) ($vars['id'] ?? ''));
+        $repository = new ComisionRepository($this->pdo);
+        $rindex = $comisionId !== '' ? $repository->rindex($comisionId) : null;
+
+        if ($rindex === null) {
+            $this->view->render('errors/404', ['title' => 'Comisión no encontrada'], 404);
+            return;
+        }
+
+        $this->view->render('comisiones/rindex', [
+            'title' => 'Rindex comisión',
+            'comision' => $rindex['comision'],
+            'columnas' => $rindex['columnas'],
+            'filas' => $rindex['filas'],
+            'from' => (string) $request->query('from', ''),
+            'notice' => flash('notice'),
+            'error' => flash('error'),
+        ]);
+    }
+
     public function alumnos(Request $request, array $vars = []): void
     {
         $this->requireLogin();

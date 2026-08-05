@@ -111,6 +111,21 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
                         <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/alumnos')) ?>">
                             Ver alumnos
                         </a>
+                        <a class="btn btn-sm btn-outline-dark" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/rindex')) ?>" title="Rindex de calificaciones de la comisión">
+                            Rindex
+                        </a>
+                        <?php if ($auth->canEdit()) : ?>
+                            <form class="d-inline" method="post"
+                                  action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/reactivar-alumnos')) ?>"
+                                  onsubmit="return confirm('¿Recalcular activo de los alumnos según calificaciones aprobadas del tramo de la comisión (≥ 3 activan, &lt; 3 desactivan)?');">
+                                <?= $csrf->field() ?>
+                                <input type="hidden" name="return_calendario" value="<?= e((string) $selectedCalendario) ?>">
+                                <button class="btn btn-sm btn-outline-info" type="submit"
+                                        title="Activa alumnos con ≥ 3 calificaciones aprobadas del mismo año/semestre de la planificación; desactiva al resto">
+                                    Reactivar alumnos
+                                </button>
+                            </form>
+                        <?php endif; ?>
                         <?php if ($puedeGenerarSiguiente) : ?>
                             <form class="d-inline" method="post"
                                   action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/generar-siguiente')) ?>"
