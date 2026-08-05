@@ -1,4 +1,5 @@
 <?php
+$canEdit = $auth->canEdit();
 $sortUrl = static function (string $column) use ($sort, $order): string {
     return url('/sedes?' . http_build_query([
         'sort' => $column,
@@ -21,7 +22,15 @@ $formatFecha = static function (mixed $value): string {
         <h1>Sedes</h1>
         <p class="text-secondary mb-0"><?= e((string) count($sedes)) ?> sedes cargadas en el sistema.</p>
     </div>
+    <?php if ($canEdit) : ?>
+        <div>
+            <a class="btn btn-primary" href="<?= e(url('/sedes/nueva')) ?>">Nueva sede</a>
+        </div>
+    <?php endif; ?>
 </div>
+
+<?php if (!empty($notice)) : ?><div class="alert alert-success"><?= e($notice) ?></div><?php endif; ?>
+<?php if (!empty($error)) : ?><div class="alert alert-danger"><?= e($error) ?></div><?php endif; ?>
 
 <?php if ($sedes === []) : ?>
     <div class="empty-state">No se encontraron sedes.</div>
@@ -36,10 +45,12 @@ $formatFecha = static function (mixed $value): string {
                 <th><a href="<?= e($sortUrl('fecha_traspaso')) ?>">Fecha traspaso</a></th>
                 <th>Domicilio</th>
                 <th>Referentes</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($sedes as $sede) : ?>
+                <?php $id = (string) ($sede['id'] ?? ''); ?>
                 <tr>
                     <td><?= e($sede['numero'] ?? '') ?></td>
                     <td><?= e($sede['nombre'] ?? '') ?></td>
@@ -47,6 +58,12 @@ $formatFecha = static function (mixed $value): string {
                     <td><?= e($formatFecha($sede['fecha_traspaso'] ?? null)) ?></td>
                     <td><?= e(trim((string) ($sede['domicilio_label'] ?? '')) ?: '—') ?></td>
                     <td><?= e($sede['referentes_label'] ?? 'Sin Referentes') ?></td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-secondary"
+                           href="<?= e(url('/sedes/' . rawurlencode($id))) ?>">
+                            <?= $canEdit ? 'Editar' : 'Ver' ?>
+                        </a>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

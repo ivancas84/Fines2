@@ -41,6 +41,7 @@ $formatFecha = static function (mixed $value): string {
         <table class="table table-hover align-middle app-table">
             <thead>
             <tr>
+                <th>ID</th>
                 <th><a href="<?= e($sortUrl('anio')) ?>">Año</a></th>
                 <th><a href="<?= e($sortUrl('semestre')) ?>">Semestre</a></th>
                 <th><a href="<?= e($sortUrl('descripcion')) ?>">Descripción</a></th>
@@ -60,6 +61,7 @@ $formatFecha = static function (mixed $value): string {
                 }
                 ?>
                 <tr>
+                    <td><code class="small"><?= e($id) ?></code></td>
                     <td><?= e((string) ($calendario['anio'] ?? '')) ?></td>
                     <td><?= e((string) ($calendario['semestre'] ?? '')) ?></td>
                     <td><?= e(trim((string) ($calendario['descripcion'] ?? '')) ?: '—') ?></td>

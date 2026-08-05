@@ -65,6 +65,12 @@ $app->post('/comisiones/{id}/tomas/agregar', [ComisionController::class, 'addTom
 $app->get('/comisiones/{id}/alumnos', [ComisionController::class, 'alumnos']);
 $app->get('/comisiones/{id}/rindex', [ComisionController::class, 'rindex']);
 $app->get('/sedes', [SedeController::class, 'index']);
+$app->get('/sedes/nueva', [SedeController::class, 'createForm']);
+$app->post('/sedes', [SedeController::class, 'create']);
+$app->get('/sedes/{id}', [SedeController::class, 'edit']);
+$app->post('/sedes/{id}', [SedeController::class, 'update']);
+$app->post('/sedes/{id}/designaciones', [SedeController::class, 'saveDesignaciones']);
+$app->post('/sedes/{id}/designaciones/agregar', [SedeController::class, 'addDesignacion']);
 $app->get('/calendarios', [CalendarioController::class, 'index']);
 $app->get('/calendarios/nuevo', [CalendarioController::class, 'createForm']);
 $app->post('/calendarios', [CalendarioController::class, 'create']);
