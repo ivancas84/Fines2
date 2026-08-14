@@ -17,11 +17,17 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
         <h1>Comisiones</h1>
         <p class="text-secondary mb-0"><?= e((string) count($comisiones)) ?> comisiones consultadas.</p>
     </div>
-    <?php if ($auth->canEdit()) : ?>
-        <a class="btn btn-primary" href="<?= e(url('/comisiones/nueva' . ($selectedCalendario !== '' ? '?calendario=' . rawurlencode((string) $selectedCalendario) : ''))) ?>">
-            Nueva comisión
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-outline-secondary"
+           href="<?= e(url('/comisiones/procesar-pf' . ($selectedCalendario !== '' ? '?calendario=' . rawurlencode((string) $selectedCalendario) : ''))) ?>">
+            Procesar PF
         </a>
-    <?php endif; ?>
+        <?php if ($auth->canEdit()) : ?>
+            <a class="btn btn-primary" href="<?= e(url('/comisiones/nueva' . ($selectedCalendario !== '' ? '?calendario=' . rawurlencode((string) $selectedCalendario) : ''))) ?>">
+                Nueva comisión
+            </a>
+        <?php endif; ?>
+    </div>
 </div>
 
 <form class="filters-bar" method="get" action="<?= e(url('/comisiones')) ?>">

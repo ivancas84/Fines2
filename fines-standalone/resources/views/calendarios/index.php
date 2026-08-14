@@ -19,7 +19,8 @@ $formatFecha = static function (mixed $value): string {
 ?>
 <div class="page-header">
     <div>
-        <h1>Calendarios</h1>
+        <a class="small" href="<?= e(url('/herramientas')) ?>">&larr; Volver a herramientas</a>
+        <h1 class="mt-2">Calendarios</h1>
         <p class="text-secondary mb-0">
             <?= e((string) count($calendarios)) ?> calendario<?= count($calendarios) === 1 ? '' : 's' ?> en el sistema.
         </p>

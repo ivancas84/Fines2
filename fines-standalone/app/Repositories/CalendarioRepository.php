@@ -42,6 +42,55 @@ final class CalendarioRepository
         return $stmt->fetchAll();
     }
 
+    /**
+     * Calendario vigente: CALENDARIO_ID_ACTUAL si existe, si no el más reciente por año/semestre.
+     *
+     * @return array{id: string, anio: mixed, semestre: mixed, descripcion: mixed, label: string}|null
+     */
+    public function resolveActual(?string $configuredId = null): ?array
+    {
+        $configuredId = $configuredId !== null ? trim($configuredId) : '';
+        if ($configuredId !== '') {
+            $configured = $this->byId($configuredId);
+            if ($configured !== null) {
+                return $this->asActualSummary($configured);
+            }
+        }
+
+        $stmt = $this->pdo->query("
+            SELECT id, anio, semestre, descripcion
+            FROM calendario
+            ORDER BY anio DESC, semestre DESC, id DESC
+            LIMIT 1
+        ");
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row === false) {
+            return null;
+        }
+
+        return $this->asActualSummary($row);
+    }
+
+    /**
+     * @param array<string, mixed> $row
+     * @return array{id: string, anio: mixed, semestre: mixed, descripcion: mixed, label: string}
+     */
+    private function asActualSummary(array $row): array
+    {
+        $label = trim(implode(' ', array_filter([
+            trim(($row['anio'] ?? '') . '-' . ($row['semestre'] ?? '')),
+            trim((string) ($row['descripcion'] ?? '')),
+        ])));
+
+        return [
+            'id' => (string) ($row['id'] ?? ''),
+            'anio' => $row['anio'] ?? null,
+            'semestre' => $row['semestre'] ?? null,
+            'descripcion' => $row['descripcion'] ?? null,
+            'label' => $label !== '' ? $label : (string) ($row['id'] ?? ''),
+        ];
+    }
+
     public function byId(string $id): ?array
     {
         $stmt = $this->pdo->prepare("

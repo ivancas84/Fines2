@@ -6,13 +6,17 @@ use FinesApp\Controllers\AlumnoController;
 use FinesApp\Controllers\AuthController;
 use FinesApp\Controllers\CalendarioController;
 use FinesApp\Controllers\ComisionController;
+use FinesApp\Controllers\ComisionesPfController;
 use FinesApp\Controllers\CursoController;
 use FinesApp\Controllers\DashboardController;
 use FinesApp\Controllers\DocenteController;
+use FinesApp\Controllers\DocentesPfController;
+use FinesApp\Controllers\HerramientasController;
 use FinesApp\Controllers\InformeController;
 use FinesApp\Controllers\PersonaController;
 use FinesApp\Controllers\ProgramaFinesController;
 use FinesApp\Controllers\SedeController;
+use FinesApp\Controllers\TomaPosesionController;
 use FinesApp\Core\App;
 use FinesApp\Core\Request;
 
@@ -21,6 +25,8 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 $app = App::boot(dirname(__DIR__));
 $request = Request::capture();
 $app->get('/', [DashboardController::class, 'index']);
+// Público (sin login)
+$app->get('/toma-posesion', [TomaPosesionController::class, 'index']);
 $app->get('/login', [AuthController::class, 'showLogin']);
 $app->get('/login/google', [AuthController::class, 'redirectToGoogle']);
 $app->get('/login/google/callback', [AuthController::class, 'handleGoogleCallback']);
@@ -28,6 +34,7 @@ $app->post('/logout', [AuthController::class, 'logout']);
 $app->get('/programafines', [ProgramaFinesController::class, 'edit']);
 $app->post('/programafines', [ProgramaFinesController::class, 'connect']);
 $app->post('/programafines/desconectar', [ProgramaFinesController::class, 'disconnect']);
+$app->get('/herramientas', [HerramientasController::class, 'index']);
 $app->get('/informes', [InformeController::class, 'index']);
 $app->get('/informes/egresados', [InformeController::class, 'egresados']);
 
@@ -49,8 +56,12 @@ $app->post('/cursos/{id}/planilla/consultar', [CursoController::class, 'planilla
 $app->post('/cursos/{id}/planilla/guardar', [CursoController::class, 'planillaGuardar']);
 $app->post('/cursos/{id}/planilla/entregada', [CursoController::class, 'marcarPlanillaEntregada']);
 $app->get('/cursos/asociar', [AlumnoController::class, 'asociarCurso']);
+$app->get('/docentes/procesar-pf', [DocentesPfController::class, 'form']);
+$app->post('/docentes/procesar-pf', [DocentesPfController::class, 'process']);
 $app->get('/comisiones', [ComisionController::class, 'index']);
 $app->get('/comisiones/nueva', [ComisionController::class, 'createForm']);
+$app->get('/comisiones/procesar-pf', [ComisionesPfController::class, 'form']);
+$app->post('/comisiones/procesar-pf', [ComisionesPfController::class, 'process']);
 $app->post('/comisiones', [ComisionController::class, 'create']);
 $app->get('/comisiones/{id}', [ComisionController::class, 'admin']);
 $app->post('/comisiones/{id}', [ComisionController::class, 'saveComision']);

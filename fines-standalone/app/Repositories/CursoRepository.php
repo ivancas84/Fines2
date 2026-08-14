@@ -79,6 +79,55 @@ final class CursoRepository
         return $row ?: null;
     }
 
+    /**
+     * Cursos de comisiones autorizadas y publicadas de un calendario
+     * (listado público de toma de posesión).
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function autorizadosPublicadosByCalendario(string $calendarioId): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT curso.id AS curso_id,
+                   curso.descripcion_horario,
+                   comision.id AS comision_id,
+                   comision.pfid,
+                   COALESCE(sede.nombre, sede.numero, '') AS sede_nombre,
+                   TRIM(CONCAT(
+                       COALESCE(domicilio.calle, ''),
+                       IF(NULLIF(TRIM(domicilio.numero), '') IS NOT NULL, CONCAT(' N°', domicilio.numero), ''),
+                       IF(NULLIF(TRIM(domicilio.entre), '') IS NOT NULL, CONCAT(' e/', domicilio.entre), ''),
+                       IF(NULLIF(TRIM(domicilio.barrio), '') IS NOT NULL, CONCAT(' ', domicilio.barrio), ''),
+                       IF(NULLIF(TRIM(domicilio.localidad), '') IS NOT NULL, CONCAT(' ', domicilio.localidad), '')
+                   )) AS domicilio_label,
+                   asignatura.nombre AS asignatura_nombre,
+                   asignatura.codigo AS asignatura_codigo,
+                   disposicion.horas_catedra AS disposicion_horas_catedra,
+                   planificacion.anio AS planificacion_anio,
+                   planificacion.semestre AS planificacion_semestre,
+                   plan.orientacion AS plan_orientacion,
+                   plan.resolucion AS plan_resolucion
+            FROM curso
+            INNER JOIN comision ON comision.id = curso.comision
+            LEFT JOIN sede ON sede.id = comision.sede
+            LEFT JOIN domicilio ON domicilio.id = sede.domicilio
+            LEFT JOIN disposicion ON disposicion.id = curso.disposicion
+            LEFT JOIN asignatura ON asignatura.id = disposicion.asignatura
+            LEFT JOIN planificacion ON planificacion.id = disposicion.planificacion
+            LEFT JOIN plan ON plan.id = planificacion.plan
+            WHERE comision.calendario = :calendario
+              AND comision.autorizada = 1
+              AND comision.publicada = 1
+            ORDER BY CAST(comision.pfid AS UNSIGNED) ASC,
+                     comision.pfid ASC,
+                     asignatura.nombre ASC,
+                     curso.id ASC
+        ");
+        $stmt->execute(['calendario' => $calendarioId]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+    }
+
     public function porCalendario(string $calendarioId): array
     {
         $stmt = $this->pdo->prepare("

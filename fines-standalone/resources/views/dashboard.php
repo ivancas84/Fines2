@@ -18,4 +18,10 @@
             <span>Listar comisiones por calendario, autorizacion y orden.</span>
         </a>
     </div>
+    <div class="col-md-6 col-xl-4">
+        <a class="action-card" href="<?= e(url('/herramientas')) ?>">
+            <strong>Herramientas</strong>
+            <span>Calendarios e importaciones PF (docentes y comisiones).</span>
+        </a>
+    </div>
 </div>

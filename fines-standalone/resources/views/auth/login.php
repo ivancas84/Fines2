@@ -11,4 +11,8 @@
     <?php else : ?>
         <div class="alert alert-warning">Google todavia no esta configurado.</div>
     <?php endif; ?>
+
+    <div class="mt-3 text-center">
+        <a class="small" href="<?= e(url('/toma-posesion')) ?>">Toma de posesión (público)</a>
+    </div>
 </section>

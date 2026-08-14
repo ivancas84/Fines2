@@ -30,6 +30,12 @@ final class View
     /** @param array<string, mixed> $data */
     public function renderToString(string $view, array $data = []): string
     {
+        $layout = (string) ($data['layout'] ?? 'layouts/app');
+        unset($data['layout']);
+        if ($layout === '' || !is_file($this->viewPath . '/' . $layout . '.php')) {
+            $layout = 'layouts/app';
+        }
+
         $shared = [
             'auth' => $this->auth,
             'csrf' => $this->csrf,
@@ -37,7 +43,7 @@ final class View
         ];
         $content = $this->renderFile($view, array_merge($data, $shared));
 
-        return $this->renderFile('layouts/app', array_merge($data, $shared, [
+        return $this->renderFile($layout, array_merge($data, $shared, [
             'content' => $content,
         ]));
     }

@@ -10,11 +10,28 @@ $navItems = [
     '/personas' => 'Personas',
     '/comisiones' => 'Comisiones',
     '/sedes' => 'Sedes',
-    '/calendarios' => 'Calendarios',
     '/cursos' => 'Cursos',
+    '/herramientas' => 'Herramientas',
     '/informes' => 'Informes',
     '/programafines' => 'ProgramaFines',
 ];
+// Rutas que deben marcar activo el ítem Herramientas.
+$isHerramientasPath = static function (string $path): bool {
+    if ($path === '/herramientas' || str_starts_with($path, '/herramientas/')) {
+        return true;
+    }
+    if ($path === '/docentes/procesar-pf' || str_starts_with($path, '/docentes/procesar-pf/')) {
+        return true;
+    }
+    if ($path === '/comisiones/procesar-pf' || str_starts_with($path, '/comisiones/procesar-pf/')) {
+        return true;
+    }
+    if ($path === '/calendarios' || str_starts_with($path, '/calendarios/')) {
+        return true;
+    }
+
+    return false;
+};
 ?>
 <!doctype html>
 <html lang="es">
@@ -33,7 +50,17 @@ $navItems = [
             <a class="app-brand" href="<?= e(url('/')) ?>">Fines</a>
             <nav class="nav flex-column gap-1">
                 <?php foreach ($navItems as $path => $label) : ?>
-                    <?php $isActive = $currentPath === $path || str_starts_with($currentPath, $path . '/'); ?>
+                    <?php
+                    if ($path === '/herramientas') {
+                        $isActive = $isHerramientasPath($currentPath);
+                    } else {
+                        $isActive = $currentPath === $path || str_starts_with($currentPath, $path . '/');
+                        // Evitar que /comisiones marque activo por /comisiones/procesar-pf
+                        if ($path === '/comisiones' && str_starts_with($currentPath, '/comisiones/procesar-pf')) {
+                            $isActive = false;
+                        }
+                    }
+                    ?>
                     <a class="nav-link<?= $isActive ? ' active' : '' ?>" href="<?= e(url($path)) ?>"<?= $isActive ? ' aria-current="page"' : '' ?>>
                         <?= e($label) ?>
                     </a>
