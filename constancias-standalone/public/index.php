@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use ConstanciasApp\Controllers\ApiTomaPosesionController;
 use ConstanciasApp\Controllers\AuthController;
 use ConstanciasApp\Controllers\ConstanciaController;
 use ConstanciasApp\Controllers\DashboardController;
@@ -38,5 +39,8 @@ $app->post('/establecimiento', [EstablecimientoController::class, 'update']);
 
 $app->get('/validar-constancia', [ConstanciaController::class, 'validateConstancia']);
 $app->get('/validar-constancia/descargar', [ConstanciaController::class, 'download']);
+
+// API interna (fines-standalone): generar toma de posesión + PDF (+ email opcional)
+$app->post('/api/toma-posesion', [ApiTomaPosesionController::class, 'create']);
 
 $app->dispatch($request);

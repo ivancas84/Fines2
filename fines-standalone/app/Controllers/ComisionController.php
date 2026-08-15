@@ -7,6 +7,7 @@ namespace FinesApp\Controllers;
 use FinesApp\Core\Request;
 use FinesApp\Core\Response;
 use FinesApp\Core\Session;
+use FinesApp\Integrations\Constancias\ConstanciasClient;
 use FinesApp\Integrations\ProgramaFines\AlumnoNoExisteException;
 use FinesApp\Integrations\ProgramaFines\ProgramaFinesClient;
 use FinesApp\Integrations\ProgramaFines\ProgramaFinesMapper;
@@ -644,6 +645,46 @@ final class ComisionController extends Controller
         }
 
         Response::redirect(url("/comisiones/{$comisionId}"));
+    }
+
+    public function generarToma(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $comisionId = trim((string) ($vars['id'] ?? ''));
+        $tomaId = trim((string) ($vars['tomaId'] ?? ''));
+        $enviarEmail = $request->input('enviar_email') === '1';
+
+        try {
+            $payload = (new TomaRepository($this->pdo))->payloadForGenerar($comisionId, $tomaId);
+            if ($payload === null) {
+                throw new \RuntimeException('La toma no existe en esta comisión.');
+            }
+            if (trim((string) ($payload['docente']['numero_documento'] ?? '')) === '') {
+                throw new \RuntimeException('La toma no tiene docente con DNI cargado.');
+            }
+
+            $result = (new ConstanciasClient($this->config))->generarTomaPosesion($payload, $enviarEmail);
+
+            $msg = 'Toma de posesión generada en constancias.';
+            if ($enviarEmail) {
+                if (!empty($result['email_sent'])) {
+                    $msg .= ' Email enviado al docente.';
+                } else {
+                    $emailError = trim((string) ($result['email_error'] ?? ''));
+                    $msg .= ' PDF generado, pero el email no se envió'
+                        . ($emailError !== '' ? ': ' . $emailError : '.');
+                }
+            }
+            if (($result['download_url'] ?? '') !== '') {
+                $msg .= ' Descargar: ' . $result['download_url'];
+            }
+            Session::flash('notice', $msg);
+        } catch (\Throwable $throwable) {
+            Session::flash('error', $throwable->getMessage());
+        }
+
+        Response::redirect(url('/comisiones/' . rawurlencode($comisionId)));
     }
 
     /** @return list<array{id: string, disposicion: mixed, horas_catedra: mixed, descripcion_horario: mixed}> */

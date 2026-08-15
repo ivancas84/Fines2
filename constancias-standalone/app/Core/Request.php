@@ -6,17 +6,45 @@ namespace ConstanciasApp\Core;
 
 final class Request
 {
+    /** @param array<string, mixed> $json */
     public function __construct(
         private readonly array $get,
         private readonly array $post,
         private readonly array $server,
         private readonly array $files = [],
+        private readonly array $json = [],
     ) {
     }
 
     public static function capture(): self
     {
-        return new self($_GET, $_POST, $_SERVER, $_FILES);
+        $json = [];
+        $contentType = (string) ($_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? '');
+        if (str_contains(strtolower($contentType), 'application/json')) {
+            $raw = file_get_contents('php://input');
+            if (is_string($raw) && $raw !== '') {
+                $decoded = json_decode($raw, true);
+                if (is_array($decoded)) {
+                    $json = $decoded;
+                }
+            }
+        }
+
+        return new self($_GET, $_POST, $_SERVER, $_FILES, $json);
+    }
+
+    /** @return array<string, mixed> */
+    public function json(): array
+    {
+        return $this->json;
+    }
+
+    public function header(string $name, ?string $default = null): ?string
+    {
+        $key = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
+        $value = $this->server[$key] ?? $default;
+
+        return is_scalar($value) ? trim((string) $value) : $default;
     }
 
     public function method(): string

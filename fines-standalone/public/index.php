@@ -73,6 +73,7 @@ $app->post('/comisiones/{id}/cursos', [ComisionController::class, 'saveCursos'])
 $app->post('/comisiones/{id}/cursos/agregar', [ComisionController::class, 'addCurso']);
 $app->post('/comisiones/{id}/tomas', [ComisionController::class, 'saveTomas']);
 $app->post('/comisiones/{id}/tomas/agregar', [ComisionController::class, 'addToma']);
+$app->post('/comisiones/{id}/tomas/{tomaId}/generar', [ComisionController::class, 'generarToma']);
 $app->get('/comisiones/{id}/alumnos', [ComisionController::class, 'alumnos']);
 $app->get('/comisiones/{id}/rindex', [ComisionController::class, 'rindex']);
 $app->get('/sedes', [SedeController::class, 'index']);

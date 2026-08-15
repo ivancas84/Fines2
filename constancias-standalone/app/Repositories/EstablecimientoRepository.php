@@ -31,6 +31,29 @@ final class EstablecimientoRepository
         return $row;
     }
 
+    public function byId(int $id): ?array
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM fines_app_establecimientos WHERE id = :id LIMIT 1');
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch();
+
+        return $row ?: null;
+    }
+
+    public function firstActive(): ?array
+    {
+        $stmt = $this->pdo->query('
+            SELECT *
+            FROM fines_app_establecimientos
+            WHERE activo = 1
+            ORDER BY id ASC
+            LIMIT 1
+        ');
+        $row = $stmt->fetch();
+
+        return $row ?: null;
+    }
+
     public function saveForUser(int $userId, array $data): int
     {
         $current = $this->byUser($userId);

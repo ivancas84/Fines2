@@ -141,6 +141,168 @@ final class TomaRepository
     }
 
     /**
+     * Datos completos de una toma para generar PDF / email en constancias.
+     *
+     * @return array{
+     *   toma_id: string,
+     *   comision_id: string,
+     *   curso_id: string,
+     *   docente: array<string, mixed>,
+     *   cargo: array<string, mixed>
+     * }|null
+     */
+    public function payloadForGenerar(string $comisionId, string $tomaId): ?array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT toma.id AS toma_id,
+                   toma.fecha_toma,
+                   toma.curso AS curso_id,
+                   toma.docente AS docente_id,
+                   comision.id AS comision_id,
+                   comision.pfid,
+                   comision.calendario AS calendario_id,
+                   curso.descripcion_horario,
+                   curso.horas_catedra AS curso_horas_catedra,
+                   sede.nombre AS sede_nombre,
+                   sede.numero AS sede_numero,
+                   TRIM(CONCAT(
+                       COALESCE(domicilio.calle, ''),
+                       IF(NULLIF(TRIM(domicilio.numero), '') IS NOT NULL, CONCAT(' N°', domicilio.numero), ''),
+                       IF(NULLIF(TRIM(domicilio.entre), '') IS NOT NULL, CONCAT(' e/', domicilio.entre), ''),
+                       IF(NULLIF(TRIM(domicilio.barrio), '') IS NOT NULL, CONCAT(' ', domicilio.barrio), ''),
+                       IF(NULLIF(TRIM(domicilio.localidad), '') IS NOT NULL, CONCAT(' ', domicilio.localidad), '')
+                   )) AS domicilio_sede,
+                   asignatura.nombre AS asignatura_nombre,
+                   asignatura.codigo AS asignatura_codigo,
+                   disposicion.horas_catedra AS disposicion_horas_catedra,
+                   planificacion.anio AS planificacion_anio,
+                   planificacion.semestre AS planificacion_semestre,
+                   plan.resolucion AS plan_resolucion,
+                   calendario.inicio AS calendario_inicio,
+                   calendario.fin AS calendario_fin,
+                   docente.nombres AS docente_nombres,
+                   docente.apellidos AS docente_apellidos,
+                   docente.numero_documento AS docente_documento,
+                   docente.cuil AS docente_cuil,
+                   docente.cuil1 AS docente_cuil1,
+                   docente.cuil2 AS docente_cuil2,
+                   docente.fecha_nacimiento AS docente_fecha_nacimiento,
+                   docente.dia_nacimiento AS docente_dia_nacimiento,
+                   docente.mes_nacimiento AS docente_mes_nacimiento,
+                   docente.anio_nacimiento AS docente_anio_nacimiento,
+                   docente.telefono AS docente_telefono,
+                   docente.email AS docente_email,
+                   docente.email_abc AS docente_email_abc,
+                   docente.descripcion_domicilio AS docente_domicilio
+            FROM toma
+            INNER JOIN curso ON curso.id = toma.curso
+            INNER JOIN comision ON comision.id = curso.comision
+            LEFT JOIN sede ON sede.id = comision.sede
+            LEFT JOIN domicilio ON domicilio.id = sede.domicilio
+            LEFT JOIN disposicion ON disposicion.id = curso.disposicion
+            LEFT JOIN asignatura ON asignatura.id = disposicion.asignatura
+            LEFT JOIN planificacion ON planificacion.id = COALESCE(disposicion.planificacion, comision.planificacion)
+            LEFT JOIN plan ON plan.id = planificacion.plan
+            LEFT JOIN calendario ON calendario.id = comision.calendario
+            LEFT JOIN persona docente ON docente.id = toma.docente
+            WHERE toma.id = :toma_id
+              AND comision.id = :comision_id
+            LIMIT 1
+        ");
+        $stmt->execute([
+            'toma_id' => $tomaId,
+            'comision_id' => $comisionId,
+        ]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($row === false) {
+            return null;
+        }
+
+        $dni = preg_replace('/\D+/', '', (string) ($row['docente_documento'] ?? '')) ?? '';
+        $cuil = trim((string) ($row['docente_cuil'] ?? ''));
+        if ($cuil === '') {
+            $cuil1 = trim((string) ($row['docente_cuil1'] ?? ''));
+            $cuil2 = trim((string) ($row['docente_cuil2'] ?? ''));
+            if ($cuil1 !== '' && $dni !== '' && $cuil2 !== '') {
+                $cuil = str_pad($cuil1, 2, '0', STR_PAD_LEFT)
+                    . str_pad($dni, 8, '0', STR_PAD_LEFT)
+                    . substr($cuil2, -1);
+            }
+        }
+
+        $fechaNac = $this->formatDisplayDate($row['docente_fecha_nacimiento'] ?? null);
+        if ($fechaNac === '') {
+            $dia = (int) ($row['docente_dia_nacimiento'] ?? 0);
+            $mes = (int) ($row['docente_mes_nacimiento'] ?? 0);
+            $anio = (int) ($row['docente_anio_nacimiento'] ?? 0);
+            if ($dia > 0 && $mes > 0 && $anio > 0 && checkdate($mes, $dia, $anio)) {
+                $fechaNac = sprintf('%02d/%02d/%04d', $dia, $mes, $anio);
+            }
+        }
+
+        $fechaToma = $this->formatDisplayDate($row['fecha_toma'] ?? null);
+        if ($fechaToma === '') {
+            $fechaToma = $this->formatDisplayDate($row['calendario_inicio'] ?? null);
+        }
+        $fechaFin = $this->formatDisplayDate($row['calendario_fin'] ?? null);
+
+        $asignatura = trim(implode(' ', array_filter([
+            (string) ($row['asignatura_nombre'] ?? ''),
+            (string) ($row['asignatura_codigo'] ?? ''),
+        ])));
+        $tramo = '';
+        if (($row['planificacion_anio'] ?? '') !== '' || ($row['planificacion_semestre'] ?? '') !== '') {
+            $tramo = trim(($row['planificacion_anio'] ?? '') . '°' . ($row['planificacion_semestre'] ?? '') . 'C');
+        }
+
+        $horas = $row['curso_horas_catedra'] ?? $row['disposicion_horas_catedra'] ?? '';
+        $sede = trim((string) ($row['sede_nombre'] ?? ''));
+        if ($sede === '') {
+            $sede = trim((string) ($row['sede_numero'] ?? ''));
+        }
+
+        return [
+            'toma_id' => (string) $row['toma_id'],
+            'comision_id' => (string) $row['comision_id'],
+            'curso_id' => (string) $row['curso_id'],
+            'docente' => [
+                'nombres' => (string) ($row['docente_nombres'] ?? ''),
+                'apellidos' => (string) ($row['docente_apellidos'] ?? ''),
+                'numero_documento' => $dni,
+                'cuil' => $cuil,
+                'fecha_nacimiento' => $fechaNac,
+                'email' => (string) ($row['docente_email'] ?? ''),
+                'email_abc' => (string) ($row['docente_email_abc'] ?? ''),
+                'descripcion_domicilio' => (string) ($row['docente_domicilio'] ?? ''),
+                'telefono' => (string) ($row['docente_telefono'] ?? ''),
+            ],
+            'cargo' => [
+                'sede' => $sede,
+                'domicilio_sede' => trim((string) ($row['domicilio_sede'] ?? '')),
+                'pfid' => (string) ($row['pfid'] ?? ''),
+                'horario' => (string) ($row['descripcion_horario'] ?? ''),
+                'fecha_toma' => $fechaToma,
+                'fecha_fin' => $fechaFin,
+                'asignatura' => $asignatura,
+                'horas_catedra' => (string) $horas,
+                'tramo' => $tramo,
+                'resolucion' => (string) ($row['plan_resolucion'] ?? ''),
+            ],
+        ];
+    }
+
+    private function formatDisplayDate(mixed $value): string
+    {
+        $raw = trim((string) ($value ?? ''));
+        if ($raw === '') {
+            return '';
+        }
+        $date = date_create($raw);
+
+        return $date instanceof \DateTimeInterface ? $date->format('d/m/Y') : $raw;
+    }
+
+    /**
      * @param list<array{
      *   id: string,
      *   fecha_toma?: mixed,
