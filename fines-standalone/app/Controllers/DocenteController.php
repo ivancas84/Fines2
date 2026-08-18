@@ -25,11 +25,27 @@ final class DocenteController extends Controller
         }
 
         $tomaRepository = new TomaRepository($this->pdo);
+        $tomas = $tomaRepository->byDocente($personaId);
+        foreach ($tomas as &$toma) {
+            $toma['constancia_url'] = null;
+            $comisionId = (string) ($toma['comision_id'] ?? '');
+            if ($comisionId === '') {
+                continue;
+            }
+            $payload = $tomaRepository->payloadForGenerar($comisionId, (string) $toma['id']);
+            if ($payload === null || trim((string) ($payload['docente']['numero_documento'] ?? '')) === '') {
+                continue;
+            }
+            $toma['constancia_url'] = constancias_url(
+                '/constancias/toma-posesion/nueva?' . http_build_query($tomaRepository->toConstanciaQuery($payload)),
+            );
+        }
+        unset($toma);
 
         $this->view->render('docentes/show', [
             'title' => 'Docente',
             'persona' => $persona,
-            'tomas' => $tomaRepository->byDocente($personaId),
+            'tomas' => $tomas,
             'estadosToma' => $tomaRepository->estados(),
             'tiposMovimiento' => $tomaRepository->tiposMovimiento(),
             'estadosContralor' => $tomaRepository->estadosContralor(),

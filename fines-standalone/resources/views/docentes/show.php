@@ -111,6 +111,7 @@ $numeroEntero = static fn (mixed $numero): string => $numero === null || $numero
                         <th>Contralor</th>
                         <th>Planilla</th>
                         <th>Observaciones</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -153,6 +154,17 @@ $numeroEntero = static fn (mixed $numero): string => $numero === null || $numero
                                 <div class="small text-secondary"><?= e($toma['planilla_numero'] ?? '') ?></div>
                             </td>
                             <td><input class="form-control form-control-sm" name="observaciones_toma[<?= e($index) ?>]" value="<?= e($toma['observaciones'] ?? '') ?>"></td>
+                            <td>
+                                <?php if (($toma['constancia_url'] ?? '') !== '') : ?>
+                                    <a class="btn btn-sm btn-outline-primary"
+                                       target="_blank"
+                                       rel="noopener"
+                                       href="<?= e((string) $toma['constancia_url']) ?>"
+                                       title="Abrir formulario de toma de posesión en constancias">
+                                        Generar toma
+                                    </a>
+                                <?php endif; ?>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
