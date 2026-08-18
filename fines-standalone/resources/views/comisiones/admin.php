@@ -237,7 +237,7 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
                                 <select class="form-select form-select-sm" name="disposicion[<?= e((string) $index) ?>]" <?= $canEdit ? '' : 'disabled' ?>>
                                     <option value="">-- Seleccione --</option>
                                     <?php foreach ($disposiciones as $disposicion) : ?>
-                                        <option value="<?= e($disposicion['id']) ?>" <?= selected($curso['disposicion_id'] ?? '', $disposicion['id']) ?>>
+                                        <option value="<?= e($disposicion['id']) ?>" data-horas="<?= e((string) ($disposicion['horas_catedra'] ?? 0)) ?>" <?= selected($curso['disposicion_id'] ?? '', $disposicion['id']) ?>>
                                             <?= e($disposicion['label']) ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -278,7 +278,7 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
                     <select class="form-select" name="disposicion" id="disposicion_nueva" required>
                         <option value="">-- Seleccione --</option>
                         <?php foreach ($disposiciones as $disposicion) : ?>
-                            <option value="<?= e($disposicion['id']) ?>"><?= e($disposicion['label']) ?></option>
+                            <option value="<?= e($disposicion['id']) ?>" data-horas="<?= e((string) ($disposicion['horas_catedra'] ?? 0)) ?>"><?= e($disposicion['label']) ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -487,3 +487,16 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
     <?php endif; ?>
 </section>
 <?php endif; ?>
+<script>
+(() => {
+    const select = document.getElementById('disposicion_nueva');
+    const horas = document.getElementById('horas_nueva');
+    if (!select || !horas) {
+        return;
+    }
+    select.addEventListener('change', () => {
+        const valor = select.selectedOptions[0]?.getAttribute('data-horas') ?? '';
+        horas.value = valor;
+    });
+})();
+</script>

@@ -959,6 +959,12 @@ final class ComisionRepository
     public function addCurso(string $comisionId, array $data): string
     {
         $id = uniqid();
+        $disposicionId = $this->nullableText($data['disposicion'] ?? null);
+        $horas = (int) ($data['horas_catedra'] ?? 0);
+        if ($horas <= 0 && $disposicionId !== null) {
+            $horas = $this->horasCatedraDisposicion($disposicionId);
+        }
+
         $stmt = $this->pdo->prepare("
             INSERT INTO curso (id, comision, disposicion, horas_catedra, descripcion_horario)
             VALUES (:id, :comision, :disposicion, :horas_catedra, :descripcion_horario)
@@ -966,8 +972,8 @@ final class ComisionRepository
         $stmt->execute([
             'id' => $id,
             'comision' => $comisionId,
-            'disposicion' => $this->nullableText($data['disposicion'] ?? null),
-            'horas_catedra' => (int) ($data['horas_catedra'] ?? 0),
+            'disposicion' => $disposicionId,
+            'horas_catedra' => $horas,
             'descripcion_horario' => $this->nullableText($data['descripcion_horario'] ?? null),
         ]);
 
@@ -1030,7 +1036,33 @@ final class ComisionRepository
             $created++;
         }
 
+        $this->rellenarHorasCatedraDesdeDisposicion($comisionId);
+
         return $created;
+    }
+
+    private function horasCatedraDisposicion(string $disposicionId): int
+    {
+        $stmt = $this->pdo->prepare('SELECT horas_catedra FROM disposicion WHERE id = :id LIMIT 1');
+        $stmt->execute(['id' => $disposicionId]);
+        $value = $stmt->fetchColumn();
+
+        return $value === false ? 0 : (int) $value;
+    }
+
+    private function rellenarHorasCatedraDesdeDisposicion(string $comisionId): int
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE curso
+            INNER JOIN disposicion ON disposicion.id = curso.disposicion
+            SET curso.horas_catedra = disposicion.horas_catedra
+            WHERE curso.comision = :comision
+              AND (curso.horas_catedra IS NULL OR curso.horas_catedra = 0)
+              AND disposicion.horas_catedra > 0
+        ");
+        $stmt->execute(['comision' => $comisionId]);
+
+        return $stmt->rowCount();
     }
 
     private function nullableText(mixed $value): ?string
