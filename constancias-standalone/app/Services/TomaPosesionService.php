@@ -35,8 +35,9 @@ final class TomaPosesionService
      */
     public function generate(array $payload, bool $enviarEmail = false): array
     {
-        $docente = is_array($payload['docente'] ?? null) ? $payload['docente'] : [];
-        $cargo = is_array($payload['cargo'] ?? null) ? $payload['cargo'] : [];
+        $docente = is_array($payload['docente'] ?? null) ? $payload['docente'] : $this->docenteFromFlat($payload);
+        $cargo = is_array($payload['cargo'] ?? null) ? $payload['cargo'] : $this->cargoFromFlat($payload);
+        $contenidoHtml = trim((string) ($payload['contenido_html'] ?? ''));
 
         $nombres = trim((string) ($docente['nombres'] ?? ''));
         $apellidos = trim((string) ($docente['apellidos'] ?? ''));
@@ -44,6 +45,8 @@ final class TomaPosesionService
         if ($nombres === '' || $dni === '') {
             throw new \InvalidArgumentException('Faltan datos del docente (nombres y documento).');
         }
+
+        $emails = $this->parseEmails($payload['emails'] ?? null, $docente);
 
         $establecimiento = $this->resolveEstablecimiento(
             isset($payload['establecimiento_id']) ? (int) $payload['establecimiento_id'] : null,
@@ -61,13 +64,19 @@ final class TomaPosesionService
             trim((string) ($cargo['pfid'] ?? '')),
         );
 
+        $incluirFirmas = array_key_exists('incluir_firmas', $payload)
+            ? !empty($payload['incluir_firmas'])
+            : true;
+
         $datos = [
             'clave' => $clave,
             'docente' => $docente,
             'cargo' => $cargo,
+            'contenido_html' => $contenidoHtml,
+            'emails' => implode(', ', $emails),
             'establecimiento_nombre' => (string) ($establecimiento['nombre'] ?? 'Establecimiento'),
             'localidad' => (string) ($establecimiento['localidad'] ?? 'La Plata'),
-            'incluir_firmas' => 1,
+            'incluir_firmas' => $incluirFirmas ? 1 : 0,
             'toma_id' => $payload['toma_id'] ?? null,
             'comision_id' => $payload['comision_id'] ?? null,
             'curso_id' => $payload['curso_id'] ?? null,
@@ -83,7 +92,7 @@ final class TomaPosesionService
             'apellidos' => $apellidos !== '' ? $apellidos : '-',
             'numero_documento' => $dni,
             'datos' => $datos,
-            'creado_por' => null,
+            'creado_por' => $payload['creado_por'] ?? null,
         ];
 
         $this->pdo->beginTransaction();
@@ -109,7 +118,7 @@ final class TomaPosesionService
         $emailError = null;
         if ($enviarEmail) {
             try {
-                $this->sendEmail($docente, $cargo, $absolutePath, $fileName);
+                $this->sendEmail($emails, $docente, $cargo, $absolutePath, $fileName);
                 $emailSent = true;
             } catch (\Throwable $throwable) {
                 $emailError = $throwable->getMessage();
@@ -143,67 +152,10 @@ final class TomaPosesionService
         $establecimientoNombre = (string) ($datos['establecimiento_nombre'] ?? 'Establecimiento');
         $localidad = (string) ($datos['localidad'] ?? 'La Plata');
 
-        $nombre = trim(
-            (string) ($docente['apellidos'] ?? '') . ', ' . (string) ($docente['nombres'] ?? ''),
-            " \t\n\r\0\x0B,",
-        );
-        $cuil = (string) ($docente['cuil'] ?? '');
-        $fechaNac = (string) ($docente['fecha_nacimiento'] ?? '');
-        $emails = trim(implode(' / ', array_filter([
-            trim((string) ($docente['email_abc'] ?? '')),
-            trim((string) ($docente['email'] ?? '')),
-        ])));
-        $domicilioDoc = (string) ($docente['descripcion_domicilio'] ?? '');
-        $telefono = (string) ($docente['telefono'] ?? '');
-
-        $tableDocente = '
-<table border="1" cellpadding="5">
-    <tr><th colspan="4" bgcolor="#cccccc"><b>Datos del Docente</b></th></tr>
-    <tr>
-        <td><b>Nombre</b></td>
-        <td colspan="3">' . $this->e($nombre) . '</td>
-    </tr>
-    <tr>
-        <td><b>CUIL</b></td><td>' . $this->e($cuil) . '</td>
-        <td><b>Fecha de Nacimiento</b></td><td>' . $this->e($fechaNac) . '</td>
-    </tr>
-    <tr>
-        <td><b>Email</b></td><td colspan="3">' . $this->e($emails) . '</td>
-    </tr>
-    <tr>
-        <td><b>Domicilio</b></td><td colspan="3">' . $this->e($domicilioDoc) . '</td>
-    </tr>
-    <tr>
-        <td><b>Teléfono</b></td><td colspan="3">' . $this->e($telefono) . '</td>
-    </tr>
-</table>';
-
-        $tableCargo = '
-<table border="1" cellpadding="5">
-    <tr><th colspan="4" bgcolor="#cccccc"><b>Datos del Cargo</b></th></tr>
-    <tr>
-        <td><b>Sede</b></td><td>' . $this->e((string) ($cargo['sede'] ?? '')) . '</td>
-        <td><b>Comisión</b></td><td>' . $this->e((string) ($cargo['pfid'] ?? '')) . '</td>
-    </tr>
-    <tr>
-        <td><b>Domicilio</b></td><td colspan="3">' . $this->e((string) ($cargo['domicilio_sede'] ?? '')) . '</td>
-    </tr>
-    <tr>
-        <td><b>Horario</b></td><td colspan="3">' . $this->e((string) ($cargo['horario'] ?? '')) . '</td>
-    </tr>
-    <tr>
-        <td><b>Fecha Toma</b></td><td>' . $this->e((string) ($cargo['fecha_toma'] ?? '')) . '</td>
-        <td><b>Fecha Fin</b></td><td>' . $this->e((string) ($cargo['fecha_fin'] ?? '')) . '</td>
-    </tr>
-    <tr>
-        <td><b>Asignatura</b></td><td>' . $this->e((string) ($cargo['asignatura'] ?? '')) . '</td>
-        <td><b>Hs Cát</b></td><td>' . $this->e((string) ($cargo['horas_catedra'] ?? '')) . '</td>
-    </tr>
-    <tr>
-        <td><b>Tramo</b></td><td>' . $this->e((string) ($cargo['tramo'] ?? '')) . '</td>
-        <td><b>Resolución</b></td><td>' . $this->e((string) ($cargo['resolucion'] ?? '')) . '</td>
-    </tr>
-</table>';
+        $contenidoHtml = trim((string) ($datos['contenido_html'] ?? ''));
+        if ($contenidoHtml === '') {
+            $contenidoHtml = $this->defaultContenidoHtml($docente, $cargo);
+        }
 
         $sello = $this->storageFilePath((string) ($establecimiento['sello_oval_path'] ?? ''));
         $firma = $this->storageFilePath((string) ($establecimiento['firma_director_path'] ?? ''));
@@ -232,14 +184,16 @@ final class TomaPosesionService
         $pdf->SetXY(163, 43);
         $pdf->Cell(32, 4, (string) ($datos['clave'] ?? ''), 0, 0, 'C');
 
-        $pdf->SetAlpha(0.9);
-        if ($sello !== null) {
-            $pdf->Image($sello, 85, 210, 30, 40);
+        if (!empty($datos['incluir_firmas'])) {
+            $pdf->SetAlpha(0.9);
+            if ($sello !== null) {
+                $pdf->Image($sello, 85, 210, 30, 40);
+            }
+            if ($firma !== null) {
+                $pdf->Image($firma, 120, 220, 60, 35);
+            }
+            $pdf->SetAlpha(1);
         }
-        if ($firma !== null) {
-            $pdf->Image($firma, 120, 220, 60, 35);
-        }
-        $pdf->SetAlpha(1);
 
         $pdf->Ln(28);
         $pdf->SetFont('helvetica', 'B', 14);
@@ -253,25 +207,21 @@ final class TomaPosesionService
         $pdf->Ln(10);
 
         $pdf->SetFont('helvetica', '', 10);
-        $pdf->writeHTML($tableDocente, true, false, false, false, '');
-        $pdf->Ln(5);
-        $pdf->writeHTML($tableCargo, true, false, false, false, '');
+        $pdf->writeHTML($contenidoHtml, true, false, false, false, '');
 
         $pdf->Output($path, 'F');
     }
 
     /**
+     * @param list<string> $to
      * @param array<string, mixed> $docente
      * @param array<string, mixed> $cargo
      */
-    private function sendEmail(array $docente, array $cargo, string $pdfPath, string $fileName): void
+    private function sendEmail(array $to, array $docente, array $cargo, string $pdfPath, string $fileName): void
     {
-        $to = array_values(array_filter([
-            trim((string) ($docente['email_abc'] ?? '')),
-            trim((string) ($docente['email'] ?? '')),
-        ]));
+        $to = array_values(array_filter(array_map('trim', $to), static fn (string $value): bool => $value !== ''));
         if ($to === []) {
-            throw new \InvalidArgumentException('El docente no tiene email cargado para el envío.');
+            throw new \InvalidArgumentException('Indicá al menos un email para el envío.');
         }
 
         $nombre = trim(
@@ -414,6 +364,140 @@ Saluda a Usted muy atentamente:
         $path = $this->config->storagePath() . DIRECTORY_SEPARATOR . ltrim(str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $relativePath), DIRECTORY_SEPARATOR);
 
         return is_file($path) ? $path : null;
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     * @return array<string, mixed>
+     */
+    private function docenteFromFlat(array $payload): array
+    {
+        return [
+            'nombres' => (string) ($payload['nombres'] ?? ''),
+            'apellidos' => (string) ($payload['apellidos'] ?? ''),
+            'numero_documento' => (string) ($payload['numero_documento'] ?? ''),
+            'cuil' => (string) ($payload['cuil'] ?? ''),
+            'fecha_nacimiento' => (string) ($payload['fecha_nacimiento'] ?? ''),
+            'email' => (string) ($payload['email'] ?? ''),
+            'email_abc' => (string) ($payload['email_abc'] ?? ''),
+            'descripcion_domicilio' => (string) ($payload['descripcion_domicilio'] ?? ''),
+            'telefono' => (string) ($payload['telefono'] ?? ''),
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $payload
+     * @return array<string, mixed>
+     */
+    private function cargoFromFlat(array $payload): array
+    {
+        return [
+            'sede' => (string) ($payload['sede'] ?? ''),
+            'domicilio_sede' => (string) ($payload['domicilio_sede'] ?? ''),
+            'pfid' => (string) ($payload['pfid'] ?? ''),
+            'horario' => (string) ($payload['horario'] ?? ''),
+            'fecha_toma' => (string) ($payload['fecha_toma'] ?? ''),
+            'fecha_fin' => (string) ($payload['fecha_fin'] ?? ''),
+            'asignatura' => (string) ($payload['asignatura'] ?? ''),
+            'horas_catedra' => (string) ($payload['horas_catedra'] ?? ''),
+            'tramo' => (string) ($payload['tramo'] ?? ''),
+            'resolucion' => (string) ($payload['resolucion'] ?? ''),
+        ];
+    }
+
+    /**
+     * @param mixed $emails
+     * @param array<string, mixed> $docente
+     * @return list<string>
+     */
+    private function parseEmails(mixed $emails, array $docente): array
+    {
+        $raw = [];
+        if (is_array($emails)) {
+            $raw = $emails;
+        } elseif (is_string($emails) && trim($emails) !== '') {
+            $raw = preg_split('/[,;]+/', $emails) ?: [];
+        } else {
+            $raw = [
+                (string) ($docente['email_abc'] ?? ''),
+                (string) ($docente['email'] ?? ''),
+            ];
+        }
+
+        $parsed = [];
+        foreach ($raw as $email) {
+            $email = strtolower(trim((string) $email));
+            if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                continue;
+            }
+            $parsed[$email] = $email;
+        }
+
+        return array_values($parsed);
+    }
+
+    /**
+     * @param array<string, mixed> $docente
+     * @param array<string, mixed> $cargo
+     */
+    private function defaultContenidoHtml(array $docente, array $cargo): string
+    {
+        $nombre = trim(
+            (string) ($docente['apellidos'] ?? '') . ', ' . (string) ($docente['nombres'] ?? ''),
+            " \t\n\r\0\x0B,",
+        );
+        $emails = trim(implode(' / ', array_filter([
+            trim((string) ($docente['email_abc'] ?? '')),
+            trim((string) ($docente['email'] ?? '')),
+        ])));
+
+        return '
+<table border="1" cellpadding="5">
+    <tr><th colspan="4" bgcolor="#cccccc"><b>Datos del Docente</b></th></tr>
+    <tr>
+        <td><b>Nombre</b></td>
+        <td colspan="3">' . $this->e($nombre) . '</td>
+    </tr>
+    <tr>
+        <td><b>CUIL</b></td><td>' . $this->e((string) ($docente['cuil'] ?? '')) . '</td>
+        <td><b>Fecha de Nacimiento</b></td><td>' . $this->e((string) ($docente['fecha_nacimiento'] ?? '')) . '</td>
+    </tr>
+    <tr>
+        <td><b>Email</b></td><td colspan="3">' . $this->e($emails) . '</td>
+    </tr>
+    <tr>
+        <td><b>Domicilio</b></td><td colspan="3">' . $this->e((string) ($docente['descripcion_domicilio'] ?? '')) . '</td>
+    </tr>
+    <tr>
+        <td><b>Teléfono</b></td><td colspan="3">' . $this->e((string) ($docente['telefono'] ?? '')) . '</td>
+    </tr>
+</table>
+<br>
+<table border="1" cellpadding="5">
+    <tr><th colspan="4" bgcolor="#cccccc"><b>Datos del Cargo</b></th></tr>
+    <tr>
+        <td><b>Sede</b></td><td>' . $this->e((string) ($cargo['sede'] ?? '')) . '</td>
+        <td><b>Comisión</b></td><td>' . $this->e((string) ($cargo['pfid'] ?? '')) . '</td>
+    </tr>
+    <tr>
+        <td><b>Domicilio</b></td><td colspan="3">' . $this->e((string) ($cargo['domicilio_sede'] ?? '')) . '</td>
+    </tr>
+    <tr>
+        <td><b>Horario</b></td><td colspan="3">' . $this->e((string) ($cargo['horario'] ?? '')) . '</td>
+    </tr>
+    <tr>
+        <td><b>Fecha Toma</b></td><td>' . $this->e((string) ($cargo['fecha_toma'] ?? '')) . '</td>
+        <td><b>Fecha Fin</b></td><td>' . $this->e((string) ($cargo['fecha_fin'] ?? '')) . '</td>
+    </tr>
+    <tr>
+        <td><b>Asignatura</b></td><td>' . $this->e((string) ($cargo['asignatura'] ?? '')) . '</td>
+        <td><b>Hs Cát</b></td><td>' . $this->e((string) ($cargo['horas_catedra'] ?? '')) . '</td>
+    </tr>
+    <tr>
+        <td><b>Tramo</b></td><td>' . $this->e((string) ($cargo['tramo'] ?? '')) . '</td>
+        <td><b>Resolución</b></td><td>' . $this->e((string) ($cargo['resolucion'] ?? '')) . '</td>
+    </tr>
+</table>';
     }
 
     private function e(string $value): string

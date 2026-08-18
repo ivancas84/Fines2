@@ -24,4 +24,10 @@
             <span>Informe global: horarios de cursos y tomas pendientes.</span>
         </a>
     </div>
+    <div class="col-md-6 col-xl-4">
+        <a class="action-card" href="<?= e(url('/comisiones/procesar-pci')) ?>">
+            <strong>Procesar comisiones PCI</strong>
+            <span>Informe global PCI: Áreas A–E, horarios y tomas por DNI.</span>
+        </a>
+    </div>
 </div>

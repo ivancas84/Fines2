@@ -7,7 +7,6 @@ namespace FinesApp\Controllers;
 use FinesApp\Core\Request;
 use FinesApp\Core\Response;
 use FinesApp\Core\Session;
-use FinesApp\Integrations\Constancias\ConstanciasClient;
 use FinesApp\Integrations\ProgramaFines\AlumnoNoExisteException;
 use FinesApp\Integrations\ProgramaFines\ProgramaFinesClient;
 use FinesApp\Integrations\ProgramaFines\ProgramaFinesMapper;
@@ -502,6 +501,21 @@ final class ComisionController extends Controller
         $comisionRepository = new ComisionRepository($this->pdo);
         $tomaRepository = new TomaRepository($this->pdo);
         $comisionId = (string) ($comision['id'] ?? '');
+        $tomas = $isNew || $comisionId === '' ? [] : $tomaRepository->byComision($comisionId);
+        foreach ($tomas as &$toma) {
+            $toma['constancia_url'] = null;
+            if (($toma['docente_id'] ?? '') === '') {
+                continue;
+            }
+            $payload = $tomaRepository->payloadForGenerar($comisionId, (string) $toma['id']);
+            if ($payload === null || trim((string) ($payload['docente']['numero_documento'] ?? '')) === '') {
+                continue;
+            }
+            $toma['constancia_url'] = constancias_url(
+                '/constancias/toma-posesion/nueva?' . http_build_query($tomaRepository->toConstanciaQuery($payload)),
+            );
+        }
+        unset($toma);
 
         $this->view->render('comisiones/admin', [
             'title' => $title,
@@ -513,7 +527,7 @@ final class ComisionController extends Controller
             'planificaciones' => $comisionRepository->planificacionesOptions(),
             'disposiciones' => $isNew ? [] : $comisionRepository->disposicionesOptions(),
             'cursos' => $isNew || $comisionId === '' ? [] : $comisionRepository->cursosByComision($comisionId),
-            'tomas' => $isNew || $comisionId === '' ? [] : $tomaRepository->byComision($comisionId),
+            'tomas' => $tomas,
             'estadosToma' => $isNew ? [] : $tomaRepository->estados(),
             'tiposMovimiento' => $isNew ? [] : $tomaRepository->tiposMovimiento(),
             'estadosContralor' => $isNew ? [] : $tomaRepository->estadosContralor(),
@@ -645,46 +659,6 @@ final class ComisionController extends Controller
         }
 
         Response::redirect(url("/comisiones/{$comisionId}"));
-    }
-
-    public function generarToma(Request $request, array $vars = []): void
-    {
-        $this->requireEdit();
-        $this->csrf->validate($request->input('_token'));
-        $comisionId = trim((string) ($vars['id'] ?? ''));
-        $tomaId = trim((string) ($vars['tomaId'] ?? ''));
-        $enviarEmail = $request->input('enviar_email') === '1';
-
-        try {
-            $payload = (new TomaRepository($this->pdo))->payloadForGenerar($comisionId, $tomaId);
-            if ($payload === null) {
-                throw new \RuntimeException('La toma no existe en esta comisión.');
-            }
-            if (trim((string) ($payload['docente']['numero_documento'] ?? '')) === '') {
-                throw new \RuntimeException('La toma no tiene docente con DNI cargado.');
-            }
-
-            $result = (new ConstanciasClient($this->config))->generarTomaPosesion($payload, $enviarEmail);
-
-            $msg = 'Toma de posesión generada en constancias.';
-            if ($enviarEmail) {
-                if (!empty($result['email_sent'])) {
-                    $msg .= ' Email enviado al docente.';
-                } else {
-                    $emailError = trim((string) ($result['email_error'] ?? ''));
-                    $msg .= ' PDF generado, pero el email no se envió'
-                        . ($emailError !== '' ? ': ' . $emailError : '.');
-                }
-            }
-            if (($result['download_url'] ?? '') !== '') {
-                $msg .= ' Descargar: ' . $result['download_url'];
-            }
-            Session::flash('notice', $msg);
-        } catch (\Throwable $throwable) {
-            Session::flash('error', $throwable->getMessage());
-        }
-
-        Response::redirect(url('/comisiones/' . rawurlencode($comisionId)));
     }
 
     /** @return list<array{id: string, disposicion: mixed, horas_catedra: mixed, descripcion_horario: mixed}> */

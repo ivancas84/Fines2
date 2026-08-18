@@ -367,7 +367,9 @@ $sedeLabel = trim(implode(' - ', array_filter([
                     </div>
                 </div>
                 <p class="form-text mb-0 mt-2">
-                    Si la persona no está cargada, el sistema mostrará un error y habrá que crearla primero en Personas.
+                    Si la persona no está cargada, creala primero en
+                    <a href="<?= e(url('/personas/nueva')) ?>">Nueva persona</a>
+                    y después reintentá la designación.
                 </p>
             </form>
         <?php endif; ?>

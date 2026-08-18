@@ -291,6 +291,90 @@ final class TomaRepository
         ];
     }
 
+    /**
+     * Parámetros GET para abrir el formulario de toma en constancias-standalone.
+     *
+     * @param array{
+     *   docente?: array<string, mixed>,
+     *   cargo?: array<string, mixed>
+     * } $payload
+     * @return array<string, string>
+     */
+    public function toConstanciaQuery(array $payload): array
+    {
+        $docente = is_array($payload['docente'] ?? null) ? $payload['docente'] : [];
+        $cargo = is_array($payload['cargo'] ?? null) ? $payload['cargo'] : [];
+        $emails = array_values(array_filter([
+            trim((string) ($docente['email_abc'] ?? '')),
+            trim((string) ($docente['email'] ?? '')),
+        ]));
+
+        return [
+            'nombres' => (string) ($docente['nombres'] ?? ''),
+            'apellidos' => (string) ($docente['apellidos'] ?? ''),
+            'numero_documento' => (string) ($docente['numero_documento'] ?? ''),
+            'cuil' => (string) ($docente['cuil'] ?? ''),
+            'fecha_nacimiento' => (string) ($docente['fecha_nacimiento'] ?? ''),
+            'telefono' => (string) ($docente['telefono'] ?? ''),
+            'descripcion_domicilio' => (string) ($docente['descripcion_domicilio'] ?? ''),
+            'email' => (string) ($docente['email'] ?? ''),
+            'email_abc' => (string) ($docente['email_abc'] ?? ''),
+            'emails' => implode(', ', $emails),
+            'sede' => (string) ($cargo['sede'] ?? ''),
+            'domicilio_sede' => (string) ($cargo['domicilio_sede'] ?? ''),
+            'pfid' => (string) ($cargo['pfid'] ?? ''),
+            'horario' => (string) ($cargo['horario'] ?? ''),
+            'fecha_toma' => (string) ($cargo['fecha_toma'] ?? ''),
+            'fecha_fin' => (string) ($cargo['fecha_fin'] ?? ''),
+            'asignatura' => (string) ($cargo['asignatura'] ?? ''),
+            'horas_catedra' => (string) ($cargo['horas_catedra'] ?? ''),
+            'tramo' => (string) ($cargo['tramo'] ?? ''),
+            'resolucion' => (string) ($cargo['resolucion'] ?? ''),
+            'contenido_html' => $this->contenidoHtmlFromPayload($docente, $cargo),
+            'incluir_firmas' => '1',
+            'enviar_email' => $emails === [] ? '' : '1',
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $docente
+     * @param array<string, mixed> $cargo
+     */
+    private function contenidoHtmlFromPayload(array $docente, array $cargo): string
+    {
+        $escape = static fn (mixed $value): string => htmlspecialchars((string) ($value ?? ''), ENT_QUOTES, 'UTF-8');
+        $nombre = trim(
+            (string) ($docente['apellidos'] ?? '') . ', ' . (string) ($docente['nombres'] ?? ''),
+            " \t\n\r\0\x0B,",
+        );
+        $emails = trim(implode(' / ', array_filter([
+            trim((string) ($docente['email_abc'] ?? '')),
+            trim((string) ($docente['email'] ?? '')),
+        ])));
+
+        return '<table border="1" cellpadding="5">'
+            . '<tr><th colspan="4" bgcolor="#cccccc"><b>Datos del Docente</b></th></tr>'
+            . '<tr><td><b>Nombre</b></td><td colspan="3">' . $escape($nombre) . '</td></tr>'
+            . '<tr><td><b>CUIL</b></td><td>' . $escape($docente['cuil'] ?? '') . '</td>'
+            . '<td><b>Fecha de Nacimiento</b></td><td>' . $escape($docente['fecha_nacimiento'] ?? '') . '</td></tr>'
+            . '<tr><td><b>Email</b></td><td colspan="3">' . $escape($emails) . '</td></tr>'
+            . '<tr><td><b>Domicilio</b></td><td colspan="3">' . $escape($docente['descripcion_domicilio'] ?? '') . '</td></tr>'
+            . '<tr><td><b>Teléfono</b></td><td colspan="3">' . $escape($docente['telefono'] ?? '') . '</td></tr>'
+            . '</table><br><table border="1" cellpadding="5">'
+            . '<tr><th colspan="4" bgcolor="#cccccc"><b>Datos del Cargo</b></th></tr>'
+            . '<tr><td><b>Sede</b></td><td>' . $escape($cargo['sede'] ?? '') . '</td>'
+            . '<td><b>Comisión</b></td><td>' . $escape($cargo['pfid'] ?? '') . '</td></tr>'
+            . '<tr><td><b>Domicilio</b></td><td colspan="3">' . $escape($cargo['domicilio_sede'] ?? '') . '</td></tr>'
+            . '<tr><td><b>Horario</b></td><td colspan="3">' . $escape($cargo['horario'] ?? '') . '</td></tr>'
+            . '<tr><td><b>Fecha Toma</b></td><td>' . $escape($cargo['fecha_toma'] ?? '') . '</td>'
+            . '<td><b>Fecha Fin</b></td><td>' . $escape($cargo['fecha_fin'] ?? '') . '</td></tr>'
+            . '<tr><td><b>Asignatura</b></td><td>' . $escape($cargo['asignatura'] ?? '') . '</td>'
+            . '<td><b>Hs Cát</b></td><td>' . $escape($cargo['horas_catedra'] ?? '') . '</td></tr>'
+            . '<tr><td><b>Tramo</b></td><td>' . $escape($cargo['tramo'] ?? '') . '</td>'
+            . '<td><b>Resolución</b></td><td>' . $escape($cargo['resolucion'] ?? '') . '</td></tr>'
+            . '</table>';
+    }
+
     private function formatDisplayDate(mixed $value): string
     {
         $raw = trim((string) ($value ?? ''));

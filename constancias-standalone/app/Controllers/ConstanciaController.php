@@ -9,6 +9,7 @@ use ConstanciasApp\Core\Response;
 use ConstanciasApp\Core\Session;
 use ConstanciasApp\Repositories\ConstanciaRepository;
 use ConstanciasApp\Repositories\EstablecimientoRepository;
+use ConstanciasApp\Services\TomaPosesionService;
 use HTMLPurifier;
 use HTMLPurifier_Config;
 use TCPDF;
@@ -220,6 +221,62 @@ final class ConstanciaController extends Controller
         );
     }
 
+    public function newTomaPosesion(Request $request): void
+    {
+        $this->requireEdit();
+        $this->view->render('constancias/toma_posesion_form', [
+            'title' => 'Toma de posesión',
+            'defaults' => $this->tomaPosesionDefaults(),
+            'error' => flash('error'),
+        ]);
+    }
+
+    public function createTomaPosesion(Request $request): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+
+        $defaults = $this->tomaPosesionValuesFromRequest($request);
+        $enviarEmail = $request->input('enviar_email') === '1';
+
+        try {
+            if (trim($defaults['nombres']) === '' || trim($defaults['numero_documento']) === '') {
+                throw new \InvalidArgumentException('Nombres y DNI del docente son obligatorios.');
+            }
+            if ($enviarEmail && trim($defaults['emails']) === '') {
+                throw new \InvalidArgumentException('Indicá uno o más emails separados por coma para enviar la toma.');
+            }
+
+            $defaults['contenido_html'] = $this->sanitizeTableHtml($defaults['contenido_html']);
+            $defaults['incluir_firmas'] = $request->input('incluir_firmas') === '1' ? 1 : 0;
+            $defaults['creado_por'] = $this->auth->user()['id'] ?? null;
+
+            $result = (new TomaPosesionService($this->pdo, $this->config))->generate(
+                $defaults,
+                $enviarEmail,
+            );
+
+            $notice = 'Toma de posesión generada.';
+            if ($enviarEmail) {
+                if (!empty($result['email_sent'])) {
+                    $notice .= ' Email enviado a ' . $defaults['emails'] . '.';
+                } else {
+                    $emailError = trim((string) ($result['email_error'] ?? ''));
+                    $notice .= ' El PDF se generó, pero el email no se envió'
+                        . ($emailError !== '' ? ': ' . $emailError : '.');
+                }
+            }
+            Session::flash('notice', $notice);
+            Response::redirect(url('/'));
+        } catch (\Throwable $exception) {
+            $this->view->render('constancias/toma_posesion_form', [
+                'title' => 'Toma de posesión',
+                'defaults' => $defaults,
+                'error' => $exception->getMessage(),
+            ]);
+        }
+    }
+
     public function validateConstancia(Request $request): void
     {
         $id = (string) $request->query('id', '');
@@ -302,6 +359,51 @@ final class ConstanciaController extends Controller
             'orientacion' => (string) ($establecimiento['orientacion_principal'] ?? 'Ciencias Sociales'),
             'resolucion' => (string) ($establecimiento['resolucion_principal'] ?? '2993/22'),
         ];
+    }
+
+    /** @return array<string, string> */
+    private function tomaPosesionDefaults(): array
+    {
+        return [
+            'nombres' => '',
+            'apellidos' => '',
+            'numero_documento' => '',
+            'cuil' => '',
+            'fecha_nacimiento' => '',
+            'telefono' => '',
+            'descripcion_domicilio' => '',
+            'email' => '',
+            'email_abc' => '',
+            'emails' => '',
+            'sede' => '',
+            'domicilio_sede' => '',
+            'pfid' => '',
+            'horario' => '',
+            'fecha_toma' => '',
+            'fecha_fin' => '',
+            'asignatura' => '',
+            'horas_catedra' => '',
+            'tramo' => '',
+            'resolucion' => '',
+            'contenido_html' => '',
+            'incluir_firmas' => '1',
+            'enviar_email' => '1',
+        ];
+    }
+
+    /** @return array<string, string> */
+    private function tomaPosesionValuesFromRequest(Request $request): array
+    {
+        $values = $this->tomaPosesionDefaults();
+        foreach (array_keys($values) as $key) {
+            if ($key === 'incluir_firmas' || $key === 'enviar_email') {
+                $values[$key] = $request->input($key) === '1' ? '1' : '';
+                continue;
+            }
+            $values[$key] = (string) $request->input($key, '');
+        }
+
+        return $values;
     }
 
     private function issueConstancia(string $tipo, string $titulo, string $heading, string $slug, array $data, callable $bodyFactory, ?callable $pdfRenderer = null): void

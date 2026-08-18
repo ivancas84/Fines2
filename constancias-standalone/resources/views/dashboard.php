@@ -6,6 +6,7 @@ $newConstanciaUrl = static function (array $constancia): ?string {
         'vacante' => '/constancias/vacante/nueva',
         'pase' => '/constancias/pase/nueva',
         'general' => '/constancias/general/nueva',
+        'toma_posesion' => '/constancias/toma-posesion/nueva',
     ];
 
     $route = $routes[(string) ($constancia['tipo'] ?? '')] ?? null;

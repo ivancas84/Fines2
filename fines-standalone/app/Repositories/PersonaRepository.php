@@ -47,6 +47,100 @@ final class PersonaRepository
         return $stmt->fetchAll();
     }
 
+    public function findByDocumento(string $numeroDocumento): ?array
+    {
+        $dni = preg_replace('/\D+/', '', $numeroDocumento) ?? '';
+        if ($dni === '') {
+            return null;
+        }
+
+        $candidates = array_values(array_unique(array_filter([
+            $dni,
+            str_pad($dni, 8, '0', STR_PAD_LEFT),
+            ltrim($dni, '0') !== '' ? ltrim($dni, '0') : null,
+        ])));
+
+        $placeholders = implode(', ', array_map(static fn (int $i): string => ":d{$i}", array_keys($candidates)));
+        $params = [];
+        foreach ($candidates as $i => $value) {
+            $params["d{$i}"] = $value;
+        }
+
+        $stmt = $this->pdo->prepare("
+            SELECT id, nombres, apellidos, numero_documento
+            FROM persona
+            WHERE numero_documento IN ({$placeholders})
+            LIMIT 1
+        ");
+        $stmt->execute($params);
+        $row = $stmt->fetch();
+
+        return $row ?: null;
+    }
+
+    public function findByEmailAbc(string $emailAbc): ?array
+    {
+        $email = trim($emailAbc);
+        if ($email === '') {
+            return null;
+        }
+
+        $stmt = $this->pdo->prepare("
+            SELECT id, nombres, apellidos, numero_documento
+            FROM persona
+            WHERE email_abc IS NOT NULL AND LOWER(email_abc) = LOWER(:email)
+            LIMIT 1
+        ");
+        $stmt->execute(['email' => $email]);
+        $row = $stmt->fetch();
+
+        return $row ?: null;
+    }
+
+    /**
+     * @param array{
+     *   nombres: string,
+     *   apellidos: ?string,
+     *   numero_documento: string,
+     *   cuil1: ?int,
+     *   cuil2: ?int,
+     *   sexo: ?int,
+     *   dia_nacimiento: ?int,
+     *   mes_nacimiento: ?int,
+     *   anio_nacimiento: ?int,
+     *   telefono: ?string,
+     *   codigo_area: ?string,
+     *   email: ?string,
+     *   email_abc: ?string,
+     *   lugar_nacimiento: ?string,
+     *   nacionalidad: ?string,
+     *   descripcion_domicilio: ?string,
+     *   departamento: ?string,
+     *   localidad: ?string,
+     *   partido: ?string
+     * } $data
+     */
+    public function create(array $data): string
+    {
+        $id = uniqid();
+        $stmt = $this->pdo->prepare("
+            INSERT INTO persona (
+                id, nombres, apellidos, numero_documento, cuil1, cuil2, sexo,
+                dia_nacimiento, mes_nacimiento, anio_nacimiento, telefono, codigo_area,
+                email, email_abc, lugar_nacimiento, nacionalidad, descripcion_domicilio,
+                departamento, localidad, partido
+            ) VALUES (
+                :id, :nombres, :apellidos, :numero_documento, :cuil1, :cuil2, :sexo,
+                :dia_nacimiento, :mes_nacimiento, :anio_nacimiento, :telefono, :codigo_area,
+                :email, :email_abc, :lugar_nacimiento, :nacionalidad, :descripcion_domicilio,
+                :departamento, :localidad, :partido
+            )
+        ");
+        $stmt->execute(array_merge($data, ['id' => $id]));
+
+        return $id;
+    }
+
     public function update(string $personaId, array $data): void
     {
         $stmt = $this->pdo->prepare("

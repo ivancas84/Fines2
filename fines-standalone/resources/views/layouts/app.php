@@ -26,6 +26,9 @@ $isHerramientasPath = static function (string $path): bool {
     if ($path === '/comisiones/procesar-pf' || str_starts_with($path, '/comisiones/procesar-pf/')) {
         return true;
     }
+    if ($path === '/comisiones/procesar-pci' || str_starts_with($path, '/comisiones/procesar-pci/')) {
+        return true;
+    }
     if ($path === '/calendarios' || str_starts_with($path, '/calendarios/')) {
         return true;
     }
@@ -56,7 +59,10 @@ $isHerramientasPath = static function (string $path): bool {
                     } else {
                         $isActive = $currentPath === $path || str_starts_with($currentPath, $path . '/');
                         // Evitar que /comisiones marque activo por /comisiones/procesar-pf
-                        if ($path === '/comisiones' && str_starts_with($currentPath, '/comisiones/procesar-pf')) {
+                        if ($path === '/comisiones' && (
+                            str_starts_with($currentPath, '/comisiones/procesar-pf')
+                            || str_starts_with($currentPath, '/comisiones/procesar-pci')
+                        )) {
                             $isActive = false;
                         }
                     }

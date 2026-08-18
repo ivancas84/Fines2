@@ -671,6 +671,40 @@ body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.role-options {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.role-option {
+    align-items: flex-start;
+    background: #fff;
+    border: 1px solid var(--app-border);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    gap: 10px;
+    margin: 0;
+    min-height: 100%;
+    padding: 14px;
+}
+
+.role-option input {
+    margin-top: 4px;
+}
+
+.role-option span span {
+    color: #6b7280;
+    display: block;
+    margin-top: 4px;
+}
+
+.role-option:has(input:checked) {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 1px #2563eb;
+}
+
 .comision-picker,
 .curso-picker {
     align-items: start;
@@ -762,6 +796,10 @@ body {
 
     .form-span-2 {
         grid-column: 1 / -1;
+    }
+
+    .role-options {
+        grid-template-columns: 1fr;
     }
 }
 

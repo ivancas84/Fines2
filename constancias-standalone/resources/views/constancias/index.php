@@ -26,4 +26,8 @@
         <strong>General</strong>
         <span>Constancia general con texto libre.</span>
     </a>
+    <a class="action-card" href="<?= e(url('/constancias/toma-posesion/nueva')) ?>">
+        <strong>Toma de posesión</strong>
+        <span>Generar PDF de toma, guardar la constancia y opcionalmente enviar email.</span>
+    </a>
 </section>

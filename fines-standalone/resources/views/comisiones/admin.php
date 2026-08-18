@@ -390,19 +390,14 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
                                             Planilla
                                         </a>
                                     <?php endif; ?>
-                                    <?php if ($canEdit && ($toma['docente_id'] ?? '') !== '') : ?>
-                                        <?php $genFormId = 'form-generar-toma-' . preg_replace('/[^a-zA-Z0-9_-]/', '', (string) $toma['id']); ?>
-                                        <label class="form-check small mb-1">
-                                            <input class="form-check-input" type="checkbox" form="<?= e($genFormId) ?>" name="enviar_email" value="1" id="<?= e($genFormId) ?>-email" checked>
-                                            <span class="form-check-label">Enviar email</span>
-                                        </label>
-                                        <button class="btn btn-sm btn-outline-primary w-100"
-                                                type="submit"
-                                                form="<?= e($genFormId) ?>"
-                                                title="Generar PDF de toma de posesión en constancias"
-                                                onclick="var cb=document.getElementById('<?= e($genFormId) ?>-email'); return confirm(cb && cb.checked ? '¿Generar toma de posesión y enviar email al docente?' : '¿Generar toma de posesión (PDF en constancias)?');">
+                                    <?php if (($toma['constancia_url'] ?? '') !== '') : ?>
+                                        <a class="btn btn-sm btn-outline-primary w-100"
+                                           target="_blank"
+                                           rel="noopener"
+                                           href="<?= e((string) $toma['constancia_url']) ?>"
+                                           title="Abrir formulario de toma de posesión en constancias">
                                             Generar toma
-                                        </button>
+                                        </a>
                                     <?php endif; ?>
                                     <?php if ($canEdit) : ?>
                                         <button class="btn btn-sm btn-outline-danger" type="submit" onclick="document.getElementById('delete_toma_id').value='<?= e($toma['id']) ?>'; return confirm('¿Eliminar esta toma?');">
@@ -420,20 +415,6 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
                 <button class="btn btn-primary" type="submit" onclick="document.getElementById('delete_toma_id').value='';">Guardar tomas</button>
             <?php endif; ?>
         </form>
-        <?php if ($canEdit) : ?>
-            <?php foreach ($tomas as $toma) : ?>
-                <?php if (($toma['docente_id'] ?? '') === '') {
-                    continue;
-                } ?>
-                <?php $genFormId = 'form-generar-toma-' . preg_replace('/[^a-zA-Z0-9_-]/', '', (string) $toma['id']); ?>
-                <form id="<?= e($genFormId) ?>"
-                      method="post"
-                      action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/tomas/' . rawurlencode((string) $toma['id']) . '/generar')) ?>"
-                      class="d-none">
-                    <?= $csrf->field() ?>
-                </form>
-            <?php endforeach; ?>
-        <?php endif; ?>
     <?php endif; ?>
 
     <?php if ($canEdit) : ?>

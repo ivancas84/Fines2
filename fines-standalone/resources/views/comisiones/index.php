@@ -22,6 +22,10 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
            href="<?= e(url('/comisiones/procesar-pf' . ($selectedCalendario !== '' ? '?calendario=' . rawurlencode((string) $selectedCalendario) : ''))) ?>">
             Procesar PF
         </a>
+        <a class="btn btn-outline-secondary"
+           href="<?= e(url('/comisiones/procesar-pci' . ($selectedCalendario !== '' ? '?calendario=' . rawurlencode((string) $selectedCalendario) : ''))) ?>">
+            Procesar PCI
+        </a>
         <?php if ($auth->canEdit()) : ?>
             <a class="btn btn-primary" href="<?= e(url('/comisiones/nueva' . ($selectedCalendario !== '' ? '?calendario=' . rawurlencode((string) $selectedCalendario) : ''))) ?>">
                 Nueva comisión
