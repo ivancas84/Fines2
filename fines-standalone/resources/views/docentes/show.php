@@ -89,7 +89,15 @@ $numeroEntero = static fn (mixed $numero): string => $numero === null || $numero
             <label class="form-label">Localidad <input class="form-control" name="localidad" value="<?= e($v($persona, 'localidad')) ?>"></label>
             <label class="form-label">Partido <input class="form-control" name="partido" value="<?= e($v($persona, 'partido')) ?>"></label>
         </div>
-        <button class="btn btn-primary mt-3" type="submit">Guardar persona</button>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            <button class="btn btn-primary" type="submit">Guardar persona</button>
+            <?php $whatsappUrl = persona_whatsapp_url($persona); ?>
+            <?php if ($whatsappUrl !== null) : ?>
+                <a class="btn btn-outline-success" href="<?= e($whatsappUrl) ?>" target="_blank" rel="noopener">
+                    WhatsApp
+                </a>
+            <?php endif; ?>
+        </div>
     </form>
 </section>
 

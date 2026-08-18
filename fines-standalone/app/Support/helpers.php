@@ -52,6 +52,21 @@ function persona_cuil(array $persona): string
         . substr($cuil2, -1);
 }
 
+function persona_whatsapp_url(array $persona): ?string
+{
+    $telefono = preg_replace('/\D+/', '', (string) ($persona['telefono'] ?? '')) ?? '';
+    if ($telefono === '') {
+        return null;
+    }
+
+    $partes = preg_split('/\s+/u', trim((string) ($persona['nombres'] ?? ''))) ?: [];
+    $primerNombre = trim((string) ($partes[0] ?? ''));
+    $texto = $primerNombre !== '' ? 'Hola ' . $primerNombre : 'Hola';
+
+    return 'https://web.whatsapp.com/send/?phone=' . rawurlencode($telefono)
+        . '&text=' . rawurlencode($texto);
+}
+
 function persona_fecha_nacimiento(array $persona): string
 {
     $dia = (int) ($persona['dia_nacimiento'] ?? 0);
