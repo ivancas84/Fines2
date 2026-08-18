@@ -37,7 +37,8 @@ final class TomaPosesionService
     {
         $docente = is_array($payload['docente'] ?? null) ? $payload['docente'] : $this->docenteFromFlat($payload);
         $cargo = is_array($payload['cargo'] ?? null) ? $payload['cargo'] : $this->cargoFromFlat($payload);
-        $contenidoHtml = trim((string) ($payload['contenido_html'] ?? ''));
+        $cargo['asignatura'] = $this->asignaturaSinCodigo((string) ($cargo['asignatura'] ?? ''));
+        $contenidoHtml = $this->contenidoHtmlSinCodigoAsignatura(trim((string) ($payload['contenido_html'] ?? '')));
 
         $nombres = trim((string) ($docente['nombres'] ?? ''));
         $apellidos = trim((string) ($docente['apellidos'] ?? ''));
@@ -228,7 +229,7 @@ final class TomaPosesionService
             (string) ($docente['apellidos'] ?? '') . ' ' . (string) ($docente['nombres'] ?? ''),
         );
         $cuil = trim((string) ($docente['cuil'] ?? ''));
-        $asignatura = trim((string) ($cargo['asignatura'] ?? ''));
+        $asignatura = $this->asignaturaSinCodigo((string) ($cargo['asignatura'] ?? ''));
         $sede = trim((string) ($cargo['sede'] ?? ''));
         $pfid = trim((string) ($cargo['pfid'] ?? ''));
 
@@ -398,7 +399,7 @@ Saluda a Usted muy atentamente:
             'horario' => (string) ($payload['horario'] ?? ''),
             'fecha_toma' => (string) ($payload['fecha_toma'] ?? ''),
             'fecha_fin' => (string) ($payload['fecha_fin'] ?? ''),
-            'asignatura' => (string) ($payload['asignatura'] ?? ''),
+            'asignatura' => $this->asignaturaSinCodigo((string) ($payload['asignatura'] ?? '')),
             'horas_catedra' => (string) ($payload['horas_catedra'] ?? ''),
             'tramo' => (string) ($payload['tramo'] ?? ''),
             'resolucion' => (string) ($payload['resolucion'] ?? ''),
@@ -490,7 +491,7 @@ Saluda a Usted muy atentamente:
         <td><b>Fecha Fin</b></td><td>' . $this->e((string) ($cargo['fecha_fin'] ?? '')) . '</td>
     </tr>
     <tr>
-        <td><b>Asignatura</b></td><td>' . $this->e((string) ($cargo['asignatura'] ?? '')) . '</td>
+        <td><b>Asignatura</b></td><td>' . $this->e($this->asignaturaSinCodigo((string) ($cargo['asignatura'] ?? ''))) . '</td>
         <td><b>Hs Cát</b></td><td>' . $this->e((string) ($cargo['horas_catedra'] ?? '')) . '</td>
     </tr>
     <tr>
@@ -498,6 +499,38 @@ Saluda a Usted muy atentamente:
         <td><b>Resolución</b></td><td>' . $this->e((string) ($cargo['resolucion'] ?? '')) . '</td>
     </tr>
 </table>';
+    }
+
+    /** Quita códigos de asignatura (WPV, ARTE1, WIN, LA, etc.) y deja el nombre. */
+    private function asignaturaSinCodigo(string $asignatura): string
+    {
+        $asignatura = trim($asignatura);
+        if ($asignatura === '') {
+            return '';
+        }
+
+        $clean = preg_replace('/\s+[A-Z]{2,6}\d*(?:\s*,\s*[A-Z]{2,6}\d*)*$/u', '', $asignatura);
+
+        return trim(is_string($clean) ? $clean : $asignatura);
+    }
+
+    private function contenidoHtmlSinCodigoAsignatura(string $html): string
+    {
+        if ($html === '') {
+            return '';
+        }
+
+        $replaced = preg_replace_callback(
+            '/(<td><b>Asignatura<\/b><\/td><td>)(.*?)(<\/td>)/is',
+            function (array $matches): string {
+                $valor = html_entity_decode(strip_tags($matches[2]), ENT_QUOTES, 'UTF-8');
+
+                return $matches[1] . $this->e($this->asignaturaSinCodigo($valor)) . $matches[3];
+            },
+            $html,
+        );
+
+        return is_string($replaced) ? $replaced : $html;
     }
 
     private function e(string $value): string

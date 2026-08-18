@@ -246,10 +246,7 @@ final class TomaRepository
         }
         $fechaFin = $this->formatDisplayDate($row['calendario_fin'] ?? null);
 
-        $asignatura = trim(implode(' ', array_filter([
-            (string) ($row['asignatura_nombre'] ?? ''),
-            (string) ($row['asignatura_codigo'] ?? ''),
-        ])));
+        $asignatura = trim((string) ($row['asignatura_nombre'] ?? ''));
         $tramo = '';
         if (($row['planificacion_anio'] ?? '') !== '' || ($row['planificacion_semestre'] ?? '') !== '') {
             $tramo = trim(($row['planificacion_anio'] ?? '') . '°' . ($row['planificacion_semestre'] ?? '') . 'C');
