@@ -26,6 +26,8 @@ final class TomaRepository
                    toma.curso AS curso_id,
                    curso.descripcion_horario,
                    curso.codigo AS curso_codigo,
+                   curso.horas_catedra AS curso_horas_catedra,
+                   disposicion.horas_catedra AS disposicion_horas_catedra,
                    asignatura.nombre AS asignatura_label,
                    TRIM(CONCAT_WS('-', NULLIF(planificacion.anio, ''), NULLIF(planificacion.semestre, ''))) AS tramo_label,
                    plan.orientacion AS plan_orientacion,

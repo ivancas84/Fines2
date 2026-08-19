@@ -6,11 +6,25 @@ $tramoAsignaturaLabel = static fn (array $row): string => trim(implode(' ', arra
     $row['asignatura_label'] ?? '',
     $row['tramo_label'] ?? '',
 ])));
-$cursoLabel = static function (array $row) use ($planLabel, $tramoAsignaturaLabel): string {
+$horasLabel = static function (array $row): string {
+    $cursoHoras = $row['curso_horas_catedra'] ?? null;
+    $disposicionHoras = $row['disposicion_horas_catedra'] ?? null;
+    if ($cursoHoras === null && $disposicionHoras === null) {
+        return '';
+    }
+
+    return 'hs: '
+        . ($cursoHoras === null || $cursoHoras === '' ? '?' : (string) $cursoHoras)
+        . ' cur - '
+        . ($disposicionHoras === null || $disposicionHoras === '' ? '?' : (string) $disposicionHoras)
+        . ' dis';
+};
+$cursoLabel = static function (array $row) use ($planLabel, $tramoAsignaturaLabel, $horasLabel): string {
     return trim(implode(' | ', array_filter([
         $tramoAsignaturaLabel($row),
         $planLabel($row),
-    ])));
+        $horasLabel($row),
+    ], static fn (string $part): bool => $part !== '')));
 };
 $fecha = static function (mixed $value): string {
     if ($value === null || $value === '') {
