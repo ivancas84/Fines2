@@ -1,14 +1,7 @@
 <?php
 $canEdit = $auth->canEdit();
 $report = is_array($report ?? null) ? $report : null;
-$levelClass = static function (string $level): string {
-    return match ($level) {
-        'success' => 'text-success',
-        'warning' => 'text-warning-emphasis',
-        'error' => 'text-danger',
-        default => 'text-secondary',
-    };
-};
+$levelClass = static fn (string $level): string => import_log_level_class($level);
 ?>
 <div class="page-header">
     <div>
@@ -35,7 +28,8 @@ $levelClass = static function (string $level): string {
         <li>Solo se actualizan comisiones del <strong>calendario</strong> seleccionado (por PFID).</li>
         <li>Tras cada curso se espera la línea del docente con CUIL (<code>XX-XXXXXXXX-X</code>) o <code>*</code> si no hay designado.</li>
         <li>Si el docente no existe en el sistema, hay que cargarlo antes (p. ej. con Docentes PF).</li>
-        <li>Si no hay toma Aprobada/Pendiente del curso, se crea una con estado <strong>Pendiente</strong>, movimiento <strong>AI</strong> y contralor <strong>Pasar</strong>.</li>
+        <li>Si la persona o el CUIL ya existen y difieren, <strong>no se actualizan</strong> y el log lo marca para verificar.</li>
+        <li>Si no hay toma Aprobada/Pendiente del curso, se crea una con estado <strong>Pendiente</strong>, movimiento <strong>AI</strong> y contralor <strong>Pasar</strong>. Si ya hay toma de otro docente, <strong>no se modifica</strong>.</li>
     </ul>
 
     <?php if (!$canEdit) : ?>
@@ -105,8 +99,13 @@ $levelClass = static function (string $level): string {
             </div>
             <div class="col-md-3">
                 <div class="border rounded p-3 h-100">
-                    <div class="text-secondary small">CUILs actualizados</div>
-                    <div class="fs-4"><?= e((string) (int) $report['cuils_actualizados']) ?></div>
+                    <div class="text-secondary small">CUILs completados / a verificar</div>
+                    <div class="fs-5">
+                        <?= e((string) (int) $report['cuils_actualizados']) ?> /
+                        <span class="<?= ((int) ($report['personas_diferentes'] ?? 0) > 0) ? 'import-log-conflict-text' : '' ?>">
+                            <?= e((string) (int) ($report['personas_diferentes'] ?? 0)) ?>
+                        </span>
+                    </div>
                 </div>
             </div>
             <div class="col-md-3">
@@ -120,7 +119,9 @@ $levelClass = static function (string $level): string {
                     <div class="text-secondary small">Tomas OK / conflicto</div>
                     <div class="fs-5">
                         <?= e((string) (int) $report['tomas_ok']) ?> /
-                        <?= e((string) (int) $report['tomas_conflicto']) ?>
+                        <span class="<?= ((int) $report['tomas_conflicto'] > 0) ? 'import-log-conflict-text' : '' ?>">
+                            <?= e((string) (int) $report['tomas_conflicto']) ?>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -159,11 +160,10 @@ $levelClass = static function (string $level): string {
                     </thead>
                     <tbody>
                     <?php foreach ($report['log'] as $entry) : ?>
-                        <tr>
-                            <td class="<?= e($levelClass((string) ($entry['level'] ?? 'info'))) ?>">
-                                <?= e((string) ($entry['level'] ?? 'info')) ?>
-                            </td>
-                            <td class="<?= e($levelClass((string) ($entry['level'] ?? 'info'))) ?>">
+                        <?php $level = (string) ($entry['level'] ?? 'info'); ?>
+                        <tr class="<?= e(import_log_row_class($level)) ?>">
+                            <td class="<?= e($levelClass($level)) ?>"><?= e($level) ?></td>
+                            <td class="<?= e($levelClass($level)) ?>">
                                 <?= e((string) ($entry['message'] ?? '')) ?>
                             </td>
                         </tr>

@@ -1,14 +1,7 @@
 <?php
 $canEdit = $auth->canEdit();
 $report = is_array($report ?? null) ? $report : null;
-$levelClass = static function (string $level): string {
-    return match ($level) {
-        'success' => 'text-success',
-        'warning' => 'text-warning-emphasis',
-        'error' => 'text-danger',
-        default => 'text-secondary',
-    };
-};
+$levelClass = static fn (string $level): string => import_log_level_class($level);
 ?>
 <div class="page-header">
     <div>
@@ -28,8 +21,8 @@ $levelClass = static function (string $level): string {
     <ul class="text-secondary">
         <li>Descargá el XLSX de docentes de ProgramaFines y copiá las filas con encabezados.</li>
         <li>Columnas esperadas (flexibles): Nombre, Apellido, DNI, Dirección, Localidad, FechaNac, Celular, Email, Comisión, Materia, CENS.</li>
-        <li>Se insertan o actualizan personas por DNI. Si el DNI ya existe y el nombre no es parecido, la fila falla.</li>
-        <li>Para el CENS indicado (por defecto <strong>462</strong>) también se crean tomas pendientes si no hay toma activa en el curso de la materia.</li>
+        <li>Se insertan personas nuevas por DNI. Si la persona ya existe y algún dato difiere, <strong>no se actualiza</strong> y el log lo marca para verificar.</li>
+        <li>Para el CENS indicado (por defecto <strong>462</strong>) se crean tomas pendientes si no hay toma activa. Si el curso ya tiene toma de otro docente, <strong>no se modifica</strong> y queda marcado para verificar.</li>
         <li>Se recomienda eliminar del pegado las últimas columnas de Dirección/Localidad del CENS si confunden el armado de columnas.</li>
     </ul>
 
@@ -104,10 +97,18 @@ $levelClass = static function (string $level): string {
             </div>
             <div class="col-md-3">
                 <div class="border rounded p-3 h-100">
-                    <div class="text-secondary small">Existentes / modificados</div>
+                    <div class="text-secondary small">Existentes / completados</div>
                     <div class="fs-5">
                         <?= e((string) (int) $report['docentes_existentes']) ?> /
                         <?= e((string) (int) $report['docentes_modificados']) ?>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="border rounded p-3 h-100">
+                    <div class="text-secondary small">Personas a verificar</div>
+                    <div class="fs-4 <?= ((int) ($report['docentes_diferentes'] ?? 0) > 0) ? 'import-log-conflict-text' : '' ?>">
+                        <?= e((string) (int) ($report['docentes_diferentes'] ?? 0)) ?>
                     </div>
                 </div>
             </div>
@@ -128,7 +129,9 @@ $levelClass = static function (string $level): string {
                     <div class="text-secondary small">Tomas ya existentes</div>
                     <div class="fs-5">
                         mismo: <?= e((string) (int) $report['tomas_existentes_mismo']) ?> /
-                        otro: <?= e((string) (int) $report['tomas_existentes_otro']) ?>
+                        <span class="<?= ((int) $report['tomas_existentes_otro'] > 0) ? 'import-log-conflict-text' : '' ?>">
+                            otro: <?= e((string) (int) $report['tomas_existentes_otro']) ?>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -157,13 +160,12 @@ $levelClass = static function (string $level): string {
                     </thead>
                     <tbody>
                     <?php foreach ($report['log'] as $entry) : ?>
-                        <tr>
-                            <td class="<?= e($levelClass((string) ($entry['level'] ?? 'info'))) ?>">
-                                <?= e((string) ($entry['level'] ?? 'info')) ?>
-                            </td>
+                        <?php $level = (string) ($entry['level'] ?? 'info'); ?>
+                        <tr class="<?= e(import_log_row_class($level)) ?>">
+                            <td class="<?= e($levelClass($level)) ?>"><?= e($level) ?></td>
                             <td><?= e(isset($entry['row']) ? (string) $entry['row'] : '—') ?></td>
                             <td><?= e((string) ($entry['cens'] ?? '—')) ?></td>
-                            <td class="<?= e($levelClass((string) ($entry['level'] ?? 'info'))) ?>">
+                            <td class="<?= e($levelClass($level)) ?>">
                                 <?= e((string) ($entry['message'] ?? '')) ?>
                             </td>
                         </tr>

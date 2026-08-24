@@ -53,4 +53,19 @@ final class PersonaName
 
         return false;
     }
+
+    /** @param array{nombres?: mixed, apellidos?: mixed, numero_documento?: mixed} $persona */
+    public static function label(array $persona): string
+    {
+        $nombre = trim(implode(' ', array_filter([
+            trim((string) ($persona['apellidos'] ?? '')),
+            trim((string) ($persona['nombres'] ?? '')),
+        ])));
+        $dni = preg_replace('/\D+/', '', (string) ($persona['numero_documento'] ?? '')) ?? '';
+        if ($nombre === '') {
+            return $dni !== '' ? 'DNI ' . $dni : 'sin datos';
+        }
+
+        return $dni !== '' ? $nombre . ' (DNI ' . $dni . ')' : $nombre;
+    }
 }

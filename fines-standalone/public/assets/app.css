@@ -803,6 +803,17 @@ body {
     }
 }
 
+tr.import-log-conflict td {
+    background-color: #ffb020 !important;
+    color: #1a1200 !important;
+    font-weight: 700;
+}
+
+.import-log-conflict-text {
+    color: #1a1200;
+    font-weight: 700;
+}
+
 @media (max-width: 760px) {
     .app-shell {
         grid-template-columns: 1fr;

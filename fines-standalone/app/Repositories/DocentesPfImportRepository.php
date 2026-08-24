@@ -24,6 +24,7 @@ final class DocentesPfImportRepository
      *   docentes_insertados: int,
      *   docentes_existentes: int,
      *   docentes_modificados: int,
+     *   docentes_diferentes: int,
      *   docentes_sin_designar: int,
      *   tomas_creadas: int,
      *   tomas_existentes_mismo: int,
@@ -51,6 +52,7 @@ final class DocentesPfImportRepository
             'docentes_insertados' => 0,
             'docentes_existentes' => 0,
             'docentes_modificados' => 0,
+            'docentes_diferentes' => 0,
             'docentes_sin_designar' => 0,
             'tomas_creadas' => 0,
             'tomas_existentes_mismo' => 0,
@@ -84,13 +86,25 @@ final class DocentesPfImportRepository
                 } elseif ($personaResult['action'] === 'update') {
                     $report['docentes_modificados']++;
                     if ($isCensTomas) {
-                        $this->log($report, 'info', "Fila {$rowNumber}: docente modificado (DNI {$dni}).", $rowNumber, $cens);
+                        $this->log($report, 'info', "Fila {$rowNumber}: docente con datos vacíos completados (DNI {$dni}).", $rowNumber, $cens);
                     }
                 } else {
                     $report['docentes_existentes']++;
-                    if ($isCensTomas) {
+                    if ($isCensTomas && ($personaResult['diffs'] ?? []) === []) {
                         $this->log($report, 'info', "Fila {$rowNumber}: docente existente (DNI {$dni}).", $rowNumber, $cens);
                     }
+                }
+
+                if (($personaResult['diffs'] ?? []) !== []) {
+                    $report['docentes_diferentes']++;
+                    $this->log(
+                        $report,
+                        'conflict',
+                        "Fila {$rowNumber}: VERIFICAR persona DNI {$dni}. Datos distintos, no se actualizaron: "
+                            . implode('; ', $personaResult['diffs']) . '.',
+                        $rowNumber,
+                        $cens !== '' ? $cens : null,
+                    );
                 }
 
                 if (!$isCensTomas) {
@@ -122,7 +136,7 @@ final class DocentesPfImportRepository
 
     /**
      * @param array<string, mixed> $row
-     * @return array{id: string, action: 'insert'|'update'|'exists'}
+     * @return array{id: string, action: 'insert'|'update'|'exists', diffs: list<string>}
      */
     private function upsertPersona(array $row, string $dni): array
     {
@@ -166,18 +180,18 @@ final class DocentesPfImportRepository
                 'sexo' => $payload['sexo'],
             ]);
 
-            return ['id' => $id, 'action' => 'insert'];
+            return ['id' => $id, 'action' => 'insert', 'diffs' => []];
         }
 
+        $diffs = [];
         if (!PersonaName::nombreParecido($existing, $payload)) {
             $stored = trim(($existing['apellidos'] ?? '') . ', ' . ($existing['nombres'] ?? ''));
             $incoming = trim(($payload['apellidos'] ?? '') . ', ' . ($payload['nombres'] ?? ''));
-            throw new \RuntimeException(
-                "Los nombres no son parecidos al registro almacenado (DNI {$dni}: «{$stored}» vs «{$incoming}»).",
-            );
+            $diffs[] = "nombre «{$stored}» (BD) vs «{$incoming}» (planilla)";
         }
 
         $merged = $this->mergePersonaFields($existing, $payload);
+        $diffs = array_merge($diffs, $merged['diffs']);
         if ($merged['changed']) {
             $stmt = $this->pdo->prepare("
                 UPDATE persona
@@ -199,10 +213,10 @@ final class DocentesPfImportRepository
             ");
             $stmt->execute(array_merge($merged['data'], ['id' => $existing['id']]));
 
-            return ['id' => (string) $existing['id'], 'action' => 'update'];
+            return ['id' => (string) $existing['id'], 'action' => 'update', 'diffs' => $diffs];
         }
 
-        return ['id' => (string) $existing['id'], 'action' => 'exists'];
+        return ['id' => (string) $existing['id'], 'action' => 'exists', 'diffs' => $diffs];
     }
 
     /**
@@ -298,10 +312,16 @@ final class DocentesPfImportRepository
                 );
             } else {
                 $report['tomas_existentes_otro']++;
+                $existente = PersonaName::label([
+                    'nombres' => $curso['toma_docente_nombres'] ?? '',
+                    'apellidos' => $curso['toma_docente_apellidos'] ?? '',
+                    'numero_documento' => $curso['toma_docente_documento'] ?? '',
+                ]);
                 $this->log(
                     $report,
-                    'warning',
-                    "Fila {$rowNumber}: toma ya existe para curso {$cursoId} ({$asignaturaNombre}) con otro docente. No se creó una nueva.",
+                    'conflict',
+                    "Fila {$rowNumber}: VERIFICAR toma de {$asignaturaNombre} (curso {$cursoId}). "
+                        . "Ya está {$existente}. La planilla indica otro docente. No se modificó.",
                     $rowNumber,
                     $cens,
                 );
@@ -362,7 +382,10 @@ final class DocentesPfImportRepository
      *   asignatura_codigo: ?string,
      *   asignatura_nombre: ?string,
      *   toma_activa_id: ?string,
-     *   toma_docente_id: ?string
+     *   toma_docente_id: ?string,
+     *   toma_docente_nombres: ?string,
+     *   toma_docente_apellidos: ?string,
+     *   toma_docente_documento: ?string
      * }>
      */
     private function cursosConTomaActivaByComision(string $comisionId): array
@@ -391,8 +414,12 @@ final class DocentesPfImportRepository
         }
 
         $tomasStmt = $this->pdo->prepare("
-            SELECT toma.id, toma.curso, toma.docente, toma.fecha_toma, toma.alta
+            SELECT toma.id, toma.curso, toma.docente, toma.fecha_toma, toma.alta,
+                   persona.nombres AS docente_nombres,
+                   persona.apellidos AS docente_apellidos,
+                   persona.numero_documento AS docente_documento
             FROM toma
+            LEFT JOIN persona ON persona.id = toma.docente
             WHERE toma.curso IN ({$placeholders})
               AND (toma.estado = 'Aprobada' OR toma.estado = 'Pendiente')
               AND toma.estado_contralor = 'Pasar'
@@ -413,6 +440,9 @@ final class DocentesPfImportRepository
             $toma = $tomaByCurso[$cursoKey] ?? null;
             $curso['toma_activa_id'] = $toma['id'] ?? null;
             $curso['toma_docente_id'] = $toma['docente'] ?? null;
+            $curso['toma_docente_nombres'] = $toma['docente_nombres'] ?? null;
+            $curso['toma_docente_apellidos'] = $toma['docente_apellidos'] ?? null;
+            $curso['toma_docente_documento'] = $toma['docente_documento'] ?? null;
         }
         unset($curso);
 
@@ -504,34 +534,34 @@ final class DocentesPfImportRepository
     /**
      * @param array<string, mixed> $existing
      * @param array<string, mixed> $incoming
-     * @return array{changed: bool, data: array<string, mixed>}
+     * @return array{changed: bool, diffs: list<string>, data: array<string, mixed>}
      */
     private function mergePersonaFields(array $existing, array $incoming): array
     {
-        $fields = [
-            'nombres',
-            'apellidos',
-            'descripcion_domicilio',
-            'localidad',
-            'telefono',
-            'email',
-            'email_abc',
-            'nacionalidad',
-            'fecha_nacimiento',
-            'dia_nacimiento',
-            'mes_nacimiento',
-            'anio_nacimiento',
-            'genero',
-            'sexo',
+        $labels = [
+            'nombres' => 'nombres',
+            'apellidos' => 'apellidos',
+            'descripcion_domicilio' => 'domicilio',
+            'localidad' => 'localidad',
+            'telefono' => 'teléfono',
+            'email' => 'email',
+            'email_abc' => 'email ABC',
+            'nacionalidad' => 'nacionalidad',
+            'fecha_nacimiento' => 'fecha de nacimiento',
+            'dia_nacimiento' => 'día de nacimiento',
+            'mes_nacimiento' => 'mes de nacimiento',
+            'anio_nacimiento' => 'año de nacimiento',
+            'genero' => 'género',
+            'sexo' => 'sexo',
         ];
 
         $data = [];
         $changed = false;
-        foreach ($fields as $field) {
+        $diffs = [];
+        foreach (array_keys($labels) as $field) {
             $newValue = $incoming[$field] ?? null;
             $oldValue = $existing[$field] ?? null;
 
-            // Solo pisa con valores no vacíos del import (como ssetNotNull del sistema viejo).
             if ($this->isEmptyValue($newValue)) {
                 $data[$field] = $oldValue;
                 continue;
@@ -543,9 +573,10 @@ final class DocentesPfImportRepository
                 continue;
             }
 
-            if ((string) $oldValue !== (string) $newValue) {
-                $data[$field] = $newValue;
-                $changed = true;
+            if ($this->personaValuesDiffer($field, $oldValue, $newValue)) {
+                $data[$field] = $oldValue;
+                $diffs[] = $labels[$field] . ' «' . $this->displayValue($oldValue) . '» (BD) vs «'
+                    . $this->displayValue($newValue) . '» (planilla)';
             } else {
                 $data[$field] = $oldValue;
             }
@@ -562,7 +593,38 @@ final class DocentesPfImportRepository
             $data['nombres'] = (string) ($existing['nombres'] ?? '');
         }
 
-        return ['changed' => $changed, 'data' => $data];
+        return ['changed' => $changed, 'diffs' => $diffs, 'data' => $data];
+    }
+
+    private function personaValuesDiffer(string $field, mixed $oldValue, mixed $newValue): bool
+    {
+        if (in_array($field, ['email', 'email_abc'], true)) {
+            return mb_strtolower(trim((string) $oldValue)) !== mb_strtolower(trim((string) $newValue));
+        }
+        if ($field === 'telefono') {
+            $oldDigits = preg_replace('/\D+/', '', (string) $oldValue) ?? '';
+            $newDigits = preg_replace('/\D+/', '', (string) $newValue) ?? '';
+
+            return $oldDigits !== $newDigits;
+        }
+        if (in_array($field, ['nombres', 'apellidos', 'descripcion_domicilio', 'localidad', 'nacionalidad', 'genero'], true)) {
+            $normalize = static fn (mixed $value): string => (string) preg_replace(
+                '/\s+/u',
+                ' ',
+                mb_strtolower(trim((string) $value)),
+            );
+
+            return $normalize($oldValue) !== $normalize($newValue);
+        }
+
+        return (string) $oldValue !== (string) $newValue;
+    }
+
+    private function displayValue(mixed $value): string
+    {
+        $text = trim((string) $value);
+
+        return $text === '' ? '(vacío)' : $text;
     }
 
     private function parseDate(?string $value): ?string

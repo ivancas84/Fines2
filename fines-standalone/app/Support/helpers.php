@@ -84,3 +84,19 @@ function flash(string $key): ?string
 {
     return Session::pullFlash($key);
 }
+
+function import_log_level_class(string $level): string
+{
+    return match ($level) {
+        'success' => 'text-success',
+        'warning' => 'text-warning-emphasis',
+        'conflict' => 'import-log-conflict-text',
+        'error' => 'text-danger',
+        default => 'text-secondary',
+    };
+}
+
+function import_log_row_class(string $level): string
+{
+    return $level === 'conflict' ? 'import-log-conflict' : '';
+}

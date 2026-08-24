@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FinesApp\Repositories;
 
+use FinesApp\Support\PersonaName;
 use PDO;
 
 /**
@@ -40,6 +41,7 @@ final class ComisionesPfImportRepository
      *   cursos_procesados: int,
      *   horarios_actualizados: int,
      *   cuils_actualizados: int,
+     *   personas_diferentes: int,
      *   tomas_creadas: int,
      *   tomas_ok: int,
      *   tomas_conflicto: int,
@@ -66,6 +68,7 @@ final class ComisionesPfImportRepository
             'cursos_procesados' => 0,
             'horarios_actualizados' => 0,
             'cuils_actualizados' => 0,
+            'personas_diferentes' => 0,
             'tomas_creadas' => 0,
             'tomas_ok' => 0,
             'tomas_conflicto' => 0,
@@ -210,15 +213,40 @@ final class ComisionesPfImportRepository
             return;
         }
 
+        $nombreInforme = trim(str_replace([$cuil, '--'], ['', '-'], $line));
+        $nombreInforme = trim((string) preg_replace('/\s+/u', ' ', $nombreInforme));
+        if ($nombreInforme !== '' && !PersonaName::nombreParecido($persona, [
+            'nombres' => $nombreInforme,
+            'apellidos' => '',
+        ])) {
+            $report['personas_diferentes']++;
+            $this->log(
+                $report,
+                'conflict',
+                "VERIFICAR persona DNI {$dni}: nombre «" . PersonaName::label($persona)
+                    . "» (BD) vs «{$nombreInforme}» (informe). No se actualizó.",
+            );
+        }
+
         $cuilSinGuiones = implode('', $cuilParts);
-        $this->updatePersonaCuil(
-            (string) $persona['id'],
-            $cuilSinGuiones,
-            (int) $cuilParts[0],
-            (int) $cuilParts[2],
-        );
-        $report['cuils_actualizados']++;
-        $this->log($report, 'success', "CUIL actualizado {$cuilSinGuiones}");
+        $storedCuil = preg_replace('/\D+/', '', (string) ($persona['cuil'] ?? '')) ?? '';
+        if ($storedCuil === '') {
+            $this->updatePersonaCuil(
+                (string) $persona['id'],
+                $cuilSinGuiones,
+                (int) $cuilParts[0],
+                (int) $cuilParts[2],
+            );
+            $report['cuils_actualizados']++;
+            $this->log($report, 'success', "CUIL completado {$cuilSinGuiones}");
+        } elseif ($storedCuil !== $cuilSinGuiones) {
+            $report['personas_diferentes']++;
+            $this->log(
+                $report,
+                'conflict',
+                "VERIFICAR persona DNI {$dni}: CUIL «{$storedCuil}» (BD) vs «{$cuilSinGuiones}» (informe). No se actualizó.",
+            );
+        }
 
         if ($cursoId === '') {
             $report['errores']++;
@@ -241,7 +269,18 @@ final class ComisionesPfImportRepository
 
         if ((string) ($toma['docente'] ?? '') !== (string) $persona['id']) {
             $report['tomas_conflicto']++;
-            $this->log($report, 'warning', "Los cargos no coinciden (curso {$cursoId}, CUIL {$cuil})");
+            $existente = PersonaName::label([
+                'nombres' => $toma['nombres'] ?? '',
+                'apellidos' => $toma['apellidos'] ?? '',
+                'numero_documento' => $toma['numero_documento'] ?? '',
+            ]);
+            $entrante = PersonaName::label($persona);
+            $this->log(
+                $report,
+                'conflict',
+                "VERIFICAR toma del curso {$context} ({$cursoId}): ya está {$existente}. "
+                    . "El informe indica {$entrante}. No se modificó.",
+            );
             return;
         }
 
@@ -341,16 +380,18 @@ final class ComisionesPfImportRepository
     }
 
     /**
-     * @return array{id: string, docente: ?string}|null
+     * @return array{id: string, docente: ?string, nombres?: ?string, apellidos?: ?string, numero_documento?: ?string}|null
      */
     private function tomaAprobadaOPendiente(string $cursoId): ?array
     {
         $stmt = $this->pdo->prepare("
-            SELECT id, docente
+            SELECT toma.id, toma.docente,
+                   persona.nombres, persona.apellidos, persona.numero_documento
             FROM toma
-            WHERE curso = :curso
-              AND (estado = 'Aprobada' OR estado = 'Pendiente')
-            ORDER BY fecha_toma DESC, alta DESC, id DESC
+            LEFT JOIN persona ON persona.id = toma.docente
+            WHERE toma.curso = :curso
+              AND (toma.estado = 'Aprobada' OR toma.estado = 'Pendiente')
+            ORDER BY toma.fecha_toma DESC, toma.alta DESC, toma.id DESC
             LIMIT 1
         ");
         $stmt->execute(['curso' => $cursoId]);
@@ -377,7 +418,7 @@ final class ComisionesPfImportRepository
     }
 
     /**
-     * @return array{id: string, numero_documento: string}|null
+     * @return array{id: string, numero_documento: string, nombres?: ?string, apellidos?: ?string, cuil?: ?string}|null
      */
     private function findPersonaByDni(string $dni): ?array
     {
@@ -398,7 +439,7 @@ final class ComisionesPfImportRepository
         }
 
         $stmt = $this->pdo->prepare("
-            SELECT id, numero_documento
+            SELECT id, numero_documento, nombres, apellidos, cuil
             FROM persona
             WHERE numero_documento IN ({$placeholders})
             LIMIT 1

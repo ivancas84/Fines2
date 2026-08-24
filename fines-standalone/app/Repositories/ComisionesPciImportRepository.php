@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FinesApp\Repositories;
 
 use FinesApp\Support\ComisionesPciParser;
+use FinesApp\Support\PersonaName;
 use PDO;
 
 /**
@@ -29,6 +30,7 @@ final class ComisionesPciImportRepository
      *   tomas_creadas: int,
      *   tomas_ok: int,
      *   tomas_conflicto: int,
+     *   personas_diferentes: int,
      *   docentes_sin_designar: int,
      *   docentes_inexistentes: int,
      *   cursos_no_encontrados: int,
@@ -63,6 +65,7 @@ final class ComisionesPciImportRepository
             'tomas_creadas' => 0,
             'tomas_ok' => 0,
             'tomas_conflicto' => 0,
+            'personas_diferentes' => 0,
             'docentes_sin_designar' => 0,
             'docentes_inexistentes' => 0,
             'cursos_no_encontrados' => 0,
@@ -155,6 +158,20 @@ final class ComisionesPciImportRepository
                 continue;
             }
 
+            $nombreInforme = trim((string) ($row['docente_nombre'] ?? ''));
+            if ($nombreInforme !== '' && !PersonaName::nombreParecido($persona, [
+                'nombres' => $nombreInforme,
+                'apellidos' => '',
+            ])) {
+                $report['personas_diferentes']++;
+                $this->log(
+                    $report,
+                    'conflict',
+                    "{$context}: VERIFICAR persona DNI {$row['dni']}: «"
+                        . PersonaName::label($persona) . "» (BD) vs «{$nombreInforme}» (informe). No se actualizó.",
+                );
+            }
+
             $toma = $this->tomaAprobadaOPendiente($cursoId);
             if ($toma === null) {
                 try {
@@ -170,7 +187,17 @@ final class ComisionesPciImportRepository
 
             if ((string) ($toma['docente'] ?? '') !== (string) $persona['id']) {
                 $report['tomas_conflicto']++;
-                $this->log($report, 'warning', "{$context}: los cargos no coinciden (DNI {$row['dni']})");
+                $existente = PersonaName::label([
+                    'nombres' => $toma['nombres'] ?? '',
+                    'apellidos' => $toma['apellidos'] ?? '',
+                    'numero_documento' => $toma['numero_documento'] ?? '',
+                ]);
+                $entrante = PersonaName::label($persona);
+                $this->log(
+                    $report,
+                    'conflict',
+                    "{$context}: VERIFICAR toma. Ya está {$existente}. El informe indica {$entrante}. No se modificó.",
+                );
                 continue;
             }
 
@@ -226,16 +253,18 @@ final class ComisionesPciImportRepository
     }
 
     /**
-     * @return array{id: string, docente: ?string}|null
+     * @return array{id: string, docente: ?string, nombres?: ?string, apellidos?: ?string, numero_documento?: ?string}|null
      */
     private function tomaAprobadaOPendiente(string $cursoId): ?array
     {
         $stmt = $this->pdo->prepare("
-            SELECT id, docente
+            SELECT toma.id, toma.docente,
+                   persona.nombres, persona.apellidos, persona.numero_documento
             FROM toma
-            WHERE curso = :curso
-              AND (estado = 'Aprobada' OR estado = 'Pendiente')
-            ORDER BY fecha_toma DESC, alta DESC, id DESC
+            LEFT JOIN persona ON persona.id = toma.docente
+            WHERE toma.curso = :curso
+              AND (toma.estado = 'Aprobada' OR toma.estado = 'Pendiente')
+            ORDER BY toma.fecha_toma DESC, toma.alta DESC, toma.id DESC
             LIMIT 1
         ");
         $stmt->execute(['curso' => $cursoId]);
@@ -262,7 +291,7 @@ final class ComisionesPciImportRepository
     }
 
     /**
-     * @return array{id: string, numero_documento: string}|null
+     * @return array{id: string, numero_documento: string, nombres?: ?string, apellidos?: ?string}|null
      */
     private function findPersonaByDni(string $dni): ?array
     {
@@ -283,7 +312,7 @@ final class ComisionesPciImportRepository
         }
 
         $stmt = $this->pdo->prepare("
-            SELECT id, numero_documento
+            SELECT id, numero_documento, nombres, apellidos
             FROM persona
             WHERE numero_documento IN ({$placeholders})
             LIMIT 1

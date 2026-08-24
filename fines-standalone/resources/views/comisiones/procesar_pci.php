@@ -1,14 +1,7 @@
 <?php
 $canEdit = $auth->canEdit();
 $report = is_array($report ?? null) ? $report : null;
-$levelClass = static function (string $level): string {
-    return match ($level) {
-        'success' => 'text-success',
-        'warning' => 'text-warning-emphasis',
-        'error' => 'text-danger',
-        default => 'text-secondary',
-    };
-};
+$levelClass = static fn (string $level): string => import_log_level_class($level);
 ?>
 <div class="page-header">
     <div>
@@ -35,6 +28,7 @@ $levelClass = static function (string $level): string {
         <li>Solo se actualizan comisiones del <strong>calendario</strong> seleccionado (por PFID) que ya tengan cursos AREA A–E.</li>
         <li>El docente se busca por DNI. Si no existe, hay que cargarlo antes en
             <a href="<?= e(url('/personas/nueva')) ?>">Nueva persona</a>.</li>
+        <li>Si el nombre de la persona o el docente de la toma difieren, <strong>no se actualizan</strong> y el log lo marca para verificar.</li>
         <li><code>Docente: Sin designar</code> no crea toma. Si no hay toma Aprobada/Pendiente, se crea una con estado <strong>Pendiente</strong>, movimiento <strong>AI</strong> y contralor <strong>Pasar</strong>.</li>
     </ul>
 
@@ -114,10 +108,20 @@ $levelClass = static function (string $level): string {
             </div>
             <div class="col-md-3">
                 <div class="border rounded p-3 h-100">
+                    <div class="text-secondary small">Personas a verificar</div>
+                    <div class="fs-4 <?= ((int) ($report['personas_diferentes'] ?? 0) > 0) ? 'import-log-conflict-text' : '' ?>">
+                        <?= e((string) (int) ($report['personas_diferentes'] ?? 0)) ?>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="border rounded p-3 h-100">
                     <div class="text-secondary small">Tomas OK / conflicto</div>
                     <div class="fs-5">
                         <?= e((string) (int) $report['tomas_ok']) ?> /
-                        <?= e((string) (int) $report['tomas_conflicto']) ?>
+                        <span class="<?= ((int) $report['tomas_conflicto'] > 0) ? 'import-log-conflict-text' : '' ?>">
+                            <?= e((string) (int) $report['tomas_conflicto']) ?>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -162,11 +166,10 @@ $levelClass = static function (string $level): string {
                     </thead>
                     <tbody>
                     <?php foreach ($report['log'] as $entry) : ?>
-                        <tr>
-                            <td class="<?= e($levelClass((string) ($entry['level'] ?? 'info'))) ?>">
-                                <?= e((string) ($entry['level'] ?? 'info')) ?>
-                            </td>
-                            <td class="<?= e($levelClass((string) ($entry['level'] ?? 'info'))) ?>">
+                        <?php $level = (string) ($entry['level'] ?? 'info'); ?>
+                        <tr class="<?= e(import_log_row_class($level)) ?>">
+                            <td class="<?= e($levelClass($level)) ?>"><?= e($level) ?></td>
+                            <td class="<?= e($levelClass($level)) ?>">
                                 <?= e((string) ($entry['message'] ?? '')) ?>
                             </td>
                         </tr>
