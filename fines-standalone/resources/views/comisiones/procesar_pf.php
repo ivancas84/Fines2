@@ -23,8 +23,9 @@ $levelClass = static fn (string $level): string => import_log_level_class($level
     <h2>Datos del informe global</h2>
     <ul class="text-secondary">
         <li>Copiá y pegá el texto del informe global de ProgramaFines.</li>
-        <li>Se procesan líneas que contienen un día de la semana (Lunes…Viernes) con formato
-            <code>{pfid}/{codigo} … Lunes …</code>.</li>
+        <li>Se procesan líneas <code>{pfid}/{codigo}Nombre … Lunes …</code>
+            (el código va pegado al nombre, p. ej. <code>10166/WPVEducacion Artistica 3 Miercoles …</code> → WPV).
+            Si el PDF parte el curso (<code>10333/WLL</code> y el día en la línea siguiente), se unen.</li>
         <li>Solo se actualizan comisiones del <strong>calendario</strong> seleccionado (por PFID).</li>
         <li>Tras cada curso se espera la línea del docente con CUIL (<code>XX-XXXXXXXX-X</code>) o <code>*</code> si no hay designado.</li>
         <li>Si el docente no existe en el sistema, hay que cargarlo antes (p. ej. con Docentes PF).</li>

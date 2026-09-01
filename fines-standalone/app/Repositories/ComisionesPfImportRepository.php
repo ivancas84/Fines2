@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FinesApp\Repositories;
 
+use FinesApp\Support\ComisionesPfParser;
 use FinesApp\Support\PersonaName;
 use PDO;
 
@@ -13,24 +14,12 @@ use PDO;
  *
  * Formato esperado (texto copiado del informe):
  * - Línea de curso/horario con un día de la semana, p. ej.:
- *   `{pfid}/{codigo} ... Lunes 18:00 a 20:00`
+ *   `{pfid}/{codigo}Nombre … Lunes 18:00 a 20:00`
+ *   El código va pegado al nombre (`10166/WPVEducacion…` → WPV).
  * - Línea(s) siguientes con docente (CUIL `XX-XXXXXXXX-X`) o `*` si no hay designado.
  */
 final class ComisionesPfImportRepository
 {
-    /** @var list<string> */
-    private const DIAS = [
-        'Lunes',
-        'Martes',
-        'Miercoles',
-        'Miércoles',
-        'Jueves',
-        'Viernes',
-        'Sabado',
-        'Sábado',
-        'Domingo',
-    ];
-
     public function __construct(private readonly PDO $pdo)
     {
     }
@@ -79,11 +68,7 @@ final class ComisionesPfImportRepository
             'log' => [],
         ];
 
-        $lines = preg_split("/\r\n|\n|\r/", $rawData) ?: [];
-        $lines = array_values(array_filter(
-            array_map(static fn (string $line): string => rtrim($line), $lines),
-            static fn (string $line): bool => trim($line) !== '',
-        ));
+        $lines = ComisionesPfParser::lines($rawData);
         $report['lines_total'] = count($lines);
 
         $procesarDocente = false;
@@ -108,12 +93,11 @@ final class ComisionesPfImportRepository
                 }
             }
 
-            $diaEncontrado = $this->findDiaInLine($line);
-            if ($diaEncontrado === null) {
+            if (ComisionesPfParser::findDia($line) === null) {
                 continue;
             }
 
-            $parsed = $this->parseCursoLine($line, $diaEncontrado);
+            $parsed = ComisionesPfParser::parseCursoLine($line);
             if ($parsed === null) {
                 $report['errores']++;
                 $this->log($report, 'error', "No se pudo interpretar la línea de curso: {$line}");
@@ -286,61 +270,6 @@ final class ComisionesPfImportRepository
 
         $report['tomas_ok']++;
         $this->log($report, 'info', "Toma existente con el mismo docente (curso {$cursoId})");
-    }
-
-    private function findDiaInLine(string $line): ?string
-    {
-        foreach (self::DIAS as $dia) {
-            if (str_contains($line, $dia)) {
-                return $dia;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @return array{pfid: string, codigo: string, horario: string}|null
-     */
-    private function parseCursoLine(string $line, string $dia): ?array
-    {
-        $slashPos = strpos($line, '/');
-        if ($slashPos === false) {
-            return null;
-        }
-
-        $pfid = trim(substr($line, 0, $slashPos));
-        if ($pfid === '') {
-            return null;
-        }
-
-        $afterSlash = substr($line, $slashPos + 1);
-        $spacePos = strpos($afterSlash, ' ');
-        $codigoRaw = $spacePos === false
-            ? trim($afterSlash)
-            : trim(substr($afterSlash, 0, $spacePos));
-
-        if ($codigoRaw === '') {
-            return null;
-        }
-
-        // Igual que el script original: recorta a 5 caracteres si viene más largo.
-        $codigo = mb_strlen($codigoRaw) > 5 ? mb_substr($codigoRaw, 0, 5) : $codigoRaw;
-
-        $diaPos = strpos($line, $dia);
-        if ($diaPos === false) {
-            return null;
-        }
-        $horario = trim(substr($line, $diaPos));
-        if ($horario === '') {
-            return null;
-        }
-
-        return [
-            'pfid' => $pfid,
-            'codigo' => $codigo,
-            'horario' => $horario,
-        ];
     }
 
     private function cursoIdByParams(string $pfid, string $codigo, string $calendarioId): ?string
