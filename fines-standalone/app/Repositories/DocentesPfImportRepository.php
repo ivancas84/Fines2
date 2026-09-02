@@ -153,11 +153,11 @@ final class DocentesPfImportRepository
             $stmt = $this->pdo->prepare("
                 INSERT INTO persona (
                     id, nombres, apellidos, numero_documento, descripcion_domicilio, localidad,
-                    telefono, email, email_abc, nacionalidad, fecha_nacimiento,
+                    telefono, email, email_abc, nacionalidad,
                     dia_nacimiento, mes_nacimiento, anio_nacimiento, genero, sexo
                 ) VALUES (
                     :id, :nombres, :apellidos, :numero_documento, :descripcion_domicilio, :localidad,
-                    :telefono, :email, :email_abc, :nacionalidad, :fecha_nacimiento,
+                    :telefono, :email, :email_abc, :nacionalidad,
                     :dia_nacimiento, :mes_nacimiento, :anio_nacimiento, :genero, :sexo
                 )
             ");
@@ -172,7 +172,6 @@ final class DocentesPfImportRepository
                 'email' => $payload['email'],
                 'email_abc' => $payload['email_abc'],
                 'nacionalidad' => $payload['nacionalidad'] ?? 'Argentina',
-                'fecha_nacimiento' => $payload['fecha_nacimiento'],
                 'dia_nacimiento' => $payload['dia_nacimiento'],
                 'mes_nacimiento' => $payload['mes_nacimiento'],
                 'anio_nacimiento' => $payload['anio_nacimiento'],
@@ -203,7 +202,6 @@ final class DocentesPfImportRepository
                     email = :email,
                     email_abc = :email_abc,
                     nacionalidad = :nacionalidad,
-                    fecha_nacimiento = :fecha_nacimiento,
                     dia_nacimiento = :dia_nacimiento,
                     mes_nacimiento = :mes_nacimiento,
                     anio_nacimiento = :anio_nacimiento,
@@ -467,7 +465,7 @@ final class DocentesPfImportRepository
 
         $stmt = $this->pdo->prepare("
             SELECT id, nombres, apellidos, numero_documento, descripcion_domicilio, localidad,
-                   telefono, email, email_abc, nacionalidad, fecha_nacimiento,
+                   telefono, email, email_abc, nacionalidad,
                    dia_nacimiento, mes_nacimiento, anio_nacimiento, genero, sexo
             FROM persona
             WHERE numero_documento IN ({$placeholders})
@@ -499,7 +497,6 @@ final class DocentesPfImportRepository
             'email' => $this->nullableText($row['email'] ?? null),
             'email_abc' => $this->nullableText($row['email_abc'] ?? null),
             'nacionalidad' => 'Argentina',
-            'fecha_nacimiento' => $fecha,
             'dia_nacimiento' => null,
             'mes_nacimiento' => null,
             'anio_nacimiento' => null,
@@ -547,7 +544,6 @@ final class DocentesPfImportRepository
             'email' => 'email',
             'email_abc' => 'email ABC',
             'nacionalidad' => 'nacionalidad',
-            'fecha_nacimiento' => 'fecha de nacimiento',
             'dia_nacimiento' => 'día de nacimiento',
             'mes_nacimiento' => 'mes de nacimiento',
             'anio_nacimiento' => 'año de nacimiento',

@@ -188,7 +188,6 @@ final class TomaRepository
                    docente.cuil AS docente_cuil,
                    docente.cuil1 AS docente_cuil1,
                    docente.cuil2 AS docente_cuil2,
-                   docente.fecha_nacimiento AS docente_fecha_nacimiento,
                    docente.dia_nacimiento AS docente_dia_nacimiento,
                    docente.mes_nacimiento AS docente_mes_nacimiento,
                    docente.anio_nacimiento AS docente_anio_nacimiento,
@@ -232,15 +231,11 @@ final class TomaRepository
             }
         }
 
-        $fechaNac = $this->formatDisplayDate($row['docente_fecha_nacimiento'] ?? null);
-        if ($fechaNac === '') {
-            $dia = (int) ($row['docente_dia_nacimiento'] ?? 0);
-            $mes = (int) ($row['docente_mes_nacimiento'] ?? 0);
-            $anio = (int) ($row['docente_anio_nacimiento'] ?? 0);
-            if ($dia > 0 && $mes > 0 && $anio > 0 && checkdate($mes, $dia, $anio)) {
-                $fechaNac = sprintf('%02d/%02d/%04d', $dia, $mes, $anio);
-            }
-        }
+        $fechaNac = persona_fecha_nacimiento([
+            'dia_nacimiento' => $row['docente_dia_nacimiento'] ?? null,
+            'mes_nacimiento' => $row['docente_mes_nacimiento'] ?? null,
+            'anio_nacimiento' => $row['docente_anio_nacimiento'] ?? null,
+        ]);
 
         $fechaToma = $this->formatDisplayDate($row['fecha_toma'] ?? null);
         if ($fechaToma === '') {

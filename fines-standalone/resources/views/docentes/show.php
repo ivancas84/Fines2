@@ -47,7 +47,6 @@ $cursoMetaLabel = static function (array $row) use ($fecha): string {
         $calendarioRango,
     ])));
 };
-$numeroEntero = static fn (mixed $numero): string => $numero === null || $numero === '' ? '' : (string) ceil((float) $numero);
 ?>
 <div class="page-header">
     <div>
@@ -194,55 +193,6 @@ $numeroEntero = static fn (mixed $numero): string => $numero === null || $numero
             </div>
             <button class="btn btn-primary" type="submit">Guardar tomas</button>
         </form>
-    <?php endif; ?>
-</section>
-
-<section class="panel">
-    <h2>Calificaciones completadas</h2>
-    <?php if ($calificaciones === []) : ?>
-        <div class="empty-state">No hay calificaciones completadas asociadas a las tomas del docente.</div>
-    <?php else : ?>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle app-table">
-                <thead>
-                <tr>
-                    <th>Alumno</th>
-                    <th>DNI</th>
-                    <th>Asignatura</th>
-                    <th>Tramo</th>
-                    <th>Curso</th>
-                    <th>N1</th>
-                    <th>N2</th>
-                    <th>N3</th>
-                    <th>Nota final</th>
-                    <th>CREC</th>
-                    <th>Fecha</th>
-                    <th>Observaciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($calificaciones as $calificacion) : ?>
-                    <tr>
-                        <td><?= e($calificacion['alumno_label'] ?? '') ?></td>
-                        <td><?= e($calificacion['alumno_documento'] ?? '') ?></td>
-                        <td><?= e($calificacion['asignatura_label'] ?? '') ?></td>
-                        <td><?= e($calificacion['tramo_label'] ?? '') ?></td>
-                        <td>
-                            <div><?= e(($calificacion['pfid'] ?? '') !== '' ? 'PFID ' . $calificacion['pfid'] : '') ?></div>
-                            <div class="small text-secondary"><?= e($calificacion['curso_id'] ?? '') ?></div>
-                        </td>
-                        <td><?= e($numeroEntero($calificacion['nota1'] ?? '')) ?></td>
-                        <td><?= e($numeroEntero($calificacion['nota2'] ?? '')) ?></td>
-                        <td><?= e($numeroEntero($calificacion['nota3'] ?? '')) ?></td>
-                        <td><?= e($numeroEntero($calificacion['nota_final'] ?? '')) ?></td>
-                        <td><?= e($numeroEntero($calificacion['crec'] ?? '')) ?></td>
-                        <td><?= e($calificacion['fecha'] ?? '') ?></td>
-                        <td><?= e($calificacion['observaciones'] ?? '') ?></td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
     <?php endif; ?>
 </section>
 

@@ -8,7 +8,6 @@ use FinesApp\Core\Request;
 use FinesApp\Core\Response;
 use FinesApp\Core\Session;
 use FinesApp\Repositories\DetallePersonaRepository;
-use FinesApp\Repositories\DocenteCalificacionRepository;
 use FinesApp\Repositories\PersonaRepository;
 use FinesApp\Repositories\TomaRepository;
 
@@ -49,7 +48,6 @@ final class DocenteController extends Controller
             'estadosToma' => $tomaRepository->estados(),
             'tiposMovimiento' => $tomaRepository->tiposMovimiento(),
             'estadosContralor' => $tomaRepository->estadosContralor(),
-            'calificaciones' => (new DocenteCalificacionRepository($this->pdo))->completadasByDocente($personaId),
             'detalles' => (new DetallePersonaRepository($this->pdo))->byPersona($personaId),
             'notice' => flash('notice'),
             'error' => flash('error'),
