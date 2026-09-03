@@ -24,6 +24,13 @@
                     <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/informes/egresados')) ?>">Abrir</a>
                 </td>
             </tr>
+            <tr>
+                <td>Contralor</td>
+                <td>Listado para copiar y pegar de tomas sin planilla (por calendario) o de una planilla docente.</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/informes/contralor')) ?>">Abrir</a>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

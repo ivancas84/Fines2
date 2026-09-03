@@ -516,6 +516,16 @@ body {
     color: #7f1d1d;
 }
 
+.contralor-copy-table {
+    width: max-content;
+    background: #fff;
+    font-size: 13px;
+}
+
+.contralor-copy-table td {
+    white-space: nowrap;
+}
+
 .rindex-table {
     background: #fff;
     border: 1px solid var(--app-border);

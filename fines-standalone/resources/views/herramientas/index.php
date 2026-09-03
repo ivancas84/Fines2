@@ -13,6 +13,12 @@
         </a>
     </div>
     <div class="col-md-6 col-xl-4">
+        <a class="action-card" href="<?= e(url('/planillas-docente')) ?>">
+            <strong>Planillas docente</strong>
+            <span>Ver, crear y editar planillas de contralor.</span>
+        </a>
+    </div>
+    <div class="col-md-6 col-xl-4">
         <a class="action-card" href="<?= e(url('/docentes/procesar-pf')) ?>">
             <strong>Procesar docentes PF</strong>
             <span>Importar XLSX de ProgramaFines: personas y tomas del CENS 462.</span>
@@ -28,6 +34,12 @@
         <a class="action-card" href="<?= e(url('/comisiones/procesar-pci')) ?>">
             <strong>Procesar comisiones PCI</strong>
             <span>Informe global PCI: Áreas A–E, horarios y tomas por DNI.</span>
+        </a>
+    </div>
+    <div class="col-md-6 col-xl-4">
+        <a class="action-card" href="<?= e(url('/informes/contralor')) ?>">
+            <strong>Contralor</strong>
+            <span>Listado para copiar y pegar: tomas sin planilla por calendario, o por planilla docente.</span>
         </a>
     </div>
 </div>

@@ -32,6 +32,9 @@ $isHerramientasPath = static function (string $path): bool {
     if ($path === '/calendarios' || str_starts_with($path, '/calendarios/')) {
         return true;
     }
+    if ($path === '/planillas-docente' || str_starts_with($path, '/planillas-docente/')) {
+        return true;
+    }
 
     return false;
 };

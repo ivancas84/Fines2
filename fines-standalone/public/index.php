@@ -15,6 +15,7 @@ use FinesApp\Controllers\DocentesPfController;
 use FinesApp\Controllers\HerramientasController;
 use FinesApp\Controllers\InformeController;
 use FinesApp\Controllers\PersonaController;
+use FinesApp\Controllers\PlanillaDocenteController;
 use FinesApp\Controllers\ProgramaFinesController;
 use FinesApp\Controllers\SedeController;
 use FinesApp\Controllers\TomaPosesionController;
@@ -38,6 +39,8 @@ $app->post('/programafines/desconectar', [ProgramaFinesController::class, 'disco
 $app->get('/herramientas', [HerramientasController::class, 'index']);
 $app->get('/informes', [InformeController::class, 'index']);
 $app->get('/informes/egresados', [InformeController::class, 'egresados']);
+$app->get('/informes/contralor', [InformeController::class, 'contralor']);
+$app->post('/informes/contralor/asignar-planilla', [InformeController::class, 'asignarPlanillaContralor']);
 
 $app->get('/personas', [PersonaController::class, 'index']);
 $app->get('/personas/nueva', [PersonaController::class, 'createForm']);
@@ -92,6 +95,11 @@ $app->get('/calendarios/nuevo', [CalendarioController::class, 'createForm']);
 $app->post('/calendarios', [CalendarioController::class, 'create']);
 $app->get('/calendarios/{id}', [CalendarioController::class, 'edit']);
 $app->post('/calendarios/{id}', [CalendarioController::class, 'update']);
+$app->get('/planillas-docente', [PlanillaDocenteController::class, 'index']);
+$app->get('/planillas-docente/nueva', [PlanillaDocenteController::class, 'createForm']);
+$app->post('/planillas-docente', [PlanillaDocenteController::class, 'create']);
+$app->get('/planillas-docente/{id}', [PlanillaDocenteController::class, 'edit']);
+$app->post('/planillas-docente/{id}', [PlanillaDocenteController::class, 'update']);
 $app->post('/comisiones/{id}/programafines/enviar', [ComisionController::class, 'enviarAlumnoProgramaFines']);
 $app->post('/comisiones/{id}/programafines/sincronizar', [ComisionController::class, 'sincronizarProgramaFines']);
 $app->post('/comisiones/{id}/programafines/importar', [ComisionController::class, 'importarAlumnoProgramaFines']);
