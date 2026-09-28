@@ -31,8 +31,8 @@ final class AlumnoRepository
         if ($alumnoId === null || $alumnoId === '') {
             $alumnoId = uniqid();
             $sql = "
-                INSERT INTO alumno (id, persona, plan, anio_ingreso, semestre_ingreso, fecha_titulacion, observaciones, confirmado_direccion)
-                VALUES (:id, :persona, :plan, :anio_ingreso, :semestre_ingreso, :fecha_titulacion, :observaciones, :confirmado_direccion)
+                INSERT INTO alumno (id, persona, plan, anio_ingreso, semestre_ingreso, fecha_titulacion, libro, folio, observaciones, confirmado_direccion)
+                VALUES (:id, :persona, :plan, :anio_ingreso, :semestre_ingreso, :fecha_titulacion, :libro, :folio, :observaciones, :confirmado_direccion)
             ";
         } else {
             $sql = "
@@ -41,6 +41,8 @@ final class AlumnoRepository
                     anio_ingreso = :anio_ingreso,
                     semestre_ingreso = :semestre_ingreso,
                     fecha_titulacion = :fecha_titulacion,
+                    libro = :libro,
+                    folio = :folio,
                     observaciones = :observaciones,
                     confirmado_direccion = :confirmado_direccion
                 WHERE id = :id AND persona = :persona

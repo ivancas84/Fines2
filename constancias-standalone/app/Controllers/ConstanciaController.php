@@ -99,6 +99,27 @@ final class ConstanciaController extends Controller
         ]);
     }
 
+    public function newMatriz(Request $request): void
+    {
+        $this->requireEdit();
+        $this->view->render('constancias/matriz_form', [
+            'title' => 'Matriz',
+            'defaults' => [
+                'nombres' => '',
+                'apellidos' => '',
+                'numero_documento' => '',
+                'fecha_nacimiento' => '',
+                'plan_estudios' => '',
+                'anio_semestre_ingreso' => '',
+                'libro_folio' => '',
+                'enlace_documentacion' => '',
+                'observaciones' => '',
+                'materias_html' => '',
+            ],
+            'error' => flash('error'),
+        ]);
+    }
+
     public function newGeneral(Request $request): void
     {
         $this->requireEdit();
@@ -196,6 +217,34 @@ final class ConstanciaController extends Controller
             fn (array $prepared): string => $this->paseBody($prepared),
             function (string $absolutePath, string $validationUrl, array $prepared, ?array $establecimiento, string $heading, string $body, string $titulo): void {
                 $this->renderPasePdf($absolutePath, $validationUrl, $prepared, $establecimiento, $heading, $body, $titulo);
+            },
+        );
+    }
+
+    public function createMatriz(Request $request): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+        $data = $this->inputFields($request, ['nombres', 'apellidos', 'numero_documento']);
+        $data['fecha_nacimiento'] = trim((string) ($request->input('fecha_nacimiento', '') ?? ''));
+        $data['plan_estudios'] = trim((string) ($request->input('plan_estudios', '') ?? ''));
+        $data['anio_semestre_ingreso'] = trim((string) ($request->input('anio_semestre_ingreso', '') ?? ''));
+        $data['libro_folio'] = trim((string) ($request->input('libro_folio', '') ?? ''));
+        $data['enlace_documentacion'] = trim((string) ($request->input('enlace_documentacion', '') ?? ''));
+        $data['materias_html'] = $this->applyMatrizColumnWidths(
+            $this->sanitizeTableHtml((string) ($request->input('materias_html', '') ?? '')),
+        );
+        $data['incluir_firmas'] = false;
+
+        $this->issueConstancia(
+            'matriz',
+            'Matriz',
+            'DATOS DE ALUMNO',
+            'matriz',
+            $data,
+            fn (array $prepared): string => $this->matrizBody($prepared),
+            function (string $absolutePath, string $validationUrl, array $prepared, ?array $establecimiento, string $heading, string $body, string $titulo): void {
+                $this->renderMatrizPdf($absolutePath, $prepared, $body, $titulo);
             },
         );
     }
@@ -542,6 +591,26 @@ final class ConstanciaController extends Controller
         $pdf->Output($path, 'F');
     }
 
+    private function renderMatrizPdf(string $path, array $data, string $body, string $title): void
+    {
+        if (!is_dir(dirname($path))) {
+            mkdir(dirname($path), 0775, true);
+        }
+
+        $pdf = new TCPDF('P', 'mm', 'A4');
+        $pdf->SetCreator('Constancias');
+        $pdf->SetAuthor((string) ($data['establecimiento_nombre'] ?? 'Establecimiento'));
+        $pdf->SetTitle($title);
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->SetMargins(12, 8, 12);
+        $pdf->SetAutoPageBreak(true, 10);
+        $pdf->AddPage();
+        $pdf->SetFont('dejavusans', '', 8);
+        $pdf->writeHTMLCell(0, 0, '', '', $body, 0, 1, false, true, 'L');
+        $pdf->Output($path, 'F');
+    }
+
     private function addHeader(TCPDF $pdf, string $validationUrl, array $data, ?array $establecimiento): void
     {
         $logo = $this->commonLogoPath();
@@ -656,6 +725,55 @@ final class ConstanciaController extends Controller
         return $this->appendObservaciones($body, $data);
     }
 
+    private function matrizBody(array $data): string
+    {
+        $inline = function (string $label, string $value): string {
+            $value = trim($value);
+            if ($value === '') {
+                return '<strong>' . $label . ':</strong>';
+            }
+
+            return '<strong>' . $label . ':</strong> ' . $this->pdfEscape($value);
+        };
+
+        $enlace = trim((string) ($data['enlace_documentacion'] ?? ''));
+        if (preg_match('#^https?://#i', $enlace) === 1) {
+            $enlaceHtml = '<a href="' . $this->pdfEscape($enlace) . '">' . $this->pdfEscape($enlace) . '</a>';
+        } else {
+            $enlaceHtml = $this->pdfEscape($enlace);
+        }
+
+        $nombre = trim((string) ($data['apellidos'] ?? '') . ', ' . (string) ($data['nombres'] ?? ''), ', ');
+        $observaciones = trim((string) ($data['observaciones'] ?? ''));
+        $celda = static function (string $width, string $content): string {
+            return '<td width="' . $width . '" valign="top"><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr><td>' . $content . '</td></tr></table></td>';
+        };
+
+        $body = '<div style="font-size:10px;font-weight:bold;">DATOS DE ALUMNO</div><br>';
+        $body .= '<table border="0" cellpadding="1" cellspacing="0" width="100%">';
+        $body .= '<tr>';
+        $body .= $celda('46%', $inline('NOMBRE', $nombre));
+        $body .= $celda('22%', $inline('DNI', (string) ($data['numero_documento'] ?? '')));
+        $body .= $celda('32%', $inline('FECHA NACIMIENTO', (string) ($data['fecha_nacimiento'] ?? '')));
+        $body .= '</tr><tr>';
+        $body .= $celda('48%', $inline('PLAN DE ESTUDIOS', (string) ($data['plan_estudios'] ?? '')));
+        $body .= $celda('28%', $inline('INGRESO', (string) ($data['anio_semestre_ingreso'] ?? '')));
+        $body .= $celda('24%', $inline('LIBRO Y FOLIO', (string) ($data['libro_folio'] ?? '')));
+        $body .= '</tr><tr>';
+        $body .= $celda('100%', $inline('OBSERVACIONES', $observaciones));
+        $body .= '</tr>';
+        if ($enlace !== '') {
+            $body .= '<tr>' . $celda('100%', '<strong>INGRESO CON LEGAJO:</strong> ' . $enlaceHtml) . '</tr>';
+        }
+        $body .= '</table><br><br>';
+
+        if (($data['materias_html'] ?? '') !== '') {
+            $body .= (string) $data['materias_html'];
+        }
+
+        return $body;
+    }
+
     private function generalBody(array $data): string
     {
         $establecimiento = $this->pdfEscape((string) $data['establecimiento_nombre']);
@@ -720,6 +838,37 @@ final class ConstanciaController extends Controller
         $clean = preg_replace('/<th\b([^>]*)>/i', '<th$1 style="font-weight:bold;">', $clean) ?? $clean;
 
         return $clean;
+    }
+
+    private function applyMatrizColumnWidths(string $html): string
+    {
+        if ($html === '') {
+            return '';
+        }
+
+        $html = preg_replace(
+            '/<table\b[^>]*>/i',
+            '<table border="1" cellpadding="2" cellspacing="0" width="100%">',
+            $html,
+        ) ?? $html;
+
+        $widths = ['38%', '6%', '56%'];
+
+        return preg_replace_callback('/<tr\b[^>]*>.*?<\/tr>/is', static function (array $rowMatch) use ($widths): string {
+            $index = 0;
+
+            return preg_replace_callback('/<(td|th)\b([^>]*)>/i', static function (array $cellMatch) use (&$index, $widths): string {
+                $tag = strtolower($cellMatch[1]);
+                $attrs = preg_replace('/\s(?:width|style|align)="[^"]*"/i', '', $cellMatch[2]) ?? $cellMatch[2];
+                $width = $widths[$index] ?? null;
+                $align = $index === 1 ? ' align="center"' : '';
+                $index++;
+                $style = $tag === 'th' ? ' style="font-weight:bold;"' : '';
+                $widthAttr = $width !== null ? ' width="' . $width . '"' : '';
+
+                return '<' . $tag . $attrs . $widthAttr . $align . $style . '>';
+            }, $rowMatch[0]) ?? $rowMatch[0];
+        }, $html) ?? $html;
     }
 
     private function formatUserText(string $text): string

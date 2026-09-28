@@ -18,7 +18,7 @@ final class PersonaRepository
             SELECT id, nombres, apellidos, numero_documento, cuil1, cuil2, sexo,
                    dia_nacimiento, mes_nacimiento, anio_nacimiento, telefono, codigo_area,
                    email, email_abc, lugar_nacimiento, nacionalidad, descripcion_domicilio,
-                   departamento, localidad, partido
+                   departamento, localidad, partido, enlace_documentacion
             FROM persona
             WHERE id = :persona_id
         ");
@@ -117,7 +117,8 @@ final class PersonaRepository
      *   descripcion_domicilio: ?string,
      *   departamento: ?string,
      *   localidad: ?string,
-     *   partido: ?string
+     *   partido: ?string,
+     *   enlace_documentacion: ?string
      * } $data
      */
     public function create(array $data): string
@@ -128,12 +129,12 @@ final class PersonaRepository
                 id, nombres, apellidos, numero_documento, cuil1, cuil2, sexo,
                 dia_nacimiento, mes_nacimiento, anio_nacimiento, telefono, codigo_area,
                 email, email_abc, lugar_nacimiento, nacionalidad, descripcion_domicilio,
-                departamento, localidad, partido
+                departamento, localidad, partido, enlace_documentacion
             ) VALUES (
                 :id, :nombres, :apellidos, :numero_documento, :cuil1, :cuil2, :sexo,
                 :dia_nacimiento, :mes_nacimiento, :anio_nacimiento, :telefono, :codigo_area,
                 :email, :email_abc, :lugar_nacimiento, :nacionalidad, :descripcion_domicilio,
-                :departamento, :localidad, :partido
+                :departamento, :localidad, :partido, :enlace_documentacion
             )
         ");
         $stmt->execute(array_merge($data, ['id' => $id]));
@@ -163,7 +164,8 @@ final class PersonaRepository
                 descripcion_domicilio = :descripcion_domicilio,
                 departamento = :departamento,
                 localidad = :localidad,
-                partido = :partido
+                partido = :partido,
+                enlace_documentacion = :enlace_documentacion
             WHERE id = :id
         ");
 

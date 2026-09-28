@@ -86,6 +86,7 @@ $existingLabel = $existing === null
             <label class="form-label">Departamento <input class="form-control" name="departamento" value="<?= e($v($persona, 'departamento')) ?>" <?= $canEdit ? '' : 'disabled' ?>></label>
             <label class="form-label">Localidad <input class="form-control" name="localidad" value="<?= e($v($persona, 'localidad')) ?>" <?= $canEdit ? '' : 'disabled' ?>></label>
             <label class="form-label">Partido <input class="form-control" name="partido" value="<?= e($v($persona, 'partido')) ?>" <?= $canEdit ? '' : 'disabled' ?>></label>
+            <label class="form-label form-wide">Enlace documentacion <input class="form-control" name="enlace_documentacion" maxlength="255" value="<?= e($v($persona, 'enlace_documentacion')) ?>" <?= $canEdit ? '' : 'disabled' ?>></label>
         </div>
     </section>
 
@@ -133,30 +134,30 @@ $existingLabel = $existing === null
                     <?php endforeach; ?>
                 </select>
             </label>
-            <div class="form-composite form-ingreso-grid">
-                <label class="form-label">
-                    Año ing
-                    <select class="form-select" name="anio_ingreso" <?= $canEdit ? '' : 'disabled' ?>>
-                        <option value="">Seleccione...</option>
-                        <option value="1" <?= selected($v($alumno, 'anio_ingreso'), '1') ?>>1</option>
-                        <option value="2" <?= selected($v($alumno, 'anio_ingreso'), '2') ?>>2</option>
-                        <option value="3" <?= selected($v($alumno, 'anio_ingreso'), '3') ?>>3</option>
-                    </select>
-                </label>
-                <label class="form-label">
-                    Sem ing
-                    <select class="form-select" name="semestre_ingreso" <?= $canEdit ? '' : 'disabled' ?>>
-                        <option value="">Seleccione...</option>
-                        <option value="1" <?= selected($v($alumno, 'semestre_ingreso'), '1') ?>>1</option>
-                        <option value="2" <?= selected($v($alumno, 'semestre_ingreso'), '2') ?>>2</option>
-                    </select>
-                </label>
-            </div>
-            <label class="form-label">Fecha titulacion <input class="form-control" type="date" name="fecha_titulacion" value="<?= e($v($alumno, 'fecha_titulacion')) ?>" <?= $canEdit ? '' : 'disabled' ?>></label>
+            <label class="form-label">
+                Año ing
+                <select class="form-select" name="anio_ingreso" <?= $canEdit ? '' : 'disabled' ?>>
+                    <option value="">Seleccione...</option>
+                    <option value="1" <?= selected($v($alumno, 'anio_ingreso'), '1') ?>>1</option>
+                    <option value="2" <?= selected($v($alumno, 'anio_ingreso'), '2') ?>>2</option>
+                    <option value="3" <?= selected($v($alumno, 'anio_ingreso'), '3') ?>>3</option>
+                </select>
+            </label>
+            <label class="form-label">
+                Sem ing
+                <select class="form-select" name="semestre_ingreso" <?= $canEdit ? '' : 'disabled' ?>>
+                    <option value="">Seleccione...</option>
+                    <option value="1" <?= selected($v($alumno, 'semestre_ingreso'), '1') ?>>1</option>
+                    <option value="2" <?= selected($v($alumno, 'semestre_ingreso'), '2') ?>>2</option>
+                </select>
+            </label>
             <label class="form-check align-self-end">
                 <input class="form-check-input" type="checkbox" name="confirmado_direccion" value="1" <?= checked($alumno['confirmado_direccion'] ?? 0) ?> <?= $canEdit ? '' : 'disabled' ?>>
                 <span class="form-check-label">Confirmado direccion</span>
             </label>
+            <label class="form-label">Libro <input class="form-control" name="libro" maxlength="45" value="<?= e($v($alumno, 'libro')) ?>" <?= $canEdit ? '' : 'disabled' ?>></label>
+            <label class="form-label">Folio <input class="form-control" name="folio" maxlength="45" value="<?= e($v($alumno, 'folio')) ?>" <?= $canEdit ? '' : 'disabled' ?>></label>
+            <label class="form-label">Fecha titulacion <input class="form-control" type="date" name="fecha_titulacion" value="<?= e($v($alumno, 'fecha_titulacion')) ?>" <?= $canEdit ? '' : 'disabled' ?>></label>
             <label class="form-label form-wide">Observaciones <textarea class="form-control" name="observaciones" rows="3" <?= $canEdit ? '' : 'disabled' ?>><?= e($v($alumno, 'observaciones')) ?></textarea></label>
         </div>
     </section>

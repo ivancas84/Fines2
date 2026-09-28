@@ -174,7 +174,8 @@ final class PersonaController extends Controller
      *   descripcion_domicilio: ?string,
      *   departamento: ?string,
      *   localidad: ?string,
-     *   partido: ?string
+     *   partido: ?string,
+     *   enlace_documentacion: ?string
      * }
      */
     private function personaInsertData(Request $request): array
@@ -196,6 +197,7 @@ final class PersonaController extends Controller
             'departamento' => $this->nullableText($request->input('departamento')),
             'localidad' => $this->nullableText($request->input('localidad')),
             'partido' => $this->nullableText($request->input('partido')),
+            'enlace_documentacion' => $this->nullableText($request->input('enlace_documentacion')),
         ];
     }
 
@@ -205,6 +207,8 @@ final class PersonaController extends Controller
      *   anio_ingreso: ?string,
      *   semestre_ingreso: ?int,
      *   fecha_titulacion: ?string,
+     *   libro: ?string,
+     *   folio: ?string,
      *   observaciones: ?string,
      *   confirmado_direccion: int
      * }
@@ -216,6 +220,8 @@ final class PersonaController extends Controller
             'anio_ingreso' => $this->nullableText($request->input('anio_ingreso')),
             'semestre_ingreso' => $this->nullableInt($request->input('semestre_ingreso')),
             'fecha_titulacion' => $this->nullableText($request->input('fecha_titulacion')),
+            'libro' => $this->nullableText($request->input('libro')),
+            'folio' => $this->nullableText($request->input('folio')),
             'observaciones' => $this->nullableText($request->input('observaciones')),
             'confirmado_direccion' => $request->checkbox('confirmado_direccion'),
         ];
@@ -251,6 +257,7 @@ final class PersonaController extends Controller
             'departamento' => '',
             'localidad' => '',
             'partido' => '',
+            'enlace_documentacion' => '',
         ];
     }
 
@@ -262,6 +269,8 @@ final class PersonaController extends Controller
             'anio_ingreso' => '',
             'semestre_ingreso' => '',
             'fecha_titulacion' => '',
+            'libro' => '',
+            'folio' => '',
             'observaciones' => '',
             'confirmado_direccion' => 0,
         ];
@@ -286,6 +295,8 @@ final class PersonaController extends Controller
             'anio_ingreso' => (string) $request->input('anio_ingreso', ''),
             'semestre_ingreso' => (string) $request->input('semestre_ingreso', ''),
             'fecha_titulacion' => (string) $request->input('fecha_titulacion', ''),
+            'libro' => (string) $request->input('libro', ''),
+            'folio' => (string) $request->input('folio', ''),
             'observaciones' => (string) $request->input('observaciones', ''),
             'confirmado_direccion' => $request->checkbox('confirmado_direccion'),
         ];

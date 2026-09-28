@@ -106,6 +106,41 @@ $paseParams = array_merge($academicParams, [
     'materias_aprobadas_html' => $materiasTable($calificacionesAprobadasPase, true),
     'materias_desaprobadas_html' => $materiasTable($calificacionesPendientesPase, false),
 ]);
+$matrizMateriasTable = static function (array $rows): string {
+    if ($rows === []) {
+        return '';
+    }
+
+    $celda = static fn (mixed $value): string => ($text = trim((string) ($value ?? ''))) === '' ? '&nbsp;' : e($text);
+    $html = '<table><thead><tr><th>ASIGNATURA</th><th>N</th><th>OBSERVACIONES</th></tr></thead><tbody>';
+    foreach ($rows as $row) {
+        $html .= '<tr><td>' . $celda($row['asignatura_label'] ?? '') . '</td>';
+        $html .= '<td>' . $celda($row['nota'] ?? '') . '</td>';
+        $html .= '<td>' . $celda($row['observaciones'] ?? '') . '</td></tr>';
+    }
+
+    return $html . '</tbody></table>';
+};
+$anioIngreso = trim($v($alumno, 'anio_ingreso'));
+$semestreIngreso = trim($v($alumno, 'semestre_ingreso'));
+$matrizParams = [
+    'nombres' => $v($persona, 'nombres'),
+    'apellidos' => $v($persona, 'apellidos'),
+    'numero_documento' => $v($persona, 'numero_documento'),
+    'fecha_nacimiento' => persona_fecha_nacimiento($persona),
+    'plan_estudios' => trim('Fines ' . trim($v($alumno, 'plan_orientacion') . ' ' . $v($alumno, 'plan_resolucion'))),
+    'anio_semestre_ingreso' => trim(implode(' ', array_filter([
+        $anioIngreso !== '' ? $anioIngreso . '° año' : '',
+        $semestreIngreso !== '' ? $semestreIngreso . ' Cuatrimestre' : '',
+    ]))),
+    'libro_folio' => trim(implode(' / ', array_filter([
+        trim($v($alumno, 'libro')),
+        trim($v($alumno, 'folio')),
+    ], static fn (string $part): bool => $part !== ''))),
+    'enlace_documentacion' => $v($persona, 'enlace_documentacion'),
+    'observaciones' => $v($alumno, 'observaciones'),
+    'materias_html' => $matrizMateriasTable($calificacionesMatriz ?? []),
+];
 $basicConstanciaParams = [
     'nombres' => $v($persona, 'nombres'),
     'apellidos' => $v($persona, 'apellidos'),
@@ -265,6 +300,7 @@ $renderCalificacionesTable = static function (array $calificaciones) use ($alumn
             <label class="form-label">Departamento <input class="form-control" name="departamento" value="<?= e($v($persona, 'departamento')) ?>"></label>
             <label class="form-label">Localidad <input class="form-control" name="localidad" value="<?= e($v($persona, 'localidad')) ?>"></label>
             <label class="form-label">Partido <input class="form-control" name="partido" value="<?= e($v($persona, 'partido')) ?>"></label>
+            <label class="form-label form-wide">Enlace documentacion <input class="form-control" name="enlace_documentacion" maxlength="255" value="<?= e($v($persona, 'enlace_documentacion')) ?>"></label>
         </div>
         <div class="d-flex flex-wrap gap-2 mt-3">
             <button class="btn btn-primary" type="submit">Guardar persona</button>
@@ -297,30 +333,30 @@ $renderCalificacionesTable = static function (array $calificaciones) use ($alumn
                     <?php endforeach; ?>
                 </select>
             </label>
-            <div class="form-composite form-ingreso-grid">
-                <label class="form-label">
-                    Año ing
-                    <select class="form-select" name="anio_ingreso">
-                        <option value="">Seleccione...</option>
-                        <option value="1" <?= selected($v($alumno, 'anio_ingreso'), '1') ?>>1</option>
-                        <option value="2" <?= selected($v($alumno, 'anio_ingreso'), '2') ?>>2</option>
-                        <option value="3" <?= selected($v($alumno, 'anio_ingreso'), '3') ?>>3</option>
-                    </select>
-                </label>
-                <label class="form-label">
-                    Sem ing
-                    <select class="form-select" name="semestre_ingreso">
-                        <option value="">Seleccione...</option>
-                        <option value="1" <?= selected($v($alumno, 'semestre_ingreso'), '1') ?>>1</option>
-                        <option value="2" <?= selected($v($alumno, 'semestre_ingreso'), '2') ?>>2</option>
-                    </select>
-                </label>
-            </div>
-            <label class="form-label">Fecha titulacion <input class="form-control" type="date" name="fecha_titulacion" value="<?= e($v($alumno, 'fecha_titulacion')) ?>"></label>
+            <label class="form-label">
+                Año ing
+                <select class="form-select" name="anio_ingreso">
+                    <option value="">Seleccione...</option>
+                    <option value="1" <?= selected($v($alumno, 'anio_ingreso'), '1') ?>>1</option>
+                    <option value="2" <?= selected($v($alumno, 'anio_ingreso'), '2') ?>>2</option>
+                    <option value="3" <?= selected($v($alumno, 'anio_ingreso'), '3') ?>>3</option>
+                </select>
+            </label>
+            <label class="form-label">
+                Sem ing
+                <select class="form-select" name="semestre_ingreso">
+                    <option value="">Seleccione...</option>
+                    <option value="1" <?= selected($v($alumno, 'semestre_ingreso'), '1') ?>>1</option>
+                    <option value="2" <?= selected($v($alumno, 'semestre_ingreso'), '2') ?>>2</option>
+                </select>
+            </label>
             <label class="form-check align-self-end">
                 <input class="form-check-input" type="checkbox" name="confirmado_direccion" value="1" <?= checked($alumno['confirmado_direccion'] ?? 0) ?>>
                 <span class="form-check-label">Confirmado direccion</span>
             </label>
+            <label class="form-label">Libro <input class="form-control" name="libro" maxlength="45" value="<?= e($v($alumno, 'libro')) ?>"></label>
+            <label class="form-label">Folio <input class="form-control" name="folio" maxlength="45" value="<?= e($v($alumno, 'folio')) ?>"></label>
+            <label class="form-label">Fecha titulacion <input class="form-control" type="date" name="fecha_titulacion" value="<?= e($v($alumno, 'fecha_titulacion')) ?>"></label>
             <label class="form-label form-wide">Observaciones <textarea class="form-control" name="observaciones" rows="3"><?= e($v($alumno, 'observaciones')) ?></textarea></label>
         </div>
         <button class="btn btn-primary mt-3" type="submit">Guardar alumno</button>
@@ -339,6 +375,7 @@ $renderCalificacionesTable = static function (array $calificaciones) use ($alumn
                 <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/titulo-tramite/nueva', $academicParams)) ?>">Titulo en tramite</a>
                 <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/vacante/nueva', $basicConstanciaParams)) ?>">Vacante</a>
                 <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/pase/nueva', $paseParams)) ?>">Pase</a>
+                <a class="btn btn-outline-primary" target="_blank" rel="noopener" href="<?= e($constanciaUrl('/constancias/matriz/nueva', $matrizParams)) ?>">Matriz</a>
             </div>
         </div>
     </section>

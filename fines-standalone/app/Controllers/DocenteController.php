@@ -75,6 +75,7 @@ final class DocenteController extends Controller
                 'departamento' => $this->nullableText($request->input('departamento')),
                 'localidad' => $this->nullableText($request->input('localidad')),
                 'partido' => $this->nullableText($request->input('partido')),
+                'enlace_documentacion' => $this->nullableText($request->input('enlace_documentacion')),
             ]);
 
             Session::flash('notice', 'Datos de persona guardados.');

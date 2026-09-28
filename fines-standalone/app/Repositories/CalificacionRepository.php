@@ -198,6 +198,111 @@ final class CalificacionRepository
         return $row === false ? null : $this->cursoSearchRow($row);
     }
 
+    /**
+     * Todas las disposiciones del plan del alumno, para la matriz.
+     * Las anteriores al ingreso van como equivalencia (nota E).
+     *
+     * @return list<array{
+     *   asignatura_label: string,
+     *   nota: string,
+     *   observaciones: string
+     * }>
+     */
+    public function matrizByAlumnoPlan(array $alumno): array
+    {
+        $alumnoId = trim((string) ($alumno['id'] ?? ''));
+        $planId = trim((string) ($alumno['plan'] ?? ''));
+        if ($alumnoId === '' || $planId === '') {
+            return [];
+        }
+
+        $anioIngreso = trim((string) ($alumno['anio_ingreso'] ?? ''));
+        $tramoIngreso = $anioIngreso === '' ? '' : $this->tramoIngresoShort($alumno);
+
+        $stmt = $this->pdo->prepare("
+            SELECT asignatura.nombre AS asignatura_label,
+                   planificacion.anio AS planificacion_anio,
+                   planificacion.semestre AS planificacion_semestre,
+                   calificacion.nota_final,
+                   calificacion.crec,
+                   calificacion.observaciones,
+                   calificacion.curso,
+                   COALESCE(toma_activa.docente_label, '') AS docente_label,
+                   COALESCE(toma_activa.calendario_label, '') AS calendario_label
+            FROM disposicion
+            INNER JOIN asignatura ON asignatura.id = disposicion.asignatura
+            INNER JOIN planificacion ON planificacion.id = disposicion.planificacion
+            LEFT JOIN calificacion ON calificacion.id = (
+                SELECT c2.id
+                FROM calificacion c2
+                WHERE c2.alumno = :alumno_id
+                  AND c2.disposicion = disposicion.id
+                ORDER BY c2.archivado ASC,
+                         CASE WHEN c2.nota_final >= 7 OR c2.crec >= 4 THEN 1 ELSE 0 END DESC,
+                         c2.nota_final DESC,
+                         c2.id DESC
+                LIMIT 1
+            )
+            LEFT JOIN curso ON curso.id = calificacion.curso
+            LEFT JOIN (
+                SELECT toma.curso,
+                       GROUP_CONCAT(
+                           NULLIF(TRIM(CONCAT_WS(', ', NULLIF(TRIM(persona.apellidos), ''), NULLIF(TRIM(persona.nombres), ''))), '')
+                           ORDER BY persona.apellidos, persona.nombres
+                           SEPARATOR ', '
+                       ) AS docente_label,
+                       TRIM(CONCAT_WS('-', NULLIF(MAX(calendario.anio), ''), NULLIF(MAX(calendario.semestre), ''))) AS calendario_label
+                FROM toma
+                LEFT JOIN persona ON persona.id = toma.docente
+                LEFT JOIN curso curso_toma ON curso_toma.id = toma.curso
+                LEFT JOIN comision ON comision.id = curso_toma.comision
+                LEFT JOIN calendario ON calendario.id = comision.calendario
+                WHERE toma.estado = 'Aprobada' AND toma.estado_contralor = 'Pasar'
+                GROUP BY toma.curso
+            ) toma_activa ON toma_activa.curso = curso.id
+            WHERE planificacion.plan = :plan_id
+            ORDER BY CAST(planificacion.anio AS UNSIGNED) ASC,
+                     CAST(planificacion.semestre AS UNSIGNED) ASC,
+                     disposicion.orden_informe_coordinacion_distrital ASC,
+                     asignatura.nombre ASC
+        ");
+        $stmt->execute([
+            'alumno_id' => $alumnoId,
+            'plan_id' => $planId,
+        ]);
+
+        $rows = [];
+        foreach ($stmt->fetchAll() as $row) {
+            $anio = trim((string) ($row['planificacion_anio'] ?? ''));
+            $semestre = trim((string) ($row['planificacion_semestre'] ?? ''));
+            $tramoDisposicion = $anio . $semestre;
+            $equivalencia = $tramoIngreso !== '' && $tramoDisposicion !== '' && $tramoDisposicion < $tramoIngreso;
+
+            $observaciones = trim((string) ($row['observaciones'] ?? ''));
+            $docente = trim((string) ($row['curso'] ?? '')) !== ''
+                ? trim((string) ($row['docente_label'] ?? ''))
+                : '';
+            $calendario = trim((string) ($row['calendario_label'] ?? ''));
+            if ($docente !== '' && $calendario !== '') {
+                $docente .= ' (' . $calendario . ')';
+            }
+            $observacionesCelda = trim(implode(' — ', array_filter([$observaciones, $docente], static fn (string $part): bool => $part !== '')));
+            $tramo = trim(implode('/', array_filter([$anio, $semestre], static fn (string $part): bool => $part !== '')));
+            $asignatura = trim((string) ($row['asignatura_label'] ?? ''));
+            if ($asignatura !== '' && $tramo !== '') {
+                $asignatura .= ' (' . $tramo . ')';
+            }
+
+            $rows[] = [
+                'asignatura_label' => $asignatura,
+                'nota' => $this->notaMatriz($row, $equivalencia),
+                'observaciones' => $observacionesCelda,
+            ];
+        }
+
+        return $rows;
+    }
+
     public function tramoIngresoShort(array $alumno): string
     {
         $anioIngreso = (string) ($alumno['anio_ingreso'] ?? '');
@@ -208,6 +313,24 @@ final class CalificacionRepository
         $semestreIngreso = (string) ($alumno['semestre_ingreso'] ?? '');
 
         return $anioIngreso . ($semestreIngreso !== '' ? $semestreIngreso : '1');
+    }
+
+    /** @param array<string, mixed> $row */
+    private function notaMatriz(array $row, bool $equivalencia): string
+    {
+        if ($equivalencia) {
+            return 'E';
+        }
+
+        if ((float) ($row['nota_final'] ?? 0) >= 7) {
+            return (string) round((float) $row['nota_final']);
+        }
+
+        if ((float) ($row['crec'] ?? 0) >= 4) {
+            return (string) round((float) $row['crec']) . 'c';
+        }
+
+        return '';
     }
 
     private function fetchByAlumno(string $whereSql, array $params): array

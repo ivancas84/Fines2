@@ -24,6 +24,7 @@ $cursoLabel = static function (array $row) use ($planLabel, $tramoAsignaturaLabe
         $tramoAsignaturaLabel($row),
         $planLabel($row),
         $horasLabel($row),
+        trim((string) ($row['asignatura_codigo'] ?? '')),
     ], static fn (string $part): bool => $part !== '')));
 };
 $fecha = static function (mixed $value): string {
@@ -101,6 +102,7 @@ $cursoMetaLabel = static function (array $row) use ($fecha): string {
             <label class="form-label">Departamento <input class="form-control" name="departamento" value="<?= e($v($persona, 'departamento')) ?>"></label>
             <label class="form-label">Localidad <input class="form-control" name="localidad" value="<?= e($v($persona, 'localidad')) ?>"></label>
             <label class="form-label">Partido <input class="form-control" name="partido" value="<?= e($v($persona, 'partido')) ?>"></label>
+            <label class="form-label form-wide">Enlace documentacion <input class="form-control" name="enlace_documentacion" maxlength="255" value="<?= e($v($persona, 'enlace_documentacion')) ?>"></label>
         </div>
         <div class="d-flex flex-wrap gap-2 mt-3">
             <button class="btn btn-primary" type="submit">Guardar persona</button>

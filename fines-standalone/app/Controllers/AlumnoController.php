@@ -75,6 +75,7 @@ final class AlumnoController extends Controller
                 (string) $alumnoId,
                 (string) $alumno['plan'],
             ) : [],
+            'calificacionesMatriz' => $tienePlan ? $calificacionRepository->matrizByAlumnoPlan($alumno) : [],
             'detalles' => (new DetallePersonaRepository($this->pdo))->byPersona($personaId),
             'notice' => flash('notice'),
             'error' => flash('error'),
@@ -131,6 +132,7 @@ final class AlumnoController extends Controller
                 'departamento' => $this->nullableText($request->input('departamento')),
                 'localidad' => $this->nullableText($request->input('localidad')),
                 'partido' => $this->nullableText($request->input('partido')),
+                'enlace_documentacion' => $this->nullableText($request->input('enlace_documentacion')),
             ]);
 
             Session::flash('notice', 'Datos de persona guardados.');
@@ -160,6 +162,8 @@ final class AlumnoController extends Controller
             'anio_ingreso' => $request->input('anio_ingreso'),
             'semestre_ingreso' => $this->nullableInt($request->input('semestre_ingreso')),
             'fecha_titulacion' => $request->input('fecha_titulacion') ?: null,
+            'libro' => $this->nullableText($request->input('libro')),
+            'folio' => $this->nullableText($request->input('folio')),
             'observaciones' => $request->input('observaciones'),
             'confirmado_direccion' => $request->checkbox('confirmado_direccion'),
         ]);
