@@ -31,6 +31,13 @@
                     <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/informes/contralor')) ?>">Abrir</a>
                 </td>
             </tr>
+            <tr>
+                <td>Emails de docentes</td>
+                <td>Emails y emails ABC de docentes con toma aprobada en el calendario elegido, sin duplicados, para copiar y pegar.</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-primary" href="<?= e(url('/informes/emails-docentes')) ?>">Abrir</a>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

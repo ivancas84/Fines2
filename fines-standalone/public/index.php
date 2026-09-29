@@ -41,6 +41,7 @@ $app->get('/informes', [InformeController::class, 'index']);
 $app->get('/informes/egresados', [InformeController::class, 'egresados']);
 $app->get('/informes/contralor', [InformeController::class, 'contralor']);
 $app->post('/informes/contralor/asignar-planilla', [InformeController::class, 'asignarPlanillaContralor']);
+$app->get('/informes/emails-docentes', [InformeController::class, 'emailsDocentes']);
 
 $app->get('/personas', [PersonaController::class, 'index']);
 $app->get('/personas/nueva', [PersonaController::class, 'createForm']);

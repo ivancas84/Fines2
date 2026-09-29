@@ -160,12 +160,19 @@
     };
 
     document.addEventListener('click', async (event) => {
-        const button = event.target.closest('[data-copy-text]');
+        const button = event.target.closest('[data-copy-text], [data-copy-target]');
         if (!button || button.disabled) {
             return;
         }
 
-        const text = button.getAttribute('data-copy-text') || '';
+        const targetSelector = button.getAttribute('data-copy-target') || '';
+        let text = '';
+        if (targetSelector !== '') {
+            const target = document.querySelector(targetSelector);
+            text = target ? String(target.value ?? target.textContent ?? '') : '';
+        } else {
+            text = button.getAttribute('data-copy-text') || '';
+        }
         if (!text) {
             return;
         }

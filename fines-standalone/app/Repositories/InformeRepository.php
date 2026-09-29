@@ -48,6 +48,68 @@ final class InformeRepository
     }
 
     /**
+     * Emails de docentes con toma aprobada en un calendario.
+     *
+     * Cadena: toma.curso -> curso.comision -> comision.calendario.
+     * Incluye persona.email y persona.email_abc, sin vacíos ni duplicados.
+     *
+     * @return array{emails: list<string>, docentes: int, sin_email: int}
+     */
+    public function emailsDocentes(string $calendarioId): array
+    {
+        $calendarioId = trim($calendarioId);
+        if ($calendarioId === '') {
+            return ['emails' => [], 'docentes' => 0, 'sin_email' => 0];
+        }
+
+        $stmt = $this->pdo->prepare("
+            SELECT DISTINCT persona.id,
+                   persona.email,
+                   persona.email_abc
+            FROM toma
+            INNER JOIN curso ON curso.id = toma.curso
+            INNER JOIN comision ON comision.id = curso.comision
+            INNER JOIN persona ON persona.id = toma.docente
+            WHERE comision.calendario = :calendario_id
+              AND toma.estado = 'Aprobada'
+        ");
+        $stmt->execute(['calendario_id' => $calendarioId]);
+
+        $emails = [];
+        $seen = [];
+        $docentes = 0;
+        $sinEmail = 0;
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $docentes++;
+            $found = false;
+            foreach (['email', 'email_abc'] as $field) {
+                $email = trim((string) ($row[$field] ?? ''));
+                if ($email === '') {
+                    continue;
+                }
+                $found = true;
+                $key = mb_strtolower($email, 'UTF-8');
+                if (isset($seen[$key])) {
+                    continue;
+                }
+                $seen[$key] = true;
+                $emails[] = $email;
+            }
+            if (!$found) {
+                $sinEmail++;
+            }
+        }
+
+        usort($emails, static fn (string $left, string $right): int => strcasecmp($left, $right));
+
+        return [
+            'emails' => $emails,
+            'docentes' => $docentes,
+            'sin_email' => $sinEmail,
+        ];
+    }
+
+    /**
      * Listado para copiar y pegar (migrado de version 5/scripts/contralor.php).
      *
      * Combinación calendario: tomas aprobadas con contralor "Pasar", sin planilla docente.

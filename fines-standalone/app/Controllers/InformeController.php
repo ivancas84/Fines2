@@ -109,4 +109,29 @@ final class InformeController extends Controller
 
         Response::redirect(url('/informes/contralor?' . http_build_query($returnQuery)));
     }
+
+    public function emailsDocentes(Request $request, array $vars = []): void
+    {
+        $this->requireLogin();
+
+        $calendarios = (new CalendarioRepository($this->pdo))->all();
+        $calendarioId = trim((string) $request->query('calendario', ''));
+        if ($calendarioId === '' && $calendarios !== []) {
+            $calendarioId = (string) $calendarios[0]['id'];
+        }
+
+        $result = $calendarioId !== ''
+            ? (new InformeRepository($this->pdo))->emailsDocentes($calendarioId)
+            : ['emails' => [], 'docentes' => 0, 'sin_email' => 0];
+
+        $this->view->render('informes/emails_docentes', [
+            'title' => 'Emails de docentes',
+            'calendarios' => $calendarios,
+            'selectedCalendario' => $calendarioId,
+            'emails' => $result['emails'],
+            'emailsTexto' => implode('; ', $result['emails']),
+            'docentes' => $result['docentes'],
+            'sinEmail' => $result['sin_email'],
+        ]);
+    }
 }
