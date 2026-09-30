@@ -11,6 +11,7 @@ use FinesApp\Integrations\ProgramaFines\AlumnoNoExisteException;
 use FinesApp\Integrations\ProgramaFines\ProgramaFinesClient;
 use FinesApp\Integrations\ProgramaFines\ProgramaFinesMapper;
 use FinesApp\Integrations\ProgramaFines\ProgramaFinesSession;
+use FinesApp\Repositories\AlumnosComisionImportRepository;
 use FinesApp\Repositories\ComisionRepository;
 use FinesApp\Repositories\TomaRepository;
 
@@ -202,6 +203,102 @@ final class ComisionController extends Controller
             'notice' => flash('notice'),
             'error' => flash('error'),
         ]);
+    }
+
+    public function rindexDivision(Request $request, array $vars = []): void
+    {
+        $this->requireLogin();
+
+        $comisionId = trim((string) ($vars['id'] ?? ''));
+        $repository = new ComisionRepository($this->pdo);
+        $rindex = $comisionId !== '' ? $repository->rindexDivision($comisionId) : null;
+
+        if ($rindex === null) {
+            $this->view->render('errors/404', ['title' => 'Comisión no encontrada'], 404);
+            return;
+        }
+
+        $this->view->render('comisiones/rindex_division', [
+            'title' => 'Rindex división',
+            'comision' => $rindex['comision'],
+            'sinPfid' => $rindex['sin_pfid'],
+            'mezcladas' => $rindex['mezcladas'],
+            'diferentePlan' => $rindex['diferente_plan'],
+            'comisionesCount' => $rindex['comisiones_count'],
+            'columnas' => $rindex['columnas'],
+            'filas' => $rindex['filas'],
+            'from' => (string) $request->query('from', ''),
+        ]);
+    }
+
+    public function cargarAlumnos(Request $request, array $vars = []): void
+    {
+        $this->requireLogin();
+        $comision = $this->comisionOr404(trim((string) ($vars['id'] ?? '')));
+        if ($comision === null) {
+            return;
+        }
+
+        $this->view->render('comisiones/cargar_alumnos', [
+            'title' => 'Cargar alumnos',
+            'comision' => $comision,
+            'rawData' => '',
+            'report' => null,
+            'notice' => flash('notice'),
+            'error' => flash('error'),
+        ]);
+    }
+
+    public function cargarAlumnosProcesar(Request $request, array $vars = []): void
+    {
+        $this->requireEdit();
+        $this->csrf->validate($request->input('_token'));
+
+        $comision = $this->comisionOr404(trim((string) ($vars['id'] ?? '')));
+        if ($comision === null) {
+            return;
+        }
+
+        $rawData = (string) $request->input('data', '');
+        $report = null;
+        $error = null;
+        $notice = null;
+        try {
+            $report = (new AlumnosComisionImportRepository($this->pdo))->import(
+                (string) $comision['id'],
+                $rawData,
+            );
+            $notice = sprintf(
+                'Proceso finalizado: %d filas, %d procesadas, %d errores.',
+                (int) $report['rows_total'],
+                (int) $report['procesados'],
+                (int) $report['errores'],
+            );
+        } catch (\Throwable $throwable) {
+            $error = $throwable->getMessage();
+        }
+
+        $this->view->render('comisiones/cargar_alumnos', [
+            'title' => 'Cargar alumnos',
+            'comision' => $comision,
+            'rawData' => $rawData,
+            'report' => $report,
+            'notice' => $notice,
+            'error' => $error,
+        ]);
+    }
+
+    /** @return array<string, mixed>|null */
+    private function comisionOr404(string $comisionId): ?array
+    {
+        $comision = $comisionId !== '' ? (new ComisionRepository($this->pdo))->byId($comisionId) : null;
+        if ($comision === null) {
+            $this->view->render('errors/404', ['title' => 'Comisión no encontrada'], 404);
+
+            return null;
+        }
+
+        return $comision;
     }
 
     public function alumnos(Request $request, array $vars = []): void

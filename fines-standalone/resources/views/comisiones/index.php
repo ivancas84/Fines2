@@ -124,6 +124,12 @@ $sortUrl = static function (string $column) use ($selectedCalendario, $soloAutor
                         <a class="btn btn-sm btn-outline-dark" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/rindex')) ?>" title="Rindex de calificaciones de la comisión">
                             Rindex
                         </a>
+                        <a class="btn btn-sm btn-outline-dark" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/rindex-division')) ?>" title="Rindex de la división: disposiciones del plan y alumnos de las comisiones del PFID">
+                            Rindex Div
+                        </a>
+                        <a class="btn btn-sm btn-outline-secondary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/cargar-alumnos')) ?>" title="Cargar alumnos desde una nómina de Excel">
+                            Cargar alumnos
+                        </a>
                         <?php if ($auth->canEdit()) : ?>
                             <form class="d-inline" method="post"
                                   action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/reactivar-alumnos')) ?>"

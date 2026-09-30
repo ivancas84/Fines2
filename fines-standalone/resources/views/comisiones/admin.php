@@ -40,6 +40,12 @@ $cursoOptionLabel = static fn (array $curso): string => trim(implode(' · ', arr
             <a class="btn btn-outline-dark" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/rindex')) ?>" title="Rindex de calificaciones de la comisión">
                 Rindex
             </a>
+            <a class="btn btn-outline-dark" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/rindex-division')) ?>" title="Rindex de la división: disposiciones del plan y alumnos de las comisiones del PFID">
+                Rindex Div
+            </a>
+            <a class="btn btn-outline-secondary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/cargar-alumnos')) ?>" title="Cargar alumnos desde una nómina de Excel">
+                Cargar alumnos
+            </a>
             <?php if ($puedeSiguiente) : ?>
                 <form method="post"
                       action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/generar-siguiente')) ?>"

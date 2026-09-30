@@ -1257,6 +1257,352 @@ final class ComisionRepository
         ];
     }
 
+    /**
+     * Rindex de división: disposiciones del plan del PFID y alumnos de la cadena.
+     * Equivalente a wp/rdd2_rindex_division_direccion.
+     *
+     * @return array{
+     *   comision: array<string, mixed>,
+     *   sin_pfid: bool,
+     *   mezcladas: bool,
+     *   diferente_plan: bool,
+     *   comisiones_count: int,
+     *   columnas: list<array{disposicion_id: string, asignatura: string, detalle: string, semestre: string}>,
+     *   filas: list<array{
+     *     alumno_id: string,
+     *     persona_id: string,
+     *     apellidos: string,
+     *     nombres: string,
+     *     numero_documento: string,
+     *     notas: list<string>
+     *   }>
+     * }|null
+     */
+    public function rindexDivision(string $comisionId): ?array
+    {
+        $comision = $this->byId($comisionId);
+        if ($comision === null) {
+            return null;
+        }
+
+        $vacio = [
+            'comision' => $comision,
+            'sin_pfid' => false,
+            'mezcladas' => false,
+            'diferente_plan' => false,
+            'comisiones_count' => 0,
+            'columnas' => [],
+            'filas' => [],
+        ];
+
+        $pfid = trim((string) ($comision['pfid'] ?? ''));
+        if ($pfid === '') {
+            $vacio['sin_pfid'] = true;
+
+            return $vacio;
+        }
+
+        $visitedIds = [];
+        $visitedPfids = [];
+        $mezcladas = false;
+        $diferentePlan = false;
+        $this->collectComisionIdsByPfid($pfid, $visitedIds, $visitedPfids, $mezcladas, $diferentePlan);
+
+        $comisionIds = array_keys($visitedIds);
+        $columnas = $this->disposicionesDivision($pfid);
+        $filas = $this->filasRindexDivision($comisionIds, $columnas);
+
+        return [
+            'comision' => $comision,
+            'sin_pfid' => false,
+            'mezcladas' => $mezcladas,
+            'diferente_plan' => $diferentePlan,
+            'comisiones_count' => count($comisionIds),
+            'columnas' => $columnas,
+            'filas' => $filas,
+        ];
+    }
+
+    /**
+     * @param array<string, true> $visitedIds
+     * @param array<string, true> $visitedPfids
+     */
+    private function collectComisionIdsByPfid(
+        string $pfid,
+        array &$visitedIds,
+        array &$visitedPfids,
+        bool &$mezcladas,
+        bool &$diferentePlan,
+    ): void {
+        $pfid = trim($pfid);
+        if ($pfid === '' || isset($visitedPfids[$pfid])) {
+            return;
+        }
+        $visitedPfids[$pfid] = true;
+
+        $stmt = $this->pdo->prepare("
+            SELECT comision.id,
+                   comision.comision_siguiente,
+                   planificacion.plan AS plan_id
+            FROM comision
+            LEFT JOIN planificacion ON planificacion.id = comision.planificacion
+            WHERE comision.pfid = :pfid
+        ");
+        $stmt->execute(['pfid' => $pfid]);
+        $comisiones = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($comisiones as $row) {
+            $id = trim((string) ($row['id'] ?? ''));
+            if ($id !== '') {
+                $visitedIds[$id] = true;
+            }
+        }
+
+        foreach ($comisiones as $row) {
+            $siguienteId = trim((string) ($row['comision_siguiente'] ?? ''));
+            if ($siguienteId === '' || isset($visitedIds[$siguienteId])) {
+                continue;
+            }
+
+            $mezcladas = true;
+            $siguiente = $this->comisionCadenaPorId($siguienteId);
+            if ($siguiente === null) {
+                $visitedIds[$siguienteId] = true;
+                continue;
+            }
+
+            $planActual = trim((string) ($row['plan_id'] ?? ''));
+            $planSiguiente = trim((string) ($siguiente['plan_id'] ?? ''));
+            if ($planActual !== $planSiguiente) {
+                $diferentePlan = true;
+            }
+
+            $siguientePfid = trim((string) ($siguiente['pfid'] ?? ''));
+            if ($siguientePfid === '') {
+                $visitedIds[$siguienteId] = true;
+                continue;
+            }
+
+            $this->collectComisionIdsByPfid($siguientePfid, $visitedIds, $visitedPfids, $mezcladas, $diferentePlan);
+        }
+    }
+
+    /**
+     * @return array{id: string, pfid: string, plan_id: string}|null
+     */
+    private function comisionCadenaPorId(string $comisionId): ?array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT comision.id,
+                   comision.pfid,
+                   planificacion.plan AS plan_id
+            FROM comision
+            LEFT JOIN planificacion ON planificacion.id = comision.planificacion
+            WHERE comision.id = :id
+            LIMIT 1
+        ");
+        $stmt->execute(['id' => $comisionId]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row === false) {
+            return null;
+        }
+
+        return [
+            'id' => (string) ($row['id'] ?? ''),
+            'pfid' => trim((string) ($row['pfid'] ?? '')),
+            'plan_id' => trim((string) ($row['plan_id'] ?? '')),
+        ];
+    }
+
+    /**
+     * @return list<array{disposicion_id: string, asignatura: string, detalle: string, semestre: string}>
+     */
+    private function disposicionesDivision(string $pfid): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT DISTINCT disposicion.id AS disposicion_id,
+                   COALESCE(asignatura.nombre, '') AS asignatura,
+                   COALESCE(asignatura.codigo, '') AS asignatura_codigo,
+                   planificacion.anio,
+                   planificacion.semestre,
+                   plan.resolucion,
+                   plan.orientacion,
+                   disposicion.horas_catedra
+            FROM disposicion
+            INNER JOIN planificacion ON planificacion.id = disposicion.planificacion
+            LEFT JOIN asignatura ON asignatura.id = disposicion.asignatura
+            LEFT JOIN plan ON plan.id = planificacion.plan
+            WHERE planificacion.plan IN (
+                SELECT planificacion_comision.plan
+                FROM comision
+                INNER JOIN planificacion planificacion_comision ON planificacion_comision.id = comision.planificacion
+                WHERE comision.pfid = :pfid
+                  AND planificacion_comision.plan IS NOT NULL
+            )
+            ORDER BY CAST(planificacion.anio AS UNSIGNED) ASC,
+                     CAST(planificacion.semestre AS UNSIGNED) ASC,
+                     asignatura.nombre ASC,
+                     disposicion.id ASC
+        ");
+        $stmt->execute(['pfid' => $pfid]);
+
+        $columnas = [];
+        foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+            $nombre = trim((string) ($row['asignatura'] ?? ''));
+            $codigo = trim((string) ($row['asignatura_codigo'] ?? ''));
+            $anio = trim((string) ($row['anio'] ?? ''));
+            $semestre = trim((string) ($row['semestre'] ?? ''));
+            $resolucion = trim((string) ($row['resolucion'] ?? ''));
+            $sigla = $this->orientacionSigla((string) ($row['orientacion'] ?? ''));
+            $horas = $row['horas_catedra'];
+            $horasLabel = ($horas === null || $horas === '') ? '?' : (string) $horas;
+            $columnas[] = [
+                'disposicion_id' => (string) ($row['disposicion_id'] ?? ''),
+                'asignatura' => trim(($nombre !== '' ? $nombre : '?') . ' ' . ($codigo !== '' ? $codigo : '?')),
+                'detalle' => ($anio !== '' ? $anio : '?')
+                    . '/'
+                    . ($semestre !== '' ? $semestre : '?')
+                    . ' '
+                    . ($resolucion !== '' ? $resolucion : '?')
+                    . ' '
+                    . ($sigla !== '' ? $sigla : '?')
+                    . ' ('
+                    . $horasLabel
+                    . ')',
+                'semestre' => $semestre,
+            ];
+        }
+
+        return $columnas;
+    }
+
+    /**
+     * @param list<string> $comisionIds
+     * @param list<array{disposicion_id: string, asignatura: string, detalle: string, semestre: string}> $columnas
+     * @return list<array{
+     *   alumno_id: string,
+     *   persona_id: string,
+     *   apellidos: string,
+     *   nombres: string,
+     *   numero_documento: string,
+     *   notas: list<string>
+     * }>
+     */
+    private function filasRindexDivision(array $comisionIds, array $columnas): array
+    {
+        if ($comisionIds === []) {
+            return [];
+        }
+
+        [$comisionIn, $params] = $this->inClause('c', $comisionIds);
+        $alumnosStmt = $this->pdo->prepare("
+            SELECT DISTINCT alumno.id AS alumno_id,
+                   alumno.persona AS persona_id,
+                   persona.apellidos,
+                   persona.nombres,
+                   persona.numero_documento
+            FROM alumno
+            INNER JOIN persona ON persona.id = alumno.persona
+            INNER JOIN alumno_comision ON alumno_comision.alumno = alumno.id
+            WHERE alumno_comision.comision IN ({$comisionIn})
+            ORDER BY persona.apellidos ASC,
+                     persona.nombres ASC,
+                     alumno.id ASC
+        ");
+        $alumnosStmt->execute($params);
+        $alumnos = $alumnosStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $notasPorAlumnoDisp = [];
+        $alumnoIds = array_values(array_unique(array_filter(array_map(
+            static fn (array $row): string => trim((string) ($row['alumno_id'] ?? '')),
+            $alumnos,
+        ))));
+        $disposicionIds = array_values(array_unique(array_filter(array_map(
+            static fn (array $columna): string => trim($columna['disposicion_id']),
+            $columnas,
+        ))));
+
+        if ($alumnoIds !== [] && $disposicionIds !== []) {
+            [$alumnoIn, $alumnoParams] = $this->inClause('a', $alumnoIds);
+            [$dispIn, $dispParams] = $this->inClause('d', $disposicionIds);
+            $califStmt = $this->pdo->prepare("
+                SELECT calificacion.alumno,
+                       calificacion.disposicion,
+                       MAX(calificacion.nota_final) AS nota_final,
+                       MAX(calificacion.crec) AS crec
+                FROM calificacion
+                WHERE calificacion.alumno IN ({$alumnoIn})
+                  AND calificacion.disposicion IN ({$dispIn})
+                  AND (calificacion.nota_final >= 7 OR calificacion.crec >= 4)
+                GROUP BY calificacion.alumno, calificacion.disposicion
+            ");
+            $califStmt->execute($alumnoParams + $dispParams);
+            foreach ($califStmt->fetchAll(PDO::FETCH_ASSOC) as $calificacion) {
+                $alumnoId = (string) ($calificacion['alumno'] ?? '');
+                $disposicionId = (string) ($calificacion['disposicion'] ?? '');
+                $nota = $this->formatNotaAprobada(
+                    $calificacion['nota_final'] ?? null,
+                    $calificacion['crec'] ?? null,
+                );
+                if ($alumnoId === '' || $disposicionId === '' || $nota === null) {
+                    continue;
+                }
+                $notasPorAlumnoDisp[$alumnoId][$disposicionId] = $nota;
+            }
+        }
+
+        $filas = [];
+        foreach ($alumnos as $alumno) {
+            $alumnoId = (string) ($alumno['alumno_id'] ?? '');
+            $notas = [];
+            foreach ($columnas as $columna) {
+                $disposicionId = $columna['disposicion_id'];
+                $notas[] = $disposicionId !== ''
+                    ? (string) ($notasPorAlumnoDisp[$alumnoId][$disposicionId] ?? '')
+                    : '';
+            }
+            $filas[] = [
+                'alumno_id' => $alumnoId,
+                'persona_id' => (string) ($alumno['persona_id'] ?? ''),
+                'apellidos' => (string) ($alumno['apellidos'] ?? ''),
+                'nombres' => (string) ($alumno['nombres'] ?? ''),
+                'numero_documento' => (string) ($alumno['numero_documento'] ?? ''),
+                'notas' => $notas,
+            ];
+        }
+
+        return $filas;
+    }
+
+    /**
+     * @param list<string> $ids
+     * @return array{0: string, 1: array<string, string>}
+     */
+    private function inClause(string $prefix, array $ids): array
+    {
+        $placeholders = [];
+        $params = [];
+        foreach (array_values($ids) as $index => $id) {
+            $key = $prefix . $index;
+            $placeholders[] = ':' . $key;
+            $params[$key] = $id;
+        }
+
+        return [implode(', ', $placeholders), $params];
+    }
+
+    private function orientacionSigla(string $orientacion): string
+    {
+        $words = preg_split('/\s+/u', trim($orientacion), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        $sigla = '';
+        foreach ($words as $word) {
+            $sigla .= mb_substr($word, 0, 1, 'UTF-8');
+        }
+
+        return $sigla;
+    }
+
     private function formatNotaAprobada(mixed $notaFinal, mixed $crec): ?string
     {
         if ($notaFinal !== null && $notaFinal !== '' && (float) $notaFinal >= 7) {

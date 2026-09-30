@@ -43,6 +43,9 @@ $filas = $filas ?? [];
         <a class="btn btn-outline-primary" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/alumnos')) ?>">
             Ver alumnos
         </a>
+        <a class="btn btn-outline-dark" href="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/rindex-division' . ($from !== '' ? '?from=' . rawurlencode($from) : ''))) ?>" title="Rindex de la división: disposiciones del plan y alumnos de las comisiones del PFID">
+            Rindex Div
+        </a>
         <?php if ($auth->canEdit()) : ?>
             <form method="post"
                   action="<?= e(url('/comisiones/' . rawurlencode((string) $comision['id']) . '/reactivar-alumnos')) ?>"
