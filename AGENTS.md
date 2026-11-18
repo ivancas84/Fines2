@@ -91,3 +91,14 @@ Para nuevas pantallas:
 - Implementar pantallas y flujos en `fines-standalone` sin depender de pantallas, scripts ni slugs anteriores.
 - Avanzar por pantallas o flujos pequeños para que el usuario pueda entender y validar cada paso.
 - Antes de reutilizar código viejo, verificar que no arrastre dependencias de WordPress, SupportCandy o rutas históricas.
+
+## Consulta obligatoria del glosario
+- Consultar [docs/glosario.md](docs/glosario.md) antes de implementar o modificar funcionalidades relacionadas con conceptos de negocio.
+- Utilizar y respetar las definiciones y distinciones del glosario. Verificar el modelo de datos y el código existente antes de asumir relaciones entre entidades o correspondencias entre conceptos y campos.
+- Si encontrás términos ambiguos, contradicciones o conceptos que no estén definidos, señalalos antes de tomar decisiones que puedan afectar el diseño o la implementación.
+
+## OpenSpec
+- Utilizar OpenSpec para los cambios que correspondan al flujo de especificación del proyecto.
+- Antes de realizar cualquier tarea relacionada con OpenSpec, consultar openspec/config.yaml y respetar las reglas y el contexto definidos allí.
+- El directorio `explores/`, ubicado en la raíz del repositorio, contiene exclusivamente registros históricos de exploraciones. No constituye documentación vigente y no debe consultarse ni utilizarse como antecedente para ninguna tarea, salvo que el desarrollador indique expresamente lo contrario.
+- Si una instrucción de trabajo contradice las reglas de openspec/config.yaml, señalar la contradicción antes de continuar y no asumir decisiones que requieran aprobación.

@@ -1,0 +1,30 @@
+
+schema: spec-driven
+
+context: |
+  - Consultar AGENTS.md para conocer las instrucciones generales de trabajo.
+  - Consultar docs/glosario.md para comprender y respetar los conceptos y la terminología del dominio.
+  - Respetar el vocabulario y las reglas de negocio confirmadas en la terminología del dominio. No inventar ni redefinir conceptos existentes. Si hay ambigüedades o contradicciones relevantes, identificarlas explícitamente.
+  - Escribir los artefactos de OpenSpec en español.
+  - Antes de proponer cambios, inspeccionar el código y los artefactos OpenSpec vigentes que sean relevantes.
+  - El directorio explores/, ubicado en la raíz del repositorio, contiene exclusivamente registros históricos de las exploraciones realizadas. No constituye documentación vigente del sistema ni forma parte de los artefactos OpenSpec.
+  - No consultar ni utilizar el contenido de explores/ para ninguna tarea, salvo que el desarrollador indique expresamente que deben tenerse en cuenta.
+  - No asumir como aprobadas las decisiones técnicas que no hayan sido confirmadas explícitamente.
+  - No implementar código ni modificar archivos de la aplicación hasta que la propuesta haya sido revisada y aprobada.
+  - Cuando se utilice el comando o skill de OpenSpec explore, guardar el resultado de la exploración en explores/.
+  - Cada exploración debe guardarse en un archivo Markdown con un nombre descriptivo y el prefijo YYYY-MM-DD-. Si se realiza más de una exploración sobre el mismo tema, agregar un número de secuencia.
+
+rules:
+  proposal:
+    - Explicar el problema y el resultado esperado.
+    - Indicar el alcance y los aspectos que quedan fuera del cambio.
+    - Distinguir los requisitos confirmados de las decisiones técnicas pendientes.
+
+  design:
+    - Justificar las decisiones técnicas relevantes.
+    - Identificar riesgos y alternativas cuando corresponda.
+
+  tasks:
+    - Incluir tareas de verificación acordes con el cambio.
+    - No marcar tareas como completadas si no se realizaron.
+    - Si una tarea verifica una migración en una base desechable, esa base debe incluir los DEFAULT, claves, índices y triggers que la columna tiene en SCHEMA.sql o en la base de destino. No dar por válida una prueba sobre un CREATE TABLE reducido.
